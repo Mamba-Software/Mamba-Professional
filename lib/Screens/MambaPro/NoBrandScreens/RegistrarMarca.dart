@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataServic
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -74,6 +75,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
 
   // 4th TAB: Time
   // Time Picker Horari de Trabajo
+  DateTime startTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0);
+  DateTime endTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 22, 0);
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
   List<double> _workShift = [];
@@ -81,8 +84,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   // Descansos
   TextEditingController breakStartTimeController = TextEditingController();
   TextEditingController breakEndTimeController = TextEditingController();
-  TimeOfDay _breakStartTime = TimeOfDay(hour: 13, minute: 00);
-  TimeOfDay _breakEndTime = TimeOfDay(hour: 14, minute: 00);
+  //TimeOfDay _breakStartTime = TimeOfDay(hour: 13, minute: 00);
+  //TimeOfDay _breakEndTime = TimeOfDay(hour: 14, minute: 00);
   List<TimeOfDay> _breakList = [];
   List<int> removedIndex = [];
   int breakLimit = 2;
@@ -101,143 +104,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     };
   }
 
-  // Cupertino Picker
-  Future<void> selectSlot(ctx, type, bool? isStart) {
-    // Initial Vars
-    var startDate = DateTime.now();
-    var title;
-    var initialDuration = 1;
-    var initialMembers = 1;
-    var widgetPicker;
-    // Init for differnt types
-    if (type == 0) {
-
-    } else if (type == 1) {
-
-    } else if (type == 2) {
-      initialMembers = members-1;
-    } else if (type == 3) {
-      // No changes needed at the moment
-    }
-
-    Widget workdayTimePicker = CupertinoTheme(
-      data: CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
-          )
-      ),
-      child: CupertinoDatePicker(
-          mode: CupertinoDatePickerMode.time,
-          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-          minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-          maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
-          use24hFormat: true,
-          minuteInterval: 30,
-          onDateTimeChanged: (val) {
-            if (isStart!) {
-              setState(() {
-                startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-              });
-            } else {
-              setState(() {
-                endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-              });
-            }
-          }
-      ),
-    );
-    Widget breakTimePicker = CupertinoTheme(
-      data: CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
-          )
-      ),
-      child: CupertinoDatePicker(
-          mode: CupertinoDatePickerMode.time,
-          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-          minimumDate: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-          maximumDate: DateTime(startDate.year, startDate.month, startDate.day, 23, 0),
-          use24hFormat: true,
-          minuteInterval: 30,
-          onDateTimeChanged: (val) {
-            if (isStart!) {
-              setState(() {
-                breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-              });
-            } else {
-              setState(() {
-                breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(val);
-              });
-            }
-          }
-      ),
-    );
-
-    if (type == 3) {
-      title = AppLocalizations.of(context)!.selectTime;
-      widgetPicker = workdayTimePicker;
-    } else if (type == 4) {
-      title = AppLocalizations.of(context)!.selectTime;
-      widgetPicker = breakTimePicker;
-    }
-    showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Material(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.40,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                        child: Text(title,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,)
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
-                    child: widgetPicker,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          }
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              ],
-            ),
-          ),
-        )
-    );
-    return Future.value("");
-  }
-
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     File? temp = await ImageUtils().pickImage();
@@ -250,8 +116,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
     gPlace = googlePlace.GooglePlace(Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
-    startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0,));
-    endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 23, 0,));
+    startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0,));
+    endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 22, 0,));
     breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0,));
     breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
     super.initState();
@@ -287,7 +153,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
             },
           ),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(0),
+            preferredSize: const Size.fromHeight(0),
             child: IgnorePointer(
                 child: Column(
                   children: [
@@ -358,12 +224,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
             Expanded(
                 child: TabBarView(
                   controller: _tabController,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     Scaffold(
                       resizeToAvoidBottomInset: true,
                       body: SingleChildScrollView(
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
                             child: Form(
@@ -414,7 +280,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                           ),
                                           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                           elevation: 10,
-                                          shape: CircleBorder(),
+                                          shape: const CircleBorder(),
                                           padding: EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.11, right: MediaQuery.of(context).size.height * 0.11, top: MediaQuery.of(context).size.height * 0.13),
                                         ),
                                       )
@@ -463,7 +329,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     Scaffold(
                       resizeToAvoidBottomInset: true,
                       body: SingleChildScrollView(
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
                             child: Form(
@@ -521,7 +387,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     Scaffold(
                       resizeToAvoidBottomInset: true,
                       body: SingleChildScrollView(
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
                             child: Column(
@@ -550,7 +416,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                 ListTile(
                                   onTap: () async {
                                     // Generate a new token here
-                                    final sessionToken = Uuid().v4();
+                                    final sessionToken = const Uuid().v4();
                                     final language = currentUser.idioma;
                                     final Suggestion? result = await showSearch(
                                       context: context,
@@ -684,7 +550,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     Scaffold(
                       resizeToAvoidBottomInset: true,
                       body: SingleChildScrollView(
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
                             child: Column(
@@ -715,12 +581,25 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   children: <Widget>[
                                     TextButton(
                                       onPressed: () async {
-                                        selectSlot(context, 3, true);
+                                        DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => SelectTimeDialog(
+                                              title: AppLocalizations.of(context)!.selectTime,
+                                              startDate: startTime,
+                                              onlyFuture: false,
+                                            )
+                                        );
+                                        if (pickedTimeTemp != null) {
+                                          setState(() {
+                                            startTime = pickedTimeTemp;
+                                            startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute,));
+                                          });
+                                        }
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(8),
+                                        padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                           border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
                                           color: Colors.transparent,
                                         ),
@@ -734,12 +613,25 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                         style: Theme.of(context).textTheme.headline3),
                                     TextButton(
                                       onPressed: () async {
-                                        selectSlot(context, 3, false);
+                                        DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                                            context: context,
+                                            builder: (_) => SelectTimeDialog(
+                                              title: AppLocalizations.of(context)!.selectTime,
+                                              startDate: endTime,
+                                              onlyFuture: false,
+                                            )
+                                        );
+                                        if (pickedTimeTemp != null) {
+                                          setState(() {
+                                            endTime = pickedTimeTemp;
+                                            endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
+                                          });
+                                        }
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(8),
+                                        padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                           border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
                                           color: Colors.transparent,
                                         ),
@@ -752,7 +644,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   ],
                                 ),
                                 errorTime != null ? Padding(
-                                  padding: EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                                  padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
                                   child: Text(
                                     errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
                                     style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
@@ -760,6 +652,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   ),
                                 ) : Container(),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                /*
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -973,7 +866,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                     ),
                                   ],
                                 ) : Container(),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                 */
                               ],
                             )
                         ),
@@ -1153,9 +1046,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
         endTimeController.text);
     double toDouble(DateTime myTime) => myTime.hour + myTime.minute / 60.0;
     if (TimeOfDay(hour: start.hour, minute: start.minute) ==
-        TimeOfDay(hour: 0, minute: 00) &&
+        const TimeOfDay(hour: 0, minute: 00) &&
         TimeOfDay(hour: end.hour, minute: end.minute) ==
-            TimeOfDay(hour: 23, minute: 00)) {
+            const TimeOfDay(hour: 23, minute: 00)) {
       setState(() {
         errorTime = 1;
       });
@@ -1209,8 +1102,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute<Null>(
-        builder: (context) => SplashScreen(),
-        settings: RouteSettings(name: 'SplashScreen'),
+        builder: (context) => const SplashScreen(),
+        settings: const RouteSettings(name: 'SplashScreen'),
       ),
       (_) => false,
     );
