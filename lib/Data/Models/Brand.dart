@@ -44,49 +44,49 @@ class Brand {
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   Brand.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('adminID')) {
-      this.adminID = documentSnapshot.get("adminID").toString();
+      adminID = documentSnapshot.get("adminID").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('logoUrl')) {
-      this.logoUrl = documentSnapshot.get("logoUrl").toString();
+      logoUrl = documentSnapshot.get("logoUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
-      this.name = documentSnapshot.get("name").toString();
+      name = documentSnapshot.get("name").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
-      this.description = documentSnapshot.get("description").toString();
+      description = documentSnapshot.get("description").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
-      this.dateJoined = documentSnapshot.get("dateJoined").toString();
+      dateJoined = documentSnapshot.get("dateJoined").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('roomId')) {
-      this.roomId = documentSnapshot.get("roomId").toString();
+      roomId = documentSnapshot.get("roomId").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('baseLocation')) {
-      this.baseLocation = documentSnapshot.get("baseLocation").toString();
+      baseLocation = documentSnapshot.get("baseLocation").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numClients')) {
-      this.numClients = documentSnapshot.get("numClients");
+      numClients = documentSnapshot.get("numClients");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numTrainers')) {
-      this.numTrainers = documentSnapshot.get("numTrainers");
+      numTrainers = documentSnapshot.get("numTrainers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('workShift')) {
-      this.workShift = documentSnapshot.get("workShift");
+      workShift = documentSnapshot.get("workShift");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
-      this.maxMembers = documentSnapshot.get("maxMembers");
+      maxMembers = documentSnapshot.get("maxMembers");
     }
   }
 
   Brand.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
-      this.name = documentSnapshot.get("name").toString();
+      name = documentSnapshot.get("name").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('logoUrl')) {
-      this.logoUrl = documentSnapshot.get("logoUrl").toString();
+      logoUrl = documentSnapshot.get("logoUrl").toString();
     }
   }
 
@@ -94,27 +94,27 @@ class Brand {
 
   // Set Basic Data
   set setBasicData(Brand brand) {
-    this.name = brand.name;
-    this.logoUrl = brand.logoUrl;
-    this.adminID = brand.adminID;
-    this.description = brand.description;
-    this.dateJoined = brand.dateJoined;
-    this.roomId = brand.roomId;
-    this.baseLocation = brand.baseLocation;
-    this.numClients = brand.numClients;
-    this.numTrainers = brand.numTrainers;
-    this.workShift = brand.workShift;
-    this.maxMembers = brand.maxMembers;
+    name = brand.name;
+    logoUrl = brand.logoUrl;
+    adminID = brand.adminID;
+    description = brand.description;
+    dateJoined = brand.dateJoined;
+    roomId = brand.roomId;
+    baseLocation = brand.baseLocation;
+    numClients = brand.numClients;
+    numTrainers = brand.numTrainers;
+    workShift = brand.workShift;
+    maxMembers = brand.maxMembers;
   }
 
   // Requests
   set setRequestList(List<RequestToBrand> requestList) {
-    this.requestsList = requestList;
+    requestsList = requestList;
   }
 
   // Users
   set setUserList(List<Usuario> userList) {
-    this.usersList = userList;
+    usersList = userList;
   }
 
   // Events

@@ -1,11 +1,10 @@
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:external_app_launcher/external_app_launcher.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
@@ -14,7 +13,7 @@ import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.
 class Login extends StatefulWidget {
-  Login({Key? key}) : super(key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();
@@ -23,7 +22,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   // Access to DatabaseService
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
   // Loading Screen Boolean
   bool isLoading = false;
   // Password Visible
@@ -48,7 +47,7 @@ class _LoginState extends State<Login> {
           key: scaffoldMessengerKey,
           child: Scaffold(
             resizeToAvoidBottomInset: true,
-            backgroundColor: Theme.of(context).accentColor,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             body: Center(
               child: SingleChildScrollView(
                 child: Form(
@@ -79,7 +78,7 @@ class _LoginState extends State<Login> {
                               labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                               errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                               prefixIcon:  Padding(
-                                padding: EdgeInsets.all(0.0),
+                                padding: const EdgeInsets.all(0.0),
                                 child: Icon(
                                   Icons.email_outlined,
                                   color: AppColors.black,
@@ -103,7 +102,7 @@ class _LoginState extends State<Login> {
                                 labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
                                 errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 suffixIcon: Padding(
-                                    padding: EdgeInsets.all(0.0),
+                                    padding: const EdgeInsets.all(0.0),
                                     child: IconButton(
                                         icon: Icon(
                                           // Based on passwordVisible state choose the icon
@@ -119,7 +118,7 @@ class _LoginState extends State<Login> {
                                     )
                                 ),
                                 prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
+                                  padding: const EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.vpn_key_outlined,
                                     color: AppColors.black,
@@ -138,12 +137,12 @@ class _LoginState extends State<Login> {
                                 context,
                                 CupertinoPageRoute<String>(
                                   builder: (context) => ForgotPassword(),
-                                  settings: RouteSettings(name: 'ForgotPassword'),
+                                  settings: const RouteSettings(name: 'ForgotPassword'),
                                 )
                             );
                             if (email != null) {
                               setState(() {
-                                this.emailController.text = email;
+                                emailController.text = email;
                                 this.email = email;
                               });
                             }
@@ -156,9 +155,9 @@ class _LoginState extends State<Login> {
                         SizedBox(height: MediaQuery.of(context).size.height*0.01),
                         Material(
                           elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.all(
-                              const Radius.circular(10.0),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
                             ),
                           ),
                           child: Container(
@@ -182,7 +181,7 @@ class _LoginState extends State<Login> {
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.06,
                                 height: MediaQuery.of(context).size.height * 0.03,
-                                child: CircularProgressIndicator(
+                                child: const CircularProgressIndicator(
                                   color: AppColors.white,
                                   strokeWidth: 2.5,
                                 ),
@@ -193,9 +192,9 @@ class _LoginState extends State<Login> {
                         SizedBox(height: MediaQuery.of(context).size.height*0.01),
                         Material(
                           elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.all(
-                              const Radius.circular(10.0),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
                             ),
                           ),
                           child: Container(
@@ -214,12 +213,12 @@ class _LoginState extends State<Login> {
                                     context,
                                     CupertinoPageRoute<String>(
                                       builder: (context) => Register(),
-                                      settings: RouteSettings(name: 'Register'),
+                                      settings: const RouteSettings(name: 'Register'),
                                     )
                                 );
                                 if (email != null) {
                                   setState(() {
-                                    this.emailController.text = email;
+                                    emailController.text = email;
                                     this.email = email;
                                   });
                                 }
@@ -244,13 +243,23 @@ class _LoginState extends State<Login> {
   void signIn() async {
       int result = await _userDataService.signIn(email.trim(), password);
       if (result == 0) {
-        Navigator.pushReplacement(
-            context,
-            CupertinoPageRoute<Null>(
-              builder: (context) => SplashScreen(),
-              settings: RouteSettings(name: 'SplashScreen'),
-            )
-        );
+        User? user = await _userDataService.getCurrentUser();
+        bool? isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
+        if (isTrainer != null && isTrainer == false) {
+          await _userDataService.signOut();
+          setState(() {
+            isLoading = false;
+          });
+          showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
+        } else {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => const SplashScreen(),
+                settings: const RouteSettings(name: 'SplashScreen'),
+              )
+          );
+        }
       } else if (result == -1) {
         setState(() {
           isLoading = false;
@@ -277,22 +286,54 @@ class _LoginState extends State<Login> {
     signIn();
   }
 
-  void showInSnackBar(String value) {
-    final snackbar = new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: "Helvetica",
-          color: Colors.black,
-          fontSize: 16.0,
-          //fontWeight: FontWeight.w800,
+  void showInSnackBar(String value, [String valueBody = "", bool isClickable = false]) {
+    Widget snackbar;
+    if (isClickable ) {
+      snackbar = SnackBar(
+        content: GestureDetector(
+          onTap: () async {
+            await LaunchApp.openApp(
+                androidPackageName: 'com.mamba.mambastyleapp',
+                iosUrlScheme: "mamba-style",
+                appStoreLink: "https://apps.apple.com/app/mamba-style/id1601684650"
+              // openStore: false
+            );
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                    value,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black)
+                ),
+              ),
+              Flexible(
+                child: Text(
+                  valueBody,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black, decoration: TextDecoration.underline),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-      backgroundColor: Colors.white,
-      duration: Duration(seconds: 5),
-    );
-    scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
+        backgroundColor: Colors.white,
+        duration: const Duration(seconds: 10),
+      );
+    } else {
+      snackbar = SnackBar(
+        content: Text(
+            value,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black)
+        ),
+        backgroundColor: Colors.white,
+        duration: const Duration(seconds: 5),
+      );
+    }
+    scaffoldMessengerKey.currentState!.showSnackBar(snackbar as SnackBar);
   }
 
 }

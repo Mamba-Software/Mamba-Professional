@@ -95,7 +95,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -111,7 +111,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     if (_timerLink != null) {
       _timerLink?.cancel();
     }
@@ -122,7 +122,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Consumer3 <LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider> (
         builder: (context, LanguageProvider language, ThemeProvider theme,  FirebaseAnalyticsProvider analytics, _) {
-          final brightness = SchedulerBinding.instance?.window.platformBrightness;
+          final brightness = SchedulerBinding.instance.window.platformBrightness;
           if (brightness == Brightness.dark) {
             print("Dark Mode");
             theme.darkModeStatusAndNavigationBar();
