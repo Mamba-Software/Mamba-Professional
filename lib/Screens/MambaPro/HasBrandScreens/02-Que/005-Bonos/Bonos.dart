@@ -16,7 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../../Globals/GlobalVars.dart';
-import '../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import '../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'AddBono.dart';
 import 'BonosRequests.dart';
 
@@ -349,7 +349,7 @@ class _BonosProState extends State<BonosPro> {
                   snapshot.data!.docs == null) {
                 return Container(
                     height: MediaQuery.of(context).size.height * 0.65,
-                    child: Center(child: LoadingViewPurple()));
+                    child: Center(child: LoadingView()));
               } else {
                 bonosList = _bonosUtils.documentsToBonos(
                     snapshot.data!.docs, orderBonoSelectedNumber);

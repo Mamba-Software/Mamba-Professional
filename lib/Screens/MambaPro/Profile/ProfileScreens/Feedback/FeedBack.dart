@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/UserFeedBack.dart';
 import 'ReportBug.dart';
@@ -59,7 +59,7 @@ class _FeedBackState extends State<FeedBack> {
             },
           ),
         ),
-        body: LoadingViewPurple(),
+        body: LoadingView(),
       )
         :
       Scaffold(
@@ -91,7 +91,7 @@ class _FeedBackState extends State<FeedBack> {
                 },
                 leading: Icon(
                   Icons.warning_amber,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   size: MediaQuery.of(context).size.width*0.05,
                 ),
                 title: Text(
@@ -100,14 +100,14 @@ class _FeedBackState extends State<FeedBack> {
                 ),
                 trailing: Icon(
                   Icons.arrow_forward_ios,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   size: MediaQuery.of(context).size.width*0.05,
                 ),
               ),
             ),
             Container(
               height: 1,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.10,),
             Padding(
@@ -142,7 +142,7 @@ class _FeedBackState extends State<FeedBack> {
                 },
                 leading: Icon(
                   Icons.warning_amber,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   size: MediaQuery.of(context).size.width*0.05,
                 ),
                 title: Text(
@@ -151,14 +151,14 @@ class _FeedBackState extends State<FeedBack> {
                 ),
                 trailing: Icon(
                   Icons.arrow_forward_ios,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   size: MediaQuery.of(context).size.width*0.05,
                 ),
               ),
             ),
             Container(
               height: 1,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.10,),
             Padding(
@@ -202,7 +202,7 @@ class _FeedBackState extends State<FeedBack> {
                         )
                     ),
                   ),
-                  Icon(Icons.touch_app, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.height*0.15,),
+                  Icon(Icons.touch_app, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.height*0.15,),
                 ],
               ),
             ),

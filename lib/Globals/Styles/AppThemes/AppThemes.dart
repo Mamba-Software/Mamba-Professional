@@ -13,7 +13,8 @@ class AppThemes {
       primaryColor: AppColors.black,
       primaryColorDark: AppColors.white,
       primaryColorLight: Colors.grey,
-      accentColor:  AppColors.mainColor,
+      // Accent Color
+      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.light),
       // BackGround Colors
       backgroundColor: AppColors.lightGrey,
       scaffoldBackgroundColor: AppColors.white,
@@ -37,7 +38,7 @@ class AppThemes {
         iconTheme: const IconThemeData(
             color: Colors.black
         ),
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
         titleTextStyle: _textStyles.blackHeadline2TextStyle(),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -56,7 +57,8 @@ class AppThemes {
       // Primary Colors
       primaryColor: AppColors.white,
       primaryColorDark: AppColors.black,
-      accentColor:  AppColors.mainColor,
+      // Accent Color
+      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.dark),
       // BackGround Colors
       backgroundColor: AppColors.darkGrey,
       scaffoldBackgroundColor: AppColors.darkerGrey,
@@ -81,7 +83,7 @@ class AppThemes {
             color: AppColors.white,
         ),
         titleTextStyle: _textStyles.whiteHeadline2TextStyle(),
-        brightness: Brightness.light,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,

@@ -32,7 +32,7 @@ class _CircularImageState extends State<CircularImage> {
               height: widget.size! * 0.20,
               child: Center(
                 child: CircularProgressIndicator(
-                  color: widget.color == null ? Theme.of(context).accentColor : widget.color!,
+                  color: widget.color == null ? Theme.of(context).colorScheme.secondary : widget.color!,
                   strokeWidth: 2,
                 ),
               ),

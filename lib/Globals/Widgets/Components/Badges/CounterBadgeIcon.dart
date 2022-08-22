@@ -28,7 +28,7 @@ class _CounterBadgeIconState extends State<CounterBadgeIcon> {
           top: -2,
           right: 0,
           child: CircleAvatar(
-            backgroundColor: Theme.of(context).accentColor,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             radius: 8,
             child: Text(
               text,

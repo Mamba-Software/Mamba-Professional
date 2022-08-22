@@ -125,7 +125,7 @@ class _LeaveBrandConfirmationDialogState extends State<LeaveBrandConfirmationDia
                     CircularImage(
                       size: MediaQuery.of(context).size.width*0.25,
                       image: currentBrand.logoUrl,
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderWidth: 2,
                     ),
                   ],

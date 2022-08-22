@@ -360,7 +360,7 @@ class _NotificationsState extends State<Notifications> {
         ),
       ) : RefreshIndicator(
           displacement: MediaQuery.of(context).size.height*0.05,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           onRefresh: () {
             return Future.delayed(
               Duration(seconds: 1), () async {

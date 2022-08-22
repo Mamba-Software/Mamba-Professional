@@ -39,9 +39,9 @@ class _GenderWidgetState extends State<GenderWidget> {
       child: ClipOval(
         child: Material(
           shape: CircleBorder(
-            side: BorderSide(color: gender == index ? Colors.black : Theme.of(context).accentColor, width: 1),
+            side: BorderSide(color: gender == index ? Colors.black : Theme.of(context).colorScheme.secondary, width: 1),
           ),
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           child: InkWell(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

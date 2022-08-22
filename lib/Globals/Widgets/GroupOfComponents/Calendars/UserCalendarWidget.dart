@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -244,7 +244,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
               stream: _eventDataService.getUserEventsStream(widget.userId),
               builder: (context, snapshot) {
                 if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-                  return LoadingViewPurple();
+                  return LoadingView();
                 } else {
                   eventsList = documentsToEvents(snapshot.data!.docs);
                   return Padding(
@@ -258,14 +258,14 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                         specialRegions: _getTimeRegions(),
                         timeRegionBuilder: timeRegionBuilder,
                         firstDayOfWeek: 1,
-                        todayHighlightColor: Theme.of(context).accentColor,
+                        todayHighlightColor: Theme.of(context).colorScheme.secondary,
                         showCurrentTimeIndicator: true,
                         initialDisplayDate: widget.dateTime,
                         initialSelectedDate: widget.dateTime,
                         selectionDecoration: _controller.view == CalendarView.week ? BoxDecoration(
                             border: Border.all(width: 0.1, color: Colors.transparent)
                         ) : BoxDecoration(
-                          border: Border.all(width: 0.5, color: Theme.of(context).accentColor),
+                          border: Border.all(width: 0.5, color: Theme.of(context).colorScheme.secondary),
                           borderRadius: new BorderRadius.all(
                             const Radius.circular(10.0),
                           ),
@@ -577,7 +577,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                   );
                 }
               }
-          ) : LoadingViewPurple(), // This trailing comma makes auto-formatting nicer for build methods.
+          ) : LoadingView(), // This trailing comma makes auto-formatting nicer for build methods.
       );
   }
 

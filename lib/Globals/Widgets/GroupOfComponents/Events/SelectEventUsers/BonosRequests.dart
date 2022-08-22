@@ -22,7 +22,7 @@ import '../../../../../../../Globals/Styles/Styles.dart';
 import '../../../../../../../Globals/Utils/Bonos/BonosUtils.dart';
 import '../../../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
-import '../../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import '../../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 
 class BonosRequests extends StatefulWidget {
@@ -182,7 +182,7 @@ class _BonosRequestsState extends State<BonosRequests> {
                   },
                 ),
               ),
-              body: LoadingViewPurple(),
+              body: LoadingView(),
             )
           : Scaffold(
               appBar: AppBar(
@@ -213,7 +213,7 @@ class _BonosRequestsState extends State<BonosRequests> {
                             snapshot.data!.docs == null) {
                           return Container(
                               height: MediaQuery.of(context).size.height * 0.65,
-                              child: Center(child: LoadingViewPurple()));
+                              child: Center(child: LoadingView()));
                         } else {
                           bonosRequestsList = _bonosUtils
                               .documentsToBonosRequests(snapshot.data!.docs);
@@ -264,7 +264,7 @@ class _BonosRequestsState extends State<BonosRequests> {
                       return Container(
                           height: MediaQuery.of(context).size.height*0.65,
                           child: Center(
-                              child: LoadingViewPurple()
+                              child: LoadingView()
                           )
                       );
                     } else {

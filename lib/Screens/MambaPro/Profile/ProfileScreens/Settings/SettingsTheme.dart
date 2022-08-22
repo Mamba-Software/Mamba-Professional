@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:provider/provider.dart';
 
 class SettingsTheme extends StatefulWidget {
@@ -41,7 +41,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
     if (states.any(interactiveStates.contains)) {
       return Colors.blue;
     }
-    return Theme.of(context).accentColor;
+    return Theme.of(context).colorScheme.secondary;
   }
 
   @override
@@ -134,7 +134,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                   leading: Radio(
                     value: 1,
                     groupValue: _value,
-                    activeColor: Theme.of(context).accentColor,
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                     onChanged: (value) {
                       setState(() {
@@ -146,7 +146,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                   trailing: Icon(
                     Icons.light_mode_outlined,
                     size: 30,
-                    color: _value == 1 ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
+                    color: _value == 1 ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor,
                   ),
                 ),
                 Row(
@@ -182,7 +182,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                   leading: Radio(
                     value: 2,
                     groupValue: _value,
-                    activeColor: Theme.of(context).accentColor,
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                     onChanged: (value) {
                       setState(() {
@@ -194,7 +194,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                   trailing: Icon(
                     Icons.dark_mode_outlined,
                     size: 30,
-                    color: _value == 2 ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
+                    color: _value == 2 ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor,
                   ),
                 ),
                 Row(
@@ -230,7 +230,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                   leading: Radio(
                     value: 3,
                     groupValue: _value,
-                    activeColor: Theme.of(context).accentColor,
+                    activeColor: Theme.of(context).colorScheme.secondary,
                     fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                     onChanged: (value) {
                       setState(() {
@@ -247,7 +247,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
                   trailing: Icon(
                     Icons.app_settings_alt_outlined,
                     size: 30,
-                    color: _value == 3 ? Theme.of(context).accentColor : Theme.of(context).primaryColor,
+                    color: _value == 3 ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor,
                   ),
                 ),
                 Row(
@@ -263,7 +263,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
               ],
             ),
           )
-      ) : LoadingViewPurple(),
+      ) : LoadingView(),
       floatingActionButton: isUpdated ? Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
         child: FloatingActionButton.extended(

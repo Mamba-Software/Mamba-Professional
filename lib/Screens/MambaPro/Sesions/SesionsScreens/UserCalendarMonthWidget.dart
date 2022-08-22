@@ -536,7 +536,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
               showDatePickerButton: false,
               showCurrentTimeIndicator: false,
               showNavigationArrow: true,
-              todayHighlightColor: Theme.of(context).accentColor,
+              todayHighlightColor: Theme.of(context).colorScheme.secondary,
               viewHeaderHeight:  widget.width*0.15,
               viewHeaderStyle: ViewHeaderStyle(
                 dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),

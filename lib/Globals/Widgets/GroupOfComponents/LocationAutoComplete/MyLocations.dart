@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataServic
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:uuid/uuid.dart';
 import 'AddressSearch.dart';
@@ -87,7 +87,7 @@ class _MyLocationsState extends State<MyLocations> {
             },
           ),
         ),
-        body: LoadingViewPurple(),
+        body: LoadingView(),
       )
           :
       Scaffold(
@@ -162,7 +162,7 @@ class _MyLocationsState extends State<MyLocations> {
                       return Container(
                           height: MediaQuery.of(context).size.height*0.65,
                           child: Center(
-                              child: LoadingViewPurple()
+                              child: LoadingView()
                           )
                       );
                     } else {
@@ -179,10 +179,10 @@ class _MyLocationsState extends State<MyLocations> {
                                 children: [
                                   SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                   ListTile(
-                                    leading: Icon(Icons.home_filled, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
+                                    leading: Icon(Icons.home_filled, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,),
                                     title: Text(
                                         location.description!,
-                                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).accentColor)
+                                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary)
                                     ),
                                     trailing: IconButton(
                                       onPressed: () async {
@@ -217,7 +217,7 @@ class _MyLocationsState extends State<MyLocations> {
                                           await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
                                         }
                                       },
-                                      icon: Icon(Icons.edit, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,),
+                                      icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,),
                                     ),
                                     onTap: () {
 

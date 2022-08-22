@@ -202,7 +202,7 @@ class MambaProUtils {
   //Function to select the page to load
   Widget pageSelector(var context,int pageIndex, String brandId, int numTrainers, int numClients, CalendarController _controller, var safeAreaWidth, var safeAreaHeight)
   {
-    if(pageIndex == 0) return HomePro(brandId:brandId, numTrainers: numTrainers, numClients: numClients, safeAreaWidth: safeAreaWidth, safeAreaHeight: safeAreaHeight,);
+    if(pageIndex == 0) return HomePro(brandId:brandId, numTrainers: numTrainers, numClients: numClients);
     if(pageIndex == 1) return Trainers(brandId:brandId, numTrainers: numTrainers );
     if(pageIndex == 2) return Clients(brandId: brandId, numClients: numClients,);
     if(pageIndex == 4) return Categories(brandId:brandId);

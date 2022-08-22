@@ -10,7 +10,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class Content extends StatefulWidget {
   String brandId;
@@ -174,7 +174,7 @@ class _ContentState extends State<Content> {
     return Scaffold(
       body: isLoading ?
         Center(
-            child: LoadingViewPurple()
+            child: LoadingView()
         )
           ://
         SingleChildScrollView(
@@ -288,7 +288,7 @@ class _ContentState extends State<Content> {
                                     height: MediaQuery.of(context).size.width * 0.35,
                                     width: MediaQuery.of(context).size.width * 0.35,
                                     decoration: new BoxDecoration(
-                                      //color: Theme.of(context).accentColor,
+                                      //color: Theme.of(context).colorScheme.secondary,
                                       borderRadius: new BorderRadius.all(
                                         const Radius.circular(10.0),
                                       ),
@@ -345,7 +345,7 @@ class _ContentState extends State<Content> {
         heroTag: "32",
         label: Text(AppLocalizations.of(context)!.uploadPhotos, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),),
         icon: Icon(Icons.file_upload_outlined, size: MediaQuery.of(context).size.width*0.06,),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         foregroundColor: AppColors.white,
         onPressed: uploadPhotos,
       ) : Container(),

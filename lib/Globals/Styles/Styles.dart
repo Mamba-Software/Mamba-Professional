@@ -28,7 +28,7 @@ class Styles {
     // Primary Colors
     primaryColor: Colors.black,
     primaryColorLight: lightBlue,
-    accentColor:  amber,
+
     // BackGround Colors
     backgroundColor: lightGrey,
     scaffoldBackgroundColor: white,

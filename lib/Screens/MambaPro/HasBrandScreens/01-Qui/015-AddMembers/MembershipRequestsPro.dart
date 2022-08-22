@@ -10,7 +10,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:share_plus/share_plus.dart';
@@ -59,7 +59,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
       appBar: null,
       body:  isLoading ?
         Scaffold(
-          body: LoadingViewPurple(),
+          body: LoadingView(),
         )
             :
         Scaffold(
@@ -129,7 +129,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                         child: SizedBox(
                             height: MediaQuery.of(context).size.height*0.65,
                             child: Center(
-                                child: LoadingViewPurple()
+                                child: LoadingView()
                             )
                         ),
                       );

@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:uuid/uuid.dart';
 import 'AddressSearch.dart';
@@ -83,7 +83,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
             },
           ),
         ),
-        body: LoadingViewPurple(),
+        body: LoadingView(),
       )
           :
       Scaffold(
@@ -157,7 +157,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                     return Container(
                         height: MediaQuery.of(context).size.height*0.65,
                         child: Center(
-                            child: LoadingViewPurple()
+                            child: LoadingView()
                         )
                     );
                   } else {
@@ -170,10 +170,10 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                         itemBuilder: (context, index) {
                           Location location = locationList[index];
                           return ListTile(
-                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: location.isBaseLocation! ?  Theme.of(context).accentColor : Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: location.isBaseLocation! ?  Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
                               title: Text(
                                   location.description!,
-                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: location.isBaseLocation! ?  Theme.of(context).accentColor : Theme.of(context).primaryColor,)
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: location.isBaseLocation! ?  Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor,)
                               ),
                               onTap: () {
                                 Navigator.of(context).pop(location.id);

@@ -55,7 +55,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       body: Center(
         child: Stack(
           children: [
@@ -87,7 +87,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                   width: MediaQuery.of(context).size.width*0.6,
                   child: LinearProgressIndicator(
                     color: AppColors.white,
-                    backgroundColor: Theme.of(context).accentColor,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                     value: value,
                     minHeight: MediaQuery.of(context).size.width*0.01,
                   ),
