@@ -117,28 +117,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     super.initState();
   }
 
-  bool checkIfBreakTimeChanged() {
-    if (_breakList.length - removedIndex.length != (currentBrand.workShift.length-2)) {
-      print(_breakList.length - removedIndex.length);
-      print(currentBrand.workShift.length-2);
-      return true;
-    } else {
-      List<int> endBreaks = [];
-      for (var j=0; j <_breakList.length; j+=1) {
-        if (j.isEven && !removedIndex.contains(j)) {
-          int temp = _breakList[j].hour + _breakList[j].minute;
-          int temp1 = _breakList[j+1].hour + _breakList[j+1].minute;
-          endBreaks.add(temp);
-          endBreaks.add(temp1);
-        }
-      }
-     if (listEquals(startBreaks, endBreaks) == false) {
-       return true;
-     }
-    }
-    return false;
-  }
-
   Future<void> navigateToEditLogoScreen() async {
     await Navigator.push(
         context,
@@ -164,8 +142,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       } else if (descriptionControllerTemp.trim() != currentBrand.description! && descriptionControllerTemp != "") {
         isUpdated = true;
       } else if (startTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,)) || endTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,))) {
-        isUpdated = true;
-      } else if (checkIfBreakTimeChanged()) {
         isUpdated = true;
       } else {
         isUpdated = false;
@@ -435,6 +411,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                       textAlign: TextAlign.center,
                     ),
                   ) : Container(),
+
+                  /*
                   SizedBox(height: MediaQuery.of(context).size.height*0.04),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -543,6 +521,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                               _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
                               setState(() {
                                 errorBreakTime = false ;
+                                _breakList.clear();
                                 _breakList.add(_breakStartTime);
                                 _breakList.add(_breakEndTime);
                               });
@@ -675,6 +654,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                       ),
                     ],
                   ) : Container(),
+                   */
                   SizedBox(height: MediaQuery.of(context).size.height*0.10),
                 ],
               ),
@@ -696,6 +676,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
               double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
               double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+              // Reset Workshift
+              _workShift.clear();
               _workShift.add(toDouble(start));
               _workShift.add(toDouble(end));
               for (var i=0; i < _breakList.length; i+=2) {
@@ -716,6 +698,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       ) : Container(),
     );
   }
+
   bool validateInfo() {
     DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
     DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);

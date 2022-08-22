@@ -15,7 +15,6 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../../Widgets/GroupOfComponents/Calendars/BrandCalendarWidgetPro.dart';
 import '../Strings/StringUtils.dart';
 
 class MambaProUtils {
@@ -35,8 +34,12 @@ class MambaProUtils {
     if(pageIndex == 7)return Text(AppLocalizations.of(context)!.content, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 9)return Text(AppLocalizations.of(context)!.stats, style: Theme.of(context).appBarTheme.titleTextStyle,);
-    if(pageIndex == 10)return Text(
-      StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)), style: Theme.of(context).appBarTheme.titleTextStyle,);
+    if(pageIndex == 10) {
+      return Text(
+        StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      );
+    }
     if(pageIndex == 11)return Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 12)return Text(AppLocalizations.of(context)!.logo, style: Theme.of(context).appBarTheme.titleTextStyle,);
     if(pageIndex == 13)return Text(AppLocalizations.of(context)!.feedback, style: Theme.of(context).appBarTheme.titleTextStyle,);
