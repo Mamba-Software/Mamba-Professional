@@ -1,111 +1,29 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+/*
 
-// HomePage for the App. Here the user can change between the diferent pages.
-// In this class we can only see the declaration of those pages and the swiping/changing between screens.
-class BrandScreen extends StatefulWidget {
-  const BrandScreen({Key? key}) : super(key: key);
+class MambaProDrawer extends StatefulWidget {
+
+  const MambaProDrawer({required Key key}) : super(key: key);
 
   @override
-  _BrandScreenState createState() => _BrandScreenState();
+  _MambaProDrawerState createState() => _MambaProDrawerState();
 }
 
-class _BrandScreenState extends State<BrandScreen> {
-
-  // Screen Dimensions
-  double safeAreaHeight = 0;
-  double safeAreaWidth = 0;
-
-  bool isLoading = true;
-
-  // Acceso a Base de Datos
-  final _userDataService = UserDataService();
-  final _eventDataService = EventDataService();
-  final _roomDataService=  RoomDataService();
-  final _brandDataService = BrandDataService();
-  final _mambaProUtils = MambaProUtils();
-
-  final CalendarController _controller = CalendarController();
-
-  //Icon to know if it's on favourites
-  bool iconStar = false;
-  bool isFirstBuild = true;
-
-  // Bools to control show for drop down
-  bool seeNextWho = true;
-  bool seeNextWhat = true;
-  bool seeNextHow = true;
-  bool seeNextWhen = true;
-  bool seeNextWhere = true;
-
-  // Icons for drop down
-  var iconWho = Icons.keyboard_arrow_down;
-  var iconWhat = Icons.keyboard_arrow_down;
-  var iconHow = Icons.keyboard_arrow_down;
-  var iconWhen = Icons.keyboard_arrow_down;
-  var iconWhere = Icons.keyboard_arrow_down;
-
-  //Index to know which page to load
-  int pageIndex = 1;
-
-  //favourite tabs of user
-  List<int> favourites = [];
-
+class _MambaProDrawerState extends State<MambaProDrawer> {
   @override
   void initState() {
     super.initState();
-    getFavourites();
   }
 
-  // Init Device Sizes
-  initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
-    safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
-  }
-
-  // Function to get the favourites of the user
-  void getFavourites() async {
-    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
-    if (favourites.contains(pageIndex)) iconStar = true;
-    if (isLoading) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  //Function to set the favourites of the user
-  void setFavourites() {
-    if(favourites.isNotEmpty && favourites.contains(pageIndex)) {
-      iconStar = true;
-    } else {
-      iconStar = false;
-    }
-  }
 
   // Navigate to Notifications Screen
   void navigateToNotificationsScreen() {
@@ -144,10 +62,10 @@ class _BrandScreenState extends State<BrandScreen> {
         CupertinoPageRoute<void>(
           builder: (context) => const Settings(),
         )
-    ).whenComplete(() {
-      getFavourites();
-    });
+    );
   }
+
+
 
   //Return the ListTile of each screen of Mamba Pro
   Widget listTilePro(int _pageIndex, [bool isFavourite = false]) {
@@ -207,9 +125,10 @@ class _BrandScreenState extends State<BrandScreen> {
     }
   }
 
+
   Widget buildHeader() {
     return Container(
-      height: safeAreaHeight*0.36,
+      height: MediaQuery.of(context).size.height*0.36,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
@@ -222,12 +141,12 @@ class _BrandScreenState extends State<BrandScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: safeAreaHeight * 0.07),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.07),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CircularImage(
-                      size: safeAreaHeight * 0.1,
+                      size: MediaQuery.of(context).size.height * 0.1,
                       image: currentUser.imageUrl,
                       color: Theme.of(context).primaryColor,
                       borderWidth: 1,
@@ -237,23 +156,23 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadNotifications,
                           child: IconButton(
-                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToNotificationsScreen,
                           ),
                         ),
-                        SizedBox(width: safeAreaWidth * 0.03),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                         CounterBadgeIcon(
                           counter: unreadChats,
                           child: IconButton(
-                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToChatScreen,
                           ),
                         ),
                         /*
                         IconButton(
-                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
                           alignment: Alignment.centerRight,
                           onPressed: navigateToSettingsScreen,
                         ),
@@ -262,22 +181,22 @@ class _BrandScreenState extends State<BrandScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: safeAreaHeight * 0.03),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Text(
                     currentUser.firstName! + ' ' + currentUser.lastName!,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal)
                 ),
-                SizedBox(height: safeAreaHeight * 0.02),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 Text(
-                    currentUser.email!,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText2,
+                  currentUser.email!,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText2,
                 ),
               ],
             ),
           ),
-          SizedBox(height: safeAreaHeight * 0.01),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
             child: TextButton(
@@ -288,7 +207,7 @@ class _BrandScreenState extends State<BrandScreen> {
                     Icons.settings,
                     color: Theme.of(context).primaryColor,
                   ),
-                  SizedBox(width: safeAreaWidth * 0.025),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.025),
                   Text(
                       AppLocalizations.of(context)!.settings,
                       style: Theme.of(context).textTheme.bodyText2
@@ -316,9 +235,9 @@ class _BrandScreenState extends State<BrandScreen> {
               return listTilePro(favourite, true);
             }
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 2),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
 
         ListTile(
           title: Row(
@@ -534,138 +453,32 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   @override
-  void dispose() {
-    didReceiveLocalNotificationSubject.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (isFirstBuild) {
-      initDeviceSizes();
-      isFirstBuild = false;
-    }
-    return Scaffold(
-      key: mambaProScaffoldKey,
-      drawer: Drawer(
-        backgroundColor: Theme.of(context).primaryColorDark,
-        child: ListView(
-          // Remove padding
-          padding: EdgeInsets.zero,
-          children: [
-            // Header
-            buildHeader(),
-            Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1,),
-            SizedBox(height: safeAreaHeight * 0.02),
-            // Brand Options
-            // TODO: Passer Rol en aquesta funció
-            buildBrandListOptions(),
-            SizedBox(height: safeAreaHeight * 0.02),
-            Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
-            // Leave/Delete Brand
-            SizedBox(height: safeAreaHeight * 0.02),
-            buildBrandLeaveOption(),
-            SizedBox(height: safeAreaHeight * 0.05),
-          ],
-        ),
-      ),
-      body: isLoading ? LoadingView() : BrandInfo(
-          locale: Localizations.localeOf(context),
-          pageIndex: pageIndex,
-          brandId: currentBrand.id!
-      ),
-       /*
-      appBar: AppBar(
-        title: _mambaProUtils.titlePageSelector(context, pageIndex),
-        centerTitle: true,
-        actions: [
-          pageIndex == 10 ? IconButton(
-            onPressed: () {
-              if (_controller.view == CalendarView.month) {
-                setState(() {
-                  _controller.view = CalendarView.week;
-                });
-              } else {
-                setState(() {
-                  _controller.view = CalendarView.month;
-                  pageIndex = 10;
-                });
-              }
-            },
-            icon: _controller.view == CalendarView.month ? SizedBox(
-              width: safeAreaWidth*0.15,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.calendar_view_week,
-                    color: Theme.of(context).primaryColor,
-                    size: safeAreaWidth*0.05,
-                  ),
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                        AppLocalizations.of(context)!.weekString,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center
-                    ),
-                  ),
-                ],
-              ),
-            ) : SizedBox(
-              width: safeAreaWidth*0.15,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.calendar_view_month,
-                    color: Theme.of(context).primaryColor,
-                    size: safeAreaWidth*0.05,
-                  ),
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                        AppLocalizations.of(context)!.monthString,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ) : Container(),
-          Padding(
-            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-            child: IconButton(
-              icon: pageIndex == 0 ? Container() :
-              Icon(
-                iconStar ? Icons.push_pin : Icons.push_pin_outlined,
-                color: iconStar ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
-                size: MediaQuery.of(context).size.width*0.06,
-              ),
-              onPressed: () {
-                setState(() {
-                  iconStar = !iconStar;
-                  if (iconStar == true) {
-                    favourites.add(pageIndex);
-                  }
-                  else {
-                    favourites.remove(pageIndex);
-                  }
-                  favourites.sort();
-                  _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
-                }
-                );
-              },
-            ),
-          )
+    return Drawer(
+      backgroundColor: Theme.of(context).primaryColorDark,
+      child: ListView(
+        // Remove padding
+        padding: EdgeInsets.zero,
+        children: [
+          // Header
+          buildHeader(),
+          Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1,),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          // Brand Options
+          // TODO: Passer Rol en aquesta funció
+          buildBrandListOptions(),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
+          // Leave/Delete Brand
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+          buildBrandLeaveOption(),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         ],
       ),
-      body: isLoading ? LoadingView() :
-      _mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
-      */
     );
   }
 }
+
+*/
 
 

@@ -26,7 +26,7 @@ class _LoadingViewState extends State<LoadingView> {
             ),
           ),
         ),
-        widget.hasLogo != null && widget.hasLogo! ? Center(
+        widget.hasLogo != null && widget.hasLogo == false ? Container() : Center(
           child: SizedBox(
             //width: MediaQuery.of(context).size.width * 0.07,
             width: 25,
@@ -36,7 +36,7 @@ class _LoadingViewState extends State<LoadingView> {
                 image: AssetImage(Constants.logoSimpleYellow)
             ),
           ),
-        ) : Container(),
+        ),
       ],
     );
   }

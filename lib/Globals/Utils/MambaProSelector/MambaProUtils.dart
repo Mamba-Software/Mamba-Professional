@@ -208,7 +208,7 @@ class MambaProUtils {
     if(pageIndex == 4) return Categories(brandId:brandId);
     if(pageIndex == 5) return BonosPro(brandId:brandId);
     if(pageIndex == 7) return Content(brandId:brandId);
-    if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
+    //if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
     if(pageIndex == 12) return Logo(brandId:brandId);
     if(pageIndex == 10) {
       return BrandCalendarWidget(
