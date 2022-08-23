@@ -174,7 +174,7 @@ class MambaProUtils {
     //if(pageIndex == 2) return Clients(brandId: brandId, numClients: numClients,);
     if(pageIndex == 4) return Categories(brandId:brandId);
     //if(pageIndex == 5) return BonosPro(brandId:brandId);
-    if(pageIndex == 7) return Content(brandId:brandId);
+    //if(pageIndex == 7) return Content(brandId:brandId);
     //if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
     if(pageIndex == 12) return Logo(brandId:brandId);
     /*
@@ -185,8 +185,8 @@ class MambaProUtils {
       );
     }
      */
-    if(pageIndex == 11) return Locations(brandId:brandId);
-    if(pageIndex == 14) return BrandEventHistoryPage(brandId: brandId);
+    //if(pageIndex == 11) return Locations(brandId:brandId);
+    //if(pageIndex == 14) return BrandEventHistoryPage(brandId: brandId);
     //if(pageIndex == 15) return MembershipRequestsPro(brandId: brandId);
     return Container();
   }

@@ -670,18 +670,34 @@ class _BrandScreenState extends State<BrandScreen> {
       case 14:
         return BrandEventHistoryPage(
           brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 7:
         return Content(
           brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 13:
         return Content(
           brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 11:
         return Locations(
           brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       default:
         return HomePro(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, numClients: currentBrand.numClients!);
