@@ -1097,6 +1097,8 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserSendRequestToBrand_Trainer": {
+        // TODO: Controlar Totes les redireccions
+        /*
         if (brand.id != null) {
           Navigator.push(
               context,
@@ -1107,6 +1109,7 @@ class _NotificationsState extends State<Notifications> {
               )
           );
         }
+         */
         break;
       }
       case "UserCancelRequestToBrand_User": {

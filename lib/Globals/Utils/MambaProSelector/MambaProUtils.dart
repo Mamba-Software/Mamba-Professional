@@ -218,7 +218,7 @@ class MambaProUtils {
     }
     if(pageIndex == 11) return Locations(brandId:brandId);
     if(pageIndex == 14) return BrandEventHistoryPage(brandId: brandId);
-    if(pageIndex == 15) return MembershipRequestsPro(brandId: brandId);
+    //if(pageIndex == 15) return MembershipRequestsPro(brandId: brandId);
     return Container();
   }
 

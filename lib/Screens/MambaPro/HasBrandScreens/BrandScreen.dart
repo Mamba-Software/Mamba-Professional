@@ -636,7 +636,11 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 15:
         return MembershipRequestsPro(
-            brandId: currentBrand.id!,
+          brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 8:
         return BrandInfo(
