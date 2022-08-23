@@ -10,7 +10,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Dialogs/ActionDialogs/Create
 
 import '../../../../../../../Globals/GlobalVars.dart';
 import '../../../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import '../../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import '../../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'BonosRequests.dart';
 
 class Bonos extends StatefulWidget {
@@ -291,18 +291,18 @@ class _BonosState extends State<Bonos> {
               },
               leading: Icon(
                 Icons.add_shopping_cart,
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
                 size: MediaQuery.of(context).size.width * 0.06,
               ),
               title: Text(
                 'Afegeix bono',
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).accentColor),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.secondary),
               ),
             ),
           ),
           Container(
             height: 1,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           StreamBuilder<QuerySnapshot>(
@@ -311,7 +311,7 @@ class _BonosState extends State<Bonos> {
                 if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
                   return Container(
                       height: MediaQuery.of(context).size.height * 0.65,
-                      child: Center(child: LoadingViewPurple()
+                      child: Center(child: LoadingView()
                       )
                   );
                 } else {

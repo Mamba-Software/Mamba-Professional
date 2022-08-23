@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class SettingsEditPhotoPage extends StatefulWidget {
   @override
@@ -71,7 +71,7 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
       ),
       body: isLoading ?
         Center(
-            child: LoadingViewPurple()
+            child: LoadingView()
         )
           :
         Center(
@@ -134,7 +134,7 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
         heroTag: "38",
         onPressed: uploadPhoto,
         tooltip: AppLocalizations.of(context)!.save,
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         child: Icon(
           Icons.check,
           color: Colors.white,

@@ -1,9 +1,11 @@
+// ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:shimmer/shimmer.dart';
@@ -12,8 +14,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BrandEventHistoryPage extends StatefulWidget {
   String brandId;
-
-  BrandEventHistoryPage({Key? key, required this.brandId}) : super(key: key);
+  bool pinned;
+  ValueChanged<bool?> pinnedChanged;
+  BrandEventHistoryPage({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
 
   @override
   _BrandEventHistoryPageState createState() => _BrandEventHistoryPageState();
@@ -21,6 +24,12 @@ class BrandEventHistoryPage extends StatefulWidget {
 
 class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
 
+  // App Bar and Scroll View
+  ScrollController? _scrollController;
+  bool appBarExpanded = false;
+  bool get _isAppBarExpanded {
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+  }
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
@@ -39,8 +48,17 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
 
   @override
   void initState() {
-    initEventHistory();
     super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() => _isAppBarExpanded ?
+      setState(() {
+        appBarExpanded = true;
+      }) :
+      setState(() {
+        appBarExpanded = false;
+      }),
+      );
+    initEventHistory();
   }
 
   Future<void> initEventHistory() async {
@@ -91,166 +109,185 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
     }
 
     return Scaffold(
-      body: isLoading ?
-      Container(
-        child: ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: 6,
-          itemBuilder: (context,int index) {
-            return Column(
-              children: [
-                index == 0 ? SizedBox(height: safeAreaWidth*0.08) : Container(),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                  child: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: safeAreaHeight*0.18,
-                      width: safeAreaWidth*0.9,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            height: (safeAreaWidth*0.9)*0.20,
-                            width: (safeAreaWidth*0.9)*0.20,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: (safeAreaWidth*0.9)*0.20,
-                                  width: (safeAreaWidth*0.9)*0.20,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                height: safeAreaHeight*18,
-                                width: safeAreaWidth*0.9*0.56,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: safeAreaHeight*0.03,
-                                      width: (safeAreaWidth*0.9)*0.20,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey,
-                                        borderRadius: BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                    SizedBox(height: safeAreaHeight*0.02,),
-                                    Container(
-                                      height: safeAreaHeight*0.02,
-                                      width: (safeAreaWidth*0.9)*0.35,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey,
-                                        borderRadius: BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                    SizedBox(height: safeAreaHeight*0.015,),
-                                    Container(
-                                      height: safeAreaHeight*0.02,
-                                      width: (safeAreaWidth*0.9)*0.5,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey,
-                                        borderRadius: BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                    SizedBox(height: safeAreaHeight*0.015,),
-                                    Container(
-                                      height: safeAreaHeight*0.02,
-                                      width: (safeAreaWidth*0.9)*0.5,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey,
-                                        borderRadius: BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                    SizedBox(height: safeAreaHeight*0.015,),
-                                    Container(
-                                      height: safeAreaHeight*0.02,
-                                      width: (safeAreaWidth*0.9)*0.5,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.grey,
-                                        borderRadius: BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                height: safeAreaHeight*15,
-                                width: (safeAreaWidth*0.84)*0.12,
-                                child: Center(
-                                  child: Container(
-                                    height: safeAreaHeight*0.05,
-                                    width: safeAreaHeight*0.05,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.grey,
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            elevation: 4,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                color: Theme.of(context).backgroundColor,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Text(
+                        AppLocalizations.of(context)!.eventHistory,
+                        style: Theme.of(context).textTheme.headline1,
                       ),
                     ),
-                  ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    Container(
+                      color: AppColors.grey,
+                      height: 1.0,
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: safeAreaHeight*0.04, horizontal: safeAreaWidth*0.08),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        height: 1,
-                        width: safeAreaWidth*0.61,
-                        color: AppColors.grey,
-                      ),
-                    ],
-                  ),
+              ),
+              titlePadding: EdgeInsets.zero,
+              //centerTitle: true,
+            ),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.eventHistory, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
+            centerTitle: true,
+            leading: Builder(
+              builder: (BuildContext innerContext) => Padding(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                child: IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      size: MediaQuery.of(context).size.height*0.04,
+                    ),
+                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
                 ),
-              ],
-            );
-          },
-        ),
-      )
-          :
-      listEvents.length > 0 ? Container(
-        child: LazyLoadScrollView(
-          onEndOfPage: () {
-            print("Getting more events ...");
-            getBrandMoreEvents(listEvents[lastIndex].id!);
-          },
-          scrollOffset: safeAreaHeight.toInt(),
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            itemCount: listEvents.length,
-            itemBuilder: (context,int index) {
-              Event event = listEvents[index];
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
+                child: IconButton(
+                  icon: Icon(
+                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    size: MediaQuery.of(context).size.width*0.06,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      widget.pinned = !widget.pinned;
+                    });
+                    widget.pinnedChanged(widget.pinned);
+                  },
+                ),
+              ),
+            ],
+          ),
+          isLoading ? SliverList(
+            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               return Column(
                 children: [
                   index == 0 ? SizedBox(height: safeAreaWidth*0.08) : Container(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
-                    child: EventListTile(
-                      eventId: event.id!,
-                      showFeedback: false,
-                      height: safeAreaHeight,
-                      width: safeAreaWidth*0.9,
+                    child: Shimmer.fromColors(
+                      baseColor: AppColors.grey,
+                      highlightColor: AppColors.grey.withOpacity(0.5),
+                      child: Container(
+                        height: safeAreaHeight*0.18,
+                        width: safeAreaWidth*0.9,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              height: (safeAreaWidth*0.9)*0.20,
+                              width: (safeAreaWidth*0.9)*0.20,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: (safeAreaWidth*0.9)*0.20,
+                                    width: (safeAreaWidth*0.9)*0.20,
+                                    decoration: BoxDecoration(
+                                      color: AppColors.grey,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  height: safeAreaHeight*18,
+                                  width: safeAreaWidth*0.9*0.56,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: safeAreaHeight*0.03,
+                                        width: (safeAreaWidth*0.9)*0.20,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                      ),
+                                      SizedBox(height: safeAreaHeight*0.02,),
+                                      Container(
+                                        height: safeAreaHeight*0.02,
+                                        width: (safeAreaWidth*0.9)*0.35,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                      ),
+                                      SizedBox(height: safeAreaHeight*0.015,),
+                                      Container(
+                                        height: safeAreaHeight*0.02,
+                                        width: (safeAreaWidth*0.9)*0.5,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                      ),
+                                      SizedBox(height: safeAreaHeight*0.015,),
+                                      Container(
+                                        height: safeAreaHeight*0.02,
+                                        width: (safeAreaWidth*0.9)*0.5,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                      ),
+                                      SizedBox(height: safeAreaHeight*0.015,),
+                                      Container(
+                                        height: safeAreaHeight*0.02,
+                                        width: (safeAreaWidth*0.9)*0.5,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.grey,
+                                          borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: safeAreaHeight*15,
+                                  width: (safeAreaWidth*0.84)*0.12,
+                                  child: Center(
+                                    child: Container(
+                                      height: safeAreaHeight*0.05,
+                                      width: safeAreaHeight*0.05,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.grey,
+                                        borderRadius: BorderRadius.circular(5.0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -269,26 +306,70 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                 ],
               );
             },
-          ), // A subclass of `ScrollView`
-        ),
-      ) :
-      Container(
-        height: safeAreaHeight,
-        width: safeAreaWidth,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Container(
-                width: MediaQuery.of(context).size.width*0.25,
-                child: Image.asset(Constants.emptyCalendar)
+              childCount: 6,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.005),
-            Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-            SizedBox(height: MediaQuery.of(context).size.height*0.12),
-          ],
-        ),
+          ) :
+          listEvents.isNotEmpty ?
+          LazyLoadScrollView(
+            onEndOfPage: () {
+              print("Getting more events ...");
+              getBrandMoreEvents(listEvents[lastIndex].id!);
+            },
+            scrollOffset: safeAreaHeight.toInt(),
+            child: SliverList(
+              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                Event event = listEvents[index];
+                return Column(
+                  children: [
+                    index == 0 ? SizedBox(height: safeAreaWidth*0.08) : Container(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
+                      child: EventListTile(
+                        eventId: event.id!,
+                        showFeedback: false,
+                        height: safeAreaHeight,
+                        width: safeAreaWidth*0.9,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: safeAreaHeight*0.04, horizontal: safeAreaWidth*0.08),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            height: 1,
+                            width: safeAreaWidth*0.61,
+                            color: AppColors.grey,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+              childCount: listEvents.length,
+              ),
+            ),
+          ) : SliverFillRemaining(
+            hasScrollBody: false,
+            child: Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                        width: MediaQuery.of(context).size.width*0.25,
+                        child: Image.asset(Constants.emptyCalendar)
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                    Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.12),
+                  ],
+                )
+            ),
+          )
+        ],
       ),
     );
   }

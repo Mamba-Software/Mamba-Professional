@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -147,7 +147,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                                 Icon(
                                   Icons.info_outlined,
                                   color: tabs[0]
-                                      ? Theme.of(context).accentColor
+                                      ? Theme.of(context).colorScheme.secondary
                                       : Theme.of(context)
                                           .scaffoldBackgroundColor,
                                   size:
@@ -166,7 +166,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                                 Icon(
                                   Icons.local_atm,
                                   color: tabs[1]
-                                      ? Theme.of(context).accentColor
+                                      ? Theme.of(context).colorScheme.secondary
                                       : Theme.of(context)
                                           .scaffoldBackgroundColor,
                                   size:
@@ -185,7 +185,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                                 Icon(
                                   Icons.color_lens,
                                   color: tabs[2]
-                                      ? Theme.of(context).accentColor
+                                      ? Theme.of(context).colorScheme.secondary
                                       : Theme.of(context)
                                           .scaffoldBackgroundColor,
                                   size:
@@ -201,13 +201,13 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                       value: addEventTabValue,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ],
                 )),
               ),
             ),
-            body: LoadingViewPurple(),
+            body: LoadingView(),
           )
         : Scaffold(
             appBar: AppBar(
@@ -247,7 +247,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                                 Icon(
                                   Icons.info_outlined,
                                   color: tabs[0]
-                                      ? Theme.of(context).accentColor
+                                      ? Theme.of(context).colorScheme.secondary
                                       : Theme.of(context)
                                           .scaffoldBackgroundColor,
                                   size:
@@ -266,7 +266,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                                 Icon(
                                   Icons.local_atm,
                                   color: tabs[1]
-                                      ? Theme.of(context).accentColor
+                                      ? Theme.of(context).colorScheme.secondary
                                       : Theme.of(context)
                                           .scaffoldBackgroundColor,
                                   size:
@@ -285,7 +285,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                                 Icon(
                                   Icons.color_lens,
                                   color: tabs[2]
-                                      ? Theme.of(context).accentColor
+                                      ? Theme.of(context).colorScheme.secondary
                                       : Theme.of(context)
                                           .scaffoldBackgroundColor,
                                   size:
@@ -301,7 +301,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                       value: addEventTabValue,
                       backgroundColor:
                           Theme.of(context).scaffoldBackgroundColor,
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ],
                 )),
@@ -402,7 +402,7 @@ class _AddBonoState extends State<AddBono> with SingleTickerProviderStateMixin {
                         },
                         backgroundColor: _selectedIndex == 2
                             ? Colors.green
-                            : Theme.of(context).accentColor,
+                            : Theme.of(context).colorScheme.secondary,
                         icon: Container(),
                         label: Text(
                           _selectedIndex == 2

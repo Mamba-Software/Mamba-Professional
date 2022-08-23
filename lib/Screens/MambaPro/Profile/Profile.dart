@@ -129,7 +129,7 @@ class _ProfileState extends State<Profile> {
               if (loadingProgress == null) return child;
               return Center(
                 child: CircularProgressIndicator(
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   value: loadingProgress.expectedTotalBytes != null
                       ? loadingProgress.cumulativeBytesLoaded /
                       loadingProgress.expectedTotalBytes!

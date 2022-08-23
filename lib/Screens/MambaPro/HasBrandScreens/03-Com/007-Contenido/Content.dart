@@ -10,12 +10,14 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class Content extends StatefulWidget {
   String brandId;
+  bool pinned;
+  ValueChanged<bool?> pinnedChanged;
 
-  Content({Key? key, required this.brandId}) : super(key: key);
+  Content({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
 
   @override
   _ContentState createState() => _ContentState();
@@ -23,14 +25,20 @@ class Content extends StatefulWidget {
 
 class _ContentState extends State<Content> {
 
+  // App Bar and Scroll View
+  ScrollController? _scrollController;
+  bool appBarExpanded = false;
+  bool get _isAppBarExpanded {
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+  }
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
+  final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
   // Bool Max Images Added
   bool maxImagesAdded = false;
   // Max Number of Images
-  int _maxImages = 10;
+  final int _maxImages = 10;
   // Image To Upload
   List<File>? _imagesToUpload = [];
   // Images uploaded
@@ -39,9 +47,18 @@ class _ContentState extends State<Content> {
 
   @override
   void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() => _isAppBarExpanded ?
+      setState(() {
+        appBarExpanded = true;
+      }) :
+      setState(() {
+        appBarExpanded = false;
+      }),
+      );
     isLoading = true;
     getBrandContentImages();
-    super.initState();
   }
 
   // Selects image from Gallery and updates in firebase.
@@ -172,180 +189,250 @@ class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isLoading ?
-        Center(
-            child: LoadingViewPurple()
-        )
-          ://
-        SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.03),
-              imageSliders.isNotEmpty ? Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    child: CarouselSlider(
-                      options: CarouselOptions(
-                        autoPlay: false,
-                        aspectRatio: 2.0,
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: false
-                      ),
-                      items: imageSliders,
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                ],
-              ) : Container(),
-              _imagesUploaded.length != _maxImages ? Container(
-                decoration: BoxDecoration(
-                  border: Border.symmetric(
-                    horizontal: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                  child: ListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 10),
-                    onTap: getImage,
-                    title: Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            elevation: 4,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                color: Theme.of(context).backgroundColor,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                       child: Text(
-                        AppLocalizations.of(context)!.addBrandPhotos,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        AppLocalizations.of(context)!.content,
+                        style: Theme.of(context).textTheme.headline1,
                       ),
                     ),
-                    subtitle: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            AppLocalizations.of(context)!.addBrandPhotosLeft((_maxImages-_imagesUploaded.length).toString(), _maxImages.toString()),
-                            style: Theme.of(context).textTheme.caption,
-                          ),
-                        ),
-                      ],
+                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    Container(
+                      color: AppColors.grey,
+                      height: 1.0,
                     ),
-                    leading: Icon(
-                      Icons.add_a_photo_outlined,
-                      size: MediaQuery.of(context).size.width*0.08,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ),
-              ) : Container(
-                decoration: BoxDecoration(
-                  border: Border.symmetric(
-                    horizontal: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                  child: ListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 10),
-                    title: Text(
-                      AppLocalizations.of(context)!.addBrandPhotosMax,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    leading: Icon(
-                      Icons.collections_outlined,
-                      size: MediaQuery.of(context).size.width*0.08,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
+                  ],
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.03),
-              _imagesToUpload!.isNotEmpty ? Container(
-                height: MediaQuery.of(context).size.height * 0.25,
-                child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _imagesToUpload!.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: !(index == 0 || index == _imagesToUpload!.length-1) ? EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.02) : EdgeInsets.only(right: _imagesToUpload!.length != 1 ? MediaQuery.of(context).size.width*0.05 : MediaQuery.of(context).size.width*0.02, left: MediaQuery.of(context).size.width*0.02),
-                        child: Column(
-                          children: [
-                            Material(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
-                              ),
-                              child: Stack(
-                                alignment: Alignment.bottomLeft,
-                                children: [
-                                  Container(
-                                    height: MediaQuery.of(context).size.width * 0.35,
-                                    width: MediaQuery.of(context).size.width * 0.35,
-                                    decoration: new BoxDecoration(
-                                      //color: Theme.of(context).accentColor,
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(10.0),
-                                      ),
-                                      image: new DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: FileImage(_imagesToUpload![index]),
-                                      ),
-                                    ),
-                                    child: Center(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                var temp = _imagesToUpload;
-                                temp!.remove(_imagesToUpload![index]);
-                                setState(() {
-                                  _imagesToUpload = temp;
-                                });
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.clear, color: AppColors.red, size: MediaQuery.of(context).size.width*0.05),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    AppLocalizations.of(context)!.discard,
-                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
+              titlePadding: EdgeInsets.zero,
+              //centerTitle: true,
+            ),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.content, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
+            centerTitle: true,
+            leading: Builder(
+              builder: (BuildContext innerContext) => Padding(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                child: IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      size: MediaQuery.of(context).size.height*0.04,
+                    ),
+                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
                 ),
-              ) : Container(),
-              maxImagesAdded ? Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                child: Center(
-                  child: Text(
-                    AppLocalizations.of(context)!.addBrandPhotosMaxLeft((_maxImages-_imagesUploaded.length).toString()),
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
+                child: IconButton(
+                  icon: Icon(
+                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    size: MediaQuery.of(context).size.width*0.06,
                   ),
+                  onPressed: () {
+                    setState(() {
+                      widget.pinned = !widget.pinned;
+                    });
+                    widget.pinnedChanged(widget.pinned);
+                  },
                 ),
-              ) : Container(),
+              ),
             ],
           ),
-        ),
+          isLoading ? SliverFillRemaining(
+            child: Center(
+                  child: LoadingView()
+              )
+          ) :
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                imageSliders.isNotEmpty ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                            autoPlay: false,
+                            aspectRatio: 2.0,
+                            enlargeCenterPage: true,
+                            enableInfiniteScroll: false
+                        ),
+                        items: imageSliders,
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  ],
+                ) : Container(),
+                _imagesUploaded.length != _maxImages ? Container(
+                  decoration: BoxDecoration(
+                    border: Border.symmetric(
+                      horizontal: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                    child: ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      onTap: getImage,
+                      title: Padding(
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
+                        child: Text(
+                          AppLocalizations.of(context)!.addBrandPhotos,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      subtitle: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.addBrandPhotosLeft((_maxImages-_imagesUploaded.length).toString(), _maxImages.toString()),
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          ),
+                        ],
+                      ),
+                      leading: Icon(
+                        Icons.add_a_photo_outlined,
+                        size: MediaQuery.of(context).size.width*0.08,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                ) : Container(
+                  decoration: BoxDecoration(
+                    border: Border.symmetric(
+                      horizontal: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                    child: ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      title: Text(
+                        AppLocalizations.of(context)!.addBrandPhotosMax,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      leading: Icon(
+                        Icons.collections_outlined,
+                        size: MediaQuery.of(context).size.width*0.08,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                _imagesToUpload!.isNotEmpty ? Container(
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _imagesToUpload!.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: !(index == 0 || index == _imagesToUpload!.length-1) ? EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.02) : EdgeInsets.only(right: _imagesToUpload!.length != 1 ? MediaQuery.of(context).size.width*0.05 : MediaQuery.of(context).size.width*0.02, left: MediaQuery.of(context).size.width*0.02),
+                          child: Column(
+                            children: [
+                              Material(
+                                elevation: 4,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    const Radius.circular(10.0),
+                                  ),
+                                ),
+                                child: Stack(
+                                  alignment: Alignment.bottomLeft,
+                                  children: [
+                                    Container(
+                                      height: MediaQuery.of(context).size.width * 0.35,
+                                      width: MediaQuery.of(context).size.width * 0.35,
+                                      decoration: BoxDecoration(
+                                        //color: Theme.of(context).colorScheme.secondary,
+                                        borderRadius: BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: FileImage(_imagesToUpload![index]),
+                                        ),
+                                      ),
+                                      child: Center(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  var temp = _imagesToUpload;
+                                  temp!.remove(_imagesToUpload![index]);
+                                  setState(() {
+                                    _imagesToUpload = temp;
+                                  });
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.clear, color: AppColors.red, size: MediaQuery.of(context).size.width*0.05),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      AppLocalizations.of(context)!.discard,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                  ),
+                ) : Container(),
+                maxImagesAdded ? Padding(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.addBrandPhotosMaxLeft((_maxImages-_imagesUploaded.length).toString()),
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ) : Container(),
+                SizedBox(height: MediaQuery.of(context).size.height*0.5),
+              ],
+            ),
+          ),
+        ],
+      ),
       floatingActionButton: _imagesToUpload!.isNotEmpty && !isLoading ? FloatingActionButton.extended(
         heroTag: "32",
         label: Text(AppLocalizations.of(context)!.uploadPhotos, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),),
         icon: Icon(Icons.file_upload_outlined, size: MediaQuery.of(context).size.width*0.06,),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         foregroundColor: AppColors.white,
         onPressed: uploadPhotos,
       ) : Container(),

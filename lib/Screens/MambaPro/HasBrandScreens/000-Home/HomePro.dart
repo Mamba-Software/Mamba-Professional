@@ -13,10 +13,8 @@ class HomePro extends StatefulWidget {
   String brandId;
   int numClients;
   int numTrainers;
-  var safeAreaHeight;
-  var safeAreaWidth;
 
-  HomePro({Key? key, required this.brandId, required this.numTrainers, required this.numClients, this.safeAreaWidth, this.safeAreaHeight}) : super(key: key);
+  HomePro({Key? key, required this.brandId, required this.numTrainers, required this.numClients}) : super(key: key);
 
   @override
   _HomePro createState() => _HomePro();
@@ -123,7 +121,7 @@ class _HomePro extends State<HomePro> {
                 SizedBox(
                   height: MediaQuery.of(context).size.width * 0.01,
                 ),
-                BrandCalendarWeekWidget(brandId: widget.brandId, width: widget.safeAreaWidth, height: widget.safeAreaWidth,),
+                BrandCalendarWeekWidget(brandId: widget.brandId, width: MediaQuery.of(context).size.width*0.90, height: MediaQuery.of(context).size.height*0.4,),
                 /*!graphClients? Column(
                   children: [
                     UserCalendarPro(userId: currentUser.id!, width: widget.safeAreaWidth, height: widget.safeAreaWidth,),

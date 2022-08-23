@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 // Tus Datos Widget.
@@ -166,7 +166,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
       ),
       resizeToAvoidBottomInset: true,
       body: isLoading ?
-        LoadingViewPurple()
+        LoadingView()
           :
         SingleChildScrollView(
           physics: BouncingScrollPhysics(),
@@ -460,7 +460,7 @@ class _GenderWidgetState extends State<GenderWidget> {
         size: Size(MediaQuery.of(context).size.width*0.2, MediaQuery.of(context).size.width*0.2), // button width and height
         child: ClipOval(
           child: Material(
-            color: gender == index ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor,
+            color: gender == index ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
             child: InkWell(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

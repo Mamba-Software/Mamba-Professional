@@ -1425,7 +1425,7 @@
   "@monthEvents": {
     "description": "Wellcome message"
   },
-  "eventHistory": "Historial",
+  "eventHistory": "Historial de eventos",
   "@eventHistory": {
     "description": "Wellcome message"
   },

@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
@@ -123,7 +123,7 @@ class _SettingsState extends State<Settings> {
     }
     return isLoading ?
       Scaffold(
-        body: LoadingViewPurple(),
+        body: LoadingView(),
       )
         :
       Scaffold(
@@ -690,7 +690,7 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
           size: Size(MediaQuery.of(context).size.width*0.17, MediaQuery.of(context).size.width*0.17), // button width and height
           child: ClipOval(
             child: Material(
-              color: _locale == locale ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, // button color
+              color: _locale == locale ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, // button color
               child: InkWell(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

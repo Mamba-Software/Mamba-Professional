@@ -10,7 +10,7 @@ import 'package:store_redirect/store_redirect.dart';
 import '../../../../../Screens/Authentication/SplashScreen.dart';
 import '../../../../GlobalVars.dart';
 import '../../../Components/Images/CircularImage.dart';
-import '../../LoadingViews/LoadingViewPurple.dart';
+import '../../LoadingViews/LoadingView.dart';
 
 class BrandInviteDialog extends StatefulWidget {
   String brandId;
@@ -83,7 +83,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              LoadingViewPurple(),
+              LoadingView(),
             ],
           ),
         ),
@@ -164,7 +164,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                       CircularImage(
                         size: MediaQuery.of(context).size.width*0.25,
                         image: brand.logoUrl,
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         borderWidth: 2,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),

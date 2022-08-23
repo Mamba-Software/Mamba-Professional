@@ -12,7 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
@@ -399,7 +399,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
   Widget build(BuildContext context) {
     return
     isLoading ? Scaffold(
-      body: LoadingViewPurple(),
+      body: LoadingView(),
     ) :
     Scaffold(
       appBar: AppBar(
@@ -421,22 +421,30 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
               child: CircularImage(
                 size: MediaQuery.of(context).size.width * 0.1,
                 image: noMessages ? imageUrlRoom : widget.room.imageUrl,
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).colorScheme.secondary,
                 borderWidth: 0.1,
               ),
               onTap: () {
-                widget.room.type.toString()
-                != "RoomType.group" ? Navigator.push(
+                widget.room.type.toString() != "RoomType.group" ?
+                  Navigator.push(
                     context,
                     CupertinoPageRoute<Null>(
                         builder: (context) => ProfileViewUser(
-                            userID: userId.id!, viewOnly: true))) : currentUser.isTrainer == true ?  Navigator.push(
-                    context,
-                    CupertinoPageRoute<Null>(
-                        builder: (context) => Trainers(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers! ))) : Navigator.push(
+                            userID: userId.id!, viewOnly: true))
+                  ) : null;
+                /*
+                Cambiant aixo degut als canvis a la app bar :D
+                currentUser.isTrainer == true ?
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute<Null>(
+                          builder: (context) => Trainers(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers! ))
+                    )
+                    : Navigator.push(
                     context,
                     CupertinoPageRoute<Null>(
                         builder: (context) => Clients(brandId: currentBrand.id!, numClients: currentBrand.numClients!)));
+                 */
               },
             ),
             SizedBox(
@@ -479,7 +487,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
             stream: FirebaseChatCore.instance.messages(snapshot.data!),
             builder: (context, snapshot) {
               if (snapshot.data == null) {
-                return LoadingViewPurple();
+                return LoadingView();
               } else {
                 return SafeArea(
                   bottom: false,
@@ -489,7 +497,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       inputBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
                       inputTextStyle: Theme.of(context).textTheme.bodyText2!,
                       inputTextColor: Theme.of(context).primaryColor,
-                      inputTextCursorColor: Theme.of(context).accentColor,
+                      inputTextCursorColor: Theme.of(context).colorScheme.secondary,
                       inputBorderRadius: BorderRadius.circular(0),
                       primaryColor: Styles.mainColorTrans,
                       secondaryColor: Theme.of(context).backgroundColor,

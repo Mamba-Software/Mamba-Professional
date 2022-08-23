@@ -17,7 +17,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/JoinConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/SendRequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -913,13 +913,13 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                     height: MediaQuery.of(context).size.height * 0.07,
                                     width: MediaQuery.of(context).size.height * 0.07,
                                     decoration: BoxDecoration(
-                                        color: Theme.of(context).accentColor.withOpacity(0.08),
+                                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
                                         borderRadius: BorderRadius.all(Radius.circular(5.0))
                                     ),
                                     child: Center(
                                         child: Text(
                                             event!.day.toString(),
-                                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
                                             textAlign: TextAlign.center
                                         )
                                     ),
@@ -973,11 +973,11 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                     height: MediaQuery.of(context).size.height * 0.07,
                                     width: MediaQuery.of(context).size.height * 0.07,
                                     decoration: BoxDecoration(
-                                        color: Theme.of(context).accentColor.withOpacity(0.08),
+                                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
                                         borderRadius: BorderRadius.all(Radius.circular(5.0))
                                     ),
                                     child: Center(
-                                        child: Icon(Icons.timer_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,)
+                                        child: Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,)
                                     ),
                                   ),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.04),
@@ -1073,7 +1073,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                       children: <Widget>[
                                         Icon(
                                           Icons.location_on,
-                                          color: Theme.of(context).accentColor,
+                                          color: Theme.of(context).colorScheme.secondary,
                                           size: 15,
                                         ),
                                         Padding(
@@ -1337,7 +1337,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                 )
             ) : Padding(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.13),
-                child: LoadingViewPurple()),
+                child: LoadingView()),
           ),
         ],
       ),

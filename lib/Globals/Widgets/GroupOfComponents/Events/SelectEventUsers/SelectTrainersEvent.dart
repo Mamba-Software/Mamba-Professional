@@ -6,7 +6,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 class SelectTrainersEvent extends StatefulWidget {
@@ -76,7 +76,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
 
   Color getColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.selected)) {
-      return Theme.of(context).accentColor;
+      return Theme.of(context).colorScheme.secondary;
     } else {
       return Colors.transparent;
     }
@@ -93,7 +93,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
     return Scaffold(
       appBar: null,
       body:  isLoading ?
-      Center(child: LoadingViewPurple())
+      Center(child: LoadingView())
           :
       DefaultTabController(
         length: 2,
@@ -266,7 +266,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                 onPressed: () {
                   Navigator.pop(context, selectedTrainers);
                 },
-                backgroundColor: Theme.of(context).accentColor,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 child: Icon(
                   Icons.person_add,
                   size: MediaQuery.of(context).size.width*0.07,

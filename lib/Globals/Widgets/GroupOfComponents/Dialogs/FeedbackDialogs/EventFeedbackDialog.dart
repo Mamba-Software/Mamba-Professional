@@ -67,7 +67,7 @@ class _EventFeedbackDialogState extends State<EventFeedbackDialog> {
                   itemSize: MediaQuery.of(context).size.height*0.1,
                   itemBuilder: (context, index) => Icon(
                       Icons.star,
-                      color: Theme.of(context).accentColor
+                      color: Theme.of(context).colorScheme.secondary
                   ),
                   onRatingUpdate: (rating) {
                     userHasAnsweredFeedback(rating);

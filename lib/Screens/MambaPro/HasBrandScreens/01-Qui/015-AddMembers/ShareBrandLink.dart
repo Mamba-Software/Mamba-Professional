@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -84,7 +81,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
               borderRadius: const BorderRadius.all(
                 Radius.circular(5),
               ),
-              border: Border.all(color: Theme.of(context).accentColor, width: 2),
+              border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
             ),
             child: QrImage(
               data: currentBrand.id!,
