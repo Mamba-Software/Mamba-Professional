@@ -9,7 +9,9 @@ import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -22,30 +24,38 @@ import 'BonosRequests.dart';
 
 class BonosPro extends StatefulWidget {
   String brandId;
+  bool pinned;
+  ValueChanged<bool?> pinnedChanged;
 
-  BonosPro({Key? key, required this.brandId}) : super(key: key);
+  BonosPro({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
 
   @override
   _BonosProState createState() => _BonosProState();
 }
 
 class _BonosProState extends State<BonosPro> {
+
+  // App Bar and Scroll View
+  ScrollController? _scrollController;
+  bool appBarExpanded = false;
+  bool get _isAppBarExpanded {
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+  }
+
   // Boolean Loading
   bool isLoading = false;
-
-
-  var _lColor = new lColor();
+  final _lColor = lColor();
 
   // Bonos list
   List<Bono> bonosList = [];
   List<Usuario> allClients = [];
 
   //Brand Service
-  var _brandDataService = new BrandDataService();
-  var _userDataService = new UserDataService();
+  final _brandDataService = BrandDataService();
+  final _userDataService = UserDataService();
 
   //Utils bonos
-  var _bonosUtils = new BonosUtils();
+  final _bonosUtils = BonosUtils();
 
   //boolean to filter by actives
   bool seeActives = true;
@@ -59,10 +69,10 @@ class _BonosProState extends State<BonosPro> {
   bool isDark = false;
 
   //HashMap to control the bonos given
-  HashMap hashMap = new HashMap<String, String>();
+  HashMap hashMap = HashMap<String, String>();
 
   //Brand
-  Brand brand = new Brand();
+  Brand brand = Brand();
 
   //Ordenar bonos
   List<String> ordenBonos = [
@@ -80,10 +90,19 @@ class _BonosProState extends State<BonosPro> {
 
   @override
   void initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() => _isAppBarExpanded ?
+      setState(() {
+        appBarExpanded = true;
+      }) :
+      setState(() {
+        appBarExpanded = false;
+      }),
+      );
     getBrand();
     getBrandBonos();
     getAllUsers();
-    super.initState();
   }
 
   Future<void> getBrand() async {
@@ -144,7 +163,7 @@ class _BonosProState extends State<BonosPro> {
 
   Widget returnBono(Bono _bono) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 0),
+      padding: const EdgeInsets.symmetric(vertical: 0),
       child: Column(
         children: [
           GestureDetector(
@@ -195,7 +214,7 @@ class _BonosProState extends State<BonosPro> {
                       border: Border.all(
                         color: Theme.of(context).primaryColor,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                      borderRadius: const BorderRadius.all(const Radius.circular(10))),
                   child: Align(
                     alignment: Alignment.center,
                     //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
@@ -307,9 +326,9 @@ class _BonosProState extends State<BonosPro> {
                   ),
                   child: DropdownButton<String>(
                     items: ordenBonos.map((String value) {
-                      return new DropdownMenuItem<String>(
+                      return DropdownMenuItem<String>(
                         value: value,
-                        child: new Text(value),
+                        child: Text(value),
                       );
                     }).toList(),
                     hint: Text(ordenBonosSelected),
@@ -347,7 +366,7 @@ class _BonosProState extends State<BonosPro> {
               if (snapshot == null ||
                   snapshot.data == null ||
                   snapshot.data!.docs == null) {
-                return Container(
+                return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.65,
                     child: Center(child: LoadingView()));
               } else {
@@ -355,7 +374,7 @@ class _BonosProState extends State<BonosPro> {
                     snapshot.data!.docs, orderBonoSelectedNumber);
                 return Expanded(
                   child: ListView.builder(
-                      physics: AlwaysScrollableScrollPhysics(),
+                      physics: const AlwaysScrollableScrollPhysics(),
                       shrinkWrap: true,
                       //controller: scrollController,
                       scrollDirection: Axis.vertical,
@@ -383,7 +402,188 @@ class _BonosProState extends State<BonosPro> {
       isFirstBuild = false;
     }
     return Scaffold(
-      body: buildYourBonos(),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            elevation: 4,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                color: Theme.of(context).backgroundColor,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Text(
+                        AppLocalizations.of(context)!.bonos,
+                        style: Theme.of(context).textTheme.headline1,
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    Container(
+                      color: AppColors.grey,
+                      height: 1.0,
+                    ),
+                  ],
+                ),
+              ),
+              titlePadding: EdgeInsets.zero,
+              //centerTitle: true,
+            ),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.bonos, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
+            centerTitle: true,
+            leading: Builder(
+              builder: (BuildContext innerContext) => Padding(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                child: IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      size: MediaQuery.of(context).size.height*0.04,
+                    ),
+                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
+                ),
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
+                child: IconButton(
+                  icon: Icon(
+                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    size: MediaQuery.of(context).size.width*0.06,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      widget.pinned = !widget.pinned;
+                    });
+                    widget.pinnedChanged(widget.pinned);
+                  },
+                ),
+              ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.06),
+                    child: Text('Ordenar por',
+                        style: Theme.of(context).textTheme.bodyText1,
+                        textAlign: TextAlign.center),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.02,
+                        right: MediaQuery.of(context).size.width * 0.01),
+                    child: Container(
+                      height: MediaQuery.of(context).size.width * 0.10,
+                      padding:
+                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        border: Border.all(
+                            color: Colors.grey,
+                            style: BorderStyle.solid,
+                            width: 0.80),
+                      ),
+                      child: DropdownButton<String>(
+                        items: ordenBonos.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        hint: Text(ordenBonosSelected),
+                        onChanged: (newVal) {
+                          ordenBonosSelected = newVal!;
+                          if (ordenBonosSelected == "Activos")
+                            orderBonoSelectedNumber = 0;
+                          else if (ordenBonosSelected == "Desactivados")
+                            orderBonoSelectedNumber = 1;
+                          else if (ordenBonosSelected == "Más nuevos")
+                            orderBonoSelectedNumber = 2;
+                          else if (ordenBonosSelected == "Más antiguos")
+                            orderBonoSelectedNumber = 3;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.08),
+                    child: IconButton(
+                        icon: Icon(Icons.request_quote,
+                            color: Theme.of(context).primaryColor,
+                            size: safeAreaWidth * 0.06),
+                        alignment: Alignment.centerRight,
+                        onPressed: navigateToBonosRequestScreen),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          StreamBuilder<QuerySnapshot>(
+              stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
+              builder: (context, snapshot) {
+                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
+                  return SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.65,
+                      child: Center(
+                          child: LoadingView()
+                      )
+                    ),
+                  );
+                } else {
+                  bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, orderBonoSelectedNumber);
+                  if (bonosList.isNotEmpty) {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                        Bono bono = bonosList[index];
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+                          child: returnBono(bono),
+                        );
+                      },
+                        childCount: bonosList.length,
+                      ),
+                    );
+                  } else {
+                    return SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width*0.30,
+                                child: Image.asset(Constants.emptyCalendar)
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                            Text("NO " + AppLocalizations.of(context)!.solicitudesBonos, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.12),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                }
+              })
+        ],
+      ),
       floatingActionButton: Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
         child: FloatingActionButton(

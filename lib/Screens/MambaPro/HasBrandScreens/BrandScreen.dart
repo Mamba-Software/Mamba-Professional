@@ -654,6 +654,10 @@ class _BrandScreenState extends State<BrandScreen> {
       case 5:
         return BonosPro(
           brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 10:
         return BrandCalendarWidget(

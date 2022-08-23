@@ -74,7 +74,7 @@ class MambaProUtils {
   //Function to select the icon to load
   Widget iconSelector(var context, int pageIndexView)
   {
-    if(pageIndexView == 1) return Icon(Icons.record_voice_over, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 1) return Icon(Icons.badge_outlined, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 2) return Icon(Icons.group, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 8) return Icon(Icons.feed, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 13) return Icon(Icons.question_mark, color: Theme.of(context).primaryColor,);
@@ -206,7 +206,7 @@ class MambaProUtils {
     //if(pageIndex == 1) return Trainers(brandId:brandId, numTrainers: numTrainers );
     //if(pageIndex == 2) return Clients(brandId: brandId, numClients: numClients,);
     if(pageIndex == 4) return Categories(brandId:brandId);
-    if(pageIndex == 5) return BonosPro(brandId:brandId);
+    //if(pageIndex == 5) return BonosPro(brandId:brandId);
     if(pageIndex == 7) return Content(brandId:brandId);
     //if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
     if(pageIndex == 12) return Logo(brandId:brandId);
