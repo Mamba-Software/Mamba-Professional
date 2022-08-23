@@ -62,12 +62,6 @@ class _Clients extends State<Clients> {
       Usuario user = brandUsers[i];
       allClients.add(user);
     }
-    ///
-    for (var i=0; i<10; i++) {
-      Usuario user = brandUsers[0];
-      allClients.add(user);
-    }
-    ///
     // Sort Clients
     allClients.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
@@ -242,8 +236,80 @@ class _Clients extends State<Clients> {
               ),
             ],
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 8,)),
-          SliverList(
+          const SliverToBoxAdapter(child: SizedBox(height: 10,)),
+          isLoading ? SliverList(
+            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ListTile(
+                  dense: true,
+                  leading: Shimmer.fromColors(
+                    baseColor: AppColors.grey,
+                    highlightColor: AppColors.grey.withOpacity(0.5),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.08,
+                      width: MediaQuery.of(context).size.height*0.08,
+                      decoration: const BoxDecoration(
+                        color: AppColors.grey,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  title: Shimmer.fromColors(
+                    baseColor: AppColors.grey,
+                    highlightColor: AppColors.grey.withOpacity(0.5),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.03,
+                      width: MediaQuery.of(context).size.width*0.02,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                        color: AppColors.grey,
+                      ),
+                    ),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      Shimmer.fromColors(
+                        baseColor: AppColors.grey,
+                        highlightColor: AppColors.grey.withOpacity(0.5),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.02,
+                          width: MediaQuery.of(context).size.width*0.2,
+                          decoration: const BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: Shimmer.fromColors(
+                    baseColor: AppColors.grey,
+                    highlightColor: AppColors.grey.withOpacity(0.5),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.04,
+                      width: MediaQuery.of(context).size.height*0.04,
+                      decoration: const BoxDecoration(
+                        color: AppColors.grey,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: null,
+                ),
+              );
+            },
+            childCount: widget.numClients,
+            ),
+          ) : SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               Usuario user = filteredMembers[index];
               return ListTile(
