@@ -61,18 +61,18 @@ class _BrandScreenState extends State<BrandScreen> {
   bool isFirstBuild = true;
 
   // Bools to control show for drop down
-  bool seeNextWho = true;
-  bool seeNextWhat = true;
-  bool seeNextHow = true;
-  bool seeNextWhen = true;
-  bool seeNextWhere = true;
+  bool seeNextWho = false;
+  bool seeNextWhat = false;
+  bool seeNextHow = false;
+  bool seeNextWhen = false;
+  bool seeNextWhere = false;
 
   // Icons for drop down
-  var iconWho = Icons.keyboard_arrow_down;
-  var iconWhat = Icons.keyboard_arrow_down;
-  var iconHow = Icons.keyboard_arrow_down;
-  var iconWhen = Icons.keyboard_arrow_down;
-  var iconWhere = Icons.keyboard_arrow_down;
+  var iconWho = Icons.keyboard_arrow_up;
+  var iconWhat = Icons.keyboard_arrow_up;
+  var iconHow = Icons.keyboard_arrow_up;
+  var iconWhen = Icons.keyboard_arrow_up;
+  var iconWhere = Icons.keyboard_arrow_up;
 
   //Index to know which page to load
   int pageIndex = 0;
@@ -358,12 +358,22 @@ class _BrandScreenState extends State<BrandScreen> {
             ],
           ),
           onTap: () => setState(() {
+            // Clicked on Open/Close
             seeNextWho = !seeNextWho;
-            if(iconWho == Icons.keyboard_arrow_up) {
+            if (iconWho == Icons.keyboard_arrow_up) {
               iconWho = Icons.keyboard_arrow_down;
             } else {
               iconWho = Icons.keyboard_arrow_up;
             }
+            // Rest on Close
+            seeNextWhen = false;
+            seeNextWhat = false;
+            seeNextHow = false;
+            seeNextWhere = false;
+            iconWhen = Icons.keyboard_arrow_up;
+            iconWhat = Icons.keyboard_arrow_up;
+            iconHow = Icons.keyboard_arrow_up;
+            iconWhere = Icons.keyboard_arrow_up;
           }),
         ),
         seeNextWho ? listTilePro(2) : Container(),
@@ -386,12 +396,23 @@ class _BrandScreenState extends State<BrandScreen> {
             ],
           ),
           onTap: () => setState(() {
+            // Clicked on Open/Close
             seeNextWhat = !seeNextWhat;
-            if(iconWhat == Icons.keyboard_arrow_up) {
+            if (iconWhat == Icons.keyboard_arrow_up) {
               iconWhat = Icons.keyboard_arrow_down;
             } else {
               iconWhat = Icons.keyboard_arrow_up;
             }
+            // Rest on Close
+            seeNextWho = false;
+            seeNextWhen = false;
+            seeNextHow = false;
+            seeNextWhere = false;
+            iconWho = Icons.keyboard_arrow_up;
+            iconWhen = Icons.keyboard_arrow_up;
+            iconHow = Icons.keyboard_arrow_up;
+            iconWhere = Icons.keyboard_arrow_up;
+
           }),
         ),
         seeNextWhat ? listTilePro(8) : Container(),
@@ -415,12 +436,22 @@ class _BrandScreenState extends State<BrandScreen> {
             ],
           ),
           onTap: () => setState(() {
+            // Clicked on Open/Close
             seeNextWhen = !seeNextWhen;
-            if(iconWhen == Icons.keyboard_arrow_up) {
+            if (iconWhen == Icons.keyboard_arrow_up) {
               iconWhen = Icons.keyboard_arrow_down;
             } else {
               iconWhen = Icons.keyboard_arrow_up;
             }
+            // Rest on Close
+            seeNextWho = false;
+            seeNextWhat = false;
+            seeNextHow = false;
+            seeNextWhere = false;
+            iconWho = Icons.keyboard_arrow_up;
+            iconWhat = Icons.keyboard_arrow_up;
+            iconHow = Icons.keyboard_arrow_up;
+            iconWhere = Icons.keyboard_arrow_up;
           }),
         ),
         seeNextWhen ? listTilePro(10) : Container(),
@@ -442,12 +473,22 @@ class _BrandScreenState extends State<BrandScreen> {
             ],
           ),
           onTap: () => setState(() {
+            // Clicked on Open/Close
             seeNextHow = !seeNextHow;
-            if(iconHow == Icons.keyboard_arrow_up) {
+            if (iconHow == Icons.keyboard_arrow_up) {
               iconHow = Icons.keyboard_arrow_down;
             } else {
               iconHow = Icons.keyboard_arrow_up;
             }
+            // Rest on Close
+            seeNextWhen = false;
+            seeNextWhat = false;
+            seeNextWho = false;
+            seeNextWhere = false;
+            iconWhen = Icons.keyboard_arrow_up;
+            iconWhat = Icons.keyboard_arrow_up;
+            iconWho = Icons.keyboard_arrow_up;
+            iconWhere = Icons.keyboard_arrow_up;
           }),
         ),
         //seeNextHow ? listTilePro(9) : Container(),
@@ -472,12 +513,23 @@ class _BrandScreenState extends State<BrandScreen> {
             ],
           ),
           onTap: () => setState(() {
+            // Clicked on Open/Close
             seeNextWhere = !seeNextWhere;
-            if(iconWhere == Icons.keyboard_arrow_up) {
+            if (iconWhere == Icons.keyboard_arrow_up) {
               iconWhere = Icons.keyboard_arrow_down;
             } else {
               iconWhere = Icons.keyboard_arrow_up;
             }
+            // Rest on Close
+            seeNextWhen = false;
+            seeNextWhat = false;
+            seeNextWho = false;
+            seeNextHow = false;
+            iconWhen = Icons.keyboard_arrow_up;
+            iconWhat = Icons.keyboard_arrow_up;
+            iconWho = Icons.keyboard_arrow_up;
+            iconHow = Icons.keyboard_arrow_up;
+
           }),
         ),
         seeNextWhere ? listTilePro(11) : Container(),
@@ -567,7 +619,11 @@ class _BrandScreenState extends State<BrandScreen> {
       case 2:
         return Clients(
           brandId: currentBrand.id!,
-          numClients: currentBrand.numClients!
+          numClients: currentBrand.numClients!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 1:
         return Trainers(
@@ -581,7 +637,6 @@ class _BrandScreenState extends State<BrandScreen> {
       case 8:
         return BrandInfo(
           locale: Localizations.localeOf(context),
-          pageIndex: pageIndex,
           brandId: currentBrand.id!,
           pinned: iconStar,
           pinnedChanged: (boolean) {

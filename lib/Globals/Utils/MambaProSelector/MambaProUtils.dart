@@ -204,7 +204,7 @@ class MambaProUtils {
   {
     if(pageIndex == 0) return HomePro(brandId:brandId, numTrainers: numTrainers, numClients: numClients);
     if(pageIndex == 1) return Trainers(brandId:brandId, numTrainers: numTrainers );
-    if(pageIndex == 2) return Clients(brandId: brandId, numClients: numClients,);
+    //if(pageIndex == 2) return Clients(brandId: brandId, numClients: numClients,);
     if(pageIndex == 4) return Categories(brandId:brandId);
     if(pageIndex == 5) return BonosPro(brandId:brandId);
     if(pageIndex == 7) return Content(brandId:brandId);

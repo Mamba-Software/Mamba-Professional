@@ -19,8 +19,10 @@ import 'package:shimmer/shimmer.dart';
 class Clients extends StatefulWidget {
   String brandId;
   int numClients;
+  bool pinned;
+  ValueChanged<bool?> pinnedChanged;
 
-  Clients({Key? key, required this.brandId, required this.numClients}) : super(key: key);
+  Clients({Key? key, required this.brandId, required this.numClients, required this.pinned, required this.pinnedChanged}) : super(key: key);
 
   @override
   _Clients createState() => _Clients();
@@ -28,9 +30,16 @@ class Clients extends StatefulWidget {
 
 class _Clients extends State<Clients> {
 
+  // App Bar and Scroll View
+  ScrollController? _scrollController;
+  bool appBarExpanded = false;
+  bool get _isAppBarExpanded {
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.25 - kToolbarHeight);
+  }
+
   // Brand Data Service
-  var _brandDataService = BrandDataService();
-  var _roomDataService = new RoomDataService();
+  final _brandDataService = BrandDataService();
+  final _roomDataService = RoomDataService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -52,8 +61,13 @@ class _Clients extends State<Clients> {
     for (var i=0; i< brandUsers.length; i++) {
       Usuario user = brandUsers[i];
       allClients.add(user);
-
     }
+    ///
+    for (var i=0; i<10; i++) {
+      Usuario user = brandUsers[0];
+      allClients.add(user);
+    }
+    ///
     // Sort Clients
     allClients.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
@@ -95,6 +109,16 @@ class _Clients extends State<Clients> {
 
   @override
   initState() {
+    super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() => _isAppBarExpanded ?
+      setState(() {
+        appBarExpanded = true;
+      }) :
+      setState(() {
+        appBarExpanded = false;
+      }),
+      );
     isLoading = true;
     getAllUsers();
   }
@@ -102,227 +126,209 @@ class _Clients extends State<Clients> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          backgroundColor: Colors.transparent,
-          body:  Container(
-              child: Column(
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02,),
-                  PreferredSize(
-                      preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.07,),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height*0.07,
-                        child: Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03,left: MediaQuery.of(context).size.width*0.03, top: MediaQuery.of(context).size.width*0.00,),
-                            child: TextField(
-                              controller: searchController,
-                              onChanged: (value) {
-                                filterSearchResults(value);
-                              },
-                              style: Theme.of(context).textTheme.bodyText2,
-                              textAlign: TextAlign.left,
-                              decoration: InputDecoration(
-                                hintStyle: Theme.of(context).textTheme.caption,
-                                hintText: AppLocalizations.of(context)!.search,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
-                                ),
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.search,
-                                  color: Colors.grey,
-                                  size: MediaQuery.of(context).size.width*0.06,
-                                ),
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    searchController.clear();
-                                    filterSearchResults("");
-                                  },
-                                  icon: Icon(Icons.delete_outline, color: Colors.grey,),
-                                ),
-                                contentPadding: EdgeInsets.all(0),
-                              ),
-                            )
+      backgroundColor: Colors.transparent,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            backgroundColor: Theme.of(context).backgroundColor,
+            expandedHeight: MediaQuery.of(context).size.height*0.2,
+            elevation: 4,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                height: MediaQuery.of(context).size.height*0.25,
+                color: Theme.of(context).backgroundColor,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.01),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Text(
+                        AppLocalizations.of(context)!.clients,
+                        style: Theme.of(context).textTheme.headline1,
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    Container(
+                      color: AppColors.grey,
+                      height: 1.0,
+                    ),
+                  ],
+                ),
+              ),
+              titlePadding: EdgeInsets.zero,
+              //centerTitle: true,
+            ),
+            //title: appBarExpanded ? Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
+            centerTitle: true,
+            leading: Builder(
+              builder: (BuildContext innerContext) => Padding(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                child: IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      size: MediaQuery.of(context).size.height*0.04,
+                    ),
+                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
+                ),
+              ),
+            ),
+            bottom: PreferredSize(
+                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.1,),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height*0.08,
+                  child: Padding(
+                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03,left: MediaQuery.of(context).size.width*0.03),
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          filterSearchResults(value);
+                        },
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.left,
+                        decoration: InputDecoration(
+                          hintStyle: Theme.of(context).textTheme.caption,
+                          hintText: AppLocalizations.of(context)!.search,
+                          enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.grey),
+                              borderRadius: BorderRadius.all(Radius.circular(10.0))
+                          ),
+                          focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.grey),
+                              borderRadius: BorderRadius.all(Radius.circular(10.0))
+                          ),
+                          border: const OutlineInputBorder(
+                              borderSide: BorderSide(color: AppColors.grey),
+                              borderRadius: BorderRadius.all(Radius.circular(10.0))
+                          ),
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.grey,
+                            size: MediaQuery.of(context).size.width*0.06,
+                          ),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              searchController.clear();
+                              filterSearchResults("");
+                            },
+                            icon: const Icon(Icons.delete_outline, color: Colors.grey,),
+                          ),
+                          contentPadding: const EdgeInsets.all(0),
                         ),
                       )
                   ),
-                  isLoading ?
-                  Expanded(
-                    child: Container(
-                      child: ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: widget.numClients,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.005),
-                              child: ListTile(
-                                dense: true,
-                                leading: Shimmer.fromColors(
-                                  baseColor: AppColors.grey,
-                                  highlightColor: AppColors.grey.withOpacity(0.5),
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height*0.08,
-                                    width: MediaQuery.of(context).size.height*0.08,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.grey,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                ),
-                                title: Shimmer.fromColors(
-                                  baseColor: AppColors.grey,
-                                  highlightColor: AppColors.grey.withOpacity(0.5),
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height*0.03,
-                                    width: MediaQuery.of(context).size.width*0.02,
-                                    decoration: BoxDecoration(
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(10.0),
-                                      ),
-                                      color: AppColors.grey,
-                                    ),
-                                  ),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                    Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor: AppColors.grey.withOpacity(0.5),
-                                      child: Container(
-                                        height: MediaQuery.of(context).size.height*0.02,
-                                        width: MediaQuery.of(context).size.width*0.2,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.grey,
-                                          borderRadius: new BorderRadius.all(
-                                            const Radius.circular(10.0),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                trailing: Shimmer.fromColors(
-                                  baseColor: AppColors.grey,
-                                  highlightColor: AppColors.grey.withOpacity(0.5),
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height*0.04,
-                                    width: MediaQuery.of(context).size.height*0.04,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.grey,
-                                      borderRadius: new BorderRadius.all(
-                                        const Radius.circular(10.0),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                onTap: null,
-                              ),
-                            );
-                          }
-                      ),
-                    ),
-                  ) :
-                  Expanded(
-                    child: Container(
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: filteredMembers.length,
-                          itemBuilder: (context, index) {
-                            Usuario user = filteredMembers[index];
-                            return Padding(
-                              padding: EdgeInsets.symmetric(vertical: 0),
-                              child: ListTile(
-                                leading: CircularImage(
-                                  size: MediaQuery.of(context).size.width*0.15,
-                                  image: user.imageUrl,
-                                  color: Theme.of(context).primaryColor,
-                                  borderWidth: 1.0,
-                                ),
-                                title: Text(
-                                  getUsersFullName(user),
-                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left,
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "@${user.nick!}",
-                                      style: Theme.of(context).textTheme.caption,
-                                    ),
-                                  ],
-                                ),
-                                trailing: user.id! == currentUser.id ? IconButton(
-                                  icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.all(0),
-                                  onPressed: false ? () {
-                                  } : null,
-                                ) : IconButton(
-                                  icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                                  alignment: Alignment.centerRight,
-                                  padding: EdgeInsets.all(0),
-                                  onPressed: () async {
-                                    types.User otherUser = types.User(
-                                      firstName: user.firstName,
-                                      lastName: user.lastName,
-                                      id: user.id!, // UID from Firebase Authentication
-                                      imageUrl: user.imageUrl,
-                                    );
-                                    final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                                      "trainer" + user.id!: user.isTrainer,
-                                      "trainer" + currentUser.id!: currentUser.isTrainer,
-                                      "active" + user.id!: false,
-                                      "active" + currentUser.id!: true,
-                                    });
-
-                                    bool? deleteRoom = await Navigator.push(
-                                      context,
-                                      CupertinoPageRoute<bool>(
-                                          builder: (context) => ChatPage(room: room)),).whenComplete(() async {
-                                      room.metadata!["active" + currentUser.id!] = false;
-                                      _roomDataService.updateRoom(room.id, room.metadata!);
-                                    });
-                                    if (!deleteRoom!) {
-                                      _roomDataService.deleteRoom(room.id);
-                                    }
-                                  },
-                                ),
-                                onTap: () async {
-                                  var result = await Navigator.push(
-                                      context,
-                                      CupertinoPageRoute<bool?>(
-                                          builder: (context) => ProfileViewUser(
-                                            userID: user.id!,
-                                            viewOnly: false,
-                                          )
-                                      )
-                                  );
-                                  if (result == true) {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    getAllUsers();
-                                  }
-                                },
-                              ),
-                            );
-                          }
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                )
             ),
-          );
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
+                child: IconButton(
+                  icon: Icon(
+                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    size: MediaQuery.of(context).size.width*0.06,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      widget.pinned = !widget.pinned;
+                    });
+                    widget.pinnedChanged(widget.pinned);
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8,)),
+          SliverList(
+            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+              Usuario user = filteredMembers[index];
+              return ListTile(
+                leading: CircularImage(
+                  size: MediaQuery.of(context).size.width*0.15,
+                  image: user.imageUrl,
+                  color: Theme.of(context).primaryColor,
+                  borderWidth: 1.0,
+                ),
+                title: Text(
+                  getUsersFullName(user),
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.left,
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "@${user.nick!}",
+                      style: Theme.of(context).textTheme.caption,
+                    ),
+                  ],
+                ),
+                trailing: user.id! == currentUser.id ? IconButton(
+                  icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.all(0),
+                  onPressed: false ? () {
+                  } : null,
+                ) : IconButton(
+                  icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () async {
+                    types.User otherUser = types.User(
+                      firstName: user.firstName,
+                      lastName: user.lastName,
+                      id: user.id!, // UID from Firebase Authentication
+                      imageUrl: user.imageUrl,
+                    );
+                    final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                      "trainer" + user.id!: user.isTrainer,
+                      "trainer" + currentUser.id!: currentUser.isTrainer,
+                      "active" + user.id!: false,
+                      "active" + currentUser.id!: true,
+                    });
+
+                    bool? deleteRoom = await Navigator.push(
+                      context,
+                      CupertinoPageRoute<bool>(
+                          builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                      room.metadata!["active" + currentUser.id!] = false;
+                      _roomDataService.updateRoom(room.id, room.metadata!);
+                    });
+                    if (!deleteRoom!) {
+                      _roomDataService.deleteRoom(room.id);
+                    }
+                  },
+                ),
+                onTap: () async {
+                  var result = await Navigator.push(
+                      context,
+                      CupertinoPageRoute<bool?>(
+                          builder: (context) => ProfileViewUser(
+                            userID: user.id!,
+                            viewOnly: false,
+                          )
+                      )
+                  );
+                  if (result == true) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    getAllUsers();
+                  }
+                },
+              );
+              },
+              childCount: filteredMembers.length,               // 1000 list items
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 8,)),
+        ],
+      ),
+    );
   }
 
   @override

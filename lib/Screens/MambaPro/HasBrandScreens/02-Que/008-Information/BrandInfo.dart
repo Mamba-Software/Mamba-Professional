@@ -15,11 +15,10 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {
   Locale? locale;
-  int pageIndex;
   String brandId;
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
-  BrandInfo({Key? key, this.locale, required this.pageIndex, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  BrandInfo({Key? key, this.locale, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
 
   @override
   _BrandInfoState createState() => _BrandInfoState();
@@ -229,8 +228,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               Padding(
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
                 child: IconButton(
-                  icon: widget.pageIndex == 0 ? Container() :
-                  Icon(
+                  icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
                     color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
                     size: MediaQuery.of(context).size.width*0.06,
