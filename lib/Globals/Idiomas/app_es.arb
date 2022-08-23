@@ -143,6 +143,14 @@
   "@alreadyUser":{
     "description": "Already user Text "
   },
+  "wrongAppUser": "Hemos detectado que tienes una cuenta de tipo Cliente.",
+  "@wrongAppUser":{
+    "description": "Already user Text "
+  },
+  "wrongAppUserBody": "Inicia sesión en Mamba",
+  "@wrongAppUserBody":{
+    "description": "Already user Text "
+  },
   "createAccount": "Crea tu cuenta",
   "@createAccount":{
     "createAccount": "Cambiar Text"
@@ -529,11 +537,19 @@
   "@deletedEvent":{
     "description": "createBrand Text"
   },
+  "joinBrand": "Únete a una marca",
+  "@joinBrand":{
+    "description": "createBrand Text"
+  },
+  "joinBrandTitle": "Puedes unirte a través de un link o escaneado el código QR de la marca",
+  "@joinBrandTitle":{
+    "description": "createBrand Text"
+  },
   "createBrand": "Crea tu marca",
   "@createBrand":{
     "description": "createBrand Text"
   },
-  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos:",
+  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos...",
   "@createBrandTitle":{
     "description": "createBrand Text"
   },
@@ -901,7 +917,7 @@
   "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
-  "copyCodeMessage": "Comparte tu código de invitación",
+  "copyCodeMessage": "Comparte tu enlace de invitación",
   "@copyCodeMessage":{
     "description": "inviteCode text"
   },
@@ -1974,6 +1990,14 @@
   },
   "donde": "Donde",
   "@donde": {
+    "description": "Donde message"
+  },
+  "scanQRCode": "Escanea código QR",
+  "@scanQRCode": {
+    "description": "Donde message"
+  },
+  "staff": "Staff",
+  "@staff": {
     "description": "Donde message"
   }
 }

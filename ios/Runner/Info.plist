@@ -45,6 +45,7 @@
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+	    <string>mamba-style</string>
 		<string>https</string>
 		<string>http</string>
 	</array>

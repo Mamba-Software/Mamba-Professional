@@ -4,24 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
-import '../../Data/DataService/Brand/BrandDataService.dart';
 import '../../Data/DataService/User/UserDataService.dart';
 import '../../Globals/GlobalVars.dart';
 import '../../Globals/NotificationService/NotificationService.dart';
 import '../../Globals/Utils/Images/ImageUtils.dart';
 import '../../Globals/Widgets/Components/Gender/GenderWidget.dart';
 import '../../Globals/Widgets/Components/Images/CircularImage.dart';
-import '../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewWhite.dart';
 import 'SplashScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({Key? key}) : super(key: key);
+
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
@@ -29,8 +26,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
-  var _brandDataService = new BrandDataService();
+  final _userDataService = UserDataService();
   // Geolocator
   final Geolocator geolocator = Geolocator();
   bool locatorDialog = false;
@@ -40,21 +36,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool isLoading = false;
   // Wellcome Pages
   int _currentPage = 0;
-  final int _numPages = 4;
+  final int _numPages = 3;
   final PageController _pageController = PageController(initialPage: 0);
   // Page 1: OnBoarding
   // Form Key
   final _formKey = GlobalKey<FormState>();
-  // Tab Controller
-  double addEventTabValue = 0.33;
-  TabController? _tabController;
-  int _selectedIndex = 0;
-  List<bool> tabs = [true, false, false, false, false, false];
   // Title Controller
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
   // Profile Image
-  var _image;
+  File? _image;
   // Nick Controller
   var nickController = TextEditingController();
   String nick = "";
@@ -78,11 +69,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   // Type of Users
   int _value = 0;
   bool errorType = false;
-
-  @override
-  initState() {
-    //isLoading = true;
-  }
 
   Future selectDate() async {
     var pickedDateTemp =  await showCupertinoModalPopup(
@@ -116,7 +102,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     });
     bool result = await _userDataService.checkIfNicknameExists(nick);
     if (result) {
-      Future.delayed(Duration(milliseconds: 500), () async {
+      Future.delayed(const Duration(milliseconds: 500), () async {
         setState(() {
           nickOkay = true;
           nickUsed = false;
@@ -124,7 +110,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         });
       });
     } else {
-      Future.delayed(Duration(milliseconds: 500), () async {
+      Future.delayed(const Duration(milliseconds: 500), () async {
         setState(() {
           nickOkay = false;
           nickUsed = true;
@@ -144,13 +130,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 150),
-      margin: EdgeInsets.symmetric(horizontal: 8.0),
+      duration: const Duration(milliseconds: 150),
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
       height: 8.0,
       width: isActive ? 24.0 : 16.0,
       decoration: BoxDecoration(
         color: isActive ? AppColors.white : AppColors.whiteTrans,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
     );
   }
@@ -158,20 +144,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> addUser() async {
     _notificationService = NotificationService();
     String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
-    bool isTrainer = false;
-    int role = 0;
-    if (_value == 1) {
-      isTrainer = true;
-      role = 5;
-    }
-    await _userDataService.updateUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, isTrainer);
+    await _userDataService.updateUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, true);
     await _userDataService.addUserNickname(currentUser.id!, nick);
     _notificationService!.wellcomeUser(currentUser.id!);
     Navigator.pushReplacement(
         context,
-        CupertinoPageRoute<Null>(
+        CupertinoPageRoute<void>(
           builder: (context) => SplashScreen(),
-          settings: RouteSettings(name: 'SplashScreen'),
+          settings: const RouteSettings(name: 'SplashScreen'),
         )
     );
   }
@@ -186,7 +166,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         child: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height*0.90,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: AppColors.mainColor
               /*
                 gradient: LinearGradient(
@@ -205,7 +185,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.05),
               child: PageView(
-                physics: ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 controller: _pageController,
                 onPageChanged: (int page) {
                   setState(() {
@@ -240,6 +220,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ],
                     ),
                   ),
+                  /*
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
                     child: Column(
@@ -257,7 +238,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             SizedBox(height: MediaQuery.of(context).size.height*0.05),
                             ListTile(
                               dense: true,
-                              contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                              contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                               title: Padding(
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                                 child: Text(
@@ -293,7 +274,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
+                                SizedBox(
                                     height: MediaQuery.of(context).size.height*0.20,
                                     child: Image.asset(Constants.clientImage)
                                 ),
@@ -302,7 +283,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             SizedBox(height: MediaQuery.of(context).size.height*0.03),
                             ListTile(
                               dense: true,
-                              contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                              contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                               title: Padding(
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
                                 child: Text(
@@ -339,7 +320,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
+                                SizedBox(
                                     height: MediaQuery.of(context).size.height*0.17,
                                     child: Image.asset(Constants.personalTrainerImage)
                                 ),
@@ -372,7 +353,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               AppLocalizations.of(context)!.trainersOnboarding,
                               style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                             ),
-                            SizedBox(height: 15.0),
+                            const SizedBox(height: 15.0),
                             Text(
                               AppLocalizations.of(context)!.trainersOnboardingDesc,
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
@@ -403,9 +384,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               AppLocalizations.of(context)!.clientsOnboarding,
                               style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                             ),
-                            SizedBox(height: 15.0),
+                            const SizedBox(height: 15.0),
                             Text(
                               AppLocalizations.of(context)!.clientsOnboardingDesc,
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                   */
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height*0.17),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Center(
+                              child: Image(
+                                image: AssetImage(Constants.themeSystemImage),
+                                width: MediaQuery.of(context).size.width,
+                              ),
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                            Text(
+                              AppLocalizations.of(context)!.trainersOnboarding,
+                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                            ),
+                            const SizedBox(height: 15.0),
+                            Text(
+                              AppLocalizations.of(context)!.trainersOnboardingDesc,
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             ),
                           ],
@@ -432,11 +445,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     width: MediaQuery.of(context).size.width * 0.45,
                                     child: Column(
                                       children: [
-                                        Container(
+                                        SizedBox(
                                           width: MediaQuery.of(context).size.width * 0.45,
                                           child: Column(
                                             children: [
@@ -451,7 +464,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 ],
                                               ),
 
-                                              Container(
+                                              SizedBox(
                                                 width: MediaQuery.of(context).size.width * 0.45,
                                                 child: Row(
                                                   children: [
@@ -459,32 +472,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                       child: TextFormField(
                                                         controller: firstNameController,
                                                         keyboardType: TextInputType.name,
-                                                        validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
                                                         style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
                                                         textCapitalization: TextCapitalization.words,
                                                         decoration: InputDecoration(
                                                           hintText: AppLocalizations.of(context)!.nameCompletoError,
                                                           hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
                                                           errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                          border: UnderlineInputBorder(
+                                                          border: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          enabledBorder: UnderlineInputBorder(
+                                                          enabledBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          focusedBorder: UnderlineInputBorder(
+                                                          focusedBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          errorBorder: UnderlineInputBorder(
+                                                          errorBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.red,
                                                                   width: 1.0
@@ -501,7 +514,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             ],
                                           ),
                                         ),
-                                        Container(
+                                        SizedBox(
                                           width: MediaQuery.of(context).size.width * 0.45,
                                           child: Column(
                                             children: [
@@ -515,7 +528,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   ),
                                                 ],
                                               ),
-                                              Container(
+                                              SizedBox(
                                                 width: MediaQuery.of(context).size.width * 0.85,
                                                 child: Row(
                                                   children: [
@@ -523,32 +536,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                       child: TextFormField(
                                                         controller: lastNameController,
                                                         keyboardType: TextInputType.name,
-                                                        validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.lastNameError : null,
+                                                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
                                                         style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
                                                         textCapitalization: TextCapitalization.words,
                                                         decoration: InputDecoration(
                                                           hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
                                                           hintText: AppLocalizations.of(context)!.lastNameError,
                                                           errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                          border: UnderlineInputBorder(
+                                                          border: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          enabledBorder: UnderlineInputBorder(
+                                                          enabledBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          focusedBorder: UnderlineInputBorder(
+                                                          focusedBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          errorBorder: UnderlineInputBorder(
+                                                          errorBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.red,
                                                                   width: 1.0
@@ -568,7 +581,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ],
                                     ),
                                   ),
-                                  Container(
+                                  SizedBox(
                                     width: MediaQuery.of(context).size.width * 0.25,
                                     child: Center(
                                         child: _image == null ?
@@ -647,7 +660,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
+                                  SizedBox(
                                     width: MediaQuery.of(context).size.width * 0.4,
                                     child: Column(
                                       children: [
@@ -673,7 +686,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
-                                                new Flexible(
+                                                Flexible(
                                                   child: TextFormField(
                                                     controller: startDateController,
                                                     readOnly: true,
@@ -683,31 +696,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                       hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
                                                       hintText: AppLocalizations.of(context)!.noDateOfBirth,
                                                       errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                      border: UnderlineInputBorder(
+                                                      border: const UnderlineInputBorder(
                                                           borderSide: BorderSide(
                                                               color: Colors.black,
                                                               width: 1.0
                                                           )
                                                       ),
-                                                      enabledBorder: UnderlineInputBorder(
+                                                      enabledBorder: const UnderlineInputBorder(
                                                           borderSide: BorderSide(
                                                               color: Colors.black,
                                                               width: 1.0
                                                           )
                                                       ),
-                                                      focusedBorder: UnderlineInputBorder(
+                                                      focusedBorder: const UnderlineInputBorder(
                                                           borderSide: BorderSide(
                                                               color: Colors.black,
                                                               width: 1.0
                                                           )
                                                       ),
-                                                      errorBorder: UnderlineInputBorder(
+                                                      errorBorder: const UnderlineInputBorder(
                                                           borderSide: BorderSide(
                                                               color: Colors.red,
                                                               width: 1.0
                                                           )
                                                       ),
-                                                      disabledBorder: UnderlineInputBorder(
+                                                      disabledBorder: const UnderlineInputBorder(
                                                           borderSide: BorderSide(
                                                               color: Colors.black,
                                                               width: 1.0
@@ -726,7 +739,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
-                                                Container(
+                                                SizedBox(
                                                   width: MediaQuery.of(context).size.width * 0.4,
                                                   child: Text(
                                                     AppLocalizations.of(context)!.selectDateOfBirth,
@@ -744,8 +757,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ],
                                     ),
                                   ),
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * 0.35,
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.36,
                                     child: Column(
                                       children: [
                                         Row(
@@ -768,15 +781,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   currentFocus.unfocus();
                                                 }
                                               },
-                                              child: Container(
-                                                width: MediaQuery.of(context).size.width * 0.35,
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context).size.width * 0.36,
                                                 child: Row(
                                                   children: [
                                                     Expanded(
                                                       child: TextFormField(
                                                         controller: nickController,
                                                         keyboardType: TextInputType.name,
-                                                        validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.nicknameError : null,
+                                                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nicknameError : null,
                                                         onChanged: (val) {
                                                           nick = val.replaceAll(' ', '');
                                                           nickController.text = nick;
@@ -786,27 +799,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
                                                         decoration: InputDecoration(
                                                           hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
-                                                          hintText: "${AppLocalizations.of(context)!.nicknameError}",
+                                                          hintText: AppLocalizations.of(context)!.nicknameError,
                                                           errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                          border: UnderlineInputBorder(
+                                                          border: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          enabledBorder: UnderlineInputBorder(
+                                                          enabledBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          focusedBorder: UnderlineInputBorder(
+                                                          focusedBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.black,
                                                                   width: 1.0
                                                               )
                                                           ),
-                                                          errorBorder: UnderlineInputBorder(
+                                                          errorBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
                                                                   color: Colors.red,
                                                                   width: 1.0
@@ -834,7 +847,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   textAlign: TextAlign.left,
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                                Icon(Icons.check, size: 25, color: Colors.green,),
+                                                const Icon(Icons.check, size: 25, color: Colors.green,),
                                               ],
                                             ),
                                           ],
@@ -851,7 +864,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   textAlign: TextAlign.left,
                                                 ),
                                                 SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                                Icon(Icons.close, size: 25, color: Colors.red,),
+                                                const Icon(Icons.close, size: 25, color: Colors.red,),
                                               ],
                                             ),
                                           ],
@@ -982,10 +995,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           SizedBox(height: MediaQuery.of(context).size.height*0.01),
           Align(
             alignment: FractionalOffset.centerRight,
-            child: FlatButton(
+            child: TextButton(
               onPressed: () {
                 _pageController.nextPage(
-                  duration: Duration(milliseconds: 500),
+                  duration: const Duration(milliseconds: 500),
                   curve: Curves.ease,
                 );
               },
@@ -997,7 +1010,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     AppLocalizations.of(context)!.next,
                     style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                   ),
-                  SizedBox(width: 10.0),
+                  const SizedBox(width: 10.0),
                   Icon(
                     Icons.arrow_forward,
                     color: Colors.white,
@@ -1041,7 +1054,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.06,
             height: MediaQuery.of(context).size.height * 0.03,
-            child: CircularProgressIndicator(
+            child: const CircularProgressIndicator(
               color: AppColors.black,
               strokeWidth: 2.5,
             ),

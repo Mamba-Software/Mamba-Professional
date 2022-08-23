@@ -142,11 +142,16 @@ class BrandFirebaseCalls {
   //Checkers
 
   Future<bool> checkIfBrandExists(String brandID) async {
-    var userDocRef = await _firestore.collection(brands).doc(brandID);
-    var doc = await userDocRef.get();
-    if (doc.exists) {
-      return true;
-    } else {
+    try {
+      var userDocRef = await _firestore.collection(brands).doc(brandID);
+      var doc = await userDocRef.get();
+      if (doc.exists) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      e.toString();
       return false;
     }
   }

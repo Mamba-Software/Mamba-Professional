@@ -1,21 +1,24 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RectangularImage extends StatefulWidget {
-  final double? size;
+  final double? height;
+  final double? width;
   final double? borderWidth;
   final double? borderRadius;
   final String? image;
   final File? file;
   final Color? color;
 
-  RectangularImage({Key? key, this.size, this.borderWidth, this.borderRadius, this.image, this.file, this.color}) : super(key: key);
+  RectangularImage({Key? key, this.height, this.width, this.borderWidth, this.borderRadius, this.image, this.file, this.color}) : super(key: key);
 
   @override
-  _RectangularImageState createState() => new _RectangularImageState();
+  _RectangularImageState createState() => _RectangularImageState();
 }
 
 class _RectangularImageState extends State<RectangularImage> {
@@ -23,32 +26,28 @@ class _RectangularImageState extends State<RectangularImage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Stack(
+    return Stack(
       children: <Widget>[
-        Container(
-          width: widget.size,
-          height: widget.size,
-          child: Center(
-            child: Container(
-              width: widget.size! * 0.20,
-              height: widget.size! * 0.20,
-              child: Center(
-                child: LoadingViewPurple(),
-              ),
-            ),
+        Shimmer.fromColors(
+          baseColor: AppColors.grey,
+          highlightColor: AppColors.grey.withOpacity(0.5),
+          child: SizedBox(
+            width: widget.width,
+            height: widget.height,
+            child: const Center(),
           ),
         ),
         Container(
-            width: widget.size,
-            height: widget.size,
-            decoration: new BoxDecoration(
+            width: widget.width,
+            height: widget.height,
+            decoration: BoxDecoration(
                 border: Border.all(
                   width: widget.borderWidth == null ? 0 : widget.borderWidth!,
                   color: widget.color == null ? Styles.mainColor : widget.color!,
                   style: widget.borderWidth == null ? BorderStyle.none : BorderStyle.solid,
                 ),
                 borderRadius: BorderRadius.circular(widget.borderRadius == null ? 0.0 : widget.borderRadius!),
-                image: new DecorationImage(
+                image: DecorationImage(
                   fit: BoxFit.cover,
                   image: widget.file != null ? FileImage(widget.file!) : CachedNetworkImageProvider(widget.image!) as ImageProvider,
                 )

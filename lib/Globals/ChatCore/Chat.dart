@@ -14,8 +14,8 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/01-Qui/001-Trainers/Trainers.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/MambaPro/01-Qui/002-Clients/Clients.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
 import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -529,7 +529,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                       ),
                       dateDividerTextStyle: Theme.of(context).textTheme.caption!.copyWith(fontSize: 10),
                     ),
-                    sendButtonVisibilityMode: SendButtonVisibilityMode.always,
+                    //sendButtonVisibilityMode: SendButtonVisibilityMode.always,
                     customDateHeaderText: _customDateHeaderText,
                     dateHeaderThreshold:  60000,
                     groupMessagesThreshold: 300000,
