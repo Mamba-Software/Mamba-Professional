@@ -210,12 +210,14 @@ class MambaProUtils {
     if(pageIndex == 7) return Content(brandId:brandId);
     //if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
     if(pageIndex == 12) return Logo(brandId:brandId);
+    /*
     if(pageIndex == 10) {
       return BrandCalendarWidget(
         brandId: brandId,
         dateTime: middleMonthDate,
       );
     }
+     */
     if(pageIndex == 11) return Locations(brandId:brandId);
     if(pageIndex == 14) return BrandEventHistoryPage(brandId: brandId);
     //if(pageIndex == 15) return MembershipRequestsPro(brandId: brandId);

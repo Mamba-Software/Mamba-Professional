@@ -1062,6 +1062,7 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserJoinsBrand_User": {
         if (brand.id != null) {
+          /*
           Navigator.push(
               context,
             CupertinoPageRoute<Null>(
@@ -1070,6 +1071,7 @@ class _NotificationsState extends State<Notifications> {
                 )
               )
           );
+           */
         }
         break;
       }
@@ -1168,6 +1170,7 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserLeaveEvent_User": {
         if (brand.id != null) {
+          /*
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
@@ -1176,6 +1179,7 @@ class _NotificationsState extends State<Notifications> {
                   )
               )
           );
+           */
         }
         break;
       }

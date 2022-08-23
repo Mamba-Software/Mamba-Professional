@@ -662,6 +662,10 @@ class _BrandScreenState extends State<BrandScreen> {
       case 10:
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 14:
         return BrandEventHistoryPage(
