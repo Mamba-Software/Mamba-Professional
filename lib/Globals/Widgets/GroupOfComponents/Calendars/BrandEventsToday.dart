@@ -6,7 +6,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -93,7 +93,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
           },
         ),
       ),
-      body: LoadingViewPurple(),
+      body: LoadingView(),
     )
         :
     Scaffold(
@@ -114,7 +114,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
           stream: _eventDataService.getBrandsEventsTodayStream(_brand.id!),
           builder: (context, snapshot) {
             if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-              return LoadingViewPurple();
+              return LoadingView();
             } else {
               todayEvents = documentsToEvents(snapshot.data!.docs);
               return SfCalendar(
@@ -125,7 +125,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                 viewHeaderHeight: 0,
                 dataSource: _getCalendarDataSource(),
                 specialRegions: _getTimeRegions(),
-                todayHighlightColor: Theme.of(context).accentColor,
+                todayHighlightColor: Theme.of(context).colorScheme.secondary,
                 selectionDecoration: BoxDecoration(
                     border: Border.all(width: 0.1, color: Colors.transparent)
                 ),

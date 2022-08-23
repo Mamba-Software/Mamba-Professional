@@ -1,5 +1,6 @@
 // This file contains all the Global Variabels used throgh the App.
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -46,6 +47,9 @@ String? timeZoneName;
 // Page Controller
 int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
+
+// Key Scaffold Mamba Pro
+final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 
 // Dynamic Links Path
 var dynamicLinkBrandId;

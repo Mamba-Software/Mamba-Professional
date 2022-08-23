@@ -42,7 +42,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               iconTheme: IconThemeData(
                 color: Colors.white, //change your color here
               ),
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
                 onPressed: () {
@@ -55,7 +55,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
             ),
             resizeToAvoidBottomInset: true,
-            backgroundColor: Theme.of(context).accentColor,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             body: SingleChildScrollView(
                 child: Form(
                   key: _formKey,

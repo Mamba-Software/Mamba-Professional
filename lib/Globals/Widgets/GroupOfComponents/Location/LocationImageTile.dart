@@ -105,7 +105,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
         width: widget.width,
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
-            border: Border.all(color: Theme.of(context).accentColor, width: 1),
+            border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 1),
             borderRadius: BorderRadius.all(Radius.circular(15.0))
         ),
         child: Stack(
@@ -153,7 +153,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                   children: <Widget>[
                     Icon(
                       Icons.location_on,
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       size: 15,
                     ),
                     Padding(

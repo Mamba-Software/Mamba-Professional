@@ -40,7 +40,7 @@ class _LongTextContainerState extends State<LongTextContainer> {
             ),
             child: Text(
               !readMore ? AppLocalizations.of(context)!.readMore : AppLocalizations.of(context)!.readLess,
-              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).accentColor),
+              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
               textAlign: TextAlign.left
             )
           )

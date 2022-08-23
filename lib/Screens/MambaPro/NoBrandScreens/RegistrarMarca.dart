@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -138,7 +138,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
             },
           ),
         ),
-        body: LoadingViewPurple(),
+        body: LoadingView(),
       )
         :
       Scaffold(
@@ -167,7 +167,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.image_outlined, color: tabs[0] ? Theme.of(context).accentColor : Colors.grey, size: MediaQuery.of(context).size.width*0.06,)
+                                Icon(Icons.image_outlined, color: tabs[0] ? Theme.of(context).colorScheme.secondary : Colors.grey, size: MediaQuery.of(context).size.width*0.06,)
                               ],
                             ),
                           ),
@@ -178,7 +178,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.info_outlined, color: tabs[1] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
+                                Icon(Icons.info_outlined, color: tabs[1] ? Theme.of(context).colorScheme.secondary : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
                               ],
                             ),
                           ),
@@ -189,7 +189,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.location_on_outlined, color: tabs[2] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
+                                Icon(Icons.location_on_outlined, color: tabs[2] ? Theme.of(context).colorScheme.secondary : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
                               ],
                             ),
                           ),
@@ -200,7 +200,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.calendar_today_outlined, color: tabs[3] ? Theme.of(context).accentColor : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
+                                Icon(Icons.calendar_today_outlined, color: tabs[3] ? Theme.of(context).colorScheme.secondary : Colors.grey.withOpacity(0.2), size: MediaQuery.of(context).size.width*0.06,)
                               ],
                             ),
                           ),
@@ -210,7 +210,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     LinearProgressIndicator(
                       value: addEventTabValue,
                       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   ],
                 )
@@ -966,7 +966,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                         }
                       }
                     },
-                    backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).accentColor,
+                    backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).colorScheme.secondary,
                     icon: Container(),
                     label: Text(
                       _selectedIndex == 3 ? AppLocalizations.of(context)!.createBrand : AppLocalizations.of(context)!.next,

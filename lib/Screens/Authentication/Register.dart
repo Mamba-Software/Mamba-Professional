@@ -56,10 +56,10 @@ class _RegisterState extends State<Register> {
                   }
                 },
               ),
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
             ),
             resizeToAvoidBottomInset: true,
-            backgroundColor: Theme.of(context).accentColor,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             body: SingleChildScrollView(
                 child: Form(
                   key: _formKey,

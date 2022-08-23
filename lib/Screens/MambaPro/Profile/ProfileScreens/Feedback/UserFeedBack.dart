@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:survey_kit/survey_kit.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -62,7 +62,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
   Widget build(BuildContext context) {
     return  isLoading ?
       Scaffold(
-        body: LoadingViewPurple(),
+        body: LoadingView(),
       )
         :
      Scaffold(
@@ -91,7 +91,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
                    },
                    task: task,
                    themeData: Styles.lightTheme.copyWith(
-                      primaryColor: Theme.of(context).accentColor,
+                      primaryColor: Theme.of(context).colorScheme.secondary,
                       backgroundColor: Colors.white,
                       outlinedButtonTheme: OutlinedButtonThemeData(
                        style: ButtonStyle(
@@ -106,7 +106,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
                                );
                              }
                              return BorderSide(
-                               color: Theme.of(context).accentColor,
+                               color: Theme.of(context).colorScheme.secondary,
                              );
                            },
                          ),
@@ -120,7 +120,7 @@ class _UserFeedBackState extends State<UserFeedBack> {
                    )
                  );
                } else {
-                 return CircularProgressIndicator.adaptive(value: 1, backgroundColor: Theme.of(context).accentColor);
+                 return CircularProgressIndicator.adaptive(value: 1, backgroundColor: Theme.of(context).colorScheme.secondary);
                }
              },
            ),

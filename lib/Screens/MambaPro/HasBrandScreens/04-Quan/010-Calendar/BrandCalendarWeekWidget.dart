@@ -157,7 +157,7 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
         showDatePickerButton: false,
         showCurrentTimeIndicator: false,
         showNavigationArrow: false,
-        todayHighlightColor: Theme.of(context).accentColor,
+        todayHighlightColor: Theme.of(context).colorScheme.secondary,
         viewHeaderHeight: widget.height*0.13,
         viewHeaderStyle: ViewHeaderStyle(
           dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
@@ -186,7 +186,7 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
           ),
         ),
         selectionDecoration: BoxDecoration(
-          border: Border.all(width: 0.5, color: Theme.of(context).accentColor),
+          border: Border.all(width: 0.5, color: Theme.of(context).colorScheme.secondary),
           borderRadius: new BorderRadius.all(
             const Radius.circular(10.0),
           ),

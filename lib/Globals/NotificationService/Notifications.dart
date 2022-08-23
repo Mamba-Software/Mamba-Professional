@@ -360,7 +360,7 @@ class _NotificationsState extends State<Notifications> {
         ),
       ) : RefreshIndicator(
           displacement: MediaQuery.of(context).size.height*0.05,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           onRefresh: () {
             return Future.delayed(
               Duration(seconds: 1), () async {
@@ -1062,6 +1062,7 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserJoinsBrand_User": {
         if (brand.id != null) {
+          /*
           Navigator.push(
               context,
             CupertinoPageRoute<Null>(
@@ -1070,6 +1071,7 @@ class _NotificationsState extends State<Notifications> {
                 )
               )
           );
+           */
         }
         break;
       }
@@ -1097,6 +1099,8 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserSendRequestToBrand_Trainer": {
+        // TODO: Controlar Totes les redireccions
+        /*
         if (brand.id != null) {
           Navigator.push(
               context,
@@ -1107,6 +1111,7 @@ class _NotificationsState extends State<Notifications> {
               )
           );
         }
+         */
         break;
       }
       case "UserCancelRequestToBrand_User": {
@@ -1165,6 +1170,7 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserLeaveEvent_User": {
         if (brand.id != null) {
+          /*
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
@@ -1173,6 +1179,7 @@ class _NotificationsState extends State<Notifications> {
                   )
               )
           );
+           */
         }
         break;
       }
