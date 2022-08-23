@@ -3505,6 +3505,30 @@ exports.zzzzUserJoinsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
       });
+
+      //TODO AFEGIT JOAN MANEL INTEGRACIÓ BONOS
+        //Add event to purchase collection
+        await db
+                .collection("7777 Payments")
+                .doc("Purchases")
+                .collection("Purchases")
+                .doc(eventUserDoc.purchaseId)
+                .collection("Events")
+                .doc(eventId)
+                .set({
+                  "isPrivate": eventDoc.isPrivate,
+                  "title": eventDoc.title,
+                  "doneAt": eventDoc.doneAt,
+                  "year": eventDoc.year,
+                  "month": eventDoc.month,
+                  "day": eventDoc.day,
+                  "hour": eventDoc.hour,
+                  "minute": eventDoc.minute,
+                  "duration": eventDoc.duration,
+                  "numTrainers": numTrainers,
+                  "numClients": numClients,
+                  "maxMembers": eventDoc.maxMembers,
+              });
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
       if (eventDoc.isPrivate == true) {
@@ -3808,6 +3832,8 @@ exports.zzzzUserJoinsEvent = functions
             );
         }
       }
+
+
       return null;
     });
 
@@ -4233,6 +4259,93 @@ exports.zzzzChangeMessageStatus = functions
                                                                 "title": bonoDoc.title,
                                                                 "sessions": bonoDoc.sessions,
                                                                  "price": purchaseDoc.price,
+                                                             });
+
+         return null;
+       });
+
+// User Purchases Bono
+   exports.usersPurchasesEvent = functions
+       .region("europe-west1")
+       .firestore
+       .document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+       .onCreate( async (snap, context) => {
+
+       const purchaseId = context.params.purchaseId;
+       const eventId = context.params.eventId;
+
+       const eventDoc = snap.data();
+
+       //Get data of the purchase
+
+      const purchaseSnapShot = await db.collection("7777 Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+      const purchaseDoc = purchaseSnapShot.data();
+
+       const userId = purchaseDoc.userId;
+       const bonoId = purchaseDoc.bonoId;
+       const brandId =  purchaseDoc.brandId;
+
+       //Get data of the bono
+
+       const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+       const bonoDoc = bonoSnapshot.data();
+
+       //Add events to purchases
+
+        await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+           "isPrivate": eventDoc.isPrivate,
+                            "title": eventDoc.title,
+                            "doneAt": eventDoc.doneAt,
+                            "year": eventDoc.year,
+                            "month": eventDoc.month,
+                            "day": eventDoc.day,
+                            "hour": eventDoc.hour,
+                            "minute": eventDoc.minute,
+                            "duration": eventDoc.duration,
+                            "numTrainers": eventDoc.numTrainers,
+                            "numClients": eventDoc.numClients,
+                            "maxMembers": eventDoc.maxMembers,
+       });
+    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+            "isPrivate": eventDoc.isPrivate,
+                             "title": eventDoc.title,
+                             "doneAt": eventDoc.doneAt,
+                             "year": eventDoc.year,
+                             "month": eventDoc.month,
+                             "day": eventDoc.day,
+                             "hour": eventDoc.hour,
+                             "minute": eventDoc.minute,
+                             "duration": eventDoc.duration,
+                             "numTrainers": eventDoc.numTrainers,
+                             "numClients": eventDoc.numClients,
+                             "maxMembers": eventDoc.maxMembers,
+        });
+
+        await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+                "isPrivate": eventDoc.isPrivate,
+              "title": eventDoc.title,
+              "doneAt": eventDoc.doneAt,
+              "year": eventDoc.year,
+              "month": eventDoc.month,
+              "day": eventDoc.day,
+              "hour": eventDoc.hour,
+              "minute": eventDoc.minute,
+              "duration": eventDoc.duration,
+              "numTrainers": eventDoc.numTrainers,
+              "numClients": eventDoc.numClients,
+              "maxMembers": eventDoc.maxMembers,
+});
+
+                 await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).update({
+                                   "sessions": bonoDoc.sessions - 1,
+                                });
+
+                 await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
+                                                    "sessions": bonoDoc.sessions - 1,
+                                                 });
+
+            await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).update({
+                                                                "sessions": bonoDoc.sessions - 1,
                                                              });
 
          return null;
