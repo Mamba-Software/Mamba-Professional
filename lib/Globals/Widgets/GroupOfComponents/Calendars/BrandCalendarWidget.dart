@@ -198,13 +198,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                height: MediaQuery.of(context).size.height*0.17,
+                height: MediaQuery.of(context).size.height*0.15,
                 color: Theme.of(context).backgroundColor,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.02),
                     Padding(
                       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
                       child: Row(
@@ -215,8 +214,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                           FittedBox(
                             fit: BoxFit.fitHeight,
                             child: SizedBox(
-                              height: MediaQuery.of(context).size.height*0.06,
+                              height: MediaQuery.of(context).size.height*0.08,
+                              width: MediaQuery.of(context).size.width*0.35,
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   TextButton(
                                     onPressed: () {
@@ -269,14 +270,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          Icons.calendar_view_week,
+                                          Icons.calendar_view_month,
                                           color: Theme.of(context).primaryColor,
                                           size: safeAreaWidth*0.05,
                                         ),
                                         FittedBox(
                                           fit: BoxFit.contain,
                                           child: Text(
-                                              AppLocalizations.of(context)!.weekString,
+                                              AppLocalizations.of(context)!.monthString,
                                               style: Theme.of(context).textTheme.bodyText2,
                                               textAlign: TextAlign.center
                                           ),
@@ -291,7 +292,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,
@@ -354,7 +355,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 eventsList = documentsToEvents(snapshot.data!.docs);
                 return SliverFillRemaining(
                   child: Padding(
-                    padding: EdgeInsets.all(safeAreaWidth*0.01),
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
                     child: SfCalendar(
                       cellEndPadding: 0,
                       view: CalendarView.week,

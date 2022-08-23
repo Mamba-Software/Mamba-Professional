@@ -49,7 +49,7 @@ int currentIndex = 0;
 PageController pageController = PageController(initialPage: currentIndex);
 
 // Key Scaffold Mamba Pro
-final GlobalKey<ScaffoldState> mambaProScaffoldKey = new GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 
 // Dynamic Links Path
 var dynamicLinkBrandId;

@@ -177,7 +177,7 @@ class _BrandScreenState extends State<BrandScreen> {
     if (_pageIndex == 0) {
       return ListTile(
           leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.1,
+            size: MediaQuery.of(context).size.width*0.07,
             image: currentBrand.logoUrl,
           ),
           title: Text(
@@ -194,7 +194,7 @@ class _BrandScreenState extends State<BrandScreen> {
       );
     } else {
       return ListTile(
-          leading: _mambaProUtils.iconSelector(context, _pageIndex),
+          leading: _mambaProUtils.iconSelectorListView(context, _pageIndex),
           title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
           trailing: isFavourite ? SizedBox(
             width: safeAreaWidth*0.15,
@@ -715,10 +715,10 @@ class _BrandScreenState extends State<BrandScreen> {
             // Brand Options
             // TODO: Passer Rol en aquesta funció
             buildBrandListOptions(),
-            SizedBox(height: safeAreaHeight * 0.02),
+            SizedBox(height: safeAreaHeight * 0.015),
             Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
             // Leave/Delete Brand
-            SizedBox(height: safeAreaHeight * 0.02),
+            SizedBox(height: safeAreaHeight * 0.015),
             buildBrandLeaveOption(),
             SizedBox(height: safeAreaHeight * 0.05),
           ],

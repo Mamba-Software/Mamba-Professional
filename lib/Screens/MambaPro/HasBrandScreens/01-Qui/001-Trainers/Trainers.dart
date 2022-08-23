@@ -59,6 +59,12 @@ class _Trainers extends State<Trainers> {
       Usuario user = brandUsers[i];
       allTrainers.add(user);
     }
+    /*
+    for (var i=0; i< 10; i++) {
+      Usuario user = brandUsers[0];
+      allTrainers.add(user);
+    }
+    */
     // Sort Trainers
     allTrainers.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());

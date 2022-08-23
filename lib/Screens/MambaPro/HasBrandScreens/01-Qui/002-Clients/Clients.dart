@@ -62,6 +62,12 @@ class _Clients extends State<Clients> {
       Usuario user = brandUsers[i];
       allClients.add(user);
     }
+    /*
+    for (var i=0; i< 10; i++) {
+      Usuario user = brandUsers[0];
+      allClients.add(user);
+    }
+    */
     // Sort Clients
     allClients.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
@@ -130,15 +136,16 @@ class _Clients extends State<Clients> {
             elevation: 4,
             floating: true,
             pinned: true,
+            //snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                height: MediaQuery.of(context).size.height*0.25,
+                height: MediaQuery.of(context).size.height*0.2-kToolbarHeight,
                 color: Theme.of(context).backgroundColor,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.01),
+                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.025),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                       child: Text(
