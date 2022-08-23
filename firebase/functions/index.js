@@ -4187,8 +4187,6 @@ exports.zzzzChangeMessageStatus = functions
         const bonoRequestId = context.params.bonoRequestId;
        // snap.data();
 
-
-
          // Get Data of the Request
             const requestDoc = snap.data();
 
