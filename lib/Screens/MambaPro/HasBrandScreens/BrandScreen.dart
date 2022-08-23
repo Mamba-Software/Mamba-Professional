@@ -14,12 +14,21 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/Content.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -47,8 +56,6 @@ class _BrandScreenState extends State<BrandScreen> {
   final _brandDataService = BrandDataService();
   final _mambaProUtils = MambaProUtils();
 
-  final CalendarController _controller = CalendarController();
-
   //Icon to know if it's on favourites
   bool iconStar = false;
   bool isFirstBuild = true;
@@ -68,8 +75,7 @@ class _BrandScreenState extends State<BrandScreen> {
   var iconWhere = Icons.keyboard_arrow_down;
 
   //Index to know which page to load
-  int pageIndex = 1;
-
+  int pageIndex = 0;
   //favourite tabs of user
   List<int> favourites = [];
 
@@ -90,7 +96,9 @@ class _BrandScreenState extends State<BrandScreen> {
   // Function to get the favourites of the user
   void getFavourites() async {
     favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
-    if (favourites.contains(pageIndex)) iconStar = true;
+    if (favourites.contains(pageIndex)) {
+      iconStar = true;
+    }
     if (isLoading) {
       setState(() {
         isLoading = false;
@@ -146,6 +154,21 @@ class _BrandScreenState extends State<BrandScreen> {
         )
     ).whenComplete(() {
       getFavourites();
+    });
+  }
+
+  // Function to Handle Favourites when User clicks on them
+  void handleChangedFavourites() {
+    setState(() {
+      iconStar = !iconStar;
+      if (iconStar == true) {
+        favourites.add(pageIndex);
+      }
+      else {
+        favourites.remove(pageIndex);
+      }
+      favourites.sort();
+      _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
     });
   }
 
@@ -533,6 +556,67 @@ class _BrandScreenState extends State<BrandScreen> {
     );
   }
 
+  Widget buildBodyNavigation() {
+    switch (pageIndex) {
+      case 0:
+        return HomePro(
+            brandId: currentBrand.id!,
+            numTrainers: currentBrand.numTrainers!,
+            numClients: currentBrand.numClients!
+        );
+      case 2:
+        return Clients(
+          brandId: currentBrand.id!,
+          numClients: currentBrand.numClients!
+        );
+      case 1:
+        return Trainers(
+            brandId: currentBrand.id!,
+            numTrainers: currentBrand.numTrainers!
+        );
+      case 15:
+        return MembershipRequestsPro(
+            brandId: currentBrand.id!,
+        );
+      case 8:
+        return BrandInfo(
+          locale: Localizations.localeOf(context),
+          pageIndex: pageIndex,
+          brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
+        );
+      case 5:
+        return BonosPro(
+          brandId: currentBrand.id!,
+        );
+      case 10:
+        return BrandCalendarWidget(
+          brandId: currentBrand.id!,
+        );
+      case 14:
+        return BrandEventHistoryPage(
+          brandId: currentBrand.id!,
+        );
+      case 7:
+        return Content(
+          brandId: currentBrand.id!,
+        );
+      case 13:
+        return Content(
+          brandId: currentBrand.id!,
+        );
+      case 11:
+        return Locations(
+          brandId: currentBrand.id!,
+        );
+      default:
+        return HomePro(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, numClients: currentBrand.numClients!);
+    }
+  }
+
   @override
   void dispose() {
     didReceiveLocalNotificationSubject.close();
@@ -569,101 +653,8 @@ class _BrandScreenState extends State<BrandScreen> {
           ],
         ),
       ),
-      body: isLoading ? LoadingView() : BrandInfo(
-          locale: Localizations.localeOf(context),
-          pageIndex: pageIndex,
-          brandId: currentBrand.id!
-      ),
-       /*
-      appBar: AppBar(
-        title: _mambaProUtils.titlePageSelector(context, pageIndex),
-        centerTitle: true,
-        actions: [
-          pageIndex == 10 ? IconButton(
-            onPressed: () {
-              if (_controller.view == CalendarView.month) {
-                setState(() {
-                  _controller.view = CalendarView.week;
-                });
-              } else {
-                setState(() {
-                  _controller.view = CalendarView.month;
-                  pageIndex = 10;
-                });
-              }
-            },
-            icon: _controller.view == CalendarView.month ? SizedBox(
-              width: safeAreaWidth*0.15,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.calendar_view_week,
-                    color: Theme.of(context).primaryColor,
-                    size: safeAreaWidth*0.05,
-                  ),
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                        AppLocalizations.of(context)!.weekString,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center
-                    ),
-                  ),
-                ],
-              ),
-            ) : SizedBox(
-              width: safeAreaWidth*0.15,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.calendar_view_month,
-                    color: Theme.of(context).primaryColor,
-                    size: safeAreaWidth*0.05,
-                  ),
-                  FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                        AppLocalizations.of(context)!.monthString,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ) : Container(),
-          Padding(
-            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-            child: IconButton(
-              icon: pageIndex == 0 ? Container() :
-              Icon(
-                iconStar ? Icons.push_pin : Icons.push_pin_outlined,
-                color: iconStar ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
-                size: MediaQuery.of(context).size.width*0.06,
-              ),
-              onPressed: () {
-                setState(() {
-                  iconStar = !iconStar;
-                  if (iconStar == true) {
-                    favourites.add(pageIndex);
-                  }
-                  else {
-                    favourites.remove(pageIndex);
-                  }
-                  favourites.sort();
-                  _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
-                }
-                );
-              },
-            ),
-          )
-        ],
-      ),
-      body: isLoading ? LoadingView() :
-      _mambaProUtils.pageSelector(context,pageIndex, currentBrand.id!, currentBrand.numTrainers!, currentBrand.numClients!, _controller,safeAreaWidth, safeAreaHeight),
-      */
+      body: isLoading ? LoadingView() : buildBodyNavigation() ,
+
     );
   }
 }
