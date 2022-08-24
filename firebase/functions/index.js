@@ -4290,6 +4290,11 @@ exports.zzzzChangeMessageStatus = functions
        const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
        const bonoDoc = bonoSnapshot.data();
 
+       //Get data of the bono user
+
+              const bonoSnapshotUser = await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).get();
+              const bonoDocUser = bonoSnapshotUser.data();
+
        //Add events to purchases
 
         await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
@@ -4338,24 +4343,24 @@ exports.zzzzChangeMessageStatus = functions
 
 functions.logger.log(
                                       "Bono Session",
-                                      bonoDoc.sessions
+                                      bonoDocUser.sessions
                                     );
 
                  await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).update({
-                                   "sessions": bonoDoc.sessions - 1,
+                                   "sessions": bonoDocUser.sessions - 1,
                                 });
 
                                 functions.logger.log(
                                                                       "Bono Session",
-                                                                      bonoDoc.sessions
+                                                                      bonoDocUser.sessions
                                                                     );
 
                  await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
-                                                    "sessions": bonoDoc.sessions - 1,
+                                                    "sessions": bonoDocUser.sessions - 1,
                                                  });
 
             await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).update({
-                                                                "sessions": bonoDoc.sessions - 1,
+                                                                "sessions": bonoDocUser.sessions - 1,
                                                              });
 
          return null;
