@@ -4214,6 +4214,8 @@ exports.zzzzChangeMessageStatus = functions
        const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
        const bonoDoc = bonoSnapshot.data();
 
+
+
        //Add purchases
 
         await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
@@ -4262,7 +4264,7 @@ exports.zzzzChangeMessageStatus = functions
          return null;
        });
 
-// User Purchases Bono
+// User Purchases Event
    exports.usersPurchasesEvent = functions
        .region("europe-west1")
        .firestore
@@ -4334,9 +4336,19 @@ exports.zzzzChangeMessageStatus = functions
               "maxMembers": eventDoc.maxMembers,
 });
 
+functions.logger.log(
+                                      "Bono Session",
+                                      bonoDoc.sessions
+                                    );
+
                  await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).update({
                                    "sessions": bonoDoc.sessions - 1,
                                 });
+
+                                functions.logger.log(
+                                                                      "Bono Session",
+                                                                      bonoDoc.sessions
+                                                                    );
 
                  await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
                                                     "sessions": bonoDoc.sessions - 1,

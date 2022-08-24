@@ -6,8 +6,8 @@ import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class RequestBonoConfirmationDialog extends StatefulWidget {
   final String text;
@@ -74,7 +74,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
           child: Stack(
             alignment: Alignment.center,
             children: [
-              LoadingViewPurple(),
+              LoadingView(),
             ],
           ),
         ),

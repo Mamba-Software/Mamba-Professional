@@ -839,10 +839,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                                   child: Row(
                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
-                                                                      Text(
-                                                                        bono.title!,
-                                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                                        textAlign: TextAlign.center,
+                                                                      Flexible(
+                                                                        child: Text(
+                                                                          bono.title!,
+                                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                                          textAlign: TextAlign.center,
+                                                                        ),
                                                                       ),
                                                                     ],
                                                                   ),
