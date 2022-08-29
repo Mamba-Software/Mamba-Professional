@@ -2,9 +2,12 @@ import 'dart:io';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/InformationDialogs/ErrorDialog.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 
 class QRScanner extends StatefulWidget {
@@ -135,8 +138,31 @@ class _QRScannerState extends State<QRScanner> {
     setState(() {
       isLoading = true;
     });
+    try {
+      await launchUrl(Uri.parse(result!.code!), mode: LaunchMode.externalApplication);
+      Navigator.pop(context);
+    } catch (e) {
+      await Future.delayed(Duration.zero, () {
+        return showDialog(
+            context: context,
+            builder: (_) {
+              return ErrorDialog(
+                text: AppLocalizations.of(context)!.brandNotFound,
+              );
+            }
+        );
+      }).whenComplete(() {
+        controller?.resumeCamera();
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
+
+    /*
     bool existsBrand = await _brandDataService.checkIfBrandExists(result!.code!);
     if (existsBrand) {
+      /*
       Future.delayed(Duration.zero, () {
         return showDialog(
             context: context,
@@ -152,6 +178,7 @@ class _QRScannerState extends State<QRScanner> {
           isLoading = false;
         });
       });
+      */
     } else {
       await Future.delayed(Duration.zero, () {
         return showDialog(
@@ -169,6 +196,7 @@ class _QRScannerState extends State<QRScanner> {
         });
       });
     }
+     */
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -18,8 +19,21 @@ class ShareBrandLink extends StatefulWidget {
 class _ShareBrandLinkState extends State<ShareBrandLink> {
 
   //  Booleans
-  bool isLoading = false;
   final _dynamicLinkUtils = DynamicLinkUtils();
+  String brandUrl = "";
+
+  @override
+  void initState() {
+    super.initState();
+    getBrandLink();
+  }
+
+  Future<void> getBrandLink() async {
+    Uri brandUri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
+    setState(() {
+      brandUrl = brandUri.toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,14 +98,15 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
               border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
             ),
             child: QrImage(
-              data: currentBrand.id!,
+              data: brandUrl,
               version: QrVersions.auto,
               size: MediaQuery.of(context).size.width*0.5,
               gapless: false,
               /*
-              embeddedImage: const AssetImage('assets/images/chatImage.png'),
+              embeddedImage: CachedNetworkImageProvider(currentBrand.logoUrl!),
               embeddedImageStyle: QrEmbeddedImageStyle(
                 size: const Size(80, 80),
+                color: Theme.of(context).primaryColor.withOpacity(0.25)
               ),
                */
             )

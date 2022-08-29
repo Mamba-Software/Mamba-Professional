@@ -18,12 +18,12 @@ class DynamicLinkUtils {
       //link: Uri.parse('https://mambastyleapp.page.link/Share'),
       // Android application details needed for opening correct app on device/Play Store
       androidParameters: const AndroidParameters(
-        packageName: "com.mamba.mambastyleapp",
+        packageName: "com.mamba.mambaprofessionalapp",
         minimumVersion: 1,
       ),
       // iOS application details needed for opening correct app on device/App Store
       iosParameters: const IOSParameters(
-        bundleId: "com.mamba.mambastyleapp",
+        bundleId: "com.mamba.mambaprofessionalapp",
         appStoreId: "1601684650",
         minimumVersion: '1',
       ),
