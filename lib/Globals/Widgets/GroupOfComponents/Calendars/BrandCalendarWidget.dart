@@ -293,7 +293,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         Icon(
                           event.isPrivate! ? Icons.lock_outlined : Icons.groups,
                           color: AppColors.white,
-                          size: details.bounds.width*0.05,
+                          size: safeAreaHeight*0.02,
                         ),
                         SizedBox(width: details.bounds.width*0.02,),
                         Text(
@@ -356,7 +356,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         Icon(
                           event.isPrivate! ? Icons.lock_outlined : Icons.groups,
                           color: AppColors.white,
-                          size: details.bounds.width*0.05,
+                          size: safeAreaHeight*0.02,
                         ),
                         SizedBox(width: details.bounds.width*0.02,),
                         Text(

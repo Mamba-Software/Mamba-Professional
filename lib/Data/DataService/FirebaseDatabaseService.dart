@@ -928,6 +928,33 @@ class FirebaseDatabaseService {
       }
     }
 
+    Future<double?> getEventAverageUserFeedback(String eventId) async {
+      try {
+        double cnt = 0;
+        double average = 0;
+        QuerySnapshot querySnapshot = await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Users")
+            .get();
+        for (int i = 0; i < querySnapshot.docs.length; i++) {
+          DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+          if ((_documentSnapshot.data() as Map<String,dynamic>).containsKey('intensityScore')) {
+            double feedbackScore = querySnapshot.docs[i].get("intensityScore");
+            cnt += 1;
+            average += feedbackScore;
+          }
+        }
+        if (cnt>0) {
+          return average/cnt;
+        } else {
+          return null;
+        }
+      } catch (e) {
+        return null;
+      }
+    }
+
     Future<List<Event>> getUserEventsToday(String userId) async {
       DateTime today = DateTime.now();
       List<Event> events = [];
