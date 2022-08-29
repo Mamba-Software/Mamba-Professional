@@ -1826,7 +1826,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     for (int i = 0; i < eventTrainersAdded.length; i++) {
       var user = eventTrainersAdded[i];
       // Add Trainer to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!);
+      if (user.id != currentUser.id!) {
+        await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+      } else {
+        await _eventDataService.addUserToEvent(event.id!, user.id!);
+      }
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Trainer Added "+user.id.toString());
@@ -1866,8 +1870,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Clients Added Not Matched means that they have added to the Event
     for (int i = 0; i < eventClientsAdded.length; i++) {
       var user = eventClientsAdded[i];
-      // Add Trainer to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!);
+      // Add Client to Event
+      await _eventDataService.addUserToEvent(event.id!, user.id!, true);
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Client Added "+user.id.toString());
@@ -2015,7 +2019,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       for (int i = 0; i < eventTrainersAdded.length; i++) {
         var user = eventTrainersAdded[i];
         // Add Trainer to Event
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        if (user.id != currentUser.id!) {
+          await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+        } else {
+          await _eventDataService.addUserToEvent(event.id!, user.id!);
+        }
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Trainer Added "+user.id.toString());
@@ -2055,8 +2063,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       // Clients Added Not Matched means that they have added to the Event
       for (int i = 0; i < eventClientsAdded.length; i++) {
         var user = eventClientsAdded[i];
-        // Add Trainer to Event
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        // Add Client to Event
+        await _eventDataService.addUserToEvent(eventId, user.id!, true);
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Client Added "+user.id.toString());
@@ -2081,7 +2089,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       if (user.isTrainer!) {
         print("Notifications Trainer "+user.name!);
         // Firebase Call
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        if (user.id != currentUser.id!) {
+          await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        } else {
+          await _eventDataService.addUserToEvent(eventId, user.id!);
+        }
         // Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       } else {

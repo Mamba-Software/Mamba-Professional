@@ -41,8 +41,8 @@ class AddOrEditEvent extends StatefulWidget {
 
 class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
-  var _eventDataService = new EventDataService();
-  var _locationDataService = new LocationDataService();
+  var _eventDataService = EventDataService();
+  var _locationDataService = LocationDataService();
   // Notification Services
   NotificationService _notificationService = NotificationService();
   LocalNotificationService _localNotificationService = LocalNotificationService();
@@ -319,7 +319,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                 Container(
                   height: MediaQuery.of(context).size.width*0.17,
                   width: MediaQuery.of(context).size.width*0.17,
-                  decoration: new BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Theme.of(context).backgroundColor,
                     border: Border.all(
                       width: 1,
@@ -390,7 +390,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                 Container(
                   height: MediaQuery.of(context).size.width*0.17,
                   width: MediaQuery.of(context).size.width*0.17,
-                  decoration: new BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Theme.of(context).backgroundColor,
                     border: Border.all(
                       width: 1,
@@ -599,14 +599,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                     children: [
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Column(
+                                              Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  new Text(
+                                                  Text(
                                                     AppLocalizations.of(context)!.title,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
@@ -617,11 +617,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                       ),
                                       Padding(
                                           padding: EdgeInsets.only(top: 0),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Flexible(
-                                                child: new TextFormField(
+                                              Flexible(
+                                                child: TextFormField(
                                                   controller: titleController,
                                                   validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
                                                   onChanged: (val) {
@@ -647,14 +647,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                       ),
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Column(
+                                              Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  new Text(
+                                                  Text(
                                                     AppLocalizations.of(context)!.description,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
@@ -665,11 +665,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                       ),
                                       Padding(
                                           padding: EdgeInsets.only(top: 0.0),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Flexible(
-                                                child: new TextFormField(
+                                              Flexible(
+                                                child: TextFormField(
                                                   keyboardType: TextInputType.visiblePassword,
                                                   controller: descriptionController,
                                                   minLines: 1,
@@ -696,14 +696,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                       ),
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Column(
+                                              Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  new Text(
+                                                  Text(
                                                     AppLocalizations.of(context)!.location,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
@@ -792,7 +792,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                             child: Row(
                                                               mainAxisSize: MainAxisSize.max,
                                                               children: <Widget>[
-                                                                new Flexible(
+                                                                Flexible(
                                                                   child: TextFormField(
                                                                     controller: startDateController,
                                                                     readOnly: true,
@@ -827,7 +827,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                             child: Row(
                                                               mainAxisSize: MainAxisSize.max,
                                                               children: <Widget>[
-                                                                new Flexible(
+                                                                Flexible(
                                                                   child: TextFormField(
                                                                     controller: startTimeController,
                                                                     readOnly: true,
@@ -868,7 +868,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                           mainAxisSize: MainAxisSize.max,
                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                           children: <Widget>[
-                                                            new Flexible(
+                                                            Flexible(
                                                               child: TextFormField(
                                                                 controller: durationController,
                                                                 readOnly: true,
@@ -908,7 +908,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                         children: [
                                           Padding(
                                               padding: EdgeInsets.only(top: 15,),
-                                              child: new Row(
+                                              child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Text(
@@ -938,7 +938,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             children: [
                                               Padding(
                                                   padding: EdgeInsets.only(top: 0),
-                                                  child: new Column(
+                                                  child: Column(
                                                     mainAxisSize: MainAxisSize.max,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -980,7 +980,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               ),
                                               Padding(
                                                   padding: EdgeInsets.only(top: 10),
-                                                  child: new Column(
+                                                  child: Column(
                                                     mainAxisSize: MainAxisSize.max,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -1078,7 +1078,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                       ) : Container(),
                                       event.eventGroupId != null ? Padding(
                                           padding: EdgeInsets.only(top: 15,),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               Text(
@@ -1115,14 +1115,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                     children: [
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Column(
+                                              Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  new Text(
+                                                  Text(
                                                     AppLocalizations.of(context)!.designatedTrainers,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
@@ -1236,14 +1236,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Column(
+                                              Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  new Text(
+                                                  Text(
                                                     AppLocalizations.of(context)!.maxNumberClients,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
@@ -1270,7 +1270,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                   mainAxisSize: MainAxisSize.min,
                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                   children: <Widget>[
-                                                    new Flexible(
+                                                    Flexible(
                                                       child: TextFormField(
                                                         controller: membersController,
                                                         readOnly: true,
@@ -1301,14 +1301,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Column(
+                                              Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  new Text(
+                                                  Text(
                                                     AppLocalizations.of(context)!.addDesignatedClients,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
@@ -1651,7 +1651,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Event Start Date
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Event Members
-    List<Usuario> eventMembers = new List.from(brandTrainersSelected);
+    List<Usuario> eventMembers = List.from(brandTrainersSelected);
     eventMembers.addAll(brandClientsSelected);
     if (!isRecurrent) {
       // Creating Event Object
@@ -1822,7 +1822,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!);
     // Event Members
-    List<Usuario> eventMembers = new List.from(brandTrainersSelected);
+    List<Usuario> eventMembers = List.from(brandTrainersSelected);
     eventMembers.addAll(brandClientsSelected);
     // Delete Event Local Notifications
     for (var i=0; i<eventMembers.length; i++) {
@@ -1873,10 +1873,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       maxMembers: eventMaxMembers,
     );
     // Event Members
-    List<Usuario> eventTrainers = new List.from(brandTrainersSelected);
-    List<Usuario> eventTrainersAdded = new List.from(eventTrainers);
-    List<Usuario> eventClients = new List.from(brandClientsSelected);
-    List<Usuario> eventClientsAdded = new List.from(eventClients);
+    List<Usuario> eventTrainers = List.from(brandTrainersSelected);
+    List<Usuario> eventTrainersAdded = List.from(eventTrainers);
+    List<Usuario> eventClients = List.from(brandClientsSelected);
+    List<Usuario> eventClientsAdded = List.from(eventClients);
     // Update Event
     await _eventDataService.updateEvent(event);
     // Update Event Location
@@ -1913,12 +1913,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
       print("Trainer Removed "+user.id.toString());
     }
-    // Handle Trainers Added
+    /// Handle Trainers Added
     // Trainers Added Not Matched means that they have added to the Event
     for (int i = 0; i < eventTrainersAdded.length; i++) {
       var user = eventTrainersAdded[i];
       // Add Trainer to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!);
+      if (user.id != currentUser.id!) {
+        await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+      } else {
+        await _eventDataService.addUserToEvent(event.id!, user.id!);
+      }
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Trainer Added "+user.id.toString());
@@ -1958,8 +1962,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Clients Added Not Matched means that they have added to the Event
     for (int i = 0; i < eventClientsAdded.length; i++) {
       var user = eventClientsAdded[i];
-      // Add Trainer to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!);
+      // Add Clients to Event
+      await _eventDataService.addUserToEvent(event.id!, user.id!, true);
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Client Added "+user.id.toString());
@@ -2066,10 +2070,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         await _eventDataService.updateEventLocation(eventId, event.locationId!, originalEvent.locationId!);
       }
       // Event Members
-      List<Usuario> eventTrainers = new List.from(brandTrainersSelected);
-      List<Usuario> eventTrainersAdded = new List.from(eventTrainers);
-      List<Usuario> eventClients = new List.from(brandClientsSelected);
-      List<Usuario> eventClientsAdded = new List.from(eventClients);
+      List<Usuario> eventTrainers = List.from(brandTrainersSelected);
+      List<Usuario> eventTrainersAdded = List.from(eventTrainers);
+      List<Usuario> eventClients = List.from(brandClientsSelected);
+      List<Usuario> eventClientsAdded = List.from(eventClients);
       // Compare Current Members vs Original Members
       /// Start With Trainers
       for (int i = 0; i < eventTrainers.length; i++) {
@@ -2105,7 +2109,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       for (int i = 0; i < eventTrainersAdded.length; i++) {
         var user = eventTrainersAdded[i];
         // Add Trainer to Event
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        if (user.id != currentUser.id!) {
+          await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+        } else {
+          await _eventDataService.addUserToEvent(event.id!, user.id!);
+        }
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Trainer Added "+user.id.toString());
@@ -2145,8 +2153,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       // Clients Added Not Matched means that they have added to the Event
       for (int i = 0; i < eventClientsAdded.length; i++) {
         var user = eventClientsAdded[i];
-        // Add Trainer to Event
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        // Add Clients to Event
+        await _eventDataService.addUserToEvent(eventId, user.id!, true);
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Client Added "+user.id.toString());
@@ -2171,7 +2179,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       if (user.isTrainer!) {
         print("Notifications Trainer "+user.name!);
         // Firebase Call
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        if (user.id != currentUser.id!) {
+          await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        } else {
+          await _eventDataService.addUserToEvent(eventId, user.id!);
+        }
         // Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       } else {
