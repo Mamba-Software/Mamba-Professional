@@ -1123,6 +1123,10 @@
   "@todayString": {
     "description": "Wellcome message"
   },
+  "dayString": "Día",
+  "@dayString": {
+    "description": "Wellcome message"
+  },
   "weekString": "Semanal",
   "@weekString": {
     "description": "Wellcome message"

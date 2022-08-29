@@ -259,6 +259,7 @@
   "doing": "Realitzant",
   "finished": "Realitzat",
   "todayString": "Avui",
+  "dayString": "Dia",
   "weekString": "Semanal",
   "monthString": "Mensual",
   "today": "Avui {date}",
