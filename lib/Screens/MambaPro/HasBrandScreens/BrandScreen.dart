@@ -494,7 +494,7 @@ class _BrandScreenState extends State<BrandScreen> {
         //seeNextHow ? listTilePro(9) : Container(),
         seeNextHow ? listTilePro(7) : Container(),
         //seeNextHow ? listTilePro(6) : Container(),
-        seeNextHow ? listTilePro(13) : Container(),
+        //seeNextHow ? listTilePro(13) : Container(),
         //seeNextHow ? listTilePro(16) : Container(),
 
 
