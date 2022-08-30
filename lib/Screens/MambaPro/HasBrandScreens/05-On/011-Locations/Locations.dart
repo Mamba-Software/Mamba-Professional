@@ -82,7 +82,7 @@ class _LocationsState extends State<Locations> {
         onTap: () {
           setState(() {
             selectedLocation = i;
-            carouselController.animateToPage(selectedLocation);
+            carouselController.jumpToPage(selectedLocation);
           });
         },
       );

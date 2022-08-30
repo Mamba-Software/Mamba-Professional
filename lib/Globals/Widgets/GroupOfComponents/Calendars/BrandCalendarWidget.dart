@@ -126,6 +126,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
+    _controller.selectedDate = DateTime.now();
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         isLoading = false;
@@ -806,12 +807,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                     onPressed: () {
                                       setState(() {
                                         _controller.displayDate = DateTime.now();
+                                        _controller.selectedDate = DateTime.now();
                                       });
-                                      if (_controller.view == CalendarView.month) {
-                                        setState(() {
-                                          _controller.selectedDate = DateTime.now();
-                                        });
-                                      }
                                     },
                                     child: Text(
                                         AppLocalizations.of(context)!.todayString,

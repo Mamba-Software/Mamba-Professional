@@ -311,6 +311,10 @@
   "@feedback":{
     "description": "Feedback Text"
   },
+  "management": "Gestión",
+  "@management":{
+    "description": "management Text"
+  },
   "noFeedback": "No hay nuevas preguntas a contestar.\n\n¡Gracias por querer ayudarnos!",
   "@noFeedback":{
     "description": "Feedback Text"
