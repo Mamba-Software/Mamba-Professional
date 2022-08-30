@@ -2233,9 +2233,20 @@ class FirebaseDatabaseService {
       List<Location> locations = [];
       QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandId).collection("Locations").get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        locations.add(Location.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+        locations.add(Location.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
       }
       return locations;
+    }
+
+    // Get All Brand Locations
+    Future<double> getLocationPercentatgeEvents(String brandId, String locationId) async {
+      // Get the total number of events in Brand
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandId).collection("Events").get();
+      int totalBrandEvents = querySnapshot.docs.length;
+      // Get Events of Location
+      QuerySnapshot querySnapshot2 = await _firestore.collection(locations).doc(locationId).collection("Events").get();
+      int totalLocationEvents = querySnapshot2.docs.length;
+      return (totalLocationEvents/totalBrandEvents)*100;
     }
 
     //Bonos

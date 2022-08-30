@@ -1437,6 +1437,15 @@
   "@recentEvents": {
     "description": "Wellcome message"
   },
+  "percentageEvents": "{percentage}% de los eventos",
+  "@percentageEvents": {
+    "description": "percentageEvents message",
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
+  },
   "sendRequestConfirmation": "¿Estás seguro de que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
   "@sendRequestConfirmation": {
     "description": "Wellcome message"

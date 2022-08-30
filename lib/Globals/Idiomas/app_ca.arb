@@ -328,6 +328,7 @@
   "monthEvents": "sessions aquest mes",
   "eventHistory": "Historial d'esdeveniments",
   "recentEvents": "Últimes sessions ...",
+  "percentageEvents": "{percentage}% dels esdeveniments",
   "feedbackSent": "Gràcies per donar-nos la teva opinió!\nNecessitem a més gent com tu",
   "feedbackNotSent": "Alguna cosa ha anat malament\n No s'han enviat les respostes",
   "feedbackAnswered": "Actualment no hi ha cap Feedback que puguis respondre",

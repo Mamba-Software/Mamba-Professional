@@ -433,6 +433,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         ),
                       ),
                     ),
+
                     widget.showFeedback ? GestureDetector(
                       onTap: canAnswerFeedback ? navigateToFeedbackEventScreen : null,
                       child: SizedBox(
