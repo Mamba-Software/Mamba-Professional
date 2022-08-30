@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
@@ -46,7 +47,10 @@ class _LocationsState extends State<Locations> {
   // Locations From Brand
   List<Location> locationList = [];
   Location baseLocation = Location();
-  Location selectedLocation = Location();
+  // Location Containers
+  final CarouselController carouselController = CarouselController();
+  var locationContainers;
+  int selectedLocation = 0;
 
   // Map Variables
   Set<Marker> markers = <Marker>{};
@@ -54,23 +58,6 @@ class _LocationsState extends State<Locations> {
   CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
   GoogleMapController? mapController;
   final Completer<GoogleMapController> _controller = Completer();
-
-  Future<void> getAllLocations() async {
-    locationList = await _locationDataService.getAllBrandLocations(widget.brandId);
-    for(int i = 0; i < locationList.length; i++) {
-      Location location = locationList[i];
-      if (location.isBaseLocation!) {
-        baseLocation = location;
-        selectedLocation = location;
-        break;
-      }
-    }
-    initCameraPosition();
-    createMarkers();
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   void initCameraPosition() {
     setState(() {
@@ -85,6 +72,7 @@ class _LocationsState extends State<Locations> {
 
   void createMarkers() async {
     // Set all Markers
+    markers = <Marker>{};
     for(int i = 0; i < locationList.length; i++) {
       Location location = locationList[i];
       Marker marker = Marker(
@@ -93,10 +81,12 @@ class _LocationsState extends State<Locations> {
         icon: customIcon!,
         onTap: () {
           setState(() {
-            selectedLocation = locationList[i];
+            selectedLocation = i;
+            carouselController.animateToPage(selectedLocation);
           });
         },
       );
+      // Add to Containers List
       setState(() {
         markers.add(marker);
       });
@@ -110,6 +100,42 @@ class _LocationsState extends State<Locations> {
         mapController = controller;
       });
     }
+  }
+
+  Future<void> getAllLocations() async {
+    locationList = await _locationDataService.getAllBrandLocations(widget.brandId);
+    for(int i = 0; i < locationList.length; i++) {
+      Location location = locationList[i];
+      if (location.isBaseLocation!) {
+        baseLocation = location;
+        selectedLocation = i;
+        break;
+      }
+    }
+    // Create List of Containers
+    locationContainers = [];
+    locationContainers = locationList.map((i)
+      => LocationImageTile(
+        height: MediaQuery.of(context).size.height*0.2,
+        width: MediaQuery.of(context).size.width*0.9,
+        locationId: i.id!,
+        brandId: currentBrand.id!,
+        locationChanged: (boolean) {
+          if (boolean!) {
+            setState(() {
+              isLoading = true;
+            });
+            getAllLocations();
+          }
+        },
+      )).toList();
+    initCameraPosition();
+    createMarkers();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   @override
@@ -213,6 +239,11 @@ class _LocationsState extends State<Locations> {
                                     }
                                     // Save location to DataBase
                                     await _locationDataService.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+                                    // Reload the Map
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    getAllLocations();
                                   }
                                 },
                                 child: Column(
@@ -320,13 +351,91 @@ class _LocationsState extends State<Locations> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05),
-                  child: LocationImageTile(
+                  child: SizedBox(
                     height: MediaQuery.of(context).size.height*0.2,
                     width: MediaQuery.of(context).size.width*0.9,
-                    locationId: selectedLocation.id!,
-                    brandId: currentBrand.id!,
+                    child: GestureDetector(
+                      child: CarouselSlider(
+                        items: locationContainers,
+                        carouselController: carouselController,
+                        options: CarouselOptions(
+                            autoPlay: false,
+                            enableInfiniteScroll: false,
+                            initialPage: selectedLocation,
+                            viewportFraction: 1,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                selectedLocation = index;
+                              });
+                              Location location = locationList[selectedLocation];
+                              mapController!.animateCamera(CameraUpdate.newCameraPosition(
+                                  CameraPosition(
+                                    target:  LatLng(location.latitude!,location.longitude!),
+                                    zoom: 15,
+                                  )
+                              ));
+                            }
+                        ),
+                      ),
+                    ),
+                  )
+                    /*
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height*0.2,
+                        width: MediaQuery.of(context).size.width*0.9,
+                        child: CarouselSlider(
+                          items: locationContainers,
+                          carouselController: carouselController,
+                          options: CarouselOptions(
+                              autoPlay: false,
+                              enableInfiniteScroll: false,
+                              initialPage: selectedLocation,
+                              viewportFraction: 1,
+                              onPageChanged: (index, reason) {
+                                setState(() {
+                                  selectedLocation = index;
+                                });
+                              }
+                          ),
+                        ),
+                      ),
+                      /*
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height*0.05,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: locationContainers.asMap().entries.map((entry) {
+                            return GestureDetector(
+                              onTap: () {
+                                //mapController.
+                                carouselController.animateToPage(entry.key);
+                              },
+                              child: Container(
+                                width: 8.0,
+                                height: 8.0,
+                                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(selectedLocation == entry.key ? 0.9 : 0.4)
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                       */
+                    ],
                   ),
+                     */
                 ),
+                /*
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05),
+                  child: locationContainers[selectedLocation],
+                ),
+                 */
               ],
             ),
           )

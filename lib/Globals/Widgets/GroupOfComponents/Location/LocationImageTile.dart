@@ -1,21 +1,28 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/AddressSearch.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:uuid/uuid.dart';
+
+import '../LocationAutoComplete/LocationPlacesSearch.dart';
 
 class LocationImageTile extends StatefulWidget {
   String locationId;
   String brandId;
+  ValueChanged<bool?> locationChanged;
   var height;
   var width;
 
-  LocationImageTile({Key? key, required this.brandId, required this.locationId, required this.height, required this.width}) : super(key: key);
+  LocationImageTile({Key? key, required this.brandId, required this.locationId, required this.locationChanged, required this.height, required this.width}) : super(key: key);
 
   @override
   _LocationImageTileState createState() => _LocationImageTileState();
@@ -26,13 +33,12 @@ class _LocationImageTileState extends State<LocationImageTile> {
   bool isLoading = true;
   // Acceso a Base de Datos
   final _locationDataService = LocationDataService();
+  // Google APIS
+  googlePlace.GooglePlace? gPlace;
+  googlePlace.DetailsResult? detailsResult;
   // Location
   Location location = Location();
   double locationPercentatgeEvents = 0;
-  Set<Marker> markers = <Marker>{};
-  CameraPosition? _initialPosition;
-  GoogleMapController? mapController;
-  final Completer<GoogleMapController> _controller = Completer();
   Map<String, double> dataMap = {
     "1": 1,
   };
@@ -47,7 +53,6 @@ class _LocationImageTileState extends State<LocationImageTile> {
   Future<void> initLocationTile() async {
     await getLocationDetails();
     if (mounted) {
-      await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
         isLoading = false;
       });
@@ -61,7 +66,6 @@ class _LocationImageTileState extends State<LocationImageTile> {
   Future<void> getLocationDetails() async {
     location = await _locationDataService.getSingleLocation(widget.locationId);
     locationPercentatgeEvents = await _locationDataService.getLocationPercentatgeEvents(widget.brandId, widget.locationId);
-    print(locationPercentatgeEvents);
     dataMap = {
       "1": locationPercentatgeEvents,
     };
@@ -76,9 +80,9 @@ class _LocationImageTileState extends State<LocationImageTile> {
         child: Container(
           height: widget.height,
           width: widget.width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: AppColors.grey,
-            borderRadius: BorderRadius.circular(5.0),
+            borderRadius: BorderRadius.all(Radius.circular(15.0))
           ),
         ),
       )
@@ -108,9 +112,9 @@ class _LocationImageTileState extends State<LocationImageTile> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                          location.description!,
-                          style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center
+                        location.description!,
+                        style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center
                       ),
                       location.isBaseLocation! ? Column(
                         children: [
@@ -136,24 +140,25 @@ class _LocationImageTileState extends State<LocationImageTile> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
+                            locationPercentatgeEvents>0 ? SizedBox(
                               height: widget.height*0.4,
                               child: PieChart(
-                              legendOptions: const LegendOptions(showLegends: false),
-                              dataMap: dataMap,
-                              chartType: ChartType.disc,
-                              baseChartColor: Theme.of(context).backgroundColor,
-                              colorList: const <Color>[
-                                AppColors.grey
-                              ],
-                              chartValuesOptions: const ChartValuesOptions(
-                                showChartValues: false,
-                                showChartValuesInPercentage: true,
-                                decimalPlaces: 0
+                                legendOptions: const LegendOptions(showLegends: false),
+                                dataMap: dataMap,
+                                chartType: ChartType.disc,
+                                //baseChartColor: AppColors.darkerGrey,
+                                colorList: const <Color>[
+                                  AppColors.grey
+                                ],
+                                emptyColor: AppColors.darkGrey,
+                                chartValuesOptions: const ChartValuesOptions(
+                                    showChartValues: false,
+                                    showChartValuesInPercentage: true,
+                                    decimalPlaces: 0
+                                ),
+                                totalValue: 100,
                               ),
-                              totalValue: 100,
-                            ),
-                            ),
+                            ) : Container(),
                             SizedBox(
                               width: widget.width*0.3,
                               child: Text(
@@ -170,48 +175,111 @@ class _LocationImageTileState extends State<LocationImageTile> {
                 ),
               ),
             ),
-            SizedBox(
-              height: widget.height,
-              width: widget.width*0.3,
-              child: IconButton(
-                onPressed: _onLaunchCoordinates,
-                icon: Icon(
-                  Icons.directions,
-                  size: widget.width*0.2,
-                  color: Colors.blue,
-                ),
-              )
-            ),
-            /*
-            Positioned(
-              left: 5.0,
-              bottom: 5.0,
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Theme.of(context).scaffoldBackgroundColor
-                ),
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.location_on,
-                      color: Theme.of(context).colorScheme.secondary,
-                      size: 15,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: widget.height*0.7,
+                  width: widget.width*0.3,
+                  child: IconButton(
+                    onPressed: _onLaunchCoordinates,
+                    icon: Icon(
+                      Icons.directions,
+                      size: widget.width*0.2,
+                      color: Colors.blue,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5.0),
-                      child: Text(
-                        location.description!,
-                        style: Theme.of(context).textTheme.bodyText2,
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-              ),
+                SizedBox(
+                  height: widget.height*0.25,
+                  width: widget.width*0.3,
+                  child: TextButton(
+                    onPressed: () async {
+                      if (location.isBaseLocation!) {
+                        // Generate a new token here
+                        final sessionToken = Uuid().v4();
+                        final language = currentUser.idioma;
+                        final Suggestion? result = await showSearch(
+                          context: context,
+                          delegate: AddressSearch(sessionToken, language!),
+                        );
+                        // We have a result for our locations search
+                        if (result != null) {
+                          Location loc = Location();
+                          loc.placeId = result.placeId;
+                          final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
+                          // Get the information on Strings
+                          if(placeDetails.street!=null) loc.street = placeDetails.street!; else loc.street="N/A";
+                          if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
+                          if(placeDetails.city!=null) loc.city = placeDetails.city!; else loc.city="N/A";
+                          if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
+                          //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                          // Build Correct Description
+                          loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
+                          // Get Latitude/Longitude
+                          var temp = await gPlace!.details.get(loc.placeId!);
+                          if (temp != null && temp.result != null && mounted) {
+                            detailsResult = temp.result;
+                            loc.latitude = detailsResult!.geometry!.location!.lat!;
+                            loc.longitude = detailsResult!.geometry!.location!.lng!;
+                          }
+                          // Save location to DataBase
+                          await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
+                        }
+                      } else {
+                        var result = await showDialog(
+                            context: context,
+                            builder: (_) {
+                              return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myLocationsDeleteDescription);
+                            }
+                        );
+                        if (result) {
+                          await _locationDataService.deleteLocation(location.id!, currentBrand.baseLocation!);
+                          widget.locationChanged(true);
+                        }
+                      }
+                    },
+                    child: location.isBaseLocation! ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.edit,
+                          color: Theme.of(context).primaryColor,
+                          size: MediaQuery.of(context).size.width*0.05,
+                        ),
+                        SizedBox(width: widget.width*0.01),
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                              AppLocalizations.of(context)!.edit,
+                              style: Theme.of(context).textTheme.bodyText2,
+                              textAlign: TextAlign.center
+                          ),
+                        ),
+                      ],
+                    ) : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.delete_outline,
+                          color: Theme.of(context).primaryColor,
+                          size: MediaQuery.of(context).size.width*0.05,
+                        ),
+                        SizedBox(width: widget.width*0.01),
+                        FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(
+                              AppLocalizations.of(context)!.delete,
+                              style: Theme.of(context).textTheme.bodyText2,
+                              textAlign: TextAlign.center
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-             */
           ],
         ),
     );
