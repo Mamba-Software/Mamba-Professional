@@ -102,11 +102,11 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
   }
 
   // Navigate to Notifications Screen
-  void navigateToSettingsScreen() {
+  void navigateToProfileScreen() {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => const Settings(),
+          builder: (context) => const Profile(),
         )
     );
   }
@@ -238,7 +238,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
   Widget buildUserPicture() {
     return !isLoading ? Center(
       child: GestureDetector(
-        onTap: navigateToSettingsScreen,
+        onTap: navigateToProfileScreen,
         child: SizedBox(
           height: safeAreaHeight * 0.1,
           child: Center(

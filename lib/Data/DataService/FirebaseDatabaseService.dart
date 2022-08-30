@@ -928,6 +928,33 @@ class FirebaseDatabaseService {
       }
     }
 
+    Future<double?> getEventAverageUserFeedback(String eventId) async {
+      try {
+        double cnt = 0;
+        double average = 0;
+        QuerySnapshot querySnapshot = await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Users")
+            .get();
+        for (int i = 0; i < querySnapshot.docs.length; i++) {
+          DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
+          if ((_documentSnapshot.data() as Map<String,dynamic>).containsKey('intensityScore')) {
+            double feedbackScore = querySnapshot.docs[i].get("intensityScore");
+            cnt += 1;
+            average += feedbackScore;
+          }
+        }
+        if (cnt>0) {
+          return average/cnt;
+        } else {
+          return null;
+        }
+      } catch (e) {
+        return null;
+      }
+    }
+
     Future<List<Event>> getUserEventsToday(String userId) async {
       DateTime today = DateTime.now();
       List<Event> events = [];
@@ -2206,9 +2233,20 @@ class FirebaseDatabaseService {
       List<Location> locations = [];
       QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandId).collection("Locations").get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        locations.add(Location.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+        locations.add(Location.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
       }
       return locations;
+    }
+
+    // Get All Brand Locations
+    Future<double> getLocationPercentatgeEvents(String brandId, String locationId) async {
+      // Get the total number of events in Brand
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandId).collection("Events").get();
+      int totalBrandEvents = querySnapshot.docs.length;
+      // Get Events of Location
+      QuerySnapshot querySnapshot2 = await _firestore.collection(locations).doc(locationId).collection("Events").get();
+      int totalLocationEvents = querySnapshot2.docs.length;
+      return (totalLocationEvents/totalBrandEvents)*100;
     }
 
     //Bonos

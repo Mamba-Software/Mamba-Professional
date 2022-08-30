@@ -1,7 +1,5 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -9,13 +7,11 @@ import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataServic
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/FeedbackDialogs/EventFeedbackDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -24,10 +20,11 @@ import 'EventFeedback.dart';
 class EventListTile extends StatefulWidget {
   String eventId;
   bool showFeedback;
+  bool? showAverage;
   var height;
   var width;
 
-  EventListTile({Key? key, required this.eventId, required this.showFeedback, required this.height, required this.width}) : super(key: key);
+  EventListTile({Key? key, required this.eventId, required this.showFeedback, this.showAverage, required this.height, required this.width}) : super(key: key);
 
   @override
   _EventListTileState createState() => _EventListTileState();
@@ -37,17 +34,17 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
-  var _eventDataService = new EventDataService();
-  var _brandDataService = new BrandDataService();
-  var _locationDataService = new LocationDataService();
+  final _eventDataService = EventDataService();
+  final _brandDataService = BrandDataService();
+  final _locationDataService = LocationDataService();
   // Brand
   Event _event = Event();
   Brand _brand = Brand();
   Location _location = Location();
   // Event Date
   DateTime eventDate = DateTime.now();
-  var eventDateString;
-  var eventHourString;
+  String eventDateString = "";
+  String eventHourString = "";
   // Feedback Event
   bool canAnswerFeedback = true;
   double? eventFeedbackValue;
@@ -63,7 +60,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
     initEventTile();
     super.initState();
     motionController = AnimationController(
-      duration: Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 700),
       vsync: this,
       lowerBound: 0.5,
     );
@@ -118,8 +115,12 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
     if (widget.showFeedback) {
       // Get Feedback you have been in this event
       eventFeedbackValue = await _eventDataService.getEventUserFeedback(_event.id!,currentUser.id!);
+    } else {
+      if (widget.showAverage != null && widget.showAverage!) {
+        // Get Average Feedback of the Event
+        eventFeedbackValue = await _eventDataService.getEventAverageUserFeedback(_event.id!);
+      }
     }
-
   }
 
   Future<void> getBrandDetails() async {
@@ -134,7 +135,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
   void navigateToEventScreen() {
     Navigator.push(
       context,
-      CupertinoPageRoute<Null>(
+      CupertinoPageRoute<void>(
         builder: (context) => EventPage(
           eventId: widget.eventId,
         ),
@@ -168,12 +169,12 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
     return eventFeedbackValue != null ?
       buildEventFeedbackIcon(eventFeedbackValue!)
         :
-      buildAnswerFeedbackIcon();
+     widget.showAverage! == false ? buildAnswerFeedbackIcon() : Container();
   }
 
   // Build EventFeedback Value
   Widget buildAnswerFeedbackIcon() {
-    var limitDateToAnswer = eventDate.add(Duration(days: 7));
+    var limitDateToAnswer = eventDate.add(const Duration(days: 7));
     if (DateTime.now().isBefore(limitDateToAnswer)) {
       return Icon(
         Icons.question_mark,
@@ -190,14 +191,14 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
 
   // Build EventFeedback Value
   Widget buildEventFeedbackIcon(double eventFeedbackValue) {
-      return Container(
+      return SizedBox(
         width: widget.width*0.1,
         child: FittedBox(
           fit: BoxFit.fitWidth,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
+              SizedBox(
                 width: widget.width*0.04,
                 child: Image.asset(Constants.fireEmojiImage),
               ),
@@ -225,14 +226,14 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
       Shimmer.fromColors(
         baseColor: AppColors.grey,
         highlightColor: AppColors.grey.withOpacity(0.5),
-        child: Container(
+        child: SizedBox(
           height: widget.height*0.18,
           width: widget.width,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
+              SizedBox(
                 height: widget.width*0.20,
                 width: widget.width*0.20,
                 child: Column(
@@ -242,7 +243,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                     Container(
                       height: widget.width*0.20,
                       width: widget.width*0.20,
-                      decoration: new BoxDecoration(
+                      decoration: BoxDecoration(
                         color: AppColors.grey,
                         borderRadius: BorderRadius.circular(5.0),
                       ),
@@ -252,7 +253,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
               ),
               Row(
                 children: [
-                  Container(
+                  SizedBox(
                     height: widget.height*18,
                     width: widget.width*0.56,
                     child: Column(
@@ -262,7 +263,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         Container(
                           height: widget.height*0.03,
                           width: widget.width*0.20,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.circular(5.0),
                           ),
@@ -271,7 +272,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         Container(
                           height: widget.height*0.02,
                           width: widget.width*0.35,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.circular(5.0),
                           ),
@@ -280,7 +281,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         Container(
                           height: widget.height*0.02,
                           width: widget.width*0.5,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.circular(5.0),
                           ),
@@ -289,7 +290,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         Container(
                           height: widget.height*0.02,
                           width: widget.width*0.5,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.circular(5.0),
                           ),
@@ -298,7 +299,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         Container(
                           height: widget.height*0.02,
                           width: widget.width*0.5,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.circular(5.0),
                           ),
@@ -307,27 +308,27 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                       ],
                     ),
                   ),
-                  widget.showFeedback ? Container(
+                  widget.showFeedback ? SizedBox(
                     height: widget.height*15,
                     width: widget.width*0.12,
                     child: Center(
                       child: Container(
                         height: widget.height*0.05,
                         width: widget.height*0.05,
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           color: AppColors.grey,
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                       ),
                     ),
-                  ) : Container(
+                  ) : SizedBox(
                     height: widget.height*15,
                     width: widget.width*0.12,
                     child: Center(
                       child: Container(
                         height: widget.height*0.05,
                         width: widget.height*0.05,
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           color: Theme.of(context).scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(5.0),
                         ),
@@ -345,13 +346,13 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
         onTap: navigateToEventScreen,
         child: FittedBox(
           fit: BoxFit.fitHeight,
-          child: Container(
+          child: SizedBox(
             width: widget.width,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
                   width: widget.width*0.20,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -432,17 +433,23 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         ),
                       ),
                     ),
+
                     widget.showFeedback ? GestureDetector(
                       onTap: canAnswerFeedback ? navigateToFeedbackEventScreen : null,
-                      child: Container(
+                      child: SizedBox(
                         width: widget.width*0.12,
                         child: Center(
                             child: buildEventFeedbackWidget()
                         ),
                       ),
-                    ) : Container(
+                    ) : widget.showAverage! ? SizedBox(
+                      width: widget.width*0.12,
+                      child: Center(
+                          child: buildEventFeedbackWidget()
+                      ),
+                    ) : SizedBox(
                         width: widget.width*0.12,
-                        child: Center()
+                        child: const Center()
                     ),
                   ],
                 ),

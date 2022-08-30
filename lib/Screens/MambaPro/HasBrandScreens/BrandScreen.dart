@@ -29,6 +29,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/Content.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -146,15 +147,13 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   // Navigate to Notifications Screen
-  void navigateToSettingsScreen() {
+  void navigateToProfileScreen() {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => const Settings(),
+          builder: (context) => const Profile(),
         )
-    ).whenComplete(() {
-      getFavourites();
-    });
+    );
   }
 
   // Function to Handle Favourites when User clicks on them
@@ -232,7 +231,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   Widget buildHeader() {
     return Container(
-      height: safeAreaHeight*0.36,
+      height: safeAreaHeight*0.32,
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
@@ -249,11 +248,14 @@ class _BrandScreenState extends State<BrandScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircularImage(
-                      size: safeAreaHeight * 0.1,
-                      image: currentUser.imageUrl,
-                      color: Theme.of(context).primaryColor,
-                      borderWidth: 1,
+                    GestureDetector(
+                      onTap: navigateToProfileScreen,
+                      child: CircularImage(
+                        size: safeAreaHeight * 0.1,
+                        image: currentUser.imageUrl,
+                        color: Theme.of(context).primaryColor,
+                        borderWidth: 1,
+                      ),
                     ),
                     Row(
                       children: [
@@ -300,6 +302,7 @@ class _BrandScreenState extends State<BrandScreen> {
               ],
             ),
           ),
+          /*
           SizedBox(height: safeAreaHeight * 0.01),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
@@ -320,6 +323,7 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
             ),
           ),
+          */
         ],
       ),
     );
@@ -327,6 +331,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   Widget buildBrandListOptions() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         listTilePro(0),
         ListView.builder(
@@ -343,6 +348,51 @@ class _BrandScreenState extends State<BrandScreen> {
         Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 2),
         SizedBox(height: safeAreaHeight * 0.01),
 
+        SizedBox(height: safeAreaHeight * 0.01),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          child: Text(
+            AppLocalizations.of(context)!.management,
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+          ),
+        ),
+        SizedBox(height: safeAreaHeight * 0.01),
+        listTilePro(10),
+        listTilePro(5),
+        listTilePro(14),
+
+        SizedBox(height: safeAreaHeight * 0.01),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          child: Text(
+            AppLocalizations.of(context)!.members,
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+          ),
+        ),
+        SizedBox(height: safeAreaHeight * 0.01),
+        listTilePro(2),
+        listTilePro(1),
+        listTilePro(15),
+
+        SizedBox(height: safeAreaHeight * 0.01),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          child: Text(
+            AppLocalizations.of(context)!.yourBrand,
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+          ),
+        ),
+        SizedBox(height: safeAreaHeight * 0.01),
+        listTilePro(8),
+        listTilePro(7),
+        listTilePro(11),
+
+
+
+        /*
         ListTile(
           title: Row(
             children: [
@@ -494,7 +544,7 @@ class _BrandScreenState extends State<BrandScreen> {
         //seeNextHow ? listTilePro(9) : Container(),
         seeNextHow ? listTilePro(7) : Container(),
         //seeNextHow ? listTilePro(6) : Container(),
-        seeNextHow ? listTilePro(13) : Container(),
+        //seeNextHow ? listTilePro(13) : Container(),
         //seeNextHow ? listTilePro(16) : Container(),
 
 
@@ -533,6 +583,7 @@ class _BrandScreenState extends State<BrandScreen> {
           }),
         ),
         seeNextWhere ? listTilePro(11) : Container(),
+         */
 
       ],
     );

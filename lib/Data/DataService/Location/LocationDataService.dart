@@ -22,7 +22,8 @@ class LocationDataService {
 
   // Get Data
   Future<Location> getSingleLocation(String locationId) => _firebase.getSingleLocation(locationId);
-  Future<List<Location>> getAllBrandLocations(String locationId) => _firebase.getAllBrandLocations(locationId);
+  Future<List<Location>> getAllBrandLocations(String brandId) => _firebase.getAllBrandLocations(brandId);
+  Future<double> getLocationPercentatgeEvents(String brandId, String locationId) => _firebase.getLocationPercentatgeEvents(brandId, locationId);
 
   // Add Data
   Future<String> addLocation(String brandId, bool isBaseLocation, String placeId, String description, String street, String streetNumber, String city, String zipCode, double latitude, double longitude) => _firebase.addLocation(brandId, isBaseLocation, placeId, description, street, streetNumber, city, zipCode, latitude, longitude);
