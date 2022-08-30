@@ -2,9 +2,11 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -18,9 +20,13 @@ class ShareBrandLink extends StatefulWidget {
 
 class _ShareBrandLinkState extends State<ShareBrandLink> {
 
-  //  Booleans
+  // Booleans
+  bool isFirst = true;
+  bool isTrainer = true;
+  // Variables
   final _dynamicLinkUtils = DynamicLinkUtils();
-  String brandUrl = "";
+  String brandUrlClient = "";
+  String brandUrlTrainer = "";
 
   @override
   void initState() {
@@ -29,15 +35,146 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
   }
 
   Future<void> getBrandLink() async {
-    Uri brandUri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
+    Uri brandUriClient = await _dynamicLinkUtils.createDynamicLinkWithIdClient(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
+    Uri brandUriTrainer = await _dynamicLinkUtils.createDynamicLinkWithIdTrainer(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
     setState(() {
-      brandUrl = brandUri.toString();
+      brandUrlClient = brandUriClient.toString();
+      brandUrlTrainer = brandUriTrainer.toString();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isFirst ? Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+          Container(
+            height: MediaQuery.of(context).size.height*0.007,
+            width: MediaQuery.of(context).size.width*0.15,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(5),
+              ),
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.03),
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(
+                      AppLocalizations.of(context)!.addMembers,
+                      style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.left
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isFirst = false;
+                isTrainer = true;
+              });
+            },
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.18,
+                  width: MediaQuery.of(context).size.height*0.18,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).backgroundColor,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: Image(
+                        image: AssetImage(Constants.clientImage)
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.client.toLowerCase(),
+                  style: Theme.of(context).textTheme.headline3,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.03),
+          Row(
+              children: <Widget>[
+                Expanded(
+                  child: Divider(color: Theme.of(context).primaryColor, height: 1, indent: MediaQuery.of(context).size.width*0.2, endIndent: MediaQuery.of(context).size.width*0.05),
+                ),
+                Text(
+                    "o",
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                    textAlign: TextAlign.center
+                ),
+                Expanded(
+                  child: Divider(color: Theme.of(context).primaryColor, height: 1, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.2),
+                ),
+              ]
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.03),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                isFirst = false;
+                isTrainer = true;
+              });
+            },
+            child: Column(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.18,
+                  width: MediaQuery.of(context).size.height*0.18,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).backgroundColor,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                  ),
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: Image(
+                        image: AssetImage(Constants.personalTrainerImage)
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.trainer.toLowerCase(),
+                  style: Theme.of(context).textTheme.headline3,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+
+        ],
+      ),
+    )
+        :
+    Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -93,12 +230,12 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: const BorderRadius.all(
-                Radius.circular(5),
+                Radius.circular(10),
               ),
               border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
             ),
             child: QrImage(
-              data: brandUrl,
+              data: isTrainer ? brandUrlTrainer : brandUrlClient,
               version: QrVersions.auto,
               size: MediaQuery.of(context).size.width*0.5,
               gapless: false,
@@ -108,7 +245,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 size: const Size(80, 80),
                 color: Theme.of(context).primaryColor.withOpacity(0.25)
               ),
-               */
+              */
             )
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.03),
@@ -130,8 +267,11 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
           SizedBox(height: MediaQuery.of(context).size.height*0.03),
           GestureDetector(
             onTap: () async {
-              final Uri uri = await _dynamicLinkUtils.createDynamicLinkWithId(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
-              await Share.share(uri.toString(), subject: currentBrand.logoUrl!);
+              if (isTrainer) {
+                await Share.share(brandUrlTrainer, subject: currentBrand.logoUrl!);
+              } else {
+                await Share.share(brandUrlClient, subject: currentBrand.logoUrl!);
+              }
             },
             child: Container(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
