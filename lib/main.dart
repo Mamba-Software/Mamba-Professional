@@ -89,7 +89,7 @@ class Mamba extends StatefulWidget {
 
 class _MambaState extends State<Mamba> with WidgetsBindingObserver {
 
-  var _dynamicLinkUtils = new DynamicLinkUtils();
+  var _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
 
   @override
@@ -101,7 +101,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(
+      _timerLink = Timer(
         const Duration(milliseconds: 1000), () {
             _dynamicLinkUtils.retrieveDynamicLink();
         },
