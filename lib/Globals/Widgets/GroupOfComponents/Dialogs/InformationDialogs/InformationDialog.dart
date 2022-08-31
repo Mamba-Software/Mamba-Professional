@@ -46,7 +46,7 @@ class InformationDialog extends StatelessWidget {
                       size: Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
-                          color: Theme.of(context).accentColor, // button color
+                          color: Theme.of(context).colorScheme.secondary, // button color
                           child: InkWell(
                             onTap: () async {
                             },

@@ -3,16 +3,16 @@ import 'dart:math';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -556,7 +556,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     if (states.any(interactiveStates.contains)) {
       return Colors.blue;
     }
-    return Theme.of(context).accentColor;
+    return Theme.of(context).colorScheme.secondary;
   }
 
   // Build EventFeedback Value
@@ -1202,13 +1202,13 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     height: MediaQuery.of(context).size.height * 0.07,
                                     width: MediaQuery.of(context).size.height * 0.07,
                                     decoration: BoxDecoration(
-                                        color: Theme.of(context).accentColor.withOpacity(0.08),
+                                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
                                         borderRadius: BorderRadius.all(Radius.circular(5.0))
                                     ),
                                     child: Center(
                                         child: Text(
                                             event!.day.toString(),
-                                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).accentColor),
+                                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
                                             textAlign: TextAlign.center
                                         )
                                     ),
@@ -1289,11 +1289,11 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     height: MediaQuery.of(context).size.height * 0.07,
                                     width: MediaQuery.of(context).size.height * 0.07,
                                     decoration: BoxDecoration(
-                                        color: Theme.of(context).accentColor.withOpacity(0.08),
+                                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
                                         borderRadius: BorderRadius.all(Radius.circular(5.0))
                                     ),
                                     child: Center(
-                                        child: Icon(Icons.timer_outlined, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06,)
+                                        child: Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,)
                                     ),
                                   ),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.04),
@@ -1432,7 +1432,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                       children: <Widget>[
                                         Icon(
                                           Icons.location_on,
-                                          color: Theme.of(context).accentColor,
+                                          color: Theme.of(context).colorScheme.secondary,
                                           size: 15,
                                         ),
                                         Padding(
@@ -1657,7 +1657,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: <Widget>[
-                                    Icon(Icons.person, color: Theme.of(context).accentColor, size: MediaQuery.of(context).size.width*0.06),
+                                    Icon(Icons.person, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06),
                                     Container(
                                       padding: EdgeInsets.only(left: 20),
                                       width: MediaQuery.of(context).size.width*0.18,
@@ -1788,7 +1788,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                 )
             ) : Padding(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.13),
-                child: LoadingViewPurple()),
+                child: LoadingView()),
           ),
         ],
       ),

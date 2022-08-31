@@ -102,7 +102,7 @@ class CancelRequestConfirmationDialog extends StatelessWidget {
                     CircularImage(
                       size: MediaQuery.of(context).size.width*0.25,
                       image: brand.logoUrl,
-                      color: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderWidth: 2,
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),

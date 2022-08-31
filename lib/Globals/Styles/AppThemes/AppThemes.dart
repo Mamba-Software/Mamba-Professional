@@ -12,7 +12,9 @@ class AppThemes {
       // Primary Colors
       primaryColor: AppColors.black,
       primaryColorDark: AppColors.white,
-      accentColor:  AppColors.mainColor,
+      primaryColorLight: Colors.grey,
+      // Accent Color
+      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.light),
       // BackGround Colors
       backgroundColor: AppColors.lightGrey,
       scaffoldBackgroundColor: AppColors.white,
@@ -30,17 +32,16 @@ class AppThemes {
         bodyText2: _textStyles.blackBodyText2Style(),
         caption: _textStyles.greyBodyTextStyle()
       ),
-      fontFamily: "Helvetica",
       appBarTheme: AppBarTheme(
         elevation: 4.0,
         backgroundColor: AppColors.white,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
             color: Colors.black
         ),
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         titleTextStyle: _textStyles.blackHeadline2TextStyle(),
       ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         elevation: 40,
         type: BottomNavigationBarType.fixed,
         backgroundColor:  AppColors.white,
@@ -56,7 +57,8 @@ class AppThemes {
       // Primary Colors
       primaryColor: AppColors.white,
       primaryColorDark: AppColors.black,
-      accentColor:  AppColors.mainColor,
+      // Accent Color
+      colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.dark),
       // BackGround Colors
       backgroundColor: AppColors.darkGrey,
       scaffoldBackgroundColor: AppColors.darkerGrey,
@@ -74,15 +76,14 @@ class AppThemes {
         bodyText2: _textStyles.whiteBodyText2Style(),
         caption: _textStyles.greyBodyTextStyle()
       ),
-      fontFamily: "Helvetica",
       appBarTheme: AppBarTheme(
         elevation: 4.0,
         backgroundColor: AppColors.darkerGrey,
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
             color: AppColors.white,
         ),
         titleTextStyle: _textStyles.whiteHeadline2TextStyle(),
-        brightness: Brightness.light,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         elevation: 40,

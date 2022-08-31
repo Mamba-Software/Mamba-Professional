@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 class SelectClientsEvent extends StatefulWidget {
@@ -77,7 +77,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
 
   Color getColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.selected)) {
-      return Theme.of(context).accentColor;
+      return Theme.of(context).colorScheme.secondary;
     } else {
       return Colors.transparent;
     }
@@ -94,7 +94,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
     return Scaffold(
       appBar: null,
       body:  isLoading ?
-      Center(child: LoadingViewPurple())
+      Center(child: LoadingView())
           :
       DefaultTabController(
         length: 2,
@@ -295,7 +295,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                 onPressed: () {
                   Navigator.pop(context, selectedClients);
                 },
-                backgroundColor: Theme.of(context).accentColor,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 child: Icon(
                   Icons.person_add,
                   size: MediaQuery.of(context).size.width*0.07,

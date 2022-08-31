@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
@@ -16,7 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectTrainersEvent.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -422,7 +422,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   Widget build(BuildContext context) {
     return isLoading ? Scaffold(
       appBar: null,
-      body: LoadingViewPurple(),
+      body: LoadingView(),
     ) :
     Scaffold(
       appBar: AppBar(
@@ -519,7 +519,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                           ],
                         ),
                       ),
@@ -530,7 +530,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                           ],
                         ),
                       ),
@@ -541,7 +541,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).accentColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                           ],
                         ),
                       ),
@@ -551,7 +551,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 LinearProgressIndicator(
                   value: addEventTabValue,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ],
             )
@@ -763,7 +763,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: <Widget>[
                                                   Row(
                                                     children: [
-                                                      Icon(Icons.calendar_today_outlined, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                                      Icon(Icons.calendar_today_outlined, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
                                                       Container(
                                                         padding: EdgeInsets.symmetric(horizontal: 20),
                                                         width: MediaQuery.of(context).size.width*0.45,
@@ -798,7 +798,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   ),
                                                   Row(
                                                     children: [
-                                                      Icon(Icons.schedule, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                                      Icon(Icons.schedule, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
                                                       Container(
                                                         padding: EdgeInsets.symmetric(horizontal: 20),
                                                         width: MediaQuery.of(context).size.width*0.25,
@@ -838,7 +838,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Icon(Icons.timer, color: Theme.of(context).accentColor,size: MediaQuery.of(context).size.width*0.05,),
+                                                  Icon(Icons.timer, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
                                                   Container(
                                                     padding: EdgeInsets.only(left: 20),
                                                     width: MediaQuery.of(context).size.width*0.30,
@@ -933,7 +933,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       ),
                                                       WeekdaySelector(
                                                         fillColor: Colors.white,
-                                                        selectedFillColor: Theme.of(context).accentColor,
+                                                        selectedFillColor: Theme.of(context).colorScheme.secondary,
                                                         textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
                                                         selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
                                                         firstDayOfWeek: 0,
@@ -991,7 +991,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             leading: Radio(
                                                               value: 1,
                                                               groupValue: _value,
-                                                              activeColor: Theme.of(context).accentColor,
+                                                              activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
                                                                 setState(() {
@@ -1015,7 +1015,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             leading: Radio(
                                                               value: 2,
                                                               groupValue: _value,
-                                                              activeColor: Theme.of(context).accentColor,
+                                                              activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
                                                                 setState(() {
@@ -1039,7 +1039,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             leading: Radio(
                                                               value: 3,
                                                               groupValue: _value,
-                                                              activeColor: Theme.of(context).accentColor,
+                                                              activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
                                                                 setState(() {
@@ -1330,7 +1330,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                                           SizedBox(
                                                                             width: MediaQuery.of(context).size.width*0.05,
                                                                             child: IconButton(
-                                                                              icon: Icon(Icons.remove_circle, color: Theme.of(context).accentColor,),
+                                                                              icon: Icon(Icons.remove_circle, color: Theme.of(context).colorScheme.secondary,),
                                                                               onPressed: () {
                                                                               },
                                                                             ),
@@ -1478,7 +1478,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         }
                       }
                     },
-                    backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).accentColor,
+                    backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).colorScheme.secondary,
                     icon: Container(),
                     label: widget.eventId == null ? Text(
                       _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
@@ -1548,7 +1548,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     if (states.any(interactiveStates.contains)) {
       return Colors.blue;
     }
-    return Theme.of(context).accentColor;
+    return Theme.of(context).colorScheme.secondary;
   }
 
   Future<void> _addEventFunction() async {
@@ -1826,7 +1826,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     for (int i = 0; i < eventTrainersAdded.length; i++) {
       var user = eventTrainersAdded[i];
       // Add Trainer to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!);
+      if (user.id != currentUser.id!) {
+        await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+      } else {
+        await _eventDataService.addUserToEvent(event.id!, user.id!);
+      }
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Trainer Added "+user.id.toString());
@@ -1866,8 +1870,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Clients Added Not Matched means that they have added to the Event
     for (int i = 0; i < eventClientsAdded.length; i++) {
       var user = eventClientsAdded[i];
-      // Add Trainer to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!);
+      // Add Client to Event
+      await _eventDataService.addUserToEvent(event.id!, user.id!, true);
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Client Added "+user.id.toString());
@@ -2015,7 +2019,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       for (int i = 0; i < eventTrainersAdded.length; i++) {
         var user = eventTrainersAdded[i];
         // Add Trainer to Event
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        if (user.id != currentUser.id!) {
+          await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+        } else {
+          await _eventDataService.addUserToEvent(event.id!, user.id!);
+        }
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Trainer Added "+user.id.toString());
@@ -2055,8 +2063,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       // Clients Added Not Matched means that they have added to the Event
       for (int i = 0; i < eventClientsAdded.length; i++) {
         var user = eventClientsAdded[i];
-        // Add Trainer to Event
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        // Add Client to Event
+        await _eventDataService.addUserToEvent(eventId, user.id!, true);
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Client Added "+user.id.toString());
@@ -2081,7 +2089,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       if (user.isTrainer!) {
         print("Notifications Trainer "+user.name!);
         // Firebase Call
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        if (user.id != currentUser.id!) {
+          await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        } else {
+          await _eventDataService.addUserToEvent(eventId, user.id!);
+        }
         // Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       } else {

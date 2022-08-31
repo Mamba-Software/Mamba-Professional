@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -17,7 +17,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/MainApp/Mamba/Brand/BrandScreens/BrandSettings/MembershipRequests.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Notifications extends StatefulWidget {
@@ -360,7 +360,7 @@ class _NotificationsState extends State<Notifications> {
         ),
       ) : RefreshIndicator(
           displacement: MediaQuery.of(context).size.height*0.05,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           onRefresh: () {
             return Future.delayed(
               Duration(seconds: 1), () async {
@@ -1062,6 +1062,7 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserJoinsBrand_User": {
         if (brand.id != null) {
+          /*
           Navigator.push(
               context,
             CupertinoPageRoute<Null>(
@@ -1070,6 +1071,7 @@ class _NotificationsState extends State<Notifications> {
                 )
               )
           );
+           */
         }
         break;
       }
@@ -1097,16 +1099,19 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
       case "UserSendRequestToBrand_Trainer": {
+        // TODO: Controlar Totes les redireccions
+        /*
         if (brand.id != null) {
           Navigator.push(
               context,
-              CupertinoPageRoute<Null>(
-                                  builder: (context) => MembershipRequests(
+              CupertinoPageRoute<void>(
+                  builder: (context) => MembershipRequestsPro(
                     brandId: brand.id!,
                   )
               )
           );
         }
+         */
         break;
       }
       case "UserCancelRequestToBrand_User": {
@@ -1165,6 +1170,7 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserLeaveEvent_User": {
         if (brand.id != null) {
+          /*
           Navigator.push(
               context,
               CupertinoPageRoute<Null>(
@@ -1173,6 +1179,7 @@ class _NotificationsState extends State<Notifications> {
                   )
               )
           );
+           */
         }
         break;
       }

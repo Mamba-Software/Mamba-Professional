@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/RoomDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -17,7 +17,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
@@ -213,7 +213,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
           ],
         ),
         body: isLoading ?
-        LoadingViewPurple()
+        LoadingView()
             :
         SingleChildScrollView(
           physics: BouncingScrollPhysics(),
@@ -242,7 +242,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   if (loadingProgress == null) return child;
                                   return Center(
                                     child: CircularProgressIndicator(
-                                      color: Theme.of(context).accentColor,
+                                      color: Theme.of(context).colorScheme.secondary,
                                       value: loadingProgress.expectedTotalBytes != null
                                           ? loadingProgress.cumulativeBytesLoaded /
                                           loadingProgress.expectedTotalBytes!
@@ -266,13 +266,13 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 children: [
                   Icon(
                     user!.isTrainer! ?  Icons.record_voice_over : Icons.directions_run,
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                     size: MediaQuery.of(context).size.width*0.04,
                   ),
                   user!.isTrainer! ? SizedBox(width: 4) : SizedBox(width: 2),
                   Text(
                     user!.isTrainer! ?  AppLocalizations.of(context)!.trainer : AppLocalizations.of(context)!.client,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).accentColor),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).colorScheme.secondary),
                   ),
                 ],
               ),
@@ -385,7 +385,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   children: [
                                     Text(
                                       Localizations.localeOf(context).languageCode == 'ca' ? month.substring(3).toUpperCase() : month.toUpperCase(),
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).accentColor),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).colorScheme.secondary),
                                     ),
                                   ],
                                 ),

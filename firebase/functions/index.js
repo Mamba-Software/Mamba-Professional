@@ -102,7 +102,7 @@ exports.scheduledDailyFunction = functions
                               body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
                             },
                             data: {
-                              route: "SplashScreen0",
+                              route: "SplashScreen",
                             },
                           };
                       } else {
@@ -112,7 +112,7 @@ exports.scheduledDailyFunction = functions
                               body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
                             },
                             data: {
-                              route: "SplashScreen0",
+                              route: "SplashScreen",
                             },
                           };
                       }
@@ -1793,64 +1793,64 @@ exports.userJoinsEvent = functions
               }
             }
           }
-        }
-        // Send Notification to Client if added directly
-        if (eventUserDoc.invitedDirectly == true) {
-            // Invited to Event
-            functions.logger.log(
-                "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
-            );
-            functions.logger.log(
-                "userDoc",
-                userDoc,
-            );
-            var payload = 0;
-            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-            if (userDoc.idioma == "es") {
-             // Date To String
-             let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-             // Hour and Minutes to String
-             let eventTimeTime = eventDoc.hour+":";
-             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-             eventTimeTime += minutes;
-             // Send Payload               
-             payload = {
-               notification: {
-                 title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
-                 body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
-               },
-               data: {
-                 route: eventId,
-               },
-             };               
-           } else {
-             // Date To String
-             let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-             // Hour and Minutes to String
-             let eventTimeTime = eventDoc.hour+":";
-             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-             eventTimeTime += minutes;
-             // Send Payload
-             payload = {
-               notification: {
-                 title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
-                 body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
-               },
-               data: {
-                 route: eventId,
-               },
-             };
-            }
-            functions.logger.log(
-              "Payload",
-              payload
-            );
-            response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-            functions.logger.log(
-              "Response",
-              response
-            );
-        }
+        }        
+      }
+      // Send Notification to User if added directly
+      if (eventUserDoc.invitedDirectly == true) {
+          // Invited to Event
+          functions.logger.log(
+              "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
+          );
+          functions.logger.log(
+              "userDoc",
+              userDoc,
+          );
+          var payload = 0;
+          let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+          if (userDoc.idioma == "es") {
+           // Date To String
+           let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+           // Hour and Minutes to String
+           let eventTimeTime = eventDoc.hour+":";
+           let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+           eventTimeTime += minutes;
+           // Send Payload               
+           payload = {
+             notification: {
+               title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
+               body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
+             },
+             data: {
+               route: eventId,
+             },
+           };               
+         } else {
+           // Date To String
+           let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+           // Hour and Minutes to String
+           let eventTimeTime = eventDoc.hour+":";
+           let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+           eventTimeTime += minutes;
+           // Send Payload
+           payload = {
+             notification: {
+               title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
+               body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
+             },
+             data: {
+               route: eventId,
+             },
+           };
+          }
+          functions.logger.log(
+            "Payload",
+            payload
+          );
+          response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+          functions.logger.log(
+            "Response",
+            response
+          );
       }
       return null;
     });
@@ -3745,8 +3745,9 @@ exports.zzzzUserJoinsEvent = functions
               }
             }
           }
-        }        
-        // Send Notification to Client if added directly
+        }       
+      }
+      // Send Notification to User if added directly
         if (eventUserDoc.invitedDirectly == true) {
             // Invited to Event
             functions.logger.log(
@@ -3803,7 +3804,6 @@ exports.zzzzUserJoinsEvent = functions
               response
             );
         }
-      }
       return null;
     });
 
@@ -4075,3 +4075,24 @@ exports.zzzzChangeMessageStatus = functions
       return null
     }
   })
+
+  // User Sends Request
+  exports.zzzzUserBonoCreate = functions
+      .region("europe-west1")
+      .firestore
+      .document("/7777 Users/{userId}/Brands/{brandId}/Bonos/{bonoId}")
+      .onCreate( async (snap, context) => {
+        // Get the value of the context triggers.
+        const brandId = context.params.brandId;
+        const userId = context.params.userId;
+        const bonoId = context.params.bonoId;
+        // Get Data of the Request
+        const requestSnapshot = await db.collection("7777 Users").doc(userId).collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+        const requestDoc = requestSnapshot.data();
+
+        await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId)
+        .update({
+            "sessions": requestDoc.sessions,
+         });
+        return null;
+      });

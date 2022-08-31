@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/DataService/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingViewPurple.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 class DeleteFromEventConfirmationDialog extends StatefulWidget {
@@ -54,7 +54,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
           child: Stack(
             alignment: Alignment.center,
             children: [
-              LoadingViewPurple(),
+              LoadingView(),
             ],
           ),
         ),
@@ -148,7 +148,7 @@ class _DeleteFromEventConfirmationDialogState extends State<DeleteFromEventConfi
                       CircularImage(
                         size: MediaQuery.of(context).size.width*0.25,
                         image: user.imageUrl,
-                        color: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
                         borderWidth: 2,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),

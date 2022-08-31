@@ -143,6 +143,14 @@
   "@alreadyUser":{
     "description": "Already user Text "
   },
+  "wrongAppUser": "Hemos detectado que tienes una cuenta de tipo Cliente.",
+  "@wrongAppUser":{
+    "description": "Already user Text "
+  },
+  "wrongAppUserBody": "Inicia sesión en Mamba",
+  "@wrongAppUserBody":{
+    "description": "Already user Text "
+  },
   "createAccount": "Crea tu cuenta",
   "@createAccount":{
     "createAccount": "Cambiar Text"
@@ -302,6 +310,10 @@
   "feedback": "Feedback",
   "@feedback":{
     "description": "Feedback Text"
+  },
+  "management": "Gestión",
+  "@management":{
+    "description": "management Text"
   },
   "noFeedback": "No hay nuevas preguntas a contestar.\n\n¡Gracias por querer ayudarnos!",
   "@noFeedback":{
@@ -529,11 +541,19 @@
   "@deletedEvent":{
     "description": "createBrand Text"
   },
+  "joinBrand": "Únete a una marca",
+  "@joinBrand":{
+    "description": "createBrand Text"
+  },
+  "joinBrandTitle": "Puedes unirte a través de un link o escaneado el código QR de la marca",
+  "@joinBrandTitle":{
+    "description": "createBrand Text"
+  },
   "createBrand": "Crea tu marca",
   "@createBrand":{
     "description": "createBrand Text"
   },
-  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos:",
+  "createBrandTitle": "Aquí puedes crear tu propia marca en cuatro simples pasos...",
   "@createBrandTitle":{
     "description": "createBrand Text"
   },
@@ -901,7 +921,7 @@
   "@inviteCodeOptional":{
     "description": "inviteCode text"
   },
-  "copyCodeMessage": "Comparte tu código de invitación",
+  "copyCodeMessage": "Comparte tu enlace de invitación",
   "@copyCodeMessage":{
     "description": "inviteCode text"
   },
@@ -1105,6 +1125,10 @@
   },
   "todayString": "Hoy",
   "@todayString": {
+    "description": "Wellcome message"
+  },
+  "dayString": "Día",
+  "@dayString": {
     "description": "Wellcome message"
   },
   "weekString": "Semanal",
@@ -1409,13 +1433,22 @@
   "@monthEvents": {
     "description": "Wellcome message"
   },
-  "eventHistory": "Historial",
+  "eventHistory": "Historial de eventos",
   "@eventHistory": {
     "description": "Wellcome message"
   },
   "recentEvents": "Últimas sesiones ...",
   "@recentEvents": {
     "description": "Wellcome message"
+  },
+  "percentageEvents": "{percentage}% de los eventos",
+  "@percentageEvents": {
+    "description": "percentageEvents message",
+    "placeholders": {
+      "percentage": {
+        "type": "String"
+      }
+    }
   },
   "sendRequestConfirmation": "¿Estás seguro de que quieres enviar una solicitud a esta marca?\n\nLos organizadores recibirán una notificación. Hasta que esta no sea aceptada o rechazada no podrás enviar otra solicitud a ninguna marca.",
   "@sendRequestConfirmation": {
@@ -1812,6 +1845,54 @@
   "@goodNightGreeting": {
     "description": "membersOfBrand message"
   },
+  "mambaProActivated": "Desactivar Mamba pro",
+  "@mambaProActivated":{
+    "description": "Mamba pro actived text"
+  },
+  "mambaProDesactivated": "Activar Mamba pro",
+  "@mambaProDesactivated":{
+    "description": "Mamba pro descativated text"
+  },
+  "categories": "Categorias",
+  "@categories":{
+    "description": "Categories text"
+  },
+  "bonos": "Bonos",
+  "@bonos":{
+    "bonos": "Bonos text"
+  },
+  "yourBonos": "Tus bonos",
+  "@yourBonos":{
+    "yourBonos": "Tus bonos text"
+  },
+  "solicitudesBonos": "Solicitudes",
+  "@solicitudesBonos":{
+    "solicitudesBonos": "Bonos request text"
+  },
+  "bonosClient": "Bonos de clientes",
+  "@bonosClient":{
+    "bonosClient": "Bonos client text"
+  },
+  "information": "Información",
+  "@information":{
+    "information": "Information text"
+  },
+  "stats": "Estadísticas",
+  "@stats":{
+    "stats": "Stats text"
+  },
+  "content": "Contenido",
+  "@content":{
+    "content": "Content text"
+  },
+  "opinions": "Opiniones",
+  "@opinions":{
+    "opinions": "opinions text"
+  },
+  "locations": "Ubicaciones",
+  "@locations":{
+    "locations": "locations text"
+  },
   "relaxedFeedbackLabel": "Leve",
   "@relaxedFeedbackLabel": {
     "description": "membersOfBrand message"
@@ -1899,5 +1980,41 @@
   "clientsOnboardingDesc": "Busca, compara y decide cuál es la marca fitness que mejor se adapta a ti. Únete a ella para poder disfrutar de su servicio y de un seguimiento personalizado.",
   "@clientsOnboardingDesc": {
     "description": "beforeEventBodyNotification message"
+  },
+  "yourBrands": "Tus marcas",
+  "@yourBrands": {
+    "description": "YourBrands message"
+  },
+  "howTheySeeMe": "Como me ven",
+  "@howTheySeeMe": {
+    "description": "howTheySeeMe message"
+  },
+  "quien": "Quien",
+  "@quien": {
+    "description": "Quien message"
+  },
+  "que": "Que",
+  "@que": {
+    "description": "Que message"
+  },
+  "como": "Como",
+  "@como": {
+    "description": "Como message"
+  },
+  "cuando": "Cuando",
+  "@cuando": {
+    "description": "Cuando message"
+  },
+  "donde": "Donde",
+  "@donde": {
+    "description": "Donde message"
+  },
+  "scanQRCode": "Escanea código QR",
+  "@scanQRCode": {
+    "description": "Donde message"
+  },
+  "staff": "Staff",
+  "@staff": {
+    "description": "Donde message"
   }
 }
