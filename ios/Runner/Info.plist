@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Mamba Pro</string>
+	<string>Mamba Professional</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,7 +45,7 @@
 	</array>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-	    <string>mamba-style</string>
+		<string>mamba-style</string>
 		<string>https</string>
 		<string>http</string>
 	</array>
