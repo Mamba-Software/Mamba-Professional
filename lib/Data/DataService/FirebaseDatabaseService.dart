@@ -47,7 +47,6 @@ class FirebaseDatabaseService {
   String requests = isProduction ? 'Requests' : '7777 Requests';
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
-  String library = isProduction ? 'Library' : '7777 Library';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -2420,46 +2419,6 @@ class FirebaseDatabaseService {
       "favourites": favourites,
     });
   }
-
-  //Colors
-
-  Future<List<lColor>> getColors() async {
-    List<lColor> colors = [];
-    try {
-      await _firestore.collection(library).doc('Colors')
-          .collection("Colors")
-          .get()
-          .then((snapshot) {
-        for (DocumentSnapshot doc in snapshot.docs) {
-          colors.add(lColor.fromObjectAllData(doc.id, doc));
-
-        }
-      });
-      return colors;
-    } catch (e) {
-      print(e.toString());
-      return colors;
-    }
-  }
-  Future<List<lPaymentMethod>> getPaymentMethods() async {
-    List<lPaymentMethod> paymentMethods = [];
-    try {
-      await _firestore.collection(library).doc('PaymentMethods')
-          .collection("PaymentMethods")
-          .get()
-          .then((snapshot) {
-        for (DocumentSnapshot doc in snapshot.docs) {
-          paymentMethods.add(lPaymentMethod.fromObjectAllData(doc.id, doc));
-
-        }
-      });
-      return paymentMethods;
-    } catch (e) {
-      print(e.toString());
-      return paymentMethods;
-    }
-  }
-
 
   Future<List<int>> getUserFavourites(String brandId, String userId) async {
     var favourites;
