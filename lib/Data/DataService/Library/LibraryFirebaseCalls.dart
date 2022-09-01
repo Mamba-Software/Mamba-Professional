@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 
@@ -63,19 +66,14 @@ class LibraryFirebaseCalls {
   Future<String> getRandomEventPhoto() async {
     List<lPaymentMethod> paymentMethods = [];
     try {
-      await _firestore.collection(library).doc('PaymentMethods')
-          .collection("PaymentMethods")
-          .get()
-          .then((snapshot) {
-        for (DocumentSnapshot doc in snapshot.docs) {
-          paymentMethods.add(lPaymentMethod.fromObjectAllData(doc.id, doc));
-
-        }
-      });
-      return "paymentMethods";
+      QuerySnapshot querySnapshot = await _firestore.collection(library).doc('Images').collection("Events").get();
+      Random rnd = Random();
+      int index = rnd.nextInt(querySnapshot.size);
+      lImage image = lImage.fromObjectAllData(querySnapshot.docs[index].id, querySnapshot.docs[index]);
+      return image.url!;
     } catch (e) {
       print(e.toString());
-      return "paymentMethods";
+      return "Error";
     }
   }
 
