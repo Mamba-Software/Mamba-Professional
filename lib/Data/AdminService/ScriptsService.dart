@@ -21,8 +21,8 @@ class ScriptsDatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
-  var _brandDataService = BrandDataService();
-  var _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  final _userDataService = UserDataService();
 
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
@@ -1749,6 +1749,78 @@ class ScriptsDatabaseService {
 
       return true;
     } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> addPhotosToLibrary() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 01 SEPTEMBER 2022');
+      print('-----------------------------\n');
+      print('\n');
+
+      print('Adding Event Photos to Library ... \n');
+      print('-----------------------------\n');
+      print('\n');
+
+      for (int i = 0; i < 15; i++) {
+        print('=================================================================================');
+        print('=================================================================================');
+        // Asset Image to File
+        String assetPath = "";
+        if (i == 0) {
+          assetPath = "assets/images/Eventbackground.jpg";
+        } else {
+          assetPath = "assets/images/Eventbackground"+i.toString()+".jpg";
+        }
+        print('Uploading Image on Asset Path: '+assetPath);
+        File fileImage = await ImageUtils().getImageFileFromAssets(assetPath);
+        // Compress Image
+        var size = await ImageUtils().getImageFileSize(fileImage, 2);
+        print("Current Image Size: "+size);
+        print('\n');
+        print("Compressing Image...");
+        print('\n');
+        final filePath = fileImage.absolute.path;
+        final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+        final splitted = filePath.substring(0, (lastIndex));
+        final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+        var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
+          fileImage.absolute.path,
+          outPath,
+          quality: 75,
+          rotate: 0,
+        );
+        var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+        print("Compressed Image Size: "+compressedSize);
+
+        /* Upload Image
+        String imageUrl;
+        var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + brandID + ".jpeg");
+        var uploadTask = storageRef.putFile(image);
+        await uploadTask.whenComplete(() async {
+          await storageRef.getDownloadURL().then((value) async {
+            imageUrl = value;
+            await _firestore.collection(brands).doc(brandID).update({
+              "logoUrl": value,
+            });
+          });
+        });
+         */
+
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+
+      }
+
+
+      return true;
+    } catch (e) {
+      print(e.toString());
       return false;
     }
   }

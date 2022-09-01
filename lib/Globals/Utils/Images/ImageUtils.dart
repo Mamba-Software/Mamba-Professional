@@ -83,7 +83,7 @@ class ImageUtils {
     return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + ' ' + suffixes[i];
   }
 
-  Future getImageFileFromAssets(String path) async {
+  Future<File> getImageFileFromAssets(String path) async {
     final byteData = await rootBundle.load(path);
     final file = File('${(await getTemporaryDirectory()).path}/$path');
     await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));

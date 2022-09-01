@@ -119,7 +119,7 @@ class EachList extends StatelessWidget{
         );
         break;
       case 3:
-        var result = await _script.getStatistics();
+        var result = await _script.addPhotosToLibrary();
         print("RESULT: "+result.toString());
         break;
 

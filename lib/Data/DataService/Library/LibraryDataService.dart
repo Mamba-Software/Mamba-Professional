@@ -16,7 +16,4 @@ class LibraryDataService {
   // Event Photos
   Future<String> getRandomEventPhoto() => _firebase.getRandomEventPhoto();
 
-
-
-
 }
