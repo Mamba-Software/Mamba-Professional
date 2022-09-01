@@ -10,10 +10,6 @@ const uuidv4 = require("uuid")
 // Firebase DataBase
 const db = admin.firestore();
 
-
-
-
-
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
    .region("europe-west1")  
@@ -1798,63 +1794,63 @@ exports.userJoinsEvent = functions
             }
           }
         }
-        // Send Notification to Client if added directly
-        if (eventUserDoc.invitedDirectly == true) {
-            // Invited to Event
-            functions.logger.log(
-                "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
-            );
-            functions.logger.log(
-                "userDoc",
-                userDoc,
-            );
-            var payload = 0;
-            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
-            if (userDoc.idioma == "es") {
-             // Date To String
-             let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
-             // Hour and Minutes to String
-             let eventTimeTime = eventDoc.hour+":";
-             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-             eventTimeTime += minutes;
-             // Send Payload               
-             payload = {
-               notification: {
-                 title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
-                 body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
-               },
-               data: {
-                 route: eventId,
-               },
-             };               
-           } else {
-             // Date To String
-             let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
-             // Hour and Minutes to String
-             let eventTimeTime = eventDoc.hour+":";
-             let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
-             eventTimeTime += minutes;
-             // Send Payload
-             payload = {
-               notification: {
-                 title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
-                 body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
-               },
-               data: {
-                 route: eventId,
-               },
-             };
-            }
-            functions.logger.log(
-              "Payload",
-              payload
-            );
-            response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-            functions.logger.log(
-              "Response",
-              response
-            );
-        }
+      }
+      // Send Notification to User if added directly
+      if (eventUserDoc.invitedDirectly == true) {
+          // Invited to Event
+          functions.logger.log(
+              "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
+          );
+          functions.logger.log(
+              "userDoc",
+              userDoc,
+          );
+          var payload = 0;
+          let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+          if (userDoc.idioma == "es") {
+           // Date To String
+           let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+           // Hour and Minutes to String
+           let eventTimeTime = eventDoc.hour+":";
+           let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+           eventTimeTime += minutes;
+           // Send Payload
+           payload = {
+             notification: {
+               title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
+               body: "Te han añadido al evento "+eventDoc.title+". Se realizará el "+dateString+" a las "+eventTimeTime,
+             },
+             data: {
+               route: eventId,
+             },
+           };
+         } else {
+           // Date To String
+           let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+           // Hour and Minutes to String
+           let eventTimeTime = eventDoc.hour+":";
+           let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+           eventTimeTime += minutes;
+           // Send Payload
+           payload = {
+             notification: {
+               title: "Nou esdeveniment programat ⁉️ 🏋️‍♂️",
+               body: "T'han afegit a l'esdeveniment "+eventDoc.title+". Es realitzarà el "+dateString+" a les "+eventTimeTime,
+             },
+             data: {
+               route: eventId,
+             },
+           };
+          }
+          functions.logger.log(
+            "Payload",
+            payload
+          );
+          response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+          functions.logger.log(
+            "Response",
+            response
+          );
       }
       return null;
     });
@@ -3773,9 +3769,10 @@ exports.zzzzUserJoinsEvent = functions
               }
             }
           }
-        }        
-        // Send Notification to Client if added directly
-        if (eventUserDoc.invitedDirectly == true) {
+        }
+      }
+      // Send Notification to User if added directly
+      if (eventUserDoc.invitedDirectly == true) {
             // Invited to Event
             functions.logger.log(
                 "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
@@ -3830,10 +3827,7 @@ exports.zzzzUserJoinsEvent = functions
               "Response",
               response
             );
-        }
       }
-
-
       return null;
     });
 

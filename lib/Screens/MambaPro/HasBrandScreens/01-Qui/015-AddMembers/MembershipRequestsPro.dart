@@ -215,13 +215,14 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
               if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
                 return SliverFillRemaining(
                   hasScrollBody: false,
-                  child: Expanded(
-                    child: SizedBox(
-                        height: MediaQuery.of(context).size.height*0.65,
+                  child: Column(
+                    children: [
+                      Expanded(
                         child: Center(
                             child: LoadingView()
                         )
-                    ),
+                      ),
+                    ],
                   ),
                 );
               } else {
@@ -284,21 +285,19 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                   );
                 } else {
                   return SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width*0.30,
-                              child: Image.asset(Constants.emptyCalendar)
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                          Text(AppLocalizations.of(context)!.noRequestsFound, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.12),
-                        ],
-                      ),
+                    hasScrollBody: true,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width*0.30,
+                            child: Image.asset(Constants.emptyCalendar)
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                        Text(AppLocalizations.of(context)!.noRequestsFound, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.12),
+                      ],
                     ),
                   );
                 }

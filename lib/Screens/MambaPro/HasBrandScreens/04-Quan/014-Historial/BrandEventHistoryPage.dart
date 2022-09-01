@@ -327,6 +327,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                       child: EventListTile(
                         eventId: event.id!,
                         showFeedback: false,
+                        showAverage: true,
                         height: safeAreaHeight,
                         width: safeAreaWidth*0.9,
                       ),
