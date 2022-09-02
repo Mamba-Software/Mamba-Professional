@@ -1267,6 +1267,10 @@
   "@yourImages": {
     "description": "Wellcome message"
   },
+  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los miembros de tu marca. Puedes añadir un máximo de 10 imágenes. En caso de no añadir ninguna imagen, se utilizarán imágenes de librería.",
+  "@yourImagesDescription": {
+    "description": "Wellcome message"
+  },
   "yourSesions": "Mis Sesiones",
   "@yourSesions": {
     "description": "Wellcome message"
@@ -1335,7 +1339,7 @@
       }
     }
   },
-  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imagen/es",
+  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imágenes",
   "@addBrandPhotosMaxLeft": {
     "description": "Wellcome message",
     "placeholders": {

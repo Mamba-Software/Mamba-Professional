@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
@@ -8,6 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -39,8 +41,6 @@ class _ContentState extends State<Content> {
   bool maxImagesAdded = false;
   // Max Number of Images
   final int _maxImages = 10;
-  // Image To Upload
-  List<File>? _imagesToUpload = [];
   // Images uploaded
   List<ImageObject> _imagesUploaded = [];
   List<Widget> imageSliders = [];
@@ -64,44 +64,35 @@ class _ContentState extends State<Content> {
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     List<File>? temp = await ImageUtils().pickMultipleImage();
-    if ((_imagesToUpload!.length + temp!.length) > (_maxImages-_imagesUploaded.length)) {
+    if ((temp!.length) > (_maxImages-_imagesUploaded.length)) {
       setState(() {
         maxImagesAdded = true;
       });
     } else {
-      if (_imagesToUpload!.isNotEmpty) {
-        setState(() {
-          _imagesToUpload!.addAll(temp);
-          maxImagesAdded = false;
-        });
-      } else {
-        setState(() {
-          _imagesToUpload = temp;
-          maxImagesAdded = false;
-        });
-      }
-
+      setState(() {
+        isLoading = true;
+        maxImagesAdded = false;
+      });
+      await _brandDataService.addBrandContentPictures(widget.brandId, temp);
+      getBrandContentImages();
     }
-  }
-
-  // Upload Image
-  Future<void> uploadPhotos() async {
-    setState(() {
-      isLoading = true;
-    });
-    await _brandDataService.addBrandContentPictures(widget.brandId, _imagesToUpload!);
-    _imagesToUpload = [];
-    getBrandContentImages();
   }
 
   // Gets the user info from firebase.
   Future<void> getBrandContentImages() async {
     _imagesUploaded = await _brandDataService.getBrandContentPictures(widget.brandId);
+    _imagesUploaded.sort((a,b) {
+      var aDate = a.timestamp!.toDate();
+      var bDate = b.timestamp!.toDate();
+      return aDate.compareTo(bDate);
+    });
+    _imagesUploaded = List.from(_imagesUploaded.reversed);
+    /*
     imageSliders = _imagesUploaded
         .map((item) => Container(
           margin: const EdgeInsets.all(5.0),
           child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               child: Stack(
                 children: <Widget>[
                   GestureDetector(
@@ -116,7 +107,7 @@ class _ContentState extends State<Content> {
                         )
                       );
                     },
-                    child: Image.network(item.url!, fit: BoxFit.cover, width: MediaQuery.of(context).size.width,)
+                    child: Image.network(item.url!, fit: BoxFit.fill, width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height*0.4,)
                   ),
                   Positioned(
                     bottom: -15,
@@ -141,7 +132,7 @@ class _ContentState extends State<Content> {
                           Text('No. ${_imagesUploaded.indexOf(item) + 1} de ${_imagesUploaded.length.toString()}',
                             style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                           ),
-                          TextButton(
+                          IconButton(
                             onPressed: () async {
                               var result = await showDialog(
                                   context: context,
@@ -159,17 +150,12 @@ class _ContentState extends State<Content> {
                                 getBrandContentImages();
                               }
                             },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Icon(Icons.delete_outline, color: AppColors.red, size: MediaQuery.of(context).size.width*0.05),
-                                const SizedBox(width: 10),
-                                Text(
-                                  AppLocalizations.of(context)!.delete,
-                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                ),
-                              ],
+                            icon: Icon(
+                              Icons.delete_outline,
+                              color: AppColors.red,
+                              size: MediaQuery.of(context).size.width*0.05
                             ),
+                            alignment: Alignment.centerRight,
                           ),
                         ],
                       ),
@@ -179,6 +165,7 @@ class _ContentState extends State<Content> {
               )),
         ))
         .toList();
+     */
     setState(() {
       isLoading = false;
     });
@@ -200,14 +187,14 @@ class _ContentState extends State<Content> {
               background: Container(
                 color: AppColors.darkGrey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                       child: Text(
-                        AppLocalizations.of(context)!.content,
+                        AppLocalizations.of(context)!.photos,
                         style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                       ),
                     ),
@@ -222,7 +209,7 @@ class _ContentState extends State<Content> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.content, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -260,179 +247,194 @@ class _ContentState extends State<Content> {
             child: Center(
                   child: LoadingView()
               )
-          ) :
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                imageSliders.isNotEmpty ? Column(
+          ) : SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    CarouselSlider(
-                      options: CarouselOptions(
-                          autoPlay: false,
-                          aspectRatio: 2.0,
-                          enlargeCenterPage: true,
-                          enableInfiniteScroll: false
-                      ),
-                      items: imageSliders,
-                    ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                  ],
-                ) : Container(),
-                _imagesUploaded.length != _maxImages ? Container(
-                  decoration: BoxDecoration(
-                    border: Border.symmetric(
-                      horizontal: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                      onTap: getImage,
-                      title: Padding(
-                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
-                        child: Text(
-                          AppLocalizations.of(context)!.addBrandPhotos,
+                    /*
+                        Text(
+                          AppLocalizations.of(context)!.yourImages,
                           style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                         ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                         */
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            AppLocalizations.of(context)!.yourImagesDescription,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    maxImagesAdded ? Padding(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03,left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.addBrandPhotosMaxLeft((_maxImages-_imagesUploaded.length).toString()),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      subtitle: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.addBrandPhotosLeft((_maxImages-_imagesUploaded.length).toString(), _maxImages.toString()),
-                              style: Theme.of(context).textTheme.caption,
+                    ) : Container(),
+                    _imagesUploaded.length < _maxImages ? Column(
+                      children: [
+                        GestureDetector(
+                          onTap: getImage,
+                          child: DottedBorder(
+                              borderType: BorderType.RRect,
+                              radius: const Radius.circular(10),
+                              dashPattern: [10, 10],
+                              color: Colors.grey,
+                              strokeWidth: 2,
+                              child: Container(
+                                height: MediaQuery.of(context).size.height*0.15,
+                                width: MediaQuery.of(context).size.height*0.9,
+                                color: Colors.transparent,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                            Icons.add,
+                                            color: Colors.grey,
+                                            size: MediaQuery.of(context).size.width*0.15
+                                        ),
+                                        //SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                        Text(
+                                          AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      "("+_imagesUploaded.length.toString()+"/"+_maxImages.toString()+")",
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ],
+                                )
+                              )
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      ],
+                    ) : Container(),
+
+                  ],
+                ),
+              )
+          ),
+          isLoading ? SliverToBoxAdapter(child: Container()) : SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              childAspectRatio: 2.5,
+              mainAxisSpacing: MediaQuery.of(context).size.width*0.02,
+              crossAxisSpacing: 10,
+            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              ImageObject image = _imagesUploaded[index];
+              return Container(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute<void>(
+                              builder: (context) => FullscreenSliderDemo(
+                                initialImage: _imagesUploaded.indexOf(image),
+                                images: _imagesUploaded,
+                              ),
+                            )
+                        );
+                      },
+                      child: RectangularImage(
+                        height: MediaQuery.of(context).size.height*0.18,
+                        width: MediaQuery.of(context).size.height*0.9,
+                        borderRadius: 10,
+                        image: image.url,
+                      ),
+                    ),
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width*0.09,
+                          decoration: const BoxDecoration(
+                              color: AppColors.white,
+                              shape: BoxShape.circle
+                          ),
+                          child: Center(
+                            child: IconButton(
+                              onPressed: () async {
+                                var result = await showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myImagesDeleteDescription);
+                                    }
+                                );
+                                if (result) {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  await Future.delayed(const Duration(milliseconds: 1000), () async {
+                                    await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!);
+                                  });
+                                  getBrandContentImages();
+                                }
+                              },
+                              icon: Icon(
+                                  Icons.delete_outline,
+                                  color: AppColors.red,
+                                  size: MediaQuery.of(context).size.width*0.05
+                              ),
+                              alignment: Alignment.center,
                             ),
                           ),
-                        ],
-                      ),
-                      leading: Icon(
-                        Icons.add_a_photo_outlined,
-                        size: MediaQuery.of(context).size.width*0.08,
-                        color: Theme.of(context).primaryColor,
+                        ),
                       ),
                     ),
-                  ),
-                ) : Container(
-                  decoration: BoxDecoration(
-                    border: Border.symmetric(
-                      horizontal: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                      title: Text(
-                        AppLocalizations.of(context)!.addBrandPhotosMax,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      leading: Icon(
-                        Icons.collections_outlined,
-                        size: MediaQuery.of(context).size.width*0.08,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
+                  ],
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                _imagesToUpload!.isNotEmpty ? SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  child: ListView.builder(
-                      physics: const BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _imagesToUpload!.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: !(index == 0 || index == _imagesToUpload!.length-1) ? EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.02) : EdgeInsets.only(right: _imagesToUpload!.length != 1 ? MediaQuery.of(context).size.width*0.05 : MediaQuery.of(context).size.width*0.02, left: MediaQuery.of(context).size.width*0.02),
-                          child: Column(
-                            children: [
-                              Material(
-                                elevation: 4,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10.0),
-                                  ),
-                                ),
-                                child: Stack(
-                                  alignment: Alignment.bottomLeft,
-                                  children: [
-                                    Container(
-                                      height: MediaQuery.of(context).size.width * 0.35,
-                                      width: MediaQuery.of(context).size.width * 0.35,
-                                      decoration: BoxDecoration(
-                                        //color: Theme.of(context).colorScheme.secondary,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(10.0),
-                                        ),
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: FileImage(_imagesToUpload![index]),
-                                        ),
-                                      ),
-                                      child: const Center(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  var temp = _imagesToUpload;
-                                  temp!.remove(_imagesToUpload![index]);
-                                  setState(() {
-                                    _imagesToUpload = temp;
-                                  });
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Icon(Icons.clear, color: AppColors.red, size: MediaQuery.of(context).size.width*0.05),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                      AppLocalizations.of(context)!.discard,
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                  ),
-                ) : Container(),
-                maxImagesAdded ? Padding(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.addBrandPhotosMaxLeft((_maxImages-_imagesUploaded.length).toString()),
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ) : Container(),
-                SizedBox(height: MediaQuery.of(context).size.height*0.5),
-              ],
+              );
+              },
+              childCount: _imagesUploaded.length,
             ),
+          ),
+          isLoading ? SliverToBoxAdapter(child: Container()) : SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  ],
+                ),
+              )
           ),
         ],
       ),
-      floatingActionButton: _imagesToUpload!.isNotEmpty && !isLoading ? FloatingActionButton.extended(
-        heroTag: "32",
-        label: Text(AppLocalizations.of(context)!.uploadPhotos, style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),),
-        icon: Icon(Icons.file_upload_outlined, size: MediaQuery.of(context).size.width*0.06,),
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        foregroundColor: AppColors.white,
-        onPressed: uploadPhotos,
-      ) : Container(),
     );
   }
 }
