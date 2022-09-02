@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -49,7 +50,7 @@ class _LocationsState extends State<Locations> {
   Location baseLocation = Location();
   // Location Containers
   final CarouselController carouselController = CarouselController();
-  var locationContainers;
+  List<Widget> locationContainers = [];
   int selectedLocation = 0;
 
   // Map Variables
@@ -71,18 +72,22 @@ class _LocationsState extends State<Locations> {
   }
 
   void createMarkers() async {
+    setState(() {
+      markers.clear();
+    });
+    print(markers.length);
     // Set all Markers
-    markers = <Marker>{};
     for(int i = 0; i < locationList.length; i++) {
       Location location = locationList[i];
       Marker marker = Marker(
         markerId: MarkerId(i.toString()),
         position: LatLng (location.latitude!,location.longitude!),
+        anchor: const Offset(0.5, 0.5),
         icon: customIcon!,
         onTap: () {
           setState(() {
             selectedLocation = i;
-            carouselController.jumpToPage(selectedLocation);
+            carouselController.animateToPage(selectedLocation);
           });
         },
       );
@@ -113,11 +118,11 @@ class _LocationsState extends State<Locations> {
       }
     }
     // Create List of Containers
-    locationContainers = [];
+    locationContainers.clear();
     locationContainers = locationList.map((i)
       => LocationImageTile(
         height: MediaQuery.of(context).size.height*0.2,
-        width: MediaQuery.of(context).size.width*0.9,
+        width: MediaQuery.of(context).size.width,
         locationId: i.id!,
         brandId: currentBrand.id!,
         locationChanged: (boolean) {
@@ -204,6 +209,10 @@ class _LocationsState extends State<Locations> {
                                   );
                                   // We have a result for our locations search
                                   if (result != null) {
+                                    // Reload the Map
+                                    setState(() {
+                                      isLoading = true;
+                                    });
                                     Location location = Location();
                                     location.placeId = result.placeId;
                                     final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
@@ -239,10 +248,6 @@ class _LocationsState extends State<Locations> {
                                     }
                                     // Save location to DataBase
                                     await _locationDataService.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
-                                    // Reload the Map
-                                    setState(() {
-                                      isLoading = true;
-                                    });
                                     getAllLocations();
                                   }
                                 },
@@ -354,16 +359,17 @@ class _LocationsState extends State<Locations> {
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height*0.2,
-                    width: MediaQuery.of(context).size.width*0.9,
+                    width: MediaQuery.of(context).size.width,
                     child: GestureDetector(
                       child: CarouselSlider(
                         items: locationContainers,
                         carouselController: carouselController,
                         options: CarouselOptions(
                             autoPlay: false,
+                            enlargeCenterPage: true,
                             enableInfiniteScroll: false,
                             initialPage: selectedLocation,
-                            viewportFraction: 1,
+                            viewportFraction: 0.82,
                             onPageChanged: (index, reason) {
                               setState(() {
                                 selectedLocation = index;
