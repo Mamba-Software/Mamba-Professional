@@ -27,7 +27,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/Content.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -728,7 +728,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 7:
-        return Content(
+        return BrandImages(
           brandId: currentBrand.id!,
           pinned: iconStar,
           pinnedChanged: (boolean) {
@@ -737,7 +737,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 13:
         // Placeholder for Feedback
-        return Content(
+        return BrandImages(
           brandId: currentBrand.id!,
           pinned: iconStar,
           pinnedChanged: (boolean) {

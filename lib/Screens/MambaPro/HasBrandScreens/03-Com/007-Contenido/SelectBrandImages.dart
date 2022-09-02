@@ -2,7 +2,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
@@ -14,25 +13,20 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
-class Content extends StatefulWidget {
+class SelectBrandImages extends StatefulWidget {
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
 
-  Content({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  SelectBrandImages({Key? key, required this.brandId}) : super(key: key);
 
   @override
-  _ContentState createState() => _ContentState();
+  _SelectBrandImagesState createState() => _SelectBrandImagesState();
 }
 
-class _ContentState extends State<Content> {
+class _SelectBrandImagesState extends State<SelectBrandImages> {
 
   // App Bar and Scroll View
   ScrollController? _scrollController;
-  bool appBarExpanded = false;
-  bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
-  }
+
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
   // Boolean Loading
@@ -48,15 +42,7 @@ class _ContentState extends State<Content> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-      setState(() {
-        appBarExpanded = true;
-      }) :
-      setState(() {
-        appBarExpanded = false;
-      }),
-      );
+    _scrollController = ScrollController();
     isLoading = true;
     getBrandContentImages();
   }
@@ -177,72 +163,6 @@ class _ContentState extends State<Content> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.15,
-            elevation: 4,
-            floating: true,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: AppColors.darkGrey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                      child: Text(
-                        AppLocalizations.of(context)!.photos,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
-                    Container(
-                      color: AppColors.grey,
-                      height: 1.0,
-                    ),
-                  ],
-                ),
-              ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
-            ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
-            centerTitle: true,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: MediaQuery.of(context).size.height*0.04,
-                    ),
-                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
-                ),
-              ),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
-              ),
-            ],
-          ),
           isLoading ? SliverFillRemaining(
             child: Center(
                   child: LoadingView()
@@ -369,6 +289,8 @@ class _ContentState extends State<Content> {
                         height: MediaQuery.of(context).size.height*0.18,
                         width: MediaQuery.of(context).size.height*0.9,
                         borderRadius: 10,
+                        color: AppColors.grey,
+                        borderWidth: 1,
                         image: image.url,
                       ),
                     ),
@@ -378,9 +300,9 @@ class _ContentState extends State<Content> {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 7.0),
                         child: Container(
-                          width: MediaQuery.of(context).size.width*0.09,
+                          width: MediaQuery.of(context).size.width*0.07,
                           decoration: const BoxDecoration(
-                              color: AppColors.white,
+                              color: AppColors.red,
                               shape: BoxShape.circle
                           ),
                           child: Center(
@@ -403,9 +325,9 @@ class _ContentState extends State<Content> {
                                 }
                               },
                               icon: Icon(
-                                  Icons.delete_outline,
-                                  color: AppColors.red,
-                                  size: MediaQuery.of(context).size.width*0.05
+                                  Icons.remove,
+                                  color: AppColors.white,
+                                  size: MediaQuery.of(context).size.width*0.03
                               ),
                               alignment: Alignment.center,
                             ),

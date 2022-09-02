@@ -1267,7 +1267,7 @@
   "@yourImages": {
     "description": "Wellcome message"
   },
-  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los miembros de tu marca. Puedes añadir un máximo de 10 imágenes. En caso de no añadir ninguna imagen, se utilizarán imágenes de librería.",
+  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los miembros de tu marca. Puedes añadir un máximo de 10 imágenes. \n\n En caso de no añadir ninguna imagen, se utilizarán imágenes de librería.",
   "@yourImagesDescription": {
     "description": "Wellcome message"
   },
