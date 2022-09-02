@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
@@ -233,8 +234,8 @@ class _BrandScreenState extends State<BrandScreen> {
     return Container(
       height: safeAreaHeight*0.32,
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
+      decoration: const BoxDecoration(
+        color: AppColors.darkGrey,
       ),
       child: Column(
         children: [
@@ -253,7 +254,7 @@ class _BrandScreenState extends State<BrandScreen> {
                       child: CircularImage(
                         size: safeAreaHeight * 0.1,
                         image: currentUser.imageUrl,
-                        color: Theme.of(context).primaryColor,
+                        color: AppColors.white,
                         borderWidth: 1,
                       ),
                     ),
@@ -262,7 +263,7 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadNotifications,
                           child: IconButton(
-                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.notifications, color: AppColors.white, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToNotificationsScreen,
                           ),
@@ -271,7 +272,7 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadChats,
                           child: IconButton(
-                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.chat, color: AppColors.white, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToChatScreen,
                           ),
@@ -291,13 +292,13 @@ class _BrandScreenState extends State<BrandScreen> {
                 Text(
                     currentUser.firstName! + ' ' + currentUser.lastName!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal)
+                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal)
                 ),
                 SizedBox(height: safeAreaHeight * 0.02),
                 Text(
                     currentUser.email!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color:AppColors.white)
                 ),
               ],
             ),
@@ -777,7 +778,7 @@ class _BrandScreenState extends State<BrandScreen> {
           children: [
             // Header
             buildHeader(),
-            Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1,),
+            Divider(color: AppColors.grey, thickness: 0, height: 1,),
             SizedBox(height: safeAreaHeight * 0.02),
             // Brand Options
             // TODO: Passer Rol en aquesta funció

@@ -167,14 +167,14 @@ class _LocationsState extends State<Locations> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             elevation: 4,
             floating: true,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                color: Theme.of(context).backgroundColor,
+                color: AppColors.darkGrey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -187,7 +187,7 @@ class _LocationsState extends State<Locations> {
                         children: [
                           Text(
                             AppLocalizations.of(context)!.locations,
-                            style: Theme.of(context).textTheme.headline1,
+                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -251,14 +251,14 @@ class _LocationsState extends State<Locations> {
                                   children: [
                                     Icon(
                                       Icons.add_circle_outline,
-                                      color: Theme.of(context).primaryColor,
+                                      color: AppColors.white,
                                       size: MediaQuery.of(context).size.width*0.07,
                                     ),
                                     FittedBox(
                                       fit: BoxFit.contain,
                                       child: Text(
                                         AppLocalizations.of(context)!.add,
-                                        style: Theme.of(context).textTheme.bodyText2,
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,),
                                         textAlign: TextAlign.center
                                       ),
                                     ),
@@ -289,6 +289,7 @@ class _LocationsState extends State<Locations> {
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
+                      color: AppColors.white,
                       size: MediaQuery.of(context).size.height*0.04,
                     ),
                     onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
@@ -301,7 +302,7 @@ class _LocationsState extends State<Locations> {
                 child: IconButton(
                   icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {

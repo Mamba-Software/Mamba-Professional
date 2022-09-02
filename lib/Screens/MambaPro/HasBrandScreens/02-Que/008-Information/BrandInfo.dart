@@ -179,14 +179,14 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             elevation: 4,
             floating: true,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                color: Theme.of(context).backgroundColor,
+                color: AppColors.darkGrey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +196,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                       child: Text(
                         AppLocalizations.of(context)!.information,
-                        style: Theme.of(context).textTheme.headline1,
+                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                       ),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.035,),
@@ -210,7 +210,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.information, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.information, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -218,6 +218,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
+                      color: AppColors.white,
                       size: MediaQuery.of(context).size.height*0.04,
                     ),
                     onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
@@ -230,7 +231,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                 child: IconButton(
                   icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
