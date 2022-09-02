@@ -771,6 +771,10 @@
   "@add":{
     "description": "Siguiente text"
   },
+  "select": "Seleccionar",
+  "@select":{
+    "description": "Siguiente text"
+  },
   "next": "Siguiente",
   "@next":{
     "description": "Siguiente text"
@@ -1267,6 +1271,10 @@
   "@yourImages": {
     "description": "Wellcome message"
   },
+  "randomImageDescription": "Se escogerá una de tus imágenes de marca de manera aleatoria",
+  "@randomImageDescription": {
+    "description": "Wellcome message"
+  },
   "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los miembros de tu marca. Puedes añadir un máximo de 10 imágenes. \n\n En caso de no añadir ninguna imagen, se utilizarán imágenes de librería.",
   "@yourImagesDescription": {
     "description": "Wellcome message"
@@ -1285,6 +1293,14 @@
   },
   "editYourInfo": "Edita tu información personal",
   "@editYourInfo": {
+    "description": "Wellcome message"
+  },
+  "photo": "Imagen",
+  "@photo": {
+    "description": "Wellcome message"
+  },
+  "randomPhoto": "Imagen aleatoria",
+  "@randomPhoto": {
     "description": "Wellcome message"
   },
   "photos": "Imágenes",

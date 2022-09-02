@@ -256,13 +256,6 @@ class _BrandImagesState extends State<BrandImages> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                    /*
-                        Text(
-                          AppLocalizations.of(context)!.yourImages,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                         */
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -293,39 +286,39 @@ class _BrandImagesState extends State<BrandImages> {
                           child: DottedBorder(
                               borderType: BorderType.RRect,
                               radius: const Radius.circular(10),
-                              dashPattern: [10, 10],
-                              color: Colors.grey,
+                              dashPattern: const [10, 10],
+                              color: AppColors.grey.withOpacity(0.5),
                               strokeWidth: 2,
                               child: Container(
-                                height: MediaQuery.of(context).size.height*0.15,
-                                width: MediaQuery.of(context).size.height*0.9,
-                                color: Colors.transparent,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                            Icons.add,
-                                            color: Colors.grey,
-                                            size: MediaQuery.of(context).size.width*0.15
-                                        ),
-                                        //SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                        Text(
-                                          AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
-                                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      "("+_imagesUploaded.length.toString()+"/"+_maxImages.toString()+")",
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ],
-                                )
+                                  height: MediaQuery.of(context).size.height*0.15,
+                                  width: MediaQuery.of(context).size.height*0.9,
+                                  color: Colors.transparent,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                              Icons.add,
+                                              color: AppColors.grey.withOpacity(0.5),
+                                              size: MediaQuery.of(context).size.width*0.1
+                                          ),
+                                          //SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                          Text(
+                                            AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
+                                            style: Theme.of(context).textTheme.caption,
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        "("+_imagesUploaded.length.toString()+"/"+_maxImages.toString()+")",
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                  )
                               )
                           ),
                         ),

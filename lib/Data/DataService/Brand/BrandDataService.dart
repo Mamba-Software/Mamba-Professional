@@ -27,7 +27,8 @@ class BrandDataService {
   Future<List<Usuario>> getBrandClients(String brandId) => _firebase.getBrandClients(brandId);
   Future<List<Brand>> getAllBrands() => _firebase.getAllBrands();
   Future<List<Brand>> getAllBrandsFromUser(String userId) => _firebase.getAllBrandsFromUser(userId);
-  Future<List<ImageObject>> getBrandContentPictures(String userId) => _firebase.getBrandContentPictures(userId);
+  Future<List<ImageObject>> getBrandContentPictures(String brandId) => _firebase.getBrandContentPictures(brandId);
+  Future<String> getRandomBrandPhoto(String brandId) => _firebase.getRandomBrandPhoto(brandId);
   Future<List<Bono>> getAllBonosFromBrandList(String brandId) => _firebase.getAllBonosFromBrandList(brandId);
   Future<Bono> getBonoInfo(String brandId, String bonoId) => _firebase.getBonoInfo(brandId, bonoId);
 

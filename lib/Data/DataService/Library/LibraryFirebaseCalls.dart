@@ -64,7 +64,6 @@ class LibraryFirebaseCalls {
   }
 
   Future<String> getRandomEventPhoto() async {
-    List<lPaymentMethod> paymentMethods = [];
     try {
       QuerySnapshot querySnapshot = await _firestore.collection(library).doc('Images').collection("Events").get();
       Random rnd = Random();

@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
@@ -24,6 +26,7 @@ class BrandFirebaseCalls {
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
+  String library = isProduction ? 'Library' : '7777 Library';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String users = isProduction ? 'Users' : '7777 Users';
   String events = isProduction ? 'Events' : '7777 Events';
@@ -309,6 +312,23 @@ class BrandFirebaseCalls {
       contentImages.add(ImageObject.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
     return contentImages;
+  }
+
+
+  Future<String> getRandomBrandPhoto(String brandID) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandID).collection("Images").get();
+      Random rnd = Random();
+      int index = rnd.nextInt(querySnapshot.size);
+      ImageObject image = ImageObject.fromObjectAllData(querySnapshot.docs[index].id, querySnapshot.docs[index]);
+      return image.url!;
+    } catch (e) {
+      QuerySnapshot querySnapshot = await _firestore.collection(library).doc('Images').collection("Events").get();
+      Random rnd = Random();
+      int index = rnd.nextInt(querySnapshot.size);
+      lImage image = lImage.fromObjectAllData(querySnapshot.docs[index].id, querySnapshot.docs[index]);
+      return image.url!;
+    }
   }
 
   Future<List<Bono>> getAllBonosFromBrandList(String brandId) async {

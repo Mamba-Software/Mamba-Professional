@@ -1176,6 +1176,7 @@ class FirebaseDatabaseService {
           "creatorID": currentUser!.uid,
           "title": event.title,
           "description": event.description,
+          "imageUrl": event.imageUrl,
           "doneAt": event.doneAt,
           "createdAt": event.createdAt,
           "year": event.year,
@@ -1205,6 +1206,7 @@ class FirebaseDatabaseService {
             "creatorID": currentUser.uid,
             "title": event.title,
             "description": event.description,
+            "imageUrl": event.imageUrl,
             "doneAt": event.doneAt,
             "createdAt": event.createdAt,
             "year": event.year,
@@ -1248,6 +1250,7 @@ class FirebaseDatabaseService {
             set({
               "isPrivate": event.isPrivate,
               "title": event.title,
+              "imageUrl": event.imageUrl,
               "doneAt": event.doneAt,
               "year": event.year,
               "month": event.month,
@@ -1273,6 +1276,7 @@ class FirebaseDatabaseService {
             set({
               "isPrivate": event.isPrivate,
               "title": event.title,
+              "imageUrl": event.imageUrl,
               "doneAt": event.doneAt,
               "year": event.year,
               "month": event.month,
@@ -1931,6 +1935,7 @@ class FirebaseDatabaseService {
       try {
         await _firestore.collection(events).doc(event.id).update({
           "title": event.title,
+          "imageUrl": event.imageUrl,
           "description": event.description,
           "doneAt": event.doneAt,
           "createdAt": event.createdAt,
@@ -1956,6 +1961,7 @@ class FirebaseDatabaseService {
           .doc(event.id!)
           .update({
             "title": event.title,
+            "imageUrl": event.imageUrl,
             "description": event.description,
             "doneAt": event.doneAt,
             "createdAt": event.createdAt,

@@ -38,6 +38,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
   // Images uploaded
   List<ImageObject> _imagesUploaded = [];
   List<Widget> imageSliders = [];
+  ImageObject selectedImage = ImageObject();
 
   @override
   void initState() {
@@ -73,85 +74,6 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
       return aDate.compareTo(bDate);
     });
     _imagesUploaded = List.from(_imagesUploaded.reversed);
-    /*
-    imageSliders = _imagesUploaded
-        .map((item) => Container(
-          margin: const EdgeInsets.all(5.0),
-          child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              child: Stack(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute<void>(
-                          builder: (context) => FullscreenSliderDemo(
-                            initialImage: _imagesUploaded.indexOf(item),
-                            images: _imagesUploaded,
-                          ),
-                        )
-                      );
-                    },
-                    child: Image.network(item.url!, fit: BoxFit.fill, width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height*0.4,)
-                  ),
-                  Positioned(
-                    bottom: -15,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color.fromARGB(200, 0, 0, 0),
-                            Color.fromARGB(0, 0, 0, 0)
-                          ],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('No. ${_imagesUploaded.indexOf(item) + 1} de ${_imagesUploaded.length.toString()}',
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                          ),
-                          IconButton(
-                            onPressed: () async {
-                              var result = await showDialog(
-                                  context: context,
-                                  builder: (_) {
-                                    return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myImagesDeleteDescription);
-                                  }
-                              );
-                              if (result) {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                await Future.delayed(const Duration(milliseconds: 1000), () async {
-                                  await _brandDataService.deleteBrandContentPictures(widget.brandId, item.id!);
-                                });
-                                getBrandContentImages();
-                              }
-                            },
-                            icon: Icon(
-                              Icons.delete_outline,
-                              color: AppColors.red,
-                              size: MediaQuery.of(context).size.width*0.05
-                            ),
-                            alignment: Alignment.centerRight,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-        ))
-        .toList();
-     */
     setState(() {
       isLoading = false;
     });
@@ -163,6 +85,44 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
+          SliverAppBar(
+            toolbarHeight: MediaQuery.of(context).size.height*0.1,
+            elevation: 0,
+            floating: true,
+            pinned: true,
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Container(
+                  height: MediaQuery.of(context).size.height*0.007,
+                  width: MediaQuery.of(context).size.width*0.15,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(5),
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                          AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.photo.toLowerCase(),
+                          style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              ],
+            ),
+            centerTitle: true,
+            automaticallyImplyLeading: false,
+          ),
           isLoading ? SliverFillRemaining(
             child: Center(
                   child: LoadingView()
@@ -171,31 +131,28 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                    /*
-                        Text(
-                          AppLocalizations.of(context)!.yourImages,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                         */
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+
+                    _imagesUploaded.isEmpty ? Column(
                       children: [
-                        Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.yourImagesDescription,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                AppLocalizations.of(context)!.yourImagesDescription,
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
                         ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
                       ],
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    ) : Container(),
                     maxImagesAdded ? Padding(
                       padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03,left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                       child: Center(
@@ -213,39 +170,39 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                           child: DottedBorder(
                               borderType: BorderType.RRect,
                               radius: const Radius.circular(10),
-                              dashPattern: [10, 10],
-                              color: Colors.grey,
+                              dashPattern: const [10, 10],
+                              color: AppColors.grey.withOpacity(0.5),
                               strokeWidth: 2,
                               child: Container(
-                                height: MediaQuery.of(context).size.height*0.15,
-                                width: MediaQuery.of(context).size.height*0.9,
-                                color: Colors.transparent,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                            Icons.add,
-                                            color: Colors.grey,
-                                            size: MediaQuery.of(context).size.width*0.15
-                                        ),
-                                        //SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                        Text(
-                                          AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
-                                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      "("+_imagesUploaded.length.toString()+"/"+_maxImages.toString()+")",
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ],
-                                )
+                                  height: MediaQuery.of(context).size.height*0.15,
+                                  width: MediaQuery.of(context).size.height*0.9,
+                                  color: Colors.transparent,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                              Icons.add,
+                                              color: AppColors.grey.withOpacity(0.5),
+                                              size: MediaQuery.of(context).size.width*0.1
+                                          ),
+                                          //SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                          Text(
+                                            AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
+                                            style: Theme.of(context).textTheme.caption,
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        "("+_imagesUploaded.length.toString()+"/"+_maxImages.toString()+")",
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                  )
                               )
                           ),
                         ),
@@ -271,72 +228,21 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                 ),
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute<void>(
-                              builder: (context) => FullscreenSliderDemo(
-                                initialImage: _imagesUploaded.indexOf(image),
-                                images: _imagesUploaded,
-                              ),
-                            )
-                        );
-                      },
-                      child: RectangularImage(
-                        height: MediaQuery.of(context).size.height*0.18,
-                        width: MediaQuery.of(context).size.height*0.9,
-                        borderRadius: 10,
-                        color: AppColors.grey,
-                        borderWidth: 1,
-                        image: image.url,
-                      ),
-                    ),
-                    Positioned(
-                      top: 4,
-                      right: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width*0.07,
-                          decoration: const BoxDecoration(
-                              color: AppColors.red,
-                              shape: BoxShape.circle
-                          ),
-                          child: Center(
-                            child: IconButton(
-                              onPressed: () async {
-                                var result = await showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myImagesDeleteDescription);
-                                    }
-                                );
-                                if (result) {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  await Future.delayed(const Duration(milliseconds: 1000), () async {
-                                    await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!);
-                                  });
-                                  getBrandContentImages();
-                                }
-                              },
-                              icon: Icon(
-                                  Icons.remove,
-                                  color: AppColors.white,
-                                  size: MediaQuery.of(context).size.width*0.03
-                              ),
-                              alignment: Alignment.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedImage = image;
+                    });
+                  },
+                  child: RectangularImage(
+                    height: MediaQuery.of(context).size.height*0.18,
+                    width: MediaQuery.of(context).size.height*0.9,
+                    borderRadius: 10,
+                    color: selectedImage == image ? Theme.of(context).colorScheme.secondary : AppColors.grey,
+                    borderWidth: selectedImage == image ? 5 : 1,
+                    image: image.url,
+                  ),
+                )
               );
               },
               childCount: _imagesUploaded.length,
@@ -357,6 +263,16 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
           ),
         ],
       ),
+      floatingActionButton: selectedImage.id != null ? Padding(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.pop(context, selectedImage.url);
+          },
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          child: const Icon(Icons.add),
+        ),
+      ) : Container(),
     );
   }
 }

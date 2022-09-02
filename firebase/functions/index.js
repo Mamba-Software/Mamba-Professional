@@ -452,6 +452,7 @@ exports.eventUpdatesCoverData = functions
         .collection("Events")
         .doc(eventId).set({
           "title": after.title,
+          "imageUrl": after.imageUrl,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -473,6 +474,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .set({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -492,6 +494,8 @@ exports.eventUpdatesCoverData = functions
       // COVER DATA: title, year, month, day, hour, minute, duration
       let coverDataChange = false;
       if (before.title != after.title) {
+        coverDataChange = true;
+      } else if (before.imageUrl != after.imageUrl) {
         coverDataChange = true;
       } else if (before.year != after.year) {
         coverDataChange = true;
@@ -527,6 +531,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -546,6 +551,7 @@ exports.eventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -571,6 +577,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -590,6 +597,7 @@ exports.eventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -615,6 +623,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -634,6 +643,7 @@ exports.eventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -1351,6 +1361,7 @@ exports.userAddsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -1374,6 +1385,7 @@ exports.userAddsEvent = functions
           .doc(eventId).set({
             "isPrivate": eventDoc.isPrivate,
             "title": eventDoc.title,
+            "imageUrl": eventDoc.imageUrl,
             "doneAt": eventDoc.doneAt,
             "year": eventDoc.year,
             "month": eventDoc.month,
@@ -1538,6 +1550,7 @@ exports.userJoinsEvent = functions
         .doc(eventId).set({
           "isPrivate": isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -1561,6 +1574,7 @@ exports.userJoinsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -2407,6 +2421,7 @@ exports.zzzzEventUpdatesCoverData = functions
         .collection("Events")
         .doc(eventId).set({
           "title": after.title,
+          "imageUrl": after.imageUrl,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -2428,6 +2443,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .doc(eventId)
           .set({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2447,6 +2463,8 @@ exports.zzzzEventUpdatesCoverData = functions
       // COVER DATA: title, year, month, day, hour, minute, duration
       let coverDataChange = false;
       if (before.title != after.title) {
+        coverDataChange = true;
+      } else if (before.imageUrl != after.imageUrl) {
         coverDataChange = true;
       } else if (before.year != after.year) {
         coverDataChange = true;
@@ -2482,6 +2500,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2501,6 +2520,7 @@ exports.zzzzEventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -2526,6 +2546,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2545,6 +2566,7 @@ exports.zzzzEventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -2570,6 +2592,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2589,6 +2612,7 @@ exports.zzzzEventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -3306,6 +3330,7 @@ exports.zzzzUserAddsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -3329,6 +3354,7 @@ exports.zzzzUserAddsEvent = functions
           .doc(eventId).set({
             "isPrivate": eventDoc.isPrivate,
             "title": eventDoc.title,
+            "imageUrl": eventDoc.imageUrl,
             "doneAt": eventDoc.doneAt,
             "year": eventDoc.year,
             "month": eventDoc.month,
@@ -3490,6 +3516,7 @@ exports.zzzzUserJoinsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -3514,6 +3541,7 @@ exports.zzzzUserJoinsEvent = functions
                 .set({
                   "isPrivate": eventDoc.isPrivate,
                   "title": eventDoc.title,
+                  "imageUrl": eventDoc.imageUrl,
                   "doneAt": eventDoc.doneAt,
                   "year": eventDoc.year,
                   "month": eventDoc.month,
@@ -3537,6 +3565,7 @@ exports.zzzzUserJoinsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
