@@ -99,86 +99,84 @@ class _ContentState extends State<Content> {
     _imagesUploaded = await _brandDataService.getBrandContentPictures(widget.brandId);
     imageSliders = _imagesUploaded
         .map((item) => Container(
-          child: Container(
-            margin: EdgeInsets.all(5.0),
-            child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute<Null>(
-                            builder: (context) => FullscreenSliderDemo(
-                              initialImage: _imagesUploaded.indexOf(item),
-                              images: _imagesUploaded,
-                            ),
-                          )
-                        );
-                      },
-                      child: Image.network(item.url!, fit: BoxFit.cover, width: MediaQuery.of(context).size.width,)
-                    ),
-                    Positioned(
-                      bottom: -15,
-                      left: 0.0,
-                      right: 0.0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Color.fromARGB(200, 0, 0, 0),
-                              Color.fromARGB(0, 0, 0, 0)
-                            ],
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
+          margin: const EdgeInsets.all(5.0),
+          child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+              child: Stack(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute<void>(
+                          builder: (context) => FullscreenSliderDemo(
+                            initialImage: _imagesUploaded.indexOf(item),
+                            images: _imagesUploaded,
                           ),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('No. ${_imagesUploaded.indexOf(item) + 1} de ${_imagesUploaded.length.toString()}',
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                var result = await showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myImagesDeleteDescription);
-                                    }
-                                );
-                                if (result) {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  await Future.delayed(const Duration(milliseconds: 1000), () async {
-                                    await _brandDataService.deleteBrandContentPictures(widget.brandId, item.id!);
-                                  });
-                                  getBrandContentImages();
-                                }
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Icon(Icons.delete_outline, color: AppColors.red, size: MediaQuery.of(context).size.width*0.05),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    AppLocalizations.of(context)!.delete,
-                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                  ),
-                                ],
-                              ),
-                            ),
+                        )
+                      );
+                    },
+                    child: Image.network(item.url!, fit: BoxFit.cover, width: MediaQuery.of(context).size.width,)
+                  ),
+                  Positioned(
+                    bottom: -15,
+                    left: 0.0,
+                    right: 0.0,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color.fromARGB(200, 0, 0, 0),
+                            Color.fromARGB(0, 0, 0, 0)
                           ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
                         ),
                       ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('No. ${_imagesUploaded.indexOf(item) + 1} de ${_imagesUploaded.length.toString()}',
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              var result = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myImagesDeleteDescription);
+                                  }
+                              );
+                              if (result) {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                await Future.delayed(const Duration(milliseconds: 1000), () async {
+                                  await _brandDataService.deleteBrandContentPictures(widget.brandId, item.id!);
+                                });
+                                getBrandContentImages();
+                              }
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Icon(Icons.delete_outline, color: AppColors.red, size: MediaQuery.of(context).size.width*0.05),
+                                const SizedBox(width: 10),
+                                Text(
+                                  AppLocalizations.of(context)!.delete,
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                )),
-          ),
+                  ),
+                ],
+              )),
         ))
         .toList();
     setState(() {
@@ -273,16 +271,14 @@ class _ContentState extends State<Content> {
                 imageSliders.isNotEmpty ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      child: CarouselSlider(
-                        options: CarouselOptions(
-                            autoPlay: false,
-                            aspectRatio: 2.0,
-                            enlargeCenterPage: true,
-                            enableInfiniteScroll: false
-                        ),
-                        items: imageSliders,
+                    CarouselSlider(
+                      options: CarouselOptions(
+                          autoPlay: false,
+                          aspectRatio: 2.0,
+                          enlargeCenterPage: true,
+                          enableInfiniteScroll: false
                       ),
+                      items: imageSliders,
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.03),
                   ],
@@ -297,7 +293,7 @@ class _ContentState extends State<Content> {
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                     child: ListTile(
                       dense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
                       onTap: getImage,
                       title: Padding(
                         padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
@@ -333,7 +329,7 @@ class _ContentState extends State<Content> {
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                     child: ListTile(
                       dense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 10),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 10),
                       title: Text(
                         AppLocalizations.of(context)!.addBrandPhotosMax,
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
@@ -347,10 +343,10 @@ class _ContentState extends State<Content> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                _imagesToUpload!.isNotEmpty ? Container(
+                _imagesToUpload!.isNotEmpty ? SizedBox(
                   height: MediaQuery.of(context).size.height * 0.25,
                   child: ListView.builder(
-                      physics: BouncingScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
                       itemCount: _imagesToUpload!.length,
@@ -361,9 +357,9 @@ class _ContentState extends State<Content> {
                             children: [
                               Material(
                                 elevation: 4,
-                                shape: RoundedRectangleBorder(
+                                shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
-                                    const Radius.circular(10.0),
+                                    Radius.circular(10.0),
                                   ),
                                 ),
                                 child: Stack(
@@ -374,15 +370,15 @@ class _ContentState extends State<Content> {
                                       width: MediaQuery.of(context).size.width * 0.35,
                                       decoration: BoxDecoration(
                                         //color: Theme.of(context).colorScheme.secondary,
-                                        borderRadius: BorderRadius.all(
-                                          const Radius.circular(10.0),
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(10.0),
                                         ),
                                         image: DecorationImage(
                                           fit: BoxFit.cover,
                                           image: FileImage(_imagesToUpload![index]),
                                         ),
                                       ),
-                                      child: Center(),
+                                      child: const Center(),
                                     ),
                                   ],
                                 ),
@@ -399,7 +395,7 @@ class _ContentState extends State<Content> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Icon(Icons.clear, color: AppColors.red, size: MediaQuery.of(context).size.width*0.05),
-                                    SizedBox(width: 10),
+                                    const SizedBox(width: 10),
                                     Text(
                                       AppLocalizations.of(context)!.discard,
                                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
