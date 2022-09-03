@@ -12,7 +12,7 @@ class BonosUtils {
       Bono bono = Bono.fromObjectAllData(documents[i].id, documents[i]);
       bonos.add(bono);
     }
-
+/*
     if(ordenSelection == 0) {
       bonos.sort((a, b) {
         if (b.isActive!) {
@@ -45,6 +45,8 @@ class BonosUtils {
         return 1;
       });
     }
+    
+ */
 
     return bonos;
   }

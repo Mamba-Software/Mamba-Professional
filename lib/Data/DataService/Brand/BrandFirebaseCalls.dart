@@ -537,6 +537,14 @@ class BrandFirebaseCalls {
     });
   }
 
+  Future<void> updateBonoActive(String brandID, String bonoId, bool isActive) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).get();
+    Bono b = Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
+      "isActive": isActive,
+    });
+  }
+
   //Delete
 
   Future<void> deleteBrand(String brandId) async {
