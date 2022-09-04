@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
@@ -48,7 +49,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.25 - kToolbarHeight);
   }
   // Boolean Loading
   bool isFirstBuild = true;
@@ -80,6 +81,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
+  int placesLeft = 0;
   int membersMax = currentBrand.maxMembers!;
   // Members Page
   bool isFull = false;
@@ -201,9 +203,9 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         eventTrainersBool.add(false);
       }
     }
-
     if (mounted) {
       setState(() {
+        placesLeft = members - eventClients.length;
         eventTrainers = trainers;
         eventTrainersIds = trainersIds;
         eventClients = clients;
@@ -507,6 +509,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     return Theme.of(context).colorScheme.secondary;
   }
 
+
   // Build EventFeedback Value
   Widget buildEventFeedbackIcon(double eventFeedbackValue) {
     return Container(
@@ -530,6 +533,33 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       ),
     );
 
+  }
+
+  Widget buildPlacesLeftWidget(int places) {
+    return FittedBox(
+      fit: BoxFit.fitHeight,
+      child: Container(
+        height: MediaQuery.of(context).size.width*0.14,
+        padding: EdgeInsets.only(top: 4, bottom: 8),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                places.toString(),
+                style: Theme.of(context).textTheme.headline3?.copyWith(color: isFull ? AppColors.red : Colors.green),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                places == 1 ? AppLocalizations.of(context)!.slot : AppLocalizations.of(context)!.slots,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: isFull ? AppColors.red : Colors.green),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -851,12 +881,17 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            toolbarHeight: MediaQuery.of(context).size.height*0.1,
+            expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
+            systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7)),
             floating: true,
             pinned: true,
-            automaticallyImplyLeading: true,
+            centerTitle: true,
+            title: appBarExpanded ? Text(
+                titleController.text,
+                style: Theme.of(context).appBarTheme.titleTextStyle
+            ) : Container(),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 decoration: BoxDecoration(
@@ -871,24 +906,37 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
-            centerTitle: true,
-            leading: !appBarExpanded ? MaterialButton(
-              elevation: 4,
-              child: Icon(
-                Icons.arrow_back,
-                color: Theme.of(context).primaryColor,
-                size: MediaQuery.of(context).size.height*0.03,
-              ),
-              color: Theme.of(context).scaffoldBackgroundColor,
-              highlightElevation: 0,
-              minWidth: double.minPositive,
-              height: double.minPositive,
-              shape: RoundedRectangleBorder(
+            leadingWidth: MediaQuery.of(context).size.width*0.2,
+            leading: Center(
+
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(100),
+                child: Material(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: InkWell(
+                    child: Padding(
+                      padding: const EdgeInsets.all(13),
+                      child : Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
+                    ),
+                    onTap: () => Navigator.pop(context),
+                  ),
+                ),
               ),
-              onPressed: () => Navigator.of(context).pop(),
-            ) : Container(),
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                child: Container(
+                  height: MediaQuery.of(context).size.width*0.06,
+                  width: MediaQuery.of(context).size.width*0.12,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    shape: BoxShape.circle
+                  ),
+                  child: buildPlacesLeftWidget(1),
+                ),
+              ),
+            ],
           ),
           !isLoadingBody ? SliverToBoxAdapter(child: Container(
               decoration: BoxDecoration(
@@ -896,6 +944,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               ),
               child: Column(
                 children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                     child: Column(
@@ -957,7 +1006,42 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
-
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Theme.of(context).backgroundColor,
+                                    ),
+                                    child: event!.isPrivate! ? Row(
+                                      children: [
+                                        Text(
+                                            AppLocalizations.of(context)!.private,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            textAlign: TextAlign.right
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                        Icon(
+                                          Icons.lock_outlined,
+                                          color: Theme.of(context).primaryColor,
+                                          size: MediaQuery.of(context).size.width*0.05,
+                                        ),
+                                      ],
+                                    ) : Row(
+                                      children: [
+                                        Text(
+                                            AppLocalizations.of(context)!.group,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            textAlign: TextAlign.right
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                        Icon(
+                                          Icons.groups,
+                                          color: Theme.of(context).primaryColor,
+                                          size: MediaQuery.of(context).size.width*0.05,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                               Padding(
@@ -1638,7 +1722,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
           ),
         ],
       ),
-
 
       /*
       Container(

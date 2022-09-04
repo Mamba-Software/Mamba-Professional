@@ -1110,6 +1110,14 @@
   "@clientsSelectedError":{
     "description": "noTrainerSelectedError text"
   },
+  "slot": "plaza",
+  "@slot":{
+    "description": "noTrainerSelectedError text"
+  },
+  "slots": "plazas",
+  "@slots":{
+    "description": "noTrainerSelectedError text"
+  },
   "totalNumberEvents": "Sesiones realizadas: {number}",
   "@totalNumberEvents": {
     "description": "Wellcome message",

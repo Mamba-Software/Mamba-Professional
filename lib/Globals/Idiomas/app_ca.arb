@@ -257,6 +257,8 @@
   "noTrainerSelectedError": "No hi ha cap entrenador assignat",
   "noClientSelectedError": "No hi ha cap client assignat",
   "clientsSelectedError": "Hi ha més clients que places disponibles",
+  "slot": "plaça",
+  "slots": "places",
   "totalNumberEvents": "Sessions realitzades: {number}",
   "noTrainingsDone": "Aquest usuari no ha participat en cap esdeveniment",
   "todaysBrandEvents": "Previst per avui",
