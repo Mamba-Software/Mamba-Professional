@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:maps_launcher/maps_launcher.dart';
@@ -11,7 +13,6 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,13 +36,20 @@ class EventPageTrainer extends StatefulWidget {
 }
 
 class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerProviderStateMixin {
+
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
-  var _eventDataService = new EventDataService();
-  var _locationDataService = new LocationDataService();
+  final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
+  final _locationDataService = LocationDataService();
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
+  // App Bar and Scroll View
+  ScrollController? _scrollController;
+  bool appBarExpanded = false;
+  bool get _isAppBarExpanded {
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+  }
   // Boolean Loading
   bool isFirstBuild = true;
   bool isLoading = true;
@@ -65,10 +73,10 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   List<String> durations = ["0.30","0.45","1.00","1.15","1.30","1.45","2.00","2.15","2.30","2.45","3.00"];
   // Location
   Location location = Location();
-  Set<Marker> markers = new Set<Marker>();
-  CameraPosition _initialPosition = CameraPosition(target: LatLng(26.8206, 30.8025));
+  Set<Marker> markers = Set<Marker>();
+  CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
   GoogleMapController? mapController;
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller = Completer();
   // Participants
   TextEditingController membersController = TextEditingController();
   int members = 1;
@@ -90,18 +98,24 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   // Event Retrieved From BD
   Event? event;
   var placeDetails;
-  // BackGround image
-  Image? theImage;
   // String Deleted Photo
   String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
-
+  // Feedback Value
   var eventFeedbackValue;
 
   @override
   initState() {
     super.initState();
+    _scrollController = ScrollController()
+      ..addListener(() => _isAppBarExpanded ?
+      setState(() {
+        appBarExpanded = true;
+      }) :
+      setState(() {
+        appBarExpanded = false;
+      }),
+      );
     isLoading = true;
-    theImage = buildRandomImage();
     getEventInfo();
   }
 
@@ -111,72 +125,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     safeAreaWidth = MediaQuery.of(context).size.width;
     print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
-  }
-
-  // Did Change Dependencies
-  @override
-  didChangeDependencies() {
-    super.didChangeDependencies();
-    precacheImage(theImage!.image, context);
-  }
-
-  Image buildRandomImage() {
-    Random random = new Random();
-    int randomNumber = random.nextInt(15);
-
-    switch(randomNumber) {
-      case 0: {
-        return Image.asset(Constants.eventBackground);
-      }
-      case 1: {
-        return Image.asset(Constants.eventBackground1);
-      }
-      case 2: {
-        return Image.asset(Constants.eventBackground2);
-      }
-      case 3: {
-        return Image.asset(Constants.eventBackground3);
-      }
-      case 4: {
-        return Image.asset(Constants.eventBackground4);
-      }
-      case 5: {
-        return Image.asset(Constants.eventBackground5);
-      }
-      case 6: {
-        return Image.asset(Constants.eventBackground6);
-      }
-      case 7: {
-        return Image.asset(Constants.eventBackground7);
-      }
-      case 8: {
-        return Image.asset(Constants.eventBackground8);
-      }
-      case 9: {
-        return Image.asset(Constants.eventBackground9);
-      }
-      case 10: {
-        return Image.asset(Constants.eventBackground10);
-      }
-      case 11: {
-        return Image.asset(Constants.eventBackground11);
-      }
-      case 12: {
-        return Image.asset(Constants.eventBackground12);
-      }
-      case 13: {
-        return Image.asset(Constants.eventBackground13);
-      }
-      case 14: {
-        return Image.asset(Constants.eventBackground14);
-      }
-      case 15: {
-        return Image.asset(Constants.eventBackground15);
-      }
-      default: {
-        return Image.asset(Constants.eventBackground);
-      }
-    }
   }
 
   void getEventInfo() async {
@@ -280,8 +228,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   }
 
   void createMarker() async{
-    Marker marker = new Marker(
-      markerId: MarkerId('1'),
+    Marker marker = Marker(
+      markerId: const MarkerId('1'),
       position: LatLng(location.latitude!,location.longitude!),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
@@ -321,8 +269,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
     var startDate = DateTime.now();
-    var minimumDate = DateTime.now().subtract(Duration(days: 365));
-    var maximumDate = DateTime.now().add(Duration(days: 365));
+    var minimumDate = DateTime.now().subtract(const Duration(days: 365));
+    var maximumDate = DateTime.now().add(const Duration(days: 365));
     var title;
     var initialDuration = 1;
     var initialMembers = 1;
@@ -340,7 +288,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
       var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
       var temp = DateTime(startDate.year, startDate.month, startDate.day, endHourWS, endMinWS);
-      maximumDate = temp.add(Duration(days: 365));
+      maximumDate = temp.add(const Duration(days: 365));
     } else if (type == 1) {
       initialDuration = durations.indexWhere((element) => element == duration);
     } else if (type == 2) {
@@ -375,7 +323,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
           )
       ),
       child: CupertinoPicker(
-          scrollController: new FixedExtentScrollController(
+          scrollController: FixedExtentScrollController(
               initialItem: initialDuration
           ),
           itemExtent: 40.0,
@@ -388,13 +336,13 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               durationController.text = "${hour}h ${min}min";
             });
           },
-          children: new List<Widget>.generate(
+          children: List<Widget>.generate(
               durations.length, (int index) {
             var item = durations[index];
             var hour = item.split(".")[0];
             var min = item.split(".")[1];
-            return new Center(
-              child: new Text(
+            return Center(
+              child: Text(
                   "${hour}h ${min}min",
                 style: Theme.of(context).textTheme.bodyText1,
               ),
@@ -410,7 +358,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
           )
       ),
       child: CupertinoPicker(
-          scrollController: new FixedExtentScrollController(
+          scrollController: FixedExtentScrollController(
               initialItem: initialMembers
           ),
           itemExtent: 40.0,
@@ -421,10 +369,10 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               membersController.text = "${event!.numClients.toString()} / ${members.toString()}";
             });
           },
-          children: new List<Widget>.generate(totalMembers.toInt(), (int index) {
+          children: List<Widget>.generate(totalMembers.toInt(), (int index) {
             var member = event!.numClients!+index;
-            return new Center(
-              child: new Text(
+            return Center(
+              child: Text(
                   "${member.toString()}",
                 style: Theme.of(context).textTheme.bodyText1,
               ),
@@ -446,7 +394,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     showCupertinoModalPopup(
         context: ctx,
         builder: (_) => Material(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
           ),
           child: Container(
@@ -623,7 +571,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               ),
               decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0))
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -631,7 +579,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   Container(
                     height:  MediaQuery.of(context).size.height*0.1,
                     child: Material(
-                      shape: RoundedRectangleBorder(
+                      shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
                       ),
                       elevation: 4,
@@ -653,7 +601,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     child: Container(
                                       height: MediaQuery.of(context).size.height * 0.04,
                                       width: MediaQuery.of(context).size.width * 0.1,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                           color: AppColors.grey,
                                           borderRadius: BorderRadius.all(Radius.circular(15.0))
                                       ),
@@ -668,7 +616,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                               child: Container(
                                 height: MediaQuery.of(context).size.height * 0.04,
                                 width: MediaQuery.of(context).size.width*0.3,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     color: AppColors.grey,
                                     borderRadius: BorderRadius.all(Radius.circular(15.0))
                                 ),
@@ -682,7 +630,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 child: Container(
                                   height: MediaQuery.of(context).size.height * 0.04,
                                   width: MediaQuery.of(context).size.width * 0.1,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       borderRadius: BorderRadius.all(Radius.circular(15.0))
                                   ),
@@ -724,7 +672,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.04,
                               width: MediaQuery.of(context).size.width*0.4,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   color: AppColors.grey,
                                   borderRadius: BorderRadius.all(Radius.circular(15.0))
                               ),
@@ -737,7 +685,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.03,
                               width: MediaQuery.of(context).size.width*0.6,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   color: AppColors.grey,
                                   borderRadius: BorderRadius.all(Radius.circular(15.0))
                               ),
@@ -753,7 +701,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 Container(
                                   height: MediaQuery.of(context).size.height * 0.07,
                                   width: MediaQuery.of(context).size.width*0.15,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       borderRadius: BorderRadius.all(Radius.circular(15.0))
                                   ),
@@ -761,7 +709,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 Container(
                                   height: MediaQuery.of(context).size.height * 0.07,
                                   width: MediaQuery.of(context).size.width*0.7,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       borderRadius: BorderRadius.all(Radius.circular(15.0))
                                   ),
@@ -779,7 +727,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 Container(
                                   height: MediaQuery.of(context).size.height * 0.07,
                                   width: MediaQuery.of(context).size.width*0.15,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       borderRadius: BorderRadius.all(Radius.circular(15.0))
                                   ),
@@ -787,7 +735,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 Container(
                                   height: MediaQuery.of(context).size.height * 0.07,
                                   width: MediaQuery.of(context).size.width*0.7,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       borderRadius: BorderRadius.all(Radius.circular(15.0))
                                   ),
@@ -811,7 +759,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             child: Container(
                               height: MediaQuery.of(context).size.height*0.2,
                               width: MediaQuery.of(context).size.width*0.9,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   color: AppColors.grey,
                                   borderRadius: BorderRadius.all(Radius.circular(15.0))
                               ),
@@ -833,7 +781,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.03,
                               width: MediaQuery.of(context).size.width*0.3,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   color: AppColors.grey,
                                   borderRadius: BorderRadius.all(Radius.circular(15.0))
                               ),
@@ -851,7 +799,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   child: Container(
                                     height: MediaQuery.of(context).size.height * 0.08,
                                     width: MediaQuery.of(context).size.height * 0.08,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       shape: BoxShape.circle,
                                     ),
@@ -863,7 +811,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   child: Container(
                                     height: MediaQuery.of(context).size.height * 0.08,
                                     width: MediaQuery.of(context).size.height * 0.08,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       shape: BoxShape.circle,
                                     ),
@@ -875,7 +823,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   child: Container(
                                     height: MediaQuery.of(context).size.height * 0.08,
                                     width: MediaQuery.of(context).size.height * 0.08,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       shape: BoxShape.circle,
                                     ),
@@ -899,779 +847,1528 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     Scaffold(
       appBar: null,
       resizeToAvoidBottomInset: true,
-      body: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-            ),
-          ),
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height*0.26,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            backgroundColor: AppColors.darkGrey,
+            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            elevation: 0,
+            floating: true,
+            pinned: true,
+            automaticallyImplyLeading: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: theImage!.image,
-                    fit: BoxFit.cover,
-                  ),
+                    color: Colors.transparent,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: CachedNetworkImageProvider(event!.imageUrl!),
+                    )
                 ),
+                child: const Center(),
               ),
-              /*
-              Container(
-                height: MediaQuery.of(context).size.height*0.26,
-                decoration: new BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  gradient: LinearGradient(
-                      begin: FractionalOffset.bottomCenter,
-                      end: FractionalOffset.topCenter,
-                      colors: [
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.1),
-                        Theme.of(context).scaffoldBackgroundColor.withOpacity(0.9),
-                      ],
-                      stops: [
-                        0.8,
-                        1
-                      ]
-                  ),
-                ),
-                child: Center(),
+              titlePadding: EdgeInsets.zero,
+              //centerTitle: true,
+            ),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
+            centerTitle: true,
+            leading: !appBarExpanded ? MaterialButton(
+              elevation: 4,
+              child: Icon(
+                Icons.arrow_back,
+                color: Theme.of(context).primaryColor,
+                size: MediaQuery.of(context).size.height*0.03,
               ),
-               */
-            ],
+              color: Theme.of(context).scaffoldBackgroundColor,
+              highlightElevation: 0,
+              minWidth: double.minPositive,
+              height: double.minPositive,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ) : Container(),
           ),
-          Positioned(
-            top: MediaQuery.of(context).size.height*0.23,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: MediaQuery.of(context).size.height*0.10,
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height*0.10,
-                minHeight: MediaQuery.of(context).size.height*0.10,
-              ),
+          !isLoadingBody ? SliverToBoxAdapter(child: Container(
               decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+                color: Theme.of(context).scaffoldBackgroundColor,
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Material(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-                    ),
-                    elevation: 4,
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-                            child: IconButton(
-                              icon: Icon(Icons.arrow_back, color: !isEditing ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06),
-                              onPressed: !isEditing ? () {
-                               Navigator.pop(context);
-                              } : null,
-                            ),
-                          ),
-                          isEditing ? Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)) : Text(datetitle, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)),
-                          (!canEdit || event!.isPrivate!) ? Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.08, left: MediaQuery.of(context).size.width*0.08),
-                            child: Container(),
-                          ) :
-                          Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
-                            child: Column(
-                              children: [
-                                !isEditing ? Icon(isFull ? Icons.lock_outline : Icons.lock_open, color: isFull ? Colors.red : Color(0xFFA8C76C), size: MediaQuery.of(context).size.width*0.05,) : Icon(Icons.lock_open, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.05,),
-                                !isEditing ? Text(isFull ? AppLocalizations.of(context)!.full : AppLocalizations.of(context)!.available, style:  Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: isFull ? Colors.red : Color(0xFFA8C76C))) : Text(AppLocalizations.of(context)!.full, style:  Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).scaffoldBackgroundColor),),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height*0.32,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: !isLoadingBody ? Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                ),
-                child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            Form(
-                              key: formKeyInfo,
-                              child: Column(
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        Form(
+                          key: formKeyInfo,
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      isEditing ? new Expanded(
-                                        child: new TextFormField(
-                                          controller: titleController,
-                                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                          style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                  isEditing ? Expanded(
+                                    child: TextFormField(
+                                      controller: titleController,
+                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                      style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                      decoration: InputDecoration(
+                                          hintStyle: Theme.of(context).textTheme.caption,
+                                          hintText:AppLocalizations.of(context)!.titleError,
+                                          enabledBorder: const UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 1.0
+                                              )
+                                          ),
+                                          focusedBorder: const UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey,
+                                                  width: 1.0
+                                              )
+                                          ),
+                                          errorBorder: const UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.red,
+                                                  width: 1.0
+                                              )
+                                          ),
+                                          disabledBorder: InputBorder.none,
+                                          contentPadding: const EdgeInsets.all(0)
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ) : Expanded(
+                                    child: TextField(
+                                      controller: titleController,
+                                      readOnly: true,
+                                      style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                      decoration: InputDecoration(
+                                        hintStyle: Theme.of(context).textTheme.caption,
+                                        hintText:AppLocalizations.of(context)!.titleError,
+                                        border: InputBorder.none,
+                                        focusedBorder: InputBorder.none,
+                                        enabledBorder: InputBorder.none,
+                                        errorBorder: InputBorder.none,
+                                        disabledBorder: InputBorder.none,
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                              Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      isEditing ? Flexible(
+                                        child: TextFormField(
+                                          controller: descriptionController,
+                                          minLines: 1,
+                                          maxLines: 6,
+                                          style: Theme.of(context).textTheme.bodyText2,
                                           decoration: InputDecoration(
-                                              hintStyle: Theme.of(context).textTheme.caption,
-                                              hintText:AppLocalizations.of(context)!.titleError,
+                                            hintStyle: Theme.of(context).textTheme.caption,
+                                            hintText:AppLocalizations.of(context)!.noDescription,
+                                            enabledBorder: const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 1.0
+                                                )
+                                            ),
+                                            focusedBorder: const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 1.0
+                                                )
+                                            ),
+                                            errorBorder: const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.red,
+                                                    width: 1.0
+                                                )
+                                            ),
+                                            disabledBorder: InputBorder.none,
+                                          ),
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                      ) : Flexible(
+                                        child: TextFormField(
+                                          controller: descriptionController,
+                                          readOnly: true,
+                                          minLines: 1,
+                                          maxLines: 4,
+                                          style: Theme.of(context).textTheme.bodyText2,
+                                          decoration: InputDecoration(
+                                            hintStyle: Theme.of(context).textTheme.caption,
+                                            hintText:AppLocalizations.of(context)!.noDescription,
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                            errorBorder: InputBorder.none,
+                                            disabledBorder: InputBorder.none,
+                                            contentPadding: const EdgeInsets.all(0),
+                                          ),
+                                          textAlign: TextAlign.justify,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        errorDate ? Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.errorDate,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ): Container(),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.08,
+                          width: MediaQuery.of(context).size.width * 0.90,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                height: MediaQuery.of(context).size.height * 0.07,
+                                width: MediaQuery.of(context).size.height * 0.07,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                ),
+                                child: Center(
+                                    child: Text(
+                                        event!.day.toString(),
+                                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                                        textAlign: TextAlign.center
+                                    )
+                                ),
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                              Container(
+                                  height: MediaQuery.of(context).size.height * 0.08,
+                                  width: MediaQuery.of(context).size.width*0.64,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        isEditing ? Flexible(
+                                          child: TextFormField(
+                                            controller: startDateController,
+                                            readOnly: true,
+                                            onTap: () {
+                                              if (isEditing) selectSlot(context, 0);
+                                            },
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            decoration: InputDecoration(
+                                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                              border: InputBorder.none,
                                               enabledBorder: UnderlineInputBorder(
                                                   borderSide: BorderSide(
-                                                      color: Colors.grey,
+                                                      color: errorDate ? Colors.red : Colors.grey,
                                                       width: 1.0
                                                   )
                                               ),
                                               focusedBorder: UnderlineInputBorder(
                                                   borderSide: BorderSide(
+                                                      color: errorDate ? Colors.red : Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              disabledBorder: InputBorder.none,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ) : Flexible(
+                                          child: TextFormField(
+                                            controller: startDateController,
+                                            readOnly: true,
+                                            enabled: false,
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            decoration: InputDecoration(
+                                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.08,
+                          width: MediaQuery.of(context).size.width * 0.90,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                height: MediaQuery.of(context).size.height * 0.07,
+                                width: MediaQuery.of(context).size.height * 0.07,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                ),
+                                child: Center(
+                                    child: Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,)
+                                ),
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                              Container(
+                                  height: MediaQuery.of(context).size.height * 0.08,
+                                  width: MediaQuery.of(context).size.width*0.64,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+
+                                        isEditing ? Flexible(
+                                          child: TextFormField(
+                                            controller: durationController,
+                                            onTap: () {
+                                              if (isEditing) selectSlot(context, 1);
+                                            },
+                                            readOnly: true,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              enabledBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: errorDate ? Colors.red : Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              focusedBorder: UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: errorDate ? Colors.red : Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.zero,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ) : Flexible(
+                                          child: TextFormField(
+                                            controller: durationController,
+                                            readOnly: true,
+                                            enabled: false,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.zero,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.2,
+                        width: MediaQuery.of(context).size.width*0.9,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).backgroundColor,
+                            borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                        ),
+                        child: Stack(
+                          children: <Widget>[
+                            Center(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(15),
+                                  topRight: Radius.circular(15),
+                                  bottomRight: Radius.circular(15),
+                                  bottomLeft: Radius.circular(15),
+                                ),
+                                child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  heightFactor: 1,
+                                  widthFactor: 2.5,
+                                  child: GoogleMap(
+                                    onMapCreated: _onMapCreated,
+                                    initialCameraPosition: _initialPosition,
+                                    scrollGesturesEnabled: false,
+                                    zoomGesturesEnabled: false,
+                                    rotateGesturesEnabled: false,
+                                    mapToolbarEnabled: false,
+                                    zoomControlsEnabled: false,
+                                    minMaxZoomPreference: const MinMaxZoomPreference(17,17),
+                                    myLocationButtonEnabled: false,
+                                    markers: markers,
+                                    mapType: MapType.hybrid,
+                                    onTap: isEditing ? (LatLng) async {
+                                      var result = await Navigator.push(
+                                          context,
+                                          CupertinoPageRoute<String>(
+                                            builder: (context) => MyLocationsSelect(
+                                              brandId: currentBrand.id!,
+                                            ),
+                                          )
+                                      );
+                                      if (result != null) {
+                                        await getLocationFromId(result);
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      }
+                                    } : _onLaunchCoordinates,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 5.0,
+                              bottom: 5.0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Theme.of(context).scaffoldBackgroundColor
+                                ),
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.location_on,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                      size: 15,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 5.0),
+                                      child: Text(
+                                        location.description!,
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      isEditing ? Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05, top:MediaQuery.of(context).size.width*0.03),
+                        child: Container(
+                          height: 1,
+                          width: MediaQuery.of(context).size.width*0.9,
+                          color: AppColors.grey,
+                        ),
+                      ) : Container(),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
+                    child: Column(
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height*0.025),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Text(
+                                AppLocalizations.of(context)!.trainers,
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              isEditing ? Container(
+                                height: MediaQuery.of(context).size.height*0.15,
+                                width: MediaQuery.of(context).size.width*0.99,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const AlwaysScrollableScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: allTrainers.length,
+                                    itemBuilder: (context, int index) {
+                                      var trainer = allTrainers[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            eventTrainersBool[index] = !eventTrainersBool[index];
+                                          });
+                                        },
+                                        child: Padding(
+                                          padding: !(index == 0 || index == allTrainers.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: allTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              CircularImage(
+                                                size: MediaQuery.of(context).size.width*0.18,
+                                                image: trainer.imageUrl,
+                                                color: Theme.of(context).primaryColor,
+                                                borderWidth: 1,
+                                              ),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.2,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      StringUtils().splitCommonName(trainer.name!),
+                                                      style: Theme.of(context).textTheme.bodyText2,
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                    SizedBox(
+                                                      width: MediaQuery.of(context).size.width*0.01,
+                                                    ),
+                                                    SizedBox(
+                                                      width: MediaQuery.of(context).size.width*0.05,
+                                                      child: Checkbox(
+                                                        checkColor: Colors.white,
+                                                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                        value: eventTrainersBool[index],
+                                                        shape: const CircleBorder(
+                                                            side: BorderSide.none
+                                                        ),
+                                                        onChanged: (bool? value) {
+                                                          setState(() {
+                                                            eventTrainersBool[index] = !eventTrainersBool[index];
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              ) :
+                              Container(
+                                height: MediaQuery.of(context).size.height*0.15,
+                                width: MediaQuery.of(context).size.width*0.99,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: eventTrainers.length,
+                                    itemBuilder: (context, int index) {
+                                      var trainer = eventTrainers[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                              builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false)));
+                                        },
+                                        child: Padding(
+                                          padding: !(index == 0 || index == eventTrainers.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              CircularImage(
+                                                size: MediaQuery.of(context).size.width*0.18,
+                                                image: trainer.imageUrl,
+                                                color: Theme.of(context).primaryColor,
+                                                borderWidth: 1,
+                                              ),
+                                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.2,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        trainer.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(trainer.name!) : trainer.name!,
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        errorNoTrainerSelected ? Padding(
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                          child: Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.noTrainerSelectedError,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ) : Container(),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Text(
+                                AppLocalizations.of(context)!.clients,
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(width: 16),
+                              (event!.isPrivate! == false) ? Row(
+                                children: [
+                                  Text(
+                                    "( "+event!.numClients.toString(),
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                  Text(
+                                    " / ",
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                  Text(
+                                    event!.maxMembers.toString()+" )",
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ],
+                              ) : Row(
+                                children: [
+                                  Text(
+                                    "( "+event!.numClients.toString()+" )",
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        isEditing ? Padding(
+                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                          child: GestureDetector(
+                            onTap: () {
+                              selectSlot(context, 2);
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Icon(Icons.person, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06),
+                                Container(
+                                    padding: const EdgeInsets.only(left: 20),
+                                    width: MediaQuery.of(context).size.width*0.18,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: TextFormField(
+                                            controller: membersController,
+                                            readOnly: true,
+                                            enabled: false,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!.members.toLowerCase(),
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ) : Padding(
+                          padding: const EdgeInsets.only(top: 0),
+                          child:
+                          eventClients.isEmpty ?
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  Container(
+                                      height: 100,
+                                      child: Image.asset(Constants.emptyPeople)
+                                  ),
+                                  Text(
+                                    AppLocalizations.of(context)!.noClientJoining,
+                                    style: Theme.of(context).textTheme.caption,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ) :
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: MediaQuery.of(context).size.height*0.15,
+                                width: MediaQuery.of(context).size.width,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: eventClients.length,
+                                    itemBuilder: (context, int index) {
+                                      var client = eventClients[index];
+                                      var clientFeedback = eventClientsFeedback[index];
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                              builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
+                                        },
+                                        child: Padding(
+                                          padding: !(index == 0 || index == eventClients.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              CircularImage(
+                                                size: MediaQuery.of(context).size.width*0.18,
+                                                image: client.imageUrl,
+                                                color: Theme.of(context).primaryColor,
+                                                borderWidth: 1,
+                                              ),
+                                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width*0.2,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        client.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(client.name!) : client.name!,
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                              clientFeedback != null ? Container(
+                                                height: MediaQuery.of(context).size.height*0.02,
+                                                width: MediaQuery.of(context).size.width*0.1,
+                                                child: FittedBox(
+                                                    fit: BoxFit.fitHeight,
+                                                    child: buildEventFeedbackIcon(clientFeedback)
+                                                ),
+                                              ) : Container(),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        isEditing ? SizedBox(height: MediaQuery.of(context).size.height*0.10) : SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.12) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+          )) : SliverFillRemaining(
+              child: Center(
+                  child: LoadingView()
+              )
+          ),
+        ],
+      ),
+
+
+      /*
+      Container(
+            height: MediaQuery.of(context).size.height*0.10,
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.10,
+              minHeight: MediaQuery.of(context).size.height*0.10,
+            ),
+            decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0))
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Material(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+                  ),
+                  elevation: 0,
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_back, color: !isEditing ? Theme.of(context).primaryColor : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06),
+                            onPressed: !isEditing ? () {
+                              Navigator.pop(context);
+                            } : null,
+                          ),
+                        ),
+                        //isEditing ? Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)) : Text(datetitle, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold)),
+                        (!canEdit || event!.isPrivate!) ? Padding(
+                          padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.08, left: MediaQuery.of(context).size.width*0.08),
+                          child: Container(),
+                        ) :
+                        Padding(
+                          padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Column(
+                                    children: [
+                                      !isEditing ? Icon(isFull ? Icons.lock_outline : Icons.lock_open, color: isFull ? Colors.red : const Color(0xFFA8C76C), size: MediaQuery.of(context).size.width*0.05,) : Icon(Icons.lock_open, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.05,),
+                                      !isEditing ? Text(isFull ? AppLocalizations.of(context)!.full : AppLocalizations.of(context)!.available, style:  Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: isFull ? Colors.red : const Color(0xFFA8C76C))) : Text(AppLocalizations.of(context)!.full, style:  Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).scaffoldBackgroundColor),),
+                                    ],
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Theme.of(context).backgroundColor,
+                                    ),
+                                    child: event!.isPrivate! ? Row(
+                                      children: [
+                                        Text(
+                                            AppLocalizations.of(context)!.private,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            textAlign: TextAlign.right
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                        Icon(
+                                          Icons.lock_outlined,
+                                          color: Theme.of(context).primaryColor,
+                                          size: MediaQuery.of(context).size.width*0.05,
+                                        ),
+                                      ],
+                                    ) : Row(
+                                      children: [
+                                        Text(
+                                            AppLocalizations.of(context)!.group,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            textAlign: TextAlign.right
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                        Icon(
+                                          Icons.groups,
+                                          color: Theme.of(context).primaryColor,
+                                          size: MediaQuery.of(context).size.width*0.05,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          !isLoadingBody ? Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+              ),
+              child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Form(
+                            key: formKeyInfo,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    isEditing ? Expanded(
+                                      child: TextFormField(
+                                        controller: titleController,
+                                        validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                        decoration: InputDecoration(
+                                            hintStyle: Theme.of(context).textTheme.caption,
+                                            hintText:AppLocalizations.of(context)!.titleError,
+                                            enabledBorder: const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 1.0
+                                                )
+                                            ),
+                                            focusedBorder: const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.grey,
+                                                    width: 1.0
+                                                )
+                                            ),
+                                            errorBorder: const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: Colors.red,
+                                                    width: 1.0
+                                                )
+                                            ),
+                                            disabledBorder: InputBorder.none,
+                                            contentPadding: const EdgeInsets.all(0)
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ) : Expanded(
+                                      child: TextField(
+                                        controller: titleController,
+                                        readOnly: true,
+                                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                        decoration: InputDecoration(
+                                          hintStyle: Theme.of(context).textTheme.caption,
+                                          hintText:AppLocalizations.of(context)!.titleError,
+                                          border: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          disabledBorder: InputBorder.none,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+
+                                  ],
+                                ),
+                                Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        isEditing ? Flexible(
+                                          child: TextFormField(
+                                            controller: descriptionController,
+                                            minLines: 1,
+                                            maxLines: 6,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            decoration: InputDecoration(
+                                              hintStyle: Theme.of(context).textTheme.caption,
+                                              hintText:AppLocalizations.of(context)!.noDescription,
+                                              enabledBorder: const UnderlineInputBorder(
+                                                  borderSide: BorderSide(
                                                       color: Colors.grey,
                                                       width: 1.0
                                                   )
                                               ),
-                                              errorBorder: UnderlineInputBorder(
+                                              focusedBorder: const UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colors.grey,
+                                                      width: 1.0
+                                                  )
+                                              ),
+                                              errorBorder: const UnderlineInputBorder(
                                                   borderSide: BorderSide(
                                                       color: Colors.red,
                                                       width: 1.0
                                                   )
                                               ),
                                               disabledBorder: InputBorder.none,
-                                              contentPadding: EdgeInsets.all(0)
+                                            ),
+                                            textAlign: TextAlign.justify,
                                           ),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ) : new Expanded(
-                                        child: new TextField(
-                                          controller: titleController,
-                                          readOnly: true,
-                                          style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
-                                          decoration: InputDecoration(
-                                            hintStyle: Theme.of(context).textTheme.caption,
-                                            hintText:AppLocalizations.of(context)!.titleError,
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
+                                        ) : Flexible(
+                                          child: TextFormField(
+                                            controller: descriptionController,
+                                            readOnly: true,
+                                            minLines: 1,
+                                            maxLines: 4,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            decoration: InputDecoration(
+                                              hintStyle: Theme.of(context).textTheme.caption,
+                                              hintText:AppLocalizations.of(context)!.noDescription,
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: const EdgeInsets.all(0),
+                                            ),
+                                            textAlign: TextAlign.justify,
                                           ),
-                                          textAlign: TextAlign.left,
                                         ),
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                          color: Theme.of(context).backgroundColor,
-                                        ),
-                                        child: event!.isPrivate! ? Row(
-                                          children: [
-                                            Text(
-                                                AppLocalizations.of(context)!.private,
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                textAlign: TextAlign.right
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                            Icon(
-                                              Icons.lock_outlined,
-                                              color: Theme.of(context).primaryColor,
-                                              size: MediaQuery.of(context).size.width*0.05,
-                                            ),
-                                          ],
-                                        ) : Row(
-                                          children: [
-                                            Text(
-                                                AppLocalizations.of(context)!.group,
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                textAlign: TextAlign.right
-                                            ),
-                                            SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                            Icon(
-                                              Icons.groups,
-                                              color: Theme.of(context).primaryColor,
-                                              size: MediaQuery.of(context).size.width*0.05,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    )
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          errorDate ? Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.errorDate,
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ): Container(),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.08,
+                            width: MediaQuery.of(context).size.width * 0.90,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  height: MediaQuery.of(context).size.height * 0.07,
+                                  width: MediaQuery.of(context).size.height * 0.07,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0))
                                   ),
-                                  Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
-                                      child: new Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          isEditing ? new Flexible(
-                                            child: new TextFormField(
-                                              controller: descriptionController,
-                                              minLines: 1,
-                                              maxLines: 6,
-                                              style: Theme.of(context).textTheme.bodyText2,
+                                  child: Center(
+                                      child: Text(
+                                          event!.day.toString(),
+                                          style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                                          textAlign: TextAlign.center
+                                      )
+                                  ),
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                Container(
+                                    height: MediaQuery.of(context).size.height * 0.08,
+                                    width: MediaQuery.of(context).size.width*0.64,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          isEditing ? Flexible(
+                                            child: TextFormField(
+                                              controller: startDateController,
+                                              readOnly: true,
+                                              onTap: () {
+                                                if (isEditing) selectSlot(context, 0);
+                                              },
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                               decoration: InputDecoration(
-                                                hintStyle: Theme.of(context).textTheme.caption,
-                                                hintText:AppLocalizations.of(context)!.noDescription,
+                                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                border: InputBorder.none,
                                                 enabledBorder: UnderlineInputBorder(
                                                     borderSide: BorderSide(
-                                                        color: Colors.grey,
+                                                        color: errorDate ? Colors.red : Colors.grey,
                                                         width: 1.0
                                                     )
                                                 ),
                                                 focusedBorder: UnderlineInputBorder(
                                                     borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1.0
-                                                    )
-                                                ),
-                                                errorBorder: UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.red,
+                                                        color: errorDate ? Colors.red : Colors.grey,
                                                         width: 1.0
                                                     )
                                                 ),
                                                 disabledBorder: InputBorder.none,
                                               ),
-                                              textAlign: TextAlign.justify,
+                                              textAlign: TextAlign.start,
                                             ),
-                                          ) : new Flexible(
-                                            child: new TextFormField(
-                                              controller: descriptionController,
+                                          ) : Flexible(
+                                            child: TextFormField(
+                                              controller: startDateController,
                                               readOnly: true,
-                                              minLines: 1,
-                                              maxLines: 4,
-                                              style: Theme.of(context).textTheme.bodyText2,
+                                              enabled: false,
+                                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                               decoration: InputDecoration(
-                                                hintStyle: Theme.of(context).textTheme.caption,
-                                                hintText:AppLocalizations.of(context)!.noDescription,
+                                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                 border: InputBorder.none,
                                                 focusedBorder: InputBorder.none,
                                                 enabledBorder: InputBorder.none,
                                                 errorBorder: InputBorder.none,
                                                 disabledBorder: InputBorder.none,
-                                                contentPadding: EdgeInsets.all(0),
                                               ),
-                                              textAlign: TextAlign.justify,
+                                              textAlign: TextAlign.start,
                                             ),
                                           ),
                                         ],
-                                      )
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                            errorDate ? Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Center(
-                                  child: Text(
-                                    AppLocalizations.of(context)!.errorDate,
-                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                      ),
+                                    )
                                 ),
-                            ): Container(),
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.08,
-                              width: MediaQuery.of(context).size.width * 0.90,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(5.0))
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.07,
-                                    width: MediaQuery.of(context).size.height * 0.07,
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
-                                        borderRadius: BorderRadius.all(Radius.circular(5.0))
-                                    ),
-                                    child: Center(
-                                        child: Text(
-                                            event!.day.toString(),
-                                            style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
-                                            textAlign: TextAlign.center
-                                        )
-                                    ),
-                                  ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                                  Container(
-                                      height: MediaQuery.of(context).size.height * 0.08,
-                                      width: MediaQuery.of(context).size.width*0.64,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            isEditing ? new Flexible(
-                                              child: TextFormField(
-                                                controller: startDateController,
-                                                readOnly: true,
-                                                onTap: () {
-                                                  if (isEditing) selectSlot(context, 0);
-                                                },
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                decoration: InputDecoration(
-                                                  labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  border: InputBorder.none,
-                                                  enabledBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: errorDate ? Colors.red : Colors.grey,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  focusedBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: errorDate ? Colors.red : Colors.grey,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  disabledBorder: InputBorder.none,
-                                                ),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ) : new Flexible(
-                                              child: TextFormField(
-                                                controller: startDateController,
-                                                readOnly: true,
-                                                enabled: false,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                decoration: InputDecoration(
-                                                  labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  border: InputBorder.none,
-                                                  focusedBorder: InputBorder.none,
-                                                  enabledBorder: InputBorder.none,
-                                                  errorBorder: InputBorder.none,
-                                                  disabledBorder: InputBorder.none,
-                                                ),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                  ),
-                                ],
-                              ),
+                              ],
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.08,
-                              width: MediaQuery.of(context).size.width * 0.90,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).scaffoldBackgroundColor,
-                                  borderRadius: BorderRadius.all(Radius.circular(5.0))
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    height: MediaQuery.of(context).size.height * 0.07,
-                                    width: MediaQuery.of(context).size.height * 0.07,
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
-                                        borderRadius: BorderRadius.all(Radius.circular(5.0))
-                                    ),
-                                    child: Center(
-                                        child: Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,)
-                                    ),
-                                  ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                                  Container(
-                                      height: MediaQuery.of(context).size.height * 0.08,
-                                      width: MediaQuery.of(context).size.width*0.64,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-
-                                            isEditing ? new Flexible(
-                                              child: TextFormField(
-                                                controller: durationController,
-                                                onTap: () {
-                                                  if (isEditing) selectSlot(context, 1);
-                                                },
-                                                readOnly: true,
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  enabledBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: errorDate ? Colors.red : Colors.grey,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  focusedBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: errorDate ? Colors.red : Colors.grey,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  disabledBorder: InputBorder.none,
-                                                  contentPadding: EdgeInsets.zero,
-                                                ),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ) : new Flexible(
-                                              child: TextFormField(
-                                                controller: durationController,
-                                                readOnly: true,
-                                                enabled: false,
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                decoration: InputDecoration(
-                                                  border: InputBorder.none,
-                                                  focusedBorder: InputBorder.none,
-                                                  enabledBorder: InputBorder.none,
-                                                  errorBorder: InputBorder.none,
-                                                  disabledBorder: InputBorder.none,
-                                                  contentPadding: EdgeInsets.zero,
-                                                ),
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                          ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.02),
                           Container(
-                            height: MediaQuery.of(context).size.height*0.2,
-                            width: MediaQuery.of(context).size.width*0.9,
+                            height: MediaQuery.of(context).size.height * 0.08,
+                            width: MediaQuery.of(context).size.width * 0.90,
                             decoration: BoxDecoration(
-                                color: Theme.of(context).backgroundColor,
-                                borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: const BorderRadius.all(Radius.circular(5.0))
                             ),
-                            child: Stack(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                Center(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      topRight: Radius.circular(15),
-                                      bottomRight: Radius.circular(15),
-                                      bottomLeft: Radius.circular(15),
-                                    ),
-                                    child: Align(
-                                      alignment: Alignment.bottomRight,
-                                      heightFactor: 1,
-                                      widthFactor: 2.5,
-                                      child: GoogleMap(
-                                        onMapCreated: _onMapCreated,
-                                        initialCameraPosition: _initialPosition,
-                                        scrollGesturesEnabled: false,
-                                        zoomGesturesEnabled: false,
-                                        rotateGesturesEnabled: false,
-                                        mapToolbarEnabled: false,
-                                        zoomControlsEnabled: false,
-                                        minMaxZoomPreference: MinMaxZoomPreference(17,17),
-                                        myLocationButtonEnabled: false,
-                                        markers: markers,
-                                        mapType: MapType.hybrid,
-                                        onTap: isEditing ? (LatLng) async {
-                                          var result = await Navigator.push(
-                                              context,
-                                              CupertinoPageRoute<String>(
-                                                builder: (context) => MyLocationsSelect(
-                                                  brandId: currentBrand.id!,
+                                Container(
+                                  height: MediaQuery.of(context).size.height * 0.07,
+                                  width: MediaQuery.of(context).size.height * 0.07,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                                      borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                  ),
+                                  child: Center(
+                                      child: Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,)
+                                  ),
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                Container(
+                                    height: MediaQuery.of(context).size.height * 0.08,
+                                    width: MediaQuery.of(context).size.width*0.64,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+
+                                          isEditing ? Flexible(
+                                            child: TextFormField(
+                                              controller: durationController,
+                                              onTap: () {
+                                                if (isEditing) selectSlot(context, 1);
+                                              },
+                                              readOnly: true,
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                enabledBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: errorDate ? Colors.red : Colors.grey,
+                                                        width: 1.0
+                                                    )
                                                 ),
-                                              )
-                                          );
-                                          if (result != null) {
-                                            await getLocationFromId(result);
-                                            setState(() {
-                                              isLoading = false;
-                                            });
-                                          }
-                                        } : _onLaunchCoordinates,
+                                                focusedBorder: UnderlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: errorDate ? Colors.red : Colors.grey,
+                                                        width: 1.0
+                                                    )
+                                                ),
+                                                disabledBorder: InputBorder.none,
+                                                contentPadding: EdgeInsets.zero,
+                                              ),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ) : Flexible(
+                                            child: TextFormField(
+                                              controller: durationController,
+                                              readOnly: true,
+                                              enabled: false,
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                              decoration: const InputDecoration(
+                                                border: InputBorder.none,
+                                                focusedBorder: InputBorder.none,
+                                                enabledBorder: InputBorder.none,
+                                                errorBorder: InputBorder.none,
+                                                disabledBorder: InputBorder.none,
+                                                contentPadding: EdgeInsets.zero,
+                                              ),
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                    )
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        Container(
+                          height: MediaQuery.of(context).size.height*0.2,
+                          width: MediaQuery.of(context).size.width*0.9,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).backgroundColor,
+                              borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                          ),
+                          child: Stack(
+                            children: <Widget>[
+                              Center(
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(15),
+                                    topRight: Radius.circular(15),
+                                    bottomRight: Radius.circular(15),
+                                    bottomLeft: Radius.circular(15),
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.bottomRight,
+                                    heightFactor: 1,
+                                    widthFactor: 2.5,
+                                    child: GoogleMap(
+                                      onMapCreated: _onMapCreated,
+                                      initialCameraPosition: _initialPosition,
+                                      scrollGesturesEnabled: false,
+                                      zoomGesturesEnabled: false,
+                                      rotateGesturesEnabled: false,
+                                      mapToolbarEnabled: false,
+                                      zoomControlsEnabled: false,
+                                      minMaxZoomPreference: const MinMaxZoomPreference(17,17),
+                                      myLocationButtonEnabled: false,
+                                      markers: markers,
+                                      mapType: MapType.hybrid,
+                                      onTap: isEditing ? (LatLng) async {
+                                        var result = await Navigator.push(
+                                            context,
+                                            CupertinoPageRoute<String>(
+                                              builder: (context) => MyLocationsSelect(
+                                                brandId: currentBrand.id!,
+                                              ),
+                                            )
+                                        );
+                                        if (result != null) {
+                                          await getLocationFromId(result);
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        }
+                                      } : _onLaunchCoordinates,
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  left: 5.0,
-                                  bottom: 5.0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: Theme.of(context).scaffoldBackgroundColor
-                                    ),
-                                    padding: EdgeInsets.all(10),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Icon(
-                                          Icons.location_on,
-                                          color: Theme.of(context).colorScheme.secondary,
-                                          size: 15,
+                              ),
+                              Positioned(
+                                left: 5.0,
+                                bottom: 5.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Theme.of(context).scaffoldBackgroundColor
+                                  ),
+                                  padding: const EdgeInsets.all(10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.location_on,
+                                        color: Theme.of(context).colorScheme.secondary,
+                                        size: 15,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 5.0),
+                                        child: Text(
+                                          location.description!,
+                                          style: Theme.of(context).textTheme.bodyText2,
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            location.description!,
-                                            style: Theme.of(context).textTheme.bodyText2,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        isEditing ? Padding(
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05, top:MediaQuery.of(context).size.width*0.03),
+                          child: Container(
+                            height: 1,
+                            width: MediaQuery.of(context).size.width*0.9,
+                            color: AppColors.grey,
+                          ),
+                        ) : Container(),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
+                      child: Column(
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.025),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Text(
+                                  AppLocalizations.of(context)!.trainers,
+                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                isEditing ? Container(
+                                  height: MediaQuery.of(context).size.height*0.15,
+                                  width: MediaQuery.of(context).size.width*0.99,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const AlwaysScrollableScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: allTrainers.length,
+                                      itemBuilder: (context, int index) {
+                                        var trainer = allTrainers[index];
+                                        return GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              eventTrainersBool[index] = !eventTrainersBool[index];
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: !(index == 0 || index == allTrainers.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: allTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                CircularImage(
+                                                  size: MediaQuery.of(context).size.width*0.18,
+                                                  image: trainer.imageUrl,
+                                                  color: Theme.of(context).primaryColor,
+                                                  borderWidth: 1,
+                                                ),
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        StringUtils().splitCommonName(trainer.name!),
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(context).size.width*0.01,
+                                                      ),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(context).size.width*0.05,
+                                                        child: Checkbox(
+                                                          checkColor: Colors.white,
+                                                          fillColor: MaterialStateProperty.resolveWith(getColor),
+                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          value: eventTrainersBool[index],
+                                                          shape: const CircleBorder(
+                                                              side: BorderSide.none
+                                                          ),
+                                                          onChanged: (bool? value) {
+                                                            setState(() {
+                                                              eventTrainersBool[index] = !eventTrainersBool[index];
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    ),
+                                        );
+                                      }
+                                  ),
+                                ) :
+                                Container(
+                                  height: MediaQuery.of(context).size.height*0.15,
+                                  width: MediaQuery.of(context).size.width*0.99,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: eventTrainers.length,
+                                      itemBuilder: (context, int index) {
+                                        var trainer = eventTrainers[index];
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(context, CupertinoPageRoute<Null>(
+                                                builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false)));
+                                          },
+                                          child: Padding(
+                                            padding: !(index == 0 || index == eventTrainers.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                CircularImage(
+                                                  size: MediaQuery.of(context).size.width*0.18,
+                                                  image: trainer.imageUrl,
+                                                  color: Theme.of(context).primaryColor,
+                                                  borderWidth: 1,
+                                                ),
+                                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          trainer.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(trainer.name!) : trainer.name!,
+                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          isEditing ? Padding(
-                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05, top:MediaQuery.of(context).size.width*0.03),
-                            child: Container(
-                              height: 1,
-                              width: MediaQuery.of(context).size.width*0.9,
-                              color: AppColors.grey,
+                          errorNoTrainerSelected ? Padding(
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                            child: Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.noTrainerSelectedError,
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ) : Container(),
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.0),
-                        child: Column(
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height*0.025),
-                            Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
+
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: <Widget>[
+                                Text(
+                                  AppLocalizations.of(context)!.clients,
+                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(width: 16),
+                                (event!.isPrivate! == false) ? Row(
+                                  children: [
                                     Text(
-                                      AppLocalizations.of(context)!.trainers,
-                                      style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                      "( "+event!.numClients.toString(),
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                    Text(
+                                      " / ",
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                    Text(
+                                      event!.maxMembers.toString()+" )",
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                  ],
+                                ) : Row(
+                                  children: [
+                                    Text(
+                                      "( "+event!.numClients.toString()+" )",
+                                      style: Theme.of(context).textTheme.bodyText2,
                                     ),
                                   ],
                                 ),
+                              ],
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 0),
+                          ),
+                          isEditing ? Padding(
+                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                            child: GestureDetector(
+                              onTap: () {
+                                selectSlot(context, 2);
+                              },
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  isEditing ? Container(
-                                    height: MediaQuery.of(context).size.height*0.15,
-                                    width: MediaQuery.of(context).size.width*0.99,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: AlwaysScrollableScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: allTrainers.length,
-                                        itemBuilder: (context, int index) {
-                                          var trainer = allTrainers[index];
-                                          return GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                eventTrainersBool[index] = !eventTrainersBool[index];
-                                              });
-                                            },
-                                            child: Padding(
-                                              padding: !(index == 0 || index == allTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: allTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  CircularImage(
-                                                    size: MediaQuery.of(context).size.width*0.18,
-                                                    image: trainer.imageUrl,
-                                                    color: Theme.of(context).primaryColor,
-                                                    borderWidth: 1,
-                                                  ),
-                                                  Container(
-                                                    width: MediaQuery.of(context).size.width*0.2,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Text(
-                                                          StringUtils().splitCommonName(trainer.name!),
-                                                          style: Theme.of(context).textTheme.bodyText2,
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                        SizedBox(
-                                                          width: MediaQuery.of(context).size.width*0.01,
-                                                        ),
-                                                        SizedBox(
-                                                          width: MediaQuery.of(context).size.width*0.05,
-                                                          child: Checkbox(
-                                                            checkColor: Colors.white,
-                                                            fillColor: MaterialStateProperty.resolveWith(getColor),
-                                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                            value: eventTrainersBool[index],
-                                                            shape: CircleBorder(
-                                                                side: BorderSide.none
-                                                            ),
-                                                            onChanged: (bool? value) {
-                                                              setState(() {
-                                                                eventTrainersBool[index] = !eventTrainersBool[index];
-                                                              });
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                    ),
-                                  ) :
-                                  Container(
-                                    height: MediaQuery.of(context).size.height*0.15,
-                                    width: MediaQuery.of(context).size.width*0.99,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: BouncingScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: eventTrainers.length,
-                                        itemBuilder: (context, int index) {
-                                          var trainer = eventTrainers[index];
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(context, CupertinoPageRoute<Null>(
-                                                builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false)));
-                                            },
-                                            child: Padding(
-                                              padding: !(index == 0 || index == eventTrainers.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  CircularImage(
-                                                    size: MediaQuery.of(context).size.width*0.18,
-                                                    image: trainer.imageUrl,
-                                                    color: Theme.of(context).primaryColor,
-                                                    borderWidth: 1,
-                                                  ),
-                                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                  Container(
-                                                    width: MediaQuery.of(context).size.width*0.2,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            trainer.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(trainer.name!) : trainer.name!,
-                                                            style: Theme.of(context).textTheme.bodyText2,
-                                                            textAlign: TextAlign.center,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            errorNoTrainerSelected ? Padding(
-                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                              child: Center(
-                                child: Text(
-                                  AppLocalizations.of(context)!.noTrainerSelectedError,
-                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ) : Container(),
-
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
-                              child: new Row(
                                 mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(
-                                    AppLocalizations.of(context)!.clients,
-                                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(width: 16),
-                                  (event!.isPrivate! == false) ? Row(
-                                    children: [
-                                      Text(
-                                        "( "+event!.numClients.toString(),
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                      ),
-                                      Text(
-                                        " / ",
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                      ),
-                                      Text(
-                                        event!.maxMembers.toString()+" )",
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                      ),
-                                    ],
-                                  ) : Row(
-                                    children: [
-                                      Text(
-                                        "( "+event!.numClients.toString()+" )",
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            isEditing ? Padding(
-                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                              child: GestureDetector(
-                                onTap: () {
-                                  selectSlot(context, 2);
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: <Widget>[
-                                    Icon(Icons.person, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06),
-                                    Container(
-                                      padding: EdgeInsets.only(left: 20),
+                                  Icon(Icons.person, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06),
+                                  Container(
+                                      padding: const EdgeInsets.only(left: 20),
                                       width: MediaQuery.of(context).size.width*0.18,
                                       child: Row(
                                         mainAxisSize: MainAxisSize.max,
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: <Widget>[
-                                          new Flexible(
+                                          Flexible(
                                             child: TextFormField(
                                               controller: membersController,
                                               readOnly: true,
                                               enabled: false,
                                               style: Theme.of(context).textTheme.bodyText2,
-                                              decoration: InputDecoration(
+                                              decoration: const InputDecoration(
                                                 border: InputBorder.none,
                                                 focusedBorder: InputBorder.none,
                                                 enabledBorder: InputBorder.none,
@@ -1683,115 +2380,114 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                           ),
                                         ],
                                       )
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.members.toLowerCase(),
-                                      style: Theme.of(context).textTheme.bodyText2,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ) : Padding(
-                              padding: EdgeInsets.only(top: 0),
-                              child:
-                              eventClients.isEmpty ?
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Container(
-                                          height: 100,
-                                          child: Image.asset(Constants.emptyPeople)
-                                      ),
-                                      Text(
-                                        AppLocalizations.of(context)!.noClientJoining,
-                                        style: Theme.of(context).textTheme.caption,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
                                   ),
-                                ],
-                              ) :
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    height: MediaQuery.of(context).size.height*0.15,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: BouncingScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: eventClients.length,
-                                        itemBuilder: (context, int index) {
-                                          var client = eventClients[index];
-                                          var clientFeedback = eventClientsFeedback[index];
-                                          return GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(context, CupertinoPageRoute<Null>(
-                                                builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
-                                            },
-                                            child: Padding(
-                                              padding: !(index == 0 || index == eventClients.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  CircularImage(
-                                                    size: MediaQuery.of(context).size.width*0.18,
-                                                    image: client.imageUrl,
-                                                    color: Theme.of(context).primaryColor,
-                                                    borderWidth: 1,
-                                                  ),
-                                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                  Container(
-                                                    width: MediaQuery.of(context).size.width*0.2,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            client.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(client.name!) : client.name!,
-                                                            style: Theme.of(context).textTheme.bodyText2,
-                                                            textAlign: TextAlign.center,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                                  clientFeedback != null ? Container(
-                                                    height: MediaQuery.of(context).size.height*0.02,
-                                                    width: MediaQuery.of(context).size.width*0.1,
-                                                    child: FittedBox(
-                                                        fit: BoxFit.fitHeight,
-                                                        child: buildEventFeedbackIcon(clientFeedback)
-                                                    ),
-                                                  ) : Container(),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                    ),
+                                  Text(
+                                    AppLocalizations.of(context)!.members.toLowerCase(),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                   ),
                                 ],
                               ),
                             ),
-                            isEditing ? SizedBox(height: MediaQuery.of(context).size.height*0.10) : SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                            canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.12) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                          ],
-                        ),
+                          ) : Padding(
+                            padding: const EdgeInsets.only(top: 0),
+                            child:
+                            eventClients.isEmpty ?
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    Container(
+                                        height: 100,
+                                        child: Image.asset(Constants.emptyPeople)
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.noClientJoining,
+                                      style: Theme.of(context).textTheme.caption,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ) :
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  height: MediaQuery.of(context).size.height*0.15,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const BouncingScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: eventClients.length,
+                                      itemBuilder: (context, int index) {
+                                        var client = eventClients[index];
+                                        var clientFeedback = eventClientsFeedback[index];
+                                        return GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(context, CupertinoPageRoute<Null>(
+                                                builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
+                                          },
+                                          child: Padding(
+                                            padding: !(index == 0 || index == eventClients.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                CircularImage(
+                                                  size: MediaQuery.of(context).size.width*0.18,
+                                                  image: client.imageUrl,
+                                                  color: Theme.of(context).primaryColor,
+                                                  borderWidth: 1,
+                                                ),
+                                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          client.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(client.name!) : client.name!,
+                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                                clientFeedback != null ? Container(
+                                                  height: MediaQuery.of(context).size.height*0.02,
+                                                  width: MediaQuery.of(context).size.width*0.1,
+                                                  child: FittedBox(
+                                                      fit: BoxFit.fitHeight,
+                                                      child: buildEventFeedbackIcon(clientFeedback)
+                                                  ),
+                                                ) : Container(),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          isEditing ? SizedBox(height: MediaQuery.of(context).size.height*0.10) : SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.12) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                        ],
                       ),
-                    ],
-                  ),
-                )
-            ) : Padding(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.13),
-                child: LoadingView()),
-          ),
-        ],
-      ),
+                    ),
+                  ],
+                ),
+              )
+          ) : Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.13),
+              child: LoadingView()),
+       */
+
       floatingActionButton: whichFloatingActionButton(context),
     );
   }
