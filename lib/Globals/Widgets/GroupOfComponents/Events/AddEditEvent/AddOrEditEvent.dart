@@ -99,6 +99,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   // Evento Recurrente
   bool modifyAllEventGroup = false;
   bool isRecurrent = false;
+  String? isRecurrentLoadingText;
+  int currentEvent = 1;
+  int totalEvents = 1;
   var oneWeek;
   var twoWeek;
   var oneMonth;
@@ -474,7 +477,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   Widget build(BuildContext context) {
     return isLoading ? Scaffold(
       appBar: null,
-      body: LoadingView(),
+      body: LoadingView(
+        text: isRecurrentLoadingText
+      ),
     ) :
     Scaffold(
       appBar: AppBar(
@@ -1944,6 +1949,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       // Add Event Members
       await _addEventMembersCall(eventId, eventMembers);
     } else {
+      // Recurrent total
+      int days = values.where((item) => item == true).length;
+      totalEvents = days*_value;
+      // Event Group Id
       String eventGroupId = const Uuid().v1();
       // First the First Event
       Event event = Event(
@@ -1979,6 +1988,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         // One Week
         for (var i=0; i<6; i++) {
           if (values[weekDay-1]!) {
+            // Upadating Loading Text
+            setState(() {
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+            });
+            currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
             if (isRandomImage) {
               eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -2019,6 +2033,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         // Two Weeks
         for (var i=0; i<13; i++) {
           if (values[weekDay-1]!) {
+            // Upadating Loading Text
+            setState(() {
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+            });
+            currentEvent += 1;
+            // Upadating Loading Text
+            setState(() {
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+            });
+            currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
             if (isRandomImage) {
               eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -2058,6 +2082,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       } else if (_value == 3) {
         // One Month
         for (var i=0; i<27; i++) {
+          // Upadating Loading Text
+          setState(() {
+            isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+          });
+          currentEvent += 1;
           // Change Image Url if IsRecurrent is Selected
           if (isRandomImage) {
             eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -2279,8 +2308,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       eventGroupIds = eventGroupIds.sublist(0, index);
       await _eventDataService.updateRecurrentEventGroup(event.eventGroupId!, eventGroupIds);
     }
+    // Recurrent total
+    totalEvents = eventGroupIdsList.length - index;
     // Delete All Events After The Index
     for (var i=index; i<eventGroupIdsList.length; i++) {
+      // Upadating Loading Text
+      setState(() {
+        isRecurrentLoadingText = AppLocalizations.of(context)!.deletingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+      });
+      currentEvent += 1;
+      // Event Id
       String eventId = eventGroupIdsList[i];
       // Delete Event Call
       await _eventDataService.deleteEvent(eventId);
@@ -2306,8 +2343,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     List<String> eventGroupIdsList = eventGroupIds.cast<String>();
     // Find index of Current Event
     int index = eventGroupIdsList.indexWhere((element) => element == event.id!);
+    // Recurrent total
+    totalEvents = eventGroupIdsList.length - index;
     // Update All Events After The Index
     for (var i=index; i<eventGroupIdsList.length; i++) {
+      // Upadating Loading Text
+      setState(() {
+        isRecurrentLoadingText = AppLocalizations.of(context)!.editingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+      });
+      currentEvent += 1;
+      // Event Id
       String eventId = eventGroupIdsList[i];
       // Get Random Photo if no Image Selected
       if (isRandomImage) {

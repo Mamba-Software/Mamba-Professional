@@ -1042,8 +1042,20 @@
   "@createEvent":{
     "description": "addEvent text"
   },
+  "creatingEvents": "Creando eventos...",
+  "@creatingEvents":{
+    "description": "addEvent text"
+  },
   "editEvent": "Editar evento",
   "@editEvent":{
+    "description": "addEvent text"
+  },
+  "editingEvents": "Editando eventos...",
+  "@editingEvents":{
+    "description": "addEvent text"
+  },
+  "deletingEvents": "Eliminando eventos...",
+  "@deletingEvents":{
     "description": "addEvent text"
   },
   "updateEvent": "Guardar evento",
