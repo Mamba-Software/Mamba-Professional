@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../../Globals/GlobalVars.dart';
@@ -50,7 +51,7 @@ class _BonosProState extends State<BonosPro> {
   }
 
   // Boolean Loading
-  bool isLoading = false;
+  bool isLoading = true;
   final _lColor = lColor();
 
   // Bonos list
@@ -109,12 +110,15 @@ class _BonosProState extends State<BonosPro> {
               }),
       );
     getBrand();
-    getBrandBonos();
-    getAllUsers();
+    //getBrandBonos();
+    //getAllUsers();
   }
 
   Future<void> getBrand() async {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> getAllUsers() async {
@@ -135,9 +139,7 @@ class _BonosProState extends State<BonosPro> {
           .compareTo(b.name.toString().toLowerCase());
     });
     await Future.delayed(const Duration(milliseconds: 500));
-    setState(() {
-      isLoading = false;
-    });
+
   }
 
   // Init Device Sizes
@@ -176,7 +178,9 @@ class _BonosProState extends State<BonosPro> {
           bonoSee = _bono.id!;
         });
       },
-      child: Padding(
+      child: _bonosUtils.bonoObject(context, _bono, brand, _lColor),
+      /*
+      Padding(
         padding: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.width * 0.01,
             horizontal: MediaQuery.of(context).size.width * 0.065),
@@ -272,6 +276,8 @@ class _BonosProState extends State<BonosPro> {
           ),
         ),
       ),
+
+       */
     );
   }
 
@@ -283,7 +289,9 @@ class _BonosProState extends State<BonosPro> {
           bonoSee = 'none';
         });
       },
-      child: Padding(
+      child: _bonosUtils.bonoObjectOpen(context, _bono, brand, _lColor, _brandDataService),
+      /*
+      Padding(
         padding: EdgeInsets.symmetric(
             vertical: MediaQuery.of(context).size.width * 0.01,
             horizontal: MediaQuery.of(context).size.width * 0.065),
@@ -464,6 +472,8 @@ class _BonosProState extends State<BonosPro> {
           ),
         ),
       ),
+
+       */
     );
 
 
@@ -718,6 +728,10 @@ class _BonosProState extends State<BonosPro> {
                               ? returnBonoOpen(bono)
                               : returnBono(bono),
                         );
+
+                        setState(() {
+
+                        });
                       }),
                 );
               }
@@ -732,7 +746,7 @@ class _BonosProState extends State<BonosPro> {
       initDeviceSizes();
       isFirstBuild = false;
     }
-    return Scaffold(
+    return isLoading? LoadingView() : Scaffold(
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -950,7 +964,7 @@ class _BonosProState extends State<BonosPro> {
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
         child: FloatingActionButton(
           onPressed: () {
-            navigateToAddBonosScreen();
+            navigateToAddBonosScreen(new Bono(), brand);
           },
           backgroundColor: Styles.mainColor,
           child: const Icon(Icons.add),
@@ -971,12 +985,12 @@ class _BonosProState extends State<BonosPro> {
   }
 
   // Navigate to Add Bonos
-  void navigateToAddBonosScreen() {
+  void navigateToAddBonosScreen(Bono bono, Brand _brand) {
     Navigator.push(
         context,
         CupertinoPageRoute<Null>(
-          builder: (context) => AddBono(
-            brandId: widget.brandId,
+          builder: (context) => AddEditBono(
+            brand: _brand, bono: bono,
           ),
         ));
   }
