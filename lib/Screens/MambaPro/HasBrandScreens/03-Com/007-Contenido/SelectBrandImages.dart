@@ -38,7 +38,6 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
   // Images uploaded
   List<ImageObject> _imagesUploaded = [];
   List<Widget> imageSliders = [];
-  ImageObject selectedImage = ImageObject();
 
   @override
   void initState() {
@@ -82,47 +81,45 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            Container(
+              height: MediaQuery.of(context).size.height*0.007,
+              width: MediaQuery.of(context).size.width*0.15,
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(
+                      AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.photo.toLowerCase(),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
+          ],
+        ),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        toolbarHeight: MediaQuery.of(context).size.height*0.1,
+        elevation: 0,
+      ),
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
-          SliverAppBar(
-            toolbarHeight: MediaQuery.of(context).size.height*0.1,
-            elevation: 0,
-            floating: true,
-            pinned: true,
-            title: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                Container(
-                  height: MediaQuery.of(context).size.height*0.007,
-                  width: MediaQuery.of(context).size.width*0.15,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(5),
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                      child: Text(
-                          AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.photo.toLowerCase(),
-                          style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.center
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.03),
-              ],
-            ),
-            centerTitle: true,
-            automaticallyImplyLeading: false,
-          ),
           isLoading ? SliverFillRemaining(
             child: Center(
                   child: LoadingView()
@@ -135,7 +132,6 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-
                     _imagesUploaded.isEmpty ? Column(
                       children: [
                         Row(
@@ -230,16 +226,14 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
                 ),
                 child: GestureDetector(
                   onTap: () {
-                    setState(() {
-                      selectedImage = image;
-                    });
+                    Navigator.pop(context, image.url);
                   },
                   child: RectangularImage(
                     height: MediaQuery.of(context).size.height*0.18,
                     width: MediaQuery.of(context).size.height*0.9,
                     borderRadius: 10,
-                    color: selectedImage == image ? Theme.of(context).colorScheme.secondary : AppColors.grey,
-                    borderWidth: selectedImage == image ? 5 : 1,
+                    color: AppColors.grey,
+                    borderWidth: 1,
                     image: image.url,
                   ),
                 )
@@ -263,16 +257,6 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
           ),
         ],
       ),
-      floatingActionButton: selectedImage.id != null ? Padding(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.pop(context, selectedImage.url);
-          },
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          child: const Icon(Icons.add),
-        ),
-      ) : Container(),
     );
   }
 }

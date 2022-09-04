@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -12,7 +10,6 @@ import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificatio
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateAndTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
@@ -53,7 +50,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
   final _brandDataService = BrandDataService();
-  final _libraryDataService = LibraryDataService();
   // Notification Services
   final NotificationService _notificationService = NotificationService();
   final LocalNotificationService _localNotificationService = LocalNotificationService();
@@ -234,6 +230,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future selectDate() async {
+    // TODO: AQUI HI HA UN ERROR QUAN SINICIA EL CREATEEVENT A LES XX:59 Y ES CLICKA AIXO A LES XX+1:01
     DateTime? pickedDateTemp =  await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDateDialog(
@@ -267,6 +264,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future selectTime() async {
+    // TODO: AQUI HI HA UN ERROR QUAN SINICIA EL CREATEEVENT A LES XX:59 Y ES CLICKA AIXO A LES XX+1:01
     if (startDate.isBefore(DateTime.now())) startDate = DateTime.now();
     DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
         context: context,
@@ -733,7 +731,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             ],
                                           )
                                       ),
-
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.0),
                                           child: Row(
@@ -850,7 +847,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                           ],
                                         )
                                       ),
-
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025),
                                           child: Row(
@@ -1784,7 +1780,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                               tabs[1] = true;
                             });
                           }
-
                         }
                       } else if (_selectedIndex == 1) {
                         setState(() {
@@ -1988,7 +1983,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         // One Week
         for (var i=0; i<6; i++) {
           if (values[weekDay-1]!) {
-            // Upadating Loading Text
+            // Updating Loading Text
             setState(() {
               isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
             });
@@ -2033,12 +2028,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         // Two Weeks
         for (var i=0; i<13; i++) {
           if (values[weekDay-1]!) {
-            // Upadating Loading Text
-            setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
-            });
-            currentEvent += 1;
-            // Upadating Loading Text
+            // Updating Loading Text
             setState(() {
               isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
             });
@@ -2082,22 +2072,23 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       } else if (_value == 3) {
         // One Month
         for (var i=0; i<27; i++) {
-          // Upadating Loading Text
-          setState(() {
-            isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
-          });
-          currentEvent += 1;
-          // Change Image Url if IsRecurrent is Selected
-          if (isRandomImage) {
-            eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
-          }
           if (values[weekDay-1]!) {
+            // Updating Loading Text
+            setState(() {
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+            });
+            currentEvent += 1;
+            // Change Image Url if IsRecurrent is Selected
+            if (isRandomImage) {
+              eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+            }
             // Event Object
             event = Event(
               //isPrivate: false,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
+              imageUrl: eventImageUrl,
               doneAt: tempTimestamp,
               createdAt: Timestamp.now(),
               year: tempDate.year.toString(),
@@ -2177,8 +2168,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     Event event = Event(
       id: widget.eventId!,
       title: titleController.text,
-      imageUrl: eventImageUrl,
       description: descriptionController.text,
+      imageUrl: eventImageUrl,
       doneAt: doneAt,
       createdAt: Timestamp.now(),
       year: startDate.year.toString(),
@@ -2292,6 +2283,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     Navigator.pop(context, true);
   }
 
+  // Recurrent Events
+
   Future<void> _deleteRecurrentEventFunction() async {
     setState(() {
       isLoading = true;
@@ -2312,7 +2305,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     totalEvents = eventGroupIdsList.length - index;
     // Delete All Events After The Index
     for (var i=index; i<eventGroupIdsList.length; i++) {
-      // Upadating Loading Text
+      // Updating Loading Text
       setState(() {
         isRecurrentLoadingText = AppLocalizations.of(context)!.deletingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
       });
@@ -2347,7 +2340,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     totalEvents = eventGroupIdsList.length - index;
     // Update All Events After The Index
     for (var i=index; i<eventGroupIdsList.length; i++) {
-      // Upadating Loading Text
+      // Updating Loading Text
       setState(() {
         isRecurrentLoadingText = AppLocalizations.of(context)!.editingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
       });
@@ -2390,8 +2383,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       Event updatedEvent = Event(
         id: eventId,
         title: titleController.text,
-        imageUrl: eventImageUrl,
         description: descriptionController.text,
+        imageUrl: eventImageUrl,
         doneAt: doneAt,
         createdAt: Timestamp.now(),
         year: updatedStartDate.year.toString(),
