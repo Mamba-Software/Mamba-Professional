@@ -544,7 +544,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            toolbarHeight: MediaQuery.of(context).size.height*0.1,
+            toolbarHeight: MediaQuery.of(context).size.height*0.08,
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
             //systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5)),

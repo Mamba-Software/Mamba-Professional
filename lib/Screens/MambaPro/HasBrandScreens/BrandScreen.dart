@@ -179,6 +179,8 @@ class _BrandScreenState extends State<BrandScreen> {
           leading: CircularImage(
             size: MediaQuery.of(context).size.width*0.07,
             image: currentBrand.logoUrl,
+            borderWidth: 1,
+            color: AppColors.grey,
           ),
           title: Text(
             currentBrand.name!,
