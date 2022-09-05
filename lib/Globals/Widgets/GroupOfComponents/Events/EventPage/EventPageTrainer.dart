@@ -102,14 +102,14 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   initState() {
     super.initState();
     _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-      setState(() {
-        appBarExpanded = true;
-      }) :
-      setState(() {
-        appBarExpanded = false;
-      }),
-      );
+    ..addListener(() => _isAppBarExpanded ?
+    setState(() {
+      appBarExpanded = true;
+    }) :
+    setState(() {
+      appBarExpanded = false;
+    }),
+    );
     isLoading = true;
     getEventInfo();
   }
@@ -215,6 +215,20 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     });
   }
 
+  Future<void> getLocationFromId(String locationId) async {
+    location = await _locationDataService.getSingleLocation(locationId);
+    createMarker();
+    mapController?.animateCamera(
+        CameraUpdate.newCameraPosition(
+            CameraPosition(target: LatLng(location.latitude!,location.longitude!), zoom: 17)
+        )
+    );
+    var temp = location;
+    setState(() {
+      location = temp;
+    });
+  }
+
   void initCameraPosition() {
     setState(() {
       _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
@@ -242,22 +256,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     }
   }
 
-  void _onLaunchCoordinates(LatLng) {
+  void _onLaunchCoordinates(latLng) {
     MapsLauncher.launchCoordinates(location.latitude!, location.longitude!, location.description!);
-  }
-
-  Future<void> getLocationFromId(String locationId) async {
-    location = await _locationDataService.getSingleLocation(locationId);
-    createMarker();
-    mapController?.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(location.latitude!,location.longitude!), zoom: 17)
-      )
-    );
-    var temp = location;
-    setState(() {
-      location = temp;
-    });
   }
 
   // Build EventFeedback Value
@@ -547,7 +547,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             toolbarHeight: MediaQuery.of(context).size.height*0.1,
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
-            systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5)),
+            //systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5)),
             floating: true,
             pinned: true,
             centerTitle: true,
@@ -595,7 +595,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                     color: Theme.of(context).scaffoldBackgroundColor,
                     shape: BoxShape.circle
                   ),
-                  child: buildPlacesLeftWidget(1),
+                  child: buildPlacesLeftWidget(placesLeft),
                 ),
               ) : Container(),
             ],
@@ -945,7 +945,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                       var trainer = eventTrainers[index];
                                       return GestureDetector(
                                         onTap: () {
-                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                          Navigator.push(context, CupertinoPageRoute<void>(
                                               builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false)));
                                         },
                                         child: Padding(
@@ -1069,7 +1069,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                       var clientFeedback = eventClientsFeedback[index];
                                       return GestureDetector(
                                         onTap: () {
-                                          Navigator.push(context, CupertinoPageRoute<Null>(
+                                          Navigator.push(context, CupertinoPageRoute<void>(
                                               builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
                                         },
                                         child: Padding(
