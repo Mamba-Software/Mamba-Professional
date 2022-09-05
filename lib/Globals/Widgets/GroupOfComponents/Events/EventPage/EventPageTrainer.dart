@@ -586,7 +586,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               ),
             ),
             actions: [
-              canEdit ? Padding(
+              canEdit && event!.isPrivate! == false ? Padding(
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                 child: Container(
                   height: MediaQuery.of(context).size.width*0.06,
