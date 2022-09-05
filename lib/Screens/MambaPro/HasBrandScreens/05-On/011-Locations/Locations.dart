@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,11 +72,15 @@ class _LocationsState extends State<Locations> {
     customIcon = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(), 'assets/images/fitnessMapIcon.png');
   }
 
+  Future<Uint8List> getBytesFromCanvas(int width, int height, String urlAsset) async {
+    final datai = await rootBundle.load(urlAsset);
+    final imaged = await loadImage(Uint8List.view(datai.buffer));
+  }
+
   void createMarkers() async {
     setState(() {
       markers.clear();
     });
-    print(markers.length);
     // Set all Markers
     for(int i = 0; i < locationList.length; i++) {
       Location location = locationList[i];

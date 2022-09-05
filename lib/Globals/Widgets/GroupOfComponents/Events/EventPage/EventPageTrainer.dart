@@ -289,7 +289,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     return FittedBox(
       fit: BoxFit.fitHeight,
       child: Container(
-        height: MediaQuery.of(context).size.width*0.14,
+        height: MediaQuery.of(context).size.width*0.1,
         padding: const EdgeInsets.only(top: 4, bottom: 8),
         child: Center(
           child: Column(
@@ -544,7 +544,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            toolbarHeight: MediaQuery.of(context).size.height*0.08,
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
             //systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5)),

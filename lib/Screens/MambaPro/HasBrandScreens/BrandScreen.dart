@@ -781,7 +781,7 @@ class _BrandScreenState extends State<BrandScreen> {
           children: [
             // Header
             buildHeader(),
-            Divider(color: AppColors.grey, thickness: 0, height: 1,),
+            const Divider(color: AppColors.grey, thickness: 0, height: 1,),
             SizedBox(height: safeAreaHeight * 0.02),
             // Brand Options
             // TODO: Passer Rol en aquesta funció
