@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:maps_launcher/maps_launcher.dart';
@@ -18,7 +16,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAutoComplete/MyLocationsSelect.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -43,8 +40,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
   // Screen Dimensions
-  var safeAreaHeight;
-  var safeAreaWidth;
+  double safeAreaHeight = 0;
+  double safeAreaWidth = 0;
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -56,7 +53,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   bool isLoading = true;
   bool isLoadingBody = false;
   // Boolean isUpdated
-  bool isEditing = false;
   bool canEdit = true;
   // Title Controller
   var titleController = TextEditingController();
@@ -74,7 +70,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   List<String> durations = ["0.30","0.45","1.00","1.15","1.30","1.45","2.00","2.15","2.30","2.45","3.00"];
   // Location
   Location location = Location();
-  Set<Marker> markers = Set<Marker>();
+  Set<Marker> markers = <Marker>{};
   CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
   GoogleMapController? mapController;
   final Completer<GoogleMapController> _controller = Completer();
@@ -99,11 +95,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   final formKeyMembers = GlobalKey<FormState>();
   // Event Retrieved From BD
   Event? event;
-  var placeDetails;
   // String Deleted Photo
   String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
-  // Feedback Value
-  var eventFeedbackValue;
 
   @override
   initState() {
@@ -165,7 +158,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         setState(() {
           isLoading = false;
           isLoadingBody = false;
-          isEditing = false;
         });
       });
     }
@@ -268,258 +260,16 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     });
   }
 
-  Future<void> selectSlot(ctx, type) {
-    // Initial Vars
-    var startDate = DateTime.now();
-    var minimumDate = DateTime.now().subtract(const Duration(days: 365));
-    var maximumDate = DateTime.now().add(const Duration(days: 365));
-    var title;
-    var initialDuration = 1;
-    var initialMembers = 1;
-    var totalMembers = (membersMax) - event!.numClients!;
-    var widgetPicker;
-    // Init for differnt types
-    if (type == 0) {
-      startDate = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).parse(StringUtils().undoCapitalized(startDateController.text));
-      // Calcular el horari de la marca
-      // Hora Inactiva Matí
-      var startHourWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
-      var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
-      minimumDate = DateTime(startDate.year, startDate.month, startDate.day, startHourWS, startMinWS);
-      // Hora Inactiva Nit
-      var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
-      var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
-      var temp = DateTime(startDate.year, startDate.month, startDate.day, endHourWS, endMinWS);
-      maximumDate = temp.add(const Duration(days: 365));
-    } else if (type == 1) {
-      initialDuration = durations.indexWhere((element) => element == duration);
-    } else if (type == 2) {
-      initialMembers = 0;
-    }
-    // Different types of pickers
-    Widget dateTimePicker = CupertinoTheme(
-      data: CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
-          )
-      ),
-      child: CupertinoDatePicker(
-          mode: CupertinoDatePickerMode.dateAndTime,
-          initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, startDate.hour,0),
-          minimumDate: minimumDate,
-          maximumDate: maximumDate,
-          use24hFormat: true,
-          minuteInterval: 15,
-          onDateTimeChanged: (val) {
-            setState(() {
-              startDateController.text = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).format(val);
-              startDateController.text = StringUtils().toCapitalized(startDateController.text);
-            });
-          }
-      )
-    );
-    Widget durationPicker = CupertinoTheme(
-      data: CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
-          )
-      ),
-      child: CupertinoPicker(
-          scrollController: FixedExtentScrollController(
-              initialItem: initialDuration
-          ),
-          itemExtent: 40.0,
-          backgroundColor: Colors.transparent,
-          onSelectedItemChanged: (int index) {
-            setState(() {
-              duration = durations[index];
-              var hour = durations[index].split(".")[0];
-              var min = durations[index].split(".")[1];
-              durationController.text = "${hour}h ${min}min";
-            });
-          },
-          children: List<Widget>.generate(
-              durations.length, (int index) {
-            var item = durations[index];
-            var hour = item.split(".")[0];
-            var min = item.split(".")[1];
-            return Center(
-              child: Text(
-                  "${hour}h ${min}min",
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            );
-          }
-          )
-      )
-    );
-    Widget membersPicker = CupertinoTheme(
-      data: CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText2,
-          )
-      ),
-      child: CupertinoPicker(
-          scrollController: FixedExtentScrollController(
-              initialItem: initialMembers
-          ),
-          itemExtent: 40.0,
-          backgroundColor: Colors.transparent,
-          onSelectedItemChanged: (int index) {
-            setState(() {
-              members = event!.numClients!+index;
-              membersController.text = "${event!.numClients.toString()} / ${members.toString()}";
-            });
-          },
-          children: List<Widget>.generate(totalMembers.toInt(), (int index) {
-            var member = event!.numClients!+index;
-            return Center(
-              child: Text(
-                  "${member.toString()}",
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            );
-          }
-        )
-      )
-    );
-    if (type == 0) {
-      title = AppLocalizations.of(context)!.selectDayTime;
-      widgetPicker = dateTimePicker;
-    } else if (type == 1) {
-      title = AppLocalizations.of(context)!.selectDuration;
-      widgetPicker = durationPicker;
-    } else if (type == 2) {
-      title = AppLocalizations.of(context)!.selectMembers;
-      widgetPicker = membersPicker;
-    }
-    showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Material(
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.40,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                        child: Text(title,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,)
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
-                    child: widgetPicker,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          }
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              ],
-            ),
-          ),
-        )
-    );
-    return Future.value("");
-  }
-
-  bool validateDateAndTime(DateTime startTime, double duration) {
-    // Calculating the Time to check
-    var hour = duration.toString().split(".")[0];
-    var min = duration.toStringAsFixed(2).split(".")[1];
-    var endTime =  startTime.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-    // Computing the workshift
-    var workshift1 = currentBrand.workShift[0];
-    var workshift2 = currentBrand.workShift[1];
-    var startWorkHour = workshift1.toStringAsFixed(2).split(".")[0];
-    var startWorkMin = workshift1.toStringAsFixed(2).split(".")[1];
-    var endWorkHour = workshift2.toStringAsFixed(2).split(".")[0];
-    var endWorkMin = workshift2.toStringAsFixed(2).split(".")[1];
-    var startWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startWorkHour),int.parse(startWorkMin));
-    var endWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endWorkHour),int.parse(endWorkMin));
-    if (
-    // Can´t create event in the past
-    startTime.isBefore(DateTime.now())|| startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
-    // Can´t create event outside of working hours
-    || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
-    || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
-    ) {
-      return false;
-    } else {
-      // Can´t create event in break period of working hours
-      for (var i=2; i<currentBrand.workShift.length; i+=2) {
-        // Breaks
-        var break1 = currentBrand.workShift[i];
-        var break2 = currentBrand.workShift[i+1];
-        // Take the minute and the hour
-        var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
-        var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
-        var endBreakHour = break2.toStringAsFixed(2).split(".")[0];
-        var endBreakMin = break2.toStringAsFixed(2).split(".")[1];
-        // Date Time formatted
-        var startBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
-        var endBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endBreakHour), int.parse(endBreakMin));
-        // Condition check
-        if ( ((startTime.isAfter(startBreak) || startTime.isAtSameMomentAs(startBreak)) && (startTime.isBefore(endBreak))) ||
-            ((endTime.isAfter(startBreak)) && (endTime.isBefore(endBreak) || endTime.isAtSameMomentAs(endBreak)))) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
-
-  Color getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
-    }
-    return Theme.of(context).colorScheme.secondary;
-  }
-
-
   // Build EventFeedback Value
   Widget buildEventFeedbackIcon(double eventFeedbackValue) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width*0.1,
       child: FittedBox(
         fit: BoxFit.fitWidth,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width*0.05,
               child: Image.asset(Constants.fireEmojiImage),
             ),
@@ -540,7 +290,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       fit: BoxFit.fitHeight,
       child: Container(
         height: MediaQuery.of(context).size.width*0.14,
-        padding: EdgeInsets.only(top: 4, bottom: 8),
+        padding: const EdgeInsets.only(top: 4, bottom: 8),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -582,98 +332,10 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.26,
+            height: MediaQuery.of(context).size.height * 0.3,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor
-            ),
-          ),
-          Positioned(
-            top: MediaQuery.of(context).size.height*0.23,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height:  MediaQuery.of(context).size.height*0.1,
-              constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height*0.10,
-                minHeight: MediaQuery.of(context).size.height*0.10,
-              ),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(25.0))
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    height:  MediaQuery.of(context).size.height*0.1,
-                    child: Material(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
-                      ),
-                      elevation: 4,
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Shimmer.fromColors(
-                              baseColor: AppColors.grey,
-                              highlightColor: AppColors.grey.withOpacity(0.5),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: Container(
-                                  height:  MediaQuery.of(context).size.height*0.1,
-                                  child: Center(
-                                    child: Container(
-                                      height: MediaQuery.of(context).size.height * 0.04,
-                                      width: MediaQuery.of(context).size.width * 0.1,
-                                      decoration: const BoxDecoration(
-                                          color: AppColors.grey,
-                                          borderRadius: BorderRadius.all(Radius.circular(15.0))
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Shimmer.fromColors(
-                              baseColor: AppColors.grey,
-                              highlightColor: AppColors.grey.withOpacity(0.5),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height * 0.04,
-                                width: MediaQuery.of(context).size.width*0.3,
-                                decoration: const BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.all(Radius.circular(15.0))
-                                ),
-                              ),
-                            ),
-                            Shimmer.fromColors(
-                              baseColor: AppColors.grey,
-                              highlightColor: AppColors.grey.withOpacity(0.5),
-                              child:  Padding(
-                                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height * 0.04,
-                                  width: MediaQuery.of(context).size.width * 0.1,
-                                  decoration: const BoxDecoration(
-                                      color: AppColors.grey,
-                                      borderRadius: BorderRadius.all(Radius.circular(15.0))
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
           Positioned(
@@ -686,6 +348,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                 color: Theme.of(context).scaffoldBackgroundColor,
               ),
               child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -818,7 +481,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.025),
-                          Container(
+                          SizedBox(
                             width: MediaQuery.of(context).size.height * 0.26,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -884,7 +547,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             toolbarHeight: MediaQuery.of(context).size.height*0.1,
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
-            systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7)),
+            systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5)),
             floating: true,
             pinned: true,
             centerTitle: true,
@@ -908,7 +571,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             ),
             leadingWidth: MediaQuery.of(context).size.width*0.2,
             leading: Center(
-
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Material(
@@ -924,7 +586,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               ),
             ),
             actions: [
-              Padding(
+              canEdit ? Padding(
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                 child: Container(
                   height: MediaQuery.of(context).size.width*0.06,
@@ -935,7 +597,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   ),
                   child: buildPlacesLeftWidget(1),
                 ),
-              ),
+              ) : Container(),
             ],
           ),
           !isLoadingBody ? SliverToBoxAdapter(child: Container(
@@ -958,38 +620,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  isEditing ? Expanded(
-                                    child: TextFormField(
-                                      controller: titleController,
-                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                      style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
-                                      decoration: InputDecoration(
-                                          hintStyle: Theme.of(context).textTheme.caption,
-                                          hintText:AppLocalizations.of(context)!.titleError,
-                                          enabledBorder: const UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1.0
-                                              )
-                                          ),
-                                          focusedBorder: const UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1.0
-                                              )
-                                          ),
-                                          errorBorder: const UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.red,
-                                                  width: 1.0
-                                              )
-                                          ),
-                                          disabledBorder: InputBorder.none,
-                                          contentPadding: const EdgeInsets.all(0)
-                                      ),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ) : Expanded(
+                                  Expanded(
                                     child: TextField(
                                       controller: titleController,
                                       readOnly: true,
@@ -1007,7 +638,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     ),
                                   ),
                                   Container(
-                                    padding: EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
                                       color: Theme.of(context).backgroundColor,
@@ -1049,38 +680,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   child: Row(
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
-                                      isEditing ? Flexible(
-                                        child: TextFormField(
-                                          controller: descriptionController,
-                                          minLines: 1,
-                                          maxLines: 6,
-                                          style: Theme.of(context).textTheme.bodyText2,
-                                          decoration: InputDecoration(
-                                            hintStyle: Theme.of(context).textTheme.caption,
-                                            hintText:AppLocalizations.of(context)!.noDescription,
-                                            enabledBorder: const UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1.0
-                                                )
-                                            ),
-                                            focusedBorder: const UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.grey,
-                                                    width: 1.0
-                                                )
-                                            ),
-                                            errorBorder: const UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.red,
-                                                    width: 1.0
-                                                )
-                                            ),
-                                            disabledBorder: InputBorder.none,
-                                          ),
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                      ) : Flexible(
+                                      Flexible(
                                         child: TextFormField(
                                           controller: descriptionController,
                                           readOnly: true,
@@ -1144,7 +744,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 ),
                               ),
                               SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                              Container(
+                              SizedBox(
                                   height: MediaQuery.of(context).size.height * 0.08,
                                   width: MediaQuery.of(context).size.width*0.64,
                                   child: Center(
@@ -1152,34 +752,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        isEditing ? Flexible(
-                                          child: TextFormField(
-                                            controller: startDateController,
-                                            readOnly: true,
-                                            onTap: () {
-                                              if (isEditing) selectSlot(context, 0);
-                                            },
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                            decoration: InputDecoration(
-                                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                              border: InputBorder.none,
-                                              enabledBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: errorDate ? Colors.red : Colors.grey,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              focusedBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: errorDate ? Colors.red : Colors.grey,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              disabledBorder: InputBorder.none,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ) : Flexible(
+                                        Flexible(
                                           child: TextFormField(
                                             controller: startDateController,
                                             readOnly: true,
@@ -1227,7 +800,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 ),
                               ),
                               SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                              Container(
+                              SizedBox(
                                   height: MediaQuery.of(context).size.height * 0.08,
                                   width: MediaQuery.of(context).size.width*0.64,
                                   child: Center(
@@ -1235,35 +808,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-
-                                        isEditing ? Flexible(
-                                          child: TextFormField(
-                                            controller: durationController,
-                                            onTap: () {
-                                              if (isEditing) selectSlot(context, 1);
-                                            },
-                                            readOnly: true,
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                            decoration: InputDecoration(
-                                              border: InputBorder.none,
-                                              enabledBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: errorDate ? Colors.red : Colors.grey,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              focusedBorder: UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: errorDate ? Colors.red : Colors.grey,
-                                                      width: 1.0
-                                                  )
-                                              ),
-                                              disabledBorder: InputBorder.none,
-                                              contentPadding: EdgeInsets.zero,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ) : Flexible(
+                                        Flexible(
                                           child: TextFormField(
                                             controller: durationController,
                                             readOnly: true,
@@ -1328,22 +873,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     myLocationButtonEnabled: false,
                                     markers: markers,
                                     mapType: MapType.hybrid,
-                                    onTap: isEditing ? (LatLng) async {
-                                      var result = await Navigator.push(
-                                          context,
-                                          CupertinoPageRoute<String>(
-                                            builder: (context) => MyLocationsSelect(
-                                              brandId: currentBrand.id!,
-                                            ),
-                                          )
-                                      );
-                                      if (result != null) {
-                                        await getLocationFromId(result);
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                      }
-                                    } : _onLaunchCoordinates,
+                                    onTap: _onLaunchCoordinates,
                                   ),
                                 ),
                               ),
@@ -1379,14 +909,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                           ],
                         ),
                       ),
-                      isEditing ? Padding(
-                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05, top:MediaQuery.of(context).size.width*0.03),
-                        child: Container(
-                          height: 1,
-                          width: MediaQuery.of(context).size.width*0.9,
-                          color: AppColors.grey,
-                        ),
-                      ) : Container(),
                     ],
                   ),
                   Padding(
@@ -1411,74 +933,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              isEditing ? Container(
-                                height: MediaQuery.of(context).size.height*0.15,
-                                width: MediaQuery.of(context).size.width*0.99,
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const AlwaysScrollableScrollPhysics(),
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: allTrainers.length,
-                                    itemBuilder: (context, int index) {
-                                      var trainer = allTrainers[index];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            eventTrainersBool[index] = !eventTrainersBool[index];
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: !(index == 0 || index == allTrainers.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0) : EdgeInsets.only(right: allTrainers.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              CircularImage(
-                                                size: MediaQuery.of(context).size.width*0.18,
-                                                image: trainer.imageUrl,
-                                                color: Theme.of(context).primaryColor,
-                                                borderWidth: 1,
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context).size.width*0.2,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      StringUtils().splitCommonName(trainer.name!),
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                    SizedBox(
-                                                      width: MediaQuery.of(context).size.width*0.01,
-                                                    ),
-                                                    SizedBox(
-                                                      width: MediaQuery.of(context).size.width*0.05,
-                                                      child: Checkbox(
-                                                        checkColor: Colors.white,
-                                                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                        value: eventTrainersBool[index],
-                                                        shape: const CircleBorder(
-                                                            side: BorderSide.none
-                                                        ),
-                                                        onChanged: (bool? value) {
-                                                          setState(() {
-                                                            eventTrainersBool[index] = !eventTrainersBool[index];
-                                                          });
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                ),
-                              ) :
-                              Container(
+                              SizedBox(
                                 height: MediaQuery.of(context).size.height*0.15,
                                 width: MediaQuery.of(context).size.width*0.99,
                                 child: ListView.builder(
@@ -1505,7 +960,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                 borderWidth: 1,
                                               ),
                                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                              Container(
+                                              SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.2,
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1540,7 +995,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             ),
                           ),
                         ) : Container(),
-
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
                           child: Row(
@@ -1577,51 +1031,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             ],
                           ),
                         ),
-                        isEditing ? Padding(
-                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                          child: GestureDetector(
-                            onTap: () {
-                              selectSlot(context, 2);
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Icon(Icons.person, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06),
-                                Container(
-                                    padding: const EdgeInsets.only(left: 20),
-                                    width: MediaQuery.of(context).size.width*0.18,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Flexible(
-                                          child: TextFormField(
-                                            controller: membersController,
-                                            readOnly: true,
-                                            enabled: false,
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                            decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                              errorBorder: InputBorder.none,
-                                              disabledBorder: InputBorder.none,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                ),
-                                Text(
-                                  AppLocalizations.of(context)!.members.toLowerCase(),
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ) : Padding(
+                        Padding(
                           padding: const EdgeInsets.only(top: 0),
                           child:
                           eventClients.isEmpty ?
@@ -1630,7 +1040,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             children: [
                               Column(
                                 children: [
-                                  Container(
+                                  SizedBox(
                                       height: 100,
                                       child: Image.asset(Constants.emptyPeople)
                                   ),
@@ -1646,7 +1056,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Container(
+                              SizedBox(
                                 height: MediaQuery.of(context).size.height*0.15,
                                 width: MediaQuery.of(context).size.width,
                                 child: ListView.builder(
@@ -1674,7 +1084,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                 borderWidth: 1,
                                               ),
                                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                              Container(
+                                              SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.2,
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1690,7 +1100,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                 ),
                                               ),
                                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                              clientFeedback != null ? Container(
+                                              clientFeedback != null ? SizedBox(
                                                 height: MediaQuery.of(context).size.height*0.02,
                                                 width: MediaQuery.of(context).size.width*0.1,
                                                 child: FittedBox(
@@ -1708,7 +1118,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             ],
                           ),
                         ),
-                        isEditing ? SizedBox(height: MediaQuery.of(context).size.height*0.10) : SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.12) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                       ],
                     ),
@@ -2582,7 +1992,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       if (canEdit) {
         return Padding(
           padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width*0.25,
             child: FloatingActionButton.extended(
               heroTag: "9",
