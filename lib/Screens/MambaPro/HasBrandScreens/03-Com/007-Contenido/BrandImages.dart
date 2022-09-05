@@ -391,9 +391,8 @@ class _BrandImagesState extends State<BrandImages> {
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  await Future.delayed(const Duration(milliseconds: 1000), () async {
-                                    await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!);
-                                  });
+                                  await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
+
                                   getBrandContentImages();
                                 }
                               },

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -581,7 +582,7 @@ class BrandFirebaseCalls {
         .delete();
   }
 
-  Future<void> deleteBrandContentPictures(String brandID, String imageId) async {
+  Future<void> deleteBrandContentPictures(String brandID, String imageId, String? imageUrl) async {
     // Delete Image From Storage
     _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + imageId + ".jpeg").delete();
     // Delete Image From Firebase Firestore
@@ -591,6 +592,22 @@ class BrandFirebaseCalls {
         .collection("Images")
         .doc(imageId)
         .delete();
+    // Get a new Image of the Brand
+    String newImageUrl = await getRandomBrandPhoto(brandID);
+    // Get all places where we can find the picture
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Events")
+        .where("imageUrl", isEqualTo: imageUrl)
+        .get();
+    // Update all places where we can find the picture
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      _firestore.collection(events).doc(event.id).update({
+        "imageUrl": newImageUrl,
+      });
+    }
   }
 
   Future<void> deleteBrandUsers(String brandId) async {
