@@ -45,12 +45,18 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     checkAndGetUserDetails();
     initColorsList();
+    initPaymentMethodList();
     //initDynamicLinks();
   }
 
   Future<void> initColorsList() async {
     currentColors =  await _libraryDataService.getColors();
   }
+
+  Future<void> initPaymentMethodList() async {
+    paymentMethods =  await _libraryDataService.getPaymentMethods();
+  }
+
 
   void checkAndGetUserDetails() async {
     //_userDataService.signOut();

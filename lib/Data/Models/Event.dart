@@ -14,6 +14,7 @@ class Event {
   String? brandID;
   bool? isPrivate;
   String? title;
+  String? imageUrl;
   String? description;
   Timestamp? doneAt;
   Timestamp? createdAt;
@@ -29,6 +30,7 @@ class Event {
   int? maxMembers;
   var joinedMembers;
   var selectedTrainers;
+  var bonos;
 
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
@@ -41,6 +43,7 @@ class Event {
     this.brandID,
     this.isPrivate,
     this.title,
+    this.imageUrl,
     this.description,
     this.doneAt,
     this.createdAt,
@@ -56,6 +59,7 @@ class Event {
     this.maxMembers,
     this.joinedMembers,
     this.selectedTrainers,
+    this.bonos,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +82,9 @@ class Event {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      this.imageUrl = documentSnapshot.get("imageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
       this.description = documentSnapshot.get("description").toString();
@@ -124,6 +131,9 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('selectedTrainers')) {
       this.selectedTrainers = documentSnapshot.get("selectedTrainers");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonos')) {
+      this.bonos = documentSnapshot.get("bonos");
+    }
   }
 
   Event.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -135,6 +145,9 @@ class Event {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      this.imageUrl = documentSnapshot.get("imageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('doneAt')) {
       this.doneAt = documentSnapshot.get("doneAt");
@@ -178,6 +191,7 @@ class Event {
     this.creatorID = event.creatorID;
     this.brandID = event.brandID;
     this.title = event.title;
+    this.imageUrl = event.imageUrl;
     this.description = event.description;
     this.year = event.year;
     this.month = event.month;
@@ -191,6 +205,7 @@ class Event {
     this.maxMembers = event.maxMembers;
     this.joinedMembers = event.joinedMembers;
     this.selectedTrainers = event.selectedTrainers;
+    this.bonos = event.bonos;
   }
 
   // Users

@@ -359,7 +359,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       RectangularImage(
-                        image: _brand.logoUrl!,
+                        image: _event.imageUrl!,
                         height: widget.width*0.2,
                         width: widget.width*0.2,
                         borderRadius: 5,
@@ -433,7 +433,6 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         ),
                       ),
                     ),
-
                     widget.showFeedback ? GestureDetector(
                       onTap: canAnswerFeedback ? navigateToFeedbackEventScreen : null,
                       child: SizedBox(
@@ -442,7 +441,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                             child: buildEventFeedbackWidget()
                         ),
                       ),
-                    ) : widget.showAverage! ? SizedBox(
+                    ) : widget.showAverage != null && widget.showAverage! ? SizedBox(
                       width: widget.width*0.12,
                       child: Center(
                           child: buildEventFeedbackWidget()

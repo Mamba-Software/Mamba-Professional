@@ -173,7 +173,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Text(
       StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-      style: Theme.of(context).textTheme.headline1,
+      style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
     );
   }
 
@@ -184,14 +184,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         children: [
           Icon(
             Icons.calendar_view_week,
-            color: Theme.of(context).primaryColor,
+            color: AppColors.white,
             size: safeAreaWidth*0.05,
           ),
           FittedBox(
             fit: BoxFit.contain,
             child: Text(
                 AppLocalizations.of(context)!.weekString,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                 textAlign: TextAlign.center
             ),
           ),
@@ -203,14 +203,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         children: [
           Icon(
             Icons.calendar_view_month,
-            color: Theme.of(context).primaryColor,
+            color: AppColors.white,
             size: safeAreaWidth*0.05,
           ),
           FittedBox(
             fit: BoxFit.contain,
             child: Text(
                 AppLocalizations.of(context)!.monthString,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                 textAlign: TextAlign.center
             ),
           ),
@@ -222,14 +222,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         children: [
           Icon(
             Icons.calendar_view_day,
-            color: Theme.of(context).primaryColor,
+            color: AppColors.white,
             size: safeAreaWidth*0.05,
           ),
           FittedBox(
             fit: BoxFit.contain,
             child: Text(
                 AppLocalizations.of(context)!.dayString,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                 textAlign: TextAlign.center
             ),
           ),
@@ -241,14 +241,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       children: [
         Icon(
           Icons.calendar_view_week,
-          color: Theme.of(context).primaryColor,
+          color: AppColors.white,
           size: safeAreaWidth*0.05,
         ),
         FittedBox(
           fit: BoxFit.contain,
           child: Text(
               AppLocalizations.of(context)!.weekString,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
               textAlign: TextAlign.center
           ),
         ),
@@ -775,7 +775,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             elevation: 4,
             floating: true,
@@ -783,7 +783,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 height: MediaQuery.of(context).size.height*0.15,
-                color: Theme.of(context).backgroundColor,
+                color: AppColors.darkGrey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -812,7 +812,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                     },
                                     child: Text(
                                         AppLocalizations.of(context)!.todayString,
-                                        style: Theme.of(context).textTheme.bodyText1,
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.center
                                     ),
                                   ),
@@ -860,6 +860,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
+                      color: AppColors.white,
                       size: MediaQuery.of(context).size.height*0.04,
                     ),
                     onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
@@ -872,7 +873,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 child: IconButton(
                   icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    color: widget.pinned ? AppColors.red : AppColors.white.withOpacity(0.5),
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {

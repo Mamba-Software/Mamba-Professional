@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/004-Categories/Categories.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/Content.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -25,7 +25,7 @@ class MambaProUtils {
     if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories);
     if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos);
     if(pageIndex == 8)return Text(AppLocalizations.of(context)!.information);
-    if(pageIndex == 7)return Text(AppLocalizations.of(context)!.content);
+    if(pageIndex == 7)return Text(AppLocalizations.of(context)!.photos);
     if(pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions);
     if(pageIndex == 9)return Text(AppLocalizations.of(context)!.stats);
     if(pageIndex == 10)return Text(AppLocalizations.of(context)!.calendar);
