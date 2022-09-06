@@ -771,6 +771,10 @@
   "@add":{
     "description": "Siguiente text"
   },
+  "select": "Seleccionar",
+  "@select":{
+    "description": "Siguiente text"
+  },
   "next": "Siguiente",
   "@next":{
     "description": "Siguiente text"
@@ -1042,6 +1046,22 @@
   "@editEvent":{
     "description": "addEvent text"
   },
+  "creating": "Creando",
+  "@creating":{
+    "description": "addEvent text"
+  },
+  "editing": "Editando",
+  "@editing":{
+    "description": "addEvent text"
+  },
+  "updating": "Actualizando",
+  "@updating":{
+    "description": "addEvent text"
+  },
+  "deleting": "Eliminando",
+  "@deletingEvents":{
+    "description": "addEvent text"
+  },
   "updateEvent": "Guardar evento",
   "@updateEvent":{
     "description": "addEvent text"
@@ -1092,6 +1112,14 @@
   },
   "clientsSelectedError": "Hay más clientes que plazas disponibles",
   "@clientsSelectedError":{
+    "description": "noTrainerSelectedError text"
+  },
+  "slot": "plaza",
+  "@slot":{
+    "description": "noTrainerSelectedError text"
+  },
+  "slots": "plazas",
+  "@slots":{
     "description": "noTrainerSelectedError text"
   },
   "totalNumberEvents": "Sesiones realizadas: {number}",
@@ -1267,6 +1295,14 @@
   "@yourImages": {
     "description": "Wellcome message"
   },
+  "randomImageDescription": "Se escogerá una de tus imágenes de marca de manera aleatoria",
+  "@randomImageDescription": {
+    "description": "Wellcome message"
+  },
+  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los miembros de tu marca. Puedes añadir un máximo de 10 imágenes. \n\n En caso de no añadir ninguna imagen, se utilizarán imágenes de librería.",
+  "@yourImagesDescription": {
+    "description": "Wellcome message"
+  },
   "yourSesions": "Mis Sesiones",
   "@yourSesions": {
     "description": "Wellcome message"
@@ -1283,8 +1319,20 @@
   "@editYourInfo": {
     "description": "Wellcome message"
   },
+  "photo": "Imagen",
+  "@photo": {
+    "description": "Wellcome message"
+  },
+  "randomPhoto": "Imagen aleatoria",
+  "@randomPhoto": {
+    "description": "Wellcome message"
+  },
   "photos": "Imágenes",
   "@photos": {
+    "description": "Wellcome message"
+  },
+  "photosDimensions": "Recomendamos orientación Horizontal (16:9)",
+  "@photosDimensions": {
     "description": "Wellcome message"
   },
   "profilePhoto": "Foto de perfil",
@@ -1335,7 +1383,7 @@
       }
     }
   },
-  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imagen/es",
+  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imágenes",
   "@addBrandPhotosMaxLeft": {
     "description": "Wellcome message",
     "placeholders": {

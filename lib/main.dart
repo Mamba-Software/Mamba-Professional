@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +89,7 @@ class Mamba extends StatefulWidget {
 
 class _MambaState extends State<Mamba> with WidgetsBindingObserver {
 
-  var _dynamicLinkUtils = new DynamicLinkUtils();
+  var _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
 
   @override
@@ -102,7 +101,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(
+      _timerLink = Timer(
         const Duration(milliseconds: 1000), () {
             _dynamicLinkUtils.retrieveDynamicLink();
         },

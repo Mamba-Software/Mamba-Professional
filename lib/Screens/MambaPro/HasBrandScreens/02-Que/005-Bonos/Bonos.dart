@@ -15,7 +15,6 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../../Globals/GlobalVars.dart';
@@ -172,311 +171,6 @@ class _BonosProState extends State<BonosPro> {
   }
 
   Widget returnBono(Bono _bono) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          bonoSee = _bono.id!;
-        });
-      },
-      child: _bonosUtils.bonoObject(context, _bono, brand, _lColor),
-      /*
-      Padding(
-        padding: EdgeInsets.symmetric(
-            vertical: MediaQuery.of(context).size.width * 0.01,
-            horizontal: MediaQuery.of(context).size.width * 0.065),
-        child: Container(
-          height: MediaQuery.of(context).size.width * 0.50,
-          width: MediaQuery.of(context).size.width * 0.25,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                opacity: 150,
-                colorFilter: ColorFilter.mode(
-                    Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                    BlendMode.color),
-                image: NetworkImage(currentUser.imageUrl!),
-                fit: BoxFit.cover,
-              ),
-              //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-              borderRadius: const BorderRadius.all(const Radius.circular(15))),
-          child: Column(
-            children: [
-              ListTile(
-                leading: Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.01,
-                      left: MediaQuery.of(context).size.height * 0.01),
-                  child: CircularImage(
-                    size: MediaQuery.of(context).size.width * 0.10,
-                    image: brand.logoUrl,
-                    color:
-                        Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                    borderWidth: 1.0,
-                  ),
-                ),
-                trailing: Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.01,
-                      left: MediaQuery.of(context).size.height * 0.01),
-                  child: Text(
-                    brand.name!.toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3
-                        ?.copyWith(fontWeight: FontWeight.normal),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.13,
-              ),
-              ListTile(
-                  title: Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.01,
-                        left: MediaQuery.of(context).size.height * 0.01),
-                    child: Text(
-                      _bono.title!.toUpperCase(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline1
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  subtitle: Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.01,
-                        left: MediaQuery.of(context).size.height * 0.01),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              right: MediaQuery.of(context).size.height * 0.02),
-                          child: Text(
-                            _bono.price!.toString().toUpperCase() + '€',
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        Text(
-                          _bono.classes!.toString().toUpperCase() +
-                              ' ' +
-                              AppLocalizations.of(context)!
-                                  .sessions
-                                  .toUpperCase(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                          textAlign: TextAlign.left,
-                        ),
-                      ],
-                    ),
-                  )),
-              //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-            ],
-          ),
-        ),
-      ),
-
-       */
-    );
-  }
-
-  Widget returnBonoOpen(Bono _bono) {
-    return GestureDetector(
-      onTap: () {
-        print(bonoSee);
-        setState(() {
-          bonoSee = 'none';
-        });
-      },
-      child: _bonosUtils.bonoObjectOpen(context, _bono, brand, _lColor, _brandDataService),
-      /*
-      Padding(
-        padding: EdgeInsets.symmetric(
-            vertical: MediaQuery.of(context).size.width * 0.01,
-            horizontal: MediaQuery.of(context).size.width * 0.065),
-        child: Container(
-          height: MediaQuery.of(context).size.width * 1.5,
-          width: MediaQuery.of(context).size.width * 0.25,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                opacity: 150,
-                colorFilter: ColorFilter.mode(
-                    Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                    BlendMode.color),
-                image: NetworkImage(currentUser.imageUrl!),
-                fit: BoxFit.cover,
-              ),
-              //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-              borderRadius: const BorderRadius.all(const Radius.circular(15))),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                leading: Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.01,
-                      left: MediaQuery.of(context).size.height * 0.01),
-                  child: CircularImage(
-                    size: MediaQuery.of(context).size.width * 0.10,
-                    image: brand.logoUrl,
-                    color:
-                        Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                    borderWidth: 1.0,
-                  ),
-                ),
-                trailing: Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.01,
-                      left: MediaQuery.of(context).size.height * 0.01),
-                  child: Text(
-                    brand.name!.toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3
-                        ?.copyWith(fontWeight: FontWeight.normal),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.13,
-              ),
-              ListTile(
-                  title: Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.01,
-                        left: MediaQuery.of(context).size.height * 0.01),
-                    child: Text(
-                      _bono.title!.toUpperCase(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline1
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),
-                  subtitle: Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.01,
-                        left: MediaQuery.of(context).size.height * 0.01),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              right: MediaQuery.of(context).size.height * 0.02),
-                          child: Text(
-                            _bono.price!.toString().toUpperCase() + '€',
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        Text(
-                          _bono.classes!.toString().toUpperCase() +
-                              ' ' +
-                              AppLocalizations.of(context)!
-                                  .sessions
-                                  .toUpperCase(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                          textAlign: TextAlign.left,
-                        ),
-                      ],
-                    ),
-                  )),
-              SizedBox(
-                height: MediaQuery.of(context).size.width * 0.05,
-              ),
-              Flexible(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.01,
-                      left: MediaQuery.of(context).size.height * 0.03),
-                    child: Text(
-                      _bono.description!,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2,
-                      textAlign: TextAlign.left,
-                    ),
-       
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.70,),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.height * 0.03,
-                        horizontal: MediaQuery.of(context).size.height * 0.01),
-                    child: Container(
-                      height: MediaQuery.of(context).size.width * 0.1,
-                      width: MediaQuery.of(context).size.width * 0.32,
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          borderRadius:
-                          const BorderRadius.all(const Radius.circular(20))),
-                      child: Align(
-                        alignment: Alignment.center,
-                        //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-                        child: Text(
-                          AppLocalizations.of(context)!
-                              .edit.toUpperCase(),
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ),
-                    ),
-                  ),
-              GestureDetector(
-                    onTap: () {
-                      _bono.isActive = !_bono.isActive!;
-                      _brandDataService.updateBonoActive(brand.id!, _bono.id!, _bono.isActive!);
-                      setState(() {
-
-                      });
-                    },
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).size.height * 0.03,
-                        right: MediaQuery.of(context).size.height * 0.02),
-
-                      child: Container(
-                        height: MediaQuery.of(context).size.width * 0.1,
-                        width: MediaQuery.of(context).size.width * 0.32,
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            borderRadius:
-                            const BorderRadius.all(const Radius.circular(20))),
-                        child: Align(
-                          alignment: Alignment.center,
-                          //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-                          child: Text(
-                            _bono.isActive!? 'Desactivar'.toUpperCase() : 'Activar'.toUpperCase(),
-                            style: Theme.of(context).textTheme.bodyText1,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-
-              //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-            ],
-          ),
-        ),
-      ),
-
-       */
-    );
-
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: Column(
@@ -751,14 +445,14 @@ class _BonosProState extends State<BonosPro> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
-            expandedHeight: MediaQuery.of(context).size.height * 0.15,
+            backgroundColor: AppColors.darkGrey,
+            expandedHeight: MediaQuery.of(context).size.height*0.15,
             elevation: 4,
             floating: true,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                color: Theme.of(context).backgroundColor,
+                color: AppColors.darkGrey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -771,7 +465,7 @@ class _BonosProState extends State<BonosPro> {
                           horizontal: MediaQuery.of(context).size.width * 0.05),
                       child: Text(
                         AppLocalizations.of(context)!.bonos,
-                        style: Theme.of(context).textTheme.headline1,
+                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                       ),
                     ),
                     SizedBox(
@@ -787,12 +481,7 @@ class _BonosProState extends State<BonosPro> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded
-                ? Text(
-                    AppLocalizations.of(context)!.bonos,
-                    style: Theme.of(context).appBarTheme.titleTextStyle,
-                  )
-                : Container(),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.bonos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -801,7 +490,8 @@ class _BonosProState extends State<BonosPro> {
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
-                      size: MediaQuery.of(context).size.height * 0.04,
+                      color: AppColors.white,
+                      size: MediaQuery.of(context).size.height*0.04,
                     ),
                     onPressed: () =>
                         mambaProScaffoldKey.currentState?.openDrawer()),
@@ -814,10 +504,8 @@ class _BonosProState extends State<BonosPro> {
                 child: IconButton(
                   icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned
-                        ? AppColors.red
-                        : Theme.of(context).primaryColor.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width * 0.06,
+                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
+                    size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
                     setState(() {

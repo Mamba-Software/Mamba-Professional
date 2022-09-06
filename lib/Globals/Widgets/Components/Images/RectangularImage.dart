@@ -14,8 +14,9 @@ class RectangularImage extends StatefulWidget {
   final String? image;
   final File? file;
   final Color? color;
+  final BoxFit? fit;
 
-  RectangularImage({Key? key, this.height, this.width, this.borderWidth, this.borderRadius, this.image, this.file, this.color}) : super(key: key);
+  RectangularImage({Key? key, this.height, this.width, this.borderWidth, this.borderRadius, this.image, this.file, this.color, this.fit}) : super(key: key);
 
   @override
   _RectangularImageState createState() => _RectangularImageState();
@@ -48,7 +49,7 @@ class _RectangularImageState extends State<RectangularImage> {
                 ),
                 borderRadius: BorderRadius.circular(widget.borderRadius == null ? 0.0 : widget.borderRadius!),
                 image: DecorationImage(
-                  fit: BoxFit.cover,
+                  fit: widget.fit == null ? BoxFit.cover : BoxFit.contain,
                   image: widget.file != null ? FileImage(widget.file!) : CachedNetworkImageProvider(widget.image!) as ImageProvider,
                 )
             )
