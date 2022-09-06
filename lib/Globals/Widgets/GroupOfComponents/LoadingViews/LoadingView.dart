@@ -39,13 +39,13 @@ class _LoadingViewState extends State<LoadingView> {
             ),
           ),
         ),
-        Positioned(
-          top: MediaQuery.of(context).size.height*0.55,
-          child: widget.text != null ? Text(
+        widget.text != null ? Padding(
+          padding: const EdgeInsets.only(top: 100),
+          child: Text(
             widget.text!,
             style: Theme.of(context).textTheme.caption,
-          ) : Container(),
-        )
+          ),
+        ) : Container(),
       ],
     );
 

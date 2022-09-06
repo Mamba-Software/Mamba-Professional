@@ -233,6 +233,8 @@ class _LocationImageTileState extends State<LocationImageTile> {
                               }
                               // Save location to DataBase
                               await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
+                              // Notifiying update
+                              widget.locationChanged(true);
                             }
                           } else {
                             var result = await showDialog(
@@ -242,7 +244,9 @@ class _LocationImageTileState extends State<LocationImageTile> {
                                 }
                             );
                             if (result) {
+                              //print("Deleting Location "+location.description!);
                               await _locationDataService.deleteLocation(location.id!, currentBrand.baseLocation!);
+                              //print("Deleted");
                               widget.locationChanged(true);
                             }
                           }

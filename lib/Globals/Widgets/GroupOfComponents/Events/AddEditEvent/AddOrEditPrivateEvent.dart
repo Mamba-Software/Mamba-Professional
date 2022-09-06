@@ -1771,7 +1771,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           if (values[weekDay-1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -1815,7 +1815,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           if (values[weekDay-1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -1859,7 +1859,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           if (values[weekDay-1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creatingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
@@ -2090,7 +2090,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     for (var i=index; i<eventGroupIdsList.length; i++) {
       // Updating Loading Text
       setState(() {
-        isRecurrentLoadingText = AppLocalizations.of(context)!.deletingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+        isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
       });
       currentEvent += 1;
       // Event Id
@@ -2125,7 +2125,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     for (var i=index; i<eventGroupIdsList.length; i++) {
       // Updating Loading Text
       setState(() {
-        isRecurrentLoadingText = AppLocalizations.of(context)!.editingEvents + " (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+        isRecurrentLoadingText = AppLocalizations.of(context)!.editing +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
       });
       currentEvent += 1;
       // Event Id

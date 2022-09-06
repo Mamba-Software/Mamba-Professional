@@ -1042,19 +1042,23 @@
   "@createEvent":{
     "description": "addEvent text"
   },
-  "creatingEvents": "Creando eventos...",
-  "@creatingEvents":{
-    "description": "addEvent text"
-  },
   "editEvent": "Editar evento",
   "@editEvent":{
     "description": "addEvent text"
   },
-  "editingEvents": "Editando eventos...",
-  "@editingEvents":{
+  "creating": "Creando",
+  "@creating":{
     "description": "addEvent text"
   },
-  "deletingEvents": "Eliminando eventos...",
+  "editing": "Editando",
+  "@editing":{
+    "description": "addEvent text"
+  },
+  "updating": "Actualizando",
+  "@updating":{
+    "description": "addEvent text"
+  },
+  "deleting": "Eliminando",
   "@deletingEvents":{
     "description": "addEvent text"
   },
