@@ -294,20 +294,29 @@ class _BrandImagesState extends State<BrandImages> {
                                   width: MediaQuery.of(context).size.height*0.9,
                                   color: Colors.transparent,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                      Column(
                                         children: [
-                                          Icon(
-                                              Icons.add,
-                                              color: AppColors.grey.withOpacity(0.5),
-                                              size: MediaQuery.of(context).size.width*0.1
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                  Icons.add,
+                                                  color: AppColors.grey.withOpacity(0.5),
+                                                  size: MediaQuery.of(context).size.width*0.1
+                                              ),
+                                              //SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              Text(
+                                                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
+                                                style: Theme.of(context).textTheme.caption,
+                                                textAlign: TextAlign.left,
+                                              ),
+                                            ],
                                           ),
-                                          //SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                           Text(
-                                            AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
-                                            style: Theme.of(context).textTheme.caption,
+                                            AppLocalizations.of(context)!.photosDimensions,
+                                            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
                                             textAlign: TextAlign.left,
                                           ),
                                         ],

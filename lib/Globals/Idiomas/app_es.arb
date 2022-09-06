@@ -1331,6 +1331,10 @@
   "@photos": {
     "description": "Wellcome message"
   },
+  "photosDimensions": "Recomendamos orientación Horizontal (16:9)",
+  "@photosDimensions": {
+    "description": "Wellcome message"
+  },
   "profilePhoto": "Foto de perfil",
   "@profilePhoto": {
     "description": "Wellcome message"
