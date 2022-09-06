@@ -55,7 +55,7 @@ class _AddEditBonoState extends State<AddEditBono> with SingleTickerProviderStat
   bool isUpdated = false;
 
   // Tab Controller
-  double addEventTabValue = 0.33;
+  double addBonosTabValue = 0.25;
   double updateEventTabValue = 0.50;
   TabController? _tabController;
   int _selectedIndex = 0;
@@ -114,183 +114,12 @@ class _AddEditBonoState extends State<AddEditBono> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+
     return isLoading
         ? Scaffold(
-            appBar: AppBar(
-              toolbarHeight: MediaQuery.of(context).size.height * 0.14,
-              title: Text(
-                AppLocalizations.of(context)!.bonos,
-                style: Theme.of(context).appBarTheme.titleTextStyle,
-              ),
-              centerTitle: true,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  size: MediaQuery.of(context).size.width * 0.06,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(0),
-                child: IgnorePointer(
-                    child: Column(
-                  children: [
-                    TabBar(
-                      controller: _tabController,
-                      indicatorColor: Colors.transparent,
-                      onTap: (index) {
-                        _selectedIndex = index;
-                      },
-                      tabs: [
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.info_outlined,
-                                  color: tabs[0]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.local_atm,
-                                  color: tabs[1]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.color_lens,
-                                  color: tabs[2]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    LinearProgressIndicator(
-                      value: addEventTabValue,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  ],
-                )),
-              ),
-            ),
             body: LoadingView(),
           )
         : Scaffold(
-            appBar: AppBar(
-              toolbarHeight: MediaQuery.of(context).size.height * 0.14,
-              title: Text(
-                AppLocalizations.of(context)!.bonos,
-                style: Theme.of(context).appBarTheme.titleTextStyle,
-              ),
-              centerTitle: true,
-              leading: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  size: MediaQuery.of(context).size.width * 0.06,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(0),
-                child: IgnorePointer(
-                    child: Column(
-                  children: [
-                    TabBar(
-                      controller: _tabController,
-                      indicatorColor: Colors.transparent,
-                      onTap: (index) {
-                        _selectedIndex = index;
-                      },
-                      tabs: [
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-
-                              ],
-                            ),
-                          ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                              ],
-                            ),
-                          ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: LinearProgressIndicator(
-                        minHeight: 10,
-                        value: addEventTabValue,
-                        backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                  ],
-                )),
-              ),
-            ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             resizeToAvoidBottomInset: true,
             body: Column(
@@ -334,7 +163,7 @@ class _AddEditBonoState extends State<AddEditBono> with SingleTickerProviderStat
                                 }
                                 _tabController!.animateTo(_selectedIndex -= 1);
                                 setState(() {
-                                  addEventTabValue -= 0.33;
+                                  addBonosTabValue -= 0.25;
                                 });
                               },
                               backgroundColor: Theme.of(context).primaryColor,
@@ -371,14 +200,14 @@ class _AddEditBonoState extends State<AddEditBono> with SingleTickerProviderStat
                             if (formKeyInfo.currentState!.validate()) {
                               _tabController!.animateTo(_selectedIndex += 1);
                               setState(() {
-                                addEventTabValue += 0.33;
+                                addBonosTabValue += 0.25;
                                 tabs[1] = true;
                               });
                             }
                           } else if (_selectedIndex == 1) {
                             _tabController!.animateTo(_selectedIndex += 1);
                             setState(() {
-                              addEventTabValue += 0.33;
+                              addBonosTabValue += 0.25;
                               tabs[2] = true;
                             });
                           } else
