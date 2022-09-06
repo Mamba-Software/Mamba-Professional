@@ -776,6 +776,7 @@ class _BrandScreenState extends State<BrandScreen> {
       drawer: Drawer(
         backgroundColor: Theme.of(context).primaryColorDark,
         child: ListView(
+          physics: const ClampingScrollPhysics(),
           // Remove padding
           padding: EdgeInsets.zero,
           children: [
