@@ -14,6 +14,7 @@ class Event {
   String? brandID;
   bool? isPrivate;
   String? title;
+  String? imageUrl;
   String? description;
   Timestamp? doneAt;
   Timestamp? createdAt;
@@ -42,6 +43,7 @@ class Event {
     this.brandID,
     this.isPrivate,
     this.title,
+    this.imageUrl,
     this.description,
     this.doneAt,
     this.createdAt,
@@ -80,6 +82,9 @@ class Event {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      this.imageUrl = documentSnapshot.get("imageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
       this.description = documentSnapshot.get("description").toString();
@@ -141,6 +146,9 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       this.title = documentSnapshot.get("title").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      this.imageUrl = documentSnapshot.get("imageUrl").toString();
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('doneAt')) {
       this.doneAt = documentSnapshot.get("doneAt");
     }
@@ -183,6 +191,7 @@ class Event {
     this.creatorID = event.creatorID;
     this.brandID = event.brandID;
     this.title = event.title;
+    this.imageUrl = event.imageUrl;
     this.description = event.description;
     this.year = event.year;
     this.month = event.month;
