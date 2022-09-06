@@ -114,12 +114,197 @@ class _AddEditBonoState extends State<AddEditBono> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-
+    
     return isLoading
         ? Scaffold(
+            appBar: AppBar(
+              toolbarHeight: MediaQuery.of(context).size.height * 0.14,
+              title: Text(
+                AppLocalizations.of(context)!.bonos,
+                style: Theme.of(context).appBarTheme.titleTextStyle,
+              ),
+              centerTitle: true,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: MediaQuery.of(context).size.width * 0.06,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(0),
+                child: IgnorePointer(
+                    child: Column(
+                  children: [
+                    TabBar(
+                      controller: _tabController,
+                      indicatorColor: Colors.transparent,
+                      onTap: (index) {
+                        _selectedIndex = index;
+                      },
+                      tabs: [
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.info_outlined,
+                                  color: tabs[0]
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.local_atm,
+                                  color: tabs[1]
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.color_lens,
+                                  color: tabs[2]
+                                      ? Theme.of(context).colorScheme.secondary
+                                      : Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 20),
+                      width: 300,
+                      height: 20,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        child: LinearProgressIndicator(
+                          value: addBonosTabValue,
+                          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.secondary),
+                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                      ),
+                    )
+                  ],
+                )),
+              ),
+            ),
             body: LoadingView(),
           )
         : Scaffold(
+            appBar: AppBar(
+              toolbarHeight: MediaQuery.of(context).size.height * 0.14,
+              title: Text(
+                AppLocalizations.of(context)!.bonos,
+                style: Theme.of(context).appBarTheme.titleTextStyle,
+              ),
+              centerTitle: true,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: MediaQuery.of(context).size.width * 0.06,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              bottom: PreferredSize(
+                preferredSize: Size.fromHeight(0),
+                child: IgnorePointer(
+                    child: Column(
+                  children: [
+                    TabBar(
+                      controller: _tabController,
+                      indicatorColor: Colors.transparent,
+                      onTap: (index) {
+                        _selectedIndex = index;
+                      },
+                      tabs: [
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+
+                              ],
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                              ],
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+                        width: MediaQuery.of(context).size.width * 0.80,
+                        height: MediaQuery.of(context).size.height * 0.015,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          child: LinearProgressIndicator(
+                            value: addBonosTabValue,
+                            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.secondary),
+                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                          ),
+                        ),
+                      )
+                    ),
+                  ],
+                )),
+              ),
+            ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             resizeToAvoidBottomInset: true,
             body: Column(
