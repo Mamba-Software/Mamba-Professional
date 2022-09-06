@@ -385,6 +385,7 @@ class _LocationsState extends State<Locations> {
                             onPageChanged: (index, reason) {
                               setState(() {
                                 selectedLocation = index;
+                                mapController = mapController;
                               });
                               Location location = locationList[selectedLocation];
                               mapController!.animateCamera(CameraUpdate.newCameraPosition(
