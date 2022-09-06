@@ -203,6 +203,10 @@ class LocalNotificationService {
           await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: currentIndex);
         }
         break;
+      case 'BonosRequests':
+        print("here");
+        await Navigator.of(context).pushNamed("BonosRequests", arguments:  '9dec4b79-08b4-4c75-a770-a822691e73fa');
+        break;
       default:
         String payloadFeedback = payload.substring(0,2);
         String payloadSubString = payload.substring(2);

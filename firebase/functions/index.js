@@ -452,6 +452,7 @@ exports.eventUpdatesCoverData = functions
         .collection("Events")
         .doc(eventId).set({
           "title": after.title,
+          "imageUrl": after.imageUrl,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -473,6 +474,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .set({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -492,6 +494,8 @@ exports.eventUpdatesCoverData = functions
       // COVER DATA: title, year, month, day, hour, minute, duration
       let coverDataChange = false;
       if (before.title != after.title) {
+        coverDataChange = true;
+      } else if (before.imageUrl != after.imageUrl) {
         coverDataChange = true;
       } else if (before.year != after.year) {
         coverDataChange = true;
@@ -527,6 +531,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -546,6 +551,7 @@ exports.eventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -571,6 +577,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -590,6 +597,7 @@ exports.eventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -615,6 +623,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -634,6 +643,7 @@ exports.eventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -1351,6 +1361,7 @@ exports.userAddsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -1374,6 +1385,7 @@ exports.userAddsEvent = functions
           .doc(eventId).set({
             "isPrivate": eventDoc.isPrivate,
             "title": eventDoc.title,
+            "imageUrl": eventDoc.imageUrl,
             "doneAt": eventDoc.doneAt,
             "year": eventDoc.year,
             "month": eventDoc.month,
@@ -1538,6 +1550,7 @@ exports.userJoinsEvent = functions
         .doc(eventId).set({
           "isPrivate": isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -1561,6 +1574,7 @@ exports.userJoinsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -1793,7 +1807,7 @@ exports.userJoinsEvent = functions
               }
             }
           }
-        }        
+        }
       }
       // Send Notification to User if added directly
       if (eventUserDoc.invitedDirectly == true) {
@@ -1814,7 +1828,7 @@ exports.userJoinsEvent = functions
            let eventTimeTime = eventDoc.hour+":";
            let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
            eventTimeTime += minutes;
-           // Send Payload               
+           // Send Payload
            payload = {
              notification: {
                title: "Nuevo evento programado ⁉️ 🏋️‍♂️",
@@ -1823,7 +1837,7 @@ exports.userJoinsEvent = functions
              data: {
                route: eventId,
              },
-           };               
+           };
          } else {
            // Date To String
            let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
@@ -2407,6 +2421,7 @@ exports.zzzzEventUpdatesCoverData = functions
         .collection("Events")
         .doc(eventId).set({
           "title": after.title,
+          "imageUrl": after.imageUrl,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -2428,6 +2443,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .doc(eventId)
           .set({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2447,6 +2463,8 @@ exports.zzzzEventUpdatesCoverData = functions
       // COVER DATA: title, year, month, day, hour, minute, duration
       let coverDataChange = false;
       if (before.title != after.title) {
+        coverDataChange = true;
+      } else if (before.imageUrl != after.imageUrl) {
         coverDataChange = true;
       } else if (before.year != after.year) {
         coverDataChange = true;
@@ -2482,6 +2500,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2501,6 +2520,7 @@ exports.zzzzEventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -2526,6 +2546,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2545,6 +2566,7 @@ exports.zzzzEventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -2570,6 +2592,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
+            "imageUrl": after.imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2589,6 +2612,7 @@ exports.zzzzEventUpdatesCoverData = functions
             .doc(eventId)
             .update({
               "title": after.title,
+              "imageUrl": after.imageUrl,
               "year": after.year,
               "month": after.month,
               "day": after.day,
@@ -3306,6 +3330,7 @@ exports.zzzzUserAddsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -3329,6 +3354,7 @@ exports.zzzzUserAddsEvent = functions
           .doc(eventId).set({
             "isPrivate": eventDoc.isPrivate,
             "title": eventDoc.title,
+            "imageUrl": eventDoc.imageUrl,
             "doneAt": eventDoc.doneAt,
             "year": eventDoc.year,
             "month": eventDoc.month,
@@ -3490,6 +3516,7 @@ exports.zzzzUserJoinsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -3501,6 +3528,31 @@ exports.zzzzUserJoinsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
       });
+
+      //TODO AFEGIT JOAN MANEL INTEGRACIÓ BONOS
+        //Add event to purchase collection
+        await db
+                .collection("7777 Payments")
+                .doc("Purchases")
+                .collection("Purchases")
+                .doc(eventUserDoc.purchaseId)
+                .collection("Events")
+                .doc(eventId)
+                .set({
+                  "isPrivate": eventDoc.isPrivate,
+                  "title": eventDoc.title,
+                  "imageUrl": eventDoc.imageUrl,
+                  "doneAt": eventDoc.doneAt,
+                  "year": eventDoc.year,
+                  "month": eventDoc.month,
+                  "day": eventDoc.day,
+                  "hour": eventDoc.hour,
+                  "minute": eventDoc.minute,
+                  "duration": eventDoc.duration,
+                  "numTrainers": numTrainers,
+                  "numClients": numClients,
+                  "maxMembers": eventDoc.maxMembers,
+              });
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
       if (eventDoc.isPrivate == true) {
@@ -3513,6 +3565,7 @@ exports.zzzzUserJoinsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -3745,10 +3798,10 @@ exports.zzzzUserJoinsEvent = functions
               }
             }
           }
-        }       
+        }
       }
       // Send Notification to User if added directly
-        if (eventUserDoc.invitedDirectly == true) {
+      if (eventUserDoc.invitedDirectly == true) {
             // Invited to Event
             functions.logger.log(
                 "NOTIFICATION CLIENT INVITED DIRECTLY TO EVENT",
@@ -3803,7 +3856,7 @@ exports.zzzzUserJoinsEvent = functions
               "Response",
               response
             );
-        }
+      }
       return null;
     });
 
@@ -4076,23 +4129,262 @@ exports.zzzzChangeMessageStatus = functions
     }
   })
 
-  // User Sends Request
-  exports.zzzzUserBonoCreate = functions
+  // User Sends Bono Request
+  exports.userSendsBonoRequest = functions
       .region("europe-west1")
       .firestore
-      .document("/7777 Users/{userId}/Brands/{brandId}/Bonos/{bonoId}")
+      .document("/7777 Brands/{brandId}/Bonos/Bonos Requests/Bonos Requests/{bonoRequestId}")
       .onCreate( async (snap, context) => {
         // Get the value of the context triggers.
         const brandId = context.params.brandId;
-        const userId = context.params.userId;
-        const bonoId = context.params.bonoId;
-        // Get Data of the Request
-        const requestSnapshot = await db.collection("7777 Users").doc(userId).collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
-        const requestDoc = requestSnapshot.data();
+        const bonoRequestId = context.params.bonoRequestId;
 
-        await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId)
-        .update({
+
+        // Get Data of the Request
+        //const requestSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).get();
+        const requestDoc = snap.data();
+
+        await db.collection("7777 Users").doc(requestDoc.userId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId)
+        .set({
             "sessions": requestDoc.sessions,
+            "brandId": brandId,
+             "title": requestDoc.title,
+             "price": requestDoc.price,
+             "bonoId": requestDoc.bonoId,
+             "timeRequested": requestDoc.timeRequested,
          });
+
+
+
+         // Get Data of the Brand
+                 const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
+                 const brandDoc = brandSnapshot.data();
+
+                 functions.logger.log(
+                                                "test",
+                                                brandDoc.adminID
+                                              );
+
+                 const userSnapshot = await db.collection("7777 Users").doc(brandDoc.adminID).get();
+                                  const userDoc = userSnapshot.data();
+
+         if (userDoc.idioma == "es") {
+                                 payload = {
+                                   notification: {
+                                     title: "Nueva solicitud de bono ",
+                                     body: "Te han solicitado un bono",
+                                   },
+                                   data: {
+                                     route: "BonosRequests",
+                                   },
+                                 };
+                             } else {
+                               payload = {
+                                                                  notification: {
+                                                                    title: "Nueva solicitud de bono ☀️",
+                                                                    body: "Te han solicitado un bono",
+                                                                  },
+                                                                  data: {
+                                                                    route: "BonosRequests",
+                                                                  },
+                                                                };
+                             }
+                             functions.logger.log(
+                               "Payload",
+                               payload
+                             );
+                             var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+
+
         return null;
       });
+
+  // User Deletes Bono Request
+  exports.userDeletesBonoRequest = functions
+      .region("europe-west1")
+      .firestore
+      .document("/7777 Brands/{brandId}/Bonos/Bonos Requests/Bonos Requests/{bonoRequestId}")
+      .onDelete( async (snap, context) => {
+        // Get the value of the context triggers.
+        const brandId = context.params.brandId;
+        const bonoRequestId = context.params.bonoRequestId;
+       // snap.data();
+
+         // Get Data of the Request
+            const requestDoc = snap.data();
+
+       await db.collection("7777 Users").doc(requestDoc.userId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).delete();
+
+        return null;
+      });
+
+  // User Purchases Bono
+   exports.userPurchasesBono = functions
+       .region("europe-west1")
+       .firestore
+       .document("/7777 Payments/Purchases/Purchases/{purchaseId}")
+       .onCreate( async (snap, context) => {
+
+       const purchaseId = context.params.purchaseId;
+       const purchaseDoc = snap.data();
+
+       const userId = purchaseDoc.userId;
+       const bonoId = purchaseDoc.bonoId;
+       const brandId =  purchaseDoc.brandId;
+
+       //Get data of the bono
+
+       const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+       const bonoDoc = bonoSnapshot.data();
+
+
+
+       //Add purchases
+
+        await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
+       "purchasedAt": purchaseDoc.purchasedAt,
+       "userId": purchaseDoc.userId,
+        "price": purchaseDoc.price,
+        "paymentMethod": purchaseDoc.paymentMethod,
+    });
+
+    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+           "purchasedAt": purchaseDoc.purchasedAt,
+           "bonoId": purchaseDoc.bonoId,
+            "price": purchaseDoc.price,
+            "paymentMethod": purchaseDoc.paymentMethod,
+        });
+
+        await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+                   "purchasedAt": purchaseDoc.purchasedAt,
+                   "bonoId": purchaseDoc.bonoId,
+                    "price": purchaseDoc.price,
+                    "paymentMethod": purchaseDoc.paymentMethod,
+                    "brandId": purchaseDoc.brandId,
+                });
+
+                 await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
+                                   "title": bonoDoc.title,
+                                   "sessions": bonoDoc.sessions,
+                                    "price": purchaseDoc.price,
+                                    "purchaseId": purchaseId,
+                                    "brandId": purchaseDoc.brandId,
+                                });
+
+                 await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
+                                                    "title": bonoDoc.title,
+                                                    "sessions": bonoDoc.sessions,
+                                                     "price": purchaseDoc.price,
+                                                     "purchaseId": purchaseId,
+                                                 });
+
+            await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).set({
+                                                                "title": bonoDoc.title,
+                                                                "sessions": bonoDoc.sessions,
+                                                                 "price": purchaseDoc.price,
+                                                             });
+
+         return null;
+       });
+
+// User Purchases Event
+   exports.usersPurchasesEvent = functions
+       .region("europe-west1")
+       .firestore
+       .document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+       .onCreate( async (snap, context) => {
+
+       const purchaseId = context.params.purchaseId;
+       const eventId = context.params.eventId;
+
+       const eventDoc = snap.data();
+
+       //Get data of the purchase
+
+      const purchaseSnapShot = await db.collection("7777 Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+      const purchaseDoc = purchaseSnapShot.data();
+
+       const userId = purchaseDoc.userId;
+       const bonoId = purchaseDoc.bonoId;
+       const brandId =  purchaseDoc.brandId;
+
+       //Get data of the bono
+
+       const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+       const bonoDoc = bonoSnapshot.data();
+
+       //Get data of the bono user
+
+              const bonoSnapshotUser = await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).get();
+              const bonoDocUser = bonoSnapshotUser.data();
+
+       //Add events to purchases
+
+        await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+           "isPrivate": eventDoc.isPrivate,
+                            "title": eventDoc.title,
+                            "doneAt": eventDoc.doneAt,
+                            "year": eventDoc.year,
+                            "month": eventDoc.month,
+                            "day": eventDoc.day,
+                            "hour": eventDoc.hour,
+                            "minute": eventDoc.minute,
+                            "duration": eventDoc.duration,
+                            "numTrainers": eventDoc.numTrainers,
+                            "numClients": eventDoc.numClients,
+                            "maxMembers": eventDoc.maxMembers,
+       });
+    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+            "isPrivate": eventDoc.isPrivate,
+                             "title": eventDoc.title,
+                             "doneAt": eventDoc.doneAt,
+                             "year": eventDoc.year,
+                             "month": eventDoc.month,
+                             "day": eventDoc.day,
+                             "hour": eventDoc.hour,
+                             "minute": eventDoc.minute,
+                             "duration": eventDoc.duration,
+                             "numTrainers": eventDoc.numTrainers,
+                             "numClients": eventDoc.numClients,
+                             "maxMembers": eventDoc.maxMembers,
+        });
+
+        await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+                "isPrivate": eventDoc.isPrivate,
+              "title": eventDoc.title,
+              "doneAt": eventDoc.doneAt,
+              "year": eventDoc.year,
+              "month": eventDoc.month,
+              "day": eventDoc.day,
+              "hour": eventDoc.hour,
+              "minute": eventDoc.minute,
+              "duration": eventDoc.duration,
+              "numTrainers": eventDoc.numTrainers,
+              "numClients": eventDoc.numClients,
+              "maxMembers": eventDoc.maxMembers,
+});
+
+functions.logger.log(
+                                      "Bono Session",
+                                      bonoDocUser.sessions
+                                    );
+
+                 await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).update({
+                                   "sessions": bonoDocUser.sessions - 1,
+                                });
+
+                                functions.logger.log(
+                                                                      "Bono Session",
+                                                                      bonoDocUser.sessions
+                                                                    );
+
+                 await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
+                                                    "sessions": bonoDocUser.sessions - 1,
+                                                 });
+
+            await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).update({
+                                                                "sessions": bonoDocUser.sessions - 1,
+                                                             });
+
+         return null;
+       });

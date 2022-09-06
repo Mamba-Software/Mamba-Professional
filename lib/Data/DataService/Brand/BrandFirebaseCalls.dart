@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
@@ -24,6 +27,7 @@ class BrandFirebaseCalls {
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
+  String library = isProduction ? 'Library' : '7777 Library';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String users = isProduction ? 'Users' : '7777 Users';
   String events = isProduction ? 'Events' : '7777 Events';
@@ -311,6 +315,23 @@ class BrandFirebaseCalls {
     return contentImages;
   }
 
+
+  Future<String> getRandomBrandPhoto(String brandID) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandID).collection("Images").get();
+      Random rnd = Random();
+      int index = rnd.nextInt(querySnapshot.size);
+      ImageObject image = ImageObject.fromObjectAllData(querySnapshot.docs[index].id, querySnapshot.docs[index]);
+      return image.url!;
+    } catch (e) {
+      QuerySnapshot querySnapshot = await _firestore.collection(library).doc('Images').collection("Events").get();
+      Random rnd = Random();
+      int index = rnd.nextInt(querySnapshot.size);
+      lImage image = lImage.fromObjectAllData(querySnapshot.docs[index].id, querySnapshot.docs[index]);
+      return image.url!;
+    }
+  }
+
   Future<List<Bono>> getAllBonosFromBrandList(String brandId) async {
     List<Bono> bonos = [];
     try {
@@ -320,7 +341,6 @@ class BrandFirebaseCalls {
           .then((snapshot) {
         for (DocumentSnapshot doc in snapshot.docs) {
           bonos.add(Bono.fromObjectAllData(doc.id, doc));
-
         }
       });
       return bonos;
@@ -328,6 +348,12 @@ class BrandFirebaseCalls {
       print(e.toString());
       return bonos;
     }
+  }
+
+  Future<Bono> getBonoInfo(String brandId, String bonoId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+    await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bonoId).get();
+    return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
   //Add
@@ -460,6 +486,8 @@ class BrandFirebaseCalls {
     await _firestore
         .collection(brands)
         .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
         .collection("Bonos Requests")
         .doc(uid)
         .set({
@@ -554,7 +582,7 @@ class BrandFirebaseCalls {
         .delete();
   }
 
-  Future<void> deleteBrandContentPictures(String brandID, String imageId) async {
+  Future<void> deleteBrandContentPictures(String brandID, String imageId, String? imageUrl) async {
     // Delete Image From Storage
     _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + imageId + ".jpeg").delete();
     // Delete Image From Firebase Firestore
@@ -564,6 +592,22 @@ class BrandFirebaseCalls {
         .collection("Images")
         .doc(imageId)
         .delete();
+    // Get a new Image of the Brand
+    String newImageUrl = await getRandomBrandPhoto(brandID);
+    // Get all places where we can find the picture
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Events")
+        .where("imageUrl", isEqualTo: imageUrl)
+        .get();
+    // Update all places where we can find the picture
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      _firestore.collection(events).doc(event.id).update({
+        "imageUrl": newImageUrl,
+      });
+    }
   }
 
   Future<void> deleteBrandUsers(String brandId) async {
@@ -615,10 +659,16 @@ class BrandFirebaseCalls {
   }
 
   Future<void> deleteBrandBonoRequest(String brandId, String bonoId) async {
-    QuerySnapshot querySnapshot = await _firestore.collection(brands).doc(brandId).collection(
-        "Bonos Requests").where("bonoId", isEqualTo: bonoId).get();
-    await _firestore.collection(brands).doc(brandId).collection(
-        "Bonos Requests").doc(querySnapshot.docs[0].id).delete();
+    QuerySnapshot querySnapshot = await _firestore.collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
+        .collection("Bonos Requests").where("bonoId", isEqualTo: bonoId).get();
+    await _firestore.collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
+        .collection("Bonos Requests").doc(querySnapshot.docs[0].id).delete();
   }
 
   //STREAMS
@@ -651,6 +701,8 @@ class BrandFirebaseCalls {
     return _firestore
         .collection(brands)
         .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
         .collection("Bonos Requests")
         .snapshots();
   }

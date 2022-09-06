@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -46,7 +47,6 @@ class FirebaseDatabaseService {
   String requests = isProduction ? 'Requests' : '7777 Requests';
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
-  String library = isProduction ? 'Library' : '7777 Library';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -1176,6 +1176,7 @@ class FirebaseDatabaseService {
           "creatorID": currentUser!.uid,
           "title": event.title,
           "description": event.description,
+          "imageUrl": event.imageUrl,
           "doneAt": event.doneAt,
           "createdAt": event.createdAt,
           "year": event.year,
@@ -1188,6 +1189,7 @@ class FirebaseDatabaseService {
           "numClients": event.numClients,
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
+          "bonos": event.bonos,
         });
         // If Event is Private
         // Add to Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1204,6 +1206,7 @@ class FirebaseDatabaseService {
             "creatorID": currentUser.uid,
             "title": event.title,
             "description": event.description,
+            "imageUrl": event.imageUrl,
             "doneAt": event.doneAt,
             "createdAt": event.createdAt,
             "year": event.year,
@@ -1216,6 +1219,7 @@ class FirebaseDatabaseService {
             "numClients": event.numClients,
             "numTrainers": event.numTrainers,
             "maxMembers": event.maxMembers,
+            "bonos": event.bonos,
           });
         }
         // Set the Brand Document in "\Events\Brands"
@@ -1246,6 +1250,7 @@ class FirebaseDatabaseService {
             set({
               "isPrivate": event.isPrivate,
               "title": event.title,
+              "imageUrl": event.imageUrl,
               "doneAt": event.doneAt,
               "year": event.year,
               "month": event.month,
@@ -1256,6 +1261,7 @@ class FirebaseDatabaseService {
               "numTrainers": event.numTrainers,
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
+              "bonos": event.bonos,
             });
         // If Event is Private
         // Add to Brands/Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1270,6 +1276,7 @@ class FirebaseDatabaseService {
             set({
               "isPrivate": event.isPrivate,
               "title": event.title,
+              "imageUrl": event.imageUrl,
               "doneAt": event.doneAt,
               "year": event.year,
               "month": event.month,
@@ -1280,6 +1287,7 @@ class FirebaseDatabaseService {
               "numTrainers": event.numTrainers,
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
+              "bonos": event.bonos,
             });
         }
         return eventID;
@@ -1927,6 +1935,7 @@ class FirebaseDatabaseService {
       try {
         await _firestore.collection(events).doc(event.id).update({
           "title": event.title,
+          "imageUrl": event.imageUrl,
           "description": event.description,
           "doneAt": event.doneAt,
           "createdAt": event.createdAt,
@@ -1940,6 +1949,7 @@ class FirebaseDatabaseService {
           "numClients": event.numClients,
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
+          "bonos": event.bonos,
         });
         // If Event is Private
         // Update to Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1951,6 +1961,7 @@ class FirebaseDatabaseService {
           .doc(event.id!)
           .update({
             "title": event.title,
+            "imageUrl": event.imageUrl,
             "description": event.description,
             "doneAt": event.doneAt,
             "createdAt": event.createdAt,
@@ -1964,6 +1975,7 @@ class FirebaseDatabaseService {
             "numClients": event.numClients,
             "numTrainers": event.numTrainers,
             "maxMembers": event.maxMembers,
+            "bonos": event.bonos,
           });
         }
       } catch (e) {
@@ -2412,27 +2424,6 @@ class FirebaseDatabaseService {
     await _firestore.collection(brands).doc(brandID).collection("Users").doc(userId).update({
       "favourites": favourites,
     });
-  }
-
-  //Colors
-
-  Future<List<lColor>> getColors() async {
-    List<lColor> colors = [];
-    try {
-      await _firestore.collection(library).doc('Colors')
-          .collection("Colors")
-          .get()
-          .then((snapshot) {
-        for (DocumentSnapshot doc in snapshot.docs) {
-          colors.add(lColor.fromObjectAllData(doc.id, doc));
-
-        }
-      });
-      return colors;
-    } catch (e) {
-      print(e.toString());
-      return colors;
-    }
   }
 
   Future<List<int>> getUserFavourites(String brandId, String userId) async {
