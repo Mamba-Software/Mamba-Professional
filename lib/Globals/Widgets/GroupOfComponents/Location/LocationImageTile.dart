@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
@@ -46,6 +47,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
   @override
   void initState() {
     isLoading = true;
+    gPlace = googlePlace.GooglePlace(Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
     initLocationTile();
     super.initState();
   }
@@ -135,13 +137,13 @@ class _LocationImageTileState extends State<LocationImageTile> {
                         ],
                       ) : Container(),
                       SizedBox(height: widget.height*0.05,),
-                      SizedBox(
+                      locationPercentatgeEvents.isNaN  == false ? SizedBox(
                         height: widget.height*0.35,
                         width: widget.width*0.7,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            locationPercentatgeEvents>0 ? SizedBox(
+                            locationPercentatgeEvents > 0 ? SizedBox(
                               height: widget.height*0.4,
                               child: PieChart(
                                 legendOptions: const LegendOptions(showLegends: false),
@@ -171,7 +173,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                             ),
                           ],
                         ),
-                      )
+                      ) : Container(),
                     ],
                   ),
                 ),
@@ -212,15 +214,31 @@ class _LocationImageTileState extends State<LocationImageTile> {
                               delegate: AddressSearch(sessionToken, language!),
                             );
                             // We have a result for our locations search
-                            if (result != null) {
+                            if (result!.placeId != "") {
                               Location loc = Location();
                               loc.placeId = result.placeId;
                               final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
                               // Get the information on Strings
-                              if(placeDetails.street!=null) loc.street = placeDetails.street!; else loc.street="N/A";
-                              if(placeDetails.streetNumber!=null) loc.streetNumber = placeDetails.streetNumber!; else loc.streetNumber="N/A";
-                              if(placeDetails.city!=null) loc.city = placeDetails.city!; else loc.city="N/A";
-                              if(placeDetails.zipCode!=null) loc.zipCode = placeDetails.zipCode!; else loc.zipCode="N/A";
+                              if(placeDetails.street!=null) {
+                                loc.street = placeDetails.street!;
+                              } else {
+                                loc.street="N/A";
+                              }
+                              if(placeDetails.streetNumber!=null) {
+                                loc.streetNumber = placeDetails.streetNumber!;
+                              } else {
+                                loc.streetNumber="N/A";
+                              }
+                              if(placeDetails.city!=null) {
+                                loc.city = placeDetails.city!;
+                              } else {
+                                loc.city="N/A";
+                              }
+                              if(placeDetails.zipCode!=null) {
+                                loc.zipCode = placeDetails.zipCode!;
+                              } else {
+                                loc.zipCode="N/A";
+                              }
                               //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                               // Build Correct Description
                               loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
@@ -233,7 +251,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                               }
                               // Save location to DataBase
                               await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
-                              // Notifiying update
+                              // Notifying update
                               widget.locationChanged(true);
                             }
                           } else {
