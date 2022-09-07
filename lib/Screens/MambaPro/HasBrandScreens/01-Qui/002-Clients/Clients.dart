@@ -233,7 +233,7 @@ class _Clients extends State<Clients> {
                         ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.025,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,
