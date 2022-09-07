@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:maps_launcher/maps_launcher.dart';
@@ -20,6 +23,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -124,7 +128,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
 
   void getEventInfo() async {
     event = await _eventDataService.getSingleEvent(widget.eventId);
-    print(event?.id);
     titleController.text = "${event!.title}";
     titleString = "${event!.title}";
     descriptionController.text = "${event!.description}";
@@ -285,6 +288,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
 
   }
 
+  // Build Places Left Event
   Widget buildPlacesLeftWidget(int places) {
     return FittedBox(
       fit: BoxFit.fitHeight,
@@ -310,6 +314,21 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         ),
       ),
     );
+  }
+
+  // Build Places Left Event
+  SystemUiOverlayStyle returnSystemBarColor() {
+    if (Platform.isAndroid) {
+      return SystemUiOverlayStyle.light;
+    } else {
+      bool isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+      if (isDark) {
+        return SystemUiOverlayStyle.light;
+      } else {
+        return !appBarExpanded ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+      }
+    }
+
   }
 
   @override
@@ -546,7 +565,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
+            systemOverlayStyle: returnSystemBarColor(),
             floating: true,
             pinned: true,
             centerTitle: true,

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -9,6 +12,9 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../Globals/Providers/ThemeProvider.dart';
 
 class HomePro extends StatefulWidget {
   String brandId;
@@ -58,6 +64,21 @@ class _HomePro extends State<HomePro> {
     });
   }
 
+  // Build Places Left Event
+  SystemUiOverlayStyle returnSystemBarColor() {
+    if (Platform.isAndroid) {
+      return SystemUiOverlayStyle.light;
+    } else {
+      bool isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+      if (isDark) {
+        return SystemUiOverlayStyle.light;
+      } else {
+        return !appBarExpanded ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+      }
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +88,7 @@ class _HomePro extends State<HomePro> {
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
+            systemOverlayStyle: returnSystemBarColor(),
             floating: true,
             pinned: true,
             centerTitle: true,
