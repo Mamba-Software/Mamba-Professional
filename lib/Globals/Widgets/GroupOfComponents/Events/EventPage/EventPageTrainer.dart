@@ -546,7 +546,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
-            systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             floating: true,
             pinned: true,
             centerTitle: true,
