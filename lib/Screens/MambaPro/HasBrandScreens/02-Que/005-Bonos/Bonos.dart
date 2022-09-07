@@ -371,8 +371,7 @@ class _BonosProState extends State<BonosPro> {
                     height: MediaQuery.of(context).size.height * 0.65,
                     child: Center(child: LoadingView()));
               } else {
-                bonosList = _bonosUtils.documentsToBonos(
-                    snapshot.data!.docs, orderBonoSelectedNumber);
+                bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, orderBonoSelectedNumber);
                 return Expanded(
                   child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -417,18 +416,38 @@ class _BonosProState extends State<BonosPro> {
               background: Container(
                 color: AppColors.darkGrey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                      child: Text(
-                        AppLocalizations.of(context)!.bonos,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.bonos,
+                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height*0.08,
+                              width: MediaQuery.of(context).size.width*0.11,
+                              child: TextButton(
+                                onPressed: null,
+                                child: Icon(
+                                  Icons.filter_list,
+                                  color: AppColors.white,
+                                  size: MediaQuery.of(context).size.width*0.07,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,

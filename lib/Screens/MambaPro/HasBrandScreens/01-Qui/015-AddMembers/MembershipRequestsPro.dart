@@ -51,14 +51,14 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
   initState() {
     super.initState();
     _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-      setState(() {
-        appBarExpanded = true;
-      }) :
-      setState(() {
-        appBarExpanded = false;
-      }),
-      );
+    ..addListener(() => _isAppBarExpanded ?
+    setState(() {
+      appBarExpanded = true;
+    }) :
+    setState(() {
+      appBarExpanded = false;
+    }),
+    );
   }
 
   List<RequestToBrand> documentsToRequests(List<DocumentSnapshot> documents) {
@@ -94,18 +94,38 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                 height: MediaQuery.of(context).size.height*0.15,
                 color: AppColors.darkGrey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                      child: Text(
-                        AppLocalizations.of(context)!.myRequests,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.myRequests,
+                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height*0.08,
+                              width: MediaQuery.of(context).size.width*0.11,
+                              child: TextButton(
+                                onPressed: null,
+                                child: Icon(
+                                  Icons.filter_list,
+                                  color: AppColors.darkGrey,
+                                  size: MediaQuery.of(context).size.width*0.07,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,
