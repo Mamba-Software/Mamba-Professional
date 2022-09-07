@@ -89,8 +89,9 @@ class _MambaState extends State<Mamba> {
     }).onError((error) {
       print(error.toString());
     });
-    // Defining the Page Controller
+    /* Defining the Page Controller
     pageController = PageController(initialPage: currentIndex);
+     */
     // Getting User Information
     getUserAndBrand();
     // On StartUp Dialogs

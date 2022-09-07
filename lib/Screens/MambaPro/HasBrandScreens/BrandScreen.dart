@@ -76,8 +76,6 @@ class _BrandScreenState extends State<BrandScreen> {
   var iconWhen = Icons.keyboard_arrow_up;
   var iconWhere = Icons.keyboard_arrow_up;
 
-  //Index to know which page to load
-  int pageIndex = 0;
   //favourite tabs of user
   List<int> favourites = [];
 

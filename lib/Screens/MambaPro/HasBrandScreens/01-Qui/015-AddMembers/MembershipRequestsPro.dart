@@ -307,7 +307,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                   );
                 } else {
                   return SliverFillRemaining(
-                    hasScrollBody: true,
+                    hasScrollBody: false,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
