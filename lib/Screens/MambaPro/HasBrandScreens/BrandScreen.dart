@@ -773,6 +773,14 @@ class _BrandScreenState extends State<BrandScreen> {
     }
     return Scaffold(
       key: mambaProScaffoldKey,
+      /*
+      appBar: AppBar(
+        toolbarHeight: 0,
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        //systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.white),
+      ),
+       */
       drawer: Drawer(
         backgroundColor: Theme.of(context).primaryColorDark,
         child: ListView(

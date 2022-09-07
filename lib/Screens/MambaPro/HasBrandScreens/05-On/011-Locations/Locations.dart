@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -59,7 +60,6 @@ class _LocationsState extends State<Locations> {
   Set<Marker> markers = <Marker>{};
   CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
   GoogleMapController? mapController;
-  final Completer<GoogleMapController> _controller = Completer();
 
   void initCameraPosition() {
     setState(() {
@@ -97,12 +97,7 @@ class _LocationsState extends State<Locations> {
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    if (!_controller.isCompleted) {
-      _controller.complete(controller);
-      setState(() {
-        mapController = controller;
-      });
-    }
+    mapController = controller;
   }
 
   Future<void> getAllLocations() async {
@@ -178,6 +173,7 @@ class _LocationsState extends State<Locations> {
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
             pinned: true,

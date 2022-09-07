@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
 
 class HomePro extends StatefulWidget {
@@ -105,11 +107,28 @@ class _HomePro extends State<HomePro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+          appBar: AppBar(
+            toolbarHeight: 0,
+            elevation: 0,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+          ),
           backgroundColor: Colors.transparent,
           body: Padding(
-            padding:  EdgeInsets.symmetric( vertical: MediaQuery.of(context).size.height*0.04, horizontal:  MediaQuery.of(context).size.width*0.04,),
-            child: ListView(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.04,),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: Theme.of(context).primaryColor,
+                        size: MediaQuery.of(context).size.height*0.04,
+                      ),
+                      onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
                   child: Text(
