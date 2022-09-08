@@ -85,16 +85,16 @@ class BonosUtils {
                   end: Alignment.bottomLeft,
                   colors: [
                 Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                    Colors.red,
+                    Colors.purple,
                   ],
                 ),
 
-                 image: DecorationImage(
+                 image: _bono.imageUrl != null && _bono.imageUrl != '' ? DecorationImage(
                   opacity: 225,
 
-                  image: NetworkImage(brand.logoUrl!),
+                  image:  NetworkImage(_bono.imageUrl!),
                   fit: BoxFit.cover,
-                ),
+                ) : null,
 
 
                 //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
@@ -105,7 +105,7 @@ class BonosUtils {
                   end: Alignment.bottomLeft,
                   colors: [
                     Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                    Colors.red,
+                    Colors.purple,
                   ],
                 ),
 
@@ -218,7 +218,7 @@ class BonosUtils {
                     end: Alignment.bottomLeft,
                     colors: [
                       Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                      Colors.red,
+                      Colors.purple,
                     ],
                   ),
 
@@ -239,7 +239,7 @@ class BonosUtils {
                     end: Alignment.bottomLeft,
                     colors: [
                       Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                      Colors.red,
+                      Colors.purple,
                     ],
                   ),
 
@@ -397,16 +397,16 @@ class BonosUtils {
                     end: Alignment.bottomLeft,
                     colors: [
                       Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                      Colors.red,
+                      Colors.purple,
                     ],
                   ),
 
-                  image: DecorationImage(
+                  image: _bono.imageUrl != null && _bono.imageUrl != '' ? DecorationImage(
                     opacity: 225,
 
-                    image: NetworkImage(brand.logoUrl!),
+                    image:  NetworkImage(_bono.imageUrl!),
                     fit: BoxFit.cover,
-                  ),
+                  ) : null,
 
 
                   //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
@@ -417,7 +417,7 @@ class BonosUtils {
                     end: Alignment.bottomLeft,
                     colors: [
                       Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                      Colors.red,
+                      Colors.purple,
                     ],
                   ),
 
@@ -536,7 +536,9 @@ class BonosUtils {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      navigateToAddBonosScreen(context, _bono, brand);
+                      if(!_brandDataService is !String) {
+                        navigateToAddBonosScreen(context, _bono, brand);
+                      }
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
@@ -565,9 +567,12 @@ class BonosUtils {
                   ),
                   GestureDetector(
                     onTap: () {
-                      _bono.isActive = !_bono.isActive!;
-                      _brandDataService.updateBonoActive(brand.id!, _bono.id!, _bono.isActive!);
-                    },
+                      if(_brandDataService is !String) {
+                        _bono.isActive = !_bono.isActive!;
+                        _brandDataService.updateBonoActive(
+                            brand.id!, _bono.id!, _bono.isActive!);
+                      }
+                      },
                     child: Padding(
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).size.height * 0.03,
@@ -609,7 +614,7 @@ class BonosUtils {
         context,
         CupertinoPageRoute<Null>(
           builder: (context) => AddEditBono(
-            brand: brand, bono: bono,
+            brand: brand, bono: bono, edit: true,
           ),
         ));
   }

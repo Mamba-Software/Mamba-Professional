@@ -528,6 +528,7 @@ class _BonosProState extends State<BonosPro> {
           builder: (context) => AddEditBono(
             brand: _brand,
             bono: bono,
+            edit: false,
           ),
         ));
   }

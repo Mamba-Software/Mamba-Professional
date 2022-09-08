@@ -14,6 +14,7 @@ class Bono {
   bool? isActive;
   int? compras;
   String? color;
+  String? imageUrl;
 
 
   Bono({
@@ -25,6 +26,7 @@ class Bono {
     this.isActive,
     this.compras,
     this.color,
+    this.imageUrl,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +54,9 @@ class Bono {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('color')) {
       this.color = documentSnapshot.get("color");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      this.imageUrl = documentSnapshot.get("imageUrl").toString();
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -66,5 +71,6 @@ class Bono {
     this.isActive = bono.isActive;
     this.compras = bono.compras;
     this.color = bono.color;
+    this.imageUrl = bono.imageUrl;
   }
 }
