@@ -70,7 +70,7 @@ Future<void> main() async {
               create: (_) => FirebaseAnalyticsProvider()
           ),
         ],
-        child: Mamba(),
+        child: const Mamba(),
       )
     );
   }, (error, stackTrace) {
@@ -88,7 +88,7 @@ class Mamba extends StatefulWidget {
 
 class _MambaState extends State<Mamba> with WidgetsBindingObserver {
 
-  var _dynamicLinkUtils = DynamicLinkUtils();
+  final _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
 
   @override
@@ -140,30 +140,30 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                 darkTheme: _appThemes.returnResponsiveDarkTheme(100.vh),
                 locale: language.idioma,
                 supportedLocales: Idiomas.all,
-                localizationsDelegates: [
+                localizationsDelegates: const [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
                 ],
-                home: SplashScreen(),
+                home: const SplashScreen(),
                 onGenerateRoute: (RouteSettings settings) {
                   final args = settings.arguments;
                   switch (settings.name) {
                     case 'SplashScreen':
                       return CupertinoPageRoute(
-                          builder: (_) => SplashScreen(),
-                          settings: RouteSettings(name: 'SplashScreen'),
+                          builder: (_) => const SplashScreen(),
+                          settings: const RouteSettings(name: 'SplashScreen'),
                       );
                     case 'Notifications':
                       return CupertinoPageRoute(
-                          builder: (_) => Notifications(),
-                          settings: RouteSettings(name: 'Notifications'),
+                          builder: (_) => const Notifications(),
+                          settings: const RouteSettings(name: 'Notifications'),
                       );
                     case 'Chat':
                       return CupertinoPageRoute(
-                          builder: (_) => ChatCore(),
-                          settings: RouteSettings(name: 'ChatCore'),
+                          builder: (_) => const ChatCore(),
+                          settings: const RouteSettings(name: 'ChatCore'),
                       );
                     case 'EventPage':
                       String eventId = args as String;
@@ -171,7 +171,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                           builder: (_) => EventPage(
                             eventId: eventId,
                           ),
-                          settings: RouteSettings(name: 'EventPage'),
+                          settings: const RouteSettings(name: 'EventPage'),
                       );
                     case 'EventFeedbackPage':
                       String eventId = args as String;
@@ -179,7 +179,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                           builder: (_) => EventFeedback(
                             eventId: eventId,
                           ),
-                          settings: RouteSettings(name: 'EventFeedback'),
+                          settings: const RouteSettings(name: 'EventFeedback'),
                       );
                     case 'BonosRequests':
                       String brandId = args as String;
@@ -187,7 +187,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                         builder: (_) => BonosRequests(
                           brandId: brandId,
                         ),
-                        settings: RouteSettings(name: 'BonosRequests'),
+                        settings: const RouteSettings(name: 'BonosRequests'),
                       );
                   }
                 },

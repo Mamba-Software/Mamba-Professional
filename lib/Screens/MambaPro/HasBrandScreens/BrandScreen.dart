@@ -303,28 +303,6 @@ class _BrandScreenState extends State<BrandScreen> {
               ],
             ),
           ),
-          /*
-          SizedBox(height: safeAreaHeight * 0.01),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-            child: TextButton(
-              onPressed: navigateToSettingsScreen,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.settings,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  SizedBox(width: safeAreaWidth * 0.025),
-                  Text(
-                      AppLocalizations.of(context)!.settings,
-                      style: Theme.of(context).textTheme.bodyText2
-                  ),
-                ],
-              ),
-            ),
-          ),
-          */
         ],
       ),
     );

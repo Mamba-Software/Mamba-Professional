@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ho
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
+import 'package:provider/provider.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
