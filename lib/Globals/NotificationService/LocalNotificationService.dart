@@ -180,10 +180,6 @@ class LocalNotificationService {
     print(payload);
     switch (payload) {
       case "SplashScreen":
-        if (ModalRoute.of(context)?.settings.name != "Mamba") {
-          pageIndex = 0;
-          await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: pageIndex);
-        }
         break;
       case "Notifications":
         await Navigator.of(context).pushNamed("Notifications", arguments: pageIndex);
@@ -192,12 +188,6 @@ class LocalNotificationService {
         await Navigator.of(context).pushNamed("Chat", arguments: pageIndex);
         break;
       case "BrandPage":
-        if (ModalRoute.of(context)?.settings.name == "Mamba") {
-          //pageController.jumpToPage(1);
-        } else {
-          //currentIndex = 1;
-          await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: 0);
-        }
         break;
       case 'BonosRequests':
         print("here");

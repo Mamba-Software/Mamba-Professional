@@ -76,7 +76,7 @@ class _QRScannerState extends State<QRScanner> {
                 Flexible(
                   child: Text(
                       AppLocalizations.of(context)!.scanQRCode,
-                      style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.headline1!.copyWith(fontWeight: FontWeight.w600),
                       textAlign: TextAlign.left
                   ),
                 ),

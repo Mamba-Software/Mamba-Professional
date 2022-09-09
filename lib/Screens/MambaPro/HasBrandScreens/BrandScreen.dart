@@ -121,6 +121,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const Notifications(),
+          settings: const RouteSettings(name: 'Notifications'),
         )
     ).whenComplete(() async {
       var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
@@ -136,6 +137,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const ChatCore(),
+          settings: const RouteSettings(name: 'ChatCore'),
         )
     ).whenComplete(() async {
       var temp = await _userDataService.getUnreadConversations(currentUser.id!);
@@ -151,6 +153,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const Profile(),
+          settings: const RouteSettings(name: 'Profile'),
         )
     );
   }
@@ -588,6 +591,7 @@ class _BrandScreenState extends State<BrandScreen> {
             setState(() {
               isLoading = true;
             });
+            pageIndex = 0;
             NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
             await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
             await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
