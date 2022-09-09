@@ -142,7 +142,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.profileBottomNav, style: Theme.of(context).appBarTheme.titleTextStyle,),
+          title: Text(isLoading ? AppLocalizations.of(context)!.profileBottomNav : user!.name!, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
@@ -151,6 +151,123 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             },
           ),
           actions: [
+            !isLoading ? Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+              child: IconButton(
+                onPressed: () async {
+                  int? result = await showModalBottomSheet<int?>(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    builder: (BuildContext context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.3,
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height*0.4,
+                          width: MediaQuery.of(context).size.width,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02, vertical: MediaQuery.of(context).size.width*0.03),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                      AppLocalizations.of(context)!.choseOption,
+                                      style: Theme.of(context).textTheme.caption,
+                                      textAlign: TextAlign.left
+                                  ),
+                                ),
+                                widget.viewOnly || user!.id! == currentUser.id ? Container() : ListTile(
+                                  leading: Icon(Icons.chat_outlined, size: MediaQuery.of(context).size.width*0.06,),
+                                  title: Text(
+                                      AppLocalizations.of(context)!.chatBottomNav,
+                                      style: Theme.of(context).textTheme.bodyText1,
+                                      textAlign: TextAlign.left
+                                  ),
+                                  onTap: () async {
+                                    types.User otherUser = types.User(
+                                      firstName: user!.firstName,
+                                      lastName: user!.lastName,
+                                      id: user!.id!, // UID from Firebase Authentication
+                                      imageUrl: user!.imageUrl,
+                                    );
+                                    final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
+                                      "trainer" + user!.id!: user!.isTrainer,
+                                      "trainer" + currentUser.id!: currentUser.isTrainer,
+                                      "active" + user!.id!: false,
+                                      "active" + currentUser.id!: true,
+                                    });
+
+                                    bool? deleteRoom = await Navigator.push(
+                                      context,
+                                      CupertinoPageRoute<bool>(
+                                          builder: (context) => ChatPage(room: room)),).whenComplete(() async {
+                                      room.metadata!["active" + currentUser.id!] = false;
+                                      _roomDataService.updateRoom(room.id, room.metadata!);
+                                    });
+                                    if (!deleteRoom!) {
+                                      _roomDataService.deleteRoom(room.id);
+                                    }
+                                  },
+                                ),
+                                canDeleteFromBrand() == false ? Container() : ListTile(
+                                  leading: Icon(
+                                    Icons.person_remove,
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                    color: AppColors.red,
+                                  ),
+                                  title: Text(
+                                      AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.user.toLowerCase(),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.red),
+                                      textAlign: TextAlign.left
+                                  ),
+                                  onTap: () async {
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return DeleteFromBrandConfirmationDialog(
+                                            text: AppLocalizations.of(context)!.deleteFromBrandConfirmation,
+                                            userId: widget.userID,
+                                          );
+                                        }
+                                    );
+                                    if (result) {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      NotificationService().userLeavesBrand(widget.userID, currentBrand.id!);
+                                      // New Database
+                                      await Future.delayed(const Duration(milliseconds: 3000));
+                                      await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+                                      await _brandDataService.deleteUserFromBrand(widget.userID, currentBrand.id!);
+                                      // TODO: Revisar Pq True, yo crec que es per recagar els users a todos los miemrbos
+                                      Navigator.pop(context, true);
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  Icons.more_horiz,
+                  color: AppColors.white,
+                  size: MediaQuery.of(context).size.width*0.07,
+                ),
+              ),
+            ) : Container(),
+            /*
             !isLoading ? Row(
               children: [
                 canDeleteFromBrand() ? IconButton(
@@ -180,36 +297,13 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     icon: Icon(Icons.delete_outlined, color: Colors.red, size: MediaQuery.of(context).size.width*0.06,)
                 ) : Container(),
                 widget.viewOnly || user!.id! == currentUser.id ? Container() : IconButton(
-                    onPressed: () async {
-                      types.User otherUser = types.User(
-                        firstName: user!.firstName,
-                        lastName: user!.lastName,
-                        id: user!.id!, // UID from Firebase Authentication
-                        imageUrl: user!.imageUrl,
-                      );
-                      final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                        "trainer" + user!.id!: user!.isTrainer,
-                        "trainer" + currentUser.id!: currentUser.isTrainer,
-                        "active" + user!.id!: false,
-                        "active" + currentUser.id!: true,
-                      });
 
-                      bool? deleteRoom = await Navigator.push(
-                        context,
-                        CupertinoPageRoute<bool>(
-                            builder: (context) => ChatPage(room: room)),).whenComplete(() async {
-                        room.metadata!["active" + currentUser.id!] = false;
-                        _roomDataService.updateRoom(room.id, room.metadata!);
-                      });
-                      if (!deleteRoom!) {
-                        _roomDataService.deleteRoom(room.id);
-                      }
-                    } ,
                     icon: Icon(Icons.chat_outlined, size: MediaQuery.of(context).size.width*0.06,)
                 ),
                 SizedBox(width: MediaQuery.of(context).size.width*0.01)
               ],
             ) : Container(),
+             */
           ],
         ),
         body: isLoading ?
@@ -221,6 +315,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              /*
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                 child: Text(
@@ -230,6 +325,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
+               */
               GestureDetector(
                   onTap: () {
                     Navigator.push(
