@@ -1095,9 +1095,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     }, name: nameBrandController.text.trim(), users: []);
     await _brandDataService.updateBrandRoom(result, room.id);
     // Pushing to Splash Screen
-    setState(() {
-      currentIndex = 1;
-    });
     await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
     Navigator.pushAndRemoveUntil(
       context,

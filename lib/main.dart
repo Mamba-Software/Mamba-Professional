@@ -39,7 +39,6 @@ late AndroidNotificationChannel channel;
 
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-  currentIndex = 2;
 }
 
 // Starting app function. After initialization, we define the global providers:
