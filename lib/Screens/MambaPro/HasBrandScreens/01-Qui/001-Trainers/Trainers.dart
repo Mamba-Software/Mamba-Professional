@@ -217,7 +217,64 @@ class _Trainers extends State<Trainers> {
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: null,
+                                    onPressed: () async {
+                                      int? result = await showModalBottomSheet<int?>(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20),
+                                          ),
+                                        ),
+                                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                                        builder: (BuildContext context) {
+                                          return FractionallySizedBox(
+                                            heightFactor: 0.3,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context).size.height*0.4,
+                                              width: MediaQuery.of(context).size.width,
+                                              child: Padding(
+                                                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.filterBy,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                      dense: true,
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.mambaProActivated,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.mambaProDesactivated,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.filterBy,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
                                     alignment: Alignment.centerRight,
                                     padding: EdgeInsets.zero,
                                     icon: Icon(

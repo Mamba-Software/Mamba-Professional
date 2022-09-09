@@ -2064,5 +2064,9 @@
   "staff": "Staff",
   "@staff": {
     "description": "Donde message"
+  },
+  "filterBy": "Ordenar por",
+  "@filterBy": {
+    "description": "Donde message"
   }
 }

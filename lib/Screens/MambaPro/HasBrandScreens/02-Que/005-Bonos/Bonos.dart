@@ -44,7 +44,7 @@ class _BonosProState extends State<BonosPro> {
   }
 
   // Boolean Loading
-  bool isLoading = false;
+  bool isLoading = true;
   final _lColor = lColor();
 
   // Bonos list
@@ -435,7 +435,64 @@ class _BonosProState extends State<BonosPro> {
                               height: MediaQuery.of(context).size.height*0.08,
                               width: MediaQuery.of(context).size.width*0.11,
                               child: TextButton(
-                                onPressed: null,
+                                onPressed: () async {
+                                  int? result = await showModalBottomSheet<int?>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20),
+                                      ),
+                                    ),
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    builder: (BuildContext context) {
+                                      return FractionallySizedBox(
+                                        heightFactor: 0.3,
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context).size.height*0.4,
+                                          width: MediaQuery.of(context).size.width,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.filterBy,
+                                                      style: Theme.of(context).textTheme.caption,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                  dense: true,
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.mambaProActivated,
+                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.mambaProDesactivated,
+                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.filterBy,
+                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
                                 child: Icon(
                                   Icons.filter_list,
                                   color: AppColors.white,
@@ -491,70 +548,6 @@ class _BonosProState extends State<BonosPro> {
                 ),
               ),
             ],
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.06),
-                    child: Text('Ordenar por',
-                        style: Theme.of(context).textTheme.bodyText1,
-                        textAlign: TextAlign.center),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.02,
-                        right: MediaQuery.of(context).size.width * 0.01),
-                    child: Container(
-                      height: MediaQuery.of(context).size.width * 0.10,
-                      padding:
-                      EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.0),
-                        border: Border.all(
-                            color: Colors.grey,
-                            style: BorderStyle.solid,
-                            width: 0.80),
-                      ),
-                      child: DropdownButton<String>(
-                        items: ordenBonos.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        hint: Text(ordenBonosSelected),
-                        onChanged: (newVal) {
-                          ordenBonosSelected = newVal!;
-                          if (ordenBonosSelected == "Activos")
-                            orderBonoSelectedNumber = 0;
-                          else if (ordenBonosSelected == "Desactivados")
-                            orderBonoSelectedNumber = 1;
-                          else if (ordenBonosSelected == "Más nuevos")
-                            orderBonoSelectedNumber = 2;
-                          else if (ordenBonosSelected == "Más antiguos")
-                            orderBonoSelectedNumber = 3;
-                          setState(() {});
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.08),
-                    child: IconButton(
-                        icon: Icon(Icons.request_quote,
-                            color: Theme.of(context).primaryColor,
-                            size: safeAreaWidth * 0.06),
-                        alignment: Alignment.centerRight,
-                        onPressed: navigateToBonosRequestScreen),
-                  ),
-                ],
-              ),
-            ),
           ),
           StreamBuilder<QuerySnapshot>(
               stream: _brandDataService.getAllBonosFromBrand(widget.brandId),

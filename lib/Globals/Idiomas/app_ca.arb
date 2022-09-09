@@ -459,5 +459,6 @@
   "cuando": "Quan",
   "donde": "On",
   "scanQRCode": "Escaneja codi QR",
-  "staff": "Staff"
+  "staff": "Staff",
+  "filterBy": "Ordenar per"
 }
