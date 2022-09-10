@@ -151,7 +151,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             },
           ),
           actions: [
-            !isLoading ? Padding(
+            isLoading == true || widget.viewOnly || user!.id! == currentUser.id ? Container() : Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
               child: IconButton(
                 onPressed: () async {
@@ -166,7 +166,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: 0.3,
+                        heightFactor: 0.25,
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height*0.4,
                           width: MediaQuery.of(context).size.width,
@@ -182,8 +182,12 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       textAlign: TextAlign.left
                                   ),
                                 ),
-                                widget.viewOnly || user!.id! == currentUser.id ? Container() : ListTile(
-                                  leading: Icon(Icons.chat_outlined, size: MediaQuery.of(context).size.width*0.06,),
+                                ListTile(
+                                  leading: Icon(
+                                    Icons.chat_outlined,
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
                                   title: Text(
                                       AppLocalizations.of(context)!.chatBottomNav,
                                       style: Theme.of(context).textTheme.bodyText1,
@@ -215,41 +219,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     }
                                   },
                                 ),
-                                canDeleteFromBrand() == false ? Container() : ListTile(
-                                  leading: Icon(
-                                    Icons.person_remove,
-                                    size: MediaQuery.of(context).size.width*0.06,
-                                    color: AppColors.red,
-                                  ),
-                                  title: Text(
-                                      AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.user.toLowerCase(),
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.red),
-                                      textAlign: TextAlign.left
-                                  ),
-                                  onTap: () async {
-                                    var result = await showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return DeleteFromBrandConfirmationDialog(
-                                            text: AppLocalizations.of(context)!.deleteFromBrandConfirmation,
-                                            userId: widget.userID,
-                                          );
-                                        }
-                                    );
-                                    if (result) {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      NotificationService().userLeavesBrand(widget.userID, currentBrand.id!);
-                                      // New Database
-                                      await Future.delayed(const Duration(milliseconds: 3000));
-                                      await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
-                                      await _brandDataService.deleteUserFromBrand(widget.userID, currentBrand.id!);
-                                      // TODO: Revisar Pq True, yo crec que es per recagar els users a todos los miemrbos
-                                      Navigator.pop(context, true);
-                                    }
-                                  },
-                                ),
                               ],
                             ),
                           ),
@@ -266,7 +235,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                   size: MediaQuery.of(context).size.width*0.07,
                 ),
               ),
-            ) : Container(),
+            ),
             /*
             !isLoading ? Row(
               children: [
