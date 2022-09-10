@@ -32,10 +32,10 @@ class ProfileViewUser extends StatefulWidget {
 class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProviderStateMixin {
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
-  var _brandDataService = new BrandDataService();
-  var _eventDataService = new EventDataService();
-  var _roomDataService = new RoomDataService();
+  var _userDataService = UserDataService();
+  var _brandDataService = BrandDataService();
+  var _eventDataService = EventDataService();
+  var _roomDataService = RoomDataService();
   // Boolean Loading
   bool isLoading = false;
   // Usuario
@@ -48,7 +48,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   int thisMonthEvents  = 0;
   List<Event> listEvents = [];
 
-  String toCapitalized(String s) => s.length > 0 ?'${s[0].toUpperCase()}${s.substring(1)}':'';
+  String toCapitalized(String s) => s.isNotEmpty ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
   // init Widget state. Loading user info.
   @override
@@ -262,7 +262,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 padding: EdgeInsets.zero,
                 icon: Icon(
                   Icons.more_horiz,
-                  color: AppColors.white,
+                  color: Theme.of(context).primaryColor,
                   size: MediaQuery.of(context).size.width*0.07,
                 ),
               ),
@@ -310,22 +310,11 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
         LoadingView()
             :
         SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
-              /*
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                child: Text(
-                  user!.name!,
-                  style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.03),
-               */
               GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -365,7 +354,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     color: Theme.of(context).colorScheme.secondary,
                     size: MediaQuery.of(context).size.width*0.04,
                   ),
-                  user!.isTrainer! ? SizedBox(width: 4) : SizedBox(width: 2),
+                  user!.isTrainer! ? const SizedBox(width: 4) : const SizedBox(width: 2),
                   Text(
                     user!.isTrainer! ?  AppLocalizations.of(context)!.trainer : AppLocalizations.of(context)!.client,
                     style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).colorScheme.secondary),
@@ -377,19 +366,19 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 children: [
                   Material(
                     //elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.all(
-                        const Radius.circular(10.0),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
                       ),
                     ),
                     child: Container(
                       width: MediaQuery.of(context).size.width * 0.81,
                       height: MediaQuery.of(context).size.height * 0.10,
-                      decoration: new BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
                         //border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                        borderRadius: new BorderRadius.all(
-                          const Radius.circular(10.0),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10.0),
                         ),
                       ),
                       child: Row(
@@ -406,7 +395,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   totalEvents.toString(),
                                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                 ),
-                                SizedBox(height: 2),
+                                const SizedBox(height: 2),
                                 Text(
                                   AppLocalizations.of(context)!.allEvents,
                                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
@@ -431,7 +420,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   thisMonthEvents.toString(),
                                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                                 ),
-                                SizedBox(height: 2),
+                                const SizedBox(height: 2),
                                 Text(
                                   AppLocalizations.of(context)!.monthEvents,
                                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
@@ -447,11 +436,11 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 ],
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              listEvents.length != 0 ? Column(
+              listEvents.isNotEmpty ? Column(
                 children: [
                   ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: listEvents.length,
                     itemBuilder: (context,int index) {
                       Event event = listEvents[index];
@@ -518,29 +507,22 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 ],
               )
                 :
-              Column(
-                children: [
-                  Container(
-                    height: MediaQuery.of(context).size.height*0.30,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Center(
-                          child: Container(
-                              height: MediaQuery.of(context).size.height*0.15,
-                              child: Image.asset(Constants.emptyCalendar)
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.20),
-                          child: Text(AppLocalizations.of(context)!.noTrainingsDone, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                        ),
-                      ],
+              SizedBox(
+                height: MediaQuery.of(context).size.height*0.4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height*0.15,
+                        child: Image.asset(Constants.emptyCalendar)
                     ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                ],
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.20),
+                      child: Text(AppLocalizations.of(context)!.noTrainingsDone, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  ],
+                ),
               ),
             ],
           ),
