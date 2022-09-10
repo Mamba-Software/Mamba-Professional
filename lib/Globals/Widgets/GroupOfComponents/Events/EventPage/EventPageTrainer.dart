@@ -292,21 +292,39 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   Widget buildPlacesLeftWidget(int places) {
     return FittedBox(
       fit: BoxFit.fitHeight,
-      child: Container(
-        height: MediaQuery.of(context).size.width*0.1,
-        padding: const EdgeInsets.only(top: 4, bottom: 8),
-        child: Center(
+      child: isFull == false ? Container(
+          height: MediaQuery.of(context).size.width*0.1,
+          padding: const EdgeInsets.only(top: 4, bottom: 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 places.toString(),
-                style: Theme.of(context).textTheme.headline3?.copyWith(color: isFull ? AppColors.red : Colors.green),
+                style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
                 textAlign: TextAlign.center,
               ),
               Text(
                 places == 1 ? AppLocalizations.of(context)!.slot : AppLocalizations.of(context)!.slots,
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: isFull ? AppColors.red : Colors.green),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: Colors.green),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          )
+      ) : Container(
+        height: MediaQuery.of(context).size.width*0.1,
+        padding: const EdgeInsets.only(top: 4, bottom: 4),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Icon(
+                Icons.lock_outlined,
+                size: MediaQuery.of(context).size.width * 0.05,
+                color: AppColors.red,
+              ),
+              Text(
+                AppLocalizations.of(context)!.full,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: AppColors.red),
                 textAlign: TextAlign.center,
               ),
             ],
