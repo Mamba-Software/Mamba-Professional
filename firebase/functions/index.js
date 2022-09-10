@@ -3530,29 +3530,31 @@ exports.zzzzUserJoinsEvent = functions
       });
 
       //TODO AFEGIT JOAN MANEL INTEGRACIÓ BONOS
-        //Add event to purchase collection
-        await db
-                .collection("7777 Payments")
-                .doc("Purchases")
-                .collection("Purchases")
-                .doc(eventUserDoc.purchaseId)
-                .collection("Events")
-                .doc(eventId)
-                .set({
-                  "isPrivate": eventDoc.isPrivate,
-                  "title": eventDoc.title,
-                  "imageUrl": eventDoc.imageUrl,
-                  "doneAt": eventDoc.doneAt,
-                  "year": eventDoc.year,
-                  "month": eventDoc.month,
-                  "day": eventDoc.day,
-                  "hour": eventDoc.hour,
-                  "minute": eventDoc.minute,
-                  "duration": eventDoc.duration,
-                  "numTrainers": numTrainers,
-                  "numClients": numClients,
-                  "maxMembers": eventDoc.maxMembers,
-              });
+      /* Add event to purchase collection
+      await db
+        .collection("7777 Payments")
+        .doc("Purchases")
+        .collection("Purchases")
+        .doc(eventUserDoc.purchaseId)
+        .collection("Events")
+        .doc(eventId)
+        .set({
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": numTrainers,
+          "numClients": numClients,
+          "maxMembers": eventDoc.maxMembers,
+      });
+      */
+      
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
       if (eventDoc.isPrivate == true) {
