@@ -5,12 +5,14 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/BonosDEL%C3%87.dart';
 
 import '../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import '../../Widgets/Components/Images/CircularImage.dart';
 
 //BonosUtils Class is used to administrate all the bonos
 class BonosUtils {
+
   //Function to transform documents to bonos
   List<Bono> documentsToBonos(
       List<DocumentSnapshot> documents, int ordenSelection) {
@@ -79,17 +81,17 @@ class BonosUtils {
           Container(
             height: MediaQuery.of(context).size.width * 0.60,
             width: MediaQuery.of(context).size.width * 0.85,
-            decoration:  _bono.isActive! ?  BoxDecoration(
+            decoration:  _bono.isDegradate! ?  BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                   colors: [
-                Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                    Colors.purple,
+                    Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
+                    Colors.purple.withOpacity(_bono.opacity!),
                   ],
                 ),
 
-                 image: _bono.imageUrl != null && _bono.imageUrl != '' ? DecorationImage(
+                 image: _bono.imageUrl != null && _bono.imageUrl != ''? DecorationImage(
                   opacity: 225,
 
                   image:  NetworkImage(_bono.imageUrl!),
@@ -100,19 +102,15 @@ class BonosUtils {
                 //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
                 borderRadius:
                     const BorderRadius.all(const Radius.circular(15))) : BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                    Colors.purple,
-                  ],
-                ),
+                image: _bono.imageUrl != null && _bono.imageUrl != ''? DecorationImage(
+                  opacity: 225,
 
-
-                //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
+                  image:  NetworkImage(_bono.imageUrl!),
+                  fit: BoxFit.cover,
+                ) : null,
+                color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
                 borderRadius:
-                const BorderRadius.all(const Radius.circular(15)))
+                const BorderRadius.all(const Radius.circular(15))),
           ),
           Padding(
             padding: EdgeInsets.only(
@@ -212,48 +210,36 @@ class BonosUtils {
           Container(
               height: MediaQuery.of(context).size.width * 0.60,
               width: MediaQuery.of(context).size.width * 0.85,
-              decoration:  _bono.isActive! ?  BoxDecoration(
+              decoration:  _bono.isDegradate! ?  BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                     colors: [
-                      Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                      Colors.purple,
+                      Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
+                      Colors.purple.withOpacity(_bono.opacity!),
                     ],
                   ),
 
-                  image: DecorationImage(
+                  image: _bono.imageUrl != null && _bono.imageUrl != '' ? DecorationImage(
                     opacity: 225,
 
-                    image: NetworkImage(brand.logoUrl!),
+                    image:  NetworkImage(_bono.imageUrl!),
                     fit: BoxFit.cover,
-                  ),
+                  ) : null,
 
 
                   //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
                   borderRadius:
-                  const BorderRadius.all(const Radius.circular(15))) :
-              BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                      Colors.purple,
-                    ],
-                  ),
-
-                  image: DecorationImage(
+                  const BorderRadius.all(const Radius.circular(15))) : BoxDecoration(
+                  image: _bono.imageUrl != null && _bono.imageUrl != ''? DecorationImage(
                     opacity: 225,
 
-                    image: NetworkImage(brand.logoUrl!),
+                    image:  NetworkImage(_bono.imageUrl!),
                     fit: BoxFit.cover,
-                  ),
-
-
-                  //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
+                  ) : null,
+                  color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
                   borderRadius:
-                  const BorderRadius.all(const Radius.circular(15))),
+                  const BorderRadius.all(const Radius.circular(15)))
           ),
           Padding(
             padding: EdgeInsets.only(
@@ -391,13 +377,13 @@ class BonosUtils {
           Container(
             height: MediaQuery.of(context).size.width * 1.5,
             width: MediaQuery.of(context).size.width * 0.85,
-              decoration:  _bono.isActive! ?  BoxDecoration(
+              decoration:  _bono.isDegradate! ?  BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                     colors: [
-                      Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                      Colors.purple,
+                      Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
+                      Colors.purple.withOpacity(_bono.opacity!),
                     ],
                   ),
 
@@ -412,17 +398,13 @@ class BonosUtils {
                   //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
                   borderRadius:
                   const BorderRadius.all(const Radius.circular(15))) : BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                      Colors.purple,
-                    ],
-                  ),
+                  image: _bono.imageUrl != null && _bono.imageUrl != ''? DecorationImage(
+                    opacity: 225,
 
-
-                  //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
+                    image:  NetworkImage(_bono.imageUrl!),
+                    fit: BoxFit.cover,
+                  ) : null,
+                  color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
                   borderRadius:
                   const BorderRadius.all(const Radius.circular(15)))
           ),
@@ -536,7 +518,7 @@ class BonosUtils {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      if(!_brandDataService is !String) {
+                      if(_brandDataService is !String) {
                         navigateToAddBonosScreen(context, _bono, brand);
                       }
                     },

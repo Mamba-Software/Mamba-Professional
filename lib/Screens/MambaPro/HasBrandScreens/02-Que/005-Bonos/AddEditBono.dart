@@ -43,6 +43,8 @@ class _AddEditBonoState extends State<AddEditBono>
   //Utils MediaQuery
   var umq = new MediaQueryUtils();
 
+  double _currentSliderValue = 100;
+
   // Event Image
   bool isRandomImage = true;
   bool imageError = true;
@@ -51,6 +53,7 @@ class _AddEditBonoState extends State<AddEditBono>
   bool bonoImage = false;
 
   var colorSelected = 0;
+  var colorSelectedDeg = 0;
 
   //TopSnackBar
   var _topsnackbar = new TopSnackBar();
@@ -102,9 +105,12 @@ class _AddEditBonoState extends State<AddEditBono>
   String colorBono = " ";
 
   Bono bono = new Bono(
-    color: "1",
+    color: "0",
     isActive: true,
     classes: 0,
+    opacity: 1,
+    imageUrl: '',
+    isDegradate: false,
   );
 
   Condition condition = new Condition(
@@ -117,14 +123,18 @@ class _AddEditBonoState extends State<AddEditBono>
   String _rangeCount = '';
 
   List<Color> colors = [];
+  List<Color> colorsDeg = [];
 
   @override
   initState() {
     isLoading = false;
     var color;
+    //bono = widget.bono;
     for (int i = 0; i < currentColors.length; ++i) {
       color = Color(int.parse(currentColors[i].hexa!));
       colors.add(color);
+      colorsDeg.add(color);
+      print(color);
     }
     colorSelected = colors[0].value;
     _tabController = TabController(length: 4, vsync: this);
@@ -569,25 +579,31 @@ class _AddEditBonoState extends State<AddEditBono>
                             vertical:
                                 MediaQuery.of(context).size.height * 0.01),
                         child: Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical:
+                          margin: EdgeInsets.only(
+                              top:
                                   MediaQuery.of(context).size.height * 0.01),
                           width: MediaQuery.of(context).size.width * 0.85,
                           height: MediaQuery.of(context).size.height * 0.015,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            child: LinearProgressIndicator(
-                              value: 0.5,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Theme.of(context).primaryColor),
-                              backgroundColor: Colors.grey.shade100,
-                            ),
+                          child: Slider(
+                            value: _currentSliderValue,
+                            max: 100,
+                            divisions: 9,
+                            min: 10,
+                            label: _currentSliderValue.round().toString(),
+                            activeColor: Colors.white,
+                            onChanged: (double value) {
+                              setState(() {
+                                _currentSliderValue = value;
+                                bono.opacity = value/100;
+                              });
+                            },
                           ),
                         )),
                     Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.09,
-                          vertical: MediaQuery.of(context).size.height * 0.03),
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.09,
+                          right: MediaQuery.of(context).size.width * 0.09,
+                          bottom: MediaQuery.of(context).size.height * 0.03),
                       child: Padding(
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * 0.00),
@@ -653,6 +669,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           );
                           if (result != null) {
                             eventImageUrl = result;
+                            bonoImage = true;
                             if (bonoImage) {
                               bono.imageUrl = result;
                             } else {
@@ -674,7 +691,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 radius: const Radius.circular(10),
                                 dashPattern: const [10, 10],
                                 color: imageError
-                                    ? AppColors.red
+                                    ? AppColors.grey
                                     : AppColors.grey.withOpacity(0.5),
                                 strokeWidth: 2,
                                 child: Container(
@@ -693,7 +710,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                           children: [
                                             Icon(Icons.add,
                                                 color: imageError
-                                                    ? AppColors.red
+                                                    ? AppColors.grey
                                                     : AppColors.grey
                                                         .withOpacity(0.5),
                                                 size: MediaQuery.of(context)
@@ -712,7 +729,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                                   .caption
                                                   ?.copyWith(
                                                     color: imageError
-                                                        ? AppColors.red
+                                                        ? AppColors.grey
                                                         : AppColors.grey
                                                             .withOpacity(0.5),
                                                   ),
@@ -773,10 +790,11 @@ class _AddEditBonoState extends State<AddEditBono>
                                 var lcolor = colors[index];
                                 return GestureDetector(
                                   onTap: () {
+                                    bono.isDegradate = false;
                                     colorSelected = lcolor.value;
+                                    colorSelectedDeg = 0;
                                     colorBono = getColorFromColorCode(lcolor.toString());
                                     bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
-                                    //bono.color = _lColor.getIdFromHexa(lcolor.value.toString());
                                     setState(() {
 
                                     });
@@ -791,11 +809,11 @@ class _AddEditBonoState extends State<AddEditBono>
                                       height: MediaQuery.of(context).size.width * 0.1,
                                       width: MediaQuery.of(context).size.width * 0.1,
                                       decoration: BoxDecoration(
-                                          color: Color(lcolor.value),
+                                          color: Color(lcolor.value), //0x00D2B19C
                                           border: colorSelected == lcolor.value? Border.all(
-                                            color:  Colors.white
+                                            color:  Theme.of(context).primaryColor,
                                           ) : Border.all(
-                                              color:  Colors.white
+                                              color:  Theme.of(context).primaryColorDark,
                                           ),
                                           borderRadius: const BorderRadius.all(
                                               const Radius.circular(20))),
@@ -851,12 +869,14 @@ class _AddEditBonoState extends State<AddEditBono>
                             shrinkWrap: true,
                             //physics: NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.horizontal,
-                            itemCount: colors.length,
+                            itemCount: colorsDeg.length,
                             itemBuilder: (context, int index) {
-                              var lcolor = colors[index];
+                              var lcolor = colorsDeg[index];
                               return GestureDetector(
                                 onTap: () {
-                                  colorSelected = lcolor.value;
+                                  bono.isDegradate = true;
+                                  colorSelectedDeg = lcolor.value;
+                                  colorSelected = 0;
                                   colorBono = getColorFromColorCode(lcolor.toString());
                                   bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
                                   //bono.color = _lColor.getIdFromHexa(lcolor.value.toString());
@@ -882,10 +902,10 @@ class _AddEditBonoState extends State<AddEditBono>
                                             Colors.purple,
                                           ],
                                         ),
-                                        border: colorSelected == lcolor.value? Border.all(
-                                            color:  Colors.black
+                                        border: colorSelectedDeg == lcolor.value? Border.all(
+                                          color:  Theme.of(context).primaryColor,
                                         ) : Border.all(
-                                            color:  Colors.white
+                                          color:  Theme.of(context).primaryColorDark,
                                         ),
                                         borderRadius: const BorderRadius.all(
                                             const Radius.circular(20))),

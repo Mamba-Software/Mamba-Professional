@@ -36,7 +36,14 @@ class LibraryFirebaseCalls {
           colors.add(lColor.fromObjectAllData(doc.id, doc));
 
         }
+        colors.sort((a, b) {
+          if (int.parse(a.id!) > int.parse(b.id!)) {
+            return 1;
+          }
+          return -1;
+        });
       });
+
       return colors;
     } catch (e) {
       print(e.toString());

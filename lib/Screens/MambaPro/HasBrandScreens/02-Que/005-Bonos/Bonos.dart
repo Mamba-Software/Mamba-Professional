@@ -500,7 +500,14 @@ class _BonosProState extends State<BonosPro> {
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
               child: FloatingActionButton(
                 onPressed: () {
-                  navigateToAddBonosScreen(new Bono(), brand);
+                  navigateToAddBonosScreen(new Bono(
+                    color: "0",
+                    isActive: true,
+                    classes: 0,
+                    opacity: 1,
+                    imageUrl: '',
+                    isDegradate: false,
+                  ), brand);
                 },
                 backgroundColor: Styles.mainColor,
                 child: const Icon(Icons.add),

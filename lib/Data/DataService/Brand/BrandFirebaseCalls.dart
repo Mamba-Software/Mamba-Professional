@@ -463,6 +463,9 @@ class BrandFirebaseCalls {
       "isActive": bono.isActive,
       "color": bono.color,
       "compras": 0,
+      "opacity": bono.opacity,
+      "imageUrl": bono.imageUrl,
+      "isDegradate": bono.isDegradate,
     }).catchError((err) {
       print(err);
     });
