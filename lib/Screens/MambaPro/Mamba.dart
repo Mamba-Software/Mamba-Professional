@@ -103,19 +103,18 @@ class _MambaState extends State<Mamba> {
     // First check if minimum version
     print("Checking Minimum App Version...");
     checkMinimumAppVersion();
-    print("Checking if invited into Brand...");
     // Check if invited into Brand
+    print("Checking if invited into Brand...");
     checkBrandInvite();
-    print("Checking Notification Permissions...");
     // Check Notification Permissions
+    print("Checking Notification Permissions...");
     var notificationString = await PermisionsService().checkUserNotificationsPermision();
     if (notificationString == "Provisional" || notificationString == "Unknown") {
       await PermisionsService().askUserNotificationsPermision();
     }
-    print("Checking Location Permissions...");
     // Check Location Permissions
+    print("Checking Location Permissions...");
     await PermisionsService().getUserLocation();
-
   }
 
   // Init Device Sizes
