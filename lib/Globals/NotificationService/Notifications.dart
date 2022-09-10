@@ -687,7 +687,7 @@ class _NotificationsState extends State<Notifications> {
           return ListTile(
             leading: CircularImage(
               size: MediaQuery.of(context).size.width*0.15,
-              image: event.id!,
+              image: event.imageUrl!,
               color: AppColors.grey,
               borderWidth: 0.5,
             ),
