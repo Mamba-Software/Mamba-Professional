@@ -111,6 +111,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     }
   }
 
+  void getUserBrandDetails() async {
+    _brand = await _brandDataService.getBrandDetails(widget.brandId);
+    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
+    initCalendar();
+  }
+
   void initCalendar() {
     // Init App Bar Title
     if (widget.dateTime == null) {
@@ -133,12 +139,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         isLoading = false;
       });
     });
-  }
-
-  void getUserBrandDetails() async {
-    _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
-    initCalendar();
   }
 
   Event getEvent(String eventId) {
