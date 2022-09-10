@@ -129,24 +129,6 @@ class _HomePro extends State<HomePro> {
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),
-                    TextButton(
-                      onPressed: () async {
-                        if (ModalRoute.of(context)?.settings.name == "Mamba") {
-                          print("Hola");
-                        } else {
-                          //currentIndex = 0;
-                          await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: 0);
-                        }
-                      },
-                      child: Container(
-                          height: MediaQuery.of(context).size.height * 0.03,
-                          width: MediaQuery.of(context).size.height * 0.15,
-                          color: Colors.red
-                      )
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.03,
-                    ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
                       child: Text(
