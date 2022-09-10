@@ -471,42 +471,6 @@ class _NotificationsState extends State<Notifications> {
           },
         );
       }
-      case "UserJoinsBrand_User": {
-        return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.15,
-            image: brand.logoUrl!,
-            color: AppColors.grey,
-            borderWidth: 0.5,
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.userJoinsBrandUser(brand.name!),
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                AppLocalizations.of(context)!.userJoinsBrandSubtitleUser,
-                style: Theme.of(context).textTheme.caption,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                time.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-              ),
-            ],
-          ),
-          onTap: () async {
-            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
-            setState(() {
-              notificationsList[index].isRead = true;
-            });
-            returnActionOnTap(index,notification);
-          },
-        );
-      }
       case "UserJoinsBrand_Trainer": {
         return ListTile(
           leading: CircularImage(
@@ -525,42 +489,6 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userJoinsBrandBrandSubtitle(notification.parameters[3]),
-                style: Theme.of(context).textTheme.caption,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                time.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-              ),
-            ],
-          ),
-          onTap: () async {
-            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
-            setState(() {
-              notificationsList[index].isRead = true;
-            });
-            returnActionOnTap(index,notification);
-          },
-        );
-      }
-      case "UserLeavesBrand_User": {
-        return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.15,
-            image: brand.logoUrl!,
-            color: AppColors.grey,
-            borderWidth: 0.5,
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.userLeavesBrandUser(brand.name!),
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                AppLocalizations.of(context)!.userLeavesBrandUserSubtitle,
                 style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -615,42 +543,6 @@ class _NotificationsState extends State<Notifications> {
           },
         );
       }
-      case "UserSendRequestToBrand_User": {
-        return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.15,
-            image: brand.logoUrl!,
-            color: AppColors.grey,
-            borderWidth: 0.5,
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.userSendRequestToBrandUser(brand.name!),
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                AppLocalizations.of(context)!.userSendRequestToBrandUserSubtitle,
-                style: Theme.of(context).textTheme.caption,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                time.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-              ),
-            ],
-          ),
-          onTap: () async {
-            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
-            setState(() {
-              notificationsList[index].isRead = true;
-            });
-            returnActionOnTap(index,notification);
-          },
-        );
-      }
       case "UserSendRequestToBrand_Trainer": {
         return ListTile(
           leading: CircularImage(
@@ -669,42 +561,6 @@ class _NotificationsState extends State<Notifications> {
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Text(
                 AppLocalizations.of(context)!.userSendRequestToBrandBrandSubtitle(notification.parameters[3]),
-                style: Theme.of(context).textTheme.caption,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                time.toUpperCase(),
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-              ),
-            ],
-          ),
-          onTap: () async {
-            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
-            setState(() {
-              notificationsList[index].isRead = true;
-            });
-            returnActionOnTap(index,notification);
-          },
-        );
-      }
-      case "UserCancelRequestToBrand_User": {
-        return ListTile(
-          leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.15,
-            image: brand.logoUrl!,
-            color: AppColors.grey,
-            borderWidth: 0.5,
-          ),
-          title: Text(
-            AppLocalizations.of(context)!.userCancelRequestToBrandUser(brand.name!),
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              Text(
-                AppLocalizations.of(context)!.userCancelRequestToBrandUserSubtitle,
                 style: Theme.of(context).textTheme.caption,
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.01),
@@ -759,82 +615,6 @@ class _NotificationsState extends State<Notifications> {
           },
         );
       }
-      case "UserJoinEvent_User": {
-        if (event.id != null) {
-          var startDate = DateTime(
-            int.parse(event.year!),
-            int.parse(event.month!),
-            int.parse(event.day!),
-            int.parse(event.hour!),
-            int.parse(event.minute!),
-          );
-          String eventTimeDay = DateFormat('EE dd-MM-yy', Localizations.localeOf(context).languageCode).format(startDate);
-          String eventTimeTime = "${event.hour.toString()}:${event.minute=="0" ? "00" : event.minute.toString()}h";
-          return ListTile(
-            leading: CircularImage(
-              size: MediaQuery.of(context).size.width*0.15,
-              image: event.imageUrl!,
-              color: AppColors.grey,
-              borderWidth: 0.5,
-            ),
-            title: Text(
-              AppLocalizations.of(context)!.userJoinEventUser(event.title!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                Text(
-                  AppLocalizations.of(context)!.userJoinEventUserSubtitle(eventTimeDay, eventTimeTime),
-                  style: Theme.of(context).textTheme.caption,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                Text(
-                  time.toUpperCase(),
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                ),
-              ],
-            ),
-            onTap: () async {
-              await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
-              setState(() {
-                notificationsList[index].isRead = true;
-              });
-              returnActionOnTap(index,notification);
-            },
-          );
-        } else {
-          return ListTile(
-            leading: SizedBox(
-              width: MediaQuery.of(context).size.width*0.15,
-              child: Center(
-                child: Image(
-                    width: MediaQuery.of(context).size.width*0.10,
-                    image: AssetImage(Constants.emptyCalendar)
-                ),
-              ),
-            ),
-            title: Text(
-                AppLocalizations.of(context)!.userJoinEventUser(event.title!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                Text(
-                  time.toUpperCase(),
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                ),
-              ],
-            ),
-            onTap: () {
-
-            },
-          );
-        }
-      }
       case "UserJoinEvent_Trainer": {
         if (event.id != null) {
           return ListTile(
@@ -884,73 +664,6 @@ class _NotificationsState extends State<Notifications> {
             ),
             title: Text(
               AppLocalizations.of(context)!.userJoinEventBrand(user.name!, event.title!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                Text(
-                  time.toUpperCase(),
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                ),
-              ],
-            ),
-            onTap: ()  {
-
-            },
-          );
-        }
-      }
-      case "UserLeaveEvent_User": {
-        if (event.id != null) {
-          return ListTile(
-            leading: CircularImage(
-              size: MediaQuery.of(context).size.width*0.15,
-              image: event.id!,
-              color: AppColors.grey,
-              borderWidth: 0.5,
-            ),
-            title: Text(
-              AppLocalizations.of(context)!.userLeavesEventUser(event.title!),
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                Text(
-                  AppLocalizations.of(context)!.userLeavesEventUserSubtitle,
-                  style: Theme.of(context).textTheme.caption,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                Text(
-                  time.toUpperCase(),
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                ),
-              ],
-            ),
-            onTap: () async {
-              await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
-              setState(() {
-                notificationsList[index].isRead = true;
-              });
-              returnActionOnTap(index,notification);
-            },
-          );
-        } else {
-          return ListTile(
-            leading: SizedBox(
-              width: MediaQuery.of(context).size.width*0.15,
-              child: Center(
-                child: Image(
-                    width: MediaQuery.of(context).size.width*0.10,
-                    image: AssetImage(Constants.emptyCalendar)
-                ),
-              ),
-            ),
-            title: Text(
-              AppLocalizations.of(context)!.userLeavesEventUser(event.title!),
               style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
