@@ -7,11 +7,14 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/BonosDEL%C3%87.dart';
 
+import '../../../Data/LibraryModels/lDegradate.dart';
 import '../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import '../../Widgets/Components/Images/CircularImage.dart';
 
 //BonosUtils Class is used to administrate all the bonos
 class BonosUtils {
+
+  var _lDegradate = new lDegradate();
 
   //Function to transform documents to bonos
   List<Bono> documentsToBonos(
@@ -86,8 +89,8 @@ class BonosUtils {
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                   colors: [
-                    Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
-                    Colors.purple.withOpacity(_bono.opacity!),
+                    Color(int.parse(_lDegradate.getlDegradate(_bono.color!).hexa1!)).withOpacity(_bono.opacity!),
+                    Color(int.parse(_lDegradate.getlDegradate(_bono.color!).hexa2!)).withOpacity(_bono.opacity!),
                   ],
                 ),
 
@@ -215,8 +218,8 @@ class BonosUtils {
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                     colors: [
-                      Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
-                      Colors.purple.withOpacity(_bono.opacity!),
+                      Color(int.parse(_lDegradate.getlDegradate(_bono.color!).hexa1!)).withOpacity(_bono.opacity!),
+                      Color(int.parse(_lDegradate.getlDegradate(_bono.color!).hexa2!)).withOpacity(_bono.opacity!),
                     ],
                   ),
 
@@ -382,8 +385,8 @@ class BonosUtils {
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                     colors: [
-                      Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)).withOpacity(_bono.opacity!),
-                      Colors.purple.withOpacity(_bono.opacity!),
+                      Color(int.parse(_lDegradate.getlDegradate(_bono.color!).hexa1!)).withOpacity(_bono.opacity!),
+                      Color(int.parse(_lDegradate.getlDegradate(_bono.color!).hexa2!)).withOpacity(_bono.opacity!),
                     ],
                   ),
 

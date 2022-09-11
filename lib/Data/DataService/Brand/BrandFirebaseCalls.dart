@@ -547,9 +547,33 @@ class BrandFirebaseCalls {
     });
   }
 
-  Future<void> updateBono(String brandID, String bonoId, bool isActive) async {
-    await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
-      "isActive": isActive,
+  Future<void> updateBono(String brandId, Bono bono, Condition condition) async {
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bono.id)
+        .update({
+      "description": bono.description,
+      "isActive": bono.isActive,
+      "color": bono.color,
+      "opacity": bono.opacity,
+      "imageUrl": bono.imageUrl,
+      "isDegradate": bono.isDegradate,
+    }).catchError((err) {
+      print(err);
+    });
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(condition.id).collection('Conditions').doc('Conditions')
+        .update({
+      "expirationTime": condition.expirationTime,
+      "weeklySessions": condition.weeklySessions,
+      "monthlySessions": condition.monthlySessions,
+    }).catchError((err) {
+      print(err);
     });
   }
 

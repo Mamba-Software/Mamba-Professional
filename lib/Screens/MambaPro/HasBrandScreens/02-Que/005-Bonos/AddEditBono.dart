@@ -18,6 +18,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/TopSnackBar/TopSnackBar.dart
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
+import '../../../../../Data/LibraryModels/lDegradate.dart';
 import '../../../../../Globals/Utils/Bonos/BonosUtils.dart';
 import '../../../../../Globals/Widgets/Components/Images/RectangularImage.dart';
 import '../../03-Com/007-Contenido/SelectBrandImages.dart';
@@ -59,6 +60,7 @@ class _AddEditBonoState extends State<AddEditBono>
   var _topsnackbar = new TopSnackBar();
 
   var _lColor = new lColor();
+  var _lDegradate = new lDegradate();
 
   // Boolean Loading
   bool isLoading = false;
@@ -103,6 +105,8 @@ class _AddEditBonoState extends State<AddEditBono>
   final values = <bool?>[false, false, false, false, false, false, false];
   int _value = 1;
   String colorBono = " ";
+  String colorBono1 = " ";
+
 
   Bono bono = new Bono(
     color: "0",
@@ -129,14 +133,36 @@ class _AddEditBonoState extends State<AddEditBono>
   initState() {
     isLoading = false;
     var color;
-    //bono = widget.bono;
+    var degradate1, degradate2;
+    bono = widget.bono;
     for (int i = 0; i < currentColors.length; ++i) {
       color = Color(int.parse(currentColors[i].hexa!));
       colors.add(color);
-      colorsDeg.add(color);
       print(color);
     }
+    for (int i = 0; i < currentDegradates.length; ++i) {
+      degradate1 = Color(int.parse(currentDegradates[i].hexa1!));
+      degradate2 = Color(int.parse(currentDegradates[i].hexa2!));
+      colorsDeg.add(degradate1);
+      colorsDeg.add(degradate2);
+    }
     colorSelected = colors[0].value;
+    if(widget.edit == true) {
+      _currentSliderValue = bono.opacity! * 100;
+      if(bono.imageUrl == '') {
+        bonoImage = false;
+      }
+      else {
+        eventImageUrl = bono.imageUrl;
+        bonoImage = true;
+      }
+      if(bono.isDegradate!) {
+        colorSelected = colorsDeg[int.parse(bono.color!)].value;
+      }
+      else {
+        colorSelected = colors[int.parse(bono.color!)].value;
+      }
+    }
     _tabController = TabController(length: 4, vsync: this);
   }
 
@@ -350,22 +376,15 @@ class _AddEditBonoState extends State<AddEditBono>
                               tabs[3] = true;
                               FocusManager.instance.primaryFocus?.unfocus();
                             });
-                          } else if (_selectedIndex == 3) {
-                            _tabController!.animateTo(_selectedIndex += 1);
-                            setState(() {
-                              addBonosTabValue += 0.25;
-                              tabs[4] = true;
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            });
-                          } else
+                          }  else
                             _addBono();
                         },
-                        backgroundColor: _selectedIndex == 4
+                        backgroundColor: _selectedIndex == 3
                             ? Colors.green
                             : Theme.of(context).colorScheme.secondary,
                         icon: Container(),
                         label: Text(
-                          _selectedIndex == 4
+                          _selectedIndex == 3
                               ? 'Crear bono'
                               : AppLocalizations.of(context)!.next,
                           style: Theme.of(context)
@@ -871,47 +890,73 @@ class _AddEditBonoState extends State<AddEditBono>
                             scrollDirection: Axis.horizontal,
                             itemCount: colorsDeg.length,
                             itemBuilder: (context, int index) {
-                              var lcolor = colorsDeg[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  bono.isDegradate = true;
-                                  colorSelectedDeg = lcolor.value;
-                                  colorSelected = 0;
-                                  colorBono = getColorFromColorCode(lcolor.toString());
-                                  bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
-                                  //bono.color = _lColor.getIdFromHexa(lcolor.value.toString());
-                                  setState(() {
+                              if(index == 0 || index%2 == 0) {
+                                var ldegradate1 = colorsDeg[index];
+                                var ldegradate2 = colorsDeg[index + 1];
+                                return GestureDetector(
+                                  onTap: () {
+                                    bono.isDegradate = true;
+                                    colorSelectedDeg = ldegradate1.value;
+                                    colorSelected = 0;
+                                    colorBono = getColorFromColorCode(
+                                        ldegradate1.toString());
+                                    colorBono1 = getColorFromColorCode(
+                                        ldegradate2.toString());
+                                    bono.color = _lDegradate.getIdFromHexa(
+                                        colorBono.toUpperCase(), colorBono1.toUpperCase());
+                                    print(bono.color);
+                                    //bono.color = _lColor.getIdFromHexa(lcolor.value.toString());
+                                    setState(() {
 
-                                  });
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right:
-                                      MediaQuery.of(context).size.width * 0.025,
-                                      left:
-                                      MediaQuery.of(context).size.width * 0.00),
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.width * 0.1,
-                                    width: MediaQuery.of(context).size.width * 0.1,
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topRight,
-                                          end: Alignment.bottomLeft,
-                                          colors: [
-                                            Color(lcolor.value),
-                                            Colors.purple,
-                                          ],
-                                        ),
-                                        border: colorSelectedDeg == lcolor.value? Border.all(
-                                          color:  Theme.of(context).primaryColor,
-                                        ) : Border.all(
-                                          color:  Theme.of(context).primaryColorDark,
-                                        ),
-                                        borderRadius: const BorderRadius.all(
-                                            const Radius.circular(20))),
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        right:
+                                        MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width * 0.025,
+                                        left:
+                                        MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width * 0.00),
+                                    child: Container(
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.1,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.1,
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topRight,
+                                            end: Alignment.bottomLeft,
+                                            colors: [
+                                              Color(ldegradate1.value),
+                                              Color(ldegradate2.value),
+                                            ],
+                                          ),
+                                          border: colorSelectedDeg ==
+                                              ldegradate1.value ? Border.all(
+                                            color: Theme
+                                                .of(context)
+                                                .primaryColor,
+                                          ) : Border.all(
+                                            color: Theme
+                                                .of(context)
+                                                .primaryColorDark,
+                                          ),
+                                          borderRadius: const BorderRadius.all(
+                                              const Radius.circular(20))),
+                                    ),
                                   ),
-                                ),
-                              );
+                                );
+                              }
+                              else return Container();
                             }),
                       ),
 
@@ -974,7 +1019,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.sesionsBono,
                         0.toString(),
                         'Añade las sesiones porfavor',
-                        true,
+                        widget.edit ? false : true,
                         clasesController,
                         false,
                         'ses'),
@@ -983,7 +1028,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.priceBono,
                         0.toString(),
                         'Añade el precio porfavor',
-                        true,
+                        widget.edit ? false : true,
                         priceController,
                         false,
                         'price'),
@@ -1341,7 +1386,9 @@ class _AddEditBonoState extends State<AddEditBono>
       setState(() {
         isLoading = true;
       });
-      _brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
+
+      if(widget.edit == false )_brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
+      else _brandDataService.updateBono(widget.brand.id!, bono, condition);
       Navigator.pop(context);
     }
   }
@@ -1403,8 +1450,10 @@ class _AddEditBonoState extends State<AddEditBono>
                     Flexible(
                       child: TextFormField(
                         keyboardType: keyboard,
-                        maxLines: null,
-                        controller: controller,
+                        initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
+                        maxLines: variable == 'desc'? 5 : null,
+                        maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
+                        controller:  widget.edit == true? null : controller,
                         validator: (val) => val!.isEmpty ? errorText : null,
                         onChanged: (val) {
                           setState(() {
