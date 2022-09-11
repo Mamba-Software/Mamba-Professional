@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
@@ -54,49 +55,53 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
-      backgroundColor: Theme.of(context).colorScheme.secondary,
-      body: Center(
-        child: Stack(
-          children: [
-            Center(
-              child: Container(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.45),
-                width: MediaQuery.of(context).size.width*0.6,
-                child: AnimatedAlign(
-                  alignment: _alignment,
-                  duration: Duration(seconds: 50),
-                  child: Image.asset(
-                    Constants.mambaProfesionalGif,
-                    //width: MediaQuery.of(context).size.width*2,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-            ),
-            Center(
-              child: Container(
-                  width: MediaQuery.of(context).size.width*0.50,
-                  child: Image.asset(Constants.logoExtended)
-              ),
-            ),
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).size.width*0.3),
-                child: Container(
-                  width: MediaQuery.of(context).size.width*0.6,
-                  child: LinearProgressIndicator(
-                    color: AppColors.white,
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    value: value,
-                    minHeight: MediaQuery.of(context).size.width*0.01,
-                  ),
-                ),
-              ),
-            ),
-          ],
+        appBar: AppBar(
+          toolbarHeight: 0,
+          backgroundColor: AppColors.black,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
-      )
+        backgroundColor: AppColors.black,
+        body: Center(
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.45),
+                  width: MediaQuery.of(context).size.width*0.6,
+                  child: AnimatedAlign(
+                    alignment: _alignment,
+                    duration: Duration(seconds: 3),
+                    child: Image.asset(
+                      Constants.runningFemale,
+                      width: MediaQuery.of(context).size.width*0.18,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: Container(
+                    width: MediaQuery.of(context).size.width*0.50,
+                    child: Image.asset(Constants.logoExtended)
+                ),
+              ),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.width*0.3),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width*0.6,
+                    child: LinearProgressIndicator(
+                      color: AppColors.white,
+                      backgroundColor: AppColors.black,
+                      value: value,
+                      minHeight: MediaQuery.of(context).size.width*0.01,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
     );
 
   }
