@@ -56,7 +56,7 @@ class _BonosProState extends State<BonosPro> {
   // Boolean Loading
   bool isLoading = true;
   final _lColor = lColor();
-  var _lDegradate = new lDegradate();
+  var _lDegradate = lDegradate();
 
 
   // Bonos list
@@ -765,7 +765,16 @@ class _BonosProState extends State<BonosPro> {
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
         child: FloatingActionButton(
           onPressed: () {
-            navigateToAddBonosScreen();
+            navigateToAddBonosScreen(
+                Bono(
+                  color: "0",
+                  isActive: true,
+                  classes: 0,
+                  opacity: 1,
+                  imageUrl: '',
+                  isDegradate: false,
+                ),
+                brand, false);
           },
           backgroundColor: Styles.mainColor,
           child: const Icon(Icons.add),
