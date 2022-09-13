@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
@@ -42,6 +43,7 @@ class BonosPro extends StatefulWidget {
 }
 
 class _BonosProState extends State<BonosPro> {
+
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
@@ -55,7 +57,8 @@ class _BonosProState extends State<BonosPro> {
   // Boolean Loading
   bool isLoading = true;
   final _lColor = lColor();
-  var _lDegradate = new lDegradate();
+  var _lDegradate = lDegradate();
+
 
   // Bonos list
   List<Bono> bonosList = [];
@@ -259,8 +262,7 @@ class _BonosProState extends State<BonosPro> {
                     height: MediaQuery.of(context).size.height * 0.65,
                     child: Center(child: LoadingView()));
               } else {
-                bonosList = _bonosUtils.documentsToBonos(
-                    snapshot.data!.docs, orderBonoSelectedNumber);
+                bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, orderBonoSelectedNumber);
                 return Expanded(
                   child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -294,41 +296,224 @@ class _BonosProState extends State<BonosPro> {
       initDeviceSizes();
       isFirstBuild = false;
     }
-    return isLoading
-        ? LoadingView()
-        : Scaffold(
-            body: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: AppColors.darkGrey,
-                  expandedHeight: MediaQuery.of(context).size.height * 0.15,
-                  elevation: 4,
-                  floating: true,
-                  pinned: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Container(
-                      color: AppColors.darkGrey,
-                      child: Column(
+    return Scaffold(
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverAppBar(
+            backgroundColor: AppColors.darkGrey,
+            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+            elevation: 4,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                color: AppColors.darkGrey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                              height: kToolbarHeight +
-                                  MediaQuery.of(context).size.height * 0.051),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.05),
-                            child: Text(
-                              AppLocalizations.of(context)!.bonos,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1
-                                  ?.copyWith(
-                                    color: AppColors.white,
-                                  ),
+                          Text(
+                            AppLocalizations.of(context)!.bonos,
+                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height*0.08,
+                              width: MediaQuery.of(context).size.width*0.11,
+                              child: TextButton(
+                                onPressed: () async {
+                                  int? result = await showModalBottomSheet<int?>(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(20),
+                                      ),
+                                    ),
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                                    builder: (BuildContext context) {
+                                      return FractionallySizedBox(
+                                        heightFactor: 0.3,
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context).size.height*0.4,
+                                          width: MediaQuery.of(context).size.width,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.filterBy,
+                                                      style: Theme.of(context).textTheme.caption,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                  dense: true,
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.mambaProActivated,
+                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.mambaProDesactivated,
+                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                ),
+                                                ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.filterBy,
+                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.filter_list,
+                                  color: AppColors.white,
+                                  size: MediaQuery.of(context).size.width*0.07,
+                                ),
+                              ),
                             ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                    Container(
+                      color: AppColors.grey,
+                      height: 1.0,
+                    ),
+                  ],
+                ),
+              ),
+              titlePadding: EdgeInsets.zero,
+              //centerTitle: true,
+            ),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.bonos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
+            centerTitle: true,
+            leading: Builder(
+              builder: (BuildContext innerContext) => Padding(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                child: IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      color: AppColors.white,
+                      size: MediaQuery.of(context).size.height*0.04,
+                    ),
+                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
+                ),
+              ),
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
+                child: IconButton(
+                  icon: Icon(
+                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
+                    size: MediaQuery.of(context).size.width*0.06,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      widget.pinned = !widget.pinned;
+                    });
+                    widget.pinnedChanged(widget.pinned);
+                  },
+                ),
+              ),
+            ],
+          ),
+          StreamBuilder<QuerySnapshot>(
+              stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
+              builder: (context, snapshot) {
+                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
+                  return SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.65,
+                      child: Center(
+                          child: LoadingView()
+                      )
+                    ),
+                  );
+                } else {
+                  bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, orderBonoSelectedNumber);
+                  if (bonosList.isNotEmpty) {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                        Bono bono = bonosList[index];
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+                          child: returnBono(bono),
+                        );
+                      },
+                        childCount: bonosList.length,
+                      ),
+                    );
+                  } else {
+                    return SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width*0.30,
+                                child: Image.asset(Constants.emptyCalendar)
+                            ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                            Text("NO " + AppLocalizations.of(context)!.solicitudesBonos, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.12),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                }
+              })
+        ],
+      ),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+        child: FloatingActionButton(
+          onPressed: () {
+            navigateToAddBonosScreen(
+                Bono(
+                  color: "0",
+                  isActive: true,
+                  classes: 0,
+                  opacity: 1,
+                  imageUrl: '',
+                  isDegradate: false,
+                ),
+                brand, false);
+          },
+          backgroundColor: Styles.mainColor,
+          child: const Icon(Icons.add),
+        ),
+      ),
+    );
                           ),
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.035,

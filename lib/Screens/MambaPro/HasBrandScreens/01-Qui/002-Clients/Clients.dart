@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
@@ -34,16 +35,13 @@ class _Clients extends State<Clients> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.25 - kToolbarHeight);
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
   }
-
   // Brand Data Service
   final _brandDataService = BrandDataService();
   final _roomDataService = RoomDataService();
   // Boolean Loading
   bool isLoading = false;
-  // Boolean isUpdated
-  bool isUpdated = false;
   // Search Controller
   bool searchClicked = false;
   var searchController = TextEditingController();
@@ -132,28 +130,167 @@ class _Clients extends State<Clients> {
         slivers: [
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.2,
+            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
             pinned: true,
             //snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                height: MediaQuery.of(context).size.height*0.2-kToolbarHeight,
+                height: MediaQuery.of(context).size.height*0.2,
+                width: double.infinity,
                 color: AppColors.darkGrey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.025),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                      child: Text(
-                        AppLocalizations.of(context)!.clients,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          searchClicked == false ? Text(
+                            AppLocalizations.of(context)!.clients,
+                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                          ) : SizedBox(
+                            width: MediaQuery.of(context).size.width*0.65,
+                            child: TextField(
+                              controller: searchController,
+                              onChanged: (value) {
+                                filterSearchResults(value);
+                              },
+                              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
+                              textAlign: TextAlign.left,
+                              decoration: InputDecoration(
+                                hintStyle: Theme.of(context).textTheme.caption,
+                                hintText: AppLocalizations.of(context)!.search,
+                                enabledBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppColors.grey),
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppColors.grey),
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                ),
+                                border: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: AppColors.grey),
+                                    borderRadius: BorderRadius.all(Radius.circular(10.0))
+                                ),
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    searchController.clear();
+                                    filterSearchResults("");
+                                  },
+                                  icon: const Icon(Icons.delete_outline, color: Colors.grey,),
+                                ),
+                                contentPadding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.04),
+                              ),
+                            ),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width*0.25,
+                              /*
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.green, width: 1.0),
+                                color: Colors.transparent,
+                              ),
+                               */
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        searchClicked = !searchClicked;
+                                      });
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    alignment: Alignment.centerRight,
+                                    icon: Icon(
+                                      searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
+                                      color: AppColors.white,
+                                      size: MediaQuery.of(context).size.width*0.07,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: () async {
+                                      int? result = await showModalBottomSheet<int?>(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20),
+                                          ),
+                                        ),
+                                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                                        builder: (BuildContext context) {
+                                          return FractionallySizedBox(
+                                            heightFactor: 0.3,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context).size.height*0.4,
+                                              width: MediaQuery.of(context).size.width,
+                                              child: Padding(
+                                                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.filterBy,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                      dense: true,
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.mambaProActivated,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.mambaProDesactivated,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.filterBy,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
+                                    alignment: Alignment.centerRight,
+                                    padding: EdgeInsets.zero,
+                                    icon: Icon(
+                                      Icons.filter_list,
+                                      color: AppColors.white,
+                                      size: MediaQuery.of(context).size.width*0.07,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,
@@ -164,7 +301,7 @@ class _Clients extends State<Clients> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            //title: appBarExpanded ? Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
+            title: appBarExpanded || searchClicked ? Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: Colors.white),) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -179,12 +316,13 @@ class _Clients extends State<Clients> {
                 ),
               ),
             ),
+            /*
             bottom: PreferredSize(
                 preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.1,),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height*0.08,
                   child: Padding(
-                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03,left: MediaQuery.of(context).size.width*0.03),
+                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05,left: MediaQuery.of(context).size.width*0.05),
                       child: TextField(
                         controller: searchController,
                         onChanged: (value) {
@@ -225,6 +363,7 @@ class _Clients extends State<Clients> {
                   ),
                 )
             ),
+             */
             actions: [
               Padding(
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),

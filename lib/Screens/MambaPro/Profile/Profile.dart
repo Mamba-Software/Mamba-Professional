@@ -200,10 +200,12 @@ class _ProfileState extends State<Profile> {
     return !isLoading ? Material(
       child: GestureDetector(
         onTap: () {
+          /*
           setState(() {
             currentIndex = 2;
           });
           pageController.jumpToPage(currentIndex);
+           */
         },
         child: Container(
           width: safeAreaWidth * 0.81,

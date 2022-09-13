@@ -160,14 +160,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: AppColors.mainColor,
+      backgroundColor: AppColors.black,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: SingleChildScrollView(
           child: Container(
             height: MediaQuery.of(context).size.height*0.90,
             decoration: const BoxDecoration(
-                color: AppColors.mainColor
+                color: AppColors.black
               /*
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -220,181 +220,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ],
                     ),
                   ),
-                  /*
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        //SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.selectTypeProfile,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                            ListTile(
-                              dense: true,
-                              contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                              title: Padding(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
-                                child: Text(
-                                  AppLocalizations.of(context)!.client,
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              subtitle: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      AppLocalizations.of(context)!.clientDescription,
-                                      style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              trailing: Transform.scale(
-                                scale: 1.5,
-                                child: Radio(
-                                  value: 2,
-                                  groupValue: _value,
-                                  activeColor: AppColors.black,
-                                  fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _value = int.parse(value.toString());
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height*0.20,
-                                    child: Image.asset(Constants.clientImage)
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                            ListTile(
-                              dense: true,
-                              contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                              title: Padding(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.01),
-                                child: Text(
-                                  AppLocalizations.of(context)!.trainer,
-                                  style: Theme.of(context).textTheme.headline3?.copyWith( color: AppColors.white, fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              subtitle: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      AppLocalizations.of(context)!.trainerDescription,
-                                      style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              trailing: Transform.scale(
-                                scale: 1.5,
-                                child: Radio(
-                                  value: 1,
-                                  groupValue: _value,
-                                  activeColor: AppColors.black,
-                                  fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _value = int.parse(value.toString());
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height*0.17,
-                                    child: Image.asset(Constants.personalTrainerImage)
-                                ),
-                              ],
-                            ),
-
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  _value==1 ? Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height*0.17),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Center(
-                              child: Image(
-                                image: AssetImage(Constants.themeSystemImage),
-                                width: MediaQuery.of(context).size.width,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                            Text(
-                              AppLocalizations.of(context)!.trainersOnboarding,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
-                            ),
-                            const SizedBox(height: 15.0),
-                            Text(
-                              AppLocalizations.of(context)!.trainersOnboardingDesc,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ) :
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height*0.17),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Center(
-                              child: Image(
-                                image: AssetImage(Constants.clientOnboardingImage),
-                                width: MediaQuery.of(context).size.width,
-                              ),
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                            Text(
-                              AppLocalizations.of(context)!.clientsOnboarding,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
-                            ),
-                            const SizedBox(height: 15.0),
-                            Text(
-                              AppLocalizations.of(context)!.clientsOnboardingDesc,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                   */
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
                     child: Column(
@@ -473,27 +298,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         controller: firstNameController,
                                                         keyboardType: TextInputType.name,
                                                         validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,),
                                                         textCapitalization: TextCapitalization.words,
                                                         decoration: InputDecoration(
                                                           hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                                          hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
+                                                          hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white,),
                                                           errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                                           border: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
                                                           enabledBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
                                                           focusedBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
@@ -537,27 +362,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                         controller: lastNameController,
                                                         keyboardType: TextInputType.name,
                                                         validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
-                                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,),
                                                         textCapitalization: TextCapitalization.words,
                                                         decoration: InputDecoration(
-                                                          hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
+                                                          hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white,),
                                                           hintText: AppLocalizations.of(context)!.lastNameError,
                                                           errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                                           border: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
                                                           enabledBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
                                                           focusedBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
@@ -600,7 +425,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 size: MediaQuery.of(context).size.width * 0.25,
                                                 image: "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
                                                 borderWidth: 1.5,
-                                                color: Colors.black,
+                                                color: Colors.white,
                                               ),
                                               SizedBox(height: MediaQuery.of(context).size.width*0.02),
                                               FittedBox(
@@ -610,11 +435,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   children: [
                                                     Text(
                                                       AppLocalizations.of(context)!.uploadPhoto,
-                                                      style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.black),
+                                                      style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white),
                                                       textAlign: TextAlign.center,
                                                     ),
                                                     SizedBox(width: MediaQuery.of(context).size.width*0.005),
-                                                    Icon(Icons.insert_photo, size: MediaQuery.of(context).size.width*0.04, color: Colors.black,),
+                                                    Icon(Icons.insert_photo, size: MediaQuery.of(context).size.width*0.04, color: Colors.white,),
                                                   ],
                                                 ),
                                               ),
@@ -630,7 +455,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 size: MediaQuery.of(context).size.width * 0.25,
                                                 file: _image,
                                                 borderWidth: 1,
-                                                color: AppColors.black,
+                                                color: AppColors.white,
                                               ),
                                               SizedBox(height: MediaQuery.of(context).size.width*0.02),
                                               FittedBox(
@@ -640,11 +465,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   children: [
                                                     Text(
                                                       AppLocalizations.of(context)!.uploadPhoto,
-                                                      style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.black),
+                                                      style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white),
                                                       textAlign: TextAlign.center,
                                                     ),
                                                     SizedBox(width: MediaQuery.of(context).size.width*0.005),
-                                                    Icon(Icons.edit, size: MediaQuery.of(context).size.width*0.04, color: Colors.black,),
+                                                    Icon(Icons.edit, size: MediaQuery.of(context).size.width*0.04, color: Colors.white,),
                                                   ],
                                                 ),
                                               ),
@@ -661,7 +486,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.4,
+                                    width: MediaQuery.of(context).size.width * 0.42,
                                     child: Column(
                                       children: [
                                         Row(
@@ -691,26 +516,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     controller: startDateController,
                                                     readOnly: true,
                                                     enabled: false,
-                                                    style: startDateController.text == nullDate ? Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red) : Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                                                    style: startDateController.text == nullDate ? Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red) : Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,),
                                                     decoration: InputDecoration(
-                                                      hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
+                                                      hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white,),
                                                       hintText: AppLocalizations.of(context)!.noDateOfBirth,
                                                       errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                                       border: const UnderlineInputBorder(
                                                           borderSide: BorderSide(
-                                                              color: Colors.black,
+                                                              color: Colors.white,
                                                               width: 1.0
                                                           )
                                                       ),
                                                       enabledBorder: const UnderlineInputBorder(
                                                           borderSide: BorderSide(
-                                                              color: Colors.black,
+                                                              color: Colors.white,
                                                               width: 1.0
                                                           )
                                                       ),
                                                       focusedBorder: const UnderlineInputBorder(
                                                           borderSide: BorderSide(
-                                                              color: Colors.black,
+                                                              color: Colors.white,
                                                               width: 1.0
                                                           )
                                                       ),
@@ -720,9 +545,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                               width: 1.0
                                                           )
                                                       ),
-                                                      disabledBorder: const UnderlineInputBorder(
+                                                      disabledBorder: UnderlineInputBorder(
                                                           borderSide: BorderSide(
-                                                              color: Colors.black,
+                                                              color: errorDate ? Colors.red : Colors.white,
                                                               width: 1.0
                                                           )
                                                       ),
@@ -758,14 +583,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.36,
+                                    width: MediaQuery.of(context).size.width * 0.35,
                                     child: Column(
                                       children: [
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text(
-                                              AppLocalizations.of(context)!.nickname,
+                                              AppLocalizations.of(context)!.user,
                                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
                                               textAlign: TextAlign.left,
                                             ),
@@ -782,7 +607,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 }
                                               },
                                               child: SizedBox(
-                                                width: MediaQuery.of(context).size.width * 0.36,
+                                                width: MediaQuery.of(context).size.width * 0.35,
                                                 child: Row(
                                                   children: [
                                                     Expanded(
@@ -796,26 +621,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           nickController.selection = TextSelection.fromPosition(TextPosition(offset: nickController.text.length));
                                                           checkIfNickExists(nick);
                                                         },
-                                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,),
                                                         decoration: InputDecoration(
-                                                          hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
+                                                          hintStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white,),
                                                           hintText: AppLocalizations.of(context)!.nicknameError,
                                                           errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                                           border: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
                                                           enabledBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
                                                           focusedBorder: const UnderlineInputBorder(
                                                               borderSide: BorderSide(
-                                                                  color: Colors.black,
+                                                                  color: Colors.white,
                                                                   width: 1.0
                                                               )
                                                           ),
@@ -978,14 +803,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (states.any(interactiveStates.contains)) {
       return Colors.blue;
     }
-    return AppColors.black;
+    return AppColors.white;
   }
 
   Widget returnCorrectBottomSheet() {
     return _currentPage != _numPages - 1 ? Container(
-      height: MediaQuery.of(context).size.height*0.1,
+      height: MediaQuery.of(context).size.height*0.12,
       width: double.infinity,
-      color: AppColors.mainColor,
+      color: AppColors.black,
       child: Column(
         children: [
           Row(
@@ -993,30 +818,33 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             children: _buildPageIndicator(),
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-          Align(
-            alignment: FractionalOffset.centerRight,
-            child: TextButton(
-              onPressed: () {
-                _pageController.nextPage(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.ease,
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    AppLocalizations.of(context)!.next,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
-                  ),
-                  const SizedBox(width: 10.0),
-                  Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                    size: MediaQuery.of(context).size.height*0.05,
-                  ),
-                ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Align(
+              alignment: FractionalOffset.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  _pageController.nextPage(
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.ease,
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      AppLocalizations.of(context)!.next,
+                      style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                    ),
+                    const SizedBox(width: 10.0),
+                    Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                      size: MediaQuery.of(context).size.height*0.05,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -1032,7 +860,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         }
       },
       child: Container(
-        height: MediaQuery.of(context).size.height*0.1,
+        height: MediaQuery.of(context).size.height*0.12,
         width: double.infinity,
         color: Colors.white,
         child: Align(

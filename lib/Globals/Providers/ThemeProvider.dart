@@ -29,7 +29,7 @@ class ThemeProvider extends ChangeNotifier {
 
   void darkModeStatusAndNavigationBar() {
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
+      const SystemUiOverlayStyle(
         statusBarBrightness: Brightness.light,
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
@@ -42,7 +42,7 @@ class ThemeProvider extends ChangeNotifier {
 
   void lightModeStatusAndNavigationBar() {
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
+      const SystemUiOverlayStyle(
         statusBarBrightness: Brightness.dark,
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,

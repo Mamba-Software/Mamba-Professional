@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -110,6 +111,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     }
   }
 
+  void getUserBrandDetails() async {
+    _brand = await _brandDataService.getBrandDetails(widget.brandId);
+    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
+    initCalendar();
+  }
+
   void initCalendar() {
     // Init App Bar Title
     if (widget.dateTime == null) {
@@ -132,12 +139,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         isLoading = false;
       });
     });
-  }
-
-  void getUserBrandDetails() async {
-    _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
-    initCalendar();
   }
 
   Event getEvent(String eventId) {
@@ -777,6 +778,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
             pinned: true,
@@ -799,7 +801,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                             fit: BoxFit.fitHeight,
                             child: SizedBox(
                               height: MediaQuery.of(context).size.height*0.08,
-                              width: MediaQuery.of(context).size.width*0.35,
+                              width: MediaQuery.of(context).size.width*0.36,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -42,7 +41,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               iconTheme: IconThemeData(
                 color: Colors.white, //change your color here
               ),
-              backgroundColor: Theme.of(context).colorScheme.secondary,
+              backgroundColor: AppColors.black,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
                 onPressed: () {
@@ -55,7 +54,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               ),
             ),
             resizeToAvoidBottomInset: true,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: AppColors.black,
             body: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
@@ -69,7 +68,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           children: [
                             Text(
                               AppLocalizations.of(context)!.emailError,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                               textAlign: TextAlign.left,
                             ),
                           ],
@@ -81,16 +80,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.email,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                 errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 prefixIcon:  Padding(
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.email_outlined,
-                                    color: AppColors.black,
+                                    color: AppColors.white,
                                   ), // icon is 48px widget.
                                 )
                             )

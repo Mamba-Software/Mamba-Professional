@@ -48,9 +48,8 @@ Position? currentPosition;
 String? currentAddress;
 String? timeZoneName;
 
-// Page Controller
-int currentIndex = 0;
-PageController pageController = PageController(initialPage: currentIndex);
+// Page Controller Mamba Professional
+int pageIndex = 0;
 
 // Key Scaffold Mamba Pro
 final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
