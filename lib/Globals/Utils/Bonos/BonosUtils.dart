@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -15,6 +16,7 @@ import '../../Widgets/Components/Images/CircularImage.dart';
 class BonosUtils {
 
   var _lDegradate = new lDegradate();
+  var _lColor = new lColor();
 
   //Function to transform documents to bonos
   List<Bono> documentsToBonos(
@@ -195,6 +197,148 @@ class BonosUtils {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget bonoObjectSmall(var context, Bono bono, Brand brand) {
+    return SizedBox(
+      height:  MediaQuery.of(context).size.width * 0.10,
+      width: MediaQuery.of(context).size.width * 0.30,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: MediaQuery.of(context).size.width * 0.0,
+            horizontal: MediaQuery.of(context).size.width * 0.065),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              height:  MediaQuery.of(context).size.width * 0.50,
+              width: MediaQuery.of(context).size.width * 0.85,
+              decoration:  bono.isDegradate! ?  BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      Color(int.parse(_lDegradate.getlDegradate(bono.color!).hexa1!)).withOpacity(bono.opacity!),
+                      Color(int.parse(_lDegradate.getlDegradate(bono.color!).hexa2!)).withOpacity(bono.opacity!),
+                    ],
+                  ),
+
+                  image: bono.imageUrl != null && bono.imageUrl != ''? DecorationImage(
+                    opacity: 225,
+
+                    image:  NetworkImage(bono.imageUrl!),
+                    fit: BoxFit.cover,
+                  ) : null,
+
+
+                  //color: Color(int.parse(_lColor.getlColor(bono.color!).hexa!)),
+                  borderRadius:
+                  const BorderRadius.all(const Radius.circular(5))) : BoxDecoration(
+                  image: bono.imageUrl != null && bono.imageUrl != ''? DecorationImage(
+                    opacity: 225,
+
+                    image:  NetworkImage(bono.imageUrl!),
+                    fit: BoxFit.cover,
+                  ) : null,
+                  color: Color(int.parse(_lColor.getlColor(bono.color!).hexa!)).withOpacity(bono.opacity!),
+                  borderRadius:
+                  const BorderRadius.all(const Radius.circular(5))),
+            ),
+
+            Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.015,
+                  left: MediaQuery.of(context).size.height * 0.03),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: CircularImage(
+                  size: MediaQuery.of(context).size.width * 0.10,
+                  image: brand.logoUrl,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.02,
+                  right: MediaQuery.of(context).size.height * 0.03),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Text(
+                  brand.name!.toUpperCase(),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline3
+                      ?.copyWith(fontWeight: FontWeight.normal, color: Colors.white),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.13,
+                  left: MediaQuery.of(context).size.height * 0.005),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.width * 0.01,
+                      horizontal: MediaQuery.of(context).size.width * 0.005),
+                  child: ListTile(
+                      title: Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.01,
+                            left: MediaQuery.of(context).size.height * 0.01),
+                        child: Text(
+                          bono.title!.toUpperCase(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1
+                              ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                      subtitle: Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.01,
+                            left: MediaQuery.of(context).size.height * 0.01),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  right: MediaQuery.of(context).size.height * 0.02),
+                              child: Text(
+                                bono.price!.toString().toUpperCase() + '€',
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            Text(
+                              bono.classes!.toString().toUpperCase() +
+                                  ' ' +
+                                  AppLocalizations.of(context)!
+                                      .sessions
+                                      .toUpperCase(),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
+                              textAlign: TextAlign.left,
+                            ),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.27),
+                            Icon(
+                              Icons.more_horiz_outlined,
+                              size: MediaQuery.of(context).size.width * 0.07,
+                            ),
+                          ],
+                        ),
+                      )),
+
+                ),
+              ),
+            ),
+
+
+          ],
+        ),
       ),
     );
   }
