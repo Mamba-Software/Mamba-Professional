@@ -132,6 +132,7 @@ class _AddEditBonoState extends State<AddEditBono>
   @override
   initState() {
     isLoading = false;
+    _tabController = TabController(length: 4, vsync: this);
     var color;
     var degradate1, degradate2;
     bono = widget.bono;
@@ -156,15 +157,15 @@ class _AddEditBonoState extends State<AddEditBono>
         eventImageUrl = bono.imageUrl;
         bonoImage = true;
       }
-      if(bono.isDegradate!) {
+      if(bono.isDegradate!)
         colorSelected = colorsDeg[int.parse(bono.color!)].value;
       }
       else {
         colorSelected = colors[int.parse(bono.color!)].value;
       }
+
     }
-    _tabController = TabController(length: 4, vsync: this);
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +200,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           margin: EdgeInsets.symmetric(
                               vertical:
                                   MediaQuery.of(context).size.height * 0.01),
-                          width: MediaQuery.of(context).size.width * 0.85,
+                          width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.015,
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -219,8 +220,7 @@ class _AddEditBonoState extends State<AddEditBono>
           )
         : Scaffold(
             appBar: AppBar(
-              elevation: 1,
-              toolbarHeight: MediaQuery.of(context).size.height * 0.12,
+              toolbarHeight: MediaQuery.of(context).size.height * 0.10,
               title: Text(
                 AppLocalizations.of(context)!.createBono,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
@@ -238,30 +238,13 @@ class _AddEditBonoState extends State<AddEditBono>
               bottom: PreferredSize(
                 preferredSize: Size.fromHeight(0),
                 child: IgnorePointer(
-                    child: Column(
-                  children: [
-                    Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical:
-                                MediaQuery.of(context).size.height * 0.01),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.01),
-                          width: MediaQuery.of(context).size.width * 0.85,
-                          height: MediaQuery.of(context).size.height * 0.015,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            child: LinearProgressIndicator(
-                              value: addBonosTabValue,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  Theme.of(context).colorScheme.secondary),
-                              backgroundColor: Colors.grey.shade100,
-                            ),
-                          ),
-                        )),
-                  ],
-                )),
+                    child: LinearProgressIndicator(
+                    value: addBonosTabValue,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).colorScheme.secondary),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                ),
               ),
             ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -1452,6 +1435,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         keyboardType: keyboard,
                         initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
                         maxLines: variable == 'desc'? 5 : null,
+                        minLines: 1,
                         maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
                         controller:  widget.edit == true? null : controller,
                         validator: (val) => val!.isEmpty ? errorText : null,

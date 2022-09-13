@@ -14,6 +14,7 @@ import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoObject.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +56,6 @@ class _BonosProState extends State<BonosPro> {
   bool isLoading = true;
   final _lColor = lColor();
   var _lDegradate = new lDegradate();
-
 
   // Bonos list
   List<Bono> bonosList = [];
@@ -174,278 +174,12 @@ class _BonosProState extends State<BonosPro> {
   }
 
   Widget returnBono(Bono _bono) {
-    if (_bono.isActive! == true) {
-      return GestureDetector(
-        onTap: () {
-          setState(() {
-            bonoSee = _bono.id!;
-          });
-        },
-        child: _bonosUtils.bonoObject(context, _bono, brand, _lColor),
-      );
-    } else {
-      return _bonosUtils.bonoObjectDesactivated(
-          context, _bono, brand, _lColor, _brandDataService);
-    }
+    print('bonooo');
+    return BonoObject(bono: _bono, view: false, brand: brand);
   }
 
   Widget returnBonoOpen(Bono _bono) {
-    if (_bono.isActive! == true) {
-      return GestureDetector(
-        onTap: () {
-          setState(() {
-            bonoSee = 'none';
-          });
-        },
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.width * 0.01,
-              horizontal: MediaQuery.of(context).size.width * 0.065),
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              Container(
-                  height: MediaQuery.of(context).size.width * 1.5,
-                  width: MediaQuery.of(context).size.width * 0.85,
-                  decoration: _bono.isDegradate!
-                      ? BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topRight,
-                            end: Alignment.bottomLeft,
-                            colors: [
-                              Color(int.parse(_lDegradate.getlDegradate(_bono.color!).hexa1!)).withOpacity(_bono.opacity!),
-                              Color(int.parse(_lDegradate.getlDegradate(_bono.color!).hexa2!)).withOpacity(_bono.opacity!),
-                            ],
-                          ),
-                          image: _bono.imageUrl != null && _bono.imageUrl != ''
-                              ? DecorationImage(
-                                  opacity: 225,
-                                  image: NetworkImage(_bono.imageUrl!),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-
-                          //color: Color(int.parse(_lColor.getlColor(_bono.color!).hexa!)),
-                          borderRadius:
-                              const BorderRadius.all(const Radius.circular(15)))
-                      : BoxDecoration(
-                          image: _bono.imageUrl != null && _bono.imageUrl != ''
-                              ? DecorationImage(
-                                  opacity: 225,
-                                  image: NetworkImage(_bono.imageUrl!),
-                                  fit: BoxFit.cover,
-                                )
-                              : null,
-                          color: Color(int.parse(
-                                  _lColor.getlColor(_bono.color!).hexa!))
-                              .withOpacity(_bono.opacity!),
-                          borderRadius: const BorderRadius.all(
-                              const Radius.circular(15)))),
-              Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.015,
-                    left: MediaQuery.of(context).size.height * 0.03),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: CircularImage(
-                    size: MediaQuery.of(context).size.width * 0.10,
-                    image: brand.logoUrl,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.02,
-                    right: MediaQuery.of(context).size.height * 0.03),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Text(
-                    brand.name!.toUpperCase(),
-                    style: Theme.of(context).textTheme.headline3?.copyWith(
-                        fontWeight: FontWeight.normal, color: Colors.white),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.15,
-                    left: MediaQuery.of(context).size.height * 0.005),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: MediaQuery.of(context).size.width * 0.05,
-                        horizontal: MediaQuery.of(context).size.width * 0.005),
-                    child: ListTile(
-                        title: Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * 0.01,
-                              left: MediaQuery.of(context).size.height * 0.01),
-                          child: Text(
-                            _bono.title!.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline1
-                                ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        subtitle: Padding(
-                          padding: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * 0.01,
-                              left: MediaQuery.of(context).size.height * 0.01),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    right: MediaQuery.of(context).size.height *
-                                        0.02),
-                                child: Text(
-                                  _bono.price!.toString().toUpperCase() + '€',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(color: Colors.white),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                              Text(
-                                _bono.classes!.toString().toUpperCase() +
-                                    ' ' +
-                                    AppLocalizations.of(context)!
-                                        .sessions
-                                        .toUpperCase(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    ?.copyWith(color: Colors.white),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
-                          ),
-                        )),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.30,
-                      left: MediaQuery.of(context).size.height * 0.035,
-                      right: MediaQuery.of(context).size.height * 0.04),
-                  child: Text(
-                    _bono.description!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        ?.copyWith(color: Colors.white),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.60,
-                      right: MediaQuery.of(context).size.height * 0.01),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (_brandDataService is! String) {
-                            navigateToAddBonosScreen( _bono, brand, true);
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.03,
-                              horizontal:
-                                  MediaQuery.of(context).size.height * 0.01),
-                          child: Container(
-                            height: MediaQuery.of(context).size.width * 0.1,
-                            width: MediaQuery.of(context).size.width * 0.32,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.white,
-                                ),
-                                borderRadius: const BorderRadius.all(
-                                    const Radius.circular(20))),
-                            child: Align(
-                              alignment: Alignment.center,
-                              //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-                              child: Text(
-                                AppLocalizations.of(context)!
-                                    .edit
-                                    .toUpperCase(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          if (_brandDataService is! String) {
-                            _bono.isActive = !_bono.isActive!;
-                            _brandDataService.updateBonoActive(
-                                brand.id!, _bono.id!, _bono.isActive!);
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height * 0.03,
-                              right: MediaQuery.of(context).size.height * 0.02),
-                          child: Container(
-                            height: MediaQuery.of(context).size.width * 0.1,
-                            width: MediaQuery.of(context).size.width * 0.32,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.white,
-                                ),
-                                borderRadius: const BorderRadius.all(
-                                    const Radius.circular(20))),
-                            child: Align(
-                              alignment: Alignment.center,
-                              //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-                              child: Text(
-                                _bono.isActive!
-                                    ? 'Desactivar'.toUpperCase()
-                                    : 'Activar'.toUpperCase(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    ?.copyWith(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        /*_bonosUtils.bonoObjectOpen(
-            context, _bono, brand, _lColor, _brandDataService),*/
-      );
-    } else {
-      return _bonosUtils.bonoObjectDesactivated(
-          context, _bono, brand, _lColor, _brandDataService);
-    }
+    return BonoObject(bono: _bono, view: false, brand: brand);
   }
 
   // Build your bonos
@@ -539,12 +273,10 @@ class _BonosProState extends State<BonosPro> {
                         return Padding(
                           padding: EdgeInsets.symmetric(
                               vertical:
-                                  MediaQuery.of(context).size.height * 0.01,
+                                  MediaQuery.of(context).size.height * 0.005,
                               horizontal:
                                   MediaQuery.of(context).size.width * 01),
-                          child: bonoSee == bono.id
-                              ? returnBonoOpen(bono)
-                              : returnBono(bono),
+                          child: returnBono(bono),
                         );
 
                         setState(() {});
@@ -692,9 +424,7 @@ class _BonosProState extends State<BonosPro> {
                                       vertical:
                                           MediaQuery.of(context).size.height *
                                               0.01),
-                                  child: bonoSee == bono.id
-                                      ? returnBonoOpen(bono)
-                                      : returnBono(bono),
+                                  child: returnBono(bono),
                                 );
                               },
                               childCount: bonosList.length,
@@ -750,7 +480,8 @@ class _BonosProState extends State<BonosPro> {
                         imageUrl: '',
                         isDegradate: false,
                       ),
-                      brand, false);
+                      brand,
+                      false);
                 },
                 backgroundColor: Styles.mainColor,
                 child: const Icon(Icons.add),

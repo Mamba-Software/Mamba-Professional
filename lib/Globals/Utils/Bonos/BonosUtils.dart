@@ -25,7 +25,7 @@ class BonosUtils {
       bonos.add(bono);
     }
 
-    if(ordenSelection == 0) {
+    if(ordenSelection == 2) {
       bonos.sort((a, b) {
         if (b.isActive!) {
           return 1;
@@ -41,12 +41,9 @@ class BonosUtils {
         return 1;
       });
     }
-    if(ordenSelection == 2) {
+    if(ordenSelection == 0) {
       bonos.sort((a, b) {
-        if (b.isActive!) {
-          return -1;
-        }
-        return 1;
+        return a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
       });
     }
     if(ordenSelection == 3) {
@@ -76,13 +73,13 @@ class BonosUtils {
   Widget bonoObject(var context, Bono _bono, Brand brand, var _lColor) {
     return Padding(
       padding: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.width * 0.01,
+          vertical: MediaQuery.of(context).size.width * 0.0,
           horizontal: MediaQuery.of(context).size.width * 0.065),
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
           Container(
-            height: MediaQuery.of(context).size.width * 0.60,
+            height: MediaQuery.of(context).size.width * 0.50,
             width: MediaQuery.of(context).size.width * 0.85,
             decoration:  _bono.isDegradate! ?  BoxDecoration(
                 gradient: LinearGradient(
@@ -506,6 +503,9 @@ class BonosUtils {
                       .textTheme
                       .bodyText2?.copyWith(color: Colors.white),
                   textAlign: TextAlign.left,
+                  maxLines: 4,
+                  overflow: TextOverflow.visible,
+
                 ),
               ),
           ),
@@ -591,7 +591,6 @@ class BonosUtils {
       ),
     );
   }
-
 
   // Navigate to Add Bonos
   void navigateToAddBonosScreen(Bono bono, var context, Brand brand) {
