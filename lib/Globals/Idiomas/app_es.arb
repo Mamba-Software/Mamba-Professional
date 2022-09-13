@@ -2108,5 +2108,9 @@
   "metalized": "Metalizados",
   "@metalized": {
     "description": "Metalizados bono message"
+  },
+  "filterBy": "Ordenar por",
+  "@filterBy": {
+    "description": "Donde message"
   }
 }

@@ -63,7 +63,7 @@ class Styles {
   );
 
   // Text Style
-  static TextStyle purpleTextStyle = TextStyle(color: Colors.black, fontSize: 18);
+  static TextStyle purpleTextStyle = TextStyle(color: Colors.white, fontSize: 18);
   static const whiteTextStyle = TextStyle(color: white, fontSize: 18);
   static const redTextStyle = TextStyle(color: red, fontSize: 20);
 
@@ -71,11 +71,11 @@ class Styles {
   static var textFromInputDecoration = InputDecoration(
     labelStyle: purpleTextStyle,
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.black, width: 1.5),
+      borderSide: BorderSide(color: Colors.white, width: 1.5),
       borderRadius: BorderRadius.circular(10.0),
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.black, width: 1.5),
+      borderSide: BorderSide(color: Colors.white, width: 1.5),
       borderRadius: BorderRadius.circular(10.0),
     ),
     errorBorder: OutlineInputBorder(
