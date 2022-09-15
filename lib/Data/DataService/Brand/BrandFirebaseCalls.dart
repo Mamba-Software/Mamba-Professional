@@ -604,7 +604,7 @@ class BrandFirebaseCalls {
     // Update all places where we can find the picture
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       Event event = Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-      _firestore.collection(events).doc(event.id).update({
+      await _firestore.collection(events).doc(event.id).update({
         "imageUrl": newImageUrl,
       });
     }
