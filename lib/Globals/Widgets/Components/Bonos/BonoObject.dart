@@ -30,7 +30,8 @@ class bonoObjectState extends State<BonoObject> {
 
   var _lDegradate = new lDegradate();
   var _lColor = new lColor();
-  Bono bono = new Bono();
+  Bono bono = new Bono(
+  );
   Brand brand = new Brand();
   final _brandDataService = BrandDataService();
   String bonoSee = 'nadie';
@@ -41,6 +42,18 @@ class bonoObjectState extends State<BonoObject> {
     brand = widget.brand;
 
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(BonoObject oldWidget) {
+    if(bono != widget.bono) {
+      setState((){
+        bono = widget.bono;
+      });
+    }
+    super.didUpdateWidget(oldWidget);
+
+    setState(() {});
   }
 
 
@@ -510,15 +523,15 @@ class bonoObjectState extends State<BonoObject> {
     bonoNew = bono;
     Navigator.push(
         context,
-        CupertinoPageRoute<Null>(
-          builder: (context) => AddEditBono(
+        new CupertinoPageRoute<Null>(
+          builder: (context) =>  new AddEditBono(
             brand: brand,
             bono: bono,
             edit: edit,
           ),
         )).whenComplete(() => () {
+          bono = new Bono();
       setState(() {
-        bono.isActive = true;
       });
     });
   }

@@ -7,6 +7,9 @@ class Condition {
   int? expirationTime;
   int? weeklySessions;
   int? monthlySessions;
+  bool? infiniteSessions;
+  double? cancelTime;
+
 
 
   Condition({
@@ -14,6 +17,8 @@ class Condition {
     this.expirationTime,
     this.weeklySessions,
     this.monthlySessions,
+    this.infiniteSessions,
+    this.cancelTime,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -29,6 +34,12 @@ class Condition {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('monthlySessions')) {
       this.monthlySessions = documentSnapshot.get("monthlySessions");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('infiniteSessions')) {
+      this.infiniteSessions = documentSnapshot.get("infiniteSessions");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('cancelTime')) {
+      this.cancelTime = documentSnapshot.get("cancelTime");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -39,5 +50,7 @@ class Condition {
     this.expirationTime = condition.expirationTime;
     this.weeklySessions = condition.weeklySessions;
     this.monthlySessions = condition.monthlySessions;
+    this.infiniteSessions = condition.infiniteSessions;
+    this.cancelTime = condition.cancelTime;
   }
 }

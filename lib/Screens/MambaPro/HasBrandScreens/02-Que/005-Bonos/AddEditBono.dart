@@ -70,6 +70,8 @@ class _AddEditBonoState extends State<AddEditBono>
   bool isLoading = false;
   bool openBono = false;
 
+  TextEditingController startDateController = TextEditingController();
+
   //Utils bonos
   final _bonosUtils = BonosUtils();
 
@@ -111,6 +113,7 @@ class _AddEditBonoState extends State<AddEditBono>
   String colorBono = " ";
   String colorBono1 = " ";
 
+
   Widget returnBono(Bono _bono) {
     return  BonoObject(bono: _bono, view: true, brand: widget.brand, clientView: true);
 
@@ -124,6 +127,7 @@ class _AddEditBonoState extends State<AddEditBono>
     opacity: 1,
     imageUrl: '',
     isDegradate: false,
+    id: 'newBono',
   );
 
   Condition condition = new Condition(
@@ -144,7 +148,20 @@ class _AddEditBonoState extends State<AddEditBono>
     _tabController = TabController(length: 4, vsync: this);
     var color;
     var degradate1, degradate2;
-    bono = widget.bono;
+    if(widget.edit == true) {
+      bono.id = widget.bono.id;
+      bono.title = widget.bono.title;
+      bono.description = widget.bono.description;
+      bono.price = widget.bono.price;
+      bono.classes = widget.bono.classes;
+      bono.isActive = widget.bono.isActive;
+      bono.compras = widget.bono.compras;
+      bono.color = widget.bono.color;
+      bono.imageUrl = widget.bono.imageUrl;
+      bono.isDegradate = widget.bono.isDegradate;
+      bono.opacity = widget.bono.opacity;
+
+    }
     for (int i = 0; i < currentColors.length; ++i) {
       color = Color(int.parse(currentColors[i].hexa!));
       colors.add(color);
@@ -174,6 +191,8 @@ class _AddEditBonoState extends State<AddEditBono>
       }
 
     }
+
+
 
 
   @override
@@ -231,7 +250,7 @@ class _AddEditBonoState extends State<AddEditBono>
             appBar: AppBar(
               toolbarHeight: MediaQuery.of(context).size.height * 0.10,
               title: Text(
-                AppLocalizations.of(context)!.createBono,
+                widget.edit? AppLocalizations.of(context)!.editBono : AppLocalizations.of(context)!.createBono,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
               ),
               centerTitle: true,
@@ -379,7 +398,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         icon: Container(),
                         label: Text(
                           _selectedIndex == 3
-                              ? 'Crear bono'
+                              ? widget.edit? AppLocalizations.of(context)!.editBono : AppLocalizations.of(context)!.createBono
                               : AppLocalizations.of(context)!.next,
                           style: Theme.of(context)
                               .textTheme
@@ -1041,7 +1060,93 @@ class _AddEditBonoState extends State<AddEditBono>
     );
   }
 
+  Future<void> selectSlot(ctx, type) {
+    // Initial Vars
+    var startDate = DateTime.now();
+    var title;
+    var widgetPicker;
+    // Different types of pickers
+    Widget dateTimePicker = CupertinoTheme(
+      data: CupertinoThemeData(
+          textTheme: CupertinoTextThemeData(
+            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
+          )
+      ),
+      child: Column(
+        children: [
+          CupertinoTimerPicker(
+            mode: CupertinoTimerPickerMode.hm,
+            onTimerDurationChanged: (value) {
+
+            },
+          ),
+        ],
+      ),
+    );
+    if (type == 0) {
+      title = AppLocalizations.of(context)!.selectDateOfBirth;
+      widgetPicker = dateTimePicker;
+    }
+    showCupertinoModalPopup(
+        context: ctx,
+        builder: (_) => Material(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height*0.40,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                        child: Text(title,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,)
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
+                    child: widgetPicker,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 0),
+                      child: TextButton(
+                          child: Text(AppLocalizations.of(context)!.entendido,
+                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
+                          onPressed: () {
+                            Navigator.of(ctx).pop();
+                          }
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              ],
+            ),
+          ),
+        )
+    );
+    return Future.value("");
+  }
+
   Widget conditionsPage() {
+
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(
@@ -1054,104 +1159,23 @@ class _AddEditBonoState extends State<AddEditBono>
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.03),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                new Text(
-                                  'Dias para expirar',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )),
-                    Padding(
-                        padding:
-                            EdgeInsets.only(top: umq.height(context, 0.02)),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            daysSelectoWidget(0, '30', false),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.02),
-                            daysSelectoWidget(1, '60', false),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.02),
-                            daysSelectoWidget(2, '90', false),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.02),
-                            daysSelectoWidget(3, '30', true),
-                          ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.03),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                new Text(
-                                  'Maximo numero de sesiones por semana',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(top: 0),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Flexible(
-                              child: new TextFormField(
-                                //controller: weeklyController,
-                                keyboardType: TextInputType.number,
-                                initialValue: bono.classes!.toString(),
-                                validator: (val) => val!.isEmpty
-                                    ? AppLocalizations.of(context)!.titleError
-                                    : null,
-                                onChanged: (val) {
-                                  setState(() {
-                                    condition.weeklySessions = int.parse(val);
-                                  });
-                                },
-                                style: Theme.of(context).textTheme.bodyText2,
-                                decoration: InputDecoration(
-                                  hintStyle:
-                                      Theme.of(context).textTheme.caption,
-                                  hintText:
-                                      AppLocalizations.of(context)!.titleHint,
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                ),
-                                enabled: true,
-                              ),
-                            ),
-                          ],
-                        )),
+                    optionConditionsWrite( TextInputType.text,
+                  'Dias para expirar',
+                  AppLocalizations.of(context)!.titleHint,
+                  AppLocalizations.of(context)!.titleError,
+                  widget.edit ? false : true,
+                  titleController,
+                  'exp'),
+                    optionConditionsWrite( TextInputType.number,
+                        'Maximo numero de sesiones por semana',
+                        AppLocalizations.of(context)!.titleHint,
+                        AppLocalizations.of(context)!.titleError,
+                        true,
+                        titleController,
+                        'maxw'),
+
+
+
                     Padding(
                         padding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height * 0.03),
@@ -1205,6 +1229,40 @@ class _AddEditBonoState extends State<AddEditBono>
                             ),
                           ],
                         )),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.01),
+                      child: GestureDetector(
+                          onTap: () {
+                            selectSlot(context, 0);
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                               Flexible(
+                                child: TextFormField(
+                                  controller: startDateController,
+                                  readOnly: true,
+                                  enabled: false,
+                                  style:  Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w300),
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            ],
+                          )
+                      ),
+                    ),
                   ]),
             ),
           ),
@@ -1373,25 +1431,32 @@ class _AddEditBonoState extends State<AddEditBono>
     if (isSelectedDays[3] == true) {
       if (daysSelectorController.text.isNotEmpty) {
         condition.expirationTime = int.parse(daysSelectorController.text);
-        setState(() {
+        /*setState(() {
           isLoading = true;
         });
         _brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
-        Navigator.pop(context);
+        Navigator.pop(context);*/
       } else {
         _topsnackbar.topsnackbar(
             context, 'Los dias para expirar deben tener un valor', Colors.red);
       }
     } else {
-      setState(() {
-        isLoading = true;
-      });
+      if (isSelectedDays[0]) {
+        condition.expirationTime = 30;
+      }
+      if (isSelectedDays[1]) {
+        condition.expirationTime = 60;
+      }
+      if (isSelectedDays[2]) {
+        condition.expirationTime = 90;
+      }
+    }
 
       if(widget.edit == false )_brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
       else _brandDataService.updateBono(widget.brand.id!, bono, condition);
       Navigator.pop(context);
     }
-  }
+
 
   Widget optionTextWrite(
       var keyboard,
@@ -1410,7 +1475,7 @@ class _AddEditBonoState extends State<AddEditBono>
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Flexible(
+                !checkBox? Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -1422,8 +1487,20 @@ class _AddEditBonoState extends State<AddEditBono>
                       ),
                     ],
                   ),
-                ),
-                checkBox
+                ) :  !widget.edit? Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        titleText,
+                        style: Theme.of(context).textTheme.headline1?.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 25),
+                      ),
+                    ],
+                  ),
+                ) : Container(),
+                checkBox && widget.edit != true
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -1439,52 +1516,151 @@ class _AddEditBonoState extends State<AddEditBono>
                     : Container(),
               ],
             )),
-        checkBox
-            ? Container()
-            : Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height * 0.05),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Flexible(
-                      child: TextFormField(
-                        keyboardType: keyboard,
-                        initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
-                        maxLines: variable == 'desc'? 5 : null,
-                        minLines: 1,
-                        maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
-                        controller:  widget.edit == true? null : controller,
-                        validator: (val) => val!.isEmpty ? errorText : null,
-                        onChanged: (val) {
-                          setState(() {
-                            if (variable == 'title') {
-                              bono.title = val;
-                            } else if (variable == 'desc') {
-                              bono.description = val;
-                            } else if (variable == 'ses') {
-                              bono.classes = int.parse(val);
-                            } else if (variable == 'price') {
-                              bono.price = double.parse(val);
-                            }
-                          });
-                        },
-                        style: Theme.of(context).textTheme.bodyText1,
-                        decoration: InputDecoration(
-                          hintStyle: Theme.of(context).textTheme.caption,
-                          hintText: hintText,
-                          //border: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black),
-                          ),
-                        ),
-                        enabled: editable,
+        !checkBox? Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * 0.00),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Flexible(
+                  child: TextFormField(
+                    keyboardType: keyboard,
+                    initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
+                    maxLines: variable == 'desc'? 5 : null,
+                    minLines: 1,
+                    maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
+                    controller:  widget.edit == true? null : controller,
+                    validator: (val) => val!.isEmpty ? errorText : null,
+                    onChanged: (val) {
+                      setState(() {
+                        if (variable == 'title') {
+                          bono.title = val;
+                        } else if (variable == 'desc') {
+                          bono.description = val;
+                        } else if (variable == 'ses') {
+                          bono.classes = int.parse(val);
+                        } else if (variable == 'price') {
+                          bono.price = double.parse(val);
+                        }
+                      });
+                    },
+                    style: Theme.of(context).textTheme.bodyText1,
+                    decoration: InputDecoration(
+                      hintStyle: Theme.of(context).textTheme.caption,
+                      hintText: hintText,
+                      //border: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
                       ),
                     ),
-                  ],
-                )),
+                    enabled: editable,
+                  ),
+                ),
+              ],
+            )) : Container()
+
+      ],
+    );
+  }
+
+  Widget optionConditionsWrite(
+      var keyboard,
+      var titleText,
+      var hintText,
+      var errorText,
+      bool editable,
+      var controller,
+      var variable) {
+    return Column(
+      children: [
+        Padding(
+            padding:
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                 Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        titleText,
+                        style: Theme.of(context).textTheme.headline1?.copyWith(
+                            fontWeight: FontWeight.bold, fontSize: 25),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )),
+          variable == 'exp'? Padding(
+              padding:
+              EdgeInsets.only(top: umq.height(context, 0.02)),
+              child: new Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  daysSelectoWidget(0, '30', false),
+                  SizedBox(
+                      width:
+                      MediaQuery.of(context).size.width * 0.02),
+                  daysSelectoWidget(1, '60', false),
+                  SizedBox(
+                      width:
+                      MediaQuery.of(context).size.width * 0.02),
+                  daysSelectoWidget(2, '90', false),
+                  SizedBox(
+                      width:
+                      MediaQuery.of(context).size.width * 0.02),
+                  daysSelectoWidget(3, '30', true),
+                ],
+              )) :
+          Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * 0.00),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Flexible(
+                    child: TextFormField(
+                      keyboardType: keyboard,
+                      initialValue: bono.classes!.toString(),
+                      maxLines: null,
+                      minLines: 1,
+                      maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
+                      controller:  widget.edit == true? null : controller,
+                      validator: (val) => val!.isEmpty ? errorText : null,
+                      onChanged: (val) {
+                        setState(() {
+                          if (variable == 'maxw') {
+                            condition.weeklySessions = int.parse(val);
+                          } else if (variable == 'maxm') {
+                            bono.description = val;
+                          } else if (variable == 'ses') {
+                            bono.classes = int.parse(val);
+                          } else if (variable == 'price') {
+                            bono.price = double.parse(val);
+                          }
+                        });
+                      },
+                      style: Theme.of(context).textTheme.bodyText1,
+                      decoration: InputDecoration(
+                        hintStyle: Theme.of(context).textTheme.caption,
+                        hintText: hintText,
+                        //border: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                      ),
+                      enabled: editable,
+                    ),
+                  ),
+                ],
+              )),
       ],
     );
   }

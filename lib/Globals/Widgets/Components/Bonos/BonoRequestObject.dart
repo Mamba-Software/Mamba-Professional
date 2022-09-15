@@ -61,64 +61,67 @@ class bonoRequestObjectState extends State<BonoRequestObject> {
 
   @override
   Widget build(BuildContext context) {
-    return  Padding(
-      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.04),
-      child: Column(
-        children: [
-          ListTile(
-              leading: CircularImage(
-                size: MediaQuery.of(context).size.width*0.15,
-                image: user.imageUrl!,
-                color: Theme.of(context).primaryColor,
-                borderWidth: 1,
-              ),
-              title: Text(
-                user.name!,
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              trailing: _bonoUtils.bonoObjectSmall(context, bono, currentBrand),
-              onTap: () async {
-                Purchase purchase = new Purchase();
-                int? paymentMethod = await showDialog(
-                    context: context,
-                    builder: (_) {
-                      return RequestBonoConfirmationDialog(
-                        text: 'Si aceptas se le otorgaran ' + bonoRequest.classes! + ' sesiones',
-                        userId: user.id!,
-                      );
-                    }
-                );
+    return  GestureDetector(
 
-                if(paymentMethod != null) {
-                  if (paymentMethod >= 0) {
-                    print('create');
-                    purchase.purchasedAt = Timestamp.now();
-                    purchase.brandId = widget.brandId;
-                    purchase.bonoId = bonoRequest.bonoId;
-                    purchase.price = double.parse(bonoRequest.price!);
-                    purchase.userId = bonoRequest.userId!;
-                    purchase.paymentMethod = paymentMethod;
+      onTap: () async {
+        Purchase purchase = new Purchase();
+        int? paymentMethod = await showDialog(
+            context: context,
+            builder: (_) {
+              return RequestBonoConfirmationDialog(
+                text: 'Si aceptas se le otorgaran ' + bonoRequest.classes! + ' sesiones',
+                userId: user.id!,
+              );
+            }
+        );
 
-                    _paymentDataService.addPurchaseToPayments(purchase);
-                    //await _brandDataService.addUserToBrand( _bonoRequest.userId!, widget.brandId, 0);
-                    //_userDataService.addBonoToUser(widget.brandId, _bonoRequest.userId!, _bonoRequest.bonoId!, int.parse(_bonoRequest.classes!), Timestamp.now());
-                    //_userDataService.deleteUserBonoRequest(_bonoRequest.userId!, widget.brandId, _bonoRequest.bonoId!);
-                    _brandDataService.deleteBrandBonoRequest( widget.brandId, bonoRequest.bonoId!);
-                    _brandDataService.updateBonoCompras(widget.brandId, bonoRequest.bonoId!);
-                  }
-                  else if (paymentMethod == -1) {
-                    _brandDataService.deleteBrandBonoRequest( widget.brandId, bonoRequest.bonoId!);
-                  }
-                }
-              }
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.width*0.04),
-            child: Divider(
-              thickness: 1,
+        if(paymentMethod != null) {
+          if (paymentMethod >= 0) {
+            print('create');
+            purchase.purchasedAt = Timestamp.now();
+            purchase.brandId = widget.brandId;
+            purchase.bonoId = bonoRequest.bonoId;
+            purchase.price = double.parse(bonoRequest.price!);
+            purchase.userId = bonoRequest.userId!;
+            purchase.paymentMethod = paymentMethod;
+
+            _paymentDataService.addPurchaseToPayments(purchase);
+            //await _brandDataService.addUserToBrand( _bonoRequest.userId!, widget.brandId, 0);
+            //_userDataService.addBonoToUser(widget.brandId, _bonoRequest.userId!, _bonoRequest.bonoId!, int.parse(_bonoRequest.classes!), Timestamp.now());
+            //_userDataService.deleteUserBonoRequest(_bonoRequest.userId!, widget.brandId, _bonoRequest.bonoId!);
+            _brandDataService.deleteBrandBonoRequest( widget.brandId, bonoRequest.bonoId!);
+            _brandDataService.updateBonoCompras(widget.brandId, bonoRequest.bonoId!);
+          }
+          else if (paymentMethod == -1) {
+            _brandDataService.deleteBrandBonoRequest( widget.brandId, bonoRequest.bonoId!);
+          }
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.04),
+        child: Column(
+          children: [
+            ListTile(
+                leading: CircularImage(
+                  size: MediaQuery.of(context).size.width*0.15,
+                  image: user.imageUrl!,
+                  color: Theme.of(context).primaryColor,
+                  borderWidth: 1,
+                ),
+                title: Text(
+                  user.name!,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                ),
+                trailing: _bonoUtils.bonoObjectSmall(context, bono, currentBrand),
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).size.width*0.04),
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

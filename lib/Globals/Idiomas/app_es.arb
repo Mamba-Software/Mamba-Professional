@@ -2065,11 +2065,11 @@
   "@staff": {
     "description": "Donde message"
   },
-  "createBono": "Creación bono",
+  "createBono": "Crear bono",
   "@createBono": {
     "description": "Create bono message"
   },
-  "editBono": "Edición bono",
+  "editBono": "Editar bono",
   "@editBono": {
     "description": "Edit bono message"
   },

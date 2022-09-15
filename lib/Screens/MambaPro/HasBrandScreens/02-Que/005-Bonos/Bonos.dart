@@ -177,6 +177,7 @@ class _BonosProState extends State<BonosPro> {
   }
 
   Widget returnBono(Bono _bono) {
+    //return _bonosUtils.bonoObject(context, _bono, brand, _lColor);
     return BonoObject(bono: _bono, view: false, brand: brand, clientView: false);
   }
 
@@ -470,6 +471,7 @@ class _BonosProState extends State<BonosPro> {
                 } else {
                   bonosList = _bonosUtils.documentsToBonos(
                       snapshot.data!.docs, orderBonoSelectedNumber);
+
                   if (bonosList.isNotEmpty) {
                     return SliverList(
                       delegate: SliverChildBuilderDelegate(
