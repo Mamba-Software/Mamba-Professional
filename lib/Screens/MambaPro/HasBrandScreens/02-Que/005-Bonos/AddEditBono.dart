@@ -132,6 +132,7 @@ class _AddEditBonoState extends State<AddEditBono>
 
   Condition condition = new Condition(
     expirationTime: 30,
+    infiniteSessions: false,
   );
 
   String _selectedDate = '';
@@ -162,6 +163,10 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.opacity = widget.bono.opacity;
 
     }
+
+    if(widget.edit == true) {
+      getCondition();
+    }
     for (int i = 0; i < currentColors.length; ++i) {
       color = Color(int.parse(currentColors[i].hexa!));
       colors.add(color);
@@ -188,6 +193,32 @@ class _AddEditBonoState extends State<AddEditBono>
       }
       else {
         colorSelected = colors[int.parse(bono.color!)].value;
+      }
+
+    }
+
+    void getCondition() async
+    {
+      condition =  await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
+      condition.infiniteSessions = false;
+      condition.cancelTime = 6.5;
+      isSelectedDays[0] = false;
+      isSelectedDays[1] = false;
+      isSelectedDays[2] = false;
+      isSelectedDays[3] = false;
+      if(condition.expirationTime == 30) {
+        isSelectedDays[0] = true;
+      }
+      else if(condition.expirationTime == 60) {
+        isSelectedDays[1] = true;
+      }
+      else if(condition.expirationTime == 90) {
+        isSelectedDays[2] = true;
+      }
+      else {
+        isSelectedDays[3] = true;
+        daysSelectorController.text = condition.expirationTime.toString();
+
       }
 
     }
@@ -1173,6 +1204,20 @@ class _AddEditBonoState extends State<AddEditBono>
                         true,
                         titleController,
                         'maxw'),
+                    optionConditionsWrite( TextInputType.number,
+                        'Maximo numero de sesiones por mes',
+                        AppLocalizations.of(context)!.titleHint,
+                        AppLocalizations.of(context)!.titleError,
+                        true,
+                        titleController,
+                        'maxm'),
+                    optionConditionsWrite( TextInputType.number,
+                        'Classes infinitas',
+                        AppLocalizations.of(context)!.titleHint,
+                        AppLocalizations.of(context)!.titleError,
+                        true,
+                        titleController,
+                        'inf'),
 
 
 
@@ -1356,6 +1401,12 @@ class _AddEditBonoState extends State<AddEditBono>
     });
   }
 
+  void setInfinitClasses(bool? infinit) {
+    setState(() {
+      condition.infiniteSessions = infinit;
+    });
+  }
+
   void setImage(bool? image) {
     setState(() {
       bonoImage = image!;
@@ -1397,6 +1448,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   controller: daysSelectorController,
                   keyboardType: TextInputType.number,
                   textAlign: TextAlign.center,
+                  //initialValue: isSelectedDays[3]? condition.expirationTime.toString() : null,
                   onTap: () {
                     setState(() {
                       isSelectedDays[0] = false;
@@ -1594,6 +1646,20 @@ class _AddEditBonoState extends State<AddEditBono>
                     ],
                   ),
                 ),
+                variable == 'inf'
+                    ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Checkbox(
+                      value: condition.infiniteSessions,
+                      onChanged: setInfinitClasses,
+                      checkColor: Theme.of(context).primaryColor,
+                      activeColor: Styles.mainColor,
+                    )
+                  ],
+                )
+                    : Container(),
               ],
             )),
           variable == 'exp'? Padding(
@@ -1616,7 +1682,7 @@ class _AddEditBonoState extends State<AddEditBono>
                       MediaQuery.of(context).size.width * 0.02),
                   daysSelectoWidget(3, '30', true),
                 ],
-              )) :
+              )) : variable == 'maxw' || variable == 'maxm'?
           Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height * 0.00),
@@ -1626,7 +1692,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   Flexible(
                     child: TextFormField(
                       keyboardType: keyboard,
-                      initialValue: bono.classes!.toString(),
+                      initialValue: widget.edit? variable == 'maxw'? condition.weeklySessions.toString() : condition.monthlySessions.toString() : bono.classes!.toString(),
                       maxLines: null,
                       minLines: 1,
                       maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
@@ -1637,7 +1703,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           if (variable == 'maxw') {
                             condition.weeklySessions = int.parse(val);
                           } else if (variable == 'maxm') {
-                            bono.description = val;
+                            condition.monthlySessions = int.parse(val);
                           } else if (variable == 'ses') {
                             bono.classes = int.parse(val);
                           } else if (variable == 'price') {
@@ -1660,7 +1726,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     ),
                   ),
                 ],
-              )),
+              )) : Container(),
       ],
     );
   }
