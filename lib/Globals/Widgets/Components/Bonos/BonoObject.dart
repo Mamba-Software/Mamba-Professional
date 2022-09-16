@@ -24,19 +24,18 @@ class BonoObject extends StatefulWidget {
   BonoObject({Key? key, required this.bono,required this.brand, required this.view, required this.clientView }) : super(key: key);
 
   @override
-  bonoObjectState createState() => new bonoObjectState();
+  bonoObjectState createState() => bonoObjectState();
 }
 
 class bonoObjectState extends State<BonoObject> {
 
-  var _lDegradate = new lDegradate();
-  var _lColor = new lColor();
-  Bono bono = new Bono(
-  );
-  Brand brand = new Brand();
+  final _lDegradate = lDegradate();
+  final _lColor = lColor();
+  Bono bono = Bono();
+  Brand brand = Brand();
   final _brandDataService = BrandDataService();
   String bonoSee = 'nadie';
-  Condition condition = new Condition();
+  Condition condition = Condition();
 
   @override
   void initState() {
@@ -46,14 +45,13 @@ class bonoObjectState extends State<BonoObject> {
     super.initState();
   }
 
-  void getCondition() async
-  {
+  void getCondition() async {
     condition =  await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
   }
 
   @override
   void didUpdateWidget(BonoObject oldWidget) {
-    if(bono != widget.bono) {
+    if (bono != widget.bono) {
       setState((){
         bono = widget.bono;
       });
@@ -72,8 +70,7 @@ class bonoObjectState extends State<BonoObject> {
         if(bono.isActive! || widget.view == true) {
           if (bonoSee == bono.id!) {
             bonoSee = 'nadie';
-          }
-          else {
+          } else {
             bonoSee = bono.id!;
           }
           setState(() {});
@@ -364,18 +361,18 @@ class bonoObjectState extends State<BonoObject> {
 
   // Navigate to Add Bonos
   void navigateToAddBonosScreen(Bono bono, Brand brand, bool edit) {
-    Bono bonoNew = new Bono();
+    Bono bonoNew = Bono();
     bonoNew = bono;
     Navigator.push(
         context,
-        new CupertinoPageRoute<Null>(
-          builder: (context) =>  new AddEditBono(
+        CupertinoPageRoute<Null>(
+          builder: (context) =>  AddEditBono(
             brand: brand,
             bono: bono,
             edit: edit,
           ),
         )).whenComplete(() => () {
-          bono = new Bono();
+          bono = Bono();
       setState(() {
       });
     });
