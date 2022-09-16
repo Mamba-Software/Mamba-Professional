@@ -2112,5 +2112,9 @@
   "filterBy": "Ordenar por",
   "@filterBy": {
     "description": "Donde message"
+  },
+  "noData": "Sin datos",
+  "@noData": {
+    "description": "Donde message"
   }
 }

@@ -138,6 +138,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
             },
           ),
         ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: LoadingView(),
       )
         :
@@ -218,7 +219,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
           ),
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             Expanded(
@@ -327,7 +328,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                       ),
                     ),
                     Scaffold(
-                      resizeToAvoidBottomInset: true,
+                      resizeToAvoidBottomInset: false,
                       body: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Padding(
@@ -385,7 +386,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                       ),
                     ),
                     Scaffold(
-                      resizeToAvoidBottomInset: true,
+                      resizeToAvoidBottomInset: false,
                       body: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Padding(
@@ -548,7 +549,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                       ),
                     ),
                     Scaffold(
-                      resizeToAvoidBottomInset: true,
+                      resizeToAvoidBottomInset: false,
                       body: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Padding(

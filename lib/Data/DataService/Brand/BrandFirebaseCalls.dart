@@ -27,7 +27,7 @@ class BrandFirebaseCalls {
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
-  String library = isProduction ? 'Library' : '7777 Library';
+  String library = isProduction ? 'Library' : 'Library';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String users = isProduction ? 'Users' : '7777 Users';
   String events = isProduction ? 'Events' : '7777 Events';
@@ -43,7 +43,7 @@ class BrandFirebaseCalls {
 
   Future<User?> getCurrentUser() async {
     User? currentUser;
-    currentUser = await _auth.currentUser;
+    currentUser = _auth.currentUser;
     return currentUser;
   }
 
@@ -369,16 +369,14 @@ class BrandFirebaseCalls {
 
   //Add
 
-  Future<String> addBrand(String name, File image, String description,
-      List<double> workShift, int maxMembers) async {
-    User? firebaseUser = await getCurrentUser();
+  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {
     bool firestoreError = false;
     var uid = Uuid().v4();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
     await _firestore.collection(brands).doc(uid).set({
-      "adminID": firebaseUser!.uid,
+      "adminID": currentUser.id!,
       "logoUrl": "",
       "name": name,
       "description": description,

@@ -317,7 +317,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                             child: Image.asset(Constants.emptyCalendar)
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Text(AppLocalizations.of(context)!.noRequestsFound, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
                         SizedBox(height: MediaQuery.of(context).size.height*0.12),
                       ],
                     ),

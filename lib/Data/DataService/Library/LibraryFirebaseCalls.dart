@@ -23,7 +23,7 @@ class LibraryFirebaseCalls {
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String library = isProduction ? 'Library' : '7777 Library';
+  String library = isProduction ? 'Library' : 'Library';
 
   //Colors
   Future<List<lColor>> getColors() async {

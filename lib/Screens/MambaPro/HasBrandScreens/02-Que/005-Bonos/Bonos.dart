@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
@@ -14,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoObject.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:provider/provider.dart';
@@ -95,6 +97,8 @@ class _BonosProState extends State<BonosPro> {
   int orderBonoSelectedNumber = 0;
 
   String bonoSee = 'nadie';
+
+  int requests = 0;
 
   @override
   void initState() {
@@ -235,8 +239,7 @@ class _BonosProState extends State<BonosPro> {
                                           snapshot.data!.docs == null) {
                                         return Container();
                                       } else {
-                                        requests = _bonosUtils
-                                            .documentsToBonosRequests(snapshot.data!.docs).length;
+                                        requests = _bonosUtils.documentsToBonosRequests(snapshot.data!.docs).length;
                                         if(requests != 0) {
                                           return Align(
                                             alignment: Alignment.topRight,
@@ -497,9 +500,7 @@ class _BonosProState extends State<BonosPro> {
                                 height:
                                     MediaQuery.of(context).size.height * 0.005),
                             Text(
-                              "NO " +
-                                  AppLocalizations.of(context)!
-                                      .solicitudesBonos,
+                              AppLocalizations.of(context)!.noData,
                               style: Theme.of(context).textTheme.caption,
                               textAlign: TextAlign.center,
                             ),
