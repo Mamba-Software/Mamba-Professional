@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -59,7 +60,6 @@ class _LocationsState extends State<Locations> {
   Set<Marker> markers = <Marker>{};
   CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
   GoogleMapController? mapController;
-  final Completer<GoogleMapController> _controller = Completer();
 
   void initCameraPosition() {
     setState(() {
@@ -97,12 +97,7 @@ class _LocationsState extends State<Locations> {
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    if (!_controller.isCompleted) {
-      _controller.complete(controller);
-      setState(() {
-        mapController = controller;
-      });
-    }
+    mapController = controller;
   }
 
   Future<void> getAllLocations() async {
@@ -178,6 +173,7 @@ class _LocationsState extends State<Locations> {
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
             pinned: true,
@@ -186,10 +182,10 @@ class _LocationsState extends State<Locations> {
                 color: AppColors.darkGrey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,85 +197,74 @@ class _LocationsState extends State<Locations> {
                           FittedBox(
                             fit: BoxFit.fitHeight,
                             child: SizedBox(
-                              height: MediaQuery.of(context).size.height*0.08,
-                              child: TextButton(
-                                onPressed: () async {
-                                  // Generate a new token here
-                                  final sessionToken = const Uuid().v4();
-                                  final language = currentUser.idioma;
-                                  final Suggestion? result = await showSearch(
-                                    context: context,
-                                    delegate: AddressSearch(sessionToken, language!),
-                                  );
-                                  // We have a result for our locations search
-                                  if (result!.placeId != "") {
-                                    // Reload the Map
-                                    setState(() {
-                                      isLoading = true;
-                                      loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
-                                    });
-                                    Location location = Location();
-                                    location.placeId = result.placeId;
-                                    final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
-                                    // Get the information on Strings
-                                    if (placeDetails.street!=null) {
-                                      location.street = placeDetails.street!;
+                                height: MediaQuery.of(context).size.height*0.08,
+                                child: IconButton(
+                                  onPressed: () async {
+                                    // Generate a new token here
+                                    final sessionToken = const Uuid().v4();
+                                    final language = currentUser.idioma;
+                                    final Suggestion? result = await showSearch(
+                                      context: context,
+                                      delegate: AddressSearch(sessionToken, language!),
+                                    );
+                                    // We have a result for our locations search
+                                    if (result!.placeId != "") {
+                                      // Reload the Map
+                                      setState(() {
+                                        isLoading = true;
+                                        loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
+                                      });
+                                      Location location = Location();
+                                      location.placeId = result.placeId;
+                                      final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
+                                      // Get the information on Strings
+                                      if (placeDetails.street!=null) {
+                                        location.street = placeDetails.street!;
+                                      } else {
+                                        location.street="N/A";
+                                      }
+                                      if(placeDetails.streetNumber!=null) {
+                                        location.streetNumber = placeDetails.streetNumber!;
+                                      } else {
+                                        location.streetNumber="N/A";
+                                      }
+                                      if(placeDetails.city!=null) {
+                                        location.city = placeDetails.city!;
+                                      } else {
+                                        location.city="N/A";
+                                      }
+                                      if(placeDetails.zipCode!=null) {
+                                        location.zipCode = placeDetails.zipCode!;
+                                      } else {
+                                        location.zipCode="N/A";
+                                      }
+                                      // Build Correct Description
+                                      location.description = "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
+                                      // Get Latitude/Longitude
+                                      var temp = await gPlace!.details.get(location.placeId!);
+                                      if (temp != null && temp.result != null && mounted) {
+                                        detailsResult = temp.result;
+                                        location.latitude = detailsResult!.geometry!.location!.lat!;
+                                        location.longitude = detailsResult!.geometry!.location!.lng!;
+                                      }
+                                      // Save location to DataBase
+                                      await _locationDataService.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
+                                      await Future.delayed(const Duration(seconds: 4));
+                                      getAllLocations();
                                     } else {
-                                      location.street="N/A";
+                                      setState(() {
+                                        isLoading = false;
+                                      });
                                     }
-                                    if(placeDetails.streetNumber!=null) {
-                                      location.streetNumber = placeDetails.streetNumber!;
-                                    } else {
-                                      location.streetNumber="N/A";
-                                    }
-                                    if(placeDetails.city!=null) {
-                                      location.city = placeDetails.city!;
-                                    } else {
-                                      location.city="N/A";
-                                    }
-                                    if(placeDetails.zipCode!=null) {
-                                      location.zipCode = placeDetails.zipCode!;
-                                    } else {
-                                      location.zipCode="N/A";
-                                    }
-                                    // Build Correct Description
-                                    location.description = "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
-                                    // Get Latitude/Longitude
-                                    var temp = await gPlace!.details.get(location.placeId!);
-                                    if (temp != null && temp.result != null && mounted) {
-                                      detailsResult = temp.result;
-                                      location.latitude = detailsResult!.geometry!.location!.lat!;
-                                      location.longitude = detailsResult!.geometry!.location!.lng!;
-                                    }
-                                    // Save location to DataBase
-                                    await _locationDataService.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
-                                    await Future.delayed(const Duration(seconds: 4));
-                                    getAllLocations();
-                                  } else {
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                  }
-                                },
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add_circle_outline,
-                                      color: AppColors.white,
-                                      size: MediaQuery.of(context).size.width*0.07,
-                                    ),
-                                    FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        AppLocalizations.of(context)!.add,
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,),
-                                        textAlign: TextAlign.center
-                                      ),
-                                    ),
-                                  ],
+                                  },
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Icons.add_location_alt_outlined,
+                                    color: AppColors.white,
+                                    size: MediaQuery.of(context).size.width*0.08,
+                                  ),
                                 ),
-                              )
                             ),
                           )
                         ],
@@ -292,6 +277,8 @@ class _LocationsState extends State<Locations> {
                     ),
                   ],
                 ),
+
+
               ),
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
@@ -357,8 +344,8 @@ class _LocationsState extends State<Locations> {
                   scrollGesturesEnabled: true,
                   zoomGesturesEnabled: true,
                   rotateGesturesEnabled: true,
-                  mapToolbarEnabled: true,
-                  zoomControlsEnabled: true,
+                  mapToolbarEnabled: false,
+                  zoomControlsEnabled: false,
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   minMaxZoomPreference: const MinMaxZoomPreference(5,20),

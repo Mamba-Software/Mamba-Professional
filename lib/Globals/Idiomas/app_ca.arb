@@ -459,5 +459,17 @@
   "cuando": "Quan",
   "donde": "On",
   "scanQRCode": "Escaneja codi QR",
-  "staff": "Staff"
+  "staff": "Staff",
+  "createBono": "Crear bono",
+  "editBono": "Editar bono",
+  "nameBono": "Nom del teu bono",
+  "descriptionBono": "Descripció del teu bono",
+  "activeBono": "¿Estarà actiu el bono?",
+  "sesionsBono": "¿Quantes sessions té el teu bono?",
+  "priceBono": "¿Quin preu té?",
+  "styleBono": "Estil del bono",
+  "colorSolid": "Color sòlid",
+  "degradateSolid": "Degradats",
+  "metalized": "Metalitzats",
+  "filterBy": "Ordenar per"
 }

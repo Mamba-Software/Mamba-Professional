@@ -356,6 +356,17 @@ class BrandFirebaseCalls {
     return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
+  Future<Condition> getConditionInfo(String brandId, String bonoId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bonoId).collection('Conditions').doc('Conditions')
+        .get();
+
+     return Condition.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+  }
+
   //Add
 
   Future<String> addBrand(String name, File image, String description,
@@ -463,6 +474,9 @@ class BrandFirebaseCalls {
       "isActive": bono.isActive,
       "color": bono.color,
       "compras": 0,
+      "opacity": bono.opacity,
+      "imageUrl": bono.imageUrl,
+      "isDegradate": bono.isDegradate,
     }).catchError((err) {
       print(err);
     });
@@ -475,6 +489,8 @@ class BrandFirebaseCalls {
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
       "monthlySessions": condition.monthlySessions,
+      "infiniteSessions": condition.infiniteSessions,
+      "cancelTime": condition.cancelTime,
     }).catchError((err) {
       print(err);
     });
@@ -544,9 +560,35 @@ class BrandFirebaseCalls {
     });
   }
 
-  Future<void> updateBono(String brandID, String bonoId, bool isActive) async {
-    await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
-      "isActive": isActive,
+  Future<void> updateBono(String brandId, Bono bono, Condition condition) async {
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bono.id)
+        .update({
+      "description": bono.description,
+      "isActive": bono.isActive,
+      "color": bono.color,
+      "opacity": bono.opacity,
+      "imageUrl": bono.imageUrl,
+      "isDegradate": bono.isDegradate,
+    }).catchError((err) {
+      print(err);
+    });
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bono.id).collection('Conditions').doc('Conditions')
+        .update({
+      "expirationTime": condition.expirationTime,
+      "weeklySessions": condition.weeklySessions,
+      "monthlySessions": condition.monthlySessions,
+      "infiniteSessions": condition.infiniteSessions,
+      "cancelTime": condition.cancelTime,
+    }).catchError((err) {
+      print(err);
     });
   }
 

@@ -14,6 +14,9 @@ class Bono {
   bool? isActive;
   int? compras;
   String? color;
+  String? imageUrl;
+  bool? isDegradate;
+  double? opacity;
 
 
   Bono({
@@ -25,6 +28,9 @@ class Bono {
     this.isActive,
     this.compras,
     this.color,
+    this.imageUrl,
+    this.isDegradate,
+    this.opacity,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +58,15 @@ class Bono {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('color')) {
       this.color = documentSnapshot.get("color");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      this.imageUrl = documentSnapshot.get("imageUrl").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isDegradate')) {
+      this.isDegradate = documentSnapshot.get("isDegradate");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('opacity')) {
+      this.opacity = documentSnapshot.get("opacity");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -66,5 +81,8 @@ class Bono {
     this.isActive = bono.isActive;
     this.compras = bono.compras;
     this.color = bono.color;
+    this.imageUrl = bono.imageUrl;
+    this.isDegradate = bono.isDegradate;
+    this.opacity = bono.opacity;
   }
 }

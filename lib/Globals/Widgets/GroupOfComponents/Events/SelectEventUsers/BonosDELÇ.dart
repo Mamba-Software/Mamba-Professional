@@ -166,8 +166,8 @@ class _BonosState extends State<Bonos> {
                                           : 'Quieres activar el bono?');
                                 });
                             if (result) {
-                              _brandDataService.updateBono(
-                                  widget.brandId, _bono.id!, !_bono.isActive!);
+                              /*_brandDataService.updateBono(
+                                  widget.brandId, _bono.id!, !_bono.isActive!);*/
                             }
                           },
                         ),

@@ -76,8 +76,6 @@ class _BrandScreenState extends State<BrandScreen> {
   var iconWhen = Icons.keyboard_arrow_up;
   var iconWhere = Icons.keyboard_arrow_up;
 
-  //Index to know which page to load
-  int pageIndex = 0;
   //favourite tabs of user
   List<int> favourites = [];
 
@@ -123,6 +121,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const Notifications(),
+          settings: const RouteSettings(name: 'Notifications'),
         )
     ).whenComplete(() async {
       var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
@@ -138,6 +137,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const ChatCore(),
+          settings: const RouteSettings(name: 'ChatCore'),
         )
     ).whenComplete(() async {
       var temp = await _userDataService.getUnreadConversations(currentUser.id!);
@@ -153,6 +153,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const Profile(),
+          settings: const RouteSettings(name: 'Profile'),
         )
     );
   }
@@ -305,28 +306,6 @@ class _BrandScreenState extends State<BrandScreen> {
               ],
             ),
           ),
-          /*
-          SizedBox(height: safeAreaHeight * 0.01),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-            child: TextButton(
-              onPressed: navigateToSettingsScreen,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.settings,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  SizedBox(width: safeAreaWidth * 0.025),
-                  Text(
-                      AppLocalizations.of(context)!.settings,
-                      style: Theme.of(context).textTheme.bodyText2
-                  ),
-                ],
-              ),
-            ),
-          ),
-          */
         ],
       ),
     );
@@ -612,6 +591,7 @@ class _BrandScreenState extends State<BrandScreen> {
             setState(() {
               isLoading = true;
             });
+            pageIndex = 0;
             NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
             await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
             await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
@@ -773,9 +753,18 @@ class _BrandScreenState extends State<BrandScreen> {
     }
     return Scaffold(
       key: mambaProScaffoldKey,
+      /*
+      appBar: AppBar(
+        toolbarHeight: 0,
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        //systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.white),
+      ),
+       */
       drawer: Drawer(
         backgroundColor: Theme.of(context).primaryColorDark,
         child: ListView(
+          physics: const ClampingScrollPhysics(),
           // Remove padding
           padding: EdgeInsets.zero,
           children: [

@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoRequestObject.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -56,8 +57,10 @@ class _BonosRequestsState extends State<BonosRequests> {
     super.initState();
   }
 
-  Widget returnBonoRequest(BonoRequest _bonoRequest, var user) {
+  Widget returnBonoRequest(BonoRequest _bonoRequest, var user, var bono) {
     Usuario _user = user;
+    Bono _bono = bono;
+    return BonoRequestObject(bono: _bono, user: _user, bonoRequest: _bonoRequest, brandId: widget.brandId);
     return ListTile(
       leading: CircularImage(
         size: MediaQuery.of(context).size.width*0.15,
@@ -196,15 +199,26 @@ class _BonosRequestsState extends State<BonosRequests> {
                                       // Run check for a single queryRow
                                       builder: (context, snapshot) {
                                         if (snapshot.data != null) {
-                                          return Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.01),
-                                            child: returnBonoRequest(
-                                                bonoRequest, snapshot.data),
-                                          );
+                                          Object? user = snapshot.data;
+                                          return FutureBuilder(
+                                              future: _brandDataService
+                                                  .getBonoInfo(widget.brandId, bonoRequest.bonoId!),
+                                              // Run check for a single queryRow
+                                              builder: (context, snapshot) {
+                                                if (snapshot.data != null) {
+                                                  return Padding(
+                                                    padding: EdgeInsets.symmetric(
+                                                        vertical: MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                            0.01),
+                                                    child: returnBonoRequest(
+                                                        bonoRequest, user, snapshot.data),
+                                                  );
+                                                } else {
+                                                  return Container();
+                                                }
+                                              });
                                         } else {
                                           return Container();
                                         }

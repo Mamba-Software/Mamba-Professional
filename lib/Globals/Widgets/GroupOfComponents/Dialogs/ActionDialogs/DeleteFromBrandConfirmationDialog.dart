@@ -111,7 +111,7 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
                             AppLocalizations.of(context)!.delete,
                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
-                          icon: Icon(Icons.delete_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
+                          icon: Icon(Icons.person_remove, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
                           onPressed: () {
                             Navigator.pop(context, true);
                           },

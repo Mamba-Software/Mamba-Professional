@@ -2,6 +2,7 @@ import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,8 +47,13 @@ class _LoginState extends State<Login> {
     return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 0,
+              backgroundColor: AppColors.black,
+              systemOverlayStyle: SystemUiOverlayStyle.light,
+            ),
             resizeToAvoidBottomInset: true,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: AppColors.black,
             body: Center(
               child: SingleChildScrollView(
                 child: Form(
@@ -72,16 +78,16 @@ class _LoginState extends State<Login> {
                               email = val;
                             });
                           },
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                           decoration: Styles.textFromInputDecoration.copyWith(
                               labelText: AppLocalizations.of(context)!.email,
-                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                               errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                               prefixIcon:  Padding(
                                 padding: const EdgeInsets.all(0.0),
                                 child: Icon(
                                   Icons.email_outlined,
-                                  color: AppColors.black,
+                                  color: AppColors.white,
                                   size: MediaQuery.of(context).size.width*0.06,
                                 ), // icon is 48px widget.
                               )
@@ -95,11 +101,11 @@ class _LoginState extends State<Login> {
                                 password = val;
                               });
                             },
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             obscureText: !_passwordVisible,
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                 errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 suffixIcon: Padding(
                                     padding: const EdgeInsets.all(0.0),
@@ -107,7 +113,7 @@ class _LoginState extends State<Login> {
                                         icon: Icon(
                                           // Based on passwordVisible state choose the icon
                                           _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                          color: AppColors.black,
+                                          color: AppColors.white,
                                           size: MediaQuery.of(context).size.width*0.06,
                                         ),
                                         onPressed: () {
@@ -121,7 +127,7 @@ class _LoginState extends State<Login> {
                                   padding: const EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.vpn_key_outlined,
-                                    color: AppColors.black,
+                                    color: AppColors.white,
                                     size: MediaQuery.of(context).size.width*0.06,
                                   ), // icon is 48px widget.
                                 )
@@ -164,7 +170,7 @@ class _LoginState extends State<Login> {
                             height: MediaQuery.of(context).size.height*0.06,
                             width: MediaQuery.of(context).size.width*0.50,
                             decoration: BoxDecoration(
-                                color: AppColors.black, borderRadius: BorderRadius.circular(10)
+                                color: AppColors.darkerGrey, borderRadius: BorderRadius.circular(10)
                             ),
                             child: !isLoading ? TextButton(
                               onPressed: () async {

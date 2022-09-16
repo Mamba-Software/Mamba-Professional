@@ -2064,5 +2064,53 @@
   "staff": "Staff",
   "@staff": {
     "description": "Donde message"
+  },
+  "createBono": "Crear bono",
+  "@createBono": {
+    "description": "Create bono message"
+  },
+  "editBono": "Editar bono",
+  "@editBono": {
+    "description": "Edit bono message"
+  },
+  "nameBono": "Nombre de tu bono",
+  "@nameBono": {
+    "description": "Name bono message"
+  },
+  "descriptionBono": "Descripción de tu bono",
+  "@descriptionBono": {
+    "description": "Description bono message"
+  },
+  "activeBono": "¿Estará activo tu bono?",
+  "@activeBono": {
+    "description": "Active bono message"
+  },
+  "sesionsBono": "¿Cuantas sesiones tiene tu bono?",
+  "@sesionsBono": {
+    "description": "Sesions bono message"
+  },
+  "priceBono": "¿Qué precio tiene?",
+  "@priceBono": {
+    "description": "Price bono message"
+  },
+  "styleBono": "Estilo del bono",
+  "@styleBono": {
+    "description": "Style bono message"
+  },
+  "colorSolid": "Color sólido",
+  "@colorSolid": {
+    "description": "Solid bono message"
+  },
+  "degradateSolid": "Degradados",
+  "@degradateSolid": {
+    "description": "Degradate bono message"
+  },
+  "metalized": "Metalizados",
+  "@metalized": {
+    "description": "Metalizados bono message"
+  },
+  "filterBy": "Ordenar por",
+  "@filterBy": {
+    "description": "Donde message"
   }
 }

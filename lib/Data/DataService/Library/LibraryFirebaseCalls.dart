@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -36,11 +37,45 @@ class LibraryFirebaseCalls {
           colors.add(lColor.fromObjectAllData(doc.id, doc));
 
         }
+        colors.sort((a, b) {
+          if (int.parse(a.id!) > int.parse(b.id!)) {
+            return 1;
+          }
+          return -1;
+        });
       });
+
       return colors;
     } catch (e) {
       print(e.toString());
       return colors;
+    }
+  }
+
+  //Degradates
+  Future<List<lDegradate>> getDegradates() async {
+    List<lDegradate> degradates = [];
+    try {
+      await _firestore.collection(library).doc('Colors')
+          .collection("Degradates")
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          degradates.add(lDegradate.fromObjectAllData(doc.id, doc));
+
+        }
+        degradates.sort((a, b) {
+          if (int.parse(a.id!) > int.parse(b.id!)) {
+            return 1;
+          }
+          return -1;
+        });
+      });
+
+      return degradates;
+    } catch (e) {
+      print(e.toString());
+      return degradates;
     }
   }
 

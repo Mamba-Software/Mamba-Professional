@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import '../Data/LibraryModels/lColor.dart';
@@ -13,7 +14,8 @@ bool isProduction = false;
 // App Version
 var appVersion = "MAMBA v0.0.11";
 
-List<lColor> currentColors = []; //0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
+List<lColor> currentColors = [];
+List<lDegradate> currentDegradates = [];//0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
 List<lPaymentMethod> paymentMethods = [];
 
 // App
@@ -46,9 +48,8 @@ Position? currentPosition;
 String? currentAddress;
 String? timeZoneName;
 
-// Page Controller
-int currentIndex = 0;
-PageController pageController = PageController(initialPage: currentIndex);
+// Page Controller Mamba Professional
+int pageIndex = 0;
 
 // Key Scaffold Mamba Pro
 final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();

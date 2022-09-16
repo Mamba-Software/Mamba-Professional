@@ -38,7 +38,7 @@ class AppThemes {
         iconTheme: const IconThemeData(
             color: Colors.black
         ),
-        systemOverlayStyle: SystemUiOverlayStyle.light,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
         titleTextStyle: _textStyles.blackHeadline2TextStyle(),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(

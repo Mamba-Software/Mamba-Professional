@@ -51,6 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> initColorsList() async {
     currentColors =  await _libraryDataService.getColors();
+    currentDegradates = await _libraryDataService.getDegradates();
   }
 
   Future<void> initPaymentMethodList() async {

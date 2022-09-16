@@ -35,13 +35,13 @@ class _GenderWidgetState extends State<GenderWidget> {
   }
   Widget _icon(int index, {required String text, required IconData icon}) {
     return SizedBox.fromSize(
-      size: Size(85, 85), // button width and height
+      size: Size(90, 90), // button width and height
       child: ClipOval(
         child: Material(
           shape: CircleBorder(
-            side: BorderSide(color: gender == index ? Colors.black : Theme.of(context).colorScheme.secondary, width: 1),
+            side: BorderSide(color: gender == index ? Colors.white : Colors.black, width: 1),
           ),
-          color: Theme.of(context).colorScheme.secondary,
+          color: AppColors.black,
           child: InkWell(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

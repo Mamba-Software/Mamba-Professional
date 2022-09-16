@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:store_redirect/store_redirect.dart';
 
@@ -23,7 +24,7 @@ class BrandInviteDialog extends StatefulWidget {
 class _BrandInviteDialogState extends State<BrandInviteDialog> {
 
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
+  final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = true;
   bool isBodyLoading = false;
@@ -52,18 +53,21 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
     if (currentUser.isTrainer!) {
       role = 5;
     }
+    pageIndex = 0;
+    NotificationService().userJoinsBrand(currentUser.id!,widget.brandId);
     await _brandDataService.addUserToBrand(currentUser.id!,widget.brandId, role);
     // Wait for CF
     await Future.delayed(const Duration(seconds: 3));
     // Push to Splash
     Navigator.pushReplacement(
         context,
-        CupertinoPageRoute<Null>(
-          builder: (context) => SplashScreen(),
-          settings: RouteSettings(name: 'SplashScreen'),
+        CupertinoPageRoute<void>(
+          builder: (context) => const SplashScreen(),
+          settings: const RouteSettings(name: 'SplashScreen'),
         )
     );
     // Reset Dynamic Link
+    await Future.delayed(const Duration(seconds: 3));
     dynamicLinkBrandId = null;
   }
 
@@ -143,7 +147,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.05,
                           height: MediaQuery.of(context).size.width * 0.05,
-                          child: CircularProgressIndicator(
+                          child: const CircularProgressIndicator(
                             color: AppColors.white,
                             strokeWidth: 2.5,
                           ),
