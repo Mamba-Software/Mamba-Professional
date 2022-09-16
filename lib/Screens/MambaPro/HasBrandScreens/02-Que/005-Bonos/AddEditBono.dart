@@ -118,11 +118,6 @@ class _AddEditBonoState extends State<AddEditBono>
 
   Widget returnBono(Bono _bono) {
     return Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.white,
-          ),
-        ),
       child: BonoObject(bono: _bono, view: true, brand: widget.brand, clientView: true)
     );
   }
@@ -287,7 +282,7 @@ class _AddEditBonoState extends State<AddEditBono>
           )
         : Scaffold(
             appBar: AppBar(
-              toolbarHeight: MediaQuery.of(context).size.height * 0.10,
+              toolbarHeight: MediaQuery.of(context).size.height*0.12,
               title: Text(
                 widget.edit? AppLocalizations.of(context)!.editBono : AppLocalizations.of(context)!.createBono,
                 style: Theme.of(context).appBarTheme.titleTextStyle,
@@ -305,6 +300,74 @@ class _AddEditBonoState extends State<AddEditBono>
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(0),
                 child: IgnorePointer(
+                    child: Column(
+                      children: [
+                        TabBar(
+                          controller: _tabController,
+                          indicatorColor: Colors.transparent,
+                          onTap: (index) {
+                            _selectedIndex = index;
+                          },
+                          tabs: [
+                            Tab(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Tab(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.euro, color: tabs[1] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Tab(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.format_list_numbered, color: tabs[2] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Tab(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.draw_outlined, color: tabs[3] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        LinearProgressIndicator(
+                          value: addBonosTabValue,
+                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                      ],
+                    )
+                ),
+              ),
+              /*
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(0),
+                child: IgnorePointer(
                     child: LinearProgressIndicator(
                     value: addBonosTabValue,
                     valueColor: AlwaysStoppedAnimation<Color>(
@@ -313,6 +376,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     ),
                 ),
               ),
+               */
             ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             resizeToAvoidBottomInset: false,
@@ -606,6 +670,7 @@ class _AddEditBonoState extends State<AddEditBono>
     return Scaffold(
       body: Column(
         children: [
+          /*
           Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.09, vertical: MediaQuery.of(context).size.height * 0.03),
               child: Row(
@@ -631,6 +696,9 @@ class _AddEditBonoState extends State<AddEditBono>
                 ],
               )
           ),
+
+           */
+          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
           mostraBono == true ? returnBono(bono) : Container(),
           Expanded(
             child: SingleChildScrollView(
@@ -638,8 +706,9 @@ class _AddEditBonoState extends State<AddEditBono>
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                   Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.09, vertical: MediaQuery.of(context).size.height * 0.03),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08, vertical: MediaQuery.of(context).size.height * 0.02),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
@@ -665,9 +734,9 @@ class _AddEditBonoState extends State<AddEditBono>
                   ),
                   Padding(
                       padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        height: MediaQuery.of(context).size.height * 0.015,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width*0.95,
+                        height: MediaQuery.of(context).size.height * 0.02,
                         child: Slider(
                           value: _currentSliderValue,
                           max: 100,
@@ -683,49 +752,33 @@ class _AddEditBonoState extends State<AddEditBono>
                           },
                         ),
                       )),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04,),
 
                   Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.09,
-                        right: MediaQuery.of(context).size.width * 0.09,
-                        bottom: MediaQuery.of(context).size.height * 0.03),
-                    child: Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.00),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Flexible(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text(
-                                    AppLocalizations.of(context)!.photo,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1
-                                        ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 25),
-                                  ),
-                                ],
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.08, right: MediaQuery.of(context).size.width * 0.08, bottom: MediaQuery.of(context).size.height * 0.03),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Flexible(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                AppLocalizations.of(context)!.photo,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1
+                                    ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
                               ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Checkbox(
-                                  value: bonoImage,
-                                  onChanged: setImage,
-                                  checkColor: Theme.of(context).primaryColor,
-                                  activeColor: Styles.mainColor,
-                                )
-                              ],
-                            ),
-                          ],
-                        )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(
@@ -763,15 +816,51 @@ class _AddEditBonoState extends State<AddEditBono>
                           setState(() {});
                         }
                       },
-                      child: eventImageUrl != null
-                          ? RectangularImage(
-                        height:
-                        MediaQuery.of(context).size.height * 0.18,
-                        width: MediaQuery.of(context).size.height * 0.9,
-                        borderRadius: 10,
-                        image: eventImageUrl,
+                      child: eventImageUrl != null ? Stack(
+                        children: [
+                          RectangularImage(
+                            height:
+                            MediaQuery.of(context).size.height * 0.18,
+                            width: MediaQuery.of(context).size.height * 0.9,
+                            borderRadius: 10,
+                            image: eventImageUrl,
+                          ),
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width*0.07,
+                                decoration: const BoxDecoration(
+                                    color: AppColors.red,
+                                    shape: BoxShape.circle
+                                ),
+                                child: Center(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        eventImageUrl = null;
+                                        bonoImage = false;
+                                        bono.imageUrl = '';
+                                      });
+
+                                    },
+                                    icon: Icon(
+                                        Icons.remove,
+                                        color: AppColors.white,
+                                        size: MediaQuery.of(context).size.width*0.03
+                                    ),
+                                    alignment: Alignment.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       )
-                          : DottedBorder(
+                        :
+                      DottedBorder(
                           borderType: BorderType.RRect,
                           radius: const Radius.circular(10),
                           dashPattern: const [10, 10],
@@ -857,179 +946,160 @@ class _AddEditBonoState extends State<AddEditBono>
                           ],
                         )),
                   ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    height: MediaQuery.of(context).size.height*0.13,
+                    width: MediaQuery.of(context).size.width*0.84,
+                    child: GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            mainAxisExtent: 40,
+                            maxCrossAxisExtent: 50,
+                            crossAxisSpacing: 15,
+                            mainAxisSpacing: 10
+                        ),
+                        itemCount: colors.length,
+                        itemBuilder: (context, int index) {
+                          var lcolor = colors[index];
+                          return GestureDetector(
+                            onTap: () {
+                              bono.isDegradate = false;
+                              colorSelected = lcolor.value;
+                              colorSelectedDeg = 0;
+                              colorBono = getColorFromColorCode(lcolor.toString());
+                              bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
+                              setState(() {});
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.025, left: MediaQuery.of(context).size.width * 0.00),
+                              child: Container(
+                                height: MediaQuery.of(context).size.width * 0.1,
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                decoration: BoxDecoration(
+                                  color: Color(lcolor.value),
+                                  border: colorSelected == lcolor.value? Border.all(
+                                    color:  Theme.of(context).primaryColor,
+                                  ) : Border.all(
+                                    color: Theme.of(context).primaryColorDark,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                    ),
+                  ),
+
                   Padding(
-                    padding: EdgeInsets.only(
-                        right:
-                        MediaQuery.of(context).size.width * 0.025,
-                        left:
-                        MediaQuery.of(context).size.width * 0.0),
-                    child:  Container(
-                      alignment: Alignment.centerLeft,
-                      height: MediaQuery.of(context).size.height*0.05,
-                      width: MediaQuery.of(context).size.width*0.80,
-                      child:
-                      ListView.builder(
-                          shrinkWrap: true,
-                          //physics: NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: colors.length,
-                          itemBuilder: (context, int index) {
-                            var lcolor = colors[index];
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.09, vertical: MediaQuery.of(context).size.height * 0.03),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Flexible(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                AppLocalizations.of(context)!
+                                    .degradateSolid,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline1
+                                    ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  ),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    height: MediaQuery.of(context).size.height*0.4,
+                    width: MediaQuery.of(context).size.width*0.84,
+                    child: GridView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 12,
+                          childAspectRatio: 2.5,
+                          mainAxisSpacing: MediaQuery.of(context).size.width*0.02,
+                          crossAxisSpacing: 10,
+                        ),
+                        itemCount: colorsDeg.length,
+                        itemBuilder: (context, int index) {
+                          if(index == 0 || index%2 == 0) {
+                            var ldegradate1 = colorsDeg[index];
+                            var ldegradate2 = colorsDeg[index + 1];
                             return GestureDetector(
                               onTap: () {
-                                bono.isDegradate = false;
-                                colorSelected = lcolor.value;
-                                colorSelectedDeg = 0;
-                                colorBono = getColorFromColorCode(lcolor.toString());
-                                bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
-                                setState(() {
-
-                                });
+                                bono.isDegradate = true;
+                                colorSelectedDeg = ldegradate1.value;
+                                colorSelected = 0;
+                                colorBono = getColorFromColorCode(
+                                    ldegradate1.toString());
+                                colorBono1 = getColorFromColorCode(
+                                    ldegradate2.toString());
+                                bono.color = _lDegradate.getIdFromHexa(
+                                    colorBono.toUpperCase(), colorBono1.toUpperCase());
+                                setState(() {});
                               },
                               child: Padding(
                                 padding: EdgeInsets.only(
                                     right:
-                                    MediaQuery.of(context).size.width * 0.025,
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.025,
                                     left:
-                                    MediaQuery.of(context).size.width * 0.00),
+                                    MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.00),
                                 child: Container(
-                                  height: MediaQuery.of(context).size.width * 0.1,
-                                  width: MediaQuery.of(context).size.width * 0.1,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 0.1,
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 0.1,
                                   decoration: BoxDecoration(
-                                      color: Color(lcolor.value), //0x00D2B19C
-                                      border: colorSelected == lcolor.value? Border.all(
-                                        color:  Theme.of(context).primaryColor,
-                                      ) : Border.all(
-                                        color:  Theme.of(context).primaryColorDark,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topRight,
+                                        end: Alignment.bottomLeft,
+                                        colors: [
+                                          Color(ldegradate1.value),
+                                          Color(ldegradate2.value),
+                                        ],
                                       ),
-                                      borderRadius: const BorderRadius.all(
-                                          const Radius.circular(20))),
+                                      border: colorSelectedDeg ==
+                                          ldegradate1.value ? Border.all(
+                                        color: Theme
+                                            .of(context)
+                                            .primaryColor,
+                                      ) : Border.all(
+                                        color: Theme
+                                            .of(context)
+                                            .primaryColorDark,
+                                      ),
+                                      shape: BoxShape.circle,
+                                  ),
                                 ),
                               ),
                             );
-                          }),
+                          } else {
+                            return Container();
+                          }
+                        }
                     ),
-
                   ),
 
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.09,
-                        vertical: MediaQuery.of(context).size.height * 0.03),
-                    child: Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.00),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Flexible(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text(
-                                    AppLocalizations.of(context)!
-                                        .degradateSolid,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1
-                                        ?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 25),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        right:
-                        MediaQuery.of(context).size.width * 0.025,
-                        left:
-                        MediaQuery.of(context).size.width * 0.0),
-                    child:  Container(
-                      alignment: Alignment.centerLeft,
-                      height: MediaQuery.of(context).size.height*0.05,
-                      width: MediaQuery.of(context).size.width*0.80,
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          //physics: NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          itemCount: colorsDeg.length,
-                          itemBuilder: (context, int index) {
-                            if(index == 0 || index%2 == 0) {
-                              var ldegradate1 = colorsDeg[index];
-                              var ldegradate2 = colorsDeg[index + 1];
-                              return GestureDetector(
-                                onTap: () {
-                                  bono.isDegradate = true;
-                                  colorSelectedDeg = ldegradate1.value;
-                                  colorSelected = 0;
-                                  colorBono = getColorFromColorCode(
-                                      ldegradate1.toString());
-                                  colorBono1 = getColorFromColorCode(
-                                      ldegradate2.toString());
-                                  bono.color = _lDegradate.getIdFromHexa(
-                                      colorBono.toUpperCase(), colorBono1.toUpperCase());
-                                  print(bono.color);
-                                  //bono.color = _lColor.getIdFromHexa(lcolor.value.toString());
-                                  setState(() {
-
-                                  });
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      right:
-                                      MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width * 0.025,
-                                      left:
-                                      MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width * 0.00),
-                                  child: Container(
-                                    height: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.1,
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.1,
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topRight,
-                                          end: Alignment.bottomLeft,
-                                          colors: [
-                                            Color(ldegradate1.value),
-                                            Color(ldegradate2.value),
-                                          ],
-                                        ),
-                                        border: colorSelectedDeg ==
-                                            ldegradate1.value ? Border.all(
-                                          color: Theme
-                                              .of(context)
-                                              .primaryColor,
-                                        ) : Border.all(
-                                          color: Theme
-                                              .of(context)
-                                              .primaryColorDark,
-                                        ),
-                                        borderRadius: const BorderRadius.all(
-                                            const Radius.circular(20))),
-                                  ),
-                                ),
-                              );
-                            }
-                            else return Container();
-                          }),
-                    ),
-
-                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.2,),
                 ]
               ),
             ),
