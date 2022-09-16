@@ -82,8 +82,8 @@ class LibraryFirebaseCalls {
   Future<List<lPaymentMethod>> getPaymentMethods() async {
     List<lPaymentMethod> paymentMethods = [];
     try {
-      await _firestore.collection(library).doc('PaymentMethods')
-          .collection("PaymentMethods")
+      await _firestore.collection(library).doc('Payment Methods')
+          .collection("Payment Methods")
           .get()
           .then((snapshot) {
         for (DocumentSnapshot doc in snapshot.docs) {

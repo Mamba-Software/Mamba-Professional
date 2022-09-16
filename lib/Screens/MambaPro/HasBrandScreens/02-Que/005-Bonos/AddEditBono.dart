@@ -1692,11 +1692,11 @@ class _AddEditBonoState extends State<AddEditBono>
                   Flexible(
                     child: TextFormField(
                       keyboardType: keyboard,
-                      initialValue: widget.edit? variable == 'maxw'? condition.weeklySessions.toString() : condition.monthlySessions.toString() : bono.classes!.toString(),
+                      initialValue: widget.edit ? variable == 'maxw'? condition.weeklySessions.toString() : condition.monthlySessions.toString() : bono.classes!.toString(),
                       maxLines: null,
                       minLines: 1,
                       maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
-                      controller:  widget.edit == true? null : controller,
+                      //controller:  widget.edit == true ? null : controller,
                       validator: (val) => val!.isEmpty ? errorText : null,
                       onChanged: (val) {
                         setState(() {
