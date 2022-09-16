@@ -137,30 +137,18 @@ class _BonosProState extends State<BonosPro> {
     }
     // Sort Clients
     allClients.sort((a, b) {
-      return a.name
-          .toString()
-          .toLowerCase()
-          .compareTo(b.name.toString().toLowerCase());
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
     });
     await Future.delayed(const Duration(milliseconds: 500));
-
   }
 
   // Init Device Sizes
   initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height -
-        AppBar().preferredSize.height -
-        MediaQuery.of(context).padding.bottom;
+    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
     isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
-    print("Device H and W: " +
-        MediaQuery.of(context).size.height.toString() +
-        " " +
-        MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: " +
-        safeAreaHeight.toString() +
-        " " +
-        safeAreaWidth.toString());
+    print("Device H and W: " + MediaQuery.of(context).size.height.toString() + " " + MediaQuery.of(context).size.width.toString());
+    print("SafeArea H and W: " + safeAreaHeight.toString() + " " + safeAreaWidth.toString());
   }
 
   String getUsersFullName(Usuario user) {
@@ -458,18 +446,15 @@ class _BonosProState extends State<BonosPro> {
           StreamBuilder<QuerySnapshot>(
               stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
               builder: (context, snapshot) {
-                if (snapshot == null ||
-                    snapshot.data == null ||
-                    snapshot.data!.docs == null) {
-                  return SliverToBoxAdapter(
-                    child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.65,
-                        child: Center(child: LoadingView())),
+                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
+                  return SliverFillRemaining(
+                    hasScrollBody: true,
+                    child: Center(
+                        child: LoadingView()
+                    ),
                   );
                 } else {
-                  bonosList = _bonosUtils.documentsToBonos(
-                      snapshot.data!.docs, orderBonoSelectedNumber);
-
+                  bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, orderBonoSelectedNumber);
                   if (bonosList.isNotEmpty) {
                     return SliverList(
                       delegate: SliverChildBuilderDelegate(
@@ -487,28 +472,26 @@ class _BonosProState extends State<BonosPro> {
                     );
                   } else {
                     return SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.30,
-                                child: Image.asset(Constants.emptyCalendar)),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.005),
-                            Text(
-                              AppLocalizations.of(context)!.noData,
-                              style: Theme.of(context).textTheme.caption,
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.12),
-                          ],
-                        ),
+                      hasScrollBody: true,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.30,
+                              child: Image.asset(Constants.emptyCalendar)),
+                          SizedBox(
+                              height:
+                              MediaQuery.of(context).size.height * 0.005),
+                          Text(
+                            AppLocalizations.of(context)!.noData,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                              height:
+                              MediaQuery.of(context).size.height * 0.12),
+                        ],
                       ),
                     );
                   }
@@ -517,24 +500,22 @@ class _BonosProState extends State<BonosPro> {
         ],
       ),
       floatingActionButton: Padding(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
-        child: FloatingActionButton(
-          onPressed: () {
-            navigateToAddBonosScreen(
-                Bono(
-                  color: "0",
-                  isActive: true,
-                  classes: 0,
-                  opacity: 1,
-                  imageUrl: '',
-                  isDegradate: false,
-                ),
+        padding: const EdgeInsets.all(20),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.width*0.15,
+          width: MediaQuery.of(context).size.width*0.15,
+          child: FloatingActionButton(
+            onPressed: () {
+              navigateToAddBonosScreen(
+                Bono(color: "0", isActive: true, classes: 0, opacity: 1, imageUrl: '', isDegradate: false,),
                 brand,
-                false);
-          },
-          backgroundColor: AppColors.white,
-          child: const Icon(Icons.add, color: AppColors.grey),
-        ),
+                false
+              );
+            },
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            child: const Icon(Icons.add, color: AppColors.white),
+          ),
+        )
       ),
     );
   }
@@ -543,7 +524,7 @@ class _BonosProState extends State<BonosPro> {
   void navigateToBonosRequestScreen() {
     Navigator.push(
         context,
-        CupertinoPageRoute<Null>(
+        CupertinoPageRoute<void>(
           builder: (context) => BonosRequests(
             brandId: widget.brandId,
           ),
@@ -554,11 +535,20 @@ class _BonosProState extends State<BonosPro> {
   void navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) {
     Navigator.push(
         context,
-        CupertinoPageRoute<Null>(
-          builder: (context) => AddEditBono(
-            brand: _brand,
-            bono: bono,
-            edit: edit,
+        CupertinoPageRoute<void>(
+          builder: (context) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: AddEditBono(
+              brand: _brand,
+              bono: bono,
+              edit: edit,
+            ),
           ),
         ));
   }

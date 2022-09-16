@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
@@ -42,10 +44,10 @@ class AddEditBono extends StatefulWidget {
 class _AddEditBonoState extends State<AddEditBono>
     with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
-  var _brandDataService = new BrandDataService();
+  final _brandDataService = BrandDataService();
 
   //Utils MediaQuery
-  var umq = new MediaQueryUtils();
+  var umq = MediaQueryUtils();
 
   double _currentSliderValue = 100;
 
@@ -61,10 +63,10 @@ class _AddEditBonoState extends State<AddEditBono>
   var colorSelectedDeg = 0;
 
   //TopSnackBar
-  var _topsnackbar = new TopSnackBar();
+  final _topsnackbar = TopSnackBar();
 
-  var _lColor = new lColor();
-  var _lDegradate = new lDegradate();
+  final _lColor = lColor();
+  final _lDegradate = lDegradate();
 
   // Boolean Loading
   bool isLoading = false;
@@ -109,18 +111,22 @@ class _AddEditBonoState extends State<AddEditBono>
   TextEditingController durationController = TextEditingController();
 
   final values = <bool?>[false, false, false, false, false, false, false];
-  int _value = 1;
+  final int _value = 1;
   String colorBono = " ";
   String colorBono1 = " ";
 
 
   Widget returnBono(Bono _bono) {
     return  BonoObject(bono: _bono, view: true, brand: widget.brand, clientView: true);
+  }
 
+  double roundDouble(double value, int places){
+    num mod = pow(10.0, places);
+    return ((value * mod).round().toDouble() / mod);
   }
 
 
-  Bono bono = new Bono(
+  Bono bono = Bono(
     color: "0",
     isActive: true,
     classes: 0,
@@ -130,15 +136,15 @@ class _AddEditBonoState extends State<AddEditBono>
     id: 'newBono',
   );
 
-  Condition condition = new Condition(
+  Condition condition = Condition(
     expirationTime: 30,
     infiniteSessions: false,
   );
 
-  String _selectedDate = '';
-  String _dateCount = '';
-  String _range = '';
-  String _rangeCount = '';
+  final String _selectedDate = '';
+  final String _dateCount = '';
+  final String _range = '';
+  final String _rangeCount = '';
 
   List<Color> colors = [];
   List<Color> colorsDeg = [];
@@ -197,39 +203,35 @@ class _AddEditBonoState extends State<AddEditBono>
 
     }
 
-    void getCondition() async
-    {
-      condition =  await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
-      condition.infiniteSessions = false;
-      condition.cancelTime = 6.5;
-      isSelectedDays[0] = false;
-      isSelectedDays[1] = false;
-      isSelectedDays[2] = false;
-      isSelectedDays[3] = false;
-      if(condition.expirationTime == 30) {
-        isSelectedDays[0] = true;
-      }
-      else if(condition.expirationTime == 60) {
-        isSelectedDays[1] = true;
-      }
-      else if(condition.expirationTime == 90) {
-        isSelectedDays[2] = true;
-      }
-      else {
-        isSelectedDays[3] = true;
-        daysSelectorController.text = condition.expirationTime.toString();
-
-      }
+  void getCondition() async
+  {
+    condition =  await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
+    condition.infiniteSessions = false;
+    condition.cancelTime = 6.5;
+    isSelectedDays[0] = false;
+    isSelectedDays[1] = false;
+    isSelectedDays[2] = false;
+    isSelectedDays[3] = false;
+    if(condition.expirationTime == 30) {
+      isSelectedDays[0] = true;
+    }
+    else if(condition.expirationTime == 60) {
+      isSelectedDays[1] = true;
+    }
+    else if(condition.expirationTime == 90) {
+      isSelectedDays[2] = true;
+    }
+    else {
+      isSelectedDays[3] = true;
+      daysSelectorController.text = condition.expirationTime.toString();
 
     }
 
-
-
+  }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Scaffold(
+    return isLoading ? Scaffold(
             appBar: AppBar(
               toolbarHeight: MediaQuery.of(context).size.height * 0.14,
               title: Text(
@@ -247,7 +249,7 @@ class _AddEditBonoState extends State<AddEditBono>
                 },
               ),
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(0),
+                preferredSize: const Size.fromHeight(0),
                 child: IgnorePointer(
                     child: Column(
                   children: [
@@ -262,7 +264,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.015,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
                             child: LinearProgressIndicator(
                               value: addBonosTabValue,
                               valueColor: AlwaysStoppedAnimation<Color>(
@@ -295,7 +297,7 @@ class _AddEditBonoState extends State<AddEditBono>
                 },
               ),
               bottom: PreferredSize(
-                preferredSize: Size.fromHeight(0),
+                preferredSize: const Size.fromHeight(0),
                 child: IgnorePointer(
                     child: LinearProgressIndicator(
                     value: addBonosTabValue,
@@ -307,25 +309,25 @@ class _AddEditBonoState extends State<AddEditBono>
               ),
             ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            resizeToAvoidBottomInset: true,
+            resizeToAvoidBottomInset: false,
             body: Column(
               children: [
                 Expanded(
-                    child: TabBarView(
-                  controller: _tabController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    informationPage(),
-                    pricePage(),
-                    stylePage(),
-                    conditionsPage(),
-                  ],
-                )),
+                  child: TabBarView(
+                    controller: _tabController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      informationPage(),
+                      pricePage(),
+                      conditionsPage(),
+                      stylePage(),
+                    ],
+                  )
+                ),
               ],
             ),
             floatingActionButton: Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.width * 0.01),
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.01),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -334,7 +336,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           padding: EdgeInsets.only(
                               right: MediaQuery.of(context).size.width * 0.01,
                               left: MediaQuery.of(context).size.width * 0.09),
-                          child: Container(
+                          child: SizedBox(
                             height: 50,
                             child: FloatingActionButton.extended(
                               heroTag: "4",
@@ -386,9 +388,8 @@ class _AddEditBonoState extends State<AddEditBono>
                           ),
                         ),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.01),
-                    child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.01),
+                    child: SizedBox(
                       height: 50,
                       child: FloatingActionButton.extended(
                         heroTag: "5",
@@ -408,7 +409,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 mostraBono = true;
                                 FocusManager.instance.primaryFocus?.unfocus();
                               });
-                              Timer(Duration(milliseconds: 100), test);
+                              Timer(const Duration(milliseconds: 100), test);
                               addBonosTabValue += 0.25;
                               tabs[2] = true;
 
@@ -448,9 +449,9 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget informationPage() {
     return Scaffold(
       body: SingleChildScrollView(
-          child: Column(
-        children: [
-          Form(
+        child: Column(
+          children: [
+            Form(
             key: formKeyInfo,
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -462,120 +463,135 @@ class _AddEditBonoState extends State<AddEditBono>
                     optionTextWrite(
                         TextInputType.text,
                         AppLocalizations.of(context)!.nameBono,
+                        "",
                         AppLocalizations.of(context)!.titleHint,
                         AppLocalizations.of(context)!.titleError,
                         widget.edit ? false : true,
                         titleController,
                         false,
                         'title'),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     optionTextWrite(
-                        TextInputType.multiline,
+                        TextInputType.text,
                         AppLocalizations.of(context)!.descriptionBono,
+                        "",
                         AppLocalizations.of(context)!.descriptionError,
                         AppLocalizations.of(context)!.descriptionError,
                         true,
                         descriptionController,
                         false,
                         'desc'),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     optionTextWrite(
                         TextInputType.multiline,
                         AppLocalizations.of(context)!.activeBono,
+                        "En caso de estar activado, este bono estará disponible para los clientes en el momento del a creación. Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
                         AppLocalizations.of(context)!.descriptionError,
                         AppLocalizations.of(context)!.descriptionError,
                         true,
                         descriptionController,
                         true,
                         bono.isActive),
-                    /*
-                    Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.01),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                new Text(
-                                  'Bono actiu',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            new Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                new Checkbox(value: bono.isActive, onChanged:  setBonoActivation, checkColor: Theme.of(context).primaryColor, activeColor: Styles.mainColor,)
-                              ],
-                            ),
-                          ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(top: umq.height(context, 0.05)),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Flexible(
-                              child: Container(
-                                height: MediaQuery.of(context).size.width * 0.1,
-                                width: MediaQuery.of(context).size.width * 0.30,
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                child: new ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Color(int.parse(_lColor.getlColor(bono.color!).hexa!))),
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text('Escull un color'),
-                                            content: SingleChildScrollView(
-                                              child: BlockPicker(
-                                                availableColors: colors,
-                                                pickerColor: Color(int.parse(_lColor.getlColor(bono.color!).hexa!)),
-                                                //default color
-                                                onColorChanged: (Color color) {
-                                                  //on color picked
-
-                                                  colorBono = getColorFromColorCode(color.toString());
-                                                },
-                                              ),
-                                            ),
-                                            actions: <Widget>[
-                                              ElevatedButton(
-                                                child: const Text('Fet'),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
-                                                  });
-                                                  Navigator.of(context)
-                                                      .pop(); //dismiss the color picker
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  child: Text("Escull un color"),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )),
-
-                     */
                   ]),
             ),
           ),
-        ],
-      )),
+          ],
+        )
+      ),
+      resizeToAvoidBottomInset: true,
+    );
+  }
+
+  Widget pricePage() {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Form(
+              key: formKePrice,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        optionTextWrite(
+                            TextInputType.number,
+                            AppLocalizations.of(context)!.sesionsBono,
+                            "",
+                            0.toString(),
+                            'Añade las sesiones porfavor',
+                            widget.edit ? false : true,
+                            clasesController,
+                            false,
+                            'ses'),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                        optionTextWrite(
+                            const TextInputType.numberWithOptions(decimal: true),
+                            AppLocalizations.of(context)!.priceBono,
+                            "",
+                            0.toString(),
+                            'Añade el precio porfavor',
+                            widget.edit ? false : true,
+                            priceController,
+                            false,
+                            'price'),
+                      ]),
+            ),
+            ),
+          ],
+        )
+      ),
+      resizeToAvoidBottomInset: true,
+    );
+  }
+
+  Widget conditionsPage() {
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Form(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      optionConditionsWrite( TextInputType.text,
+                          'Fecha de expiración',
+                          "Indica el número de días hasta el vencimiento de este bono",
+                          AppLocalizations.of(context)!.titleHint,
+                          AppLocalizations.of(context)!.titleError,
+                          widget.edit ? false : true,
+                          titleController,
+                          'exp'),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      optionConditionsWrite(
+                          TextInputType.number,
+                          'Cancelación gratuita',
+                          "Introduce el número de horas mínimo para cancelar la asistencia a una sessión de manera gratuïta.",
+                          AppLocalizations.of(context)!.titleHint,
+                          AppLocalizations.of(context)!.titleError,
+                          true,
+                          titleController,
+                          'ses'),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      optionConditionsWrite( TextInputType.number,
+                          'Sesiones por semana',
+                          "Introduce el número máximo de sesiones que pueden realizar tus clientes en una misma semana (Lunes a Domingo).",
+                          AppLocalizations.of(context)!.titleHint,
+                          AppLocalizations.of(context)!.titleError,
+                          true,
+                          titleController,
+                          'maxw'),
+                    ]),
+              ),
+            ),
+          ],
+        )
+      ),
       resizeToAvoidBottomInset: true,
     );
   }
@@ -587,171 +603,171 @@ class _AddEditBonoState extends State<AddEditBono>
           Expanded(
             child: ClipRect(
               child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: MediaQuery.of(context).size.width * 0.09,
-                            vertical: MediaQuery.of(context).size.height * 0.03),
-                        child: Padding(
-                            padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).size.height * 0.00),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Flexible(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text(
-                                        AppLocalizations.of(context)!.styleBono,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline1
-                                            ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 25),
-                                      ),
-                                    ],
-                                  ),
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.09,
+                          vertical: MediaQuery.of(context).size.height * 0.03),
+                      child: Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.00),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Flexible(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Text(
+                                      AppLocalizations.of(context)!.styleBono,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline1
+                                          ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 25),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            )),
-                      ),
-                      mostraBono == true
-                          ? returnBono(bono)
-                          : Container(),
-                    ]),
+                              ),
+                            ],
+                          )),
+                    ),
+                    mostraBono == true
+                        ? returnBono(bono)
+                        : Container(),
+                  ]),
 
             ),
           ),
           Expanded(
             child: SingleChildScrollView(
                 child: Column(
-              children: [
-                Form(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.00),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical:
+                  children: [
+                    Form(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery.of(context).size.width * 0.00),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical:
                                       MediaQuery.of(context).size.height * 0.01),
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                    top:
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                        top:
                                         MediaQuery.of(context).size.height * 0.01),
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                height: MediaQuery.of(context).size.height * 0.015,
-                                child: Slider(
-                                  value: _currentSliderValue,
-                                  max: 100,
-                                  divisions: 9,
-                                  min: 10,
-                                  label: _currentSliderValue.round().toString(),
-                                  activeColor: Colors.white,
-                                  onChanged: (double value) {
-                                    setState(() {
-                                      _currentSliderValue = value;
-                                      bono.opacity = value/100;
-                                    });
-                                  },
-                                ),
-                              )),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.09,
-                                right: MediaQuery.of(context).size.width * 0.09,
-                                bottom: MediaQuery.of(context).size.height * 0.03),
-                            child: Padding(
+                                    width: MediaQuery.of(context).size.width * 0.85,
+                                    height: MediaQuery.of(context).size.height * 0.015,
+                                    child: Slider(
+                                      value: _currentSliderValue,
+                                      max: 100,
+                                      divisions: 9,
+                                      min: 10,
+                                      label: _currentSliderValue.round().toString(),
+                                      activeColor: Colors.white,
+                                      onChanged: (double value) {
+                                        setState(() {
+                                          _currentSliderValue = value;
+                                          bono.opacity = value/100;
+                                        });
+                                      },
+                                    ),
+                                  )),
+                              Padding(
                                 padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).size.height * 0.00),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context)!.photo,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1
-                                                ?.copyWith(
+                                    left: MediaQuery.of(context).size.width * 0.09,
+                                    right: MediaQuery.of(context).size.width * 0.09,
+                                    bottom: MediaQuery.of(context).size.height * 0.03),
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: MediaQuery.of(context).size.height * 0.00),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                AppLocalizations.of(context)!.photo,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline1
+                                                    ?.copyWith(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 25),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Checkbox(
-                                          value: bonoImage,
-                                          onChanged: setImage,
-                                          checkColor: Theme.of(context).primaryColor,
-                                          activeColor: Styles.mainColor,
-                                        )
+                                        ),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Checkbox(
+                                              value: bonoImage,
+                                              onChanged: setImage,
+                                              checkColor: Theme.of(context).primaryColor,
+                                              activeColor: Styles.mainColor,
+                                            )
+                                          ],
+                                        ),
                                       ],
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.09,
-                                right: MediaQuery.of(context).size.width * 0.09,
-                                bottom: MediaQuery.of(context).size.height * 0.005),
-                            child: GestureDetector(
-                              onTap: () async {
-                                var result = await showModalBottomSheet<String?>(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20),
-                                    ),
-                                  ),
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  builder: (BuildContext context) {
-                                    return FractionallySizedBox(
-                                      heightFactor: 0.85,
-                                      child: SelectBrandImages(
-                                        brandId: currentBrand.id!,
+                                    )),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width * 0.09,
+                                    right: MediaQuery.of(context).size.width * 0.09,
+                                    bottom: MediaQuery.of(context).size.height * 0.005),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    var result = await showModalBottomSheet<String?>(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(20),
+                                        ),
                                       ),
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      builder: (BuildContext context) {
+                                        return FractionallySizedBox(
+                                          heightFactor: 0.85,
+                                          child: SelectBrandImages(
+                                            brandId: currentBrand.id!,
+                                          ),
+                                        );
+                                      },
                                     );
+                                    if (result != null) {
+                                      eventImageUrl = result;
+                                      bonoImage = true;
+                                      if (bonoImage) {
+                                        bono.imageUrl = result;
+                                      } else {
+                                        bono.imageUrl = '';
+                                      }
+                                      setState(() {});
+                                    }
                                   },
-                                );
-                                if (result != null) {
-                                  eventImageUrl = result;
-                                  bonoImage = true;
-                                  if (bonoImage) {
-                                    bono.imageUrl = result;
-                                  } else {
-                                    bono.imageUrl = '';
-                                  }
-                                  setState(() {});
-                                }
-                              },
-                              child: eventImageUrl != null
-                                  ? RectangularImage(
-                                      height:
-                                          MediaQuery.of(context).size.height * 0.18,
-                                      width: MediaQuery.of(context).size.height * 0.9,
-                                      borderRadius: 10,
-                                      image: eventImageUrl,
-                                    )
-                                  : DottedBorder(
+                                  child: eventImageUrl != null
+                                      ? RectangularImage(
+                                    height:
+                                    MediaQuery.of(context).size.height * 0.18,
+                                    width: MediaQuery.of(context).size.height * 0.9,
+                                    borderRadius: 10,
+                                    image: eventImageUrl,
+                                  )
+                                      : DottedBorder(
                                       borderType: BorderType.RRect,
                                       radius: const Radius.circular(10),
                                       dashPattern: const [10, 10],
@@ -767,24 +783,24 @@ class _AddEditBonoState extends State<AddEditBono>
                                           color: Colors.transparent,
                                           child: Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                                 children: [
                                                   Icon(Icons.add,
                                                       color: imageError
                                                           ? AppColors.grey
                                                           : AppColors.grey
-                                                              .withOpacity(0.5),
+                                                          .withOpacity(0.5),
                                                       size: MediaQuery.of(context)
-                                                              .size
-                                                              .width *
+                                                          .size
+                                                          .width *
                                                           0.1),
                                                   Text(
                                                     AppLocalizations.of(context)!
-                                                            .select +
+                                                        .select +
                                                         " " +
                                                         AppLocalizations.of(context)!
                                                             .photo
@@ -793,300 +809,259 @@ class _AddEditBonoState extends State<AddEditBono>
                                                         .textTheme
                                                         .caption
                                                         ?.copyWith(
-                                                          color: imageError
-                                                              ? AppColors.grey
-                                                              : AppColors.grey
-                                                                  .withOpacity(0.5),
-                                                        ),
+                                                      color: imageError
+                                                          ? AppColors.grey
+                                                          : AppColors.grey
+                                                          .withOpacity(0.5),
+                                                    ),
                                                     textAlign: TextAlign.left,
                                                   ),
                                                 ],
                                               ),
                                             ],
                                           ))),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: MediaQuery.of(context).size.width * 0.09,
-                                vertical: MediaQuery.of(context).size.height * 0.03),
-                            child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).size.height * 0.00),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context)!.colorSolid,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1
-                                                ?.copyWith(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 25),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                right:
-                                MediaQuery.of(context).size.width * 0.025,
-                                left:
-                                MediaQuery.of(context).size.width * 0.0),
-                            child:  Container(
-                                alignment: Alignment.centerLeft,
-                                height: MediaQuery.of(context).size.height*0.05,
-                                width: MediaQuery.of(context).size.width*0.80,
-                                child:
-                                ListView.builder(
-                                    shrinkWrap: true,
-                                    //physics: NeverScrollableScrollPhysics(),
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: colors.length,
-                                    itemBuilder: (context, int index) {
-                                      var lcolor = colors[index];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          bono.isDegradate = false;
-                                          colorSelected = lcolor.value;
-                                          colorSelectedDeg = 0;
-                                          colorBono = getColorFromColorCode(lcolor.toString());
-                                          bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
-                                          setState(() {
-
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              right:
-                                                  MediaQuery.of(context).size.width * 0.025,
-                                              left:
-                                                  MediaQuery.of(context).size.width * 0.00),
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.width * 0.1,
-                                            width: MediaQuery.of(context).size.width * 0.1,
-                                            decoration: BoxDecoration(
-                                                color: Color(lcolor.value), //0x00D2B19C
-                                                border: colorSelected == lcolor.value? Border.all(
-                                                  color:  Theme.of(context).primaryColor,
-                                                ) : Border.all(
-                                                    color:  Theme.of(context).primaryColorDark,
-                                                ),
-                                                borderRadius: const BorderRadius.all(
-                                                    const Radius.circular(20))),
-                                          ),
-                                        ),
-                                      );
-                                    }),
+                                ),
                               ),
-
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: MediaQuery.of(context).size.width * 0.09,
-                                vertical: MediaQuery.of(context).size.height * 0.03),
-                            child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).size.height * 0.00),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context)!
-                                                .degradateSolid,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1
-                                                ?.copyWith(
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: MediaQuery.of(context).size.width * 0.09,
+                                    vertical: MediaQuery.of(context).size.height * 0.03),
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: MediaQuery.of(context).size.height * 0.00),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                AppLocalizations.of(context)!.colorSolid,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline1
+                                                    ?.copyWith(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 25),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                right:
-                                MediaQuery.of(context).size.width * 0.025,
-                                left:
-                                MediaQuery.of(context).size.width * 0.0),
-                            child:  Container(
-                              alignment: Alignment.centerLeft,
-                              height: MediaQuery.of(context).size.height*0.05,
-                              width: MediaQuery.of(context).size.width*0.80,
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  //physics: NeverScrollableScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: colorsDeg.length,
-                                  itemBuilder: (context, int index) {
-                                    if(index == 0 || index%2 == 0) {
-                                      var ldegradate1 = colorsDeg[index];
-                                      var ldegradate2 = colorsDeg[index + 1];
-                                      return GestureDetector(
-                                        onTap: () {
-                                          bono.isDegradate = true;
-                                          colorSelectedDeg = ldegradate1.value;
-                                          colorSelected = 0;
-                                          colorBono = getColorFromColorCode(
-                                              ldegradate1.toString());
-                                          colorBono1 = getColorFromColorCode(
-                                              ldegradate2.toString());
-                                          bono.color = _lDegradate.getIdFromHexa(
-                                              colorBono.toUpperCase(), colorBono1.toUpperCase());
-                                          print(bono.color);
-                                          //bono.color = _lColor.getIdFromHexa(lcolor.value.toString());
-                                          setState(() {
-
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(
-                                              right:
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width * 0.025,
-                                              left:
-                                              MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width * 0.00),
-                                          child: Container(
-                                            height: MediaQuery
-                                                .of(context)
-                                                .size
-                                                .width * 0.1,
-                                            width: MediaQuery
-                                                .of(context)
-                                                .size
-                                                .width * 0.1,
-                                            decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  begin: Alignment.topRight,
-                                                  end: Alignment.bottomLeft,
-                                                  colors: [
-                                                    Color(ldegradate1.value),
-                                                    Color(ldegradate2.value),
-                                                  ],
-                                                ),
-                                                border: colorSelectedDeg ==
-                                                    ldegradate1.value ? Border.all(
-                                                  color: Theme
-                                                      .of(context)
-                                                      .primaryColor,
-                                                ) : Border.all(
-                                                  color: Theme
-                                                      .of(context)
-                                                      .primaryColorDark,
-                                                ),
-                                                borderRadius: const BorderRadius.all(
-                                                    const Radius.circular(20))),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      );
-                                    }
-                                    else return Container();
-                                  }),
-                            ),
-
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: MediaQuery.of(context).size.width * 0.09,
-                                vertical: MediaQuery.of(context).size.height * 0.03),
-                            child: Padding(
+                                      ],
+                                    )),
+                              ),
+                              Padding(
                                 padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).size.height * 0.00),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Flexible(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Text(
-                                            AppLocalizations.of(context)!.metalized,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1
-                                                ?.copyWith(
+                                    right:
+                                    MediaQuery.of(context).size.width * 0.025,
+                                    left:
+                                    MediaQuery.of(context).size.width * 0.0),
+                                child:  Container(
+                                  alignment: Alignment.centerLeft,
+                                  height: MediaQuery.of(context).size.height*0.05,
+                                  width: MediaQuery.of(context).size.width*0.80,
+                                  child:
+                                  ListView.builder(
+                                      shrinkWrap: true,
+                                      //physics: NeverScrollableScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: colors.length,
+                                      itemBuilder: (context, int index) {
+                                        var lcolor = colors[index];
+                                        return GestureDetector(
+                                          onTap: () {
+                                            bono.isDegradate = false;
+                                            colorSelected = lcolor.value;
+                                            colorSelectedDeg = 0;
+                                            colorBono = getColorFromColorCode(lcolor.toString());
+                                            bono.color = _lColor.getIdFromHexa(colorBono.toUpperCase());
+                                            setState(() {
+
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                right:
+                                                MediaQuery.of(context).size.width * 0.025,
+                                                left:
+                                                MediaQuery.of(context).size.width * 0.00),
+                                            child: Container(
+                                              height: MediaQuery.of(context).size.width * 0.1,
+                                              width: MediaQuery.of(context).size.width * 0.1,
+                                              decoration: BoxDecoration(
+                                                  color: Color(lcolor.value), //0x00D2B19C
+                                                  border: colorSelected == lcolor.value? Border.all(
+                                                    color:  Theme.of(context).primaryColor,
+                                                  ) : Border.all(
+                                                    color:  Theme.of(context).primaryColorDark,
+                                                  ),
+                                                  borderRadius: const BorderRadius.all(
+                                                      const Radius.circular(20))),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                ),
+
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: MediaQuery.of(context).size.width * 0.09,
+                                    vertical: MediaQuery.of(context).size.height * 0.03),
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: MediaQuery.of(context).size.height * 0.00),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                AppLocalizations.of(context)!
+                                                    .degradateSolid,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline1
+                                                    ?.copyWith(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 25),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                        ]),
-                  ),
-                ),
-              ],
-            )),
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    right:
+                                    MediaQuery.of(context).size.width * 0.025,
+                                    left:
+                                    MediaQuery.of(context).size.width * 0.0),
+                                child:  Container(
+                                  alignment: Alignment.centerLeft,
+                                  height: MediaQuery.of(context).size.height*0.05,
+                                  width: MediaQuery.of(context).size.width*0.80,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      //physics: NeverScrollableScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: colorsDeg.length,
+                                      itemBuilder: (context, int index) {
+                                        if(index == 0 || index%2 == 0) {
+                                          var ldegradate1 = colorsDeg[index];
+                                          var ldegradate2 = colorsDeg[index + 1];
+                                          return GestureDetector(
+                                            onTap: () {
+                                              bono.isDegradate = true;
+                                              colorSelectedDeg = ldegradate1.value;
+                                              colorSelected = 0;
+                                              colorBono = getColorFromColorCode(
+                                                  ldegradate1.toString());
+                                              colorBono1 = getColorFromColorCode(
+                                                  ldegradate2.toString());
+                                              bono.color = _lDegradate.getIdFromHexa(
+                                                  colorBono.toUpperCase(), colorBono1.toUpperCase());
+                                              print(bono.color);
+                                              //bono.color = _lColor.getIdFromHexa(lcolor.value.toString());
+                                              setState(() {
+
+                                              });
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  right:
+                                                  MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .width * 0.025,
+                                                  left:
+                                                  MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .width * 0.00),
+                                              child: Container(
+                                                height: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width * 0.1,
+                                                width: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width * 0.1,
+                                                decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      begin: Alignment.topRight,
+                                                      end: Alignment.bottomLeft,
+                                                      colors: [
+                                                        Color(ldegradate1.value),
+                                                        Color(ldegradate2.value),
+                                                      ],
+                                                    ),
+                                                    border: colorSelectedDeg ==
+                                                        ldegradate1.value ? Border.all(
+                                                      color: Theme
+                                                          .of(context)
+                                                          .primaryColor,
+                                                    ) : Border.all(
+                                                      color: Theme
+                                                          .of(context)
+                                                          .primaryColorDark,
+                                                    ),
+                                                    borderRadius: const BorderRadius.all(
+                                                        const Radius.circular(20))),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        else return Container();
+                                      }),
+                                ),
+
+                              ),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: MediaQuery.of(context).size.width * 0.09,
+                                    vertical: MediaQuery.of(context).size.height * 0.03),
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: MediaQuery.of(context).size.height * 0.00),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Text(
+                                                AppLocalizations.of(context)!.metalized,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headline1
+                                                    ?.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 25),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                            ]),
+                      ),
+                    ),
+                  ],
+                )),
           ),
         ],
       ),
-      resizeToAvoidBottomInset: true,
-    );
-  }
-
-  Widget pricePage() {
-    return Scaffold(
-      body: SingleChildScrollView(
-          child: Column(
-        children: [
-          Form(
-            key: formKePrice,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.05),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    optionTextWrite(
-                        TextInputType.number,
-                        AppLocalizations.of(context)!.sesionsBono,
-                        0.toString(),
-                        'Añade las sesiones porfavor',
-                        widget.edit ? false : true,
-                        clasesController,
-                        false,
-                        'ses'),
-                    optionTextWrite(
-                        TextInputType.number,
-                        AppLocalizations.of(context)!.priceBono,
-                        0.toString(),
-                        'Añade el precio porfavor',
-                        widget.edit ? false : true,
-                        priceController,
-                        false,
-                        'price'),
-                  ]),
-            ),
-          ),
-        ],
-      )),
       resizeToAvoidBottomInset: true,
     );
   }
@@ -1121,8 +1096,8 @@ class _AddEditBonoState extends State<AddEditBono>
     showCupertinoModalPopup(
         context: ctx,
         builder: (_) => Material(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
+          shape: const RoundedRectangleBorder(
+              borderRadius: const BorderRadius.vertical(top: const Radius.circular(25.0))
           ),
           child: Container(
             constraints: BoxConstraints(
@@ -1174,206 +1149,6 @@ class _AddEditBonoState extends State<AddEditBono>
         )
     );
     return Future.value("");
-  }
-
-  Widget conditionsPage() {
-
-    return Scaffold(
-      body: SingleChildScrollView(
-          child: Column(
-        children: [
-          Form(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.05),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    optionConditionsWrite( TextInputType.text,
-                  'Dias para expirar',
-                  AppLocalizations.of(context)!.titleHint,
-                  AppLocalizations.of(context)!.titleError,
-                  widget.edit ? false : true,
-                  titleController,
-                  'exp'),
-                    optionConditionsWrite( TextInputType.number,
-                        'Maximo numero de sesiones por semana',
-                        AppLocalizations.of(context)!.titleHint,
-                        AppLocalizations.of(context)!.titleError,
-                        true,
-                        titleController,
-                        'maxw'),
-                    optionConditionsWrite( TextInputType.number,
-                        'Maximo numero de sesiones por mes',
-                        AppLocalizations.of(context)!.titleHint,
-                        AppLocalizations.of(context)!.titleError,
-                        true,
-                        titleController,
-                        'maxm'),
-                    optionConditionsWrite( TextInputType.number,
-                        'Classes infinitas',
-                        AppLocalizations.of(context)!.titleHint,
-                        AppLocalizations.of(context)!.titleError,
-                        true,
-                        titleController,
-                        'inf'),
-
-
-
-                    Padding(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.03),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                new Text(
-                                  'Maximo numero de classes por mes',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )),
-                    Padding(
-                        padding: EdgeInsets.only(top: 0),
-                        child: new Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            new Flexible(
-                              child: new TextFormField(
-                                //controller: monthlyController,
-                                keyboardType: TextInputType.number,
-                                initialValue: bono.classes.toString(),
-                                onChanged: (val) {
-                                  setState(() {
-                                    condition.monthlySessions = int.parse(val);
-                                  });
-                                },
-                                style: Theme.of(context).textTheme.bodyText2,
-                                decoration: InputDecoration(
-                                  hintStyle:
-                                      Theme.of(context).textTheme.caption,
-                                  hintText:
-                                      AppLocalizations.of(context)!.titleHint,
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                ),
-                                enabled: true,
-                              ),
-                            ),
-                          ],
-                        )),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.01),
-                      child: GestureDetector(
-                          onTap: () {
-                            selectSlot(context, 0);
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                            if (!currentFocus.hasPrimaryFocus) {
-                              currentFocus.unfocus();
-                            }
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                               Flexible(
-                                child: TextFormField(
-                                  controller: startDateController,
-                                  readOnly: true,
-                                  enabled: false,
-                                  style:  Theme.of(context).textTheme.headline1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w300),
-                                  decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                    ),
-                  ]),
-            ),
-          ),
-        ],
-      )),
-      resizeToAvoidBottomInset: true,
-    );
-  }
-
-  bool validateDateAndTime(DateTime startTime, double duration) {
-    // Calculating the Time to check
-    var hour = duration.toString().split(".")[0];
-    var min = duration.toStringAsFixed(2).split(".")[1];
-    var endTime = startTime
-        .add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-    // Computing the workshift
-    var workshift1 = currentBrand.workShift[0];
-    var workshift2 = currentBrand.workShift[1];
-    var startWorkHour = workshift1.toStringAsFixed(2).split(".")[0];
-    var startWorkMin = workshift1.toStringAsFixed(2).split(".")[1];
-    var endWorkHour = workshift2.toStringAsFixed(2).split(".")[0];
-    var endWorkMin = workshift2.toStringAsFixed(2).split(".")[1];
-    var startWorkDay = DateTime(startTime.year, startTime.month, startTime.day,
-        int.parse(startWorkHour), int.parse(startWorkMin));
-    var endWorkDay = DateTime(startTime.year, startTime.month, startTime.day,
-        int.parse(endWorkHour), int.parse(endWorkMin));
-    if ( // Can´t create event in the past
-        startTime.isBefore(DateTime.now()) ||
-            startTime.isAtSameMomentAs(DateTime.now()) ||
-            endTime.isBefore(DateTime.now()) ||
-            endTime.isAtSameMomentAs(DateTime.now())
-            // Can´t create event outside of working hours
-            ||
-            startTime.isBefore(startWorkDay) ||
-            endTime.isBefore(startWorkDay) ||
-            startTime.isAfter(endWorkDay) ||
-            endTime.isAfter(endWorkDay)) {
-      return false;
-    } else {
-      // Can´t create event in break period of working hours
-      for (var i = 2; i < currentBrand.workShift.length; i += 2) {
-        // Breaks
-        var break1 = currentBrand.workShift[i];
-        var break2 = currentBrand.workShift[i + 1];
-        // Take the minute and the hour
-        var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
-        var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
-        var endBreakHour = break2.toStringAsFixed(2).split(".")[0];
-        var endBreakMin = break2.toStringAsFixed(2).split(".")[1];
-        // Date Time formatted
-        var startBreak = DateTime(startTime.year, startTime.month,
-            startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
-        var endBreak = DateTime(startTime.year, startTime.month, startTime.day,
-            int.parse(endBreakHour), int.parse(endBreakMin));
-        // Condition check
-        if (((startTime.isAfter(startBreak) ||
-                    startTime.isAtSameMomentAs(startBreak)) &&
-                (startTime.isBefore(endBreak))) ||
-            ((endTime.isAfter(startBreak)) &&
-                (endTime.isBefore(endBreak) ||
-                    endTime.isAtSameMomentAs(endBreak)))) {
-          return false;
-        }
-      }
-      return true;
-    }
   }
 
   String getColorFromColorCode(String code) {
@@ -1439,41 +1214,23 @@ class _AddEditBonoState extends State<AddEditBono>
                   ? Styles.mainColor
                   : Theme.of(context).primaryColor,
             ),
-            borderRadius: BorderRadius.all(Radius.circular(20))),
+            borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Align(
           alignment: Alignment.center,
           //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-          child: customized
-              ? new TextFormField(
-                  controller: daysSelectorController,
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  //initialValue: isSelectedDays[3]? condition.expirationTime.toString() : null,
-                  onTap: () {
-                    setState(() {
-                      isSelectedDays[0] = false;
-                      isSelectedDays[1] = false;
-                      isSelectedDays[2] = false;
-                      isSelectedDays[3] = false;
-                      isSelectedDays[index] = true;
-                    });
-                  },
-                  style: Theme.of(context).textTheme.bodyText2,
-                  decoration: InputDecoration(
-                    hintStyle: Theme.of(context).textTheme.caption,
-                    hintText: 'Personaliza',
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                  ),
-                  enabled: true,
-                )
-              : Text(
-                  numberDays,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                 customized == false ? numberDays : "No expira",
                   style: Theme.of(context).textTheme.button,
-                ),
+              ),
+              customized == false ? Text(
+                AppLocalizations.of(context)!.days,
+                style: Theme.of(context).textTheme.button,
+              ) : Container(),
+            ],
+          ),
         ),
       ),
     );
@@ -1513,6 +1270,7 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget optionTextWrite(
       var keyboard,
       var titleText,
+      var subtitleText,
       var hintText,
       var errorText,
       bool editable,
@@ -1522,97 +1280,127 @@ class _AddEditBonoState extends State<AddEditBono>
     return Column(
       children: [
         Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                !checkBox? Flexible(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        titleText,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 25),
-                      ),
-                    ],
-                  ),
-                ) :  !widget.edit? Flexible(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        titleText,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 25),
-                      ),
-                    ],
-                  ),
-                ) : Container(),
-                checkBox && widget.edit != true
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Checkbox(
-                            value: bono.isActive,
-                            onChanged: setBonoActivation,
-                            checkColor: Theme.of(context).primaryColor,
-                            activeColor: Styles.mainColor,
-                          )
-                        ],
-                      )
-                    : Container(),
-              ],
-            )),
-        !checkBox? Padding(
-            padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).size.height * 0.00),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Flexible(
-                  child: TextFormField(
-                    keyboardType: keyboard,
-                    initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
-                    maxLines: variable == 'desc'? 5 : null,
-                    minLines: 1,
-                    maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
-                    controller:  widget.edit == true? null : controller,
-                    validator: (val) => val!.isEmpty ? errorText : null,
-                    onChanged: (val) {
-                      setState(() {
-                        if (variable == 'title') {
-                          bono.title = val;
-                        } else if (variable == 'desc') {
-                          bono.description = val;
-                        } else if (variable == 'ses') {
-                          bono.classes = int.parse(val);
-                        } else if (variable == 'price') {
-                          bono.price = double.parse(val);
-                        }
-                      });
-                    },
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: InputDecoration(
-                      hintStyle: Theme.of(context).textTheme.caption,
-                      hintText: hintText,
-                      //border: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              !checkBox? Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      titleText,
+                      style: Theme.of(context).textTheme.headline1?.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: 25),
+                    ),
+                    subtitleText != "" ? Text(
+                      subtitleText,
+                      style: Theme.of(context).textTheme.caption,
+                    ) : Container(),
+                  ],
+                ),
+              ) : !widget.edit? Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      titleText,
+                      style: Theme.of(context).textTheme.headline1?.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: 25),
+                    ),
+                    subtitleText != "" ? Text(
+                      subtitleText,
+                      style: Theme.of(context).textTheme.caption,
+                    ) : Container(),
+                  ],
+                ),
+              ) : Container(),
+              checkBox && widget.edit != true
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Checkbox(
+                          value: bono.isActive,
+                          onChanged: setBonoActivation,
+                          checkColor: Theme.of(context).primaryColor,
+                          activeColor: Styles.mainColor,
+                        )
+                      ],
+                    )
+                  : Container(),
+            ],
+          )
+        ),
+        !checkBox? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.height * 0.00),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                        keyboardType: keyboard,
+                        inputFormatters: variable == 'ses' || variable == 'price' ? [FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),] : null,
+                        initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
+                        maxLines: variable == 'desc'? 5 : null,
+                        minLines: 1,
+                        maxLength: variable == 'title' ? 20 : variable == 'desc'? 100 : null,
+                        controller:  widget.edit == true ? null : controller,
+                        validator: (val) => val!.isEmpty ? errorText : null,
+                        textCapitalization: variable == 'title' ? TextCapitalization.words : TextCapitalization.sentences,
+                        onChanged: (val) {
+                          setState(() {
+                            if (variable == 'title') {
+                              bono.title = val;
+                            } else if (variable == 'desc') {
+                              bono.description = val;
+                            } else if (variable == 'ses') {
+                              bono.classes = int.parse(val);
+                            } else if (variable == 'price') {
+                              double price = double.parse(val.replaceAll(',','.'));
+                              print(roundDouble(price, 2));
+                              bono.price = roundDouble(price, 2);
+                            }
+                          });
+                        },
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          hintStyle: Theme.of(context).textTheme.caption,
+                          hintText: hintText,
+                          //border: InputBorder.none,
+                          errorBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          disabledBorder: InputBorder.none,
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: editable,
                       ),
                     ),
-                    enabled: editable,
-                  ),
-                ),
-              ],
-            )) : Container()
-
+                  ],
+                )),
+            variable == 'price' ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+              "en Euros (€)",
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: AppColors.grey),
+              ),
+            ) : Container(),
+          ],
+        ) : Container()
       ],
     );
   }
@@ -1620,6 +1408,7 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget optionConditionsWrite(
       var keyboard,
       var titleText,
+      var subtitleText,
       var hintText,
       var errorText,
       bool editable,
@@ -1628,13 +1417,13 @@ class _AddEditBonoState extends State<AddEditBono>
     return Column(
       children: [
         Padding(
-            padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                  Flexible(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -1643,31 +1432,25 @@ class _AddEditBonoState extends State<AddEditBono>
                         style: Theme.of(context).textTheme.headline1?.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 25),
                       ),
+                      subtitleText != "" ? Text(
+                        subtitleText,
+                        style: Theme.of(context).textTheme.caption,
+                      ) : Container(),
                     ],
                   ),
                 ),
-                variable == 'inf'
-                    ? Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Checkbox(
-                      value: condition.infiniteSessions,
-                      onChanged: setInfinitClasses,
-                      checkColor: Theme.of(context).primaryColor,
-                      activeColor: Styles.mainColor,
-                    )
-                  ],
-                )
-                    : Container(),
               ],
             )),
           variable == 'exp'? Padding(
               padding:
               EdgeInsets.only(top: umq.height(context, 0.02)),
-              child: new Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
+                  daysSelectoWidget(0, 'No expira', true),
+                  SizedBox(
+                      width:
+                      MediaQuery.of(context).size.width * 0.02),
                   daysSelectoWidget(0, '30', false),
                   SizedBox(
                       width:
@@ -1680,9 +1463,8 @@ class _AddEditBonoState extends State<AddEditBono>
                   SizedBox(
                       width:
                       MediaQuery.of(context).size.width * 0.02),
-                  daysSelectoWidget(3, '30', true),
                 ],
-              )) : variable == 'maxw' || variable == 'maxm'?
+              )) : variable == 'maxw' || variable == 'ses'?
           Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.height * 0.00),
@@ -1715,11 +1497,16 @@ class _AddEditBonoState extends State<AddEditBono>
                       decoration: InputDecoration(
                         hintStyle: Theme.of(context).textTheme.caption,
                         hintText: hintText,
-                        //border: InputBorder.none,
-                        errorBorder: InputBorder.none,
+                        suffixText: variable == 'maxw' ? "sesiones por semana" : variable == 'ses' ? "horas de antelacion" : "",
+                        errorBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red),
+                        ),
                         disabledBorder: InputBorder.none,
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
+                        enabledBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
                         ),
                       ),
                       enabled: editable,
