@@ -486,8 +486,6 @@ class BrandFirebaseCalls {
         .set({
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
-      "monthlySessions": condition.monthlySessions,
-      "infiniteSessions": condition.infiniteSessions,
       "cancelTime": condition.cancelTime,
     }).catchError((err) {
       print(err);
@@ -582,8 +580,6 @@ class BrandFirebaseCalls {
         .update({
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
-      "monthlySessions": condition.monthlySessions,
-      "infiniteSessions": condition.infiniteSessions,
       "cancelTime": condition.cancelTime,
     }).catchError((err) {
       print(err);

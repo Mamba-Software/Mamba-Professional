@@ -126,7 +126,6 @@ class _AddEditBonoState extends State<AddEditBono>
 
   Condition condition = Condition(
     expirationTime: 30,
-    infiniteSessions: false,
   );
 
   final String _selectedDate = '';
@@ -158,6 +157,12 @@ class _AddEditBonoState extends State<AddEditBono>
     }
     if(widget.edit == true) {
       getCondition();
+    }
+    else {
+      condition.cancelTime = 6;
+      condition.expirationTime = 30;
+      isSelectedDays[0] = true;
+      condition.weeklySessions = 10;
     }
     for (int i = 0; i < currentColors.length; ++i) {
       color = Color(int.parse(currentColors[i].hexa!));
@@ -192,8 +197,7 @@ class _AddEditBonoState extends State<AddEditBono>
   void getCondition() async
   {
     condition =  await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
-    condition.infiniteSessions = false;
-    condition.cancelTime = 6.5;
+    condition.cancelTime = 6;
     isSelectedDays[0] = false;
     isSelectedDays[1] = false;
     isSelectedDays[2] = false;
@@ -709,7 +713,8 @@ class _AddEditBonoState extends State<AddEditBono>
             bono: bono,
             brand: widget.brand,
             canExpand: false,
-            clientView: false
+            clientView: false,
+            view: false,
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02,),
           Expanded(
@@ -1120,7 +1125,8 @@ class _AddEditBonoState extends State<AddEditBono>
                   brand: widget.brand,
                   canExpand: true,
                   isExpanded: true,
-                  clientView: false
+                  clientView: false,
+                  view: false,
               ),
             ],
           ),
@@ -1139,12 +1145,6 @@ class _AddEditBonoState extends State<AddEditBono>
   void setBonoActivation(bool? activation) {
     setState(() {
       bono.isActive = activation;
-    });
-  }
-
-  void setInfinitClasses(bool? infinit) {
-    setState(() {
-      condition.infiniteSessions = infinit;
     });
   }
 
@@ -1438,7 +1438,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   Flexible(
                     child: TextFormField(
                       keyboardType: keyboard,
-                      initialValue: widget.edit ? variable == 'maxw'? condition.weeklySessions.toString() : condition.monthlySessions.toString() : bono.classes!.toString(),
+                      initialValue: widget.edit ? variable == 'maxw'? condition.weeklySessions.toString() : null : null,
                       maxLines: null,
                       minLines: 1,
                       maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
@@ -1448,9 +1448,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         setState(() {
                           if (variable == 'maxw') {
                             condition.weeklySessions = int.parse(val);
-                          } else if (variable == 'maxm') {
-                            condition.monthlySessions = int.parse(val);
-                          } else if (variable == 'ses') {
+                          }  else if (variable == 'ses') {
                             bono.classes = int.parse(val);
                           } else if (variable == 'price') {
                             bono.price = double.parse(val);

@@ -165,13 +165,17 @@ class _BonosProState extends State<BonosPro> {
 
   Widget returnBono(Bono _bono) {
     //return _bonosUtils.bonoObject(context, _bono, brand, _lColor);
-    return BonoCard(
-      height: 0,
-      width: 0,
-      bono: _bono,
-      brand: brand,
-      canExpand: false,
-      clientView: false,
+    return Padding(
+      padding:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+      child: BonoCard(
+        height: MediaQuery.of(context).size.height*0.22,
+        width: MediaQuery.of(context).size.width*0.84,
+        bono: _bono,
+        brand: brand,
+        canExpand: true,
+        clientView: true,
+        view: true,
+      ),
     );
   }
 
