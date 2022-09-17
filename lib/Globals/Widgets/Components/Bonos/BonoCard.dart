@@ -244,7 +244,6 @@ class BonoCardState extends State<BonoCard> {
                       ),
                     ],
                   ),
-
                   /*
                   !bono.isActive! && widget.view == false? Container(
                     height: widget.width * 0.50,
