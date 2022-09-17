@@ -13,7 +13,7 @@ import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoObject.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/BonosDEL%C3%87.dart';
 

@@ -15,7 +15,7 @@ import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoObject.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:provider/provider.dart';
@@ -165,7 +165,14 @@ class _BonosProState extends State<BonosPro> {
 
   Widget returnBono(Bono _bono) {
     //return _bonosUtils.bonoObject(context, _bono, brand, _lColor);
-    return BonoObject(bono: _bono, view: false, brand: brand, clientView: false);
+    return BonoCard(
+      height: 0,
+      width: 0,
+      bono: _bono,
+      brand: brand,
+      canExpand: false,
+      clientView: false,
+    );
   }
 
   @override

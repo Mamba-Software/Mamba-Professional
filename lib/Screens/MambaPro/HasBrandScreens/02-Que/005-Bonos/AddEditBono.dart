@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -13,7 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoObject.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +18,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MediaQuery/MediaQuery.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/TopSnackBar/TopSnackBar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-
 import '../../../../../Data/LibraryModels/lDegradate.dart';
 import '../../../../../Globals/Utils/Bonos/BonosUtils.dart';
 import '../../../../../Globals/Widgets/Components/Images/RectangularImage.dart';
@@ -57,7 +52,6 @@ class _AddEditBonoState extends State<AddEditBono>
   String? eventImageUrl;
 
   bool bonoImage = false;
-  bool mostraBono = false;
 
   var colorSelected = 0;
   var colorSelectedDeg = 0;
@@ -115,13 +109,6 @@ class _AddEditBonoState extends State<AddEditBono>
   String colorBono = " ";
   String colorBono1 = " ";
 
-
-  Widget returnBono(Bono _bono) {
-    return Container(
-      child: BonoObject(bono: _bono, view: true, brand: widget.brand, clientView: true)
-    );
-  }
-
   double roundDouble(double value, int places){
     num mod = pow(10.0, places);
     return ((value * mod).round().toDouble() / mod);
@@ -168,16 +155,13 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.imageUrl = widget.bono.imageUrl;
       bono.isDegradate = widget.bono.isDegradate;
       bono.opacity = widget.bono.opacity;
-
     }
-
     if(widget.edit == true) {
       getCondition();
     }
     for (int i = 0; i < currentColors.length; ++i) {
       color = Color(int.parse(currentColors[i].hexa!));
       colors.add(color);
-      print(color);
     }
     for (int i = 0; i < currentDegradates.length; ++i) {
       degradate1 = Color(int.parse(currentDegradates[i].hexa1!));
@@ -195,8 +179,9 @@ class _AddEditBonoState extends State<AddEditBono>
         eventImageUrl = bono.imageUrl;
         bonoImage = true;
       }
-      if(bono.isDegradate!)
+      if(bono.isDegradate!) {
         colorSelected = colorsDeg[int.parse(bono.color!)].value;
+      }
       }
       else {
         colorSelected = colors[int.parse(bono.color!)].value;
@@ -476,13 +461,12 @@ class _AddEditBonoState extends State<AddEditBono>
                           } else if (_selectedIndex == 1) {
                             if (formKePrice.currentState!.validate()) {
                               setState(() {
-                                mostraBono = true;
                                 FocusManager.instance.primaryFocus?.unfocus();
                               });
                               Timer(const Duration(milliseconds: 100), test);
                               addBonosTabValue += 0.25;
                               tabs[2] = true;
-
+                              priceController.text = bono.price!.toStringAsFixed(2);
                             }
                           } else if (_selectedIndex == 2) {
                             _tabController!.animateTo(_selectedIndex += 1);
@@ -491,8 +475,9 @@ class _AddEditBonoState extends State<AddEditBono>
                               tabs[3] = true;
                               FocusManager.instance.primaryFocus?.unfocus();
                             });
-                          }  else
+                          } else {
                             _addBono();
+                          }
                         },
                         backgroundColor: _selectedIndex == 3
                             ? Colors.green
@@ -699,7 +684,15 @@ class _AddEditBonoState extends State<AddEditBono>
 
            */
           SizedBox(height: MediaQuery.of(context).size.height*0.02,),
-          mostraBono == true ? returnBono(bono) : Container(),
+          BonoCard(
+            height: MediaQuery.of(context).size.height*0.25,
+            width: MediaQuery.of(context).size.width*0.84,
+            bono: bono,
+            brand: widget.brand,
+            canExpand: false,
+            clientView: false
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -733,24 +726,30 @@ class _AddEditBonoState extends State<AddEditBono>
                       )
                   ),
                   Padding(
-                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width*0.95,
-                        height: MediaQuery.of(context).size.height * 0.02,
-                        child: Slider(
-                          value: _currentSliderValue,
-                          max: 100,
-                          divisions: 9,
-                          min: 10,
-                          label: _currentSliderValue.round().toString(),
-                          activeColor: Colors.white,
-                          onChanged: (double value) {
-                            setState(() {
-                              _currentSliderValue = value;
-                              bono.opacity = value/100;
-                            });
-                          },
-                        ),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.height * 0.02),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width*0.95,
+                            height: MediaQuery.of(context).size.height * 0.02,
+                            child: Slider(
+                              value: _currentSliderValue,
+                              max: 100,
+                              divisions: 9,
+                              min: 10,
+                              label: _currentSliderValue.round().toString(),
+                              activeColor: Theme.of(context).primaryColor,
+                              inactiveColor: Theme.of(context).backgroundColor,
+                              onChanged: (double value) {
+                                setState(() {
+                                  _currentSliderValue = value;
+                                  bono.opacity = value/100;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       )),
                   SizedBox(height: MediaQuery.of(context).size.height*0.04,),
 
@@ -952,11 +951,11 @@ class _AddEditBonoState extends State<AddEditBono>
                     width: MediaQuery.of(context).size.width*0.84,
                     child: GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                            mainAxisExtent: 40,
-                            maxCrossAxisExtent: 50,
-                            crossAxisSpacing: 15,
-                            mainAxisSpacing: 10
+                        shrinkWrap: true,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 6,
+                          crossAxisSpacing: 5.0,
+                          mainAxisSpacing: 5.0,
                         ),
                         itemCount: colors.length,
                         itemBuilder: (context, int index) {
@@ -1019,82 +1018,54 @@ class _AddEditBonoState extends State<AddEditBono>
                   ),
                   Container(
                     alignment: Alignment.centerLeft,
-                    height: MediaQuery.of(context).size.height*0.4,
+                    height: MediaQuery.of(context).size.height*0.14,
                     width: MediaQuery.of(context).size.width*0.84,
                     child: GridView.builder(
                         physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 12,
-                          childAspectRatio: 2.5,
-                          mainAxisSpacing: MediaQuery.of(context).size.width*0.02,
-                          crossAxisSpacing: 10,
+                        shrinkWrap: true,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 6,
+                          crossAxisSpacing: 5.0,
+                          mainAxisSpacing: 5.0,
                         ),
-                        itemCount: colorsDeg.length,
+                        itemCount: currentDegradates.length,
                         itemBuilder: (context, int index) {
-                          if(index == 0 || index%2 == 0) {
-                            var ldegradate1 = colorsDeg[index];
-                            var ldegradate2 = colorsDeg[index + 1];
-                            return GestureDetector(
-                              onTap: () {
-                                bono.isDegradate = true;
-                                colorSelectedDeg = ldegradate1.value;
-                                colorSelected = 0;
-                                colorBono = getColorFromColorCode(
-                                    ldegradate1.toString());
-                                colorBono1 = getColorFromColorCode(
-                                    ldegradate2.toString());
-                                bono.color = _lDegradate.getIdFromHexa(
-                                    colorBono.toUpperCase(), colorBono1.toUpperCase());
-                                setState(() {});
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    right:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.025,
-                                    left:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.00),
-                                child: Container(
-                                  height: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.1,
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.1,
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topRight,
-                                        end: Alignment.bottomLeft,
-                                        colors: [
-                                          Color(ldegradate1.value),
-                                          Color(ldegradate2.value),
-                                        ],
-                                      ),
-                                      border: colorSelectedDeg ==
-                                          ldegradate1.value ? Border.all(
-                                        color: Theme
-                                            .of(context)
-                                            .primaryColor,
-                                      ) : Border.all(
-                                        color: Theme
-                                            .of(context)
-                                            .primaryColorDark,
-                                      ),
-                                      shape: BoxShape.circle,
+                          var ldegradate1 = colorsDeg[index];
+                          var ldegradate2 = colorsDeg[index + 1];
+                          return GestureDetector(
+                            onTap: () {
+                              bono.isDegradate = true;
+                              colorSelectedDeg = ldegradate1.value;
+                              colorSelected = 0;
+                              colorBono = getColorFromColorCode(ldegradate1.toString());
+                              colorBono1 = getColorFromColorCode(ldegradate2.toString());
+                              bono.color = _lDegradate.getIdFromHexa(colorBono.toUpperCase(), colorBono1.toUpperCase());
+                              setState(() {});
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  right: MediaQuery.of(context).size.width * 0.025,
+                                  left: MediaQuery.of(context).size.width * 0.00
+                              ),
+                              child: Container(
+                                height: MediaQuery.of(context).size.width * 0.1,
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
+                                    colors: [
+                                      Color(ldegradate1.value),
+                                      Color(ldegradate2.value),
+                                    ],
                                   ),
+                                  border: colorSelectedDeg == ldegradate1.value ? Border.all(color: Theme.of(context).primaryColor,
+                                  ) : Border.all(color: Theme.of(context).primaryColorDark,),
+                                  shape: BoxShape.circle,
                                 ),
                               ),
-                            );
-                          } else {
-                            return Container();
-                          }
+                            ),
+                          );
                         }
                     ),
                   ),
@@ -1110,108 +1081,8 @@ class _AddEditBonoState extends State<AddEditBono>
     );
   }
 
-  Future<void> selectSlot(ctx, type) {
-    // Initial Vars
-    var startDate = DateTime.now();
-    var title;
-    var widgetPicker;
-    // Different types of pickers
-    Widget dateTimePicker = CupertinoTheme(
-      data: CupertinoThemeData(
-          textTheme: CupertinoTextThemeData(
-            dateTimePickerTextStyle: Theme.of(context).textTheme.bodyText1,
-          )
-      ),
-      child: Column(
-        children: [
-          CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.hm,
-            onTimerDurationChanged: (value) {
-
-            },
-          ),
-        ],
-      ),
-    );
-    if (type == 0) {
-      title = AppLocalizations.of(context)!.selectDateOfBirth;
-      widgetPicker = dateTimePicker;
-    }
-    showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Material(
-          shape: const RoundedRectangleBorder(
-              borderRadius: const BorderRadius.vertical(top: const Radius.circular(25.0))
-          ),
-          child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height*0.40,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                        child: Text(title,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,)
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
-                    child: widgetPicker,
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          }
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              ],
-            ),
-          ),
-        )
-    );
-    return Future.value("");
-  }
-
   String getColorFromColorCode(String code) {
     return code.substring(6, 16);
-  }
-
-  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
-    /// The argument value will return the changed date as [DateTime] when the
-    /// widget [SfDateRangeSelectionMode] set as single.
-    ///
-    /// The argument value will return the changed dates as [List<DateTime>]
-    /// when the widget [SfDateRangeSelectionMode] set as multiple.
-    ///
-    /// The argument value will return the changed range as [PickerDateRange]
-    /// when the widget [SfDateRangeSelectionMode] set as range.
-    ///
-    /// The argument value will return the changed ranges as
-    /// [List<PickerDateRange] when the widget [SfDateRangeSelectionMode] set as
-    /// multi range.
   }
 
   void setBonoActivation(bool? activation) {
@@ -1305,8 +1176,11 @@ class _AddEditBonoState extends State<AddEditBono>
       }
     }
 
-      if(widget.edit == false )_brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
-      else _brandDataService.updateBono(widget.brand.id!, bono, condition);
+      if(widget.edit == false ) {
+        _brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
+      } else {
+        _brandDataService.updateBono(widget.brand.id!, bono, condition);
+      }
       Navigator.pop(context);
     }
 
@@ -1417,6 +1291,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         },
                         style: Theme.of(context).textTheme.bodyText1,
                         decoration: InputDecoration(
+                          suffixText: variable == 'ses' ? "sesiones" : variable == 'price' ?  "euros (€)" : "",
                           hintStyle: Theme.of(context).textTheme.caption,
                           hintText: hintText,
                           //border: InputBorder.none,
@@ -1435,14 +1310,8 @@ class _AddEditBonoState extends State<AddEditBono>
                       ),
                     ),
                   ],
-                )),
-            variable == 'price' ? Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-              "en Euros (€)",
-              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.normal, fontStyle: FontStyle.italic, color: AppColors.grey),
+                )
               ),
-            ) : Container(),
           ],
         ) : Container()
       ],
