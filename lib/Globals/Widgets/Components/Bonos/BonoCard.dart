@@ -21,9 +21,10 @@ class BonoCard extends StatefulWidget {
   Bono bono;
   Brand brand;
   bool canExpand;
+  bool? isExpanded;
   bool clientView;
 
-  BonoCard({Key? key, required this.height, required this.width, required this.bono, required this.brand, required this.canExpand, required this.clientView }) : super(key: key);
+  BonoCard({Key? key, required this.height, required this.width, required this.bono, required this.brand, required this.canExpand, this.isExpanded, required this.clientView }) : super(key: key);
 
   @override
   BonoCardState createState() => BonoCardState();
@@ -43,6 +44,9 @@ class BonoCardState extends State<BonoCard> {
   void initState() {
     bono = widget.bono;
     brand = widget.brand;
+    if (widget.isExpanded != null && widget.isExpanded!) {
+      bonoSee = widget.bono.id!;
+    }
     getCondition();
     super.initState();
   }
@@ -141,13 +145,13 @@ class BonoCardState extends State<BonoCard> {
                       ),
                       SizedBox(
                         height: widget.height * 0.2,
-                        width: widget.width*0.4,
+                        width: widget.width*0.6,
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: FittedBox(
                             fit: BoxFit.contain,
                             child: Text(
-                              brand.name!.toUpperCase(),
+                             brand.name!.toUpperCase(),
                               style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal, color: Colors.white),
                               textAlign: TextAlign.left,
                             ),
@@ -164,7 +168,7 @@ class BonoCardState extends State<BonoCard> {
                         children: [
                           SizedBox(
                             height: widget.height * 0.15,
-                            width: widget.width*0.6,
+                            width: widget.width*0.7,
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: FittedBox(
@@ -193,7 +197,7 @@ class BonoCardState extends State<BonoCard> {
                                 child: Row(
                                   children: [
                                     Text(
-                                      bono.price!.toString().toUpperCase() + '€',
+                                      bono.price!.toStringAsFixed(2).toUpperCase() + '€',
                                       style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
                                       textAlign: TextAlign.left,
                                     ),

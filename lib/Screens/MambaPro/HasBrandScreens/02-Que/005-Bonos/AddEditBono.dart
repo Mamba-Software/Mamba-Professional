@@ -78,7 +78,7 @@ class _AddEditBonoState extends State<AddEditBono>
   bool isUpdated = false;
 
   // Tab Controller
-  double addBonosTabValue = 0.25;
+  double addBonosTabValue = 0.20;
   double updateEventTabValue = 0.50;
   TabController? _tabController;
   int _selectedIndex = 0;
@@ -704,7 +704,7 @@ class _AddEditBonoState extends State<AddEditBono>
            */
           SizedBox(height: MediaQuery.of(context).size.height*0.02,),
           BonoCard(
-            height: MediaQuery.of(context).size.height*0.25,
+            height: MediaQuery.of(context).size.height*0.22,
             width: MediaQuery.of(context).size.width*0.84,
             bono: bono,
             brand: widget.brand,
@@ -1049,8 +1049,11 @@ class _AddEditBonoState extends State<AddEditBono>
                         ),
                         itemCount: currentDegradates.length,
                         itemBuilder: (context, int index) {
-                          var ldegradate1 = colorsDeg[index];
-                          var ldegradate2 = colorsDeg[index + 1];
+                          int index1 = index * 2;
+                          int index2 = index1 + 1;
+
+                          var ldegradate1 = colorsDeg[index1];
+                          var ldegradate2 = colorsDeg[index2];
                           return GestureDetector(
                             onTap: () {
                               bono.isDegradate = true;
@@ -1116,6 +1119,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   bono: bono,
                   brand: widget.brand,
                   canExpand: true,
+                  isExpanded: true,
                   clientView: false
               ),
             ],
