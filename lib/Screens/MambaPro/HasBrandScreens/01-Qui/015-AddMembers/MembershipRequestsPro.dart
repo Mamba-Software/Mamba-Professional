@@ -293,10 +293,10 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                                 );
                               }
                           );
-                          if (result) {
+                          if (result != null && result) {
                             NotificationService().userJoinsBrand(request.userId!, request.brandId!);
                             _brandDataService.acceptRequestFromUser(request);
-                          } else if (!result) {
+                          } else if (result != null && !result) {
                             _userDataService.deleteRequestToBrand(request);
                           }
                         },
