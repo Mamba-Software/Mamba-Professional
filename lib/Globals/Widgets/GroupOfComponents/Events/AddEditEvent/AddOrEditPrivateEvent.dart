@@ -446,7 +446,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     ) :
     Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.14,
+        toolbarHeight: MediaQuery.of(context).size.height*0.12,
         title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
