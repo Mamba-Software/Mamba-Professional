@@ -82,7 +82,7 @@ class _AddEditBonoState extends State<AddEditBono>
   double updateEventTabValue = 0.50;
   TabController? _tabController;
   int _selectedIndex = 0;
-  List<bool> tabs = [true, false, false, false];
+  List<bool> tabs = [true, false, false, false, false];
 
   // Title Controller
   var titleController = TextEditingController();
@@ -140,7 +140,7 @@ class _AddEditBonoState extends State<AddEditBono>
   @override
   initState() {
     isLoading = false;
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     var color;
     var degradate1, degradate2;
     if(widget.edit == true) {
@@ -338,6 +338,17 @@ class _AddEditBonoState extends State<AddEditBono>
                                 ),
                               ),
                             ),
+                            Tab(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.playlist_add_check, color: tabs[4] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         LinearProgressIndicator(
@@ -376,6 +387,7 @@ class _AddEditBonoState extends State<AddEditBono>
                       pricePage(),
                       conditionsPage(),
                       stylePage(),
+                      confirmationPage(),
                     ],
                   )
                 ),
@@ -417,7 +429,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 }
                                 _tabController!.animateTo(_selectedIndex -= 1);
                                 setState(() {
-                                  addBonosTabValue -= 0.25;
+                                  addBonosTabValue -= 0.20;
                                 });
                               },
                               backgroundColor: Theme.of(context).primaryColor,
@@ -453,7 +465,7 @@ class _AddEditBonoState extends State<AddEditBono>
                             if (formKeyInfo.currentState!.validate()) {
                               _tabController!.animateTo(_selectedIndex += 1);
                               setState(() {
-                                addBonosTabValue += 0.25;
+                                addBonosTabValue += 0.20;
                                 tabs[1] = true;
                                 FocusManager.instance.primaryFocus?.unfocus();
                               });
@@ -464,27 +476,34 @@ class _AddEditBonoState extends State<AddEditBono>
                                 FocusManager.instance.primaryFocus?.unfocus();
                               });
                               Timer(const Duration(milliseconds: 100), test);
-                              addBonosTabValue += 0.25;
+                              addBonosTabValue += 0.20;
                               tabs[2] = true;
                               priceController.text = bono.price!.toStringAsFixed(2);
                             }
                           } else if (_selectedIndex == 2) {
                             _tabController!.animateTo(_selectedIndex += 1);
                             setState(() {
-                              addBonosTabValue += 0.25;
+                              addBonosTabValue += 0.20;
                               tabs[3] = true;
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            });
+                          } else if (_selectedIndex == 3) {
+                            _tabController!.animateTo(_selectedIndex += 1);
+                            setState(() {
+                              addBonosTabValue += 0.20;
+                              tabs[4] = true;
                               FocusManager.instance.primaryFocus?.unfocus();
                             });
                           } else {
                             _addBono();
                           }
                         },
-                        backgroundColor: _selectedIndex == 3
+                        backgroundColor: _selectedIndex == 4
                             ? Colors.green
                             : Theme.of(context).colorScheme.secondary,
                         icon: Container(),
                         label: Text(
-                          _selectedIndex == 3
+                          _selectedIndex == 4
                               ? widget.edit? AppLocalizations.of(context)!.editBono : AppLocalizations.of(context)!.createBono
                               : AppLocalizations.of(context)!.next,
                           style: Theme.of(context)
@@ -1080,6 +1099,34 @@ class _AddEditBonoState extends State<AddEditBono>
       resizeToAvoidBottomInset: true,
     );
   }
+
+  Widget confirmationPage() {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BonoCard(
+                  height: MediaQuery.of(context).size.height*0.25,
+                  width: MediaQuery.of(context).size.width*0.84,
+                  bono: bono,
+                  brand: widget.brand,
+                  canExpand: true,
+                  clientView: false
+              ),
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+        ],
+      ),
+      resizeToAvoidBottomInset: true,
+    );
+  }
+
 
   String getColorFromColorCode(String code) {
     return code.substring(6, 16);
