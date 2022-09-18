@@ -269,8 +269,7 @@ class _AddEditBonoState extends State<AddEditBono>
               ),
             ),
             body: LoadingView(),
-          )
-        : Scaffold(
+          ) : Scaffold(
             appBar: AppBar(
               toolbarHeight: MediaQuery.of(context).size.height*0.12,
               title: Text(
@@ -338,7 +337,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.draw_outlined, color: tabs[3] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
+                                    Icon(Icons.palette_outlined, color: tabs[3] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
                                   ],
                                 ),
                               ),
@@ -428,6 +427,12 @@ class _AddEditBonoState extends State<AddEditBono>
                                 } else if (_selectedIndex == 3) {
                                   setState(() {
                                     tabs[3] = false;
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
+                                  });
+                                } else if (_selectedIndex == 4) {
+                                  setState(() {
+                                    tabs[4] = false;
                                     FocusManager.instance.primaryFocus
                                         ?.unfocus();
                                   });
@@ -679,35 +684,7 @@ class _AddEditBonoState extends State<AddEditBono>
     return Scaffold(
       body: Column(
         children: [
-          /*
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.09, vertical: MediaQuery.of(context).size.height * 0.03),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Flexible(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          AppLocalizations.of(context)!.styleBono,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline1
-                              ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-          ),
-
-           */
-          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+          SizedBox(height: MediaQuery.of(context).size.height*0.03,),
           BonoCard(
             height: MediaQuery.of(context).size.height*0.22,
             width: MediaQuery.of(context).size.width*0.84,
@@ -724,9 +701,9 @@ class _AddEditBonoState extends State<AddEditBono>
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                   Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08, vertical: MediaQuery.of(context).size.height * 0.02),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
@@ -751,7 +728,7 @@ class _AddEditBonoState extends State<AddEditBono>
                       )
                   ),
                   Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.height * 0.02),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.height * 0.03),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -776,7 +753,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           ),
                         ],
                       )),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04,),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
 
                   Padding(
                     padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.08, right: MediaQuery.of(context).size.width * 0.08, bottom: MediaQuery.of(context).size.height * 0.03),
@@ -1111,15 +1088,32 @@ class _AddEditBonoState extends State<AddEditBono>
 
   Widget confirmationPage() {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              BonoCard(
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.03,),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: Text(
+                      "Previsualiza tu bono",
+                      style: Theme.of(context).textTheme.headline1?.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: 25),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.04,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                BonoCard(
                   height: MediaQuery.of(context).size.height*0.22,
                   width: MediaQuery.of(context).size.width*0.84,
                   bono: bono,
@@ -1127,12 +1121,14 @@ class _AddEditBonoState extends State<AddEditBono>
                   canExpand: true,
                   isExpanded: true,
                   onlyView: true,
+                  clientView: true,
                   condition: condition,
-              ),
-            ],
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height*0.02,),
-        ],
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.2,),
+          ],
+        ),
       ),
       resizeToAvoidBottomInset: true,
     );

@@ -28,6 +28,7 @@ class BonoCard extends StatefulWidget {
   bool canExpand;
   bool? isExpanded;
   bool? onlyView;
+  bool? clientView;
 
   BonoCard(
       {Key? key,
@@ -37,6 +38,7 @@ class BonoCard extends StatefulWidget {
       required this.brand,
       required this.canExpand,
       this.isExpanded,
+      this.clientView,
       required this.onlyView,
       required this.condition})
       : super(key: key);
@@ -57,7 +59,7 @@ class BonoCardState extends State<BonoCard> {
   final _lColor = lColor();
   // Booleans
   bool isExpanded = false;
-  double isExpandedHeight = 2.5;
+  double isExpandedHeight = 2;
 
   @override
   void initState() {
@@ -70,19 +72,18 @@ class BonoCardState extends State<BonoCard> {
       condition = widget.condition;
     } else {
       getCondition();
-      print(bono.title.toString());
-      if (condition.expirationTime != 0) {
-        isExpandedHeight = isExpandedHeight + 0.33;
-      }
-      if (condition.weeklySessions != 0) {
-        isExpandedHeight = isExpandedHeight + 0.33;
-      }
-      if (condition.cancelTime != 0) {
-        isExpandedHeight = isExpandedHeight + 0.33;
-      }
+      isExpandedHeight = isExpandedHeight + 0.35;
+    }
+    if (condition.expirationTime != 0) {
+      isExpandedHeight = isExpandedHeight + 0.35;
+    }
+    if (condition.cancelTime != 0) {
+      isExpandedHeight = isExpandedHeight + 0.35;
+    }
+    if (condition.weeklySessions != 0) {
+      isExpandedHeight = isExpandedHeight + 0.35;
     }
     super.initState();
-
   }
 
   void getCondition() async {
@@ -309,7 +310,10 @@ class BonoCardState extends State<BonoCard> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          widget.canExpand == false ? SizedBox(
+                              height: widget.height * 0.15,
+                              width: widget.width * 0.1
+                          ) : SizedBox(
                             height: widget.height * 0.15,
                             width: widget.width * 0.1,
                             child: Align(
@@ -339,7 +343,7 @@ class BonoCardState extends State<BonoCard> {
                 height: widget.height * isExpandedHeight*2 - widget.height,
                 width: widget.width,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: widget.height*0.1),
+                  padding: EdgeInsets.only(top: widget.height*0.1),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -368,7 +372,7 @@ class BonoCardState extends State<BonoCard> {
                                     children: [
                                       Text(
                                         "Nº SESIONES",
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: Colors.white70),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(height: widget.width*0.02,),
@@ -389,7 +393,7 @@ class BonoCardState extends State<BonoCard> {
                                     children: [
                                       Text(
                                         "DISPONIBILIDAD",
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: Colors.white70),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(height: widget.width*0.02,),
@@ -416,7 +420,7 @@ class BonoCardState extends State<BonoCard> {
                                     children: [
                                       Text(
                                         "PRECIO",
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: Colors.white70),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(height: widget.width*0.02,),
@@ -460,7 +464,7 @@ class BonoCardState extends State<BonoCard> {
                                     children: [
                                       Text(
                                         "CONDICIONES",
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: Colors.white70),
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),
                                         textAlign: TextAlign.left,
                                       ),
                                       SizedBox(height: widget.width*0.02,),
@@ -512,787 +516,37 @@ class BonoCardState extends State<BonoCard> {
                         ),
                       ),
                       SizedBox(height: widget.height*0.05,),
-                      GestureDetector(
-                        onTap: () => navigateToAddBonosScreen(bono, brand, true),
-                        child: Container(
-                          height: widget.height*0.3,
-                          width: widget.width*0.9,
-                          decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(15.0),
-                          ),
-                          child: Center(
-                            child: Text(
-                              AppLocalizations.of(context)!.edit,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
+                  ),
+                ),
+              ),
+            ) : Container(),
+            isExpanded && widget.onlyView == false ? GestureDetector(
+              onTap: () {
+                if (widget.onlyView != null && widget.onlyView == false) {
+                  navigateToAddBonosScreen(bono, brand, true);
+                }
+              },
+              child: Container(
+                height: widget.height*0.4,
+                width: widget.width,
+                decoration: const BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    widget.clientView != null && widget.clientView == true ? "Comprar" : AppLocalizations.of(context)!.edit,
+                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
                   ),
                 ),
               ),
             ) : Container(),
           ],
         ),
-
-        /*
-                      Padding(
-                        padding: EdgeInsets.only(
-                            bottom: widget.height * 0.03,
-                            right: widget.height * 0.02),
-
-                        child: Container(
-                          height: widget.width * 0.1,
-                          width: widget.width * 0.32,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.white,
-                              ),
-                              borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
-                          child: Align(
-                            alignment: Alignment.center,
-                            //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                            child: Text(
-                              bono.isActive!? 'Desactivar'.toUpperCase() : 'Activar'.toUpperCase(),
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                      */
-        /*
-                      !bono.isActive! && !widget.onlyView! ? GestureDetector(
-                        onTap: () {
-                          if(widget.onlyView == false) {
-                            bono.isActive = !bono.isActive!;
-                            _brandDataService.updateBonoActive(
-                                brand.id!, bono.id!, bono.isActive!);
-                            setState(() {
-                              bonoSee = 'nadie';
-                            });
-                          }
-                        },
-                        child:  Container(
-                          constraints: BoxConstraints(
-                            minHeight: widget.height,
-                            minWidth: widget.width,
-                            maxWidth: widget.width,
-                          ),
-                          height: bonoSee == bono.id! ? widget.height * widthOpen : widget.height,
-                          width: widget.width,
-                          child: Container(
-                            height: widget.width * 0.1,
-                            width: widget.width * 0.32,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.white,
-                                ),
-                                borderRadius:
-                                const BorderRadius.all(Radius.circular(20))),
-                            child: Align(
-                              alignment: Alignment.center,
-                              //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                              child: Text(
-                                bono.isActive!? 'Desactivar'.toUpperCase() : 'Activar'.toUpperCase(),
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                      ) : Container(),
-        */
-
-        /*
-        Stack(
-          children: [
-            Column(
-            children: [
-              Container(
-                height: widget.height,
-                width: widget.width,
-                padding: EdgeInsets.all(widget.width * 0.05),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          height: widget.height * 0.2,
-                          width: widget.width * 0.15,
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: CircularImage(
-                                size: widget.width * 0.15,
-                                image: brand.logoUrl,
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: widget.height * 0.2,
-                          width: widget.width * 0.6,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Text(
-                                brand.name!.toUpperCase(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline3
-                                    ?.copyWith(
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.white),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: widget.height * 0.15,
-                              width: widget.width * 0.7,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: Text(
-                                    bono.title!.toUpperCase(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headline1
-                                        ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              height: widget.height * 0.1,
-                              width: widget.width * 0.8,
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        bono.price!
-                                                .toStringAsFixed(2)
-                                                .toUpperCase() +
-                                            '€',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText1
-                                            ?.copyWith(color: Colors.white),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      Text(
-                                        (bono.price!/bono.classes!)
-                                            .toStringAsFixed(2)
-                                            .toUpperCase() +
-                                            '€/S',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2
-                                            ?.copyWith(color: Colors.white70),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                      SizedBox(
-                                        width: widget.width * 0.05,
-                                      ),
-                                      bono.classes == 100000
-                                          ? Text(
-                                              '∞ ' +
-                                                  AppLocalizations.of(context)!
-                                                      .sessions
-                                                      .toUpperCase(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  ?.copyWith(color: Colors.white),
-                                              textAlign: TextAlign.left,
-                                            )
-                                          : Text(
-                                              bono.classes!
-                                                      .toString()
-                                                      .toUpperCase() +
-                                                  ' ' +
-                                                  AppLocalizations.of(context)!
-                                                      .sessions
-                                                      .toUpperCase(),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  ?.copyWith(color: Colors.white),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: widget.height * 0.2,
-                              width: widget.width * 0.1,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: bonoSee != bono.id!
-                                        ? Icon(
-                                            Icons.expand_more,
-                                            size: widget.width * 0.1,
-                                          )
-                                        : Icon(
-                                            Icons.expand_less,
-                                            size: widget.width * 0.1,
-                                          )),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    /*
-                    bonoSee == bono.id!? Align(
-                      alignment: Alignment.bottomRight,
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            top: widget.height * 0.60,
-                            right: widget.height * 0.01),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                if(widget.onlyView == false) {
-                                  navigateToAddBonosScreen(bono, brand, true);
-                                }
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: widget.height * 0.03,
-                                    horizontal: widget.height * 0.01),
-                                child: Container(
-                                  height: widget.width * 0.1,
-                                  width: widget.width * 0.32,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.white,
-                                      ),
-                                      borderRadius:
-                                      const BorderRadius.all(Radius.circular(20))),
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                                    child: Text(
-                                      AppLocalizations.of(context)!
-                                          .edit.toUpperCase(),
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                if(widget.onlyView == false) {
-                                  bono.isActive = !bono.isActive!;
-                                  _brandDataService.updateBonoActive(
-                                      brand.id!, bono.id!, bono.isActive!);
-                                  setState(() {
-                                    bonoSee = 'nadie';
-                                  });
-                                }
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: widget.height * 0.03,
-                                    right: widget.height * 0.02),
-
-                                child: Container(
-                                  height: widget.width * 0.1,
-                                  width: widget.width * 0.32,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.white,
-                                      ),
-                                      borderRadius:
-                                      const BorderRadius.all(Radius.circular(20))),
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                                    child: Text(
-                                      bono.isActive!? 'Desactivar'.toUpperCase() : 'Activar'.toUpperCase(),
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ) : Container(),
-
-                     */
-                  ],
-                ),
-              ),
-              bonoSee == bono.id!
-                  ? Container(
-                      height: widget.height * widthOpen - widget.height,
-                      width: widget.width,
-                      padding: EdgeInsets.symmetric(
-                          vertical: widget.width * 0.005,
-                          horizontal: widget.width * 0.05),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: widget.height * 0.30,//(0.15 + bono.description!.length/100),
-                                width: widget.width * 0.9,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            bono.description!,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1
-                                                ?.copyWith(color: Colors.white70),
-                                            textAlign: TextAlign.left,
-                                            maxLines: 4,
-                                            overflow: TextOverflow.visible,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                ),
-                              )
-                            ],
-                          ),
-                          Column(
-                              children: [
-                            widthOpen != 2.5
-                                ? Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: widget.height * 0.20,
-                                        width: widget.width * 0.7,
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Text(
-                                              'CONDICIONES',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Container(),
-                            condition.expirationTime != 0
-                                ? Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: widget.height * 0.30,
-                                        width: widget.width * 0.7,
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              '- Este bono expira pasados los ' +
-                                                  condition.expirationTime
-                                                      .toString() +
-                                                  ' dias',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      color: Colors.white70),
-                                              textAlign: TextAlign.left,
-                                            ),
-
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Container(),
-                            condition.weeklySessions != 0
-                                ? Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: widget.height * 0.30,
-                                        width: widget.width * 0.7,
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                            child: Flexible(
-                                              child: Text(
-                                                '- El usuario no puede usar el bono más de ' +
-                                                    condition.weeklySessions
-                                                        .toString() +
-                                                    ' veces por semana',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText1
-                                                    ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                        color: Colors.white70),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Container(),
-                            condition.cancelTime != 0
-                                ? Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: widget.height * 0.30,
-                                        width: widget.width * 0.7,
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              '- Tiene cancelación gratuita ' +
-                                                  condition.cancelTime
-                                                      .toString() +
-                                                  ' hora/s antes del evento',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1
-                                                  ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      color: Colors.white70),
-                                              textAlign: TextAlign.left,
-                                            ),
-
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Container(),
-                          ]),
-                          widget.clientView
-                              ? GestureDetector(
-                                onTap: () {
-                                  if(widget.onlyView == false) {
-                                    _brandDataService.addBonoRequestToBrand(brand.id!, currentUser.id!, bono.id!, bono.title!, bono.price, bono.classes, Timestamp.now());
-                                  }
-                                },
-                                child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: widget.height * 0.60,
-                                        width: widget.width * 0.85,
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Container(
-                                              height: widget.width * 0.2,
-                                              width: widget.width * 0.9,
-                                              decoration: BoxDecoration(
-                                                color: AppColors.darkGrey,
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(30))),
-                                              child: Align(
-                                                alignment: Alignment.center,
-                                                //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                                                child: Text(
-                                                  'comprar'.toUpperCase(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.copyWith(
-                                                          color: Colors.white),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                              )
-                              : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        if(widget.onlyView == false) {
-                                          navigateToAddBonosScreen(bono, brand, true);
-                                        }
-                                      },
-                                      child: SizedBox(
-                                        height: widget.height * 0.60,
-                                        width: widget.width * 0.40,
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Container(
-                                              height: widget.width * 0.2,
-                                              width: widget.width * 0.35,
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                    color: Colors.white,
-                                                  ),
-                                                  borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(30))),
-                                              child: Align(
-                                                alignment: Alignment.center,
-                                                //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                                                child: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .edit.toUpperCase().toUpperCase(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.copyWith(
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        if(widget.onlyView == false) {
-                                          bono.isActive = !bono.isActive!;
-                                          _brandDataService.updateBonoActive(
-                                              brand.id!, bono.id!, bono.isActive!);
-                                          setState(() {
-                                            bonoSee = 'nadie';
-                                          });
-                                        }
-                                      },
-                                      child: SizedBox(
-                                        height: widget.height * 0.60,
-                                        width: widget.width * 0.50,
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Container(
-                                              height: widget.width * 0.2,
-                                              width: widget.width * 0.35,
-                                              decoration: BoxDecoration(
-                                                  color: AppColors.darkGrey,
-                                                  borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(30))),
-                                              child: Align(
-                                                alignment: Alignment.center,
-                                                //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                                                child: Text(
-                                                  'desactivar'.toUpperCase(),
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.copyWith(
-                                                      color: Colors.white),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                        ],
-                      ),
-                    )
-                  : Container(),
-/*
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: widget.height * 0.03,
-                    right: widget.height * 0.02),
-
-                child: Container(
-                  height: widget.width * 0.1,
-                  width: widget.width * 0.32,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white,
-                      ),
-                      borderRadius:
-                      const BorderRadius.all(Radius.circular(20))),
-                  child: Align(
-                    alignment: Alignment.center,
-                    //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                    child: Text(
-                      bono.isActive!? 'Desactivar'.toUpperCase() : 'Activar'.toUpperCase(),
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-              */
-/*
-              !bono.isActive! && !widget.onlyView! ? GestureDetector(
-                onTap: () {
-                  if(widget.onlyView == false) {
-                    bono.isActive = !bono.isActive!;
-                    _brandDataService.updateBonoActive(
-                        brand.id!, bono.id!, bono.isActive!);
-                    setState(() {
-                      bonoSee = 'nadie';
-                    });
-                  }
-                },
-                child:  Container(
-                  constraints: BoxConstraints(
-                    minHeight: widget.height,
-                    minWidth: widget.width,
-                    maxWidth: widget.width,
-                  ),
-                  height: bonoSee == bono.id! ? widget.height * widthOpen : widget.height,
-                  width: widget.width,
-                  child: Container(
-                    height: widget.width * 0.1,
-                    width: widget.width * 0.32,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.white,
-                        ),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(20))),
-                    child: Align(
-                      alignment: Alignment.center,
-                      //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                      child: Text(
-                        bono.isActive!? 'Desactivar'.toUpperCase() : 'Activar'.toUpperCase(),
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-
-              ) : Container(),
-*/
-
-            ],
-          ),
-            /*
-            !bono.isActive! && !widget.onlyView! ?
-            Container(
-              height: widget.height,
-              width: widget.width * 1.4,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.4),
-                borderRadius:
-                BorderRadius.all(Radius.circular(10)),),
-
-              child: GestureDetector(
-                onTap: () {
-                  if(widget.onlyView == false) {
-                    bono.isActive = !bono.isActive!;
-                    _brandDataService.updateBonoActive(brand.id!, bono.id!, bono.isActive!);
-                    setState(() {
-                      bonoSee = 'nadie';
-                    });
-                  }
-                },
-                child:  Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    height: widget.height * 0.3,
-                    width: widget.width * 0.4,
-                    decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 3,
-                        ),
-                        borderRadius:
-                        const BorderRadius.all(Radius.circular(30))),
-                    child: Align(
-                      alignment: Alignment.center,
-                      //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                      child: Text(
-                        bono.isActive!? 'Desactivar'.toUpperCase() : 'Activar'.toUpperCase(),
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ) : Container(),
-             */
-
-
-      ],
-        ),
-         */
       ),
     );
   }

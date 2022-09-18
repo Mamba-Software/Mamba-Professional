@@ -167,7 +167,7 @@ class _BonosProState extends State<BonosPro> {
   Widget returnBono(Bono _bono) {
     //return _bonosUtils.bonoObject(context, _bono, brand, _lColor);
     return Padding(
-      padding:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+      padding:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
       child: BonoCard(
         height: MediaQuery.of(context).size.height*0.22,
         width: MediaQuery.of(context).size.width*0.84,
@@ -472,11 +472,15 @@ class _BonosProState extends State<BonosPro> {
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                           Bono bono = bonosList[index];
-                          return Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical:
-                                    MediaQuery.of(context).size.width * 0.04),
-                            child: returnBono(bono),
+                          return Column(
+                            children: [
+                              index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.04) : Container(),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04),
+                                child: returnBono(bono),
+                              ),
+                              index == bonosList.length-1 ? SizedBox(height: MediaQuery.of(context).size.width * 0.04) : Container(),
+                            ],
                           );
                         },
                         childCount: bonosList.length,
@@ -525,7 +529,7 @@ class _BonosProState extends State<BonosPro> {
               );
             },
             backgroundColor: Theme.of(context).colorScheme.secondary,
-            child: const Icon(Icons.add, color: AppColors.white),
+            child: const Icon(Icons.add, color: AppColors.white,),
           ),
         )
       ),
