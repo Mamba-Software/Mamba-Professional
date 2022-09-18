@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
@@ -173,8 +174,9 @@ class _BonosProState extends State<BonosPro> {
         bono: _bono,
         brand: brand,
         canExpand: true,
-        clientView: true,
-        view: true,
+        clientView: false,
+        view: false,
+        condition: Condition(),
       ),
     );
   }

@@ -157,6 +157,7 @@ class _AddEditBonoState extends State<AddEditBono>
     }
     if(widget.edit == true) {
       getCondition();
+      weeklyController.text = condition.weeklySessions.toString();
     }
     else {
       condition.cancelTime = 6;
@@ -713,8 +714,9 @@ class _AddEditBonoState extends State<AddEditBono>
             bono: bono,
             brand: widget.brand,
             canExpand: false,
-            clientView: false,
-            view: false,
+            clientView: true,
+            view: true,
+            condition: condition,
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02,),
           Expanded(
@@ -1119,14 +1121,15 @@ class _AddEditBonoState extends State<AddEditBono>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BonoCard(
-                  height: MediaQuery.of(context).size.height*0.25,
+                  height: MediaQuery.of(context).size.height*0.22,
                   width: MediaQuery.of(context).size.width*0.84,
                   bono: bono,
                   brand: widget.brand,
                   canExpand: true,
                   isExpanded: true,
-                  clientView: false,
-                  view: false,
+                  clientView: true,
+                  view: true,
+                condition: condition,
               ),
             ],
           ),
@@ -1217,12 +1220,15 @@ class _AddEditBonoState extends State<AddEditBono>
       }
     } else {
       if (isSelectedDays[0]) {
-        condition.expirationTime = 30;
+        condition.expirationTime = 0;
       }
       if (isSelectedDays[1]) {
-        condition.expirationTime = 60;
+        condition.expirationTime = 30;
       }
       if (isSelectedDays[2]) {
+        condition.expirationTime = 60;
+      }
+      if (isSelectedDays[3]) {
         condition.expirationTime = 90;
       }
     }
@@ -1333,6 +1339,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               bono.description = val;
                             } else if (variable == 'ses') {
                               bono.classes = int.parse(val);
+                              weeklyController.text = condition.weeklySessions.toString();
                             } else if (variable == 'price') {
                               double price = double.parse(val.replaceAll(',','.'));
                               print(roundDouble(price, 2));
@@ -1415,15 +1422,15 @@ class _AddEditBonoState extends State<AddEditBono>
                   SizedBox(
                       width:
                       MediaQuery.of(context).size.width * 0.02),
-                  daysSelectoWidget(0, '30', false),
+                  daysSelectoWidget(1, '30', false),
                   SizedBox(
                       width:
                       MediaQuery.of(context).size.width * 0.02),
-                  daysSelectoWidget(1, '60', false),
+                  daysSelectoWidget(2, '60', false),
                   SizedBox(
                       width:
                       MediaQuery.of(context).size.width * 0.02),
-                  daysSelectoWidget(2, '90', false),
+                  daysSelectoWidget(3, '90', false),
                   SizedBox(
                       width:
                       MediaQuery.of(context).size.width * 0.02),
