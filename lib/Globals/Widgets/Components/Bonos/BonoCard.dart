@@ -480,7 +480,7 @@ class BonoCardState extends State<BonoCard> {
                                             size: widget.width*0.07,
                                             color: Colors.white70),
                                         title: Text(
-                                          "Expira en 30 días",
+                                          "Expira en " + condition.expirationTime.toString() + " días",
                                           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
                                         )
                                       ) : Container(),
@@ -493,7 +493,7 @@ class BonoCardState extends State<BonoCard> {
                                             size: widget.width*0.07,
                                             color: Colors.white70),
                                         title: Text(
-                                          "Cancelacion gratuita hasta 8 horas",
+                                          "Cancelacion gratuita hasta " + condition.cancelTime.toString() + " horas",
                                           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
                                         )
                                       ) : Container(),
@@ -506,7 +506,7 @@ class BonoCardState extends State<BonoCard> {
                                               size: widget.width*0.07,
                                               color: Colors.white70),
                                           title: Text(
-                                            "Máximo 3 entrenos por semana",
+                                            "Máximo " + condition.weeklySessions.toString() + " entrenos por semana",
                                             style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
                                           )
                                       ) : Container(),

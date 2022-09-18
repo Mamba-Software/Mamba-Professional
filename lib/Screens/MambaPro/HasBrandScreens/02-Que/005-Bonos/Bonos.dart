@@ -103,6 +103,7 @@ class _BonosProState extends State<BonosPro> {
 
   @override
   void initState() {
+
     super.initState();
     _scrollController = ScrollController()
       ..addListener(
@@ -172,7 +173,7 @@ class _BonosProState extends State<BonosPro> {
         height: MediaQuery.of(context).size.height*0.22,
         width: MediaQuery.of(context).size.width*0.84,
         bono: _bono,
-        brand: brand,
+        brand: currentBrand,
         canExpand: true,
         onlyView: false,
       ),

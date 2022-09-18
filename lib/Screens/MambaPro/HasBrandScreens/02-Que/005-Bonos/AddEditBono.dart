@@ -72,7 +72,7 @@ class _AddEditBonoState extends State<AddEditBono>
   final _bonosUtils = BonosUtils();
 
   // Boolean days bono selected
-  List<bool> isSelectedDays = [true, false, false, false];
+  List<bool> isSelectedDays = [false, false, false, false];
 
   // Boolean isUpdated
   bool isUpdated = false;
@@ -91,7 +91,7 @@ class _AddEditBonoState extends State<AddEditBono>
   var descriptionController = TextEditingController();
   var clasesController = TextEditingController();
   var priceController = TextEditingController();
-  var expirationController = TextEditingController();
+  var freeCancellController = TextEditingController();
   var weeklyController = TextEditingController();
   var monthlyController = TextEditingController();
   var daysSelectorController = TextEditingController();
@@ -126,6 +126,7 @@ class _AddEditBonoState extends State<AddEditBono>
 
   Condition condition = Condition(
     expirationTime: 30,
+    cancelTime: 24,
   );
 
   final String _selectedDate = '';
@@ -154,16 +155,11 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.imageUrl = widget.bono.imageUrl;
       bono.isDegradate = widget.bono.isDegradate;
       bono.opacity = widget.bono.opacity;
-    }
-    if(widget.edit == true) {
       getCondition();
-      weeklyController.text = condition.weeklySessions.toString();
     }
     else {
-      condition.cancelTime = 6;
-      condition.expirationTime = 30;
-      isSelectedDays[0] = true;
-      condition.weeklySessions = 10;
+      isSelectedDays[1] = true;
+      freeCancellController.text = '24';
     }
     for (int i = 0; i < currentColors.length; ++i) {
       color = Color(int.parse(currentColors[i].hexa!));
@@ -198,25 +194,29 @@ class _AddEditBonoState extends State<AddEditBono>
   void getCondition() async
   {
     condition =  await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
-    condition.cancelTime = 6;
     isSelectedDays[0] = false;
     isSelectedDays[1] = false;
     isSelectedDays[2] = false;
     isSelectedDays[3] = false;
-    if(condition.expirationTime == 30) {
+    if(condition.expirationTime == 0) {
       isSelectedDays[0] = true;
     }
-    else if(condition.expirationTime == 60) {
+    else if(condition.expirationTime == 30) {
       isSelectedDays[1] = true;
     }
-    else if(condition.expirationTime == 90) {
+    else if(condition.expirationTime == 60) {
       isSelectedDays[2] = true;
     }
     else {
       isSelectedDays[3] = true;
-      daysSelectorController.text = condition.expirationTime.toString();
 
     }
+
+    print(condition.weeklySessions.toString());
+    print(condition.cancelTime.toString());
+    print(condition.expirationTime.toString());
+    weeklyController.text = condition.weeklySessions.toString();
+    freeCancellController.text = condition.cancelTime.toString();
 
   }
 
@@ -659,7 +659,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           AppLocalizations.of(context)!.titleHint,
                           AppLocalizations.of(context)!.titleError,
                           true,
-                          titleController,
+                          freeCancellController,
                           'ses'),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                       optionConditionsWrite( TextInputType.number,
@@ -668,7 +668,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           AppLocalizations.of(context)!.titleHint,
                           AppLocalizations.of(context)!.titleError,
                           true,
-                          titleController,
+                          weeklyController,
                           'maxw'),
                     ]),
               ),
@@ -1158,13 +1158,25 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget daysSelectoWidget(int index, String numberDays, bool customized) {
     return GestureDetector(
       onTap: () {
+        isSelectedDays[0] = false;
+        isSelectedDays[1] = false;
+        isSelectedDays[2] = false;
+        isSelectedDays[3] = false;
+        isSelectedDays[index] = true;
+
+        if (isSelectedDays[0]) {
+          condition.expirationTime = 0;
+        }
+        if (isSelectedDays[1]) {
+          condition.expirationTime = 30;
+        }
+        if (isSelectedDays[2]) {
+          condition.expirationTime = 60;
+        }
+        if (isSelectedDays[3]) {
+          condition.expirationTime = 90;
+        }
         setState(() {
-          condition.expirationTime = int.parse(numberDays);
-          isSelectedDays[0] = false;
-          isSelectedDays[1] = false;
-          isSelectedDays[2] = false;
-          isSelectedDays[3] = false;
-          isSelectedDays[index] = true;
         });
       },
       child: Container(
@@ -1332,7 +1344,8 @@ class _AddEditBonoState extends State<AddEditBono>
                               bono.description = val;
                             } else if (variable == 'ses') {
                               bono.classes = int.parse(val);
-                              weeklyController.text = condition.weeklySessions.toString();
+                              weeklyController.text = val;
+                              condition.weeklySessions = int.parse(val);
                             } else if (variable == 'price') {
                               double price = double.parse(val.replaceAll(',','.'));
                               print(roundDouble(price, 2));
@@ -1438,7 +1451,8 @@ class _AddEditBonoState extends State<AddEditBono>
                   Flexible(
                     child: TextFormField(
                       keyboardType: keyboard,
-                      initialValue: widget.edit ? variable == 'maxw'? condition.weeklySessions.toString() : null : null,
+                      controller: controller,
+                      //initialValue: widget.edit ? variable == 'maxw'? condition.weeklySessions.toString() : null : null,
                       maxLines: null,
                       minLines: 1,
                       maxLength: variable == 'title'? 20 : variable == 'desc'? 100 : null,
@@ -1449,7 +1463,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           if (variable == 'maxw') {
                             condition.weeklySessions = int.parse(val);
                           }  else if (variable == 'ses') {
-                            bono.classes = int.parse(val);
+                            condition.cancelTime = int.parse(val);
                           } else if (variable == 'price') {
                             bono.price = double.parse(val);
                           }
