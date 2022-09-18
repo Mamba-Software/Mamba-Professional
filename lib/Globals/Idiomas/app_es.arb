@@ -2065,6 +2065,10 @@
   "@staff": {
     "description": "Donde message"
   },
+  "bonoRequestDescription": "Consulta las compras de bonos pendientes de confirmación",
+  "@bonoRequestDescription": {
+    "description": "Create bono message"
+  },
   "createBono": "Crear bono",
   "@createBono": {
     "description": "Create bono message"

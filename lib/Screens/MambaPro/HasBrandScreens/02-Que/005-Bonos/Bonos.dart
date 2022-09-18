@@ -167,10 +167,10 @@ class _BonosProState extends State<BonosPro> {
   Widget returnBono(Bono _bono) {
     //return _bonosUtils.bonoObject(context, _bono, brand, _lColor);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
       child: BonoCard(
         height: MediaQuery.of(context).size.height*0.22,
-        width: MediaQuery.of(context).size.width*0.84,
+        width: MediaQuery.of(context).size.width*0.9,
         bono: _bono,
         brand: brand,
         canExpand: true,
@@ -221,83 +221,6 @@ class _BonosProState extends State<BonosPro> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height * 0.08,
                             width: MediaQuery.of(context).size.width * 0.40,
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.width *
-                                0.1,
-                            width: MediaQuery.of(context).size.width *
-                                0.1,
-                            child: Stack(
-                              children: [
-                                StreamBuilder<QuerySnapshot>(
-                                    stream: _brandDataService
-                                        .getBonosRequestsFromBrand(widget.brandId),
-                                    builder: (context, snapshot) {
-                                      if (snapshot == null ||
-                                          snapshot.data == null ||
-                                          snapshot.data!.docs == null) {
-                                        return Container();
-                                      } else {
-                                        requests = _bonosUtils.documentsToBonosRequests(snapshot.data!.docs).length;
-                                        if(requests != 0) {
-                                          return Align(
-                                            alignment: Alignment.topRight,
-                                            child: Container(
-                                              height: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width *
-                                                  0.03,
-                                              width: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width *
-                                                  0.03,
-                                              decoration: BoxDecoration(
-                                                  color: AppColors.mainColor,
-                                                  borderRadius: const BorderRadius
-                                                      .all(
-                                                      const Radius.circular(
-                                                          20))),
-                                              child: Align(
-                                                alignment: Alignment.topCenter,
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(1.0),
-                                                  child: Text(
-                                                      requests.toString(),
-                                                     style: Theme.of(context)
-                                                      .textTheme
-                                                      .headline3
-                                                      ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 10),
-                                                      textAlign:
-                                                      TextAlign.center
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                        else return Container();
-                                      }
-                                      return Container();
-                                    }),
-                                IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      navigateToBonosRequestScreen();
-                                    });
-                                  },
-                                  padding: EdgeInsets.zero,
-                                  alignment: Alignment.centerRight,
-                                  icon: Icon(
-                                    Icons.person_outline_rounded,
-                                    color: AppColors.white,
-                                    size: MediaQuery.of(context).size.width *
-                                        0.07,
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
@@ -454,6 +377,75 @@ class _BonosProState extends State<BonosPro> {
               ),
             ],
           ),
+          SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                  GestureDetector(
+                    onTap: navigateToBonosRequestScreen,
+                    child: Container(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                      height: MediaQuery.of(context).size.height*0.15,
+                      width: MediaQuery.of(context).size.width*0.9,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Icon(
+                            Icons.confirmation_number_outlined,
+                            color: Theme.of(context).colorScheme.secondary,
+                            size: MediaQuery.of(context).size.width*0.10,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                          Flexible(
+                            child: Text(
+                              AppLocalizations.of(context)!.bonoRequestDescription,
+                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                          StreamBuilder<QuerySnapshot>(
+                              stream: _brandDataService.getBonosRequestsFromBrand(widget.brandId),
+                              builder: (context, snapshot) {
+                                if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
+                                  return Container();
+                                } else {
+                                  requests = _bonosUtils.documentsToBonosRequests(snapshot.data!.docs).length;
+                                  return Container(
+                                    height: MediaQuery.of(context).size.width * 0.08,
+                                    width: MediaQuery.of(context).size.width * 0.08,
+                                    decoration: const BoxDecoration(
+                                        color: AppColors.mainColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(20))
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                          requests.toString(),
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                                          textAlign: TextAlign.center
+                                      ),
+                                    ),
+                                  );
+                                }
+                              }
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                ],
+              ),
+          ),
           StreamBuilder<QuerySnapshot>(
               stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
               builder: (context, snapshot) {
@@ -538,12 +530,13 @@ class _BonosProState extends State<BonosPro> {
   // Navigate to Bonos Request Screen
   void navigateToBonosRequestScreen() {
     Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => BonosRequests(
-            brandId: widget.brandId,
-          ),
-        ));
+      context,
+      CupertinoPageRoute<void>(
+        builder: (context) => BonosRequests(
+          brandId: widget.brandId,
+        ),
+      )
+    );
   }
 
   // Navigate to Add Bonos
