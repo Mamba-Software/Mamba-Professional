@@ -167,7 +167,7 @@ class _BonosProState extends State<BonosPro> {
   Widget returnBono(Bono _bono) {
     //return _bonosUtils.bonoObject(context, _bono, brand, _lColor);
     return Padding(
-      padding:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
       child: BonoCard(
         height: MediaQuery.of(context).size.height*0.22,
         width: MediaQuery.of(context).size.width*0.84,
@@ -175,7 +175,6 @@ class _BonosProState extends State<BonosPro> {
         brand: brand,
         canExpand: true,
         onlyView: false,
-        condition: Condition(),
       ),
     );
   }
@@ -479,7 +478,7 @@ class _BonosProState extends State<BonosPro> {
                                 padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04),
                                 child: returnBono(bono),
                               ),
-                              index == bonosList.length-1 ? SizedBox(height: MediaQuery.of(context).size.width * 0.04) : Container(),
+                              index == bonosList.length-1 ? SizedBox(height: MediaQuery.of(context).size.width * 0.1) : Container(),
                             ],
                           );
                         },

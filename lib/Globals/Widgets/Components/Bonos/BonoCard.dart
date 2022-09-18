@@ -23,7 +23,7 @@ class BonoCard extends StatefulWidget {
   double width = 0;
   Bono bono;
   Brand brand;
-  Condition condition;
+  Condition? condition;
   // Booleans de que fer amb el Bono
   bool canExpand;
   bool? isExpanded;
@@ -36,11 +36,12 @@ class BonoCard extends StatefulWidget {
       required this.width,
       required this.bono,
       required this.brand,
+      this.condition,
       required this.canExpand,
       this.isExpanded,
       this.clientView,
       required this.onlyView,
-      required this.condition})
+      })
       : super(key: key);
 
   @override
@@ -68,11 +69,13 @@ class BonoCardState extends State<BonoCard> {
     if (widget.isExpanded != null && widget.isExpanded!) {
       isExpanded = true;
     }
-    if (widget.onlyView == true) {
-      condition = widget.condition;
-    } else {
+    if (widget.onlyView == false) {
+      isExpandedHeight = isExpandedHeight + 0.4;
+    }
+    if (widget.condition == null) {
       getCondition();
-      isExpandedHeight = isExpandedHeight + 0.35;
+    } else {
+      condition = widget.condition!;
     }
     if (condition.expirationTime != 0) {
       isExpandedHeight = isExpandedHeight + 0.35;

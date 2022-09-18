@@ -1121,7 +1121,6 @@ class _AddEditBonoState extends State<AddEditBono>
                   canExpand: true,
                   isExpanded: true,
                   onlyView: true,
-                  clientView: true,
                   condition: condition,
                 ),
               ],
