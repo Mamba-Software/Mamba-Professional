@@ -24,12 +24,12 @@ class Condition {
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   Condition.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('expirationTime')) {
-      this.expirationTime = documentSnapshot.get("expirationTime");
+      expirationTime = documentSnapshot.get("expirationTime");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('weeklySessions')) {
-      this.weeklySessions = documentSnapshot.get("weeklySessions");
+      weeklySessions = documentSnapshot.get("weeklySessions");
     }
     /*
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('monthlySessions')) {
@@ -43,7 +43,7 @@ class Condition {
 
      */
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('cancelTime')) {
-      this.cancelTime = documentSnapshot.get("cancelTime");
+      cancelTime = documentSnapshot.get("cancelTime");
     }
   }
 
@@ -51,11 +51,11 @@ class Condition {
 
   // Set Basic Data
   set setBasicData(Condition condition) {
-    this.id = condition.id;
-    this.expirationTime = condition.expirationTime;
-    this.weeklySessions = condition.weeklySessions;
+    id = condition.id;
+    expirationTime = condition.expirationTime;
+    weeklySessions = condition.weeklySessions;
     //this.monthlySessions = condition.monthlySessions;
     //this.infiniteSessions = condition.infiniteSessions;
-    this.cancelTime = condition.cancelTime;
+    cancelTime = condition.cancelTime;
   }
 }

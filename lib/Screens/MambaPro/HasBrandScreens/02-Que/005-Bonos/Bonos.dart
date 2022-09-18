@@ -175,7 +175,7 @@ class _BonosProState extends State<BonosPro> {
         brand: brand,
         canExpand: true,
         clientView: false,
-        view: false,
+        onlyView: false,
         condition: Condition(),
       ),
     );
