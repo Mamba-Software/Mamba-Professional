@@ -242,7 +242,7 @@ class _BonosProState extends State<BonosPro> {
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
                                     builder: (BuildContext context) {
                                       return FractionallySizedBox(
-                                        heightFactor: 0.3,
+                                        heightFactor: 0.25,
                                         child: SizedBox(
                                           height: MediaQuery.of(context)
                                                   .size
@@ -284,15 +284,6 @@ class _BonosProState extends State<BonosPro> {
                                                 ListTile(
                                                   title: Text(
                                                       'Desactivados',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText1,
-                                                      textAlign:
-                                                          TextAlign.left),
-                                                ),
-                                                ListTile(
-                                                  title: Text(
-                                                      'Nombre',
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .bodyText1,
