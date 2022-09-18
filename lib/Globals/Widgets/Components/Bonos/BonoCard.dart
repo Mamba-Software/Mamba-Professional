@@ -160,7 +160,7 @@ class BonoCardState extends State<BonoCard> {
             Container(
               height: widget.height,
               width: widget.width,
-              padding: EdgeInsets.all(widget.width * 0.05),
+              padding: EdgeInsets.only(right: widget.width * 0.05, left: widget.width * 0.05, top: widget.width * 0.05, bottom: !isExpanded ? widget.width * 0.05 : 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -330,16 +330,7 @@ class BonoCardState extends State<BonoCard> {
                             ),
                           ),
                         ],
-                      ) : Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            height: widget.height * 0.05,
-                            width: widget.width * 0.8,
-                          ),
-                        ],
-                      ),
+                      ) : Container(),
                     ],
                   ),
                   /*
@@ -431,7 +422,7 @@ class BonoCardState extends State<BonoCard> {
             ),
             isExpanded ? Expanded(
               child: Container(
-                height: widget.height * isExpandedHeight - widget.height,
+                height: widget.height * isExpandedHeight*2 - widget.height,
                 width: widget.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -511,8 +502,6 @@ class BonoCardState extends State<BonoCard> {
                                       "PRECIO",
                                       style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold, color: Colors.white70),
                                       textAlign: TextAlign.left,
-                                      maxLines: 4,
-                                      overflow: TextOverflow.visible,
                                     ),
                                     SizedBox(height: widget.width*0.02,),
                                     Row(
@@ -529,8 +518,6 @@ class BonoCardState extends State<BonoCard> {
                                           "("+(bono.price!/bono.classes!).toStringAsFixed(2)+" €/sesión)",
                                           style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white70, fontStyle: FontStyle.italic),
                                           textAlign: TextAlign.left,
-                                          maxLines: 4,
-                                          overflow: TextOverflow.visible,
                                         ),
                                       ],
                                     ),
@@ -561,11 +548,45 @@ class BonoCardState extends State<BonoCard> {
                                       textAlign: TextAlign.left,
                                     ),
                                     SizedBox(height: widget.width*0.02,),
-                                    ListTile(
+                                    condition.expirationTime == 0 ? ListTile(
+                                      dense: true,
                                       contentPadding: EdgeInsets.zero,
-                                      leading: Icon(Icons.list),
-                                      title: Text("List item index")
-                                    )
+                                      minLeadingWidth: widget.width*0.07,
+                                      leading: Icon(
+                                          Icons.calendar_month,
+                                          size: widget.width*0.07,
+                                          color: Colors.white70),
+                                      title: Text(
+                                        "Expira en 30 días",
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
+                                      )
+                                    ) : Container(),
+                                    condition.expirationTime == 0 ? ListTile(
+                                      dense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      minLeadingWidth: widget.width*0.07,
+                                      leading: Icon(
+                                          Icons.free_cancellation,
+                                          size: widget.width*0.07,
+                                          color: Colors.white70),
+                                      title: Text(
+                                        "Cancelacion gratuita hasta 8 horas",
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
+                                      )
+                                    ) : Container(),
+                                    condition.expirationTime == 0 ? ListTile(
+                                        dense: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        minLeadingWidth: widget.width*0.07,
+                                        leading: Icon(
+                                            Icons.calendar_month,
+                                            size: widget.width*0.07,
+                                            color: Colors.white70),
+                                        title: Text(
+                                          "Expira en 30 días",
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
+                                        )
+                                    ) : Container(),
                                   ],
                                 ),
                               ),
