@@ -19,6 +19,7 @@ class Bono {
   double? opacity;
 
 
+
   Bono({
     this.id,
     this.title,

@@ -53,6 +53,8 @@ class _AddEditBonoState extends State<AddEditBono>
 
   bool bonoImage = false;
 
+  bool seeSessions = false;
+
   var colorSelected = 0;
   var colorSelectedDeg = 0;
 
@@ -76,6 +78,7 @@ class _AddEditBonoState extends State<AddEditBono>
 
   // Boolean isUpdated
   bool isUpdated = false;
+
 
   // Tab Controller
   double addBonosTabValue = 0.20;
@@ -602,7 +605,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         optionTextWrite(
                             TextInputType.number,
                             AppLocalizations.of(context)!.sesionsBono,
-                            "",
+                            "Marca la casilla para indicar que este bono no tiene límite de sesiones.",
                             0.toString(),
                             'Añade las sesiones porfavor',
                             widget.edit ? false : true,
@@ -1143,6 +1146,24 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.isActive = activation;
     });
   }
+  void setSeeSessions(bool? seeSes) {
+    seeSessions = seeSes!;
+    if(seeSessions == true) {
+      clasesController.text = '';
+      bono.classes = 0;
+      weeklyController.text = '';
+      condition.weeklySessions = 0;
+    }
+    else {
+      clasesController.text = '';
+      bono.classes = 0;
+      weeklyController.text = '';
+      condition.weeklySessions = 0;
+    }
+    setState(() {
+
+    });
+  }
 
   void setImage(bool? image) {
     setState(() {
@@ -1264,7 +1285,7 @@ class _AddEditBonoState extends State<AddEditBono>
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              !checkBox? Flexible(
+              !checkBox && variable != 'ses'? Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1281,7 +1302,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     ) : Container(),
                   ],
                 ),
-              ) : !widget.edit? Flexible(
+              ) : variable != 'ses'? Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -1299,7 +1320,39 @@ class _AddEditBonoState extends State<AddEditBono>
                   ],
                 ),
               ) : Container(),
-              checkBox && widget.edit != true
+              variable == 'ses'? Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      titleText,
+                      style: Theme.of(context).textTheme.headline1?.copyWith(
+                          fontWeight: FontWeight.bold, fontSize: 25),
+                    ),
+                    subtitleText != "" ? Text(
+                      subtitleText,
+                      style: Theme.of(context).textTheme.caption,
+                    ) : Container(),
+                  ],
+                ),
+              ) : Container(),
+              variable == 'ses'?
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Checkbox(
+                    value: seeSessions,
+                    onChanged: setSeeSessions,
+                    checkColor: Theme.of(context).primaryColor,
+                    activeColor: Styles.mainColor,
+                  )
+                ],
+              )
+                  : Container(),
+              checkBox
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -1316,7 +1369,8 @@ class _AddEditBonoState extends State<AddEditBono>
             ],
           )
         ),
-        !checkBox? Column(
+
+        !checkBox && !seeSessions && variable != 'ses'? Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
@@ -1377,7 +1431,68 @@ class _AddEditBonoState extends State<AddEditBono>
                 )
               ),
           ],
-        ) : Container()
+        ) : !seeSessions && variable == 'ses'?  Container() : Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.height * 0.00),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                        keyboardType: keyboard,
+                        inputFormatters: variable == 'ses' || variable == 'price' ? [FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),] : null,
+                        initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
+                        maxLines: variable == 'desc'? 5 : null,
+                        minLines: 1,
+                        maxLength: variable == 'title' ? 20 : variable == 'desc'? 100 : null,
+                        controller:  widget.edit == true ? null : controller,
+                        validator: (val) => val!.isEmpty ? errorText : null,
+                        textCapitalization: variable == 'title' ? TextCapitalization.words : TextCapitalization.sentences,
+                        onChanged: (val) {
+                          setState(() {
+                            if (variable == 'title') {
+                              bono.title = val;
+                            } else if (variable == 'desc') {
+                              bono.description = val;
+                            } else if (variable == 'ses') {
+                              bono.classes = int.parse(val);
+                              weeklyController.text = val;
+                              condition.weeklySessions = int.parse(val);
+                            } else if (variable == 'price') {
+                              double price = double.parse(val.replaceAll(',','.'));
+                              print(roundDouble(price, 2));
+                              bono.price = roundDouble(price, 2);
+                            }
+                          });
+                        },
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          suffixText: variable == 'ses' ? "sesiones" : variable == 'price' ?  "euros (€)" : "",
+                          hintStyle: Theme.of(context).textTheme.caption,
+                          hintText: hintText,
+                          //border: InputBorder.none,
+                          errorBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          disabledBorder: InputBorder.none,
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: editable,
+                      ),
+                    ),
+                  ],
+                )
+            ),
+          ],
+        ),
       ],
     );
   }
