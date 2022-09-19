@@ -1,11 +1,14 @@
 import 'package:animated_widgets/widgets/opacity_animated.dart';
 import 'package:animated_widgets/widgets/translation_animated.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Payments/PaymentDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -30,6 +33,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
 
   // Brand Service
   final _brandDataService = BrandDataService();
+  final _paymentDataService = PaymentDataService();
   // Booleans
   bool isLoading = false;
   bool isFirstBuild = true;
@@ -56,8 +60,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
       isFirstBuild = false;
     }
     return Scaffold(
-      body: Container(
-
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           children: [
@@ -333,9 +336,37 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         ),
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.05),
+
+                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    TextButton(
+                        child: Text(AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(), style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline), ),
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.bonoRequest.id!);
+                          Navigator.of(context).pop();
+                        }
+                    ),
                     GestureDetector(
-                      onTap: null,
+                      onTap: isLoading ? null : () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        // Build Purchase Object
+                        Purchase purchase = Purchase();
+                        purchase.purchasedAt = Timestamp.now();
+                        purchase.brandId = widget.brand.id!;
+                        purchase.bonoId = widget.bonoRequest.bonoId;
+                        purchase.price = double.parse(widget.bonoRequest.price!);
+                        purchase.userId = widget.bonoRequest.userId!;
+                        purchase.paymentMethod = paymentMethod;
+                        // Build Purchase Object
+                        await _paymentDataService.addPurchaseToPayments(purchase);
+                        await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.bonoRequest.id!);
+                        await _brandDataService.updateBonoCompras(widget.brand.id!, widget.bonoRequest.bonoId!);
+                        Navigator.of(context).pop();
+                      },
                       child: Container(
                           height: MediaQuery.of(context).size.height*0.1,
                           width: double.infinity,

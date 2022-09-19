@@ -91,7 +91,7 @@ class _MambaState extends State<Mamba> {
       print(error.toString());
     });
     // Setting default open to Homepage
-    pageIndex = 0;
+    //pageIndex = 0;
     // Getting User Information
     getUserAndBrand();
     // On StartUp Dialogs

@@ -1200,6 +1200,10 @@
   "@myRequests": {
     "description": "Wellcome message"
   },
+  "request": "Solicitud",
+  "@request": {
+    "description": "Wellcome message"
+  },
   "noRequestsFound": "No hemos encontrado ninguna solicitud",
   "@noRequestsFound": {
     "description": "Wellcome message"
@@ -2065,7 +2069,7 @@
   "@staff": {
     "description": "Donde message"
   },
-  "bonoRequestDescription": "Consulta las compras de bonos pendientes de confirmación",
+  "bonoRequestDescription": "Compras de bonos pendientes de confirmación",
   "@bonoRequestDescription": {
     "description": "Create bono message"
   },

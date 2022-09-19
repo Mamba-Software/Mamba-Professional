@@ -183,6 +183,9 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                       );
                     case 'BonosRequests':
                       String brandId = args as String;
+                      setState(() {
+                        pageIndex = 5;
+                      });
                       return CupertinoPageRoute(
                         builder: (_) => BonosRequests(
                           brandId: brandId,
