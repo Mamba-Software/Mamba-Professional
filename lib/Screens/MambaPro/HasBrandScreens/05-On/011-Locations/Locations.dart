@@ -368,7 +368,7 @@ class _LocationsState extends State<Locations> {
                             enlargeCenterPage: true,
                             enableInfiniteScroll: false,
                             initialPage: selectedLocation,
-                            viewportFraction: locationContainers.length == 1 ? 0.9 : 0.82,
+                            viewportFraction: 0.82,
                             onPageChanged: (index, reason) {
                               setState(() {
                                 selectedLocation = index;

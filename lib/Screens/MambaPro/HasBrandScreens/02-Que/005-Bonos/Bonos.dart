@@ -471,7 +471,7 @@ class _BonosProState extends State<BonosPro> {
                     );
                   } else {
                     return SliverFillRemaining(
-                      hasScrollBody: true,
+                      hasScrollBody: false,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
