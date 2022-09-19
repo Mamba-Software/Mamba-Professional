@@ -546,6 +546,10 @@ class _BonosProState extends State<BonosPro> {
               edit: edit,
             ),
           ),
-        ));
+        )).whenComplete(() => () {
+          setState(() {
+
+          });
+    });
   }
 }

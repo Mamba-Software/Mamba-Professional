@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 
+import 'Condition.dart';
+
 class Bono {
   String? id;
   String? title;
@@ -17,7 +19,7 @@ class Bono {
   String? imageUrl;
   bool? isDegradate;
   double? opacity;
-
+  Condition? condition;
 
 
   Bono({
@@ -32,6 +34,7 @@ class Bono {
     this.imageUrl,
     this.isDegradate,
     this.opacity,
+    this.condition,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////

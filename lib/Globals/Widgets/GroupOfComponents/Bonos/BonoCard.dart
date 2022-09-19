@@ -72,9 +72,9 @@ class BonoCardState extends State<BonoCard> {
     } else {
       condition = widget.condition!;
     }
-    if (condition.expirationTime != 0) {
+    //if (condition.expirationTime != 0) {
       isExpandedHeight = isExpandedHeight + 0.35;
-    }
+    //}
     if (condition.cancelTime != 0) {
       isExpandedHeight = isExpandedHeight + 0.35;
     }
@@ -105,7 +105,7 @@ class BonoCardState extends State<BonoCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (bono.isActive! && widget.canExpand == true ||
+        if (widget.canExpand == true ||
             widget.onlyView! && widget.canExpand) {
           isExpanded = !isExpanded;
           setState(() {});
@@ -293,7 +293,7 @@ class BonoCardState extends State<BonoCard> {
                                             SizedBox(
                                               width: widget.width * 0.05,
                                             ),
-                                            bono.classes == 100000
+                                            bono.classes == 0
                                                 ? Text(
                                                     AppLocalizations.of(
                                                                 context)!
@@ -418,6 +418,18 @@ class BonoCardState extends State<BonoCard> {
                                               SizedBox(
                                                 height: widget.width * 0.02,
                                               ),
+                                              bono.classes == 0?
+                                              Text(
+                                                'ILIMITADAS',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1
+                                                    ?.copyWith(
+                                                    color: Colors.white70),
+                                                textAlign: TextAlign.left,
+                                                maxLines: 4,
+                                                overflow: TextOverflow.visible,
+                                              ) :
                                               Text(
                                                 bono.classes!.toString(),
                                                 style: Theme.of(context)
@@ -453,7 +465,7 @@ class BonoCardState extends State<BonoCard> {
                                                 height: widget.width * 0.02,
                                               ),
                                               Text(
-                                                "Activo",
+                                                bono.isActive!? "Activo" : "Desactivo",
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1
@@ -515,7 +527,10 @@ class BonoCardState extends State<BonoCard> {
                                                   SizedBox(
                                                     width: widget.width * 0.05,
                                                   ),
-                                                  Text(
+                                                  bono.classes == 0?
+                                                  Container()
+                                                  :
+                                                    Text(
                                                     "(" +
                                                         (bono.price! /
                                                                 bono.classes!)
@@ -543,7 +558,7 @@ class BonoCardState extends State<BonoCard> {
                               SizedBox(
                                 height: widget.height * 0.15,
                               ),
-                              SizedBox(
+                               SizedBox(
                                 width: widget.width * 0.9,
                                 child: Column(
                                   children: [
@@ -598,7 +613,28 @@ class BonoCardState extends State<BonoCard> {
                                                                 color: Colors
                                                                     .white70),
                                                       ))
-                                                  : Container(),
+                                                  : ListTile(
+                                                  dense: true,
+                                                  contentPadding:
+                                                  EdgeInsets.zero,
+                                                  minLeadingWidth:
+                                                  widget.width * 0.07,
+                                                  leading: Icon(
+                                                      Icons
+                                                          .query_builder_outlined,
+                                                      size: widget.width *
+                                                          0.07,
+                                                      color:
+                                                      Colors.white70),
+                                                  title: Text(
+                                                    "No tiene fecha de expiración",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1
+                                                        ?.copyWith(
+                                                        color: Colors
+                                                            .white70),
+                                                  )),
                                               condition.cancelTime != 0
                                                   ? ListTile(
                                                       dense: true,
@@ -661,7 +697,7 @@ class BonoCardState extends State<BonoCard> {
                                   ],
                                 ),
                               ),
-                              SizedBox(
+                               SizedBox(
                                 height: widget.height * 0.05,
                               ),
                             ],
@@ -706,54 +742,102 @@ class BonoCardState extends State<BonoCard> {
             ],
           ),
         ),
-        !bono.isActive! && !widget.onlyView!
-            ? Container(
-                height: widget.height,
-                width: widget.width * 1.4,
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.4),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    if (!widget.onlyView!) {
-                      bono.isActive = !bono.isActive!;
-                      _brandDataService.updateBonoActive(
-                          brand.id!, bono.id!, bono.isActive!);
-                      setState(() {
-                        isExpanded = !isExpanded;
-                      });
-                    }
-                  },
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                        height: widget.height * 0.3,
-                        width: widget.width * 0.4,
-                        decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            border: Border.all(
-                              width: 3,
-                            ),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(30))),
-                        child: Align(
-                          alignment: Alignment.center,
-                          //padding: EdgeInsets.symmetric(horizontal: widget.width * 0.06, vertical: widget.width * 0.02),
-                          child: Text(
-                            bono.isActive!
-                                ? 'Desactivar'.toUpperCase()
-                                : 'Activar'.toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1
-                                ?.copyWith(color: Colors.white),
-                          ),
-                        )),
+        !bono.isActive! && !widget.onlyView!? AnimatedContainer(
+          constraints: BoxConstraints(
+            minHeight: widget.height,
+            minWidth: widget.width,
+            maxWidth: widget.width,
+          ),
+          height: isExpanded ? widget.height * isExpandedHeight : widget.height,
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.3),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+          ),
+          // Animation
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.fastOutSlowIn,
+          child: Column(
+            children: [
+              Container(
+                width: widget.width,
+                padding: EdgeInsets.only(
+                    right: widget.width * 0.05,
+                    left: widget.width * 0.05,
+                    top: widget.width * 0.05,
+                    bottom: !isExpanded ? widget.width * 0.05 : 0),
+
+              ),
+              isExpanded
+                  ? Expanded(
+                child: SizedBox(
+                  height: widget.height * isExpandedHeight * 2 -
+                      widget.height,
+                  width: widget.width,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: widget.height * 0.1),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: widget.width * 0.9,
+                        ),
+                        SizedBox(
+                          height: widget.height * 0.15,
+                        ),
+                        SizedBox(
+                          width: widget.width * 0.9,
+                        ),
+                        SizedBox(
+                          height: widget.height * 0.15,
+                        ),
+                        SizedBox(
+                          width: widget.width * 0.9,
+                        ),
+                        SizedBox(
+                          height: widget.height * 0.05,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
-            : Container(),
+                  : Container(),
+              isExpanded && widget.onlyView == false
+                  ? GestureDetector(
+                onTap: () {
+                  if (widget.onlyView != null &&
+                      widget.onlyView == false) {
+                    navigateToAddBonosScreen(bono, brand, true);
+                  }
+                },
+                child: Container(
+                  height: widget.height * 0.4,
+                  width: widget.width,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      widget.clientView != null &&
+                          widget.clientView == true
+                          ? "Comprar"
+                          : AppLocalizations.of(context)!.edit,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline3
+                          ?.copyWith(color: Theme.of(context).primaryColorDark),
+                    ),
+                  ),
+                ),
+              )
+                  : Container(),
+            ],
+          ),
+        ) : Container(),
       ]
       ),
     );
@@ -773,7 +857,9 @@ class BonoCardState extends State<BonoCard> {
             edit: edit,
           ),
         )).whenComplete(() => () {;
-          setState(() {});
+          setState(() {
+            getCondition();
+          });
         });
   }
 }
