@@ -146,7 +146,7 @@ class BonoCardState extends State<BonoCard> {
                           fit: BoxFit.cover,
                         )
                       : null,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)))
+                  borderRadius: BorderRadius.all(Radius.circular(widget.width*0.03)))
               : BoxDecoration(
                   image: bono.imageUrl != null && bono.imageUrl != ''
                       ? DecorationImage(
@@ -157,7 +157,7 @@ class BonoCardState extends State<BonoCard> {
                       : null,
                   color: Color(int.parse(_lColor.getlColor(bono.color!).hexa!))
                       .withOpacity(bono.opacity!),
-                  borderRadius: const BorderRadius.all(Radius.circular(10))),
+                  borderRadius: BorderRadius.all(Radius.circular(widget.width*0.03))),
           // Animation
           duration: const Duration(milliseconds: 500),
           curve: Curves.fastOutSlowIn,

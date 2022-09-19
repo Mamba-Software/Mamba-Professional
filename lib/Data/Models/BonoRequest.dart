@@ -11,8 +11,10 @@ class BonoRequest {
   String? price;
   String? classes;
   String? bonoId;
+  String? brandId;
   String? userId;
   String? userName;
+  int? paymentMethod;
   Timestamp? timeRequested;
 
   BonoRequest({
@@ -21,35 +23,43 @@ class BonoRequest {
     this.price,
     this.classes,
     this.bonoId,
+    this.brandId,
     this.userId,
     this.userName,
+    this.paymentMethod,
     this.timeRequested,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   BonoRequest.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
-      this.title = documentSnapshot.get("title").toString();
+      title = documentSnapshot.get("title").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
-      this.price = documentSnapshot.get("price");
+      price = documentSnapshot.get("price");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
-      this.classes = documentSnapshot.get("sessions");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('classes')) {
+      classes = documentSnapshot.get("classes");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoId')) {
-      this.bonoId = documentSnapshot.get("bonoId");
+      bonoId = documentSnapshot.get("bonoId");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandId')) {
+      brandId = documentSnapshot.get("brandId");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('userId')) {
-      this.userId = documentSnapshot.get("userId");
+      userId = documentSnapshot.get("userId");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('userName')) {
-      this.userName = documentSnapshot.get("userName");
+      userName = documentSnapshot.get("userName");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('paymentMethod')) {
+      paymentMethod = documentSnapshot.get("paymentMethod");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('timeRequested')) {
-      this.timeRequested = documentSnapshot.get("timeRequested");
+      timeRequested = documentSnapshot.get("timeRequested");
     }
   }
 
@@ -57,13 +67,14 @@ class BonoRequest {
 
   // Set Basic Data
   set setBasicData(BonoRequest bonoRequest) {
-    this.id = bonoRequest.id;
-    this.title = bonoRequest.title;
-    this.price = bonoRequest.price;
-    this.classes = bonoRequest.classes;
-    this.bonoId = bonoRequest.bonoId;
-    this.userId = bonoRequest.userId;
-    this.userName = bonoRequest.userName;
-    this.timeRequested = bonoRequest.timeRequested;
+    id = bonoRequest.id;
+    title = bonoRequest.title;
+    price = bonoRequest.price;
+    classes = bonoRequest.classes;
+    bonoId = bonoRequest.bonoId;
+    userId = bonoRequest.userId;
+    userName = bonoRequest.userName;
+    paymentMethod = bonoRequest.paymentMethod;
+    timeRequested = bonoRequest.timeRequested;
   }
 }

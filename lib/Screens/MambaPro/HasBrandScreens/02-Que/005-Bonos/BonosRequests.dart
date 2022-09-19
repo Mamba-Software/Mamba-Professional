@@ -7,7 +7,10 @@ import 'package:mamba_castelldefels/Data/DataService/Payments/PaymentDataService
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoRequestObject.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../../../Data/Models/Bono.dart';
 import '../../../../../../Data/Models/Usuario.dart';
 import '../../../../../../Globals/Utils/Bonos/BonosUtils.dart';
@@ -43,7 +46,12 @@ class _BonosRequestsState extends State<BonosRequests> {
   Widget returnBonoRequest(BonoRequest _bonoRequest, var user, var bono) {
     Usuario _user = user;
     Bono _bono = bono;
-    return BonoRequestObject(bono: _bono, user: _user, bonoRequest: _bonoRequest, brandId: widget.brandId);
+    return BonoRequestObject(
+      bono: _bono,
+      user: _user,
+      brand: currentBrand,
+      bonoRequest: _bonoRequest,
+    );
   }
 
   @override
@@ -51,7 +59,7 @@ class _BonosRequestsState extends State<BonosRequests> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.myRequests,
+          "Compras de "+AppLocalizations.of(context)!.bonos,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -75,14 +83,11 @@ class _BonosRequestsState extends State<BonosRequests> {
             return ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
-                //controller: scrollController,
                 scrollDirection: Axis.vertical,
                 itemCount: bonosRequestsList.length,
-                itemExtent:
-                MediaQuery.of(context).size.height * 0.20,
+                itemExtent: MediaQuery.of(context).size.height*0.11,
                 itemBuilder: (context, index) {
-                  BonoRequest bonoRequest =
-                  bonosRequestsList[index];
+                  BonoRequest bonoRequest = bonosRequestsList[index];
                   return FutureBuilder(
                       future: _userDataService.getUserDetails(bonoRequest.userId!),
                       // Run check for a single queryRow
@@ -94,19 +99,150 @@ class _BonosRequestsState extends State<BonosRequests> {
                               // Run check for a single queryRow
                               builder: (context, snapshot) {
                                 if (snapshot.data != null) {
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
-                                    child: returnBonoRequest(
-                                        bonoRequest, user, snapshot.data
-                                    ),
+                                  return returnBonoRequest(
+                                      bonoRequest,
+                                      user,
+                                      snapshot.data
                                   );
                                 } else {
-                                  return Center(child: LoadingView());
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    child: ListTile(
+                                      dense: true,
+                                      leading: Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.08,
+                                          width: MediaQuery.of(context).size.height*0.08,
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.grey,
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                      title: Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.03,
+                                          width: MediaQuery.of(context).size.width*0.02,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0),
+                                            ),
+                                            color: AppColors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                          Shimmer.fromColors(
+                                            baseColor: AppColors.grey,
+                                            highlightColor: AppColors.grey.withOpacity(0.5),
+                                            child: Container(
+                                              height: MediaQuery.of(context).size.height*0.02,
+                                              width: MediaQuery.of(context).size.width*0.2,
+                                              decoration: const BoxDecoration(
+                                                color: AppColors.grey,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.04,
+                                          width: MediaQuery.of(context).size.height*0.04,
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.grey,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      onTap: null,
+                                    ),
+                                  );
                                 }
                               }
                           );
                         } else {
-                          return Center(child: LoadingView());
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: ListTile(
+                              dense: true,
+                              leading: Shimmer.fromColors(
+                                baseColor: AppColors.grey,
+                                highlightColor: AppColors.grey.withOpacity(0.5),
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height*0.08,
+                                  width: MediaQuery.of(context).size.height*0.08,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.grey,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                              title: Shimmer.fromColors(
+                                baseColor: AppColors.grey,
+                                highlightColor: AppColors.grey.withOpacity(0.5),
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height*0.03,
+                                  width: MediaQuery.of(context).size.width*0.02,
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                    color: AppColors.grey,
+                                  ),
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                  Shimmer.fromColors(
+                                    baseColor: AppColors.grey,
+                                    highlightColor: AppColors.grey.withOpacity(0.5),
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height*0.02,
+                                      width: MediaQuery.of(context).size.width*0.2,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.grey,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: Shimmer.fromColors(
+                                baseColor: AppColors.grey,
+                                highlightColor: AppColors.grey.withOpacity(0.5),
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height*0.04,
+                                  width: MediaQuery.of(context).size.height*0.04,
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.grey,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              onTap: null,
+                            ),
+                          );
                         }
                       });
                 });

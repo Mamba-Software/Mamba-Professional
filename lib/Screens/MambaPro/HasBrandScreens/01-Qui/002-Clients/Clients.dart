@@ -387,7 +387,7 @@ class _Clients extends State<Clients> {
           isLoading ? SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: ListTile(
                   dense: true,
                   leading: Shimmer.fromColors(

@@ -65,8 +65,7 @@ class BonosUtils {
   List<BonoRequest> documentsToBonosRequests(List<DocumentSnapshot> documents) {
     List<BonoRequest> bonosRequests = [];
     for (int i = 0; i < documents.length; i++) {
-      BonoRequest bonoRequest =
-          BonoRequest.fromObjectAllData(documents[i].id, documents[i]);
+      BonoRequest bonoRequest = BonoRequest.fromObjectAllData(documents[i].id, documents[i]);
       bonosRequests.add(bonoRequest);
     }
     return bonosRequests;

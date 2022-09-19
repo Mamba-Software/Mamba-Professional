@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,21 +8,17 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../../Globals/GlobalVars.dart';
 import '../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'AddBono.dart';
 import 'BonosRequests.dart';
 
 class BonosPro extends StatefulWidget {
@@ -121,7 +116,8 @@ class _BonosProState extends State<BonosPro> {
   }
 
   Future<void> getBrand() async {
-    brand = await _brandDataService.getBrandDetails(widget.brandId);
+    //brand = await _brandDataService.getBrandDetails(widget.brandId);
+    brand = currentBrand;
     setState(() {
       isLoading = false;
     });
