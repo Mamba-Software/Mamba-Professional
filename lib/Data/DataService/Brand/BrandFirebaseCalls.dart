@@ -563,6 +563,7 @@ class BrandFirebaseCalls {
         .collection("Bonos")
         .doc(bono.id)
         .update({
+      "title": bono.title,
       "description": bono.description,
       "isActive": bono.isActive,
       "color": bono.color,
