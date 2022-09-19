@@ -1370,68 +1370,7 @@ class _AddEditBonoState extends State<AddEditBono>
           )
         ),
 
-        !checkBox && !seeSessions && variable != 'ses'? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height * 0.00),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Flexible(
-                      child: TextFormField(
-                        keyboardType: keyboard,
-                        inputFormatters: variable == 'ses' || variable == 'price' ? [FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),] : null,
-                        initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
-                        maxLines: variable == 'desc'? 5 : null,
-                        minLines: 1,
-                        maxLength: variable == 'title' ? 20 : variable == 'desc'? 100 : null,
-                        controller:  widget.edit == true ? null : controller,
-                        validator: (val) => val!.isEmpty ? errorText : null,
-                        textCapitalization: variable == 'title' ? TextCapitalization.words : TextCapitalization.sentences,
-                        onChanged: (val) {
-                          setState(() {
-                            if (variable == 'title') {
-                              bono.title = val;
-                            } else if (variable == 'desc') {
-                              bono.description = val;
-                            } else if (variable == 'ses') {
-                              bono.classes = int.parse(val);
-                              weeklyController.text = val;
-                              condition.weeklySessions = int.parse(val);
-                            } else if (variable == 'price') {
-                              double price = double.parse(val.replaceAll(',','.'));
-                              print(roundDouble(price, 2));
-                              bono.price = roundDouble(price, 2);
-                            }
-                          });
-                        },
-                        style: Theme.of(context).textTheme.bodyText1,
-                        decoration: InputDecoration(
-                          suffixText: variable == 'ses' ? "sesiones" : variable == 'price' ?  "euros (€)" : "",
-                          hintStyle: Theme.of(context).textTheme.caption,
-                          hintText: hintText,
-                          //border: InputBorder.none,
-                          errorBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red),
-                          ),
-                          disabledBorder: InputBorder.none,
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                        enabled: editable,
-                      ),
-                    ),
-                  ],
-                )
-              ),
-          ],
-        ) : !seeSessions && variable == 'ses'?  Container() : Column(
+        !checkBox && variable != 'ses'?  Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
@@ -1492,7 +1431,68 @@ class _AddEditBonoState extends State<AddEditBono>
                 )
             ),
           ],
-        ),
+        ) : variable == 'ses' && !seeSessions? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.height * 0.00),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                        keyboardType: keyboard,
+                        inputFormatters: variable == 'ses' || variable == 'price' ? [FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),] : null,
+                        initialValue: widget.edit == true? variable == 'title'? bono.title : variable == 'desc'? bono.description : variable == 'ses'? bono.classes.toString() : variable == 'price'? bono.price.toString() : null : null,
+                        maxLines: variable == 'desc'? 5 : null,
+                        minLines: 1,
+                        maxLength: variable == 'title' ? 20 : variable == 'desc'? 100 : null,
+                        controller:  widget.edit == true ? null : controller,
+                        validator: (val) => val!.isEmpty ? errorText : null,
+                        textCapitalization: variable == 'title' ? TextCapitalization.words : TextCapitalization.sentences,
+                        onChanged: (val) {
+                          setState(() {
+                            if (variable == 'title') {
+                              bono.title = val;
+                            } else if (variable == 'desc') {
+                              bono.description = val;
+                            } else if (variable == 'ses') {
+                              bono.classes = int.parse(val);
+                              weeklyController.text = val;
+                              condition.weeklySessions = int.parse(val);
+                            } else if (variable == 'price') {
+                              double price = double.parse(val.replaceAll(',','.'));
+                              print(roundDouble(price, 2));
+                              bono.price = roundDouble(price, 2);
+                            }
+                          });
+                        },
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: InputDecoration(
+                          suffixText: variable == 'ses' ? "sesiones" : variable == 'price' ?  "euros (€)" : "",
+                          hintStyle: Theme.of(context).textTheme.caption,
+                          hintText: hintText,
+                          //border: InputBorder.none,
+                          errorBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          disabledBorder: InputBorder.none,
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: editable,
+                      ),
+                    ),
+                  ],
+                )
+            ),
+          ],
+        ) : Container(),
       ],
     );
   }
