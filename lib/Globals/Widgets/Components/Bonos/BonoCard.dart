@@ -258,10 +258,12 @@ class BonoCardState extends State<BonoCard> {
                                               ? Icon(
                                                   Icons.expand_less,
                                                   size: widget.width * 0.1,
+                                                    color: AppColors.white
                                                 )
                                               : Icon(
                                                   Icons.expand_more,
                                                   size: widget.width * 0.1,
+                                                  color: AppColors.white
                                                 )),
                                     ),
                                   ),
@@ -348,13 +350,13 @@ class BonoCardState extends State<BonoCard> {
                                                 child: isExpanded
                                                     ? Icon(
                                                         Icons.expand_less,
-                                                        size:
-                                                            widget.width * 0.1,
+                                                        size: widget.width * 0.1,
+                                                        color: AppColors.white
                                                       )
                                                     : Icon(
                                                         Icons.expand_more,
-                                                        size:
-                                                            widget.width * 0.1,
+                                                        size: widget.width * 0.1,
+                                                        color: AppColors.white
                                                       )),
                                           ),
                                         ),
@@ -414,7 +416,9 @@ class BonoCardState extends State<BonoCard> {
                                                     .bodyText2
                                                     ?.copyWith(
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                            FontWeight.bold,
+                                                    color: AppColors.white
+                                                ),
                                                 textAlign: TextAlign.left,
                                               ),
                                               SizedBox(
@@ -447,7 +451,8 @@ class BonoCardState extends State<BonoCard> {
                                                     .bodyText2
                                                     ?.copyWith(
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                            FontWeight.bold,
+                                                    color: AppColors.white),
                                                 textAlign: TextAlign.left,
                                               ),
                                               SizedBox(
@@ -489,7 +494,8 @@ class BonoCardState extends State<BonoCard> {
                                                     .bodyText2
                                                     ?.copyWith(
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                            FontWeight.bold,
+                                                    color: AppColors.white),
                                                 textAlign: TextAlign.left,
                                               ),
                                               SizedBox(
@@ -564,7 +570,8 @@ class BonoCardState extends State<BonoCard> {
                                                     .bodyText2
                                                     ?.copyWith(
                                                         fontWeight:
-                                                            FontWeight.bold),
+                                                            FontWeight.bold,
+                                                    color: AppColors.white),
                                                 textAlign: TextAlign.left,
                                               ),
                                               SizedBox(
@@ -680,9 +687,9 @@ class BonoCardState extends State<BonoCard> {
                       child: Container(
                         height: widget.height * 0.4,
                         width: widget.width,
-                        decoration: const BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.only(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: const BorderRadius.only(
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10),
                           ),
@@ -696,7 +703,7 @@ class BonoCardState extends State<BonoCard> {
                             style: Theme.of(context)
                                 .textTheme
                                 .headline3
-                                ?.copyWith(color: AppColors.black),
+                                ?.copyWith(color: Theme.of(context).primaryColorDark),
                           ),
                         ),
                       ),
@@ -732,7 +739,6 @@ class BonoCardState extends State<BonoCard> {
                         decoration: BoxDecoration(
                             color: Colors.transparent,
                             border: Border.all(
-                              color: Colors.white,
                               width: 3,
                             ),
                             borderRadius:

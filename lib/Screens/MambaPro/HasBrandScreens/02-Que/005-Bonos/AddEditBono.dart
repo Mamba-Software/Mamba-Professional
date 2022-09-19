@@ -688,14 +688,19 @@ class _AddEditBonoState extends State<AddEditBono>
       body: Column(
         children: [
           SizedBox(height: MediaQuery.of(context).size.height*0.03,),
-          BonoCard(
-            height: MediaQuery.of(context).size.height*0.22,
-            width: MediaQuery.of(context).size.width*0.84,
-            bono: bono,
-            brand: widget.brand,
-            canExpand: false,
-            onlyView: true,
-            condition: condition,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BonoCard(
+                height: MediaQuery.of(context).size.height*0.22,
+                width: MediaQuery.of(context).size.width*0.84,
+                bono: bono,
+                brand: widget.brand,
+                canExpand: false,
+                onlyView: true,
+                condition: condition,
+              ),
+            ]
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02,),
           Expanded(
