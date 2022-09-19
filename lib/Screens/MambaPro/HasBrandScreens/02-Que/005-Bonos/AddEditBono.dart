@@ -10,7 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

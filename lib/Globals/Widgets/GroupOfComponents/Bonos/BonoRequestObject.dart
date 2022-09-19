@@ -14,14 +14,15 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Bonos/BonoCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ConfirmBuyBono.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/BonosDEL%C3%87.dart';
 
 import '../../../../Data/LibraryModels/lColor.dart';
 import '../../../../Data/LibraryModels/lDegradate.dart';
 import '../../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
-import '../../GroupOfComponents/Dialogs/ActionDialogs/RequestBonoConfirmationDialog.dart';
+import '../Dialogs/ActionDialogs/RequestBonoConfirmationDialog.dart';
 
 class BonoRequestObject extends StatefulWidget {
   Bono bono;
@@ -100,17 +101,44 @@ class bonoRequestObjectState extends State<BonoRequestObject> {
         ),
       ),
       onTap: () async {
+        var result = await showModalBottomSheet<bool?>(
+          context: context,
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          builder: (BuildContext context) {
+            return FractionallySizedBox(
+              heightFactor: 0.9,
+              child: ConfirmBuyBono(
+                bono: widget.bono,
+                user: widget.user,
+                brand: widget.brand,
+                bonoRequest: widget.bonoRequest,
+              ),
+            );
+          },
+        );
+        if (result != null && result) {
+          //bonosSolicitudes.add(bono);
+        }
+
+        /*
         Purchase purchase = Purchase();
         int? paymentMethod = await showDialog(
             context: context,
             builder: (_) {
               return RequestBonoConfirmationDialog(
-                text: 'Si aceptas se le otorgaran ' + bonoRequest.classes! + ' sesiones',
-                userId: user.id!,
+                bono: widget.bono,
+                user: widget.user,
+                brand: widget.brand,
+                bonoRequest: widget.bonoRequest,
               );
             }
         );
-
         if(paymentMethod != null) {
           if (paymentMethod >= 0) {
             print('create');
@@ -127,11 +155,13 @@ class bonoRequestObjectState extends State<BonoRequestObject> {
             //_userDataService.deleteUserBonoRequest(_bonoRequest.userId!, widget.brandId, _bonoRequest.bonoId!);
             _brandDataService.deleteBrandBonoRequest(widget.brand.id!, bonoRequest.bonoId!);
             _brandDataService.updateBonoCompras(widget.brand.id!, bonoRequest.bonoId!);
-          }
-          else if (paymentMethod == -1) {
+          } else if (paymentMethod == -1) {
             _brandDataService.deleteBrandBonoRequest(widget.brand.id!, bonoRequest.bonoId!);
           }
+
         }
+
+         */
       },
     );
   }

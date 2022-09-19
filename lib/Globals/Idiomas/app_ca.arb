@@ -472,5 +472,7 @@
   "colorSolid": "Color sòlid",
   "degradateSolid": "Degradats",
   "metalized": "Metalitzats",
-  "filterBy": "Ordenar per"
+  "filterBy": "Ordenar per",
+  "cashPaymentMethod": "Efectiu",
+  "transferPaymentMethod": "Transferència"
 }

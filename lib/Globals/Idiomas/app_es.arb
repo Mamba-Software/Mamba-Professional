@@ -2120,5 +2120,13 @@
   "noData": "Sin datos",
   "@noData": {
     "description": "Donde message"
+  },
+  "cashPaymentMethod": "Efectivo",
+  "@cashPaymentMethod": {
+    "description": "Donde message"
+  },
+  "transferPaymentMethod": "Transferencia",
+  "@transferPaymentMethod": {
+    "description": "Donde message"
   }
 }
