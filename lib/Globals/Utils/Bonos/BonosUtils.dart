@@ -22,38 +22,19 @@ class BonosUtils {
     List<Bono> bonos = [];
     for (int i = 0; i < documents.length; i++) {
       Bono bono = Bono.fromObjectAllData(documents[i].id, documents[i]);
-      bonos.add(bono);
-    }
+      if(ordenSelection == 0) {
+        bonos.add(bono);
+      } else if(ordenSelection == 1 && bono.isActive!) {
+        bonos.add(bono);
+      } else if(ordenSelection == 2 && !bono.isActive!) {
+        bonos.add(bono);
+      }
 
-    if(ordenSelection == 2) {
-      bonos.sort((a, b) {
-        if (b.isActive!) {
-          return 1;
-        }
-        return -1;
-      });
     }
-    if(ordenSelection == 1) {
-      bonos.sort((a, b) {
-        if (b.isActive!) {
-          return -1;
-        }
-        return 1;
-      });
-    }
-    if(ordenSelection == 0) {
       bonos.sort((a, b) {
         return a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
       });
-    }
-    if(ordenSelection == 3) {
-      bonos.sort((a, b) {
-        if (b.isActive!) {
-          return -1;
-        }
-        return 1;
-      });
-    }
+
 
 
     return bonos;

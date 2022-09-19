@@ -81,11 +81,10 @@ class _BonosProState extends State<BonosPro> {
   Brand brand = Brand();
 
   //Ordenar bonos
-  List<String> ordenBonos = [
-    'Activos',
-    'Desactivados',
-    'Más nuevos',
-    'Más antiguos'
+  List<bool> ordenBonos = [
+    true,
+    false,
+    false,
   ];
 
   String ordenBonosSelected = 'Activos';
@@ -258,9 +257,7 @@ class _BonosProState extends State<BonosPro> {
                                               children: [
                                                 ListTile(
                                                   title: Text(
-                                                      AppLocalizations.of(
-                                                              context)!
-                                                          .filterBy,
+                                                      'Ver los bonos',
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .caption,
@@ -269,22 +266,106 @@ class _BonosProState extends State<BonosPro> {
                                                   dense: true,
                                                 ),
                                                 ListTile(
-                                                  title: Text(
-                                                       'Activados',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText1,
-                                                      textAlign:
-                                                          TextAlign.left),
+                                                  onTap: () {
+
+                                                    ordenBonos[1] = !ordenBonos[1];
+                                                    print(ordenBonos);
+
+                                                    if(ordenBonos[1] && ordenBonos[2]) {
+                                                      orderBonoSelectedNumber = 0;
+                                                    }
+                                                    else if(ordenBonos[1]) {
+                                                      orderBonoSelectedNumber = 1;
+                                                    }
+                                                    else if(ordenBonos[2]) {
+                                                      orderBonoSelectedNumber = 2;
+                                                    }
+                                                    else {
+                                                      orderBonoSelectedNumber = 0;
+                                                    }
+
+                                                    setState(() {
+
+                                                    });
+                                                    Navigator.pop(context);
+                                                  },
+                                                  title: AnimatedContainer(
+                                                    height: MediaQuery.of(context).size.width * 0.10,
+                                                    width: MediaQuery.of(context).size.width * 0.2,
+                                                    decoration: BoxDecoration(
+                                                      color: ordenBonos[1]? AppColors.mainColor : null,
+                                                        border: Border.all(
+                                                          color: Theme.of(context).primaryColor,
+                                                        ),
+                                                        borderRadius: const BorderRadius.all(Radius.circular(20))),
+                                                    duration: const Duration(milliseconds: 500),
+                                                    curve: Curves.fastOutSlowIn,
+                                                    child: Align(
+                                                      alignment: Alignment.center,
+                                                      //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                              'Activados',
+                                                              style:  Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText1?.copyWith(color: Theme.of(context).primaryColor),
+                                                              textAlign:
+                                                              TextAlign.center)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                                 ListTile(
-                                                  title: Text(
-                                                      'Desactivados',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText1,
-                                                      textAlign:
-                                                          TextAlign.left),
+                                                  onTap: () {
+                                                    ordenBonos[2] = !ordenBonos[2];
+                                                    if(ordenBonos[1] && ordenBonos[2]) {
+                                                      orderBonoSelectedNumber = 0;
+                                                    }
+                                                    else if(ordenBonos[1]) {
+                                                      orderBonoSelectedNumber = 1;
+                                                    }
+                                                    else if(ordenBonos[2]) {
+                                                      orderBonoSelectedNumber = 2;
+                                                    }
+                                                    else {
+                                                      orderBonoSelectedNumber = 0;
+                                                    }
+                                                    setState(() {
+
+                                                    });
+                                                    Navigator.pop(context);
+                                                  },
+                                                  title: AnimatedContainer(
+                                                    height: MediaQuery.of(context).size.width * 0.10,
+                                                    width: MediaQuery.of(context).size.width * 0.2,
+                                                    decoration: BoxDecoration(
+                                                        color: ordenBonos[2]? AppColors.mainColor : null,
+                                                        border: Border.all(
+                                                          color:  Theme.of(context).primaryColor,
+                                                        ),
+                                                        borderRadius: const BorderRadius.all(Radius.circular(20))),
+                                                    duration: const Duration(milliseconds: 500),
+                                                    curve: Curves.fastOutSlowIn,
+                                                    child: Align(
+                                                      alignment: Alignment.center,
+                                                      //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                              'Desactivados',
+                                                              style: Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyText1?.copyWith(color: Theme.of(context).primaryColor),
+                                                              textAlign:
+                                                              TextAlign.center)
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),

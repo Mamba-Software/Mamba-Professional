@@ -2132,5 +2132,66 @@
   "transferPaymentMethod": "Transferencia",
   "@transferPaymentMethod": {
     "description": "Donde message"
+  },
+  "ilimitadas": "ilimitadas",
+  "@ilimitadas": {
+    "description": "ilimitadas message"
+  },
+  "numberSessions": "Nº sesiones",
+  "@numberSessions": {
+    "description": "numberSessions message"
+  },
+  "buy": "Comprar",
+  "@buy": {
+    "description": "buy message"
+  },
+  "disponibilidad": "Disponibilidad",
+  "@disponibilidad": {
+    "description": "disponibilidad message"
+  },
+  "active": "Activo",
+  "@active": {
+    "description": "active message"
+  },
+  "desactive": "Desactivo",
+  "@desactive": {
+    "description": "desactive message"
+  },
+  "price": "Precio",
+  "@price": {
+    "description": "price message"
+  },
+  "session": "sesión",
+  "@session":{
+    "description": "session Text"
+  },
+  "conditions": "Condiciones",
+  "@conditions":{
+    "description": "conditions Text"
+  },
+  "expiresAt": "Expira en",
+  "@expiresAt":{
+    "description": "expiresAt Text"
+  },
+  "noExpireDate":  "No tiene fecha de expiración",
+  "@noExpireDate":{
+    "description": "noExpireDate Text"
+  },
+  "hours":  "Horas",
+  "@hours":{
+    "description": "hours Text"
+  },
+  "cancelTimeAt":  "Cancelación gratuita hasta",
+  "@cancelTimeAt":{
+    "description": "cancelTimeAt Text"
+  },
+  "max":  "Máximo",
+  "@max":{
+    "description": "max Text"
+  },
+  "trainsPerWeek":  "Entrenos por semana",
+  "@trainsPerWekk":{
+    "description": "trainsPerWekk Text"
   }
+
 }

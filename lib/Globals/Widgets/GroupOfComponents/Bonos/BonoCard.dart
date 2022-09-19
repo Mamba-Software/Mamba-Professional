@@ -299,7 +299,8 @@ class BonoCardState extends State<BonoCard> {
                                                                 context)!
                                                             .sessions
                                                             .toUpperCase() +
-                                                        " ILIMITADAS",
+                                                        " " +  AppLocalizations.of(
+                                                        context)!.ilimitadas.toUpperCase(),
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyText1
@@ -404,7 +405,8 @@ class BonoCardState extends State<BonoCard> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "Nº SESIONES",
+                                              AppLocalizations.of(
+                                              context)!.numberSessions.toUpperCase(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2
@@ -420,7 +422,8 @@ class BonoCardState extends State<BonoCard> {
                                               ),
                                               bono.classes == 0?
                                               Text(
-                                                'ILIMITADAS',
+                                                AppLocalizations.of(
+                                                    context)!.ilimitadas.toUpperCase(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1
@@ -451,7 +454,8 @@ class BonoCardState extends State<BonoCard> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "DISPONIBILIDAD",
+                                                AppLocalizations.of(
+                                                    context)!.disponibilidad.toUpperCase(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2
@@ -465,7 +469,9 @@ class BonoCardState extends State<BonoCard> {
                                                 height: widget.width * 0.02,
                                               ),
                                               Text(
-                                                bono.isActive!? "Activo" : "Desactivo",
+                                                bono.isActive!? AppLocalizations.of(
+                                                    context)!.active : AppLocalizations.of(
+                                                    context)!.desactive,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1
@@ -494,7 +500,8 @@ class BonoCardState extends State<BonoCard> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "PRECIO",
+                                                AppLocalizations.of(
+                                                    context)!.price.toUpperCase(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2
@@ -536,7 +543,8 @@ class BonoCardState extends State<BonoCard> {
                                                                 bono.classes!)
                                                             .toStringAsFixed(
                                                                 2) +
-                                                        " €/sesión)",
+                                                        " €/" + AppLocalizations.of(
+                                                        context)!.session + ')',
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyText2
@@ -573,7 +581,8 @@ class BonoCardState extends State<BonoCard> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                "CONDICIONES",
+                                                AppLocalizations.of(
+                                                    context)!.conditions.toUpperCase(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2
@@ -601,11 +610,13 @@ class BonoCardState extends State<BonoCard> {
                                                           color:
                                                               Colors.white70),
                                                       title: Text(
-                                                        "Expira en " +
+                                                        AppLocalizations.of(
+                                                            context)!.expiresAt + " " +
                                                             condition
                                                                 .expirationTime
                                                                 .toString() +
-                                                            " días",
+                                                            " " + AppLocalizations.of(
+                                                            context)!.days.toLowerCase(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyText1
@@ -627,7 +638,8 @@ class BonoCardState extends State<BonoCard> {
                                                       color:
                                                       Colors.white70),
                                                   title: Text(
-                                                    "No tiene fecha de expiración",
+                                                    AppLocalizations.of(
+                                                        context)!.noExpireDate,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodyText1
@@ -650,10 +662,12 @@ class BonoCardState extends State<BonoCard> {
                                                           color:
                                                               Colors.white70),
                                                       title: Text(
-                                                        "Cancelacion gratuita hasta " +
+                                                        AppLocalizations.of(
+                                                            context)!.cancelTimeAt + " " +
                                                             condition.cancelTime
                                                                 .toString() +
-                                                            " horas",
+                                                            " " + AppLocalizations.of(
+                                                            context)!.hours.toLowerCase(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyText1
@@ -676,11 +690,13 @@ class BonoCardState extends State<BonoCard> {
                                                           color:
                                                               Colors.white70),
                                                       title: Text(
-                                                        "Máximo " +
+                                                        AppLocalizations.of(
+                                                            context)!.max + " " +
                                                             condition
                                                                 .weeklySessions
                                                                 .toString() +
-                                                            " entrenos por semana",
+                                                            " " + AppLocalizations.of(
+                                                            context)!.trainsPerWeek.toLowerCase(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyText1
@@ -728,7 +744,8 @@ class BonoCardState extends State<BonoCard> {
                           child: Text(
                             widget.clientView != null &&
                                     widget.clientView == true
-                                ? "Comprar"
+                                ? AppLocalizations.of(
+                                context)!.buy
                                 : AppLocalizations.of(context)!.edit,
                             style: Theme.of(context)
                                 .textTheme
@@ -824,7 +841,8 @@ class BonoCardState extends State<BonoCard> {
                     child: Text(
                       widget.clientView != null &&
                           widget.clientView == true
-                          ? "Comprar"
+                          ? AppLocalizations.of(
+                          context)!.buy
                           : AppLocalizations.of(context)!.edit,
                       style: Theme.of(context)
                           .textTheme
@@ -856,10 +874,6 @@ class BonoCardState extends State<BonoCard> {
             bono: bono,
             edit: edit,
           ),
-        )).whenComplete(() => () {;
-          setState(() {
-            getCondition();
-          });
-        });
+        ));
   }
 }
