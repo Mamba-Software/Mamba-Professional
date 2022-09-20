@@ -473,15 +473,16 @@
   "colorSolid": "Color sòlid",
   "degradateSolid": "Degradats",
   "metalized": "Metalitzats",
-  "filterBy": "Ordenar per",
+  "orderBy": "Ordenar per",
+  "filterBy": "Filtrar per",
   "cashPaymentMethod": "Efectiu",
   "transferPaymentMethod": "Transferència",
   "ilimitadas": "ilimitades",
   "numberSessions": "Nº sessions",
   "buy": "Comprar",
-  "disponibilidad": "Disponibilitat",
   "active": "Actiu",
-  "desactive": "Desactiu",
+  "desactive": "Inactiu",
+
   "price": "Preu",
   "session": "sessió",
   "conditions": "Condicions",
@@ -490,5 +491,8 @@
   "cancelTimeAt":  "Cancelació gratuita fins a",
   "hours":  "hores",
   "max":  "Màxim",
-  "trainsPerWeek":  "Entrenaments per setmana"
+  "trainsPerWeek":  "Entrenaments per setmana",
+  "first": "Primer",
+  "alphabetAtoZ":"Ordenar de A-Z",
+  "alphabetZtoA": "Ordenar de Z-A"
 }

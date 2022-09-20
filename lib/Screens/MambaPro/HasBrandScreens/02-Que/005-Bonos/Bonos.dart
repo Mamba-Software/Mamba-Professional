@@ -38,105 +38,50 @@ class BonosPro extends StatefulWidget {
 }
 
 class _BonosProState extends State<BonosPro> {
+  // Screen Dimensions
+  double safeAreaHeight = 0;
+  double safeAreaWidth = 0;
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
-
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients &&
-        _scrollController!.offset >
-            (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
-
+  // Brand Service
+  final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = true;
-  final _lColor = lColor();
-
+  // Number Request
+  int requests = 0;
   // Bonos list
   List<Bono> bonosList = [];
-  List<Usuario> allClients = [];
-
-  //Brand Service
-  final _brandDataService = BrandDataService();
-  final _userDataService = UserDataService();
-
-  //Utils bonos
   final _bonosUtils = BonosUtils();
-
-  //boolean to filter by actives
-  bool seeActives = true;
-
-  // Screen Dimensions
-  var safeAreaHeight;
-  var safeAreaWidth;
-
   // Boolean Loading
   bool isFirstBuild = true;
   bool isDark = false;
+  // Filtrar bonos
+  int filterBonosNumber = 0;
+  List<bool> filterByBonos = [true, false];
+  // Ordernar bonos
+  int orderByBonosNumber = 0;
+  int alphabeticOrder = 0;
+  List<bool> orderByBonos = [true, false, true, false];
 
-  //HashMap to control the bonos given
-  HashMap hashMap = HashMap<String, String>();
 
-  //Brand
-  Brand brand = Brand();
-
-  //Ordenar bonos
-  List<bool> ordenBonos = [
-    true,
-    false,
-    false,
-  ];
-
-  String ordenBonosSelected = 'Activos';
-
-  int orderBonoSelectedNumber = 0;
-
-  String bonoSee = 'nadie';
-
-  int requests = 0;
 
   @override
   void initState() {
-
     super.initState();
     _scrollController = ScrollController()
-      ..addListener(
-        () => _isAppBarExpanded
-            ? setState(() {
-                appBarExpanded = true;
-              })
-            : setState(() {
-                appBarExpanded = false;
-              }),
-      );
-    getBrand();
-    //getBrandBonos();
-    //getAllUsers();
-  }
-
-  Future<void> getBrand() async {
-    //brand = await _brandDataService.getBrandDetails(widget.brandId);
-    brand = currentBrand;
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<void> getAllUsers() async {
-    List<Usuario> brandUsers =
-        await _brandDataService.getBrandUsers(currentBrand.id!);
-    allClients = [];
-    for (var i = 0; i < brandUsers.length; i++) {
-      Usuario user = brandUsers[i];
-      if (!user.isTrainer!) {
-        allClients.add(user);
-      }
-    }
-    // Sort Clients
-    allClients.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
-    await Future.delayed(const Duration(milliseconds: 500));
+    ..addListener(
+    () => _isAppBarExpanded
+    ? setState(() {
+        appBarExpanded = true;
+      })
+    : setState(() {
+        appBarExpanded = false;
+      }),
+    );
   }
 
   // Init Device Sizes
@@ -148,15 +93,41 @@ class _BonosProState extends State<BonosPro> {
     print("SafeArea H and W: " + safeAreaHeight.toString() + " " + safeAreaWidth.toString());
   }
 
-  String getUsersFullName(Usuario user) {
-    return "${user.firstName} ${user.lastName}";
+  // Navigate to Bonos Request Screen
+  void navigateToBonosRequestScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => BonosRequests(
+            brandId: widget.brandId,
+          ),
+        )
+    );
   }
 
-  // Gets the bonos from the brand
-  Future<void> getBrandBonos() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    setState(() {
-      isLoading = false;
+  // Navigate to Add Bonos
+  void navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: AddEditBono(
+              brand: _brand,
+              bono: bono,
+              edit: edit,
+            ),
+          ),
+        )).whenComplete(() => () {
+      setState(() {
+
+      });
     });
   }
 
@@ -225,8 +196,7 @@ class _BonosProState extends State<BonosPro> {
                               width: MediaQuery.of(context).size.width * 0.11,
                               child: TextButton(
                                 onPressed: () async {
-                                  int? result =
-                                      await showModalBottomSheet<int?>(
+                                  await showModalBottomSheet(
                                     context: context,
                                     isScrollControlled: true,
                                     shape: const RoundedRectangleBorder(
@@ -236,150 +206,183 @@ class _BonosProState extends State<BonosPro> {
                                     ),
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
                                     builder: (BuildContext context) {
-                                      return FractionallySizedBox(
-                                        heightFactor: 0.25,
-                                        child: SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.4,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Padding(
-                                            padding: EdgeInsets.all(
-                                                MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.02),
-                                            child: Column(
-                                              mainAxisAlignment:
+                                      return StatefulBuilder(
+                                        builder: (BuildContext context, StateSetter setStateBottom) {
+                                          return FractionallySizedBox(
+                                            heightFactor: 0.56,
+                                            child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
+                                              width: MediaQuery.of(context).size.width,
+                                              child: Padding(
+                                                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                child: Column(
+                                                  mainAxisAlignment:
                                                   MainAxisAlignment.start,
-                                              children: [
-                                                ListTile(
-                                                  title: Text(
-                                                      'Ver los bonos',
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .caption,
-                                                      textAlign:
-                                                          TextAlign.left),
-                                                  dense: true,
-                                                ),
-                                                ListTile(
-                                                  onTap: () {
-
-                                                    ordenBonos[1] = !ordenBonos[1];
-                                                    print(ordenBonos);
-
-                                                    if(ordenBonos[1] && ordenBonos[2]) {
-                                                      orderBonoSelectedNumber = 0;
-                                                    }
-                                                    else if(ordenBonos[1]) {
-                                                      orderBonoSelectedNumber = 1;
-                                                    }
-                                                    else if(ordenBonos[2]) {
-                                                      orderBonoSelectedNumber = 2;
-                                                    }
-                                                    else {
-                                                      orderBonoSelectedNumber = 0;
-                                                    }
-
-                                                    setState(() {
-
-                                                    });
-                                                    Navigator.pop(context);
-                                                  },
-                                                  title: AnimatedContainer(
-                                                    height: MediaQuery.of(context).size.width * 0.10,
-                                                    width: MediaQuery.of(context).size.width * 0.2,
-                                                    decoration: BoxDecoration(
-                                                      color: ordenBonos[1]? AppColors.mainColor : null,
-                                                        border: Border.all(
-                                                          color: Theme.of(context).primaryColor,
-                                                        ),
-                                                        borderRadius: const BorderRadius.all(Radius.circular(20))),
-                                                    duration: const Duration(milliseconds: 500),
-                                                    curve: Curves.fastOutSlowIn,
-                                                    child: Align(
-                                                      alignment: Alignment.center,
-                                                      //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Text(
-                                                              'Activados',
-                                                              style:  Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyText1?.copyWith(color: Theme.of(context).primaryColor),
-                                                              textAlign:
-                                                              TextAlign.center)
-                                                        ],
+                                                  children: [
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.filterBy,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                          textAlign: TextAlign.left
                                                       ),
+                                                      dense: true,
                                                     ),
-                                                  ),
-                                                ),
-                                                ListTile(
-                                                  onTap: () {
-                                                    ordenBonos[2] = !ordenBonos[2];
-                                                    if(ordenBonos[1] && ordenBonos[2]) {
-                                                      orderBonoSelectedNumber = 0;
-                                                    }
-                                                    else if(ordenBonos[1]) {
-                                                      orderBonoSelectedNumber = 1;
-                                                    }
-                                                    else if(ordenBonos[2]) {
-                                                      orderBonoSelectedNumber = 2;
-                                                    }
-                                                    else {
-                                                      orderBonoSelectedNumber = 0;
-                                                    }
-                                                    setState(() {
-
-                                                    });
-                                                    Navigator.pop(context);
-                                                  },
-                                                  title: AnimatedContainer(
-                                                    height: MediaQuery.of(context).size.width * 0.10,
-                                                    width: MediaQuery.of(context).size.width * 0.2,
-                                                    decoration: BoxDecoration(
-                                                        color: ordenBonos[2]? AppColors.mainColor : null,
-                                                        border: Border.all(
-                                                          color:  Theme.of(context).primaryColor,
-                                                        ),
-                                                        borderRadius: const BorderRadius.all(Radius.circular(20))),
-                                                    duration: const Duration(milliseconds: 500),
-                                                    curve: Curves.fastOutSlowIn,
-                                                    child: Align(
-                                                      alignment: Alignment.center,
-                                                      //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Text(
-                                                              'Desactivados',
-                                                              style: Theme.of(context)
-                                                                  .textTheme
-                                                                  .bodyText1?.copyWith(color: Theme.of(context).primaryColor),
-                                                              textAlign:
-                                                              TextAlign.center)
-                                                        ],
+                                                    ListTile(
+                                                      onTap: () {
+                                                        setStateBottom(() {
+                                                          filterByBonos[0] = !filterByBonos[0];
+                                                        });
+                                                      },
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.active,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
                                                       ),
+                                                      trailing: filterByBonos[0] ? SizedBox(
+                                                        width: MediaQuery.of(context).size.width * 0.15,
+                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
                                                     ),
-                                                  ),
+                                                    ListTile(
+                                                      onTap: () {
+                                                        setStateBottom(() {
+                                                          filterByBonos[1] = !filterByBonos[1];
+                                                        });
+                                                      },
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.desactive,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                      trailing: filterByBonos[1] ? SizedBox(
+                                                        width: MediaQuery.of(context).size.width * 0.15,
+                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                    ),
+
+                                                    ListTile(
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.orderBy,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                      dense: true,
+                                                    ),
+
+                                                    ListTile(
+                                                      onTap: () {
+                                                        setStateBottom(() {
+                                                          orderByBonos[0] = !orderByBonos[0];
+                                                          orderByBonos[1] = !orderByBonos[1];
+                                                        });
+                                                      },
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.alphabetAtoZ,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                      trailing: orderByBonos[0] ? SizedBox(
+                                                        width: MediaQuery.of(context).size.width * 0.15,
+                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                    ),
+                                                    ListTile(
+                                                      onTap: () {
+                                                        setStateBottom(() {
+                                                          orderByBonos[1] = !orderByBonos[1];
+                                                          orderByBonos[0] = !orderByBonos[0];
+                                                        });
+                                                      },
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.alphabetZtoA,
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                      trailing: orderByBonos[1] ? SizedBox(
+                                                        width: MediaQuery.of(context).size.width * 0.15,
+                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                    ),
+
+                                                    ListTile(
+                                                      onTap: () {
+                                                        setStateBottom(() {
+                                                          orderByBonos[2] = !orderByBonos[2];
+                                                          orderByBonos[3] = !orderByBonos[3];
+                                                        });
+                                                      },
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.active+" "+AppLocalizations.of(context)!.first.toLowerCase(),
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                      trailing: orderByBonos[2] ? SizedBox(
+                                                        width: MediaQuery.of(context).size.width * 0.15,
+                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                    ),
+                                                    ListTile(
+                                                      onTap: () {
+                                                        setStateBottom(() {
+                                                          orderByBonos[3] = !orderByBonos[3];
+                                                          orderByBonos[2] = !orderByBonos[2];
+                                                        });
+                                                      },
+                                                      title: Text(
+                                                          AppLocalizations.of(context)!.desactive+" "+AppLocalizations.of(context)!.first.toLowerCase(),
+                                                          style: Theme.of(context).textTheme.bodyText1,
+                                                          textAlign: TextAlign.left
+                                                      ),
+                                                      trailing: orderByBonos[3] ? SizedBox(
+                                                        width: MediaQuery.of(context).size.width * 0.15,
+                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
+                                              ),
                                             ),
-                                          ),
-                                        ),
+                                          );
+                                        } ,
                                       );
                                     },
-                                  );
+                                  ).whenComplete(() {
+                                    setState(() {
+                                      // Filter By
+                                      if (filterByBonos[0] && filterByBonos[1]) {
+                                        // Active/Inactive Selected
+                                        filterBonosNumber = 0;
+                                      } else if (filterByBonos[0]) {
+                                        // Active Selected
+                                        filterBonosNumber = 1;
+                                      } else if(filterByBonos[1]) {
+                                        // Inactive Selected
+                                        filterBonosNumber = 2;
+                                      } else {
+                                        // None Selected
+                                        filterBonosNumber = 3;
+                                      }
+                                      // OrderBy
+                                      if (orderByBonos[0]) {
+                                        // A-Z
+                                        alphabeticOrder = 0;
+                                      } else {
+                                        // Z-A
+                                        alphabeticOrder = 1;
+                                      }
+                                      if (orderByBonos[2]) {
+                                        // Active First
+                                        orderByBonosNumber = 0;
+                                      } else {
+                                        // InActive First
+                                        orderByBonosNumber = 1;
+                                      }
+                                    });
+                                  });
                                 },
                                 child: Icon(
                                   Icons.filter_list,
                                   color: AppColors.white,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.07,
+                                  size: MediaQuery.of(context).size.width * 0.07,
                                 ),
                               ),
                             ),
@@ -484,7 +487,22 @@ class _BonosProState extends State<BonosPro> {
                               stream: _brandDataService.getBonosRequestsFromBrand(widget.brandId),
                               builder: (context, snapshot) {
                                 if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
-                                  return Container();
+                                  return Container(
+                                    height: MediaQuery.of(context).size.width * 0.08,
+                                    width: MediaQuery.of(context).size.width * 0.08,
+                                    decoration: const BoxDecoration(
+                                        color: AppColors.mainColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(20))
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                          0.toString(),
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                                          textAlign: TextAlign.center
+                                      ),
+                                    ),
+                                  );
                                 } else {
                                   requests = _bonosUtils.documentsToBonosRequests(snapshot.data!.docs).length;
                                   return Container(
@@ -526,7 +544,7 @@ class _BonosProState extends State<BonosPro> {
                     ),
                   );
                 } else {
-                  bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, orderBonoSelectedNumber);
+                  bonosList = _bonosUtils.documentsToBonos(snapshot.data!.docs, filterBonosNumber, orderByBonosNumber, alphabeticOrder);
                   if (bonosList.isNotEmpty) {
                     return SliverList(
                       delegate: SliverChildBuilderDelegate(
@@ -584,7 +602,7 @@ class _BonosProState extends State<BonosPro> {
             onPressed: () {
               navigateToAddBonosScreen(
                 Bono(color: "0", isActive: true, classes: 0, opacity: 1, imageUrl: '', isDegradate: false,),
-                brand,
+                currentBrand,
                 false
               );
             },
@@ -596,41 +614,4 @@ class _BonosProState extends State<BonosPro> {
     );
   }
 
-  // Navigate to Bonos Request Screen
-  void navigateToBonosRequestScreen() {
-    Navigator.push(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => BonosRequests(
-          brandId: widget.brandId,
-        ),
-      )
-    );
-  }
-
-  // Navigate to Add Bonos
-  void navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
-            child: AddEditBono(
-              brand: _brand,
-              bono: bono,
-              edit: edit,
-            ),
-          ),
-        )).whenComplete(() => () {
-          setState(() {
-
-          });
-    });
-  }
 }

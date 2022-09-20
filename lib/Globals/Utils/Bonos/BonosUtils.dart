@@ -13,30 +13,53 @@ import '../../Widgets/Components/Images/CircularImage.dart';
 //BonosUtils Class is used to administrate all the bonos
 class BonosUtils {
 
-  var _lDegradate = new lDegradate();
-  var _lColor = new lColor();
+  final _lDegradate = lDegradate();
+  final _lColor = lColor();
 
   //Function to transform documents to bonos
-  List<Bono> documentsToBonos(
-      List<DocumentSnapshot> documents, int ordenSelection) {
+  List<Bono> documentsToBonos(List<DocumentSnapshot> documents, int filterSelection, int orderByBonosNumber, int alphabeticOrder) {
     List<Bono> bonos = [];
+    List<Bono> activeBonos = [];
+    List<Bono> inactiveBonos = [];
     for (int i = 0; i < documents.length; i++) {
       Bono bono = Bono.fromObjectAllData(documents[i].id, documents[i]);
-      if(ordenSelection == 0) {
-        bonos.add(bono);
-      } else if(ordenSelection == 1 && bono.isActive!) {
-        bonos.add(bono);
-      } else if(ordenSelection == 2 && !bono.isActive!) {
-        bonos.add(bono);
+      if (bono.isActive!) {
+        activeBonos.add(bono);
+      } else {
+        inactiveBonos.add(bono);
       }
-
     }
-      bonos.sort((a, b) {
-        return a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
-      });
-
-
-
+    // Order By
+    activeBonos.sort((a, b) {
+      return a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
+    });
+    inactiveBonos.sort((a, b) {
+      return a.title.toString().toLowerCase().compareTo(b.title.toString().toLowerCase());
+    });
+    if (alphabeticOrder == 1) {
+      activeBonos = List.from(activeBonos.reversed);
+      inactiveBonos = List.from(inactiveBonos.reversed);
+    }
+    // Filter By
+    if (filterSelection == 0) {
+      // Active/Inactive Selected
+      if (orderByBonosNumber == 0) {
+        bonos.addAll(activeBonos);
+        bonos.addAll(inactiveBonos);
+      } else {
+        bonos.addAll(inactiveBonos);
+        bonos.addAll(activeBonos);
+      }
+    } else if(filterSelection == 1) {
+      // Active Selected
+      bonos.addAll(activeBonos);
+    } else if(filterSelection == 2) {
+      // Inactive Selected
+      bonos.addAll(inactiveBonos);
+    } else {
+      // None Selected
+    }
+    // Return List of Bonos
     return bonos;
   }
 

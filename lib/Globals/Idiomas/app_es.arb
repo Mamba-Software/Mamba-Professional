@@ -2117,7 +2117,11 @@
   "@metalized": {
     "description": "Metalizados bono message"
   },
-  "filterBy": "Ordenar por",
+  "orderBy": "Ordenar por",
+  "@orderBy": {
+    "description": "Donde message"
+  },
+  "filterBy": "Filtrar por",
   "@filterBy": {
     "description": "Donde message"
   },
@@ -2145,15 +2149,11 @@
   "@buy": {
     "description": "buy message"
   },
-  "disponibilidad": "Disponibilidad",
-  "@disponibilidad": {
-    "description": "disponibilidad message"
-  },
-  "active": "Activo",
+  "active": "Bonos activos",
   "@active": {
     "description": "active message"
   },
-  "desactive": "Desactivo",
+  "desactive": "Bonos inactivos",
   "@desactive": {
     "description": "desactive message"
   },
@@ -2192,6 +2192,17 @@
   "trainsPerWeek":  "Entrenos por semana",
   "@trainsPerWekk":{
     "description": "trainsPerWekk Text"
+  },
+  "first": "Primero",
+  "@first":{
+    "description": "trainsPerWekk Text"
+  },
+  "alphabetAtoZ":"Ordenar de A-Z",
+  "@alphabetAtoZ":{
+    "description": "trainsPerWekk Text"
+  },
+  "alphabetZtoA": "Ordenar de Z-A",
+  "@alphabetZtoA":{
+    "description": "trainsPerWekk Text"
   }
-
 }
