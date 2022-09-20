@@ -233,7 +233,7 @@ class _BonosProState extends State<BonosPro> {
                                                         });
                                                       },
                                                       title: Text(
-                                                          AppLocalizations.of(context)!.active,
+                                                          AppLocalizations.of(context)!.activeBono,
                                                           style: Theme.of(context).textTheme.bodyText1,
                                                           textAlign: TextAlign.left
                                                       ),
@@ -249,7 +249,7 @@ class _BonosProState extends State<BonosPro> {
                                                         });
                                                       },
                                                       title: Text(
-                                                          AppLocalizations.of(context)!.desactive,
+                                                          AppLocalizations.of(context)!.desactiveBono,
                                                           style: Theme.of(context).textTheme.bodyText1,
                                                           textAlign: TextAlign.left
                                                       ),

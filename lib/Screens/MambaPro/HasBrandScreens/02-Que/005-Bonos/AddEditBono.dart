@@ -613,7 +613,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     optionTextWrite(
                         TextInputType.multiline,
-                        AppLocalizations.of(context)!.activeBono,
+                        AppLocalizations.of(context)!.activeBonoQues,
                         "En caso de estar activado, este bono estará disponible para los clientes en el momento del a creación. Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
                         AppLocalizations.of(context)!.descriptionError,
                         AppLocalizations.of(context)!.descriptionError,

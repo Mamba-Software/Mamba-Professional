@@ -149,8 +149,7 @@ class BonoCardState extends State<BonoCard> {
                           fit: BoxFit.cover,
                         )
                       : null,
-                  color: Color(int.parse(_lColor.getlColor(bono.color!).hexa!))
-                      .withOpacity(bono.opacity!),
+                  color: Color(int.parse(_lColor.getlColor(bono.color!).hexa!)).withOpacity(bono.opacity!),
                   borderRadius: BorderRadius.all(Radius.circular(widget.width*0.03))),
           // Animation
           duration: const Duration(milliseconds: 500),
@@ -282,7 +281,7 @@ class BonoCardState extends State<BonoCard> {
                                               bono.price!
                                                       .toStringAsFixed(2)
                                                       .toUpperCase() +
-                                                  '€',
+                                                  ' €',
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1
@@ -326,6 +325,22 @@ class BonoCardState extends State<BonoCard> {
                                                                 Colors.white),
                                                     textAlign: TextAlign.left,
                                                   ),
+                                            bono.isActive! == false ? Row(
+                                              children: [
+                                                SizedBox(
+                                                  width: widget.width * 0.05,
+                                                ),
+                                                Text(
+                                                  "("+AppLocalizations.of(context)!.desactive+")",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText1
+                                                      ?.copyWith(
+                                                      color: Colors.white, fontSize: 12),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ],
+                                            ) : Container(),
                                           ],
                                         ),
                                       ),
@@ -469,8 +484,7 @@ class BonoCardState extends State<BonoCard> {
                                                 height: widget.width * 0.02,
                                               ),
                                               Text(
-                                                bono.isActive!? AppLocalizations.of(
-                                                    context)!.active : AppLocalizations.of(
+                                                bono.isActive!? AppLocalizations.of(context)!.activeBono : AppLocalizations.of(
                                                     context)!.desactive,
                                                 style: Theme.of(context)
                                                     .textTheme

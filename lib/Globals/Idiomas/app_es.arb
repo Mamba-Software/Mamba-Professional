@@ -2089,8 +2089,8 @@
   "@descriptionBono": {
     "description": "Description bono message"
   },
-  "activeBono": "¿Estará activo tu bono?",
-  "@activeBono": {
+  "activeBonoQues": "¿Quieres activar este bono?",
+  "@activeBonoQues": {
     "description": "Active bono message"
   },
   "sesionsBono": "¿Cuantas sesiones tiene tu bono?",
@@ -2149,11 +2149,19 @@
   "@buy": {
     "description": "buy message"
   },
-  "active": "Bonos activos",
+  "activeBono": "Bonos activos",
+  "@activeBono": {
+    "description": "active message"
+  },
+  "desactiveBono": "Bonos inactivos",
+  "@desactiveBono": {
+    "description": "desactive message"
+  },
+  "active": "Activo",
   "@active": {
     "description": "active message"
   },
-  "desactive": "Bonos inactivos",
+  "desactive": "Inactivo",
   "@desactive": {
     "description": "desactive message"
   },
