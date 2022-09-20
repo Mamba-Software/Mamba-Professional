@@ -2089,11 +2089,11 @@
   "@descriptionBono": {
     "description": "Description bono message"
   },
-  "activeBonoQues": "¿Quieres activar este bono?",
+  "activeBonoQues": "Activar/Desactivar bono",
   "@activeBonoQues": {
     "description": "Active bono message"
   },
-  "activeBonoQuesDesc": "Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
+  "activeBonoQuesDesc": "Si esta activo, tus clientes podrán comprarlo. Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
   "@activeBonoQuesDesc": {
     "description": "Active bono message"
   },
@@ -2243,6 +2243,10 @@
   },
   "alphabetZtoA": "Ordenar de Z-A",
   "@alphabetZtoA":{
+    "description": "trainsPerWekk Text"
+  },
+  "preseeBono": "Previsualiza tu bono",
+  "@preseeBono":{
     "description": "trainsPerWekk Text"
   }
 }

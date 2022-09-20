@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import '../../../Data/LibraryModels/lDegradate.dart';
 import '../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import '../../Widgets/Components/Images/CircularImage.dart';
@@ -15,6 +18,7 @@ class BonosUtils {
 
   final _lDegradate = lDegradate();
   final _lColor = lColor();
+  final _brandDataService = BrandDataService();
 
   //Function to transform documents to bonos
   List<Bono> documentsToBonos(List<DocumentSnapshot> documents, int filterSelection, int orderByBonosNumber, int alphabeticOrder) {

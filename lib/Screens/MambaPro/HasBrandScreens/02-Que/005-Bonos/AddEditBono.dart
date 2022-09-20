@@ -419,17 +419,18 @@ class _AddEditBonoState extends State<AddEditBono>
             body: Column(
               children: [
                 Expanded(
-                    child: TabBarView(
-                  controller: _tabController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    informationPage(),
-                    pricePage(),
-                    conditionsPage(),
-                    stylePage(),
-                    confirmationPage(),
-                  ],
-                )),
+                  child: TabBarView(
+                    controller: _tabController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      informationPage(),
+                      pricePage(),
+                      conditionsPage(),
+                      stylePage(),
+                      confirmationPage(),
+                    ],
+                  ),
+                ),
               ],
             ),
             floatingActionButton: Padding(
@@ -1194,7 +1195,7 @@ class _AddEditBonoState extends State<AddEditBono>
                 children: [
                   Flexible(
                     child: Text(
-                      "Previsualiza tu bono",
+                      AppLocalizations.of(context)!.preseeBono,
                       style: Theme.of(context)
                           .textTheme
                           .headline1

@@ -466,8 +466,8 @@
   "editBono": "Editar val",
   "nameBono": "Nom del teu val",
   "descriptionBono": "Descripció del teu val",
-  "activeBonoQues": "Vols activar aquest val?",
-  "activeBonoQuesDesc": "Sempre pots activar o desactivar el teu val una vegada aquest ha estat creat.",
+  "activeBonoQues": "Activar/Desactivar val",
+  "activeBonoQuesDesc": "Si està actiu, els teus clients podran comprar-lo. Sempre pots activar o desactivar el teu val una vegada aquest ha estat creat.",
   "sesionsBono": "Cuantes sessions té el teu val?",
   "sesionsBonoDesc": "Fes clic per indicar que aquest val no té límit de sessions. A continuació, podràs definir la data d'expiració.",
   "priceBono": "Quin preu té?",
@@ -503,5 +503,6 @@
   "trainsPerWeek":  "Entrenaments per setmana",
   "first": "Primer",
   "alphabetAtoZ":"Ordenar de A-Z",
-  "alphabetZtoA": "Ordenar de Z-A"
+  "alphabetZtoA": "Ordenar de Z-A",
+  "preseeBono": "Previsualiza el teu val"
 }

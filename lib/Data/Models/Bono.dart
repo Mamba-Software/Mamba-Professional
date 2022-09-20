@@ -89,4 +89,9 @@ class Bono {
     this.isDegradate = bono.isDegradate;
     this.opacity = bono.opacity;
   }
+
+  // Set Basic Data
+  set setConditionsData(Condition condition) {
+    this.condition = condition;
+  }
 }
