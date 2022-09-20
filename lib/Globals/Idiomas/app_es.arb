@@ -2093,8 +2093,16 @@
   "@activeBonoQues": {
     "description": "Active bono message"
   },
+  "activeBonoQuesDesc": "Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
+  "@activeBonoQuesDesc": {
+    "description": "Active bono message"
+  },
   "sesionsBono": "¿Cuantas sesiones tiene tu bono?",
   "@sesionsBono": {
+    "description": "Sesions bono message"
+  },
+  "sesionsBonoDesc": "Haz clic para indicar que bono no tiene límite de sesiones. A continuación, podrás definir la fecha de expiración.",
+  "@sesionsBonoDesc": {
     "description": "Sesions bono message"
   },
   "priceBono": "¿Qué precio tiene?",
@@ -2169,8 +2177,16 @@
   "@price": {
     "description": "price message"
   },
+  "pricePlease": "Añade el precio por favor",
+  "@pricePlease": {
+    "description": "price message"
+  },
   "session": "sesión",
   "@session":{
+    "description": "session Text"
+  },
+  "sessionPlease": "Añade las sesiones por favor",
+  "@sessionPlease":{
     "description": "session Text"
   },
   "conditions": "Condiciones",
@@ -2181,6 +2197,18 @@
   "@expiresAt":{
     "description": "expiresAt Text"
   },
+  "expiresAtDesc": "Número de días hasta el vencimiento de este bono.",
+  "@expiresAtDesc":{
+    "description": "expiresAt Text"
+  },
+  "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.\n\nDejar valor en 0 para evitar esta condición.",
+  "@freeCancelDesc":{
+    "description": "cancelTimeAt Text"
+  },
+  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana (lunes a domingo).\n\nDejar en 0 para evitar esta condición.",
+  "@trainsPerWeekDesc":{
+    "description": "trainsPerWekk Text"
+  },
   "noExpireDate":  "No tiene fecha de expiración",
   "@noExpireDate":{
     "description": "noExpireDate Text"
@@ -2189,16 +2217,20 @@
   "@hours":{
     "description": "hours Text"
   },
+  "freeCancel":  "Cancelación gratuita",
+  "@freeCancel":{
+    "description": "cancelTimeAt Text"
+  },
   "cancelTimeAt":  "Cancelación gratuita hasta",
   "@cancelTimeAt":{
     "description": "cancelTimeAt Text"
   },
-  "max":  "Máximo",
+  "max": "Máximo",
   "@max":{
     "description": "max Text"
   },
-  "trainsPerWeek":  "Entrenos por semana",
-  "@trainsPerWekk":{
+  "trainsPerWeek":  "Sesiones por semana",
+  "@trainsPerWeek":{
     "description": "trainsPerWekk Text"
   },
   "first": "Primero",

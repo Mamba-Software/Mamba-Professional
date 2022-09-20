@@ -484,7 +484,7 @@ class BonoCardState extends State<BonoCard> {
                                                 height: widget.width * 0.02,
                                               ),
                                               Text(
-                                                bono.isActive!? AppLocalizations.of(context)!.activeBono : AppLocalizations.of(
+                                                bono.isActive!? AppLocalizations.of(context)!.active : AppLocalizations.of(
                                                     context)!.desactive,
                                                 style: Theme.of(context)
                                                     .textTheme

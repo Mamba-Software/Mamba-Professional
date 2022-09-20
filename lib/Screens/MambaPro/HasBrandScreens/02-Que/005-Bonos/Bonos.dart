@@ -311,7 +311,7 @@ class _BonosProState extends State<BonosPro> {
                                                         });
                                                       },
                                                       title: Text(
-                                                          AppLocalizations.of(context)!.active+" "+AppLocalizations.of(context)!.first.toLowerCase(),
+                                                          AppLocalizations.of(context)!.activeBono+" "+AppLocalizations.of(context)!.first.toLowerCase(),
                                                           style: Theme.of(context).textTheme.bodyText1,
                                                           textAlign: TextAlign.left
                                                       ),
@@ -328,7 +328,7 @@ class _BonosProState extends State<BonosPro> {
                                                         });
                                                       },
                                                       title: Text(
-                                                          AppLocalizations.of(context)!.desactive+" "+AppLocalizations.of(context)!.first.toLowerCase(),
+                                                          AppLocalizations.of(context)!.desactiveBono+" "+AppLocalizations.of(context)!.first.toLowerCase(),
                                                           style: Theme.of(context).textTheme.bodyText1,
                                                           textAlign: TextAlign.left
                                                       ),

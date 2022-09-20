@@ -614,7 +614,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     optionTextWrite(
                         TextInputType.multiline,
                         AppLocalizations.of(context)!.activeBonoQues,
-                        "En caso de estar activado, este bono estará disponible para los clientes en el momento del a creación. Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
+                        AppLocalizations.of(context)!.activeBonoQuesDesc,
                         AppLocalizations.of(context)!.descriptionError,
                         AppLocalizations.of(context)!.descriptionError,
                         true,
@@ -647,9 +647,9 @@ class _AddEditBonoState extends State<AddEditBono>
                     optionTextWrite(
                         TextInputType.number,
                         AppLocalizations.of(context)!.sesionsBono,
-                        "Marca la casilla para indicar que este bono no tiene límite de sesiones.",
+                        AppLocalizations.of(context)!.sesionsBonoDesc,
                         0.toString(),
-                        'Añade las sesiones porfavor',
+                        AppLocalizations.of(context)!.sessionPlease,
                         widget.edit ? false : true,
                         clasesController,
                         false,
@@ -660,7 +660,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.priceBono,
                         "",
                         0.toString(),
-                        'Añade el precio porfavor',
+                        AppLocalizations.of(context)!.pricePlease,
                         widget.edit ? false : true,
                         priceController,
                         false,
@@ -689,8 +689,8 @@ class _AddEditBonoState extends State<AddEditBono>
                   children: [
                     optionConditionsWrite(
                         TextInputType.text,
-                        'Fecha de expiración',
-                        "Indica el número de días hasta el vencimiento de este bono",
+                        AppLocalizations.of(context)!.expiresAt + "...",
+                        AppLocalizations.of(context)!.expiresAtDesc,
                         AppLocalizations.of(context)!.titleHint,
                         AppLocalizations.of(context)!.titleError,
                         widget.edit ? false : true,
@@ -699,8 +699,8 @@ class _AddEditBonoState extends State<AddEditBono>
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     optionConditionsWrite(
                         TextInputType.number,
-                        'Cancelación gratuita',
-                        "Introduce el número de horas mínimo para cancelar la asistencia a una sessión de manera gratuïta. Dejar valor en 0 para evitar esta condición.",
+                        AppLocalizations.of(context)!.freeCancel,
+                        AppLocalizations.of(context)!.freeCancelDesc,
                         AppLocalizations.of(context)!.titleHint,
                         AppLocalizations.of(context)!.titleError,
                         widget.edit ? false : true,
@@ -709,13 +709,14 @@ class _AddEditBonoState extends State<AddEditBono>
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     optionConditionsWrite(
                         TextInputType.number,
-                        'Sesiones por semana',
-                        "Introduce el número máximo de sesiones que pueden realizar tus clientes en una misma semana (Lunes a Domingo). Dejar en 0 para evitar esta condición.",
+                        AppLocalizations.of(context)!.trainsPerWeek,
+                        AppLocalizations.of(context)!.trainsPerWeekDesc,
                         AppLocalizations.of(context)!.titleHint,
                         AppLocalizations.of(context)!.titleError,
                         widget.edit ? false : true,
                         weeklyController,
                         'maxw'),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   ]),
             ),
           ),
@@ -1296,6 +1297,8 @@ class _AddEditBonoState extends State<AddEditBono>
         width: MediaQuery.of(context).size.width * 0.2,
         decoration: BoxDecoration(
             border: Border.all(
+              width: isSelectedDays[index] == true
+                  ? 3 : 1,
               color: isSelectedDays[index] == true
                   ? Styles.mainColor
                   : widget.edit == false? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
@@ -1326,6 +1329,7 @@ class _AddEditBonoState extends State<AddEditBono>
         width: MediaQuery.of(context).size.width * 0.2,
         decoration: BoxDecoration(
             border: Border.all(
+              width: isSelectedDays[index] == true ? 3 : 1,
               color: isSelectedDays[index] == true
                   ? Styles.mainColor
                   : widget.edit == false? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
@@ -1413,10 +1417,13 @@ class _AddEditBonoState extends State<AddEditBono>
                                       fontSize: 25),
                             ),
                             subtitleText != ""
-                                ?  Text(
-                                    subtitleText,
-                                    style: Theme.of(context).textTheme.caption,
-                                  )
+                                ?  Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                      subtitleText,
+                                      style: Theme.of(context).textTheme.caption,
+                                    ),
+                                )
                                 :  Container(),
                           ],
                         ),
@@ -1438,16 +1445,20 @@ class _AddEditBonoState extends State<AddEditBono>
                                           fontSize: 25),
                                 ),
                                 subtitleText != ""
-                                    ? Text(
-                                        subtitleText,
-                                        style:
-                                            Theme.of(context).textTheme.caption,
-                                      )
+                                    ? Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                          subtitleText,
+                                          style:
+                                              Theme.of(context).textTheme.caption,
+                                        ),
+                                    )
                                     : Container(),
                               ],
                             ),
                           )
                         : Container(),
+
                 variable == 'ses'
                     ? Flexible(
                         child: Column(
@@ -1464,43 +1475,55 @@ class _AddEditBonoState extends State<AddEditBono>
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
                             ),
-                            subtitleText != ""
-                                ? variable != 'ses'? Text(
-                              subtitleText,
-                              style: Theme.of(context).textTheme.caption,
-                            )
-                                : isSelectedDays[0] == false? Text(
-                              subtitleText,
-                              style: Theme.of(context).textTheme.caption,
-                            ) : Container() :  Container(),
+                            subtitleText != "" ? variable != 'ses'? Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                subtitleText,
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                            ) : isSelectedDays[0] == false? Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                subtitleText,
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                            ) : Container() : Container(),
                           ],
                         ),
                       )
                     : Container(),
+
                 variable == 'ses' && isSelectedDays[0] == false
                     ? Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Checkbox(
-                            value: noSessions,
-                            onChanged: !widget.edit? setSeeSessions : null,
-                            checkColor: Theme.of(context).primaryColor,
-                            activeColor: Styles.mainColor,
+                          Transform.scale(
+                            scale: 1.3,
+                            child: Checkbox(
+                              value: noSessions,
+                              onChanged: !widget.edit? setSeeSessions : null,
+                              checkColor: AppColors.white,
+                              activeColor: Styles.mainColor,
+                            ),
                           )
                         ],
                       )
                     : Container(),
+
                 checkBox
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Checkbox(
-                            value: bono.isActive,
-                            onChanged: setBonoActivation,
-                            checkColor: Theme.of(context).primaryColor,
-                            activeColor: Styles.mainColor,
+                          Transform.scale(
+                            scale: 1.3,
+                            child: Checkbox(
+                              value: bono.isActive,
+                              onChanged: setBonoActivation,
+                              checkColor: AppColors.white,
+                              activeColor: Styles.mainColor,
+                            ),
                           )
                         ],
                       )
@@ -1725,10 +1748,13 @@ class _AddEditBonoState extends State<AddEditBono>
                             fontWeight: FontWeight.bold, fontSize: 25),
                       ),
                       subtitleText != ""
-                          ? Text(
-                              subtitleText,
-                              style: Theme.of(context).textTheme.caption,
-                            )
+                          ? Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                                subtitleText,
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                          )
                           : Container(),
                     ],
                   ),
@@ -1737,8 +1763,9 @@ class _AddEditBonoState extends State<AddEditBono>
             )),
         variable == 'exp'
             ? Padding(
-                padding: EdgeInsets.only(top: umq.height(context, 0.02)),
+                padding: EdgeInsets.only(top: umq.height(context, 0.03)),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     daysSelectoWidget(0, 'No expira', true),
