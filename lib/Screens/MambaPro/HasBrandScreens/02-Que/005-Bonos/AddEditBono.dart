@@ -132,11 +132,6 @@ class _AddEditBonoState extends State<AddEditBono>
     weeklySessions: 0,
   );
 
-  final String _selectedDate = '';
-  final String _dateCount = '';
-  final String _range = '';
-  final String _rangeCount = '';
-
   List<Color> colors = [];
   List<Color> colorsDeg = [];
 
