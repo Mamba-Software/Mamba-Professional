@@ -55,7 +55,7 @@ class BonoCardState extends State<BonoCard> {
 
   // Booleans
   bool isExpanded = false;
-  double isExpandedHeight = 2;
+  double isExpandedHeight = 2.5;
 
   @override
   void initState() {
@@ -72,9 +72,6 @@ class BonoCardState extends State<BonoCard> {
     } else {
       condition = widget.condition!;
     }
-    //if (condition.expirationTime != 0) {
-      isExpandedHeight = isExpandedHeight + 0.35;
-    //}
     if (condition.cancelTime != 0) {
       isExpandedHeight = isExpandedHeight + 0.35;
     }
@@ -680,8 +677,7 @@ class BonoCardState extends State<BonoCard> {
                                                             context)!.cancelTimeAt + " " +
                                                             condition.cancelTime
                                                                 .toString() +
-                                                            " " + AppLocalizations.of(
-                                                            context)!.hours.toLowerCase(),
+                                                            " " + AppLocalizations.of(context)!.hours.toLowerCase(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyText1
@@ -709,8 +705,7 @@ class BonoCardState extends State<BonoCard> {
                                                             condition
                                                                 .weeklySessions
                                                                 .toString() +
-                                                            " " + AppLocalizations.of(
-                                                            context)!.trainsPerWeek.toLowerCase(),
+                                                            " " + AppLocalizations.of(context)!.trainsPerWeek.toLowerCase(),
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .bodyText1

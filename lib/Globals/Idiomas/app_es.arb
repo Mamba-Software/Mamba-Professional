@@ -2213,7 +2213,7 @@
   "@noExpireDate":{
     "description": "noExpireDate Text"
   },
-  "hours":  "Horas",
+  "hours":  "Horas antes de la sesión",
   "@hours":{
     "description": "hours Text"
   },
