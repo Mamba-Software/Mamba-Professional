@@ -143,10 +143,12 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                               height: MediaQuery.of(context).size.height*0.08,
                               width: MediaQuery.of(context).size.width*0.11,
                               child: TextButton(
-                                onPressed: null,
+                                onPressed: () {
+
+                                },
                                 child: Icon(
                                   Icons.filter_list,
-                                  color: AppColors.darkGrey,
+                                  color: AppColors.white,
                                   size: MediaQuery.of(context).size.width*0.07,
                                 ),
                               ),
