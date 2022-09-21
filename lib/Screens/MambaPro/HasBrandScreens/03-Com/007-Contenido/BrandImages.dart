@@ -423,7 +423,6 @@ class _BrandImagesState extends State<BrandImages> {
                                     isLoading = true;
                                   });
                                   await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
-
                                   getBrandContentImages();
                                 }
                               },

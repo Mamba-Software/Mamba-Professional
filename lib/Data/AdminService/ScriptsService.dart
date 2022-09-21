@@ -1835,10 +1835,10 @@ class ScriptsDatabaseService {
       int brandErrorCnt = 0;
       int locationErrorCnt = 0;
 
-      String events = "Events";
-      String users = "Users";
-      String brands = "Brands";
-      String locations = "Locations";
+      String events = "7777 Events";
+      String users = "7777 Users";
+      String brands = "7777 Brands";
+      String locations = "7777 Locations";
 
       // PRODUCTION FOR ALL REAL EVENTS
       QuerySnapshot querySnapshot = await _firestore.collection(events).get();
@@ -1848,67 +1848,67 @@ class ScriptsDatabaseService {
         print('=================================================================================');
         print('EVENT WITH ID: '+event.id!+" OF BRAND WITH ID: "+event.brandID!);
         print('\n');
-        if (event.imageUrl == null) {
-          print('Getting Random Image from Library ...');
-          String imageUrl = await _libraryDataService.getRandomEventPhoto();
+
+        print('Getting Random Image from Library ...');
+        String imageUrl = await _libraryDataService.getRandomEventPhoto();
+        print('\n');
+        print('Updating Event Image Url ...');
+        await _firestore.collection(events).doc(event.id!).update({
+          "imageUrl": imageUrl,
+        });
+        print('\n');
+
+        try {
+          print('Updating "Users" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotUsers = await _firestore.collection(events).doc(event.id!).collection("Users").get();
+          for (var i=0; i<querySnapshotUsers.size;i++) {
+            Usuario user = Usuario.fromObjectOnlyCoverData(querySnapshotUsers.docs[i].id, querySnapshotUsers.docs[i]);
+            await _firestore.collection(users).doc(user.id!).collection("Events").doc(event.id!).update({
+              "imageUrl": imageUrl,
+            });
+          }
+          print('All Users Updated');
           print('\n');
-          print('Updating Event Image Url ...');
-          await _firestore.collection(events).doc(event.id!).update({
-            "imageUrl": imageUrl,
-          });
-          print('\n');
-
-          try {
-            print('Updating "Users" subcollection');
-            print('-----------------------------\n');
-            QuerySnapshot querySnapshotUsers = await _firestore.collection(events).doc(event.id!).collection("Users").get();
-            for (var i=0; i<querySnapshotUsers.size;i++) {
-              Usuario user = Usuario.fromObjectOnlyCoverData(querySnapshotUsers.docs[i].id, querySnapshotUsers.docs[i]);
-              await _firestore.collection(users).doc(user.id!).collection("Events").doc(event.id!).update({
-                "imageUrl": imageUrl,
-              });
-            }
-            print('All Users Updated');
-            print('\n');
-          } catch (e) {
-            print('No document to update: projects/mamba-style/databases/(default)/documents/Users/{userId}/Events/[eventId}');
-            usersErrorCnt += 1;
-          }
-
-          try {
-            print('Updating "Brands" subcollection');
-            print('-----------------------------\n');
-            QuerySnapshot querySnapshotBrands = await _firestore.collection(events).doc(event.id!).collection("Brands").get();
-            for (var i=0; i<querySnapshotBrands.size;i++) {
-              Brand brand = Brand.fromObjectOnlyCoverData(querySnapshotBrands.docs[i].id, querySnapshotBrands.docs[i]);
-              await _firestore.collection(brands).doc(brand.id!).collection("Events").doc(event.id!).update({
-                "imageUrl": imageUrl,
-              });
-            }
-            print('All Brands Updated');
-            print('\n');
-          } catch (e) {
-            print('No document to update: projects/mamba-style/databases/(default)/documents/Brands/{brandId}/Events/[eventId}');
-            brandErrorCnt += 1;
-          }
-
-          try {
-            print('Updating "Locations" subcollection');
-            print('-----------------------------\n');
-            QuerySnapshot querySnapshotLocations = await _firestore.collection(events).doc(event.id!).collection("Locations").get();
-            for (var i=0; i<querySnapshotLocations.size;i++) {
-              Location location = Location.fromObjectOnlyCoverData(querySnapshotLocations.docs[i].id, querySnapshotLocations.docs[i]);
-              await _firestore.collection(locations).doc(location.id!).collection("Events").doc(event.id!).update({
-                "imageUrl": imageUrl,
-              });
-            }
-            print('All Locations Updated');
-            print('\n');
-          } catch (e) {
-            print('No document to update: projects/mamba-style/databases/(default)/documents/Locations/{locationId}/Events/[eventId}');
-            locationErrorCnt += 1;
-          }
+        } catch (e) {
+          print('No document to update: projects/mamba-style/databases/(default)/documents/Users/{userId}/Events/[eventId}');
+          usersErrorCnt += 1;
         }
+
+        try {
+          print('Updating "Brands" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotBrands = await _firestore.collection(events).doc(event.id!).collection("Brands").get();
+          for (var i=0; i<querySnapshotBrands.size;i++) {
+            Brand brand = Brand.fromObjectOnlyCoverData(querySnapshotBrands.docs[i].id, querySnapshotBrands.docs[i]);
+            await _firestore.collection(brands).doc(brand.id!).collection("Events").doc(event.id!).update({
+              "imageUrl": imageUrl,
+            });
+          }
+          print('All Brands Updated');
+          print('\n');
+        } catch (e) {
+          print('No document to update: projects/mamba-style/databases/(default)/documents/Brands/{brandId}/Events/[eventId}');
+          brandErrorCnt += 1;
+        }
+
+        try {
+          print('Updating "Locations" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotLocations = await _firestore.collection(events).doc(event.id!).collection("Locations").get();
+          for (var i=0; i<querySnapshotLocations.size;i++) {
+            Location location = Location.fromObjectOnlyCoverData(querySnapshotLocations.docs[i].id, querySnapshotLocations.docs[i]);
+            await _firestore.collection(locations).doc(location.id!).collection("Events").doc(event.id!).update({
+              "imageUrl": imageUrl,
+            });
+          }
+          print('All Locations Updated');
+          print('\n');
+        } catch (e) {
+          print('No document to update: projects/mamba-style/databases/(default)/documents/Locations/{locationId}/Events/[eventId}');
+          locationErrorCnt += 1;
+        }
+
         print('\n');
         print('=================================================================================');
         print('=================================================================================');
