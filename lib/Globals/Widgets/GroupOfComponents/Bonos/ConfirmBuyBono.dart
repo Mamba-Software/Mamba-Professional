@@ -83,18 +83,18 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
               width: MediaQuery.of(context).size.width*0.84,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Flexible(
                     child: Text(
-                        "Confirmación de compra",
+                        AppLocalizations.of(context)!.acceptBono,
                         style: Theme.of(context).textTheme.headline1,
                         textAlign: TextAlign.left
                     ),
                   ),
                   Flexible(
                     child: Text(
-                        "Verifica la información de compra antes de otorgar el bono",
+                        AppLocalizations.of(context)!.acceptBonoDesc,
                         style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
                         textAlign: TextAlign.center
                     ),
@@ -104,6 +104,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
             ),
             Expanded(
               child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -186,7 +187,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         children: [
                           Flexible(
                             child: Text(
-                                "Bono",
+                                AppLocalizations.of(context)!.bono,
                                 style: Theme.of(context).textTheme.headline3,
                                 textAlign: TextAlign.center
                             ),
@@ -219,7 +220,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         children: [
                           Flexible(
                             child: Text(
-                                "Método de Pago",
+                                AppLocalizations.of(context)!.paymentMethod,
                                 style: Theme.of(context).textTheme.headline3,
                                 textAlign: TextAlign.center
                             ),
@@ -233,110 +234,157 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         text: TextSpan(
                           style: Theme.of(context).textTheme.bodyText2,
                           children: [
-                            TextSpan(text: widget.user.firstName! +" ha indicado que ha pagado usando: ", style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)),
+                            TextSpan(text: widget.user.firstName! + AppLocalizations.of(context)!.paymentIndication, style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)),
                             TextSpan(text: originalPaymentString, style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.bold, height: 1.5),),
-                            TextSpan(text: ". Confirma el método de pago por favor.", style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)),
+                            TextSpan(text: ". "+ AppLocalizations.of(context)!.paymentMethodConfirm, style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)),
                           ],
                         ),
                       ),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              paymentMethod = 0;
-                            });
-                          },
-                          child: Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                                height: MediaQuery.of(context).size.height*0.18,
-                                width: MediaQuery.of(context).size.height*0.18,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).backgroundColor,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(10),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                paymentMethod = 0;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                                  height: MediaQuery.of(context).size.width*0.25,
+                                  width: MediaQuery.of(context).size.width*0.25,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).backgroundColor,
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                    border: Border.all(color: Theme.of(context).primaryColor, width: paymentMethod == 0 ? 5 : 1),
                                   ),
-                                  border: Border.all(color: Theme.of(context).primaryColor, width: paymentMethod == 0 ? 5 : 1),
+                                  child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: Image(
+                                      image: AssetImage(Constants.imageCash),
+                                      opacity: AlwaysStoppedAnimation(paymentMethod == 1 ? 100 : 1),
+                                    ),
+                                  ),
                                 ),
-                                child: FittedBox(
-                                  fit: BoxFit.cover,
-                                  child: Image(
-                                    image: AssetImage(Constants.imageCash),
-                                    opacity: AlwaysStoppedAnimation(paymentMethod == 1 ? 100 : 1),
-                                  ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.cashPaymentMethod,
+                                      style: Theme.of(context).textTheme.headline3?.copyWith(color: paymentMethod == 1 ? Theme.of(context).primaryColor.withOpacity(0.5) : Theme.of(context).primaryColor),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    paymentMethod == 0 ? Icon(
+                                      Icons.check_circle,
+                                      color: Theme.of(context).primaryColor,
+                                    ) : Container(),
+                                  ],
                                 ),
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.cashPaymentMethod,
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: paymentMethod == 1 ? Theme.of(context).primaryColor.withOpacity(0.5) : Theme.of(context).primaryColor),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  paymentMethod == 0 ? Icon(
-                                    Icons.check_circle,
-                                    color: Theme.of(context).primaryColor,
-                                  ) : Container(),
-                                ],
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              paymentMethod = 1;
-                            });
-                          },
-                          child: Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                                height: MediaQuery.of(context).size.height*0.18,
-                                width: MediaQuery.of(context).size.height*0.18,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).backgroundColor,
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(10),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                paymentMethod = 1;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                                  height: MediaQuery.of(context).size.width*0.25,
+                                  width: MediaQuery.of(context).size.width*0.25,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).backgroundColor,
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                    border: Border.all(color: Theme.of(context).primaryColor, width: paymentMethod == 1 ? 5 : 1),
                                   ),
-                                  border: Border.all(color: Theme.of(context).primaryColor, width: paymentMethod == 1 ? 5 : 1),
+                                  child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: Image(
+                                      image: AssetImage(Constants.imageTransfer),
+                                      opacity: AlwaysStoppedAnimation(paymentMethod == 0 ? 100 : 1),
+                                    ),
+                                  ),
                                 ),
-                                child: FittedBox(
-                                  fit: BoxFit.cover,
-                                  child: Image(
-                                    image: AssetImage(Constants.imageTransfer),
-                                    opacity: AlwaysStoppedAnimation(paymentMethod == 0 ? 100 : 1),
-                                  ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.transferPaymentMethod,
+                                      style: Theme.of(context).textTheme.headline3?.copyWith(color: paymentMethod == 0 ? Theme.of(context).primaryColor.withOpacity(0.5) : Theme.of(context).primaryColor),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    paymentMethod == 1 ? Icon(
+                                      Icons.check_circle,
+                                      color: Theme.of(context).primaryColor,
+                                    ) : Container(),
+                                  ],
                                 ),
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.transferPaymentMethod,
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: paymentMethod == 0 ? Theme.of(context).primaryColor.withOpacity(0.5) : Theme.of(context).primaryColor),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  paymentMethod == 1 ? Icon(
-                                    Icons.check_circle,
-                                    color: Theme.of(context).primaryColor,
-                                  ) : Container(),
-                                ],
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                paymentMethod = 2;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                                  height: MediaQuery.of(context).size.width*0.25,
+                                  width: MediaQuery.of(context).size.width*0.25,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).backgroundColor,
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                    border: Border.all(color: Theme.of(context).primaryColor, width: paymentMethod == 2 ? 5 : 1),
+                                  ),
+                                  child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: Image(
+                                      image: AssetImage(Constants.imageGift),
+                                      opacity: AlwaysStoppedAnimation(paymentMethod != 2 ? 100 : 1),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.giftPaymentMethod,
+                                      style: Theme.of(context).textTheme.headline3?.copyWith(color: paymentMethod != 2 ? Theme.of(context).primaryColor.withOpacity(0.5) : Theme.of(context).primaryColor),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    paymentMethod == 2 ? Icon(
+                                      Icons.check_circle,
+                                      color: Theme.of(context).primaryColor,
+                                    ) : Container(),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-
                     SizedBox(height: MediaQuery.of(context).size.height*0.03),
                     TextButton(
                         child: Text(AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(), style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline), ),
@@ -384,7 +432,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                             child: Padding(
                               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.00),
                               child: Text(
-                                "Otorgar bono",
+                                AppLocalizations.of(context)!.confirm,
                                 style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
                               ),
                             ),

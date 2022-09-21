@@ -82,7 +82,7 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
                   height: MediaQuery.of(context).size.width*0.06,
                   width: MediaQuery.of(context).size.width*0.06,
                   child: FittedBox(
@@ -106,7 +106,7 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
         ),
       ),
       onTap: () async {
-        var result = await showModalBottomSheet<bool?>(
+        await showModalBottomSheet<bool?>(
           context: context,
           isScrollControlled: true,
           shape: const RoundedRectangleBorder(
@@ -117,7 +117,7 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           builder: (BuildContext context) {
             return FractionallySizedBox(
-              heightFactor: 0.85,
+              heightFactor: 0.95,
               child: ConfirmBuyBono(
                 bono: widget.bono,
                 user: widget.user,

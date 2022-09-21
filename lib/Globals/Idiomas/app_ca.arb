@@ -445,6 +445,7 @@
   "mambaProActivated": "Activar Mamba pro",
   "mambaProDesactivated": "Desactivar Mamba pro",
   "categories": "Categories",
+  "bono": "Val",
   "bonos": "Vals",
   "yourBonos": "Els teus vals",
   "solicitudesBonos": "Sol·licituds",
@@ -477,8 +478,11 @@
   "metalized": "Metalitzats",
   "orderBy": "Ordenar per",
   "filterBy": "Filtrar per",
+  "paymentMethod": "Mètode de pagament",
+  "paymentMethodConfirm": "Confirma el mètode de pagament si us plau.",
   "cashPaymentMethod": "Efectiu",
   "transferPaymentMethod": "Transferència",
+  "giftPaymentMethod": "Regal",
   "ilimitadas": "ilimitades",
   "numberSessions": "Nº sessions",
   "buy": "Comprar",
@@ -504,5 +508,8 @@
   "first": "Primer",
   "alphabetAtoZ":"Ordenar de A-Z",
   "alphabetZtoA": "Ordenar de Z-A",
-  "preseeBono": "Previsualiza el teu val"
+  "preseeBono": "Previsualiza el teu val",
+  "acceptBono": "Concedir bono",
+  "acceptBonoDesc": "Verifica la informació abans de confirmar la compra del val",
+  "paymentIndication": " ha indicat que ha pagat usant: "
 }

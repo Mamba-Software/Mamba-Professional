@@ -1909,9 +1909,13 @@
   "@categories":{
     "description": "Categories text"
   },
+  "bono": "Bono",
+  "@bono":{
+    "description": "Bonos text"
+  },
   "bonos": "Bonos",
   "@bonos":{
-    "bonos": "Bonos text"
+    "description": "Bonos text"
   },
   "yourBonos": "Tus bonos",
   "@yourBonos":{
@@ -2137,12 +2141,24 @@
   "@noData": {
     "description": "Donde message"
   },
+  "paymentMethod": "Método de pago",
+  "@paymentMethod": {
+    "description": "Donde message"
+  },
+  "paymentMethodConfirm": "Confirma el método de pago por favor.",
+  "@paymentMethodConfirm": {
+    "description": "Donde message"
+  },
   "cashPaymentMethod": "Efectivo",
   "@cashPaymentMethod": {
     "description": "Donde message"
   },
   "transferPaymentMethod": "Transferencia",
   "@transferPaymentMethod": {
+    "description": "Donde message"
+  },
+  "giftPaymentMethod": "Regalo",
+  "@giftPaymentMethod": {
     "description": "Donde message"
   },
   "ilimitadas": "ilimitadas",
@@ -2247,6 +2263,18 @@
   },
   "preseeBono": "Previsualiza tu bono",
   "@preseeBono":{
+    "description": "trainsPerWekk Text"
+  },
+  "acceptBono": "Otorgar bono",
+  "@acceptBono":{
+    "description": "trainsPerWekk Text"
+  },
+  "acceptBonoDesc": "Verifica la información antes de confirmar la compra del bono",
+  "@acceptBonoDesc":{
+    "description": "trainsPerWekk Text"
+  },
+  "paymentIndication": " ha indicado que ha pagado usando: ",
+  "@paymentIndication": {
     "description": "trainsPerWekk Text"
   }
 }
