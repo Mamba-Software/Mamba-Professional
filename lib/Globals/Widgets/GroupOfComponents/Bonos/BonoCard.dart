@@ -64,8 +64,13 @@ class BonoCardState extends State<BonoCard> {
     if (widget.isExpanded != null && widget.isExpanded!) {
       isExpanded = true;
     }
+    calculateExpandedHeight();
+    super.initState();
+  }
+
+  Future<void> calculateExpandedHeight() async {
     if (widget.condition == null) {
-      condition = widget.bono.condition!;
+      condition = await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
     } else {
       condition = widget.condition!;
     }
@@ -85,10 +90,7 @@ class BonoCardState extends State<BonoCard> {
     if (cnt == 1) isExpandedHeight = isExpandedHeight + 0.3;
     if (cnt == 2) isExpandedHeight = isExpandedHeight + 0.7;
     if (cnt == 3) isExpandedHeight = isExpandedHeight + 1;
-
-    super.initState();
   }
-
 
   @override
   void didUpdateWidget(BonoCard oldWidget) {
