@@ -387,7 +387,7 @@ class _Clients extends State<Clients> {
           isLoading ? SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: ListTile(
                   dense: true,
                   leading: Shimmer.fromColors(
@@ -454,9 +454,10 @@ class _Clients extends State<Clients> {
                 ),
               );
             },
-            childCount: widget.numClients,
+            childCount: widget.numClients == 0 ? 5 : widget.numClients,
             ),
-          ) : SliverList(
+          ) : filteredMembers.isNotEmpty ?
+          SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               Usuario user = filteredMembers[index];
               return ListTile(
@@ -536,6 +537,21 @@ class _Clients extends State<Clients> {
               );
               },
               childCount: filteredMembers.length,               // 1000 list items
+            ),
+          ) : SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width*0.30,
+                    child: Image.asset(Constants.emptyCalendar)
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.12),
+              ],
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 8,)),

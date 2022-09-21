@@ -361,7 +361,7 @@ class _BrandImagesState extends State<BrandImages> {
                 ),
               )
           ),
-          isLoading ? SliverToBoxAdapter(child: Container()) : SliverGrid(
+          isLoading || _imagesUploaded.isEmpty ? SliverToBoxAdapter(child: Container()) : SliverGrid(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
               childAspectRatio: 2.5,

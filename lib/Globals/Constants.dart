@@ -27,6 +27,8 @@ class Constants {
   static String locationCreateBrandIntro = "assets/images/LocationCreateBrandIntro.png";
   static String horarioCreateBrandIntro = "assets/images/HorarioCreateBrandIntro.png";
 
+  static String imageCash = "assets/images/imageCash.png";
+  static String imageTransfer = "assets/images/imageTransfer.png";
   static String locationImage = "assets/images/locationImage.png";
   static String teamImage = "assets/images/teamImage.jpg";
   static String statisticsImage = "assets/images/statisticsImage.jpg";

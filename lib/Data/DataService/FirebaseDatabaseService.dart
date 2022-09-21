@@ -2348,7 +2348,6 @@ class FirebaseDatabaseService {
         .set({
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
-      "monthlySessions": condition.monthlySessions,
     }).catchError((err) {
       print(err);
     });

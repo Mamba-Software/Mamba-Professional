@@ -27,7 +27,7 @@ class BrandFirebaseCalls {
   final batch = FirebaseFirestore.instance.batch();
 
   // Firebase collections
-  String library = isProduction ? 'Library' : '7777 Library';
+  String library = isProduction ? 'Library' : 'Library';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String users = isProduction ? 'Users' : '7777 Users';
   String events = isProduction ? 'Events' : '7777 Events';
@@ -43,7 +43,7 @@ class BrandFirebaseCalls {
 
   Future<User?> getCurrentUser() async {
     User? currentUser;
-    currentUser = await _auth.currentUser;
+    currentUser = _auth.currentUser;
     return currentUser;
   }
 
@@ -356,18 +356,27 @@ class BrandFirebaseCalls {
     return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
+  Future<Condition> getConditionInfo(String brandId, String bonoId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bonoId).collection('Conditions').doc('Conditions')
+        .get();
+
+     return Condition.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+  }
+
   //Add
 
-  Future<String> addBrand(String name, File image, String description,
-      List<double> workShift, int maxMembers) async {
-    User? firebaseUser = await getCurrentUser();
+  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {
     bool firestoreError = false;
     var uid = Uuid().v4();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
     await _firestore.collection(brands).doc(uid).set({
-      "adminID": firebaseUser!.uid,
+      "adminID": currentUser.id!,
       "logoUrl": "",
       "name": name,
       "description": description,
@@ -463,6 +472,9 @@ class BrandFirebaseCalls {
       "isActive": bono.isActive,
       "color": bono.color,
       "compras": 0,
+      "opacity": bono.opacity,
+      "imageUrl": bono.imageUrl,
+      "isDegradate": bono.isDegradate,
     }).catchError((err) {
       print(err);
     });
@@ -474,7 +486,7 @@ class BrandFirebaseCalls {
         .set({
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
-      "monthlySessions": condition.monthlySessions,
+      "cancelTime": condition.cancelTime,
     }).catchError((err) {
       print(err);
     });
@@ -544,9 +556,34 @@ class BrandFirebaseCalls {
     });
   }
 
-  Future<void> updateBono(String brandID, String bonoId, bool isActive) async {
-    await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
-      "isActive": isActive,
+  Future<void> updateBono(String brandId, Bono bono, Condition condition) async {
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bono.id)
+        .update({
+      "title": bono.title,
+      "description": bono.description,
+      "isActive": bono.isActive,
+      "color": bono.color,
+      "opacity": bono.opacity,
+      "imageUrl": bono.imageUrl,
+      "isDegradate": bono.isDegradate,
+    }).catchError((err) {
+      print(err);
+    });
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bono.id).collection('Conditions').doc('Conditions')
+        .update({
+      "expirationTime": condition.expirationTime,
+      "weeklySessions": condition.weeklySessions,
+      "cancelTime": condition.cancelTime,
+    }).catchError((err) {
+      print(err);
     });
   }
 
@@ -555,6 +592,14 @@ class BrandFirebaseCalls {
     Bono b = Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
       "compras": b.compras! + 1,
+    });
+  }
+
+  Future<void> updateBonoActive(String brandID, String bonoId, bool isActive) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).get();
+    Bono b = Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bonoId).update({
+      "isActive": isActive,
     });
   }
 
@@ -658,17 +703,14 @@ class BrandFirebaseCalls {
     }
   }
 
-  Future<void> deleteBrandBonoRequest(String brandId, String bonoId) async {
-    QuerySnapshot querySnapshot = await _firestore.collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc("Bonos Requests")
-        .collection("Bonos Requests").where("bonoId", isEqualTo: bonoId).get();
+  Future<void> deleteBrandBonoRequest(String brandId, String bonoRequestId) async {
     await _firestore.collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc("Bonos Requests")
-        .collection("Bonos Requests").doc(querySnapshot.docs[0].id).delete();
+    .doc(brandId)
+    .collection("Bonos")
+    .doc("Bonos Requests")
+    .collection("Bonos Requests")
+    .doc(bonoRequestId)
+    .delete();
   }
 
   //STREAMS

@@ -42,7 +42,7 @@ class ScriptsDatabaseService {
   String requests = isProduction ? 'Requests' : '7777 Requests';
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
-  String library = isProduction ? 'Library' : '7777 Library';
+  String library = isProduction ? 'Library' : 'Library';
 
   Future<bool> migrateUserDataFebruary6th() async {
     try {

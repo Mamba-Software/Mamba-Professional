@@ -15,7 +15,7 @@ import 'package:mamba_castelldefels/Globals/Utils/MediaQuery/MediaQuery.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/TopSnackBar/TopSnackBar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-
+/*
 class AddBono extends StatefulWidget {
 
   String brandId;
@@ -1209,3 +1209,4 @@ Widget daysSelectoWidget(int index, String numberDays, bool customized)
     }
   }
 }
+*/

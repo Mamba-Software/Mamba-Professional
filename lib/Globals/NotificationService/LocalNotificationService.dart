@@ -190,8 +190,7 @@ class LocalNotificationService {
       case "BrandPage":
         break;
       case 'BonosRequests':
-        print("here");
-        await Navigator.of(context).pushNamed("BonosRequests", arguments:  '9dec4b79-08b4-4c75-a770-a822691e73fa');
+        await Navigator.of(context).pushNamed("BonosRequests", arguments: currentBrand.id!);
         break;
       default:
         String payloadFeedback = payload.substring(0,2);

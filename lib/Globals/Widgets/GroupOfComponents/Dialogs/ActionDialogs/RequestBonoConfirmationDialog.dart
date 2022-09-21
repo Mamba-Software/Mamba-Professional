@@ -2,93 +2,50 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
+import '../../../../../Data/Models/Brand.dart';
+
 class RequestBonoConfirmationDialog extends StatefulWidget {
-  final String text;
-  final String userId;
-  const RequestBonoConfirmationDialog({Key? key, required this.text, required this.userId}) : super(key: key);
+  Bono bono;
+  Usuario user;
+  BonoRequest bonoRequest;
+  Brand brand;
+
+  RequestBonoConfirmationDialog({Key? key, required this.bono,required this.user,required this.bonoRequest, required this.brand }) : super(key: key);
 
   @override
   _RequestBonoConfirmationDialogState createState() => _RequestBonoConfirmationDialogState();
 }
 
 class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationDialog> {
-  // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
+
   // Boolean Loading
   bool isLoading = false;
-  // User Requesting
-  Usuario user = Usuario();
-
-  String paymentMethodSelected = paymentMethods[0].name!;
-
-  //List of payment methods
-  List<String> paymentMethodsLocale = [];
-
-  int paymentMethod = 0;
 
   @override
   void initState() {
-    isLoading = true;
-    getUser();
-    getPaymentMethod();
     super.initState();
-  }
-
-  // Gets the user info from firebase.
-  void getUser() async {
-    user = await _userDataService.getUserDetails(widget.userId);
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  // Gets the paymentMethod info
-  void getPaymentMethod() {
-    for(int i = 0; i < paymentMethods.length; ++i)
-      {
-        paymentMethodsLocale.add(paymentMethods[i].name!);
-      }
-    setState(() {
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ?
-      Dialog(
+    return Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: Container(
-          height: MediaQuery.of(context).size.height*0.3,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Theme.of(context).scaffoldBackgroundColor,
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              LoadingView(),
-            ],
-          ),
-        ),
-      )
-        :
-      Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
-        child: Container(
-          padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
-          height: MediaQuery.of(context).size.height*0.4,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: Theme.of(context).scaffoldBackgroundColor,
+              color: Theme.of(context).scaffoldBackgroundColor
           ),
           child: Stack(
             clipBehavior: Clip.none,
@@ -98,79 +55,57 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(height: MediaQuery.of(context).size.height*0.08),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
-                          child: Text(widget.text, style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),textAlign: TextAlign.center,),
+                          child: Text(
+                            "ha solicitado la confirmación de compra del bono",
+                            style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-
                       ],
                     ),
                   ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 24.0, right: 10, left: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Flexible(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: MediaQuery.of(context).size.width * 0.06),
-                                child: Text('Pagado con',
-                                    style: Theme.of(context).textTheme.bodyText1,
-                                    textAlign: TextAlign.center),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: MediaQuery.of(context).size.width * 0.02,
-                                    right: MediaQuery.of(context).size.width * 0.01),
-                                child: Container(
-                                  height: MediaQuery.of(context).size.width * 0.10,
-                                  padding:
-                                  EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    border: Border.all(
-                                        color: Colors.grey,
-                                        style: BorderStyle.solid,
-                                        width: 0.80),
-                                  ),
-                                  child: DropdownButton<String>(
-                                    items: paymentMethodsLocale.map((String value) {
-                                      return new DropdownMenuItem<String>(
-                                        value: value,
-                                        child: new Text(value),
-                                      );
-                                    }).toList(),
-                                    hint: Text(paymentMethodSelected),
-                                    onChanged: (newVal) {
-                                      paymentMethodSelected = newVal!;
-                                      for (int j = 0; j <= paymentMethods.length; ++j)
-                                      {
-                                        if(paymentMethods[j].name == paymentMethodSelected)
-                                        {
-                                          paymentMethod = j;
-                                          break;
-                                        }
-                                      }
-                                      setState(() {});
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                        BonoCard(
+                          height: MediaQuery.of(context).size.height*0.12,
+                          width: MediaQuery.of(context).size.width*0.4,
+                          bono: widget.bono,
+                          brand: widget.brand,
+                          canExpand: false,
+                          onlyView: true
                         )
                       ],
                     ),
                   ),
-
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            "pagado con",
+                            style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -192,9 +127,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
                           icon: Icon(Icons.check_circle_outline, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
-                          onPressed: () {
-                            Navigator.pop(context, paymentMethod);
-                          },
+                          onPressed: null,
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.01),
                         OutlinedButton.icon(
@@ -213,10 +146,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
                           icon: Icon(Icons.cancel_outlined, size: MediaQuery.of(context).size.width*0.06,color: AppColors.white),
-                          onPressed: () {
-                            paymentMethod = -1;
-                            Navigator.pop(context, paymentMethod);
-                          },
+                          onPressed: null,
                         ),
                       ],
                     ),
@@ -224,18 +154,17 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                 ],
               ),
               Positioned(
-                  bottom: 0,
-                  top: -150,
+                  top: -90,
                   child: Column(
                     children: <Widget>[
                       CircularImage(
                         size: MediaQuery.of(context).size.width*0.25,
-                        image: user.imageUrl,
-                        color: Theme.of(context).accentColor,
-                        borderWidth: 2,
+                        image: widget.user.imageUrl,
+                        color: Theme.of(context).primaryColor,
+                        borderWidth: 1,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10),
@@ -244,7 +173,7 @@ class _RequestBonoConfirmationDialogState extends State<RequestBonoConfirmationD
                             children: [
                               Flexible(
                                 child: Text(
-                                  user.name!,
+                                  widget.user.name!,
                                   style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.left,
                                 ),

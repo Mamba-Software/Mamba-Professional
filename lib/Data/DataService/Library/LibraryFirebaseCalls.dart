@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -22,7 +23,7 @@ class LibraryFirebaseCalls {
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String library = isProduction ? 'Library' : '7777 Library';
+  String library = isProduction ? 'Library' : 'Library';
 
   //Colors
   Future<List<lColor>> getColors() async {
@@ -36,7 +37,14 @@ class LibraryFirebaseCalls {
           colors.add(lColor.fromObjectAllData(doc.id, doc));
 
         }
+        colors.sort((a, b) {
+          if (int.parse(a.id!) > int.parse(b.id!)) {
+            return 1;
+          }
+          return -1;
+        });
       });
+
       return colors;
     } catch (e) {
       print(e.toString());
@@ -44,11 +52,38 @@ class LibraryFirebaseCalls {
     }
   }
 
+  //Degradates
+  Future<List<lDegradate>> getDegradates() async {
+    List<lDegradate> degradates = [];
+    try {
+      await _firestore.collection(library).doc('Colors')
+          .collection("Degradates")
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          degradates.add(lDegradate.fromObjectAllData(doc.id, doc));
+
+        }
+        degradates.sort((a, b) {
+          if (int.parse(a.id!) > int.parse(b.id!)) {
+            return 1;
+          }
+          return -1;
+        });
+      });
+
+      return degradates;
+    } catch (e) {
+      print(e.toString());
+      return degradates;
+    }
+  }
+
   Future<List<lPaymentMethod>> getPaymentMethods() async {
     List<lPaymentMethod> paymentMethods = [];
     try {
-      await _firestore.collection(library).doc('PaymentMethods')
-          .collection("PaymentMethods")
+      await _firestore.collection(library).doc('Payment Methods')
+          .collection("Payment Methods")
           .get()
           .then((snapshot) {
         for (DocumentSnapshot doc in snapshot.docs) {

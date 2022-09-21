@@ -1200,6 +1200,10 @@
   "@myRequests": {
     "description": "Wellcome message"
   },
+  "request": "Solicitud",
+  "@request": {
+    "description": "Wellcome message"
+  },
   "noRequestsFound": "No hemos encontrado ninguna solicitud",
   "@noRequestsFound": {
     "description": "Wellcome message"
@@ -2065,8 +2069,184 @@
   "@staff": {
     "description": "Donde message"
   },
-  "filterBy": "Ordenar por",
+  "bonoRequestDescription": "Compras de bonos pendientes de confirmación",
+  "@bonoRequestDescription": {
+    "description": "Create bono message"
+  },
+  "createBono": "Crear bono",
+  "@createBono": {
+    "description": "Create bono message"
+  },
+  "editBono": "Editar bono",
+  "@editBono": {
+    "description": "Edit bono message"
+  },
+  "nameBono": "Nombre de tu bono",
+  "@nameBono": {
+    "description": "Name bono message"
+  },
+  "descriptionBono": "Descripción de tu bono",
+  "@descriptionBono": {
+    "description": "Description bono message"
+  },
+  "activeBonoQues": "Activar/Desactivar bono",
+  "@activeBonoQues": {
+    "description": "Active bono message"
+  },
+  "activeBonoQuesDesc": "Si esta activo, tus clientes podrán comprarlo. Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
+  "@activeBonoQuesDesc": {
+    "description": "Active bono message"
+  },
+  "sesionsBono": "¿Cuantas sesiones tiene tu bono?",
+  "@sesionsBono": {
+    "description": "Sesions bono message"
+  },
+  "sesionsBonoDesc": "Haz clic para indicar que bono no tiene límite de sesiones. A continuación, podrás definir la fecha de expiración.",
+  "@sesionsBonoDesc": {
+    "description": "Sesions bono message"
+  },
+  "priceBono": "¿Qué precio tiene?",
+  "@priceBono": {
+    "description": "Price bono message"
+  },
+  "styleBono": "Estilo del bono",
+  "@styleBono": {
+    "description": "Style bono message"
+  },
+  "colorSolid": "Color sólido",
+  "@colorSolid": {
+    "description": "Solid bono message"
+  },
+  "degradateSolid": "Degradados",
+  "@degradateSolid": {
+    "description": "Degradate bono message"
+  },
+  "metalized": "Metalizados",
+  "@metalized": {
+    "description": "Metalizados bono message"
+  },
+  "orderBy": "Ordenar por",
+  "@orderBy": {
+    "description": "Donde message"
+  },
+  "filterBy": "Filtrar por",
   "@filterBy": {
     "description": "Donde message"
+  },
+  "noData": "Sin datos",
+  "@noData": {
+    "description": "Donde message"
+  },
+  "cashPaymentMethod": "Efectivo",
+  "@cashPaymentMethod": {
+    "description": "Donde message"
+  },
+  "transferPaymentMethod": "Transferencia",
+  "@transferPaymentMethod": {
+    "description": "Donde message"
+  },
+  "ilimitadas": "ilimitadas",
+  "@ilimitadas": {
+    "description": "ilimitadas message"
+  },
+  "numberSessions": "Nº sesiones",
+  "@numberSessions": {
+    "description": "numberSessions message"
+  },
+  "buy": "Comprar",
+  "@buy": {
+    "description": "buy message"
+  },
+  "activeBono": "Bonos activos",
+  "@activeBono": {
+    "description": "active message"
+  },
+  "desactiveBono": "Bonos inactivos",
+  "@desactiveBono": {
+    "description": "desactive message"
+  },
+  "active": "Activo",
+  "@active": {
+    "description": "active message"
+  },
+  "desactive": "Inactivo",
+  "@desactive": {
+    "description": "desactive message"
+  },
+  "price": "Precio",
+  "@price": {
+    "description": "price message"
+  },
+  "pricePlease": "Añade el precio por favor",
+  "@pricePlease": {
+    "description": "price message"
+  },
+  "session": "sesión",
+  "@session":{
+    "description": "session Text"
+  },
+  "sessionPlease": "Añade las sesiones por favor",
+  "@sessionPlease":{
+    "description": "session Text"
+  },
+  "conditions": "Condiciones",
+  "@conditions":{
+    "description": "conditions Text"
+  },
+  "expiresAt": "Expira en",
+  "@expiresAt":{
+    "description": "expiresAt Text"
+  },
+  "expiresAtDesc": "Número de días hasta el vencimiento de este bono.",
+  "@expiresAtDesc":{
+    "description": "expiresAt Text"
+  },
+  "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.\n\nDejar valor en 0 para evitar esta condición.",
+  "@freeCancelDesc":{
+    "description": "cancelTimeAt Text"
+  },
+  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana (lunes a domingo).\n\nDejar en 0 para evitar esta condición.",
+  "@trainsPerWeekDesc":{
+    "description": "trainsPerWekk Text"
+  },
+  "noExpireDate":  "No tiene fecha de expiración",
+  "@noExpireDate":{
+    "description": "noExpireDate Text"
+  },
+  "hours":  "Horas antes de la sesión",
+  "@hours":{
+    "description": "hours Text"
+  },
+  "freeCancel":  "Cancelación gratuita",
+  "@freeCancel":{
+    "description": "cancelTimeAt Text"
+  },
+  "cancelTimeAt":  "Cancelación gratuita hasta",
+  "@cancelTimeAt":{
+    "description": "cancelTimeAt Text"
+  },
+  "max": "Máximo",
+  "@max":{
+    "description": "max Text"
+  },
+  "trainsPerWeek":  "Sesiones por semana",
+  "@trainsPerWeek":{
+    "description": "trainsPerWekk Text"
+  },
+  "first": "Primero",
+  "@first":{
+    "description": "trainsPerWekk Text"
+  },
+  "alphabetAtoZ":"Ordenar de A-Z",
+  "@alphabetAtoZ":{
+    "description": "trainsPerWekk Text"
+  },
+  "alphabetZtoA": "Ordenar de Z-A",
+  "@alphabetZtoA":{
+    "description": "trainsPerWekk Text"
+  },
+  "preseeBono": "Previsualiza tu bono",
+  "@preseeBono":{
+    "description": "trainsPerWekk Text"
   }
 }
