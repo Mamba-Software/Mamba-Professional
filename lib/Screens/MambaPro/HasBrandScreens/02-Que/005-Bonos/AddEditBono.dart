@@ -147,7 +147,7 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.description = widget.bono.description;
       bono.price = widget.bono.price;
       bono.classes = widget.bono.classes;
-      if(bono.classes == 0) {
+      if (bono.classes == 0) {
         noSessions = true;
         clasesController.text = '';
       }
@@ -158,6 +158,7 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.isDegradate = widget.bono.isDegradate;
       bono.opacity = widget.bono.opacity;
       getCondition();
+
     } else {
       isSelectedDays[1] = true;
       freeCancellController.text = '0';
@@ -191,8 +192,11 @@ class _AddEditBonoState extends State<AddEditBono>
   }
 
   void getCondition() async {
-    condition =
-        await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
+    condition = Condition(
+      expirationTime: widget.bono.condition!.expirationTime,
+      cancelTime: widget.bono.condition!.cancelTime,
+      weeklySessions: widget.bono.condition!.weeklySessions,
+    );
     isSelectedDays[0] = false;
     isSelectedDays[1] = false;
     isSelectedDays[2] = false;
@@ -206,7 +210,6 @@ class _AddEditBonoState extends State<AddEditBono>
     } else {
       isSelectedDays[3] = true;
     }
-
     weeklyController.text = condition.weeklySessions.toString();
     freeCancellController.text = condition.cancelTime.toString();
   }

@@ -356,17 +356,6 @@ class BrandFirebaseCalls {
     return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
-  Future<Condition> getConditionInfo(String brandId, String bonoId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc(bonoId).collection('Conditions').doc('Conditions')
-        .get();
-
-     return Condition.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
-  }
-
   //Add
 
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {
@@ -475,15 +464,6 @@ class BrandFirebaseCalls {
       "opacity": bono.opacity,
       "imageUrl": bono.imageUrl,
       "isDegradate": bono.isDegradate,
-    }).catchError((err) {
-      print(err);
-    });
-    await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc(uid).collection('Conditions').doc('Conditions')
-        .set({
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
       "cancelTime": condition.cancelTime,

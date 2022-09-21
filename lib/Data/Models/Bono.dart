@@ -19,7 +19,11 @@ class Bono {
   String? imageUrl;
   bool? isDegradate;
   double? opacity;
-  Condition? condition;
+  Condition? condition = Condition(
+    expirationTime: 0,
+    cancelTime: 0,
+    weeklySessions: 0,
+  );
 
 
   Bono({
@@ -40,36 +44,46 @@ class Bono {
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   Bono.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
-      this.title = documentSnapshot.get("title").toString();
+      title = documentSnapshot.get("title").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
-      this.description = documentSnapshot.get("description").toString();
+      description = documentSnapshot.get("description").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
-      this.price = documentSnapshot.get("price");
+      price = documentSnapshot.get("price");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
-      this.classes = documentSnapshot.get("sessions");
+      classes = documentSnapshot.get("sessions");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
-      this.isActive = documentSnapshot.get("isActive");
+      isActive = documentSnapshot.get("isActive");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('compras')) {
-      this.compras = documentSnapshot.get("compras");
+      compras = documentSnapshot.get("compras");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('color')) {
-      this.color = documentSnapshot.get("color");
+      color = documentSnapshot.get("color");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
-      this.imageUrl = documentSnapshot.get("imageUrl").toString();
+      imageUrl = documentSnapshot.get("imageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isDegradate')) {
-      this.isDegradate = documentSnapshot.get("isDegradate");
+      isDegradate = documentSnapshot.get("isDegradate");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('opacity')) {
-      this.opacity = documentSnapshot.get("opacity");
+      opacity = documentSnapshot.get("opacity");
+    }
+    // Conditions
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('expirationTime')) {
+      condition!.expirationTime = documentSnapshot.get("expirationTime");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('cancelTime')) {
+      condition!.cancelTime = documentSnapshot.get("cancelTime");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('weeklySessions')) {
+      condition!.weeklySessions = documentSnapshot.get("weeklySessions");
     }
   }
 
@@ -77,17 +91,17 @@ class Bono {
 
   // Set Basic Data
   set setBasicData(Bono bono) {
-    this.id = bono.id;
-    this.title = bono.title;
-    this.description = bono.description;
-    this.price = bono.price;
-    this.classes = bono.classes;
-    this.isActive = bono.isActive;
-    this.compras = bono.compras;
-    this.color = bono.color;
-    this.imageUrl = bono.imageUrl;
-    this.isDegradate = bono.isDegradate;
-    this.opacity = bono.opacity;
+    id = bono.id;
+    title = bono.title;
+    description = bono.description;
+    price = bono.price;
+    classes = bono.classes;
+    isActive = bono.isActive;
+    compras = bono.compras;
+    color = bono.color;
+    imageUrl = bono.imageUrl;
+    isDegradate = bono.isDegradate;
+    opacity = bono.opacity;
   }
 
   // Set Basic Data

@@ -542,7 +542,9 @@ class _BonosProState extends State<BonosPro> {
                   return SliverFillRemaining(
                     hasScrollBody: true,
                     child: Center(
-                        child: LoadingView()
+                        child: LoadingView(
+                          hasLogo: false,
+                        )
                     ),
                   );
                 } else {
@@ -552,41 +554,16 @@ class _BonosProState extends State<BonosPro> {
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                           Bono bono = bonosList[index];
-                          return FutureBuilder(
-                              future: _brandDataService.getConditionInfo(widget.brandId, bono.id!),
-                              builder: (BuildContext context, AsyncSnapshot<Condition> snapshot) {
-                                if (snapshot.data != null) {
-                                  Condition? condition = snapshot.data;
-                                  bono.setConditionsData = condition!;
-                                  return Column(
-                                    children: [
-                                      index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.04) : Container(),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04),
-                                        child: returnBono(bono),
-                                      ),
-                                      index == bonosList.length-1 ? SizedBox(height: MediaQuery.of(context).size.width * 0.1) : Container(),
-                                    ],
-                                  );
-                                } else {
-                                  return Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.04),
-                                    child: Shimmer.fromColors(
-                                      baseColor: AppColors.grey,
-                                      highlightColor: AppColors.grey.withOpacity(0.5),
-                                      child: Container(
-                                        height: MediaQuery.of(context).size.height*0.24,
-                                        width: MediaQuery.of(context).size.width*0.90,
-                                        decoration: BoxDecoration(
-                                          color: AppColors.grey,
-                                          borderRadius: BorderRadius.all(Radius.circular(MediaQuery.of(context).size.width*0.9*0.03)),
-                                        ),
-                                      ),
-                                    )
-                                  );
-                                }
-                              }
-                            );
+                          return Column(
+                            children: [
+                              index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.04) : Container(),
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04),
+                                child: returnBono(bono),
+                              ),
+                              index == bonosList.length-1 ? SizedBox(height: MediaQuery.of(context).size.width * 0.1) : Container(),
+                            ],
+                          );
                         },
                         childCount: bonosList.length,
                       ),

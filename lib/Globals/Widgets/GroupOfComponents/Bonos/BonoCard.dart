@@ -70,7 +70,11 @@ class BonoCardState extends State<BonoCard> {
 
   Future<void> calculateExpandedHeight() async {
     if (widget.condition == null) {
-      condition = await _brandDataService.getConditionInfo(widget.brand.id!, bono.id!);
+      condition = Condition(
+        expirationTime: widget.bono.condition!.expirationTime,
+        cancelTime: widget.bono.condition!.cancelTime,
+        weeklySessions: widget.bono.condition!.weeklySessions,
+      );
     } else {
       condition = widget.condition!;
     }
