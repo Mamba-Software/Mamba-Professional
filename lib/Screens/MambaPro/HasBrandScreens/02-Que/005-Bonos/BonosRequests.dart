@@ -59,7 +59,7 @@ class _BonosRequestsState extends State<BonosRequests> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          AppLocalizations.of(context)!.myRequests+" de compra",
+          AppLocalizations.of(context)!.bonoBuys,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,

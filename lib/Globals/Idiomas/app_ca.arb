@@ -508,6 +508,7 @@
   "first": "Primer",
   "alphabetAtoZ":"Ordenar de A-Z",
   "alphabetZtoA": "Ordenar de Z-A",
+  "bonoBuys": "Vals pendents",
   "preseeBono": "Previsualiza el teu val",
   "acceptBono": "Concedir bono",
   "acceptBonoDesc": "Verifica la informació abans de confirmar la compra del val",

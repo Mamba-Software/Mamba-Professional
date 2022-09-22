@@ -61,11 +61,17 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
           ),
           const SizedBox(height: 8),
           Text(
-            "Pagado con "+originalPaymentString,
+            AppLocalizations.of(context)!.bono+": "+widget.bono.title!.toUpperCase(),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
           ),
           const SizedBox(height: 4),
+          Text(
+            AppLocalizations.of(context)!.paymentMethod+": "+originalPaymentString,
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+          ),
+          const SizedBox(height: 8),
           Text(
             AppLocalizations.of(context)!.requestSent(DateTimeUtils().formatDateTimeToStringDDMMYYYY(widget.bonoRequest.timeRequested!.toDate(), Localizations.localeOf(context).languageCode)),
             style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
@@ -77,14 +83,14 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
       trailing: FittedBox(
         fit: BoxFit.cover,
         child: SizedBox(
-          width: MediaQuery.of(context).size.width*0.25,
+          width: MediaQuery.of(context).size.width*0.1,
           child: Center(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.width*0.06,
-                  width: MediaQuery.of(context).size.width*0.06,
+                  height: MediaQuery.of(context).size.width*0.1,
+                  width: MediaQuery.of(context).size.width*0.1,
                   child: FittedBox(
                     fit: BoxFit.fitHeight,
                     child: Image(
@@ -92,14 +98,17 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
                     ),
                   ),
                 ),
+                /*
                 BonoCard(
-                  height: MediaQuery.of(context).size.height*0.05,
-                  width: MediaQuery.of(context).size.width*0.17,
+                  height: MediaQuery.of(context).size.height*0.04,
+                  width: MediaQuery.of(context).size.width*0.15,
                   bono: widget.bono,
                   brand: widget.brand,
                   canExpand: false,
                   onlyView: true,
                 ),
+
+                 */
               ],
             ),
           ),
