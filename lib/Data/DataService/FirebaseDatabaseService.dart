@@ -921,7 +921,7 @@ class FirebaseDatabaseService {
             .collection("Users")
             .doc(userId)
             .get();
-        double feedbackScore = _documentSnapshot.get("intensityScore");
+        double feedbackScore = _documentSnapshot.get("intensityScore").toDouble();
         return feedbackScore;
       } catch (e) {
         return null;
@@ -2333,7 +2333,7 @@ class FirebaseDatabaseService {
       "title": bono.title!,
       "description": bono.description,
       "price": bono.price!,
-      "sessions": bono.classes,
+      "sessions": bono.sessions,
       "isActive": bono.isActive,
       "color": bono.color,
       "compras": 0,

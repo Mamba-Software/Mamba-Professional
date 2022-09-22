@@ -721,4 +721,15 @@ class UserFirebaseCalls {
         .snapshots();
   }
 
+
+
+  //Get bono Requests from brand
+  Stream<QuerySnapshot> getAllBonosFromUser(String userId) {
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Bonos")
+        .snapshots();
+  }
+
 }

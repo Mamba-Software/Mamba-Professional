@@ -457,7 +457,7 @@ class BrandFirebaseCalls {
       "title": bono.title!,
       "description": bono.description,
       "price": bono.price!,
-      "sessions": bono.classes,
+      "sessions": bono.sessions,
       "isActive": bono.isActive,
       "color": bono.color,
       "compras": 0,
@@ -736,6 +736,17 @@ class BrandFirebaseCalls {
         .collection("Bonos")
         .doc("Bonos Requests")
         .collection("Bonos Requests")
+        .snapshots();
+  }
+
+
+  //Get bonos from brand
+  Stream<DocumentSnapshot> getBonoInfoStream(String brandId, String bonoId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bonoId)
         .snapshots();
   }
 

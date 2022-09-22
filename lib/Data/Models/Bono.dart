@@ -1,10 +1,5 @@
 // This class represents the Object <Event> that will be showed in the Calendar Widget.
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Location.dart';
-
 import 'Condition.dart';
 
 class Bono {
@@ -12,7 +7,7 @@ class Bono {
   String? title;
   String? description;
   double? price;
-  int? classes;
+  int? sessions;
   bool? isActive;
   int? compras;
   String? color;
@@ -24,14 +19,16 @@ class Bono {
     cancelTime: 0,
     weeklySessions: 0,
   );
-
+  // Ids
+  String? purchaseId;
+  String? brandId;
 
   Bono({
     this.id,
     this.title,
     this.description,
     this.price,
-    this.classes,
+    this.sessions,
     this.isActive,
     this.compras,
     this.color,
@@ -39,6 +36,8 @@ class Bono {
     this.isDegradate,
     this.opacity,
     this.condition,
+    this.purchaseId,
+    this.brandId,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +54,7 @@ class Bono {
       price = documentSnapshot.get("price").toDouble();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
-      classes = documentSnapshot.get("sessions");
+      sessions = documentSnapshot.get("sessions");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
       isActive = documentSnapshot.get("isActive");
@@ -85,6 +84,13 @@ class Bono {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('weeklySessions')) {
       condition!.weeklySessions = documentSnapshot.get("weeklySessions");
     }
+    // Purchases
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+      purchaseId = documentSnapshot.get("purchaseId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandId')) {
+      brandId = documentSnapshot.get("brandId").toString();
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -95,13 +101,20 @@ class Bono {
     title = bono.title;
     description = bono.description;
     price = bono.price;
-    classes = bono.classes;
+    sessions = bono.sessions;
     isActive = bono.isActive;
     compras = bono.compras;
     color = bono.color;
     imageUrl = bono.imageUrl;
     isDegradate = bono.isDegradate;
     opacity = bono.opacity;
+    purchaseId = bono.purchaseId;
+    brandId = bono.brandId;
+  }
+
+  // Set Basic Data
+  set setBonoSessions(int sessions) {
+    this.sessions = sessions;
   }
 
   // Set Basic Data

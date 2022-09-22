@@ -2130,6 +2130,10 @@
   "@staff": {
     "description": "Donde message"
   },
+  "buyDate": "Fecha de compra",
+  "@buyDate": {
+    "description": "Donde message"
+  },
   "bonoRequestDescription": "Compras de bonos pendientes de confirmación",
   "@bonoRequestDescription": {
     "description": "Create bono message"

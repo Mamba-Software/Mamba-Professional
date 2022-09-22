@@ -119,7 +119,7 @@ class _AddEditBonoState extends State<AddEditBono>
   Bono bono = Bono(
     color: "0",
     isActive: true,
-    classes: 0,
+    sessions: 0,
     opacity: 1,
     imageUrl: '',
     isDegradate: false,
@@ -146,8 +146,8 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.title = widget.bono.title;
       bono.description = widget.bono.description;
       bono.price = widget.bono.price;
-      bono.classes = widget.bono.classes;
-      if (bono.classes == 0) {
+      bono.sessions = widget.bono.sessions;
+      if (bono.sessions == 0) {
         noSessions = true;
         clasesController.text = '';
       }
@@ -1249,7 +1249,7 @@ class _AddEditBonoState extends State<AddEditBono>
   void setSeeSessions(bool? seeSes) {
     noSessions = seeSes!;
     clasesController.text = '';
-    bono.classes = 0;
+    bono.sessions = 0;
 
     setState(() {});
   }
@@ -1555,7 +1555,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                       : variable == 'desc'
                                           ? bono.description
                                           : variable == 'ses'
-                                              ? bono.classes.toString()
+                                              ? bono.sessions.toString()
                                               : variable == 'price'
                                                   ? bono.price.toString()
                                                   : null
@@ -1581,7 +1581,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                   } else if (variable == 'desc') {
                                     bono.description = val;
                                   } else if (variable == 'ses') {
-                                    bono.classes = int.parse(val);
+                                    bono.sessions = int.parse(val);
                                   } else if (variable == 'price') {
                                     double price =
                                         double.parse(val.replaceAll(',', '.'));
@@ -1646,7 +1646,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                           : variable == 'desc'
                                               ? bono.description
                                               : variable == 'ses'
-                                                  ? bono.classes.toString()
+                                                  ? bono.sessions.toString()
                                                   : variable == 'price'
                                                       ? bono.price.toString()
                                                       : null
@@ -1672,7 +1672,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                       } else if (variable == 'desc') {
                                         bono.description = val;
                                       } else if (variable == 'ses') {
-                                        bono.classes = int.parse(val);
+                                        bono.sessions = int.parse(val);
                                       } else if (variable == 'price') {
                                         double price = double.parse(
                                             val.replaceAll(',', '.'));
