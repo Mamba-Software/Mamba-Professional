@@ -216,7 +216,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
                           child: TextButton(
-                              child: Text(AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(), style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline), ),
+                              child: Text("Personalizar este bono solo para ${widget.user.firstName!}", style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline), ),
                               style: const ButtonStyle(),
                               onPressed: () async {},
                           ),
