@@ -176,7 +176,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         ),
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.035),
 
                     SizedBox(
                       height: MediaQuery.of(context).size.height*0.05,
@@ -209,7 +209,22 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         ),
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.035),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
+                          child: TextButton(
+                              child: Text(AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(), style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline), ),
+                              style: const ButtonStyle(),
+                              onPressed: () async {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+
 
                     SizedBox(
                       height: MediaQuery.of(context).size.height*0.05,
