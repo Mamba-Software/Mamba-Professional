@@ -478,6 +478,7 @@
   "metalized": "Metalitzats",
   "orderBy": "Ordenar per",
   "filterBy": "Filtrar per",
+  "noData": "Sense dades",
   "paymentMethod": "Mètode de pagament",
   "paymentMethodConfirm": "Confirma el mètode de pagament si us plau.",
   "cashPaymentMethod": "Efectiu",
