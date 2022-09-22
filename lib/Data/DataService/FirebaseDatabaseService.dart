@@ -2091,6 +2091,38 @@ class FirebaseDatabaseService {
       }
     }
 
+    //Add Event to purchase
+  Future<void> addEventToPurchase(String purchaseId, Event eventDoc) async {
+    try {
+      await _firestore
+        ..collection("7777 Payments")
+            .doc("Purchases")
+            .collection("Purchases")
+            .doc(purchaseId)
+            .collection("Events")
+            .doc(eventDoc.id)
+            .set({
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": eventDoc.numTrainers,
+          "numClients": eventDoc.numClients,
+          "maxMembers": eventDoc.maxMembers,
+        }).catchError((err) {
+          print(err);
+        });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
     // Update Event Is Completed
     Future<void> updateEventCompleted(String id) async {
       await _firestore.collection(events).doc(id).update({

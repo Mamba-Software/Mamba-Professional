@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
@@ -57,6 +58,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   bool isLoading = false;
   // Boolean isUpdated
   bool isUpdated = false;
+
+  //Boolean to available bonos
+  bool availableBonos = false;
   // Tab Controller
   double addEventTabValue = 0.33;
   double updateEventTabValue = 0.50;
@@ -170,6 +174,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       {
         bonosSelected.add(event.bonos[i].toString());
       }
+    if(bonosSelected.length != 0) {
+      availableBonos = true;
+    }
     // Event Date
     originalStartDate = DateTime(
       int.parse(event.year!),
@@ -906,15 +913,22 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                   Text(
-                                                    'Bonos',
+                                                    AppLocalizations.of(context)!.bonos,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
                                                 ],
                                               ),
+                                              const SizedBox(width: 10,),
+                                              Checkbox(
+                                                checkColor: Colors.white,
+                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                value: availableBonos,
+                                                onChanged: setBonosAvailable,
+                                              ),
                                             ],
                                           )
                                       ),
-                                      Padding(
+                                      availableBonos? Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
                                         child: Container(
                                           width: MediaQuery.of(context).size.width,
@@ -939,12 +953,60 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                               bonosSelected.remove(bono.id);
                                                             }
                                                             else bonosSelected.add(bono.id!);
-
+                                                            print(bonosSelected);
                                                             setState(() {
 
                                                             });
                                                           },
                                                           child: Padding(
+                                                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.03),
+                                                            child: Stack(
+                                                              children: [
+                                                                BonoCard(
+                                                                  height: MediaQuery.of(context).size.height * 0.12,
+                                                                  width: MediaQuery.of(context).size.width * 0.45,
+                                                                  bono: bono,
+                                                                  brand: currentBrand,
+                                                                  canExpand: false,
+                                                                  onlyView: true,
+                                                                ),
+                                                                Positioned(
+                                                                    top: MediaQuery.of(context).size.width*0.05,
+                                                                    left: MediaQuery.of(context).size.width*0.35,
+                                                                    bottom: MediaQuery.of(context).size.height * 0.05,
+                                                                    child: CircleAvatar(
+                                                                      backgroundColor: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
+                                                                      radius: MediaQuery.of(context).size.width*0.04,
+                                                                      child: bonosSelected.contains(bono.id)? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
+                                                                    ),
+                                                                  ),
+
+                                                                bonosSelected.contains(bono.id)? Container(
+                                                                  height: MediaQuery.of(context).size.height * 0.12,
+                                                                  width: MediaQuery.of(context).size.width * 0.45,
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                      width:  1,
+                                                                      color: AppColors.mainColor,
+                                                                    ),
+                                                                  ),
+                                                                ) : Container(
+                                                                  height: MediaQuery.of(context).size.height * 0.12,
+                                                                  width: MediaQuery.of(context).size.width * 0.45,
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                      width:  0,
+                                                                      color: Theme.of(context).backgroundColor,
+                                                                    ),
+                                                                  ),
+                                                                ),
+
+
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          /*
+                                                          Padding(
                                                             padding:EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02, left: 1.0),
                                                             child: Column(
                                                               mainAxisAlignment: MainAxisAlignment.center,
@@ -989,6 +1051,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                               ],
                                                             ),
                                                           ),
+
+                                                           */
                                                         );
                                                       }
                                                   ),
@@ -997,7 +1061,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             ),
                                           ),
                                         ),
-                                      ),
+                                      ) : Container(),
                                     ]
                                 ),
                               ),
@@ -1909,6 +1973,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     setState(() {
       isLoading = true;
     });
+    if(!availableBonos) {
+      bonosSelected = [];
+    }
     // Get Random Photo if no Image Selected
     if (eventImageUrl == null || (eventImageUrl != null && isRandomImage)) {
       eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -2155,9 +2222,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future<void> _updateEventFunction() async {
+    print("update event");
+    print(bonosSelected);
     setState(() {
       isLoading = true;
     });
+    if(!availableBonos) {
+      bonosSelected = [];
+    }
     // Get Random Photo if no Image Selected
     if (isRandomImage) {
       eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -2498,6 +2570,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     }
     // Pop to Get Back
     Navigator.pop(context, true);
+  }
+
+  void setBonosAvailable(bool? seeBonos) {
+    availableBonos = seeBonos!;
+    setState(() {});
   }
 
   // Firebase Calls

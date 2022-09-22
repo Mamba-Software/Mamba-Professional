@@ -2162,7 +2162,7 @@
   "@sesionsBono": {
     "description": "Sesions bono message"
   },
-  "sesionsBonoDesc": "Haz clic para indicar que bono no tiene límite de sesiones. A continuación, podrás definir la fecha de expiración.",
+  "sesionsBonoDesc": "Haz clic para indicar que tu bono no tiene límite de sesiones. En la siguiente pantalla, podrás definir la fecha de expiración.",
   "@sesionsBonoDesc": {
     "description": "Sesions bono message"
   },

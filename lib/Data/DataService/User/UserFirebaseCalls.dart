@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -334,6 +335,20 @@ class UserFirebaseCalls {
       );
     }
     return notis;
+  }
+
+  Future<List<Bono>> getUserBonos(String userId) async {
+    List<Bono> userBonos = [];
+    QuerySnapshot querySnapshot = await _firestore.collection(users)
+        .doc(userId)
+        .collection("Bonos")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if (querySnapshot.docs[i].id != "Bono Requests") {
+        userBonos.add(Bono.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+    }
+    return userBonos;
   }
 
   //Add

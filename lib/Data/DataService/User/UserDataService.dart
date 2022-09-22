@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserFirebaseCalls.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
@@ -37,6 +38,7 @@ class UserDataService {
   Future<List<ReceivedNotification>> getLocalNotifications(String userId) => _firebase.getLocalNotifications(userId);
   Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) => _firebase.getIndividualLocalNotification(userId, notificationId);
   Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) => _firebase.findEventLocalNotification(userId, eventId);
+  Future<List<Bono>> getUserBonos(String userId) => _firebase.getUserBonos(userId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);

@@ -49,6 +49,7 @@ class EventDataService {
   Future<void> addRecurrentEventGroup(String eventGroupId, List<String> eventIds) => _firebase.addRecurrentEventGroups(eventGroupId, eventIds);
   Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
   Future<void> addEventFeedback(String eid, String uid, double intensityScore) => _firebase.addEventFeedback(eid, uid, intensityScore);
+  Future<void> addEventToPurchase(String purchaseId, Event event) => _firebase.addEventToPurchase(purchaseId, event);
 
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);

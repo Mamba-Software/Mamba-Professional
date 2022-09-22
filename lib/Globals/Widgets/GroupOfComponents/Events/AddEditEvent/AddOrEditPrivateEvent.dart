@@ -3,6 +3,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
@@ -14,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
@@ -26,6 +29,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAu
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectClientsEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
@@ -46,6 +50,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
   final _brandDataService = BrandDataService();
+  final _userDataService = UserDataService();
+  var _topSnackBar = TopSnackBar();
   // Notification Services
   final NotificationService _notificationService = NotificationService();
   final LocalNotificationService _localNotificationService = LocalNotificationService();
@@ -81,6 +87,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   TextEditingController startTimeController = TextEditingController();
   bool errorDate = false;
   Timestamp? doneAt;
+
+  //Boolean to available bonos
+  bool availableBonos = false;
+  List<Bono> bonos = [];
+  List<String> bonosSelected = [];
+
   // Duration
   String duration = "1.00";
   TextEditingController durationController = TextEditingController();
@@ -124,6 +136,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     }
   }
 
+  Future<void> getBonos() async {
+    bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+  }
+
   Future<void> initializeEventInfo() async {
     startDate = DateTime(
       startDate.year,
@@ -148,11 +164,21 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     membersController.text = "${eventMaxMembers.toString()}";
     brandTrainersSelected.add(currentUser);
     getLocation(currentBrand.baseLocation!);
+    getBonos();
   }
 
   Future<void> getEventInfo() async {
     // Get Event Info
     event = await _eventDataService.getSingleEvent(widget.eventId!);
+    getBonos();
+    for(int i = 0; i < event.bonos.length; ++i)
+    {
+      bonosSelected.add(event.bonos[i].toString());
+    }
+    if(bonosSelected.length != 0) {
+      availableBonos = true;
+    }
+
     // Event Date
     originalStartDate = DateTime(
       int.parse(event.year!),
@@ -861,6 +887,165 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           },
                                         ),
                                       ),
+                                      Padding(
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Text(
+                                                    AppLocalizations.of(context)!.bonos,
+                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(width: 10,),
+                                              Checkbox(
+                                                checkColor: Colors.white,
+                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                value: availableBonos,
+                                                onChanged: setBonosAvailable,
+                                              ),
+                                            ],
+                                          )
+                                      ),
+                                      availableBonos? Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          child: SingleChildScrollView(
+                                            physics: const BouncingScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                  height: MediaQuery.of(context).size.height*0.15,
+                                                  child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics: const NeverScrollableScrollPhysics(),
+                                                      scrollDirection: Axis.horizontal,
+                                                      itemCount: bonos.length,
+                                                      itemBuilder: (context, int index) {
+                                                        var bono = bonos[index];
+                                                        return GestureDetector(
+                                                          onTap: () {
+                                                            if(bonosSelected.contains(bono.id)) {
+                                                              bonosSelected.remove(bono.id);
+                                                            }
+                                                            else bonosSelected.add(bono.id!);
+                                                            print(bonosSelected);
+                                                            setState(() {
+
+                                                            });
+                                                          },
+                                                          child: Padding(
+                                                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.03),
+                                                            child: Stack(
+                                                              children: [
+                                                                BonoCard(
+                                                                  height: MediaQuery.of(context).size.height * 0.12,
+                                                                  width: MediaQuery.of(context).size.width * 0.45,
+                                                                  bono: bono,
+                                                                  brand: currentBrand,
+                                                                  canExpand: false,
+                                                                  onlyView: true,
+                                                                ),
+                                                                Positioned(
+                                                                  top: MediaQuery.of(context).size.width*0.05,
+                                                                  left: MediaQuery.of(context).size.width*0.35,
+                                                                  bottom: MediaQuery.of(context).size.height * 0.05,
+                                                                  child: CircleAvatar(
+                                                                    backgroundColor: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
+                                                                    radius: MediaQuery.of(context).size.width*0.04,
+                                                                    child: bonosSelected.contains(bono.id)? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
+                                                                  ),
+                                                                ),
+
+                                                                bonosSelected.contains(bono.id)? Container(
+                                                                  height: MediaQuery.of(context).size.height * 0.12,
+                                                                  width: MediaQuery.of(context).size.width * 0.45,
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                      width:  1,
+                                                                      color: AppColors.mainColor,
+                                                                    ),
+                                                                  ),
+                                                                ) : Container(
+                                                                  height: MediaQuery.of(context).size.height * 0.12,
+                                                                  width: MediaQuery.of(context).size.width * 0.45,
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                      width:  0,
+                                                                      color: Theme.of(context).backgroundColor,
+                                                                    ),
+                                                                  ),
+                                                                ),
+
+
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          /*
+                                                          Padding(
+                                                            padding:EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02, left: 1.0),
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Stack(
+                                                                  alignment: Alignment.topRight,
+                                                                  children: [
+                                                                    IconButton(onPressed: () {
+                                                                      if(bonosSelected.contains(bono.id)) {
+                                                                        bonosSelected.remove(bono.id);
+                                                                      }
+                                                                      else bonosSelected.add(bono.id!);
+
+                                                                      setState(() {
+
+                                                                      });
+                                                                    }, icon: const Icon(
+                                                                      Icons.confirmation_number,
+                                                                    ),
+                                                                      color: bonosSelected.contains(bono.id)? Color(int.parse(currentColors[int.parse(bono.color!)].hexa!)) : Colors.white30,
+                                                                      ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: MediaQuery.of(context).size.width*0.02,
+                                                                ),
+                                                                Container(
+                                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Flexible(
+                                                                        child: Text(
+                                                                          bono.title!,
+                                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                                          textAlign: TextAlign.center,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+
+                                                           */
+                                                        );
+                                                      }
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ) : Container(),
                                     ]
                                 ),
                               ),
@@ -1694,9 +1879,31 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future<void> _addEventFunction() async {
+    List<Usuario> eventMembers = List.from(brandTrainersSelected);
+    List<Bono> userBonos = [];
     setState(() {
       isLoading = true;
     });
+
+    if(!availableBonos) {
+      bonosSelected = [];
+    }
+    else {
+      for (int i = 0; i < eventMembers.length; i++) {
+        var user = eventMembers[i];
+        userBonos =  await _userDataService.getUserBonos(user.id!);
+        for (int j = 0; j < bonosSelected.length; j++) {
+          if ((userBonos.singleWhere((bon) => bon.id == bonosSelected[j])).title == null) {
+            setState(() {
+              isLoading = true;
+            });
+            _topSnackBar.topsnackbar(context, 'No se puede crear el evento privado ya que el usuario ' + user.name! + ' no tiene ninguno de los bonos asignados al evento', AppColors.red);
+            return;
+          }
+          }
+        }
+      }
+
     // Get Random Photo if no Image Selected
     if (eventImageUrl == null || (eventImageUrl != null && isRandomImage)) {
       eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -1704,7 +1911,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Event Start Date
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Event Members
-    List<Usuario> eventMembers = List.from(brandTrainersSelected);
+
     eventMembers.addAll(brandClientsSelected);
     if (!isRecurrent) {
       // Creating Event Object
@@ -1725,6 +1932,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
+        bonos: bonosSelected,
       );
       // Add Event
       String eventId = await _addEventCall(event);
@@ -1755,6 +1963,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
+        bonos: bonosSelected,
       );
       // Add Event
       String eventId = await _addEventCall(event);
@@ -1797,6 +2006,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
+              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1841,6 +2051,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
+              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1885,6 +2096,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
+              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1898,6 +2110,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           weekDay = tempDate.weekday;
         }
       }
+
+      assignBonoUsers(eventMembers, event);
       // Create Entry in /Event Groups
       await _eventDataService.addRecurrentEventGroup(eventGroupId, groupEventsIds);
     }
@@ -1966,6 +2180,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       numClients: brandClientsSelected.length,
       numTrainers: brandTrainersSelected.length,
       maxMembers: eventMaxMembers,
+      bonos: bonosSelected,
     );
     // Event Members
     List<Usuario> eventTrainers = List.from(brandTrainersSelected);
@@ -2180,6 +2395,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
+        bonos: bonosSelected,
       );
       // Update Event
       await _eventDataService.updateEvent(updatedEvent);
@@ -2282,6 +2498,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     Navigator.pop(context, true);
   }
 
+  void setBonosAvailable(bool? seeBonos) {
+    availableBonos = seeBonos!;
+    setState(() {});
+  }
+
   // Firebase Calls
 
   Future<String> _addEventCall(Event event) async {
@@ -2330,6 +2551,22 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       await _localNotificationService.deleteEventLocalNotifications(eventId);
     } else {
       await _localNotificationService.deleteRemoteEventLocalNotifications(eventId, userId);
+    }
+  }
+
+  void assignBonoUsers(var eventMembers, Event event) async{
+    List<Bono> userBonos = [];
+    Bono bono = new Bono();
+    if(availableBonos) {
+      for (int i = 0; i < eventMembers.length; i++) {
+        var user = eventMembers[i];
+        userBonos =  await _userDataService.getUserBonos(user.id!);
+        for (int j = 0; j < bonosSelected.length; j++) {
+          bono = userBonos.singleWhere((bon) => bon.id == bonosSelected[j]);
+            _eventDataService.addEventToPurchase(bono.purchaseId!,event);
+
+        }
+      }
     }
   }
 

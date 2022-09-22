@@ -2481,6 +2481,9 @@ exports.zzzzEventUpdatesCoverData = functions
       } else if (before.maxMembers != after.maxMembers) {
         coverDataChange = true;
       }
+       else if (before.bonos != after.bonos) {
+              coverDataChange = true;
+       }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -2508,6 +2511,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
           // Update Private Event
           if (after.isPrivate == true) {                 
@@ -2528,6 +2532,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
          }
        }
@@ -2554,6 +2559,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
           // Update Private Event
           if (after.isPrivate == true) {                 
@@ -2574,6 +2580,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
          }
        }
@@ -2600,6 +2607,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
           // Update Private Event
           if (after.isPrivate == true) {                 
@@ -2620,6 +2628,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
          }
        }
@@ -4243,22 +4252,86 @@ exports.userPurchasesBono = functions
          "brandId": purchaseDoc.brandId,
        });
 
-       await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
-        "title": bonoDoc.title,
-        "sessions": bonoDoc.sessions,
-        "price": purchaseDoc.price,
-        "purchaseId": purchaseId,
-      });
-
-       await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).set({
-        "title": bonoDoc.title,
-        "sessions": bonoDoc.sessions,
-        "price": purchaseDoc.price,
-      });
-
 
        return null;
      });
+
+     // Updates User Bono
+     exports.zzzzupdateUserBono = functions
+     .region("europe-west1")
+     .firestore
+     .document("/7777 Users/{userId}/Bonos/{bonoId}")
+     .onUpdate( async (change, context) => {
+
+        const userId = context.params.userId;
+       const bonoId = context.params.bonoId;
+       const before = change.before.data();
+       const bonoDoc = change.after.data();
+
+       if(bonoDoc.title != before.title || bonoDoc.sessions != before.sessions) {
+
+            await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
+             "title": bonoDoc.title,
+             "sessions": bonoDoc.sessions,
+           });
+
+            await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).update({
+             "title": bonoDoc.title,
+              "sessions": bonoDoc.sessions,
+           });
+           }
+
+
+            return null;
+          });
+
+  // Creates User Bono
+     exports.zzzzcreateUserBono = functions
+     .region("europe-west1")
+     .firestore
+     .document("/7777 Users/{userId}/Bonos/{bonoId}")
+     .onCreate( async (snap, context) => {
+
+        const userId = context.params.userId;
+       const bonoId = context.params.bonoId;
+       const bonoDoc = snap.data();
+
+            await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
+             "title": bonoDoc.title,
+             "sessions": bonoDoc.sessions,
+             "price": bonoDoc.price,
+             "purchaseId": bonoDoc.purchaseId,
+           });
+
+            await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).set({
+             "title": bonoDoc.title,
+              "sessions": bonoDoc.sessions,
+              "price": bonoDoc.price,
+              "purchaseId": bonoDoc.purchaseId,
+           });
+
+
+            return null;
+          });
+
+// User Deletes Location
+exports.zzzzDeleteUserBono = functions
+.region("europe-west1")
+.firestore
+.document("/7777 Users/{userId}/Bonos/{bonoId}")
+.onDelete( async (snap, context) => {
+
+ const userId = context.params.userId;
+       const bonoId = context.params.bonoId;
+       const bonoDoc = snap.data();
+
+            await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).delete();
+
+            await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).delete();
+
+
+            return null;
+});
 
 // User Purchases Event
 exports.usersPurchasesEvent = functions
@@ -4345,16 +4418,6 @@ exports.usersPurchasesEvent = functions
        await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).update({
          "sessions": bonoDocUser.sessions - 1,
        });
-
-
-
-       await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
-        "sessions": bonoDocUser.sessions - 1,
-      });
-
-       await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).update({
-        "sessions": bonoDocUser.sessions - 1,
-      });
 
        return null;
 

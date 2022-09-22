@@ -299,7 +299,7 @@ class BonoCardState extends State<BonoCard> {
                                             SizedBox(
                                               width: widget.width * 0.05,
                                             ),
-                                            bono.classes == 0
+                                            bono.classes == 10000
                                                 ? Text(
                                                     AppLocalizations.of(
                                                                 context)!
@@ -442,7 +442,7 @@ class BonoCardState extends State<BonoCard> {
                                               SizedBox(
                                                 height: widget.width * 0.02,
                                               ),
-                                              bono.classes == 0?
+                                              bono.classes == 10000?
                                               Text(
                                                 AppLocalizations.of(
                                                     context)!.ilimitadas.toUpperCase(),
@@ -555,7 +555,7 @@ class BonoCardState extends State<BonoCard> {
                                                   SizedBox(
                                                     width: widget.width * 0.05,
                                                   ),
-                                                  bono.classes == 0?
+                                                  bono.classes == 10000?
                                                   Container()
                                                   :
                                                     Text(
@@ -668,6 +668,34 @@ class BonoCardState extends State<BonoCard> {
                                                         color: Colors
                                                             .white70),
                                                   )),
+                                              condition.weeklySessions != 0
+                                                  ? ListTile(
+                                                  dense: true,
+                                                  contentPadding:
+                                                  EdgeInsets.zero,
+                                                  minLeadingWidth:
+                                                  widget.width * 0.07,
+                                                  leading: Icon(
+                                                      Icons.rule_outlined,
+                                                      size: widget.width *
+                                                          0.07,
+                                                      color:
+                                                      Colors.white70),
+                                                  title: Text(
+                                                    AppLocalizations.of(
+                                                        context)!.max + " " +
+                                                        condition
+                                                            .weeklySessions
+                                                            .toString() +
+                                                        " " + AppLocalizations.of(context)!.trainsPerWeek.toLowerCase(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1
+                                                        ?.copyWith(
+                                                        color: Colors
+                                                            .white70),
+                                                  ))
+                                                  : Container(),
                                               condition.cancelTime != 0
                                                   ? ListTile(
                                                       dense: true,
@@ -696,34 +724,7 @@ class BonoCardState extends State<BonoCard> {
                                                                     .white70),
                                                       ))
                                                   : Container(),
-                                              condition.weeklySessions != 0
-                                                  ? ListTile(
-                                                      dense: true,
-                                                      contentPadding:
-                                                          EdgeInsets.zero,
-                                                      minLeadingWidth:
-                                                          widget.width * 0.07,
-                                                      leading: Icon(
-                                                          Icons.rule_outlined,
-                                                          size: widget.width *
-                                                              0.07,
-                                                          color:
-                                                              Colors.white70),
-                                                      title: Text(
-                                                        AppLocalizations.of(
-                                                            context)!.max + " " +
-                                                            condition
-                                                                .weeklySessions
-                                                                .toString() +
-                                                            " " + AppLocalizations.of(context)!.trainsPerWeek.toLowerCase(),
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyText1
-                                                            ?.copyWith(
-                                                                color: Colors
-                                                                    .white70),
-                                                      ))
-                                                  : Container(),
+
                                             ],
                                           ),
                                         ),

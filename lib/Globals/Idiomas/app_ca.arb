@@ -476,7 +476,7 @@
   "activeBonoQues": "Activar/Desactivar val",
   "activeBonoQuesDesc": "Si està actiu, els teus clients podran comprar-lo. Sempre pots activar o desactivar el teu val una vegada aquest ha estat creat.",
   "sesionsBono": "Cuantes sessions té el teu val?",
-  "sesionsBonoDesc": "Fes clic per indicar que aquest val no té límit de sessions. A continuació, podràs definir la data d'expiració.",
+  "sesionsBonoDesc": "Fes clic per indicar que aquest val no té límit de sessions. A la següent pantalla, podràs definir la data d'expiració.",
   "priceBono": "Quin preu té?",
   "styleBono": "Estil del val",
   "colorSolid": "Color sòlid",

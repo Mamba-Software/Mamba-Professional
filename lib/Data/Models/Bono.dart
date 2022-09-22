@@ -24,6 +24,7 @@ class Bono {
     cancelTime: 0,
     weeklySessions: 0,
   );
+  String? purchaseId;
 
 
   Bono({
@@ -39,6 +40,7 @@ class Bono {
     this.isDegradate,
     this.opacity,
     this.condition,
+    this.purchaseId,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +87,9 @@ class Bono {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('weeklySessions')) {
       condition!.weeklySessions = documentSnapshot.get("weeklySessions");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+      purchaseId = documentSnapshot.get("purchaseId");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -102,6 +107,7 @@ class Bono {
     imageUrl = bono.imageUrl;
     isDegradate = bono.isDegradate;
     opacity = bono.opacity;
+    purchaseId = bono.purchaseId;
   }
 
   // Set Basic Data
