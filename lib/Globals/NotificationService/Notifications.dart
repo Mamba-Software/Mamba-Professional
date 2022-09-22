@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -19,6 +20,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BonosRequests.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Notifications extends StatefulWidget {
@@ -44,6 +46,7 @@ class _NotificationsState extends State<Notifications> {
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
   List<Event> eventList = [];
+  List<Bono> bonoList = [];
   // Has unread notifications
   bool hasUnread = false;
   // String Deleted Photo
@@ -69,6 +72,7 @@ class _NotificationsState extends State<Notifications> {
     List<Usuario> users = [];
     List<Brand> brands = [];
     List<Event> events = [];
+    List<Bono> bonos = [];
     notificationsList = await _userDataService.getUserFirstNotificationsLimit10(currentUser.id!);
     // Order Notification List Descending Time
     notificationsList.sort((a,b) {
@@ -132,15 +136,30 @@ class _NotificationsState extends State<Notifications> {
         } else {
           events.add(Event());
         }
+        if (notification.parameters.length > 4 && notification.parameters[4] != "null") {
+          Bono bono = bonos.firstWhere((element) => element.id == notification.parameters[4], orElse: () => Bono());
+          if (bono.id == null) {
+            bono = await _brandDataService.getBonoInfo(currentBrand.id!, notification.parameters[4]);
+          }
+          if (bono.id == null) {
+            bonos.add(Bono(title: AppLocalizations.of(context)!.deletedEvent.toLowerCase()));
+          } else {
+            bonos.add(bono);
+          }
+        } else {
+          bonos.add(Bono());
+        }
       } else {
         users.add(Usuario());
         brands.add(Brand());
         events.add(Event());
+        bonos.add(Bono());
       }
     }
     usersList = users;
     brandsList = brands;
     eventList = events;
+    bonoList = bonos;
     if (mounted) {
       setState(() {
         lastIndex = 9;
@@ -153,6 +172,7 @@ class _NotificationsState extends State<Notifications> {
     List<Usuario> users = [];
     List<Brand> brands = [];
     List<Event> events = [];
+    List<Bono> bonos = [];
     var extraNotifications = await _userDataService.getUserMoreNotificationsLimit10(currentUser.id!, notif.id!);
     // Order Notification List Descending Time
     extraNotifications.sort((a,b) {
@@ -216,15 +236,30 @@ class _NotificationsState extends State<Notifications> {
         } else {
           events.add(Event());
         }
+        if (notification.parameters.length > 4 && notification.parameters[4] != "null") {
+          Bono bono = bonos.firstWhere((element) => element.id == notification.parameters[4], orElse: () => Bono());
+          if (bono.id == null) {
+            bono = await _brandDataService.getBonoInfo(currentBrand.id!, notification.parameters[4]);
+          }
+          if (bono.id == null) {
+            bonos.add(Bono(title: AppLocalizations.of(context)!.deletedEvent.toLowerCase()));
+          } else {
+            bonos.add(bono);
+          }
+        } else {
+          bonos.add(Bono());
+        }
       } else {
         users.add(Usuario());
         brands.add(Brand());
         events.add(Event());
+        bonos.add(Bono());
       }
     }
     usersList.addAll(users);
     brandsList.addAll(brands);
     eventList.addAll(events);
+    bonoList.addAll(bonos);
     if (mounted) {
       setState(() {
         notificationsList.addAll(extraNotifications);
@@ -393,6 +428,7 @@ class _NotificationsState extends State<Notifications> {
     Usuario user = usersList[index];
     Brand brand = brandsList[index];
     Event event = eventList[index];
+    Bono bono = bonoList[index];
 
     switch(notification.type!) {
       case "Wellcome_User": {
@@ -749,6 +785,37 @@ class _NotificationsState extends State<Notifications> {
           );
         }
       }
+      case "UserSendBonoRequest_Trainer": {
+        return ListTile(
+            leading: CircularImage(
+              size: MediaQuery.of(context).size.width*0.15,
+              image: user.imageUrl!,
+              color: AppColors.grey,
+              borderWidth: 0.5,
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.userSendsBonoRequestBrand(user.name!, bono.title!.toUpperCase()),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  time.toUpperCase(),
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+                ),
+              ],
+            ),
+            onTap: () async {
+              await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
+              setState(() {
+                notificationsList[index].isRead = true;
+              });
+              returnActionOnTap(index,notification);
+            },
+          );
+      }
       default: {
         return Container();
       }
@@ -883,6 +950,17 @@ class _NotificationsState extends State<Notifications> {
               )
           );
         }
+        break;
+      }
+      case "UserSendBonoRequest_Trainer": {
+        Navigator.push(
+            context,
+            CupertinoPageRoute<void>(
+              builder: (context) => BonosRequests(
+                brandId: currentBrand.id!,
+              ),
+            )
+        );
         break;
       }
       default: {

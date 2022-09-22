@@ -407,7 +407,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                           setState(() {
                             isLoading = true;
                           });
-                          await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.bonoRequest.id!);
+                          await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest.id!);
                           Navigator.of(context).pop();
                         }
                     ),
@@ -426,7 +426,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         purchase.paymentMethod = paymentMethod;
                         // Build Purchase Object
                         await _paymentDataService.addPurchaseToPayments(purchase);
-                        await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.bonoRequest.id!);
+                        await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest.id!);
                         await _brandDataService.updateBonoCompras(widget.brand.id!, widget.bonoRequest.bonoId!);
                         Navigator.of(context).pop();
                       },

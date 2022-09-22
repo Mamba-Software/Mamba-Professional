@@ -1695,6 +1695,32 @@
       }
     }
   },
+  "userSendsBonoRequestBrand": "{name} ha enviado una solicitado de compra del bono {bono}",
+  "@userSendsBonoRequestBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "userCancelsBonoRequestBrand": "{name} ha cancelado su solicitud de compra del bono {bono} ",
+  "@userCancelsBonoRequestBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+
+
   "myLocationsBaseLocationDesc": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.",
   "@myLocationsBaseLocationDesc": {
     "description": "Wellcome message"

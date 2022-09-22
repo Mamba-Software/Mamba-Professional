@@ -683,14 +683,24 @@ class BrandFirebaseCalls {
     }
   }
 
-  Future<void> deleteBrandBonoRequest(String brandId, String bonoRequestId) async {
+  // Delete Brand Bono Request
+  Future<void> deleteBrandBonoRequest(String brandId, String userId, String bonoRequestId) async {
+    // Delete in Brand/Bonos/BonosRequests
     await _firestore.collection(brands)
-    .doc(brandId)
-    .collection("Bonos")
-    .doc("Bonos Requests")
-    .collection("Bonos Requests")
-    .doc(bonoRequestId)
-    .delete();
+        .doc(brandId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
+        .collection("Bonos Requests")
+        .doc(bonoRequestId)
+        .delete();
+    // Delete in Brand/Bonos/BonosRequests
+    await _firestore.collection(users)
+        .doc(userId)
+        .collection("Bonos")
+        .doc("Bonos Requests")
+        .collection("Bonos Requests")
+        .doc(bonoRequestId)
+        .delete();
   }
 
   //STREAMS

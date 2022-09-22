@@ -7,25 +7,23 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 
 class BonoRequest {
   String? id;
-  String? title;
-  String? price;
-  String? classes;
-  String? bonoId;
   String? brandId;
   String? userId;
-  String? userName;
+  String? bonoId;
+  String? title;
+  String? price;
+  String? sessions;
   int? paymentMethod;
   Timestamp? timeRequested;
 
   BonoRequest({
     this.id,
-    this.title,
-    this.price,
-    this.classes,
-    this.bonoId,
     this.brandId,
     this.userId,
-    this.userName,
+    this.bonoId,
+    this.title,
+    this.price,
+    this.sessions,
     this.paymentMethod,
     this.timeRequested,
   });
@@ -34,26 +32,23 @@ class BonoRequest {
 
   BonoRequest.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     id = documentId;
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
-      title = documentSnapshot.get("title").toString();
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
-      price = documentSnapshot.get("price");
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('classes')) {
-      classes = documentSnapshot.get("classes");
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoId')) {
-      bonoId = documentSnapshot.get("bonoId");
-    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandId')) {
       brandId = documentSnapshot.get("brandId");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('userId')) {
       userId = documentSnapshot.get("userId");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('userName')) {
-      userName = documentSnapshot.get("userName");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoId')) {
+      bonoId = documentSnapshot.get("bonoId");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
+      title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
+      price = documentSnapshot.get("price");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
+      sessions = documentSnapshot.get("sessions");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('paymentMethod')) {
       paymentMethod = documentSnapshot.get("paymentMethod");
@@ -68,12 +63,12 @@ class BonoRequest {
   // Set Basic Data
   set setBasicData(BonoRequest bonoRequest) {
     id = bonoRequest.id;
+    brandId = bonoRequest.brandId;
+    userId = bonoRequest.userId;
+    bonoId = bonoRequest.bonoId;
     title = bonoRequest.title;
     price = bonoRequest.price;
-    classes = bonoRequest.classes;
-    bonoId = bonoRequest.bonoId;
-    userId = bonoRequest.userId;
-    userName = bonoRequest.userName;
+    sessions = bonoRequest.sessions;
     paymentMethod = bonoRequest.paymentMethod;
     timeRequested = bonoRequest.timeRequested;
   }

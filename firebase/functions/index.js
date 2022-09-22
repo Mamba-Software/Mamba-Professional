@@ -4149,18 +4149,6 @@ exports.userSendsBonoRequest = functions
       const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(requestDoc.bonoId).get();
       const bonoDoc = snap.data();
 
-      await db.collection("7777 Users").doc(requestDoc.userId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId)
-      .set({
-        "sessions": requestDoc.sessions,
-        "brandId": brandId,
-        "title": requestDoc.title,
-        "paymentMethod": requestDoc.paymentMethod,
-        "price": requestDoc.price,
-        "bonoId": requestDoc.bonoId,
-        "timeRequested": requestDoc.timeRequested,
-      });
-
-
        // Get Data of the Brand
        const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
        const brandDoc = brandSnapshot.data();
@@ -4203,25 +4191,6 @@ exports.userSendsBonoRequest = functions
 
       return null;
     });
-
-// User Deletes Bono Request
-exports.userDeletesBonoRequest = functions
-.region("europe-west1")
-.firestore
-.document("/7777 Brands/{brandId}/Bonos/Bonos Requests/Bonos Requests/{bonoRequestId}")
-.onDelete( async (snap, context) => {
-      // Get the value of the context triggers.
-      const brandId = context.params.brandId;
-      const bonoRequestId = context.params.bonoRequestId;
-      // snap.data();
-
-      // Get Data of the Request
-      const requestDoc = snap.data();
-
-      await db.collection("7777 Users").doc(requestDoc.userId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).delete();
-
-      return null;
-   });
 
 // User Purchases Bono
 exports.userPurchasesBono = functions
