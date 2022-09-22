@@ -52,7 +52,7 @@ class Bono {
       description = documentSnapshot.get("description").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
-      price = documentSnapshot.get("price");
+      price = documentSnapshot.get("price").toDouble();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
       classes = documentSnapshot.get("sessions");
