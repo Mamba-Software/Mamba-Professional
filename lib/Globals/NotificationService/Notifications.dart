@@ -794,12 +794,17 @@ class _NotificationsState extends State<Notifications> {
               borderWidth: 0.5,
             ),
             title: Text(
-              AppLocalizations.of(context)!.userSendsBonoRequestBrand(user.name!, bono.title!.toUpperCase()),
+              AppLocalizations.of(context)!.userSendsBonoRequestBrand(user.name!),
               style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                Text(
+                  AppLocalizations.of(context)!.userSendsBonoRequestSubtitleBrand(bono.title!.toUpperCase()),
+                  style: Theme.of(context).textTheme.caption,
+                ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 Text(
                   time.toUpperCase(),
@@ -815,6 +820,42 @@ class _NotificationsState extends State<Notifications> {
               returnActionOnTap(index,notification);
             },
           );
+      }
+      case "UserCancelBonoRequest_Trainer": {
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: user.imageUrl!,
+            color: AppColors.grey,
+            borderWidth: 0.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userCancelsBonoRequestBrand(user.name!),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userCancelsBonoRequestSubtitleBrand(bono.title!.toUpperCase()),
+                style: Theme.of(context).textTheme.caption,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
+            returnActionOnTap(index,notification);
+          },
+        );
       }
       default: {
         return Container();

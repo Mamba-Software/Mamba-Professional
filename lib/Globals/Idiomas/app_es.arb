@@ -1695,20 +1695,44 @@
       }
     }
   },
-  "userSendsBonoRequestBrand": "{name} ha enviado una solicitado de compra del bono {bono}",
+  "userSendsBonoRequestBrand": "{name} ha enviado una solicitud de compra",
   "@userSendsBonoRequestBrand": {
     "description": "userJoinsBrandUser message",
     "placeholders": {
       "name": {
         "type": "String"
-      },
+      }
+    }
+  },
+  "userSendsBonoRequestSubtitleBrand": "Espera confirmación para comprar el bono {bono}",
+  "@userSendsBonoRequestSubtitleBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
       "bono": {
         "type": "String"
       }
     }
   },
-  "userCancelsBonoRequestBrand": "{name} ha cancelado su solicitud de compra del bono {bono} ",
+  "userCancelsBonoRequestBrand": "{name} ha cancelado su solicitud de compra",
   "@userCancelsBonoRequestBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "userCancelsBonoRequestSubtitleBrand": "El bono {bono} le ha dejado de interesar",
+  "@userCancelsBonoRequestSubtitleBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "userBuysBonoBrand": "{name} ha comprado el bono {bono}",
+  "@userBuysBonoBrand": {
     "description": "userJoinsBrandUser message",
     "placeholders": {
       "name": {
@@ -1719,8 +1743,15 @@
       }
     }
   },
-
-
+  "userBuysBonoSubtitleBrand": "Puede realizar un total de {sesiones} sesiones",
+  "@userBuysBonoSubtitleBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "sesiones": {
+        "type": "String"
+      }
+    }
+  },
   "myLocationsBaseLocationDesc": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.",
   "@myLocationsBaseLocationDesc": {
     "description": "Wellcome message"
