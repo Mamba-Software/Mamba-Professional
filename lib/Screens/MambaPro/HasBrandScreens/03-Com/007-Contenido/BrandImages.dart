@@ -267,7 +267,9 @@ class _BrandImagesState extends State<BrandImages> {
           ),
           isLoading ? SliverFillRemaining(
             child: Center(
-                  child: LoadingView()
+                  child: LoadingView(
+                    text: AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...",
+                  )
               )
           ) : SliverToBoxAdapter(
               child: Padding(
