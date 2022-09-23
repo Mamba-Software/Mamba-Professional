@@ -1287,6 +1287,8 @@ class _AddEditBonoState extends State<AddEditBono>
           if (isSelectedDays[3]) {
             condition.expirationTime = 90;
           }
+          //bono.condition!.expirationTime = condition.expirationTime;
+
           setState(() {});
         }
       },
