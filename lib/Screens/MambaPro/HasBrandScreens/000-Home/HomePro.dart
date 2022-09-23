@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
 import 'package:provider/provider.dart';
 import '../../../../Globals/Providers/ThemeProvider.dart';
@@ -30,7 +31,7 @@ class _HomePro extends State<HomePro> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.22 - kToolbarHeight);
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
   }
   // Boolean Loading
   bool isLoading = false;
@@ -81,17 +82,52 @@ class _HomePro extends State<HomePro> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            expandedHeight: MediaQuery.of(context).size.height*0.22,
+            expandedHeight: MediaQuery.of(context).size.height*0.15,
             elevation: 0,
             systemOverlayStyle: returnSystemBarColor(),
             floating: true,
             pinned: true,
             centerTitle: true,
             flexibleSpace: FlexibleSpaceBar(
-              background: RectangularImage(
-                height: MediaQuery.of(context).size.height*0.3,
-                width: MediaQuery.of(context).size.width,
-                image: imageUrl,
+              background: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  RectangularImage(
+                    height: MediaQuery.of(context).size.height*0.3,
+                    width: MediaQuery.of(context).size.width,
+                    image: imageUrl,
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.width*0.05,
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width*0.84,
+                      minWidth: MediaQuery.of(context).size.width*0.84,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).backgroundColor,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(15.0),
+                        topLeft: Radius.circular(15.0),
+                      ),// BorderRadius
+
+                    ),// BoxDecoration
+                    child: Container(
+                      margin: const EdgeInsetsDirectional.only(start: 1, end: 1, top: 1),
+                      height: MediaQuery.of(context).size.width*0.05,
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width*0.84,
+                        minWidth: MediaQuery.of(context).size.width*0.84,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(15.0),
+                          topLeft: Radius.circular(15.0),
+                        ),// BorderRadius
+                      ),
+                    ),                    // Container
+                  ),
+                ],
               ),
               titlePadding: EdgeInsets.zero,
             ),
@@ -119,8 +155,9 @@ class _HomePro extends State<HomePro> {
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.04,),
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    UserTodayWidget(),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),

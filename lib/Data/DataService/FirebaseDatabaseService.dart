@@ -3100,6 +3100,18 @@ class FirebaseDatabaseService {
           .snapshots();
     }
 
+  Stream<QuerySnapshot> getUserEventsTodayStream(String userId) {
+    DateTime today = DateTime.now();
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .snapshots();
+  }
+
     Stream<QuerySnapshot> getBrandEventsStream(String brandId) {
       return _firestore
           .collection(brands)
