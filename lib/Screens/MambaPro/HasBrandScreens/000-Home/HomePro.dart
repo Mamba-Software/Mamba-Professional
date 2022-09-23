@@ -133,7 +133,7 @@ class _HomePro extends State<HomePro> {
               titlePadding: EdgeInsets.zero,
             ),
             title: appBarExpanded ? Text(currentBrand.name!, style: Theme.of(context).appBarTheme.titleTextStyle) : Container(),
-            leadingWidth: MediaQuery.of(context).size.width*0.2,
+            leadingWidth: MediaQuery.of(context).size.width*0.18,
             leading: Padding(
               padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06),
               child: Container(
@@ -147,7 +147,7 @@ class _HomePro extends State<HomePro> {
                   icon: Icon(
                     Icons.menu,
                     color: Theme.of(context).primaryColor,
-                    size: MediaQuery.of(context).size.height*0.04,
+                    size: MediaQuery.of(context).size.height*0.035
                   ),
                   onPressed: () => mambaProScaffoldKey.currentState?.openDrawer(),
                 ),
