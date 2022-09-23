@@ -889,6 +889,10 @@
   "@contact":{
     "description": "Cancelar text"
   },
+  "resend": "Reenviar",
+  "@resend":{
+    "description": "Cancelar text"
+  },
   "send": "Enviar",
   "@send":{
     "description": "Cancelar text"

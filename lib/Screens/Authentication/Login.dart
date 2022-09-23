@@ -284,7 +284,7 @@ class _LoginState extends State<Login> {
         setState(() {
           isLoading = false;
         });
-        showInSnackBar(AppLocalizations.of(context)!.validateError);
+        showInSnackBar(AppLocalizations.of(context)!.validateError, AppLocalizations.of(context)!.resend+" "+AppLocalizations.of(context)!.email, true, true);
       }
   }
 
@@ -300,18 +300,23 @@ class _LoginState extends State<Login> {
     signIn();
   }
 
-  void showInSnackBar(String value, [String valueBody = "", bool isClickable = false]) {
+  void showInSnackBar(String value, [String valueBody = "", bool isClickable = false, bool resendEmail = false]) {
     Widget snackbar;
     if (isClickable ) {
       snackbar = SnackBar(
         content: GestureDetector(
           onTap: () async {
-            await LaunchApp.openApp(
+            if (resendEmail == false) {
+              await LaunchApp.openApp(
                 androidPackageName: 'com.mamba.mambastyleapp',
                 iosUrlScheme: "mamba-style",
-                appStoreLink: "https://apps.apple.com/app/mamba-style/id1601684650"
-              // openStore: false
-            );
+                appStoreLink: "https://apps.apple.com/app/mamba-style/id1601684650",
+                openStore: true
+              );
+            } else {
+              await _userDataService.resendEmail(email.trim());
+              scaffoldMessengerKey.currentState!.hideCurrentSnackBar();
+            }
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
