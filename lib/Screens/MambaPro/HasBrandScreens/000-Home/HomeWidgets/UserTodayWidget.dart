@@ -35,7 +35,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
   List<Event> userEventsToday = [];
   var todayEventsLabels = [];
   List<Widget> eventSliders = [];
-  int _current = 0;
+  int _current = 1;
 
   @override
   void initState() {
@@ -102,6 +102,52 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
         ),
       )
     );
+  }
+
+  // Gets user events today.
+  Future<void> getUserEventsToday() async {
+    bool indexFound = false;
+    DateTime now = DateTime.now();
+    todayEventsLabels = [];
+    for (var i=0; i < userEventsToday.length; i++) {
+      Event event = userEventsToday[i];
+      // Event Time
+      var startDate =  DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      var hour = event.duration.toString().split(".")[0];
+      var min = event.duration!.toStringAsFixed(2).split(".")[1];
+      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+      if (startDate.isBefore(now) && endDate.isBefore(now)) {
+        // Done
+        todayEventsLabels.add(2);
+      }
+      if (startDate.isBefore(now) && endDate.isAfter(now)) {
+        // Doing
+        todayEventsLabels.add(1);
+        _current = i;
+        indexFound = true;
+      }
+      if (startDate.isAfter(now) && endDate.isAfter(now)) {
+        // To Do
+        todayEventsLabels.add(0);
+      }
+      // Define Scroll Position
+      if (!indexFound && startDate.isAfter(now)) {
+        _current = i;
+        indexFound = true;
+      }
+    }
+    if (!indexFound) {
+      _current = userEventsToday.length-1;
+    }
+    eventSliders = userEventsToday.map((item) => Container(
+        child: buildEventContainer(item, MediaQuery.of(context).size.height*0.18, MediaQuery.of(context).size.width, buildBadge(userEventsToday.indexOf(item)))
+    )).toList();
   }
 
   // Return bade on events Today
@@ -303,38 +349,6 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                         Row(
                           children: [
                             badge,
-                            SizedBox(width: width*0.02),
-                            Container(
-                              child: event.isPrivate! ? Row(
-                                children: [
-                                  Text(
-                                      AppLocalizations.of(context)!.private,
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                      textAlign: TextAlign.right
-                                  ),
-                                  SizedBox(width: width*0.01),
-                                  Icon(
-                                    Icons.lock_outlined,
-                                    color: AppColors.white,
-                                    size: width*0.05,
-                                  ),
-                                ],
-                              ) : Row(
-                                children: [
-                                  Text(
-                                      AppLocalizations.of(context)!.group,
-                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                      textAlign: TextAlign.right
-                                  ),
-                                  SizedBox(width: width*0.01),
-                                  Icon(
-                                    Icons.groups,
-                                    color: AppColors.white,
-                                    size: width*0.05,
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                       ],
@@ -448,7 +462,8 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           maxWidth: MediaQuery.of(context).size.width*0.84,
           minWidth: MediaQuery.of(context).size.width*0.84,
         ),
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05),
+        //padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.only(
@@ -460,65 +475,68 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: navigateToProfileScreen,
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.width * 0.15,
-                    child: Center(
-                      child: CircularImage(
-                        size: MediaQuery.of(context).size.width * 0.15,
-                        image: currentUser.imageUrl,
-                        color: Theme.of(context).backgroundColor,
-                        borderWidth: 1,
+            Padding(
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: navigateToProfileScreen,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.15,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.15,
+                          image: currentUser.imageUrl,
+                          color: Theme.of(context).backgroundColor,
+                          borderWidth: 1,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.02,),
-                Expanded(
-                  child: Column(
+                  SizedBox(width: MediaQuery.of(context).size.width*0.02,),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            StringUtils().greetingMessage(context),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                            textAlign: TextAlign.center
+                        ),
+                        Text(
+                            currentUser.firstName!,
+                            style: Theme.of(context).textTheme.headline1,
+                            textAlign: TextAlign.center
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                          StringUtils().greetingMessage(context),
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
-                          textAlign: TextAlign.center
+                      CounterBadgeIcon(
+                        counter: unreadNotifications,
+                        child: IconButton(
+                          icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
+                          alignment: Alignment.centerRight,
+                          onPressed: navigateToNotificationsScreen,
+                        ),
                       ),
-                      Text(
-                          currentUser.firstName!,
-                          style: Theme.of(context).textTheme.headline1,
-                          textAlign: TextAlign.center
+                      CounterBadgeIcon(
+                        counter: unreadChats,
+                        child: IconButton(
+                          icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
+                          alignment: Alignment.centerRight,
+                          onPressed: navigateToChatScreen,
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CounterBadgeIcon(
-                      counter: unreadNotifications,
-                      child: IconButton(
-                        icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
-                        alignment: Alignment.centerRight,
-                        onPressed: navigateToNotificationsScreen,
-                      ),
-                    ),
-                    CounterBadgeIcon(
-                      counter: unreadChats,
-                      child: IconButton(
-                        icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
-                        alignment: Alignment.centerRight,
-                        onPressed: navigateToChatScreen,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.04,),
             StreamBuilder<QuerySnapshot>(
@@ -531,11 +549,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                   } else {
                     userEventsToday = documentsToEvents(snapshot.data!.docs);
                     if (userEventsToday.isNotEmpty) {
-                      eventSliders = userEventsToday
-                          .map((item) => Container(
-                          child: buildEventContainer(item, MediaQuery.of(context).size.height*0.20, MediaQuery.of(context).size.width, buildBadge(userEventsToday.indexOf(item)))
-                      ))
-                          .toList();
+                      getUserEventsToday();
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -543,12 +557,12 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                           SizedBox(
                             height: MediaQuery.of(context).size.height*0.05,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
                               child: Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                             ),
                           ),
                           SizedBox(
-                            height: MediaQuery.of(context).size.height*0.20,
+                            height: MediaQuery.of(context).size.height*0.18,
                             width: MediaQuery.of(context).size.width,
                             child: CarouselSlider(
                               options: CarouselOptions(
@@ -574,8 +588,8 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: eventSliders.asMap().entries.map((entry) {
                                 return Container(
-                                  width: MediaQuery.of(context).size.height*0.01,
-                                  height: MediaQuery.of(context).size.height*0.01,
+                                  width: _current == entry.key ? 8.0 : 5.0,
+                                  height: _current == entry.key ? 8.0 : 5.0,
                                   margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                                   decoration: BoxDecoration(
                                       shape: BoxShape.circle,
