@@ -45,19 +45,12 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     checkAndGetUserDetails();
     initColorsList();
-    initPaymentMethodList();
-    //initDynamicLinks();
   }
 
   Future<void> initColorsList() async {
     currentColors =  await _libraryDataService.getColors();
     currentDegradates = await _libraryDataService.getDegradates();
   }
-
-  Future<void> initPaymentMethodList() async {
-    paymentMethods =  await _libraryDataService.getPaymentMethods();
-  }
-
 
   void checkAndGetUserDetails() async {
     //_userDataService.signOut();
@@ -123,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.pushAndRemoveUntil(
             context,
             CupertinoPageRoute<void>(
-              builder: (context) => Login(),
+              builder: (context) => const Login(),
               settings: const RouteSettings(name: 'Login'),
             ),
                 (_) => false,
@@ -160,7 +153,6 @@ class _SplashScreenState extends State<SplashScreen> {
           );
         } else {
           if (!(currentUser.isFirst!)) {
-            print("hola");
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<void>(
@@ -184,7 +176,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => Login(),
+          builder: (context) => const Login(),
           settings: const RouteSettings(name: 'Login'),
         ),
             (_) => false,
@@ -194,7 +186,19 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> getUserData(String userId) async {
     // Get Current User Main Data from Document
-    currentUser = await _userDataService.getUserDetails(userId);
+    try {
+      currentUser = await _userDataService.getUserDetails(userId);
+    } catch (e) {
+      _userDataService.signOut();
+      await Future.delayed(const Duration(seconds: 1));
+      Navigator.pushAndRemoveUntil(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => const Login(),
+          settings: const RouteSettings(name: 'Login'),
+        ), (_) => false,
+      );
+    }
     // Set App Locale To User Preferred Language
     Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
     // Set App Theme To User Preferred Theme Settings

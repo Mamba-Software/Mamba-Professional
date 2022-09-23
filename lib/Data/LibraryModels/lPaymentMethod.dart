@@ -23,11 +23,6 @@ class lPaymentMethod {
     }
   }
 
-  lPaymentMethod getlPaymentMethod(String id)
-  {
-    return paymentMethods[int.parse(id)];
-  }
-
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
 

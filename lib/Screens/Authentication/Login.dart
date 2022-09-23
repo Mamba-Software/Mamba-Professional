@@ -250,21 +250,29 @@ class _LoginState extends State<Login> {
       int result = await _userDataService.signIn(email.trim(), password);
       if (result == 0) {
         User? user = await _userDataService.getCurrentUser();
-        bool? isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
-        if (isTrainer != null && isTrainer == false) {
-          await _userDataService.signOut();
+        bool? isTrainer;
+        try {
+          isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
+          if (isTrainer != null && isTrainer == false) {
+            await _userDataService.signOut();
+            setState(() {
+              isLoading = false;
+            });
+            showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
+          } else {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<void>(
+                  builder: (context) => const SplashScreen(),
+                  settings: const RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          }
+        } catch (e) {
           setState(() {
             isLoading = false;
           });
-          showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
-        } else {
-          Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute<void>(
-                builder: (context) => const SplashScreen(),
-                settings: const RouteSettings(name: 'SplashScreen'),
-              )
-          );
+          showInSnackBar(AppLocalizations.of(context)!.loginError);
         }
       } else if (result == -1) {
         setState(() {
