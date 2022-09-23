@@ -438,7 +438,6 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -452,8 +451,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(15.0),
           bottomRight: Radius.circular(15.0),
-        ),// BorderRadius
-
+        ),//
       ),// BoxDecoration
       child: Container(
         margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1),
@@ -566,17 +564,17 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                             width: MediaQuery.of(context).size.width,
                             child: CarouselSlider(
                               options: CarouselOptions(
-                                  autoPlay: false,
-                                  aspectRatio: 2.0,
-                                  viewportFraction: 0.84,
-                                  enlargeCenterPage: true,
-                                  enableInfiniteScroll: false,
-                                  initialPage: _current,
-                                  onPageChanged: (index, reason) {
-                                    setState(() {
-                                      _current = index;
-                                    });
-                                  }
+                                autoPlay: false,
+                                aspectRatio: 2.0,
+                                viewportFraction: 0.84,
+                                enlargeCenterPage: true,
+                                enableInfiniteScroll: false,
+                                initialPage: _current,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    _current = index;
+                                  });
+                                }
                               ),
                               items: eventSliders,
                             ),

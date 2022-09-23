@@ -1,12 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandCalendarMonthWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
@@ -99,7 +100,7 @@ class _HomePro extends State<HomePro> {
                     image: imageUrl,
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.width*0.05,
+                    height: MediaQuery.of(context).size.width*0.07,
                     constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width*0.84,
                       minWidth: MediaQuery.of(context).size.width*0.84,
@@ -198,34 +199,23 @@ class _HomePro extends State<HomePro> {
             )
           ) : SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.04,),
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.08,),
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    UserTodayWidget(),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.03,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
-                      child: Text(
-                        AppLocalizations.of(context)!.calendarWeekBrandText(currentBrand.name!),
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.01,
-                    ),
-                    BrandCalendarWeekWidget(brandId: widget.brandId, width: MediaQuery.of(context).size.width*0.90, height: MediaQuery.of(context).size.height*0.4,),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.05),
-
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.01,
-                    ),
-                    BrandCalendarWeekWidget(brandId: widget.brandId, width: MediaQuery.of(context).size.width*0.90, height: MediaQuery.of(context).size.height*0.4,),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                  ]
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  UserTodayWidget(),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.04,
+                  ),
+                  BrandCalendarMonthWidget(
+                    brandId: currentBrand.id!,
+                    height: MediaQuery.of(context).size.height * 0.41,
+                    width: MediaQuery.of(context).size.width * 0.84,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.04,
+                  ),
+                ]
               ),
             ),
           ),
