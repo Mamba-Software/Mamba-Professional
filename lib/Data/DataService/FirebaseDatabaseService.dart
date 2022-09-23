@@ -921,7 +921,7 @@ class FirebaseDatabaseService {
             .collection("Users")
             .doc(userId)
             .get();
-        double feedbackScore = _documentSnapshot.get("intensityScore");
+        double feedbackScore = _documentSnapshot.get("intensityScore").toDouble();
         return feedbackScore;
       } catch (e) {
         return null;
@@ -2365,7 +2365,7 @@ class FirebaseDatabaseService {
       "title": bono.title!,
       "description": bono.description,
       "price": bono.price!,
-      "sessions": bono.classes,
+      "sessions": bono.sessions,
       "isActive": bono.isActive,
       "color": bono.color,
       "compras": 0,
@@ -3131,6 +3131,18 @@ class FirebaseDatabaseService {
           .orderBy("day", descending: true)
           .snapshots();
     }
+
+  Stream<QuerySnapshot> getUserEventsTodayStream(String userId) {
+    DateTime today = DateTime.now();
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .snapshots();
+  }
 
     Stream<QuerySnapshot> getBrandEventsStream(String brandId) {
       return _firestore

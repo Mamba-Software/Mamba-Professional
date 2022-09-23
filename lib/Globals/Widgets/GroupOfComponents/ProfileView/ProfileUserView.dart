@@ -9,7 +9,9 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonosWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteFromBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -32,10 +34,9 @@ class ProfileViewUser extends StatefulWidget {
 class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProviderStateMixin {
 
   // Acceso a Base de Datos
-  var _userDataService = UserDataService();
-  var _brandDataService = BrandDataService();
-  var _eventDataService = EventDataService();
-  var _roomDataService = RoomDataService();
+  final _userDataService = UserDataService();
+  final _eventDataService = EventDataService();
+  final _roomDataService = RoomDataService();
   // Boolean Loading
   bool isLoading = false;
   // Usuario
@@ -47,8 +48,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   int totalEvents  = 0;
   int thisMonthEvents  = 0;
   List<Event> listEvents = [];
-
-  String toCapitalized(String s) => s.isNotEmpty ?'${s[0].toUpperCase()}${s.substring(1)}':'';
 
   // init Widget state. Loading user info.
   @override
@@ -110,32 +109,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
       totalEvents = listEvents.length;
       isLoading = false;
     });
-  }
-
-  // Calculate Age
-  calculateAge(DateTime birthDate) {
-    DateTime currentDate = DateTime.now();
-    int age = currentDate.year - birthDate.year;
-    int month1 = currentDate.month;
-    int month2 = birthDate.month;
-    if (month2 > month1) {
-      age--;
-    } else if (month1 == month2) {
-      int day1 = currentDate.day;
-      int day2 = birthDate.day;
-      if (day2 > day1) {
-        age--;
-      }
-    }
-    return age;
-  }
-
-  durationToString(double duration) {
-    String temp = "";
-    temp = duration.toStringAsFixed(2);
-    var hour = temp.split(".")[0];
-    var min = temp.split(".")[1];
-    return "${hour}h ${min}m ";
   }
 
   @override
@@ -288,7 +261,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                   onTap: () {
                     Navigator.push(
                         context,
-                        CupertinoPageRoute<Null>(
+                        CupertinoPageRoute<void>(
                             builder: (context) => FullScreenPage(
                               child:  Image.network(
                                 user!.imageUrl!,
@@ -404,7 +377,25 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                   ),
                 ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              user!.isTrainer! == false ? UserBonosWidget(
+                userId: widget.userID,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+              ) : SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+                    child: Text(
+                        AppLocalizations.of(context)!.mySessions,
+                        style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
               listEvents.isNotEmpty ? Column(
                 children: [
                   ListView.builder(
@@ -430,7 +421,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                       return Column(
                         children: [
                           addLabel ? Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08, vertical: MediaQuery.of(context).size.width*0.03),
                             child: Column(
                               children: [
                                 //if(index != 0) SizedBox(height: MediaQuery.of(context).size.height*0.02),
@@ -438,8 +429,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      Localizations.localeOf(context).languageCode == 'ca' ? month.substring(3).toUpperCase() : month.toUpperCase(),
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                      Localizations.localeOf(context).languageCode == 'ca' ? month.substring(3).toUpperCase() : StringUtils().toCapitalized(month),
+                                      style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
                                     ),
                                   ],
                                 ),
@@ -450,7 +441,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
                             child: EventListTile(
                               eventId: event.id!,
-                              showFeedback: currentUser.id! == user!.id! && currentUser.isTrainer == false,
+                              userId: widget.userID,
+                              showFeedback: true,
                               height: MediaQuery.of(context).size.height,
                               width: MediaQuery.of(context).size.width*0.84,
                             ),

@@ -250,21 +250,29 @@ class _LoginState extends State<Login> {
       int result = await _userDataService.signIn(email.trim(), password);
       if (result == 0) {
         User? user = await _userDataService.getCurrentUser();
-        bool? isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
-        if (isTrainer != null && isTrainer == false) {
-          await _userDataService.signOut();
+        bool? isTrainer;
+        try {
+          isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
+          if (isTrainer != null && isTrainer == false) {
+            await _userDataService.signOut();
+            setState(() {
+              isLoading = false;
+            });
+            showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
+          } else {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<void>(
+                  builder: (context) => const SplashScreen(),
+                  settings: const RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          }
+        } catch (e) {
           setState(() {
             isLoading = false;
           });
-          showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
-        } else {
-          Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute<void>(
-                builder: (context) => const SplashScreen(),
-                settings: const RouteSettings(name: 'SplashScreen'),
-              )
-          );
+          showInSnackBar(AppLocalizations.of(context)!.loginError);
         }
       } else if (result == -1) {
         setState(() {
@@ -276,7 +284,7 @@ class _LoginState extends State<Login> {
         setState(() {
           isLoading = false;
         });
-        showInSnackBar(AppLocalizations.of(context)!.validateError);
+        showInSnackBar(AppLocalizations.of(context)!.validateError, AppLocalizations.of(context)!.resend+" "+AppLocalizations.of(context)!.email, true, true);
       }
   }
 
@@ -292,18 +300,23 @@ class _LoginState extends State<Login> {
     signIn();
   }
 
-  void showInSnackBar(String value, [String valueBody = "", bool isClickable = false]) {
+  void showInSnackBar(String value, [String valueBody = "", bool isClickable = false, bool resendEmail = false]) {
     Widget snackbar;
     if (isClickable ) {
       snackbar = SnackBar(
         content: GestureDetector(
           onTap: () async {
-            await LaunchApp.openApp(
+            if (resendEmail == false) {
+              await LaunchApp.openApp(
                 androidPackageName: 'com.mamba.mambastyleapp',
                 iosUrlScheme: "mamba-style",
-                appStoreLink: "https://apps.apple.com/app/mamba-style/id1601684650"
-              // openStore: false
-            );
+                appStoreLink: "https://apps.apple.com/app/mamba-style/id1601684650",
+                openStore: true
+              );
+            } else {
+              await _userDataService.resendEmail(email.trim());
+              scaffoldMessengerKey.currentState!.hideCurrentSnackBar();
+            }
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

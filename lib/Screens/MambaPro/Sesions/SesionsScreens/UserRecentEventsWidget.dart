@@ -201,6 +201,7 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
           return Column(
             children: [
               EventListTile(
+                userId: currentUser.id!,
                 eventId: event.id!,
                 showFeedback: currentUser.id! == user.id! && currentUser.isTrainer == false,
                 height: widget.height,

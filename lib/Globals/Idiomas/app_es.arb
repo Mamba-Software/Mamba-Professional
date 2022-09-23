@@ -889,6 +889,10 @@
   "@contact":{
     "description": "Cancelar text"
   },
+  "resend": "Reenviar",
+  "@resend":{
+    "description": "Cancelar text"
+  },
   "send": "Enviar",
   "@send":{
     "description": "Cancelar text"
@@ -2128,6 +2132,10 @@
   },
   "staff": "Staff",
   "@staff": {
+    "description": "Donde message"
+  },
+  "buyDate": "Fecha de compra",
+  "@buyDate": {
     "description": "Donde message"
   },
   "bonoRequestDescription": "Compras de bonos pendientes de confirmación",

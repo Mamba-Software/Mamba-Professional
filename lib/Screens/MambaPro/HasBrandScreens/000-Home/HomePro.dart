@@ -1,9 +1,5 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -11,9 +7,10 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
 import 'package:provider/provider.dart';
-
 import '../../../../Globals/Providers/ThemeProvider.dart';
 
 class HomePro extends StatefulWidget {
@@ -35,7 +32,7 @@ class _HomePro extends State<HomePro> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.22 - kToolbarHeight);
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.18 - kToolbarHeight);
   }
   // Boolean Loading
   bool isLoading = false;
@@ -86,35 +83,114 @@ class _HomePro extends State<HomePro> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            expandedHeight: MediaQuery.of(context).size.height*0.22,
-            elevation: 0,
+            expandedHeight: MediaQuery.of(context).size.height*0.18,
+            elevation: 4,
             systemOverlayStyle: returnSystemBarColor(),
             floating: true,
             pinned: true,
             centerTitle: true,
             flexibleSpace: FlexibleSpaceBar(
-              background: RectangularImage(
-                height: MediaQuery.of(context).size.height*0.3,
-                width: MediaQuery.of(context).size.width,
-                image: imageUrl,
+              background: Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  RectangularImage(
+                    height: MediaQuery.of(context).size.height*0.3,
+                    width: MediaQuery.of(context).size.width,
+                    image: imageUrl,
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.width*0.05,
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width*0.84,
+                      minWidth: MediaQuery.of(context).size.width*0.84,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).backgroundColor,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(15.0),
+                        topLeft: Radius.circular(15.0),
+                      ),// BorderRadius
+
+                    ),// BoxDecoration
+                    child: Container(
+                      margin: const EdgeInsetsDirectional.only(start: 1, end: 1, top: 1),
+                      height: MediaQuery.of(context).size.width*0.05,
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width*0.84,
+                        minWidth: MediaQuery.of(context).size.width*0.84,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(15.0),
+                          topLeft: Radius.circular(15.0),
+                        ),// BorderRadius
+                      ),
+                    ),                    // Container
+                  ),
+                ],
               ),
               titlePadding: EdgeInsets.zero,
             ),
             title: appBarExpanded ? Text(currentBrand.name!, style: Theme.of(context).appBarTheme.titleTextStyle) : Container(),
-            leadingWidth: MediaQuery.of(context).size.width*0.2,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+            leadingWidth: MediaQuery.of(context).size.width*0.18,
+            leading: Padding(
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06),
+              child: Container(
+                height: MediaQuery.of(context).size.width*0.06,
+                width: MediaQuery.of(context).size.width*0.12,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    shape: BoxShape.circle
+                ),
                 child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: !appBarExpanded ? AppColors.white : Theme.of(context).primaryColor,
-                      size: MediaQuery.of(context).size.height*0.04,
-                    ),
-                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
+                  icon: Icon(
+                    Icons.menu,
+                    color: Theme.of(context).primaryColor,
+                    size: MediaQuery.of(context).size.height*0.035
+                  ),
+                  onPressed: () => mambaProScaffoldKey.currentState?.openDrawer(),
                 ),
               ),
             ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.06),
+                child: Container(
+                  height: MediaQuery.of(context).size.width*0.06,
+                  width: MediaQuery.of(context).size.width*0.12,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      shape: BoxShape.circle
+                  ),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.qr_code,
+                      color: Theme.of(context).primaryColor,
+                      size: MediaQuery.of(context).size.height*0.035,
+                    ),
+                    onPressed: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        builder: (BuildContext context) {
+                          return const FractionallySizedBox(
+                            heightFactor: 0.7,
+                            child: ShareBrandLink(),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
           isLoading ? SliverFillRemaining(
             child: Center(
@@ -124,8 +200,9 @@ class _HomePro extends State<HomePro> {
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.04,),
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    UserTodayWidget(),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),

@@ -262,6 +262,7 @@ class _UserEventHistoryPageState extends State<UserEventHistoryPage> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
                     child: EventListTile(
+                      userId: currentUser.id!,
                       eventId: event.id!,
                       showFeedback: currentUser.id! == user.id! && currentUser.isTrainer == false,
                       height: safeAreaHeight,

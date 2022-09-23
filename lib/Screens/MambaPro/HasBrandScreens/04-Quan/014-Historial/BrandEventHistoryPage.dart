@@ -350,6 +350,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
                       child: EventListTile(
+                        userId: currentUser.id!,
                         eventId: event.id!,
                         showFeedback: false,
                         showAverage: true,

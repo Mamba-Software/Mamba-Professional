@@ -605,7 +605,7 @@ class _BonosProState extends State<BonosPro> {
           child: FloatingActionButton(
             onPressed: () {
               navigateToAddBonosScreen(
-                Bono(color: "0", isActive: true, classes: 0, opacity: 1, imageUrl: '', isDegradate: false,),
+                Bono(color: "0", isActive: true, sessions: 0, opacity: 1, imageUrl: '', isDegradate: false,),
                 currentBrand,
                 false
               );

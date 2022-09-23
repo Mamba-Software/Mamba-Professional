@@ -72,6 +72,17 @@ class UserFirebaseCalls {
     }
   }
 
+  Future<int> resendEmail(String email) async {
+    try {
+      User? currentUser = await getCurrentUser();
+      currentUser!.sendEmailVerification();
+      return 1;
+    } catch (e) {
+      print(e.toString());
+      return -1;
+    }
+  }
+
   Future<bool> deleteUser(String password) async {
     try {
       bool error = false;
@@ -376,7 +387,7 @@ class UserFirebaseCalls {
             "imageUrl": null,
             "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
             "isFirst": true,
-            "isTrainer": null,
+            "isTrainer": true,
             "isPrivate": true,
             "gender": null,
             "dateJoined": formatted,
@@ -733,6 +744,17 @@ class UserFirebaseCalls {
         .collection(users)
         .doc(userId)
         .collection("Notifications")
+        .snapshots();
+  }
+
+
+
+  //Get bono Requests from brand
+  Stream<QuerySnapshot> getAllBonosFromUser(String userId) {
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Bonos")
         .snapshots();
   }
 

@@ -18,6 +18,7 @@ class UserDataService {
   Future<int> signIn(String email, String password) => _firebase.signIn(email, password);
   Future<void> signOut() => _firebase.signOut();
   Future<int> resetPassword(String email) => _firebase.resetPassword(email);
+  Future<int> resendEmail(String email) => _firebase.resendEmail(email);
   Future<bool> deleteUser(String password) => _firebase.deleteUser(password);
 
   // Check Data
@@ -72,5 +73,7 @@ class UserDataService {
   // STREAMS
 
   Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) => _firebase.getAllNotificationsUserStream(userId);
+
+  Stream<QuerySnapshot> getAllBonosFromUser(String userId) => _firebase.getAllBonosFromUser(userId);
 
 }
