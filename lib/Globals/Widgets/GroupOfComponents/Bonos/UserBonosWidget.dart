@@ -77,6 +77,8 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                     itemBuilder: (context,int index) {
                       Bono bono = userBonos[index];
                       int sessions = bono.sessions!;
+                      double price = bono.price!;
+                      bono.setConditionsData = bono.condition!;
                       String purchaseId = bono.purchaseId!;
                       return StreamBuilder<DocumentSnapshot>(
                           stream: _brandDataService.getBonoInfoStream(bono.brandId!, bono.id!),

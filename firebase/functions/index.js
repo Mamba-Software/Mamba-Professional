@@ -4250,6 +4250,9 @@ exports.userPurchasesBono = functions
          "price": purchaseDoc.price,
          "purchaseId": purchaseId,
          "brandId": purchaseDoc.brandId,
+         "expirationTime": bonoDoc.expirationTime,
+         "cancelTime": bonoDoc.cancelTime,
+         "weeklySessions": bonoDoc.weeklySessions,
        });
 
 
@@ -4268,16 +4271,24 @@ exports.userPurchasesBono = functions
        const before = change.before.data();
        const bonoDoc = change.after.data();
 
-       if(bonoDoc.title != before.title || bonoDoc.sessions != before.sessions) {
+       if(bonoDoc.title != before.title || bonoDoc.sessions != before.sessions || bonoDoc.price != before.price || bonoDoc.expirationTime != before.expirationTime || bonoDoc.cancelTime != before.cancelTime || bonoDoc.weeklySessions != before.weeklySessions) {
 
             await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
              "title": bonoDoc.title,
              "sessions": bonoDoc.sessions,
+             "price": bonoDoc.price,
+             "expirationTime": bonoDoc.expirationTime,
+             "cancelTime": bonoDoc.cancelTime,
+             "weeklySessions": bonoDoc.weeklySessions,
            });
 
             await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).update({
              "title": bonoDoc.title,
               "sessions": bonoDoc.sessions,
+              "price": bonoDoc.price,
+              "expirationTime": bonoDoc.expirationTime,
+              "cancelTime": bonoDoc.cancelTime,
+              "weeklySessions": bonoDoc.weeklySessions,
            });
            }
 
@@ -4301,6 +4312,9 @@ exports.userPurchasesBono = functions
              "sessions": bonoDoc.sessions,
              "price": bonoDoc.price,
              "purchaseId": bonoDoc.purchaseId,
+             "expirationTime": bonoDoc.expirationTime,
+           "cancelTime": bonoDoc.cancelTime,
+           "weeklySessions": bonoDoc.weeklySessions,
            });
 
             await db.collection("7777 Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).set({
@@ -4308,6 +4322,9 @@ exports.userPurchasesBono = functions
               "sessions": bonoDoc.sessions,
               "price": bonoDoc.price,
               "purchaseId": bonoDoc.purchaseId,
+              "expirationTime": bonoDoc.expirationTime,
+            "cancelTime": bonoDoc.cancelTime,
+            "weeklySessions": bonoDoc.weeklySessions,
            });
 
 
