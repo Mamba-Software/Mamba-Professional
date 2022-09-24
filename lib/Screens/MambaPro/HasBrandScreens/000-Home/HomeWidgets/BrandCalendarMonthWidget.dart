@@ -7,12 +7,15 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+typedef DateCallBack = void Function(int pageIndex, DateTime? dateTime, CalendarView calendarView);
+
 class BrandCalendarMonthWidget extends StatefulWidget {
   String brandId;
   double height = 0;
   double width = 0;
+  final DateCallBack navigateToPage;
 
-  BrandCalendarMonthWidget({Key? key, required this.brandId, required this.height, required this.width}) : super(key: key);
+  BrandCalendarMonthWidget({Key? key, required this.brandId, required this.height, required this.width, required this.navigateToPage}) : super(key: key);
 
   @override
   _BrandCalendarMonthWidgetState createState() => _BrandCalendarMonthWidgetState();
@@ -99,114 +102,141 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
   Widget build(BuildContext context) {
     return FittedBox(
       fit: BoxFit.fitHeight,
-      child: Container(
-        height: widget.height,
-        width: widget.width,
-        decoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
-          borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
-        ),// BoxDecoration
+      child: Material(
+        elevation: 4,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+        ),
         child: Container(
-          margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
           height: widget.height,
           width: widget.width,
-          padding: EdgeInsets.all(widget.width*0.05),
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: Theme.of(context).backgroundColor,
             borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
           ),// BoxDecoration
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FittedBox(
-                fit: BoxFit.fitHeight,
-                child: SizedBox(
-                  height: widget.height*0.10,
-                  width: widget.width,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Container(
+            margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+            height: widget.height,
+            width: widget.width,
+            padding: EdgeInsets.all(widget.width*0.05),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
+            ),// BoxDecoration
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: SizedBox(
+                    height: widget.height*0.10,
+                    width: widget.width,
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Icon(Icons.calendar_month_outlined, size: widget.width*0.05, color: AppColors.grey,),
-                        SizedBox(width: widget.width*0.02),
-                        Text(
-                            AppLocalizations.of(context)!.calendar,
-                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
-                            textAlign: TextAlign.center
+                        TextButton(
+                          onPressed: () {
+                            widget.navigateToPage(10, DateTime.now(), CalendarView.day);
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.calendar_month_outlined, size: widget.width*0.05, color: AppColors.grey,),
+                              SizedBox(width: widget.width*0.02),
+                              Text(
+                                  AppLocalizations.of(context)!.calendar,
+                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                                  textAlign: TextAlign.center
+                              ),
+                            ],
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              _calendarController.displayDate = DateTime.now();
+                              _calendarController.selectedDate = DateTime.now();
+                            });
+                          },
+                          child: Text(
+                              AppLocalizations.of(context)!.todayString,
+                              style: Theme.of(context).textTheme.caption,
+                              textAlign: TextAlign.center
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
-              FittedBox(
-                fit: BoxFit.fitHeight,
-                child: SizedBox(
-                  height: widget.height*0.85,
-                  width: widget.width,
-                  child: StreamBuilder<QuerySnapshot>(
-                      stream: _eventDataService.getBrandEventsStream(widget.brandId),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return LoadingView(
-                            hasLogo: false,
-                          );
-                        } else {
-                          eventsList = documentsToEvents(snapshot.data!.docs);
-                          return SfCalendar(
-                            view: CalendarView.month,
-                            controller: _calendarController,
-                            dataSource: _getCalendarDataSource(),
-                            firstDayOfWeek: 1,
-                            showDatePickerButton: false,
-                            showCurrentTimeIndicator: false,
-                            showNavigationArrow: true,
-                            todayHighlightColor: Theme.of(context).colorScheme.secondary,
-                            viewHeaderStyle: ViewHeaderStyle(
-                              dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                            ),
-                            headerHeight: 0,
-                            headerDateFormat: "MMMM yyyy",
-                            headerStyle: CalendarHeaderStyle(
-                              textAlign: TextAlign.center,
-                              backgroundColor: Colors.transparent,
-                              textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
-                            ),
-                            cellBorderColor: Colors.transparent,
-                            monthViewSettings: MonthViewSettings(
-                              appointmentDisplayCount: 2,
-                              appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
-                              showAgenda: false,
-                              navigationDirection: MonthNavigationDirection.horizontal,
-                              monthCellStyle: MonthCellStyle(
-                                textStyle: Theme.of(context).textTheme.bodyText1,
-                                trailingDatesTextStyle: Theme.of(context).textTheme.caption,
-                                leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+                FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: SizedBox(
+                    height: widget.height*0.85,
+                    width: widget.width,
+                    child: StreamBuilder<QuerySnapshot>(
+                        stream: _eventDataService.getBrandEventsStream(widget.brandId),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return LoadingView(
+                              isSmall: true,
+                              hasLogo: false,
+                            );
+                          } else {
+                            eventsList = documentsToEvents(snapshot.data!.docs);
+                            return SfCalendar(
+                              view: CalendarView.month,
+                              controller: _calendarController,
+                              dataSource: _getCalendarDataSource(),
+                              firstDayOfWeek: 1,
+                              showDatePickerButton: false,
+                              showCurrentTimeIndicator: false,
+                              showNavigationArrow: true,
+                              todayHighlightColor: Theme.of(context).colorScheme.secondary,
+                              viewHeaderStyle: ViewHeaderStyle(
+                                dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                               ),
-                              numberOfWeeksInView: 6,
-                              showTrailingAndLeadingDates: true,
-                            ),
-                            selectionDecoration: BoxDecoration(
-                                border: Border.all(width: 0.1, color: Colors.transparent)
-                            ),
-                            onViewChanged: (ViewChangedDetails viewChangedDetails) {
-                              Future.delayed(Duration.zero, () async {
-                                setState(() {
-                                  middleMonthDate = viewChangedDetails.visibleDates[14];
+                              headerHeight: 0,
+                              headerDateFormat: "MMMM yyyy",
+                              headerStyle: CalendarHeaderStyle(
+                                textAlign: TextAlign.center,
+                                backgroundColor: Colors.transparent,
+                                textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
+                              ),
+                              cellBorderColor: Colors.transparent,
+                              monthViewSettings: MonthViewSettings(
+                                appointmentDisplayCount: 4,
+                                appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
+                                showAgenda: false,
+                                navigationDirection: MonthNavigationDirection.horizontal,
+                                monthCellStyle: MonthCellStyle(
+                                  textStyle: Theme.of(context).textTheme.bodyText1,
+                                  trailingDatesTextStyle: Theme.of(context).textTheme.caption,
+                                  leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+                                ),
+                                numberOfWeeksInView: 6,
+                                showTrailingAndLeadingDates: true,
+                              ),
+                              selectionDecoration: BoxDecoration(
+                                  border: Border.all(width: 0.1, color: Colors.transparent)
+                              ),
+                              onViewChanged: (ViewChangedDetails viewChangedDetails) {
+                                Future.delayed(Duration.zero, () async {
+                                  setState(() {
+                                    middleMonthDate = viewChangedDetails.visibleDates[14];
+                                  });
                                 });
-                              });
-                            },
-                            onTap: (CalendarTapDetails details) {
-                              print("to Calendar");
-                            },
-                          );
+                              },
+                              onTap: (CalendarTapDetails details) {
+                                widget.navigateToPage(10, details.date, CalendarView.month);
+                              },
+                            );
+                          }
                         }
-                      }
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

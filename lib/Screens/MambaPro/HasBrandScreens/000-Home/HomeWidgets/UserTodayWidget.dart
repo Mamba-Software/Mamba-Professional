@@ -20,7 +20,9 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 
 class UserTodayWidget extends StatefulWidget {
 
-  UserTodayWidget({Key? key}) : super(key: key);
+  ValueChanged<bool?> onClicked;
+
+  UserTodayWidget({Key? key, required this.onClicked}) : super(key: key);
 
   @override
   _UserTodayWidgetState createState() => _UserTodayWidgetState();
@@ -440,264 +442,283 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height,
-        maxWidth: MediaQuery.of(context).size.width*0.84,
-        minWidth: MediaQuery.of(context).size.width*0.84,
-      ),
-      decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
-        borderRadius: const BorderRadius.only(
+    return Material(
+      elevation: 4,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(15.0),
           bottomRight: Radius.circular(15.0),
-        ),//
-      ),// BoxDecoration
+        ),
+      ),
       child: Container(
-        margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1),
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height,
           maxWidth: MediaQuery.of(context).size.width*0.84,
           minWidth: MediaQuery.of(context).size.width*0.84,
         ),
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05),
-        //padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
         decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
+          color: Theme.of(context).backgroundColor,
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(15.0),
             bottomRight: Radius.circular(15.0),
-          ),// BorderRadius
+          ),//
         ),// BoxDecoration
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: navigateToProfileScreen,
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.15,
-                      child: Center(
-                        child: CircularImage(
-                          size: MediaQuery.of(context).size.width * 0.15,
-                          image: currentUser.imageUrl,
-                          color: Theme.of(context).backgroundColor,
-                          borderWidth: 1,
+        child: Container(
+          margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1),
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height,
+            maxWidth: MediaQuery.of(context).size.width*0.84,
+            minWidth: MediaQuery.of(context).size.width*0.84,
+          ),
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05),
+          //padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(15.0),
+              bottomRight: Radius.circular(15.0),
+            ),// BorderRadius
+          ),// BoxDecoration
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: navigateToProfileScreen,
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.width * 0.15,
+                        child: Center(
+                          child: CircularImage(
+                            size: MediaQuery.of(context).size.width * 0.15,
+                            image: currentUser.imageUrl,
+                            color: Theme.of(context).backgroundColor,
+                            borderWidth: 1,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.02,),
-                  Expanded(
-                    child: Column(
+                    SizedBox(width: MediaQuery.of(context).size.width*0.02,),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              StringUtils().greetingMessage(context),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                              textAlign: TextAlign.center
+                          ),
+                          Text(
+                              currentUser.firstName!,
+                              style: Theme.of(context).textTheme.headline1,
+                              textAlign: TextAlign.center
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                            StringUtils().greetingMessage(context),
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
-                            textAlign: TextAlign.center
+                        CounterBadgeIcon(
+                          counter: unreadNotifications,
+                          child: IconButton(
+                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
+                            alignment: Alignment.centerRight,
+                            onPressed: navigateToNotificationsScreen,
+                          ),
                         ),
-                        Text(
-                            currentUser.firstName!,
-                            style: Theme.of(context).textTheme.headline1,
-                            textAlign: TextAlign.center
+                        CounterBadgeIcon(
+                          counter: unreadChats,
+                          child: IconButton(
+                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
+                            alignment: Alignment.centerRight,
+                            onPressed: navigateToChatScreen,
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CounterBadgeIcon(
-                        counter: unreadNotifications,
-                        child: IconButton(
-                          icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
-                          alignment: Alignment.centerRight,
-                          onPressed: navigateToNotificationsScreen,
-                        ),
-                      ),
-                      CounterBadgeIcon(
-                        counter: unreadChats,
-                        child: IconButton(
-                          icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
-                          alignment: Alignment.centerRight,
-                          onPressed: navigateToChatScreen,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.04,),
-            StreamBuilder<QuerySnapshot>(
-                stream: _eventDataService.getUserEventsTodayStream(currentUser.id!),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return LoadingView(
-                      hasLogo: false,
-                    );
-                  } else {
-                    userEventsToday = documentsToEvents(snapshot.data!.docs);
-                    if (userEventsToday.isNotEmpty) {
-                      getUserEventsToday();
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height*0.05,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
-                              child: Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height*0.18,
-                            width: MediaQuery.of(context).size.width,
-                            child: CarouselSlider(
-                              options: CarouselOptions(
-                                autoPlay: false,
-                                aspectRatio: 2.0,
-                                viewportFraction: 0.84,
-                                enlargeCenterPage: true,
-                                enableInfiniteScroll: false,
-                                initialPage: _current,
-                                onPageChanged: (index, reason) {
-                                  setState(() {
-                                    _current = index;
-                                  });
-                                }
-                              ),
-                              items: eventSliders,
-                            ),
-                          ),
-                          userEventsToday.length > 1 ? SizedBox(
-                            height: MediaQuery.of(context).size.height*0.05,
-                            width: MediaQuery.of(context).size.width,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: eventSliders.asMap().entries.map((entry) {
-                                return Container(
-                                  width: _current == entry.key ? 8.0 : 5.0,
-                                  height: _current == entry.key ? 8.0 : 5.0,
-                                  margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: (Theme.of(context).brightness == Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black)
-                                          .withOpacity(_current == entry.key ? 0.9 : 0.4)),
-                                );
-                              }).toList(),
-                            ),
-                          ) : Container(),
-                        ],
-                      );
-                    } else {
+              SizedBox(height: MediaQuery.of(context).size.height*0.04,),
+              StreamBuilder<QuerySnapshot>(
+                  stream: _eventDataService.getUserEventsTodayStream(currentUser.id!),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
                       return SizedBox(
                         height: MediaQuery.of(context).size.height*0.10,
                         width: MediaQuery.of(context).size.width,
                         child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Flexible(child: Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
-                              TextButton(
-                                onPressed: null,
-                                child: Text(
-                                  AppLocalizations.of(context)!.calendar,
-                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.secondary),
-                                ),
-                              ),
-                            ],
-                          ),
+                          child: LoadingView(
+                            isSmall: true,
+                            hasLogo: false,
+                          )
                         )
                       );
-                    }
-                    return Container();
-                    /*
-                  if (userBonos.isNotEmpty) {
-                    return Column(
-                      children: [
-                        SizedBox(
-                          height: widget.height*0.05,
-                          width: widget.width*0.84,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                  AppLocalizations.of(context)!.bonos,
-                                  style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center
+
+                    } else {
+                      userEventsToday = documentsToEvents(snapshot.data!.docs);
+                      if (userEventsToday.isNotEmpty) {
+                        getUserEventsToday();
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height*0.05,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
+                                child: Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
                               ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: widget.height*0.02,),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: widget.width*0.08),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: userBonos.length,
-                            itemBuilder: (context,int index) {
-                              Bono bono = userBonos[index];
-                              int sessions = bono.sessions!;
-                              String purchaseId = bono.purchaseId!;
-                              return StreamBuilder<DocumentSnapshot>(
-                                  stream: _brandDataService.getBonoInfoStream(bono.brandId!, bono.id!),
-                                  builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Container();
-                                    } else {
-                                      bono = Bono.fromObjectAllData(snapshot.data!.id, snapshot.data!);
-                                      bono.setBonoSessions = sessions;
-                                      return StreamBuilder<DocumentSnapshot>(
-                                          stream: _purchaseDataService.getPurchaseInfoStream(purchaseId),
-                                          builder: (context, snapshot) {
-                                            if (!snapshot.hasData) {
-                                              return Container();
-                                            } else {
-                                              Purchase bonoPurchase = Purchase.fromObjectAllData(snapshot.data!.id, snapshot.data!);
-                                              return ClientBonoCard(
-                                                height: widget.height*0.22,
-                                                width: widget.width*0.84,
-                                                bono: bono,
-                                                brand: currentBrand,
-                                                purchase: bonoPurchase,
-                                                canExpand: true,
-                                                onlyView: false,
-                                              );
-                                            }
-                                          }
-                                      );
-                                    }
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height*0.18,
+                              width: MediaQuery.of(context).size.width,
+                              child: CarouselSlider(
+                                options: CarouselOptions(
+                                  autoPlay: false,
+                                  aspectRatio: 2.0,
+                                  viewportFraction: 0.84,
+                                  enlargeCenterPage: true,
+                                  enableInfiniteScroll: false,
+                                  initialPage: _current,
+                                  onPageChanged: (index, reason) {
+                                    setState(() {
+                                      _current = index;
+                                    });
                                   }
-                              );
-                            },
+                                ),
+                                items: eventSliders,
+                              ),
+                            ),
+                            userEventsToday.length > 1 ? SizedBox(
+                              height: MediaQuery.of(context).size.height*0.05,
+                              width: MediaQuery.of(context).size.width,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: eventSliders.asMap().entries.map((entry) {
+                                  return Container(
+                                    width: _current == entry.key ? 8.0 : 5.0,
+                                    height: _current == entry.key ? 8.0 : 5.0,
+                                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: (Theme.of(context).brightness == Brightness.dark
+                                            ? Colors.white
+                                            : Colors.black)
+                                            .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                                  );
+                                }).toList(),
+                              ),
+                            ) : Container(),
+                          ],
+                        );
+                      } else {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height*0.10,
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Flexible(child: Text(AppLocalizations.of(context)!.noEventsToday, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
+                                TextButton(
+                                  onPressed: () {
+                                    widget.onClicked(true);
+                                  },
+                                  child: Text(
+                                    AppLocalizations.of(context)!.calendarWeekBrandText(currentBrand.name!),
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        );
+                      }
+                      return Container();
+                      /*
+                    if (userBonos.isNotEmpty) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            height: widget.height*0.05,
+                            width: widget.width*0.84,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                    AppLocalizations.of(context)!.bonos,
+                                    style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: widget.height*0.04,),
-                      ],
-                    );
-                  } else {
-                    return Container();
+                          SizedBox(height: widget.height*0.02,),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: widget.width*0.08),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: userBonos.length,
+                              itemBuilder: (context,int index) {
+                                Bono bono = userBonos[index];
+                                int sessions = bono.sessions!;
+                                String purchaseId = bono.purchaseId!;
+                                return StreamBuilder<DocumentSnapshot>(
+                                    stream: _brandDataService.getBonoInfoStream(bono.brandId!, bono.id!),
+                                    builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return Container();
+                                      } else {
+                                        bono = Bono.fromObjectAllData(snapshot.data!.id, snapshot.data!);
+                                        bono.setBonoSessions = sessions;
+                                        return StreamBuilder<DocumentSnapshot>(
+                                            stream: _purchaseDataService.getPurchaseInfoStream(purchaseId),
+                                            builder: (context, snapshot) {
+                                              if (!snapshot.hasData) {
+                                                return Container();
+                                              } else {
+                                                Purchase bonoPurchase = Purchase.fromObjectAllData(snapshot.data!.id, snapshot.data!);
+                                                return ClientBonoCard(
+                                                  height: widget.height*0.22,
+                                                  width: widget.width*0.84,
+                                                  bono: bono,
+                                                  brand: currentBrand,
+                                                  purchase: bonoPurchase,
+                                                  canExpand: true,
+                                                  onlyView: false,
+                                                );
+                                              }
+                                            }
+                                        );
+                                      }
+                                    }
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(height: widget.height*0.04,),
+                        ],
+                      );
+                    } else {
+                      return Container();
+                    }
+                     */
+                    }
                   }
-                   */
-                  }
-                }
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );// Container

@@ -79,6 +79,12 @@ class _BrandScreenState extends State<BrandScreen> {
   //favourite tabs of user
   List<int> favourites = [];
 
+  // DateTime // Calendar View For Navigation Purposes
+  bool? addGroupEvent;
+  bool? addPrivateEvent;
+  DateTime? calendarDateTime;
+  CalendarView? calendarView;
+
   @override
   void initState() {
     super.initState();
@@ -648,7 +654,16 @@ class _BrandScreenState extends State<BrandScreen> {
         return HomePro(
             brandId: currentBrand.id!,
             numTrainers: currentBrand.numTrainers!,
-            numClients: currentBrand.numClients!
+            numClients: currentBrand.numClients!,
+            navigateToPage: (int page, DateTime? dateTime, CalendarView calendarView, bool? addGroupEvent, bool? addPrivateEvent) {
+              setState(() {
+                this.addGroupEvent = addGroupEvent;
+                this.addPrivateEvent = addPrivateEvent;
+                calendarDateTime = dateTime;
+                this.calendarView = calendarView;
+                pageIndex = page;
+              });
+            },
         );
       case 2:
         return Clients(
@@ -696,6 +711,10 @@ class _BrandScreenState extends State<BrandScreen> {
       case 10:
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
+          addGroupEvent: addGroupEvent,
+          addPrivateEvent: addPrivateEvent,
+          dateTime: calendarDateTime,
+          calendarView: calendarView,
           pinned: iconStar,
           pinnedChanged: (boolean) {
             handleChangedFavourites();
@@ -735,7 +754,20 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       default:
-        return HomePro(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, numClients: currentBrand.numClients!);
+        return HomePro(
+          brandId: currentBrand.id!,
+          numTrainers: currentBrand.numTrainers!,
+          numClients: currentBrand.numClients!,
+          navigateToPage: (int page, DateTime? dateTime, CalendarView calendarView, bool? addGroupEvent, bool? addPrivateEvent) {
+            setState(() {
+              this.addGroupEvent = addGroupEvent;
+              this.addPrivateEvent = addPrivateEvent;
+              calendarDateTime = dateTime;
+              this.calendarView = calendarView;
+              pageIndex = page;
+            });
+          },
+        );
     }
   }
 

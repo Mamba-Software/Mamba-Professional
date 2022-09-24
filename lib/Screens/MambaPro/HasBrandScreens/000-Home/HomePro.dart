@@ -1,25 +1,27 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandCalendarMonthWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/PlanEventWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../Globals/Providers/ThemeProvider.dart';
+
+// Step 1: Define a Callback.
+typedef DateCallBack = void Function(int pageIndex, DateTime? dateTime, CalendarView calendarView, bool? addGroupEvent, bool? addPrivateEvent);
 
 class HomePro extends StatefulWidget {
   String brandId;
   int numClients;
   int numTrainers;
+  final DateCallBack navigateToPage;
 
-  HomePro({Key? key, required this.brandId, required this.numTrainers, required this.numClients}) : super(key: key);
+  HomePro({Key? key, required this.brandId, required this.numTrainers, required this.numClients, required this.navigateToPage}) : super(key: key);
 
   @override
   _HomePro createState() => _HomePro();
@@ -35,8 +37,6 @@ class _HomePro extends State<HomePro> {
   bool get _isAppBarExpanded {
     return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.18 - kToolbarHeight);
   }
-  // Boolean Loading
-  bool isLoading = false;
   // Brand Image
   String imageUrl = currentBrand.logoUrl!;
 
@@ -80,6 +80,7 @@ class _HomePro extends State<HomePro> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -193,27 +194,54 @@ class _HomePro extends State<HomePro> {
               ),
             ],
           ),
-          isLoading ? SliverFillRemaining(
-            child: Center(
-                child: LoadingView()
-            )
-          ) : SliverToBoxAdapter(
+          SliverToBoxAdapter(
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.08,),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  UserTodayWidget(),
+                  UserTodayWidget(
+                    onClicked: (boolean) {
+                      widget.navigateToPage(10,DateTime.now(), CalendarView.week, null, null);
+                    },
+                  ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.04,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      PlanEventWidget(
+                        height: MediaQuery.of(context).size.height * 0.07,
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        isPrivate: false,
+                        onClicked: (bool? value) {
+                          widget.navigateToPage(10,DateTime.now(),CalendarView.day,true,null);
+                        },
+                      ),
+                      PlanEventWidget(
+                        height: MediaQuery.of(context).size.height * 0.07,
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        isPrivate: true,
+                        onClicked: (bool? value) {
+                          widget.navigateToPage(10,DateTime.now(),CalendarView.day,null,true);
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   BrandCalendarMonthWidget(
                     brandId: currentBrand.id!,
                     height: MediaQuery.of(context).size.height * 0.41,
                     width: MediaQuery.of(context).size.width * 0.84,
+                    navigateToPage: (int page, DateTime? dateTime, CalendarView calendarView) {
+                      widget.navigateToPage(10, dateTime, CalendarView.month, null, null);
+                    },
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.04,
+                    height: MediaQuery.of(context).size.height * 0.1,
                   ),
                 ]
               ),
