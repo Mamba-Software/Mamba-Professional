@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE" />
     <queries>
-        <package android:name="com.mamba.mambastyleapp"/>
+        <package android:name="com.mamba.mambaprofessionalapp"/>
     </queries>
     <application
         android:label="Mamba Pro"

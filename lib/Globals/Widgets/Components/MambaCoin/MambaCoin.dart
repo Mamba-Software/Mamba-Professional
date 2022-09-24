@@ -3,8 +3,7 @@
 //MambaCoin class used to have a widget of mamba coin
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 
 class MambaCoin {
 
