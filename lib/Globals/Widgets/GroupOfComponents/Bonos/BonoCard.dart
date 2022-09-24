@@ -101,11 +101,6 @@ class BonoCardState extends State<BonoCard> {
     super.didUpdateWidget(oldWidget);
     bono = widget.bono;
     brand = widget.brand;
-    condition = Condition(
-      expirationTime: widget.bono.condition!.expirationTime,
-      cancelTime: widget.bono.condition!.cancelTime,
-      weeklySessions: widget.bono.condition!.weeklySessions,
-    );
     isExpandedHeight = 2.5;
     calculateExpandedHeight();
   }

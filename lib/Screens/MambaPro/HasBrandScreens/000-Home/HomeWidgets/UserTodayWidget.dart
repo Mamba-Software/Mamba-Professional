@@ -561,7 +561,6 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                           )
                         )
                       );
-
                     } else {
                       userEventsToday = documentsToEvents(snapshot.data!.docs);
                       if (userEventsToday.isNotEmpty) {
@@ -617,6 +616,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                                 }).toList(),
                               ),
                             ) : Container(),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                           ],
                         );
                       } else {

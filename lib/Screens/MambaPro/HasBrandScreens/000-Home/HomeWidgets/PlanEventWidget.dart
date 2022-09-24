@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -23,6 +26,29 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
   void initState() {
     super.initState();
   }
+
+  void _addEvent() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => AddOrEditEvent(
+            locale: Localizations.localeOf(context),
+          ),
+        )
+    );
+  }
+
+  void _addPrivateEvent() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => AddOrEditPrivateEvent(
+            locale: Localizations.localeOf(context),
+          ),
+        )
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +79,13 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
                 height: widget.height,
                 width: widget.width,
                 child: TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    if (widget.isPrivate) {
+                      _addPrivateEvent();
+                    } else {
+                      _addEvent();
+                    }
+                    await Future.delayed(const Duration(seconds: 1));
                     widget.onClicked(true);
                   } ,
                   child: widget.isPrivate ? Row(

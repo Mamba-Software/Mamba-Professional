@@ -80,8 +80,6 @@ class _BrandScreenState extends State<BrandScreen> {
   List<int> favourites = [];
 
   // DateTime // Calendar View For Navigation Purposes
-  bool? addGroupEvent;
-  bool? addPrivateEvent;
   DateTime? calendarDateTime;
   CalendarView? calendarView;
 
@@ -655,18 +653,14 @@ class _BrandScreenState extends State<BrandScreen> {
             brandId: currentBrand.id!,
             numTrainers: currentBrand.numTrainers!,
             numClients: currentBrand.numClients!,
-            navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView, bool? addGroupEvent, bool? addPrivateEvent]) async {
+            navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView]) async {
               setState(() {
-                this.addGroupEvent = addGroupEvent;
-                this.addPrivateEvent = addPrivateEvent;
                 calendarDateTime = dateTime;
                 this.calendarView = calendarView;
                 pageIndex = page;
               });
               await Future.delayed(const Duration(seconds: 2));
               setState(() {
-                this.addGroupEvent = null;
-                this.addPrivateEvent = null;
                 calendarDateTime = null;
                 this.calendarView = null;
               });
@@ -718,8 +712,6 @@ class _BrandScreenState extends State<BrandScreen> {
       case 10:
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
-          addGroupEvent: addGroupEvent,
-          addPrivateEvent: addPrivateEvent,
           dateTime: calendarDateTime,
           calendarView: calendarView,
           pinned: iconStar,
@@ -765,18 +757,14 @@ class _BrandScreenState extends State<BrandScreen> {
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
           numClients: currentBrand.numClients!,
-          navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView, bool? addGroupEvent, bool? addPrivateEvent]) async {
+          navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView, bool? addGroupEvent, bool? addPrivateEvent, bool? createBono]) async {
             setState(() {
-              this.addGroupEvent = addGroupEvent;
-              this.addPrivateEvent = addPrivateEvent;
               calendarDateTime = dateTime;
               this.calendarView = calendarView;
               pageIndex = page;
             });
             await Future.delayed(const Duration(seconds: 2));
             setState(() {
-              this.addGroupEvent = null;
-              this.addPrivateEvent = null;
               calendarDateTime = null;
               this.calendarView = null;
             });

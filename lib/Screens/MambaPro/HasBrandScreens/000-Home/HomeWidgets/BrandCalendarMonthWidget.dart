@@ -141,7 +141,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                           },
                           child: Row(
                             children: [
-                              Icon(Icons.calendar_month_outlined, size: widget.width*0.05, color: AppColors.grey,),
+                              Icon(Icons.calendar_month_outlined, size: widget.width*0.06, color: AppColors.grey,),
                               SizedBox(width: widget.width*0.02),
                               Text(
                                   AppLocalizations.of(context)!.calendar,

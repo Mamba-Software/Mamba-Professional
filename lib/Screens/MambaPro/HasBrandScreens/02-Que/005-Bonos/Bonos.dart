@@ -102,8 +102,8 @@ class _BonosProState extends State<BonosPro> {
   }
 
   // Navigate to Add Bonos
-  void navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) {
-    Navigator.push(
+  Future<void> navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) async {
+    await Navigator.push(
         context,
         CupertinoPageRoute<void>(
           builder: (context) => GestureDetector(

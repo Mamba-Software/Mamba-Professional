@@ -21,15 +21,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;
-  bool? addGroupEvent;
-  bool? addPrivateEvent;
   DateTime? dateTime;
   CalendarView? calendarView;
   bool? onlyView;
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
 
-  BrandCalendarWidget({Key? key, required this.brandId, this.addGroupEvent, this.addPrivateEvent, this.dateTime, this.calendarView, this.onlyView, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime, this.calendarView, this.onlyView, required this.pinned, required this.pinnedChanged}) : super(key: key);
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
@@ -145,14 +143,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    // Add Event Directly
-    if (widget.addGroupEvent != null && widget.addGroupEvent!) {
-      _addEvent();
-    }
-    // Add Event Group
-    if (widget.addPrivateEvent != null && widget.addPrivateEvent!) {
-      _addPrivateEvent();
-    }
     setState(() {
       isLoading = false;
     });

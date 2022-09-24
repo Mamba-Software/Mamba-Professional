@@ -2,29 +2,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 typedef DateCallBack = void Function(int pageIndex, DateTime? dateTime, CalendarView calendarView);
 
-class BrandRequestsWidget extends StatefulWidget {
+class BrandBonoRequestsWidget extends StatefulWidget {
   String brandId;
   double height = 0;
   double width = 0;
   ValueChanged<bool?> onClicked;
 
-  BrandRequestsWidget({Key? key, required this.height, required this.width, required this.brandId, required this.onClicked}) : super(key: key);
+  BrandBonoRequestsWidget({Key? key, required this.height, required this.width, required this.brandId, required this.onClicked}) : super(key: key);
 
   @override
-  _BrandRequestsWidgetState createState() => _BrandRequestsWidgetState();
+  _BrandBonoRequestsWidgetState createState() => _BrandBonoRequestsWidgetState();
 }
 
-class _BrandRequestsWidgetState extends State<BrandRequestsWidget> {
+class _BrandBonoRequestsWidgetState extends State<BrandBonoRequestsWidget> {
 
   // Brand Service
   final _brandDataService = BrandDataService();
   // Number Request
   int requests = 0;
+  final _bonosUtils = BonosUtils();
 
   @override
   void initState() {
@@ -43,12 +45,12 @@ class _BrandRequestsWidgetState extends State<BrandRequestsWidget> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _brandDataService.getBrandRequestsStream(widget.brandId),
+      stream: _brandDataService.getBonosRequestsFromBrand(widget.brandId),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Container();
         } else {
-          requests = documentsToRequests(snapshot.data!.docs).length;
+          requests = _bonosUtils.documentsToBonosRequests(snapshot.data!.docs).length;
           if (requests != 0) {
             return Column(
               children: [
@@ -89,7 +91,7 @@ class _BrandRequestsWidgetState extends State<BrandRequestsWidget> {
                               SizedBox(
                                 width: widget.width*0.15,
                                 child: Icon(
-                                  Icons.group_add_outlined,
+                                  Icons.confirmation_number_outlined,
                                   color: Theme.of(context).primaryColor,
                                   size: MediaQuery.of(context).size.width*0.10,
                                 ),
@@ -101,7 +103,7 @@ class _BrandRequestsWidgetState extends State<BrandRequestsWidget> {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        AppLocalizations.of(context)!.myRequestsDesc,
+                                        AppLocalizations.of(context)!.bonoRequestDescription,
                                         style: Theme.of(context).textTheme.bodyText2,
                                         textAlign: TextAlign.center,
                                       ),
