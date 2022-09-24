@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ConfirmBuyBonoPresent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonosWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteFromBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -190,6 +191,39 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     if (!deleteRoom!) {
                                       _roomDataService.deleteRoom(room.id);
                                     }
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(
+                                    Icons.confirmation_number_outlined,
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  title: Text(
+                                      AppLocalizations.of(context)!.acceptBono,
+                                      style: Theme.of(context).textTheme.bodyText1,
+                                      textAlign: TextAlign.left
+                                  ),
+                                  onTap: () async {
+                                    await showModalBottomSheet<bool?>(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(20),
+                                        ),
+                                      ),
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      builder: (BuildContext context) {
+                                        return FractionallySizedBox(
+                                          heightFactor: 0.95,
+                                          child: ConfirmBuyBonoPresent(
+                                            user: user!,
+                                            brand: currentBrand,
+                                          ),
+                                        );
+                                      },
+                                    );
                                   },
                                 ),
                               ],
