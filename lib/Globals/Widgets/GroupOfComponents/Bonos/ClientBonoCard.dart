@@ -806,6 +806,8 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                         child: OtorgarBono(
                           user: user,
                           brand: brand,
+                          edit: true,
+                          bono: bono,
                         ),
                       );
                     },

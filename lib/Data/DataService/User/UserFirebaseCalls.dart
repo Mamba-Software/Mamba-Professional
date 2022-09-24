@@ -706,6 +706,17 @@ class UserFirebaseCalls {
     }
   }
 
+  Future<void> updateUserBono(String userId, Bono bono) async {
+
+    await _firestore.collection(users).doc(userId).collection("Bonos").doc(bono.id).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+    });
+  }
+
   //Delete
 
   Future<void> deleteRequestToBrand(RequestToBrand request) async {
