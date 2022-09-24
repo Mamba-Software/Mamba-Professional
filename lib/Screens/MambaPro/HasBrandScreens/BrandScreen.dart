@@ -655,13 +655,20 @@ class _BrandScreenState extends State<BrandScreen> {
             brandId: currentBrand.id!,
             numTrainers: currentBrand.numTrainers!,
             numClients: currentBrand.numClients!,
-            navigateToPage: (int page, DateTime? dateTime, CalendarView calendarView, bool? addGroupEvent, bool? addPrivateEvent) {
+            navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView, bool? addGroupEvent, bool? addPrivateEvent]) async {
               setState(() {
                 this.addGroupEvent = addGroupEvent;
                 this.addPrivateEvent = addPrivateEvent;
                 calendarDateTime = dateTime;
                 this.calendarView = calendarView;
                 pageIndex = page;
+              });
+              await Future.delayed(const Duration(seconds: 2));
+              setState(() {
+                this.addGroupEvent = null;
+                this.addPrivateEvent = null;
+                calendarDateTime = null;
+                this.calendarView = null;
               });
             },
         );
@@ -758,13 +765,20 @@ class _BrandScreenState extends State<BrandScreen> {
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
           numClients: currentBrand.numClients!,
-          navigateToPage: (int page, DateTime? dateTime, CalendarView calendarView, bool? addGroupEvent, bool? addPrivateEvent) {
+          navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView, bool? addGroupEvent, bool? addPrivateEvent]) async {
             setState(() {
               this.addGroupEvent = addGroupEvent;
               this.addPrivateEvent = addPrivateEvent;
               calendarDateTime = dateTime;
               this.calendarView = calendarView;
               pageIndex = page;
+            });
+            await Future.delayed(const Duration(seconds: 2));
+            setState(() {
+              this.addGroupEvent = null;
+              this.addPrivateEvent = null;
+              calendarDateTime = null;
+              this.calendarView = null;
             });
           },
         );

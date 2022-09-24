@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandCalendarMonthWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandRequestsWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/PlanEventWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
@@ -13,7 +14,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../Globals/Providers/ThemeProvider.dart';
 
 // Step 1: Define a Callback.
-typedef DateCallBack = void Function(int pageIndex, DateTime? dateTime, CalendarView calendarView, bool? addGroupEvent, bool? addPrivateEvent);
+typedef DateCallBack = void Function(int pageIndex, [DateTime? dateTime, CalendarView? calendarView, bool? addGroupEvent, bool? addPrivateEvent]);
 
 class HomePro extends StatefulWidget {
   String brandId;
@@ -202,46 +203,64 @@ class _HomePro extends State<HomePro> {
                 children: [
                   UserTodayWidget(
                     onClicked: (boolean) {
-                      widget.navigateToPage(10,DateTime.now(), CalendarView.week, null, null);
+                      widget.navigateToPage(10, DateTime.now(), CalendarView.week, null, null);
                     },
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.04,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      PlanEventWidget(
-                        height: MediaQuery.of(context).size.height * 0.07,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        isPrivate: false,
-                        onClicked: (bool? value) {
-                          widget.navigateToPage(10,DateTime.now(),CalendarView.day,true,null);
-                        },
-                      ),
-                      PlanEventWidget(
-                        height: MediaQuery.of(context).size.height * 0.07,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        isPrivate: true,
-                        onClicked: (bool? value) {
-                          widget.navigateToPage(10,DateTime.now(),CalendarView.day,null,true);
-                        },
-                      ),
-                    ],
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
-                  BrandCalendarMonthWidget(
-                    brandId: currentBrand.id!,
-                    height: MediaQuery.of(context).size.height * 0.41,
-                    width: MediaQuery.of(context).size.width * 0.84,
-                    navigateToPage: (int page, DateTime? dateTime, CalendarView calendarView) {
-                      widget.navigateToPage(10, dateTime, CalendarView.month, null, null);
-                    },
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+                    child: BrandRequestsWidget(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      width: MediaQuery.of(context).size.width * 0.84,
+                      brandId: currentBrand.id!,
+                      onClicked: (bool? value) {
+                        widget.navigateToPage(15);
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            PlanEventWidget(
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              isPrivate: false,
+                              onClicked: (bool? value) {
+                                widget.navigateToPage(10,DateTime.now(),CalendarView.day,true,null);
+                              },
+                            ),
+                            PlanEventWidget(
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              isPrivate: true,
+                              onClicked: (bool? value) {
+                                widget.navigateToPage(10,DateTime.now(),CalendarView.day,null,true);
+                              },
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02,
+                        ),
+                        BrandCalendarMonthWidget(
+                          brandId: currentBrand.id!,
+                          height: MediaQuery.of(context).size.height * 0.41,
+                          width: MediaQuery.of(context).size.width * 0.84,
+                          navigateToPage: (int page, DateTime? dateTime, CalendarView? calendarView) {
+                            widget.navigateToPage(10, dateTime, calendarView, null, null);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1,
+                    height: MediaQuery.of(context).size.height * 0.15,
                   ),
                 ]
               ),

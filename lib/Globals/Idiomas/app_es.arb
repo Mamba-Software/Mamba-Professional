@@ -1204,6 +1204,10 @@
   "@myRequests": {
     "description": "Wellcome message"
   },
+  "myRequestsDesc": "Solicitudes de afiliación pendientes de respuesta",
+  "@myRequestsDesc": {
+    "description": "Wellcome message"
+  },
   "request": "Solicitud",
   "@request": {
     "description": "Wellcome message"

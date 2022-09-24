@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-typedef DateCallBack = void Function(int pageIndex, DateTime? dateTime, CalendarView calendarView);
+typedef DateCallBack = void Function(int pageIndex, DateTime? dateTime, CalendarView? calendarView);
 
 class BrandCalendarMonthWidget extends StatefulWidget {
   String brandId;
