@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -7,9 +8,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
 import '../../../../Data/LibraryModels/lColor.dart';
 import '../../../../Data/LibraryModels/lDegradate.dart';
 import 'ConfirmBuyBono.dart';
@@ -52,6 +55,10 @@ class ClientBonoCardState extends State<ClientBonoCard> {
   Purchase purchase = Purchase();
   Brand brand = Brand();
   Condition condition = Condition();
+
+  final _userDataService = UserDataService();
+  Usuario user = Usuario();
+
   // Variables Colors
   final _lDegradate = lDegradate();
   final _lColor = lColor();
@@ -76,13 +83,21 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       cancelTime: widget.bono.condition!.cancelTime,
       weeklySessions: widget.bono.condition!.weeklySessions,
     );
+    print(bono.title!);
+    print(condition.expirationTime);
     if (widget.isExpanded != null && widget.isExpanded!) {
       isExpanded = true;
     }
     calculateExpandedHeight();
     calculateCurrentBonoStats();
+    getUser();
     super.initState();
   }
+
+  Future<void> getUser() async {
+    user = await _userDataService.getUserDetails(purchase.userId!);
+  }
+
 
   Future<void> calculateExpandedHeight() async {
     // Height of Expanded Container
@@ -775,7 +790,27 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                       ),
                     ) : Container(),
               isExpanded && widget.onlyView == false ? GestureDetector(
-                onTap: null,
+                onTap: () async {
+                  await showModalBottomSheet<bool?>(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    builder: (BuildContext context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.95,
+                        child: OtorgarBono(
+                          user: user,
+                          brand: brand,
+                        ),
+                      );
+                    },
+                  );
+                },
                 child: Container(
                   height: widget.height * 0.4,
                   width: widget.width,

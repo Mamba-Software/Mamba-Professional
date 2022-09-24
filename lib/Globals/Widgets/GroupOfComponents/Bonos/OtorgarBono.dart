@@ -20,18 +20,21 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Bono
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/TopSnackBar/TopSnackBar.dart';
 
-class ConfirmBuyBonoPresent extends StatefulWidget {
+class OtorgarBono extends StatefulWidget {
   Usuario user;
   Brand brand;
+  bool? edit;
+  Bono? bono;
 
-  ConfirmBuyBonoPresent({Key? key, required this.user, required this.brand})
+
+  OtorgarBono({Key? key, required this.user, required this.brand, this.edit, this.bono})
       : super(key: key);
 
   @override
-  _ConfirmBuyBonoPresentState createState() => _ConfirmBuyBonoPresentState();
+  _OtorgarBonoState createState() => _OtorgarBonoState();
 }
 
-class _ConfirmBuyBonoPresentState extends State<ConfirmBuyBonoPresent> {
+class _OtorgarBonoState extends State<OtorgarBono> {
   // Brand Service
   final _brandDataService = BrandDataService();
   final _paymentDataService = PaymentDataService();
@@ -59,9 +62,14 @@ class _ConfirmBuyBonoPresentState extends State<ConfirmBuyBonoPresent> {
   int indexBono = 0;
   var _topSnackBar = TopSnackBar();
 
+  bool editBono = false;
+
 
   @override
   void initState() {
+    if(widget.edit != null && widget.edit == true) {
+      editBono = true;
+    }
     user = widget.user;
     paymentMethod = 2;
     getBonos();
@@ -69,22 +77,33 @@ class _ConfirmBuyBonoPresentState extends State<ConfirmBuyBonoPresent> {
   }
 
   Future<void> getBonos() async {
-    bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
-    userBonos = await _userDataService.getUserBonos(user.id!);
-    Bono bonoDelete;
-    for (int i = 0; i < userBonos.length; ++i) {
-      bonoDelete = bonos.firstWhere((element) => element.id == userBonos[i].id);
-      if (bonoDelete.id != '') {
-        bonos.remove(bonoDelete);
+    if(!editBono) {
+      bonos =
+      await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+      userBonos = await _userDataService.getUserBonos(user.id!);
+      Bono bonoDelete;
+      for (int i = 0; i < userBonos.length; ++i) {
+        bonoDelete =
+            bonos.firstWhere((element) => element.id == userBonos[i].id);
+        if (bonoDelete.id != '') {
+          bonos.remove(bonoDelete);
+        }
+      }
+      if (bonos.length > 0) {
+        bonoSelected = bonos[0];
+        isBonoSelected = true;
+      }
+      if (isBonoSelected == false) {
+        _topSnackBar.topsnackbar(
+            context, 'Este usuario ya tiene todos los bonos de tu marca',
+            AppColors.red);
+        Navigator.of(context).pop();
       }
     }
-    if (bonos.length > 0) {
+    else {
+      bonos.add(widget.bono!);
       bonoSelected = bonos[0];
       isBonoSelected = true;
-    }
-    if(isBonoSelected == false) {
-      _topSnackBar.topsnackbar(context, 'Este usuario ya tiene todos los bonos de tu marca', AppColors.red);
-      Navigator.of(context).pop();
     }
     setState(() {});
   }
@@ -597,7 +616,8 @@ class _ConfirmBuyBonoPresentState extends State<ConfirmBuyBonoPresent> {
                                     await _paymentDataService
                                         .addPurchaseToPayments(purchase);
 
-                                    //await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
+                                    await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
+                                    await Future.delayed(const Duration(seconds: 3));
                                     Navigator.of(context).pop();
                                   },
                             child: Container(

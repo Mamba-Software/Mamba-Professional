@@ -4,6 +4,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -78,7 +79,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                       Bono bono = userBonos[index];
                       int sessions = bono.sessions!;
                       double price = bono.price!;
-                      bono.setConditionsData = bono.condition!;
+                      Condition bonoUserConditions = bono.condition!;
                       String purchaseId = bono.purchaseId!;
                       return StreamBuilder<DocumentSnapshot>(
                           stream: _brandDataService.getBonoInfoStream(bono.brandId!, bono.id!),
@@ -88,6 +89,10 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                             } else {
                               bono = Bono.fromObjectAllData(snapshot.data!.id, snapshot.data!);
                               bono.setBonoSessions = sessions;
+                              print(bono.title!);
+                              print(bonoUserConditions.expirationTime!);
+                              bono.setConditionsData = bonoUserConditions;
+                              bono.setBonoPrice = price;
                               return StreamBuilder<DocumentSnapshot>(
                                   stream: _purchaseDataService.getPurchaseInfoStream(purchaseId),
                                   builder: (context, snapshot) {

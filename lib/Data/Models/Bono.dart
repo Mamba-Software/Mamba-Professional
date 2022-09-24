@@ -117,6 +117,11 @@ class Bono {
     this.sessions = sessions;
   }
 
+  // Set Price
+  set setBonoPrice(double price) {
+    this.price = price;
+  }
+
   // Set Basic Data
   set setConditionsData(Condition condition) {
     this.condition = condition;
