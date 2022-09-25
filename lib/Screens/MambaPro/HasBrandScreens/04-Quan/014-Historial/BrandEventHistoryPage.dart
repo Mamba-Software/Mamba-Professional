@@ -143,12 +143,10 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                               height: MediaQuery.of(context).size.height*0.08,
                               width: MediaQuery.of(context).size.width*0.11,
                               child: TextButton(
-                                onPressed: () {
-
-                                },
+                                onPressed: null,
                                 child: Icon(
                                   Icons.filter_list,
-                                  color: AppColors.white,
+                                  color: AppColors.darkGrey,
                                   size: MediaQuery.of(context).size.width*0.07,
                                 ),
                               ),
@@ -212,14 +210,14 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                     child: Shimmer.fromColors(
                       baseColor: AppColors.grey,
                       highlightColor: AppColors.grey.withOpacity(0.5),
-                      child: Container(
+                      child: SizedBox(
                         height: safeAreaHeight*0.18,
                         width: safeAreaWidth*0.9,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
+                            SizedBox(
                               height: (safeAreaWidth*0.9)*0.20,
                               width: (safeAreaWidth*0.9)*0.20,
                               child: Column(
@@ -239,7 +237,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                             ),
                             Row(
                               children: [
-                                Container(
+                                SizedBox(
                                   height: safeAreaHeight*18,
                                   width: safeAreaWidth*0.9*0.56,
                                   child: Column(
@@ -294,7 +292,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                     ],
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   height: safeAreaHeight*15,
                                   width: (safeAreaWidth*0.84)*0.12,
                                   child: Center(
@@ -379,22 +377,20 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
             ),
           ) : SliverFillRemaining(
             hasScrollBody: false,
-            child: Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width*0.25,
-                        child: Image.asset(Constants.emptyCalendar)
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                    Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.12),
-                  ],
-                )
-            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width*0.25,
+                    child: Image.asset(Constants.emptyCalendar)
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.12),
+              ],
+            )
           )
         ],
       ),
