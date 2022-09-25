@@ -31,8 +31,17 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => AddOrEditEvent(
-            locale: Localizations.localeOf(context),
+          builder: (context) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: AddOrEditEvent(
+              locale: Localizations.localeOf(context),
+            ),
           ),
         )
     );
@@ -42,8 +51,17 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => AddOrEditPrivateEvent(
-            locale: Localizations.localeOf(context),
+          builder: (context) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: AddOrEditPrivateEvent(
+              locale: Localizations.localeOf(context),
+            ),
           ),
         )
     );

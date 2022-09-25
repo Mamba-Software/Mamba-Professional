@@ -2038,9 +2038,18 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   result = await Navigator.push(
                       context,
                       CupertinoPageRoute(
-                        builder: (context) => AddOrEditPrivateEvent(
-                          locale: Localizations.localeOf(context),
-                          eventId: event!.id!,
+                        builder: (context) => GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                          },
+                          child:  AddOrEditPrivateEvent(
+                            locale: Localizations.localeOf(context),
+                            eventId: event!.id!,
+                          ),
                         ),
                       )
                   );
@@ -2048,9 +2057,18 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   result = await Navigator.push(
                       context,
                       CupertinoPageRoute(
-                        builder: (context) => AddOrEditEvent(
-                          locale: Localizations.localeOf(context),
-                          eventId: event!.id!,
+                        builder: (context) => GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                          },
+                          child:  AddOrEditEvent(
+                            locale: Localizations.localeOf(context),
+                            eventId: event!.id!,
+                          ),
                         ),
                       )
                   );

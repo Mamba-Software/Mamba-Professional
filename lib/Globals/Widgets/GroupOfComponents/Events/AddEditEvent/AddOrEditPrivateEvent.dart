@@ -87,12 +87,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   TextEditingController startTimeController = TextEditingController();
   bool errorDate = false;
   Timestamp? doneAt;
-
-  //Boolean to available bonos
-  bool availableBonos = false;
-  List<Bono> bonos = [];
-  List<String> bonosSelected = [];
-
   // Duration
   String duration = "1.00";
   TextEditingController durationController = TextEditingController();
@@ -124,6 +118,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
   final formKeyMembers = GlobalKey<FormState>();
+  //Boolean to available bonos
+  List<Bono> bonos = [];
+  List<String> bonosSelected = [];
 
   @override
   initState() {
@@ -163,6 +160,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${eventMaxMembers.toString()}";
     brandTrainersSelected.add(currentUser);
+    isRandomImage = true;
     getLocation(currentBrand.baseLocation!);
     getBonos();
   }
@@ -170,15 +168,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   Future<void> getEventInfo() async {
     // Get Event Info
     event = await _eventDataService.getSingleEvent(widget.eventId!);
-    getBonos();
-    for(int i = 0; i < event.bonos.length; ++i)
-    {
-      bonosSelected.add(event.bonos[i].toString());
-    }
-    if(bonosSelected.length != 0) {
-      availableBonos = true;
-    }
-
     // Event Date
     originalStartDate = DateTime(
       int.parse(event.year!),
@@ -208,11 +197,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     eventImageUrl = event.imageUrl;
     isRandomImage = false;
     // Event Duration
+    duration = event.duration!.toStringAsFixed(2);
     durationController.text = StringUtils().durationToString(event.duration!);
     // Event Members
     eventMaxMembers = event.maxMembers!;
     membersController.text = "${event.maxMembers!}";
     getEventMembers(event.id!);
+    // Event Bonos
+    getBonos();
+    for(int i = 0; i < event.bonos.length; ++i) {
+      bonosSelected.add(event.bonos[i].toString());
+    }
     // Event Locations
     originalLocationId = event.locationId!;
     getLocation(event.locationId!);
@@ -619,436 +614,265 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         children: [
                           Form(
                               key: formKeyInfo,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                    child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.title,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.title,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.only(top: 0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: TextFormField(
-                                                  controller: titleController,
-                                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      titleString = val;
-                                                    });
-                                                  },
-                                                  style: Theme.of(context).textTheme.bodyText2,
-                                                  decoration: InputDecoration(
-                                                    hintStyle: Theme.of(context).textTheme.caption,
-                                                    hintText: AppLocalizations.of(context)!.titleHint,
-                                                    border: InputBorder.none,
-                                                    focusedBorder: InputBorder.none,
-                                                    enabledBorder: InputBorder.none,
-                                                    errorBorder: InputBorder.none,
-                                                    disabledBorder: InputBorder.none,
-                                                  ),
-                                                  enabled: true,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: const EdgeInsets.only(top: 0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.description,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  Flexible(
+                                                    child: TextFormField(
+                                                      controller: titleController,
+                                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                                      onChanged: (val) {
+                                                        setState(() {
+                                                          titleString = val;
+                                                        });
+                                                      },
+                                                      style: Theme.of(context).textTheme.bodyText2,
+                                                      decoration: InputDecoration(
+                                                        hintStyle: Theme.of(context).textTheme.caption,
+                                                        hintText: AppLocalizations.of(context)!.titleHint,
+                                                        border: InputBorder.none,
+                                                        focusedBorder: InputBorder.none,
+                                                        enabledBorder: InputBorder.none,
+                                                        errorBorder: InputBorder.none,
+                                                        disabledBorder: InputBorder.none,
+                                                      ),
+                                                      enabled: true,
+                                                    ),
                                                   ),
                                                 ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.only(top: 0.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: TextFormField(
-                                                  keyboardType: TextInputType.visiblePassword,
-                                                  controller: descriptionController,
-                                                  minLines: 1,
-                                                  maxLines: 4,
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      descriptionString = val;
-                                                    });
-                                                  },
-                                                  style: Theme.of(context).textTheme.bodyText2,
-                                                  decoration: InputDecoration(
-                                                    hintStyle: Theme.of(context).textTheme.caption,
-                                                    hintText:AppLocalizations.of(context)!.descriptionError,
-                                                    border: InputBorder.none,
-                                                    focusedBorder: InputBorder.none,
-                                                    enabledBorder: InputBorder.none,
-                                                    errorBorder: InputBorder.none,
-                                                    disabledBorder: InputBorder.none,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.randomPhoto,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.description,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
-                                              ),
-                                              Checkbox(
-                                                checkColor: Colors.white,
-                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                value: isRandomImage,
-                                                onChanged: (bool? value) {
-                                                  setState(() {
-                                                    isRandomImage = value!;
-                                                  });
-                                                  if (imageError) {
-                                                    setState(() {
-                                                      imageError = false;
-                                                    });
-                                                  }
-                                                },
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      isRandomImage == false ? Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            var result = await showModalBottomSheet<String?>(
-                                              context: context,
-                                              isScrollControlled: true,
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.vertical(
-                                                  top: Radius.circular(20),
-                                                ),
-                                              ),
-                                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                                              builder: (BuildContext context) {
-                                                return FractionallySizedBox(
-                                                  heightFactor: 0.85,
-                                                  child: SelectBrandImages(
-                                                    brandId: currentBrand.id!,
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: const EdgeInsets.only(top: 0.0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    child: TextFormField(
+                                                      keyboardType: TextInputType.visiblePassword,
+                                                      controller: descriptionController,
+                                                      minLines: 1,
+                                                      maxLines: 4,
+                                                      onChanged: (val) {
+                                                        setState(() {
+                                                          descriptionString = val;
+                                                        });
+                                                      },
+                                                      style: Theme.of(context).textTheme.bodyText2,
+                                                      decoration: InputDecoration(
+                                                        hintStyle: Theme.of(context).textTheme.caption,
+                                                        hintText:AppLocalizations.of(context)!.descriptionError,
+                                                        border: InputBorder.none,
+                                                        focusedBorder: InputBorder.none,
+                                                        enabledBorder: InputBorder.none,
+                                                        errorBorder: InputBorder.none,
+                                                        disabledBorder: InputBorder.none,
+                                                      ),
+                                                    ),
                                                   ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.location,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 15.0),
+                                            child: ListTile(
+                                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                              title: Text(
+                                                  location.description!,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                              ),
+                                              trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                              onTap: () async {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                var result = await Navigator.push(
+                                                    context,
+                                                  CupertinoPageRoute<String>(
+                                                    builder: (context) => MyLocationsSelect(
+                                                        brandId: currentBrand.id!,
+                                                      ),
+                                                    )
                                                 );
+                                                if (result != null) {
+                                                  getLocation(result);
+                                                } else {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                }
                                               },
-                                            );
-                                            if (result != null) {
-                                              setState(() {
-                                                eventImageUrl = result;
-                                              });
-                                            }
-                                          },
-                                          child: eventImageUrl != null ?
-                                          RectangularImage(
-                                            height: MediaQuery.of(context).size.height*0.18,
-                                            width: MediaQuery.of(context).size.height*0.9,
-                                            borderRadius: 10,
-                                            image: eventImageUrl,
-                                          ) :
-                                          DottedBorder(
-                                              borderType: BorderType.RRect,
-                                              radius: const Radius.circular(10),
-                                              dashPattern: const [10, 10],
-                                              color: imageError ? AppColors.red : AppColors.grey.withOpacity(0.5),
-                                              strokeWidth: 2,
-                                              child: Container(
-                                                  height: MediaQuery.of(context).size.height*0.15,
-                                                  width: MediaQuery.of(context).size.height*0.9,
-                                                  color: Colors.transparent,
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Icon(
-                                                              Icons.add,
-                                                              color: imageError ? AppColors.red : AppColors.grey.withOpacity(0.5),
-                                                              size: MediaQuery.of(context).size.width*0.1
-                                                          ),
+                                            ),
+                                          ),
+                                          bonos.isNotEmpty ? Column(
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
                                                           Text(
-                                                            AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.photo.toLowerCase(),
-                                                            style: Theme.of(context).textTheme.caption?.copyWith(color: imageError ? AppColors.red : AppColors.grey.withOpacity(0.5),),
-                                                            textAlign: TextAlign.left,
+                                                            AppLocalizations.of(context)!.bonos,
+                                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                           ),
                                                         ],
                                                       ),
                                                     ],
                                                   )
-                                              )
-                                          ),
-                                        ),
-                                      ) : Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.0, bottom: MediaQuery.of(context).size.height*0.01),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: Text(
-                                                  AppLocalizations.of(context)!.randomImageDescription,
-                                                  style: Theme.of(context).textTheme.caption,
-                                                ),
-
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.0),
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      Flexible(
+                                                        child: Text(
+                                                          AppLocalizations.of(context)!.bonosDescriptionPrivate,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
                                               ),
                                             ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.location,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15.0),
-                                        child: ListTile(
-                                          leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                                          title: Text(
-                                              location.description!,
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                          ),
-                                          trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                                          onTap: () async {
-                                            setState(() {
-                                              isLoading = true;
-                                            });
-                                            var result = await Navigator.push(
-                                                context,
-                                              CupertinoPageRoute<String>(
-                                                builder: (context) => MyLocationsSelect(
-                                                    brandId: currentBrand.id!,
-                                                  ),
-                                                )
-                                            );
-                                            if (result != null) {
-                                              getLocation(result);
-                                            } else {
-                                              setState(() {
-                                                isLoading = false;
-                                              });
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.bonos,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(width: 10,),
-                                              Checkbox(
-                                                checkColor: Colors.white,
-                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                value: availableBonos,
-                                                onChanged: setBonosAvailable,
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      availableBonos? Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          child: SingleChildScrollView(
-                                            physics: const BouncingScrollPhysics(),
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  height: MediaQuery.of(context).size.height*0.15,
-                                                  child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const NeverScrollableScrollPhysics(),
-                                                      scrollDirection: Axis.horizontal,
-                                                      itemCount: bonos.length,
-                                                      itemBuilder: (context, int index) {
-                                                        var bono = bonos[index];
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            if(bonosSelected.contains(bono.id)) {
-                                                              bonosSelected.remove(bono.id);
-                                                            }
-                                                            else bonosSelected.add(bono.id!);
-                                                            print(bonosSelected);
-                                                            setState(() {
-
-                                                            });
-                                                          },
-                                                          child: Padding(
-                                                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.03),
-                                                            child: Stack(
-                                                              children: [
-                                                                BonoCard(
-                                                                  height: MediaQuery.of(context).size.height * 0.12,
-                                                                  width: MediaQuery.of(context).size.width * 0.45,
-                                                                  bono: bono,
-                                                                  brand: currentBrand,
-                                                                  canExpand: false,
-                                                                  onlyView: true,
-                                                                ),
-                                                                Positioned(
-                                                                  top: MediaQuery.of(context).size.width*0.05,
-                                                                  left: MediaQuery.of(context).size.width*0.35,
-                                                                  bottom: MediaQuery.of(context).size.height * 0.05,
-                                                                  child: CircleAvatar(
-                                                                    backgroundColor: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
-                                                                    radius: MediaQuery.of(context).size.width*0.04,
-                                                                    child: bonosSelected.contains(bono.id)? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
-                                                                  ),
-                                                                ),
-
-                                                                bonosSelected.contains(bono.id)? Container(
-                                                                  height: MediaQuery.of(context).size.height * 0.12,
-                                                                  width: MediaQuery.of(context).size.width * 0.45,
-                                                                  decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                      width:  1,
-                                                                      color: AppColors.mainColor,
-                                                                    ),
-                                                                  ),
-                                                                ) : Container(
-                                                                  height: MediaQuery.of(context).size.height * 0.12,
-                                                                  width: MediaQuery.of(context).size.width * 0.45,
-                                                                  decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                      width:  0,
-                                                                      color: Theme.of(context).backgroundColor,
-                                                                    ),
-                                                                  ),
-                                                                ),
-
-
-                                                              ],
-                                                            ),
+                                          ) : Container(),
+                                        ]
+                                    ),
+                                  ),
+                                  bonos.isNotEmpty ? SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height*0.21,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const BouncingScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: bonos.length,
+                                        itemBuilder: (context, int index) {
+                                          var bono = bonos[index];
+                                          return Row(
+                                            children: [
+                                              index == 0 ? SizedBox(width: MediaQuery.of(context).size.width * 0.05) : Container(),
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: 16.0),
+                                                child: Container(
+                                                    width: MediaQuery.of(context).size.width * 0.75,
+                                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
+                                                    child: Stack(
+                                                      alignment: Alignment.bottomLeft,
+                                                      children: [
+                                                        Positioned(
+                                                          top: 10,
+                                                          child: BonoCard(
+                                                            height: MediaQuery.of(context).size.height * 0.18,
+                                                            width: MediaQuery.of(context).size.width * 0.7,
+                                                            bono: bono,
+                                                            brand: currentBrand,
+                                                            canExpand: false,
+                                                            onlyView: true,
                                                           ),
-                                                          /*
-                                                          Padding(
-                                                            padding:EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02, left: 1.0),
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Stack(
-                                                                  alignment: Alignment.topRight,
-                                                                  children: [
-                                                                    IconButton(onPressed: () {
-                                                                      if(bonosSelected.contains(bono.id)) {
-                                                                        bonosSelected.remove(bono.id);
-                                                                      }
-                                                                      else bonosSelected.add(bono.id!);
-
-                                                                      setState(() {
-
-                                                                      });
-                                                                    }, icon: const Icon(
-                                                                      Icons.confirmation_number,
-                                                                    ),
-                                                                      color: bonosSelected.contains(bono.id)? Color(int.parse(currentColors[int.parse(bono.color!)].hexa!)) : Colors.white30,
-                                                                      ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: MediaQuery.of(context).size.width*0.02,
-                                                                ),
-                                                                Container(
-                                                                  width: MediaQuery.of(context).size.width*0.2,
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: [
-                                                                      Flexible(
-                                                                        child: Text(
-                                                                          bono.title!,
-                                                                          style: Theme.of(context).textTheme.bodyText2,
-                                                                          textAlign: TextAlign.center,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
+                                                        ),
+                                                        Positioned(
+                                                          top: -6,
+                                                          left: MediaQuery.of(context).size.width * 0.57,
+                                                          child: MaterialButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                if (bonosSelected.contains(bono.id)) {
+                                                                  bonosSelected.remove(bono.id);
+                                                                } else {
+                                                                  bonosSelected.add(bono.id!);
+                                                                }
+                                                              });
+                                                            },
+                                                            elevation: 8,
+                                                            color: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
+                                                            textColor: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
+                                                            child: bonosSelected.contains(bono.id)? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
+                                                            padding: null,
+                                                            shape: const CircleBorder(),
                                                           ),
-
-                                                           */
-                                                        );
-                                                      }
-                                                  ),
+                                                        ),
+                                                      ],
+                                                    )
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ) : Container(),
-                                    ]
-                                ),
+                                              ),
+                                              index == bonos.length-1 ? SizedBox(width: MediaQuery.of(context).size.width * 0.01) : Container(),
+                                            ],
+                                          );
+                                        }
+                                    ),
+                                  ) : Container(),
+                                ],
                               ),
+                            
                             ),
                         ],
                       )
@@ -1159,7 +983,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Icon(Icons.timer, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
+                                                  Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
                                                   Container(
                                                     padding: const EdgeInsets.only(left: 20),
                                                     width: MediaQuery.of(context).size.width*0.30,
@@ -1885,10 +1709,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       isLoading = true;
     });
 
-    if(!availableBonos) {
-      bonosSelected = [];
-    }
-    else {
+    if (bonosSelected.isNotEmpty) {
       for (int i = 0; i < eventMembers.length; i++) {
         var user = eventMembers[i];
         userBonos =  await _userDataService.getUserBonos(user.id!);
@@ -1900,9 +1721,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
             _topSnackBar.topsnackbar(context, 'No se puede crear el evento privado ya que el usuario ' + user.name! + ' no tiene ninguno de los bonos asignados al evento', AppColors.red);
             return;
           }
-          }
         }
       }
+    }
 
     // Get Random Photo if no Image Selected
     if (eventImageUrl == null || (eventImageUrl != null && isRandomImage)) {
@@ -2498,11 +2319,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     Navigator.pop(context, true);
   }
 
-  void setBonosAvailable(bool? seeBonos) {
-    availableBonos = seeBonos!;
-    setState(() {});
-  }
-
   // Firebase Calls
 
   Future<String> _addEventCall(Event event) async {
@@ -2557,7 +2373,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   void assignBonoUsers(var eventMembers, Event event) async{
     List<Bono> userBonos = [];
     Bono bono = new Bono();
-    if(availableBonos) {
+    if(bonosSelected.isNotEmpty) {
       for (int i = 0; i < eventMembers.length; i++) {
         var user = eventMembers[i];
         userBonos =  await _userDataService.getUserBonos(user.id!);

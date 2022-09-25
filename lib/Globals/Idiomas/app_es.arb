@@ -1994,25 +1994,21 @@
   "@bonosClient":{
     "bonosClient": "Bonos client text"
   },
+  "bonosDescription": "Si este evento no es gratuito, selecciona los bonos con los que te puedes unir",
+  "@bonosDescription":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosDescriptionPrivate": "Selecciona los bonos que debe tener un cliente para poder ser invitado a este evento",
+  "@bonosDescriptionPrivate":{
+    "bonosClient": "Bonos client text"
+  },
   "information": "Información",
   "@information":{
     "information": "Information text"
   },
-  "stats": "Estadísticas",
-  "@stats":{
-    "stats": "Stats text"
-  },
-  "content": "Contenido",
-  "@content":{
-    "content": "Content text"
-  },
   "opinions": "Opiniones",
   "@opinions":{
     "opinions": "opinions text"
-  },
-  "locations": "Ubicaciones",
-  "@locations":{
-    "locations": "locations text"
   },
   "relaxedFeedbackLabel": "Leve",
   "@relaxedFeedbackLabel": {

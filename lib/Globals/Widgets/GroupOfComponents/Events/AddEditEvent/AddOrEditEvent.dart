@@ -58,9 +58,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   bool isLoading = false;
   // Boolean isUpdated
   bool isUpdated = false;
-
-  //Boolean to available bonos
-  bool availableBonos = false;
   // Tab Controller
   double addEventTabValue = 0.33;
   double updateEventTabValue = 0.50;
@@ -120,7 +117,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
   final formKeyMembers = GlobalKey<FormState>();
-
+  // Event Bonos
   List<Bono> bonos = [];
   List<String> bonosSelected = [];
 
@@ -151,32 +148,23 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     twoWeek = startDate.add(const Duration(days: 14));
     oneMonth= startDate.add(const Duration(days: 28));
     doneAt = Timestamp.fromDate(startDate);
-    titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
+    titleController.text = currentBrand.name!.replaceAll(RegExp(r"\s+"), "");
     titleString = titleController.text;
     var hour = duration.split(".")[0];
     var min = duration.split(".")[1];
     durationController.text = "${hour}h ${min}min";
-    membersController.text = "${eventMaxMembers.toString()}";
+    membersController.text = eventMaxMembers.toString();
     brandTrainersSelected.add(currentUser);
-    getLocation(currentBrand.baseLocation!);
+    isRandomImage = true;
+    // Get Event Bonos
     getBonos();
-  }
-
-  Future<void> getBonos() async {
-    bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    // Get Event Location
+    getLocation(currentBrand.baseLocation!);    
   }
 
   Future<void> getEventInfo() async {
     // Get Event Info
-    event = await _eventDataService.getSingleEvent(widget.eventId!);
-    getBonos();
-    for(int i = 0; i < event.bonos.length; ++i)
-      {
-        bonosSelected.add(event.bonos[i].toString());
-      }
-    if(bonosSelected.length != 0) {
-      availableBonos = true;
-    }
+    event = await _eventDataService.getSingleEvent(widget.eventId!);    
     // Event Date
     originalStartDate = DateTime(
       int.parse(event.year!),
@@ -206,14 +194,24 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     eventImageUrl = event.imageUrl;
     isRandomImage = false;
     // Event Duration
+    duration = event.duration!.toStringAsFixed(2);
     durationController.text = StringUtils().durationToString(event.duration!);
     // Event Members
     eventMaxMembers = event.maxMembers!;
     membersController.text = "${event.maxMembers!}";
     getEventMembers(event.id!);
+    // Event Bonos
+    getBonos();
+    for(int i = 0; i < event.bonos.length; ++i) {
+      bonosSelected.add(event.bonos[i].toString());
+    }
     // Event Locations
     originalLocationId = event.locationId!;
     getLocation(event.locationId!);
+  }
+
+  Future<void> getBonos() async {
+    bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
   }
 
   Future<void> getEventMembers(String eventId) async {
@@ -328,7 +326,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     if (pickedMembers != null) {
       setState(() {
         eventMaxMembers = pickedMembers;
-        membersController.text = "${eventMaxMembers.toString()}";
+        membersController.text = eventMaxMembers.toString();
       });
     }
   }
@@ -386,7 +384,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width*0.2,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -457,7 +455,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width*0.2,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -530,7 +528,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                   }
                 }
               },
-              icon: Container(
+              icon: SizedBox(
                 width: MediaQuery.of(context).size.width*0.15,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -539,7 +537,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                   ],
                 ),
               )
-          ) : Container(
+          ) : SizedBox(
             width: MediaQuery.of(context).size.width*0.15,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -635,435 +633,264 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                         children: [
                           Form(
                               key: formKeyInfo,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.title,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.title,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.only(top: 0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: TextFormField(
-                                                  controller: titleController,
-                                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      titleString = val;
-                                                    });
-                                                  },
-                                                  style: Theme.of(context).textTheme.bodyText2,
-                                                  decoration: InputDecoration(
-                                                    hintStyle: Theme.of(context).textTheme.caption,
-                                                    hintText: AppLocalizations.of(context)!.titleHint,
-                                                    border: InputBorder.none,
-                                                    focusedBorder: InputBorder.none,
-                                                    enabledBorder: InputBorder.none,
-                                                    errorBorder: InputBorder.none,
-                                                    disabledBorder: InputBorder.none,
-                                                  ),
-                                                  enabled: true,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: const EdgeInsets.only(top: 0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.description,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.only(top: 0.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: TextFormField(
-                                                  keyboardType: TextInputType.visiblePassword,
-                                                  controller: descriptionController,
-                                                  minLines: 1,
-                                                  maxLines: 4,
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      descriptionString = val;
-                                                    });
-                                                  },
-                                                  style: Theme.of(context).textTheme.bodyText2,
-                                                  decoration: InputDecoration(
-                                                    hintStyle: Theme.of(context).textTheme.caption,
-                                                    hintText:AppLocalizations.of(context)!.descriptionError,
-                                                    border: InputBorder.none,
-                                                    focusedBorder: InputBorder.none,
-                                                    enabledBorder: InputBorder.none,
-                                                    errorBorder: InputBorder.none,
-                                                    disabledBorder: InputBorder.none,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.randomPhoto,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                              Checkbox(
-                                                checkColor: Colors.white,
-                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                value: isRandomImage,
-                                                onChanged: (bool? value) {
-                                                  setState(() {
-                                                    isRandomImage = value!;
-                                                  });
-                                                  if (imageError) {
-                                                    setState(() {
-                                                      imageError = false;
-                                                    });
-                                                  }
-                                                },
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      isRandomImage == false ? Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: GestureDetector(
-                                            onTap: () async {
-                                              var result = await showModalBottomSheet<String?>(
-                                                context: context,
-                                                isScrollControlled: true,
-                                                shape: const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.vertical(
-                                                    top: Radius.circular(20),
-                                                  ),
-                                                ),
-                                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                                builder: (BuildContext context) {
-                                                  return FractionallySizedBox(
-                                                    heightFactor: 0.85,
-                                                    child: SelectBrandImages(
-                                                      brandId: currentBrand.id!,
+                                                  Flexible(
+                                                    child: TextFormField(
+                                                      controller: titleController,
+                                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                                      onChanged: (val) {
+                                                        setState(() {
+                                                          titleString = val;
+                                                        });
+                                                      },
+                                                      style: Theme.of(context).textTheme.bodyText2,
+                                                      decoration: InputDecoration(
+                                                        hintStyle: Theme.of(context).textTheme.caption,
+                                                        hintText: AppLocalizations.of(context)!.titleHint,
+                                                        border: InputBorder.none,
+                                                        focusedBorder: InputBorder.none,
+                                                        enabledBorder: InputBorder.none,
+                                                        errorBorder: InputBorder.none,
+                                                        disabledBorder: InputBorder.none,
+                                                      ),
+                                                      enabled: true,
                                                     ),
-                                                  );
-                                                },
-                                              );
-                                              if (result != null) {
+                                                  ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.description,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: const EdgeInsets.only(top: 0.0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    child: TextFormField(
+                                                      keyboardType: TextInputType.visiblePassword,
+                                                      controller: descriptionController,
+                                                      minLines: 1,
+                                                      maxLines: 4,
+                                                      onChanged: (val) {
+                                                        setState(() {
+                                                          descriptionString = val;
+                                                        });
+                                                      },
+                                                      style: Theme.of(context).textTheme.bodyText2,
+                                                      decoration: InputDecoration(
+                                                        hintStyle: Theme.of(context).textTheme.caption,
+                                                        hintText:AppLocalizations.of(context)!.descriptionError,
+                                                        border: InputBorder.none,
+                                                        focusedBorder: InputBorder.none,
+                                                        enabledBorder: InputBorder.none,
+                                                        errorBorder: InputBorder.none,
+                                                        disabledBorder: InputBorder.none,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.location,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 15.0),
+                                            child: ListTile(
+                                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                              title: Text(
+                                                location.description!,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                              ),
+                                              trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                              onTap: () async {
                                                 setState(() {
-                                                  eventImageUrl = result;
+                                                  isLoading = true;
                                                 });
-                                              }
-                                            },
-                                            child: eventImageUrl != null ?
-                                              RectangularImage(
-                                                height: MediaQuery.of(context).size.height*0.18,
-                                                width: MediaQuery.of(context).size.height*0.9,
-                                                borderRadius: 10,
-                                                image: eventImageUrl,
-                                              ) :
-                                              DottedBorder(
-                                                borderType: BorderType.RRect,
-                                                radius: const Radius.circular(10),
-                                                dashPattern: const [10, 10],
-                                                color: imageError ? AppColors.red : AppColors.grey.withOpacity(0.5),
-                                                strokeWidth: 2,
-                                                child: Container(
-                                                    height: MediaQuery.of(context).size.height*0.15,
-                                                    width: MediaQuery.of(context).size.height*0.9,
-                                                    color: Colors.transparent,
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Icon(
-                                                                Icons.add,
-                                                                color: imageError ? AppColors.red : AppColors.grey.withOpacity(0.5),
-                                                                size: MediaQuery.of(context).size.width*0.1
-                                                            ),
-                                                            Text(
-                                                              AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.photo.toLowerCase(),
-                                                              style: Theme.of(context).textTheme.caption?.copyWith(color: imageError ? AppColors.red : AppColors.grey.withOpacity(0.5),),
-                                                              textAlign: TextAlign.left,
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                                var result = await Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute<String>(
+                                                      builder: (context) => MyLocationsSelect(
+                                                        brandId: currentBrand.id!,
+                                                      ),
                                                     )
-                                                )
+                                                );
+                                                if (result != null) {
+                                                  getLocation(result);
+                                                } else {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                }
+                                              },
                                             ),
                                           ),
-                                      ) : Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.0, bottom: MediaQuery.of(context).size.height*0.01),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: Text(
-                                                  AppLocalizations.of(context)!.randomImageDescription,
-                                                  style: Theme.of(context).textTheme.caption,
-                                                ),
+                                          bonos.isNotEmpty ? Column(
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            AppLocalizations.of(context)!.bonos,
+                                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.0),
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      Flexible(
+                                                        child: Text(
+                                                          AppLocalizations.of(context)!.bonosDescription,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                            ],
+                                          ) : Container(),
 
-                                            ),
-                                          ],
-                                        )
+                                        ],
                                       ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.location,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 15.0),
-                                        child: ListTile(
-                                          leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                                          title: Text(
-                                              location.description!,
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                          ),
-                                          trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                                          onTap: () async {
-                                            setState(() {
-                                              isLoading = true;
-                                            });
-                                            var result = await Navigator.push(
-                                                context,
-                                              CupertinoPageRoute<String>(
-                                                builder: (context) => MyLocationsSelect(
-                                                    brandId: currentBrand.id!,
-                                                  ),
-                                                )
-                                            );
-                                            if (result != null) {
-                                              getLocation(result);
-                                            } else {
-                                              setState(() {
-                                                isLoading = false;
-                                              });
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.bonos,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(width: 10,),
-                                              Checkbox(
-                                                checkColor: Colors.white,
-                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                value: availableBonos,
-                                                onChanged: setBonosAvailable,
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      availableBonos? Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          child: SingleChildScrollView(
-                                            physics: const BouncingScrollPhysics(),
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                    ),
+                                    bonos.isNotEmpty ? SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: MediaQuery.of(context).size.height*0.21,
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: const BouncingScrollPhysics(),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: bonos.length,
+                                          itemBuilder: (context, int index) {
+                                            var bono = bonos[index];
+                                            return Row(
                                               children: [
-                                                Container(
-                                                  height: MediaQuery.of(context).size.height*0.15,
-                                                  child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const NeverScrollableScrollPhysics(),
-                                                      scrollDirection: Axis.horizontal,
-                                                      itemCount: bonos.length,
-                                                      itemBuilder: (context, int index) {
-                                                        var bono = bonos[index];
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            if(bonosSelected.contains(bono.id)) {
-                                                              bonosSelected.remove(bono.id);
-                                                            }
-                                                            else bonosSelected.add(bono.id!);
-                                                            print(bonosSelected);
-                                                            setState(() {
-
-                                                            });
-                                                          },
-                                                          child: Padding(
-                                                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.03),
-                                                            child: Stack(
-                                                              children: [
-                                                                BonoCard(
-                                                                  height: MediaQuery.of(context).size.height * 0.12,
-                                                                  width: MediaQuery.of(context).size.width * 0.45,
-                                                                  bono: bono,
-                                                                  brand: currentBrand,
-                                                                  canExpand: false,
-                                                                  onlyView: true,
-                                                                ),
-                                                                Positioned(
-                                                                    top: MediaQuery.of(context).size.width*0.05,
-                                                                    left: MediaQuery.of(context).size.width*0.35,
-                                                                    bottom: MediaQuery.of(context).size.height * 0.05,
-                                                                    child: CircleAvatar(
-                                                                      backgroundColor: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
-                                                                      radius: MediaQuery.of(context).size.width*0.04,
-                                                                      child: bonosSelected.contains(bono.id)? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
-                                                                    ),
-                                                                  ),
-
-                                                                bonosSelected.contains(bono.id)? Container(
-                                                                  height: MediaQuery.of(context).size.height * 0.12,
-                                                                  width: MediaQuery.of(context).size.width * 0.45,
-                                                                  decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                      width:  1,
-                                                                      color: AppColors.mainColor,
-                                                                    ),
-                                                                  ),
-                                                                ) : Container(
-                                                                  height: MediaQuery.of(context).size.height * 0.12,
-                                                                  width: MediaQuery.of(context).size.width * 0.45,
-                                                                  decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                      width:  0,
-                                                                      color: Theme.of(context).backgroundColor,
-                                                                    ),
-                                                                  ),
-                                                                ),
-
-
-                                                              ],
+                                                index == 0 ? SizedBox(width: MediaQuery.of(context).size.width * 0.05) : Container(),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(right: 16.0),
+                                                  child: Container(
+                                                      width: MediaQuery.of(context).size.width * 0.75,
+                                                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
+                                                      child: Stack(
+                                                        alignment: Alignment.bottomLeft,
+                                                        children: [
+                                                          Positioned(
+                                                            top: 10,
+                                                            child: BonoCard(
+                                                              height: MediaQuery.of(context).size.height * 0.18,
+                                                              width: MediaQuery.of(context).size.width * 0.7,
+                                                              bono: bono,
+                                                              brand: currentBrand,
+                                                              canExpand: false,
+                                                              onlyView: true,
                                                             ),
                                                           ),
-                                                          /*
-                                                          Padding(
-                                                            padding:EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02, left: 1.0),
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Stack(
-                                                                  alignment: Alignment.topRight,
-                                                                  children: [
-                                                                    IconButton(onPressed: () {
-                                                                      if(bonosSelected.contains(bono.id)) {
-                                                                        bonosSelected.remove(bono.id);
-                                                                      }
-                                                                      else bonosSelected.add(bono.id!);
-
-                                                                      setState(() {
-
-                                                                      });
-                                                                    }, icon: const Icon(
-                                                                      Icons.confirmation_number,
-                                                                    ),
-                                                                      color: bonosSelected.contains(bono.id)? Color(int.parse(currentColors[int.parse(bono.color!)].hexa!)) : Colors.white30,
-                                                                      ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: MediaQuery.of(context).size.width*0.02,
-                                                                ),
-                                                                Container(
-                                                                  width: MediaQuery.of(context).size.width*0.2,
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: [
-                                                                      Flexible(
-                                                                        child: Text(
-                                                                          bono.title!,
-                                                                          style: Theme.of(context).textTheme.bodyText2,
-                                                                          textAlign: TextAlign.center,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                          Positioned(
+                                                            top: -6,
+                                                            left: MediaQuery.of(context).size.width * 0.57,
+                                                            child: MaterialButton(
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  if (bonosSelected.contains(bono.id)) {
+                                                                    bonosSelected.remove(bono.id);
+                                                                  } else {
+                                                                    bonosSelected.add(bono.id!);
+                                                                  }
+                                                                });
+                                                              },
+                                                              elevation: 8,
+                                                              color: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
+                                                              textColor: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
+                                                              child: bonosSelected.contains(bono.id)? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
+                                                              padding: null,
+                                                              shape: const CircleBorder(),
                                                             ),
                                                           ),
-
-                                                           */
-                                                        );
-                                                      }
+                                                        ],
+                                                      )
                                                   ),
                                                 ),
+                                                index == bonos.length-1 ? SizedBox(width: MediaQuery.of(context).size.width * 0.01) : Container(),
                                               ],
-                                            ),
-                                          ),
-                                        ),
-                                      ) : Container(),
-                                    ]
-                                ),
+                                            );
+                                          }
+                                      ),
+                                    ) : Container(),
+                                  ]
                               ),
                             ),
                         ],
@@ -1463,7 +1290,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
-                                        child: Container(
+                                        child: SizedBox(
                                           width: MediaQuery.of(context).size.width,
                                           child: SingleChildScrollView(
                                             physics: const BouncingScrollPhysics(),
@@ -1472,7 +1299,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
                                                 buildAddUserButton(true),
-                                                Container(
+                                                SizedBox(
                                                   height: MediaQuery.of(context).size.height*0.15,
                                                   child: ListView.builder(
                                                       shrinkWrap: true,
@@ -1517,7 +1344,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                                 SizedBox(
                                                                   height: MediaQuery.of(context).size.width*0.02,
                                                                 ),
-                                                                Container(
+                                                                SizedBox(
                                                                   width: MediaQuery.of(context).size.width*0.2,
                                                                   child: Row(
                                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1657,7 +1484,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
-                                        child: Container(
+                                        child: SizedBox(
                                           width: MediaQuery.of(context).size.width,
                                           child: SingleChildScrollView(
                                             physics: const BouncingScrollPhysics(),
@@ -1666,7 +1493,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
                                                 buildAddUserButton(false),
-                                                Container(
+                                                SizedBox(
                                                   height: MediaQuery.of(context).size.height*0.15,
                                                   child: ListView.builder(
                                                       shrinkWrap: true,
@@ -1711,7 +1538,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                                 SizedBox(
                                                                   height: MediaQuery.of(context).size.width*0.02,
                                                                 ),
-                                                                Container(
+                                                                SizedBox(
                                                                   width: MediaQuery.of(context).size.width*0.2,
                                                                   child: Row(
                                                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1727,6 +1554,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                                 /*
                                                                     Container(
                                                                       width: MediaQuery.of(context).size.width*0.2,
+                                                                      width: MediaQuery.of(context).size.widtdurh*0.2,
                                                                       child: Row(
                                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                                         children: [
@@ -1793,7 +1621,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             children: [
               _selectedIndex != 0 ? Padding(
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
-                child: Container(
+                child: SizedBox(
                   height: 50,
                   child: FloatingActionButton.extended(
                     heroTag: "4",
@@ -1826,7 +1654,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
-                child: Container(
+                child: SizedBox(
                   height: 50,
                   child: FloatingActionButton.extended(
                     heroTag: "5",
@@ -1973,9 +1801,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     setState(() {
       isLoading = true;
     });
+    /*
     if(!availableBonos) {
       bonosSelected = [];
     }
+     */
     // Get Random Photo if no Image Selected
     if (eventImageUrl == null || (eventImageUrl != null && isRandomImage)) {
       eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -2226,10 +2056,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     print(bonosSelected);
     setState(() {
       isLoading = true;
-    });
+    });/*
     if(!availableBonos) {
       bonosSelected = [];
     }
+     */
     // Get Random Photo if no Image Selected
     if (isRandomImage) {
       eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -2570,11 +2401,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     }
     // Pop to Get Back
     Navigator.pop(context, true);
-  }
-
-  void setBonosAvailable(bool? seeBonos) {
-    availableBonos = seeBonos!;
-    setState(() {});
   }
 
   // Firebase Calls

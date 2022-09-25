@@ -458,6 +458,8 @@
   "yourBonos": "Els teus vals",
   "solicitudesBonos": "Sol·licituds",
   "bonosClient": "Bonos de clients",
+  "bonosDescription": "Si aquest esdeveniment no és gratuït, selecciona els vals amb els quals et pots unir",
+  "bonosDescriptionPrivate": "Selecciona els vals que ha de tenir un client per a poder ser convidat a aquest esdeveniment",
   "information": "Informació",
   "stats": "Estadístiques",
   "opinions": "Opinions",
