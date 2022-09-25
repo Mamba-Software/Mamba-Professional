@@ -2361,5 +2361,21 @@
   "createFistBono": "Crea tu primer bono",
   "@createFistBono": {
     "description": "trainsPerWekk Text"
+  },
+  "userBuysBonoTrainer": "{user} ha comprado el bono {bono}",
+  "@userBuysBonoTrainer": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      },
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "userBuysBonoTrainerSubtitle": "Puedes encontrar todos los detalles de su progreso en el perfil del usuario",
+  "@userBuysBonoTrainerSubtitle": {
+    "description": "userJoinsBrandUser message"
   }
 }

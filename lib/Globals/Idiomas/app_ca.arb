@@ -528,5 +528,7 @@
   "acceptBonoDesc": "Verifica la informació abans de confirmar la compra del val",
   "paymentIndication": " ha indicat que ha pagat usant: ",
   "noBonosCreated": "No s'ha creat cap bo",
-  "createFistBono": "Crea el teu primer val"
+  "createFistBono": "Crea el teu primer val",
+  "userBuysBonoTrainer": "{user} ha comprat el val {bono}",
+  "userBuysBonoTrainerSubtitle": "Pots trobar tots els detalls del seu progrés en el perfil de l'usuari"
 }

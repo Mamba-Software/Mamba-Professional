@@ -1,6 +1,7 @@
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
@@ -153,4 +154,21 @@ class NotificationService {
       }
     }
   }
+
+  Future<void> userBuysBono(String userId, String brandId, Bono bono) async {
+    // Notification to the User Joining
+    var parameters = ["null", brandId, "null", "null", bono.id];
+    _userDataService.sendNotificationToUser(userId, "UserBuysBono_User", parameters);
+    // Notification to All Brand Trainers
+    parameters = [userId, "null", "null", "null", bono.id,];
+    List<Usuario> listUsers = await _brandDataService.getBrandTrainers(brandId);
+    for (var i=0; i<listUsers.length; i++) {
+      Usuario trainer = listUsers[i];
+      if (trainer.id! != userId) {
+        // New Notification
+        _userDataService.sendNotificationToUser(trainer.id!, "UserBuysBono_Trainer", parameters);
+      }
+    }
+  }
+
 }

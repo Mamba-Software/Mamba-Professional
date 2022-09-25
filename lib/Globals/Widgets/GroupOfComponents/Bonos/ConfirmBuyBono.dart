@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -34,6 +35,8 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
   // Brand Service
   final _brandDataService = BrandDataService();
   final _paymentDataService = PaymentDataService();
+  // Notification Services
+  final NotificationService _notificationService = NotificationService();
   // Booleans
   bool isLoading = false;
   bool isFirstBuild = true;
@@ -424,6 +427,8 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         purchase.price = double.parse(widget.bonoRequest.price!);
                         purchase.userId = widget.bonoRequest.userId!;
                         purchase.paymentMethod = paymentMethod;
+                        // Notifications Service
+                        _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, widget.bono);
                         // Build Purchase Object
                         await _paymentDataService.addPurchaseToPayments(purchase);
                         await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest.id!);

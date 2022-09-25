@@ -857,6 +857,42 @@ class _NotificationsState extends State<Notifications> {
           },
         );
       }
+      case "UserBuysBono_Trainer": {
+        return ListTile(
+          leading: CircularImage(
+            size: MediaQuery.of(context).size.width*0.15,
+            image: user.imageUrl!,
+            color: AppColors.grey,
+            borderWidth: 0.5,
+          ),
+          title: Text(
+            AppLocalizations.of(context)!.userBuysBonoTrainer(user.name!, bono.title!.toUpperCase()),
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: notification.isRead! ? FontWeight.normal : FontWeight.bold),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                AppLocalizations.of(context)!.userBuysBonoTrainerSubtitle,
+                style: Theme.of(context).textTheme.caption,
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              Text(
+                time.toUpperCase(),
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
+              ),
+            ],
+          ),
+          onTap: () async {
+            await _userDataService.markNotificationAsRead(currentUser.id!, notification.id!);
+            setState(() {
+              notificationsList[index].isRead = true;
+            });
+            returnActionOnTap(index,notification);
+          },
+        );
+      }
       default: {
         return Container();
       }
@@ -1002,6 +1038,20 @@ class _NotificationsState extends State<Notifications> {
               ),
             )
         );
+        break;
+      }
+      case "UserBuysBono_Trainer": {
+        if (user.id != null) {
+          Navigator.push(
+              context,
+              CupertinoPageRoute<void>(
+                  builder: (context) => ProfileViewUser(
+                    userID: user.id!,
+                    viewOnly: false,
+                  )
+              )
+          );
+        }
         break;
       }
       default: {
