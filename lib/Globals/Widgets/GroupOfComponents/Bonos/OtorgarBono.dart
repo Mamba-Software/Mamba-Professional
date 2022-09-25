@@ -79,10 +79,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
 
   bool noSessions = false;
 
+  // Page View Controller
+  int _numPages = 3;
+  int? _currentPage;
+  PageController? _pageController;
 
   @override
   void initState() {
-    if(widget.edit != null && widget.edit == true) {
+    if (widget.edit != null && widget.edit == true) {
       editBono = true;
     }
     user = widget.user;
@@ -91,31 +95,49 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     super.initState();
   }
 
+  List<Widget> _buildPageIndicator() {
+    List<Widget> list = [];
+    for (int i = 0; i < _numPages; i++) {
+      list.add(i == _currentPage ? _indicator(true) : _indicator(false));
+    }
+    return list;
+  }
+
+  Widget _indicator(bool isActive) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      height: 4.0,
+      width: isActive ? 12.0 : 6.0,
+      decoration: BoxDecoration(
+        color: isActive ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+      ),
+    );
+  }
+
   Future<void> getBonos() async {
-    if(!editBono) {
-      bonos =
-      await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    if (!editBono) {
+      bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+      _numPages = bonos.length;
       userBonos = await _userDataService.getUserBonos(user.id!);
       Bono bonoDelete;
       for (int i = 0; i < userBonos.length; ++i) {
-        bonoDelete =
-            bonos.firstWhere((element) => element.id == userBonos[i].id);
+        bonoDelete = bonos.firstWhere((element) => element.id == userBonos[i].id);
         if (bonoDelete.id != '') {
           bonos.remove(bonoDelete);
         }
       }
-      if (bonos.length > 0) {
+      if (bonos.isNotEmpty) {
         bonoSelected = bonos[0];
+        _currentPage = 0;
         isBonoSelected = true;
       }
       if (isBonoSelected == false) {
-        _topSnackBar.topsnackbar(
-            context, 'Este usuario ya tiene todos los bonos de tu marca',
-            AppColors.red);
+        _topSnackBar.topsnackbar(context, 'Este usuario ya tiene todos los bonos de tu marca', AppColors.red);
         Navigator.of(context).pop();
       }
-    }
-    else {
+    } else {
       bonos.add(widget.bono!);
       bonoSelected = bonos[0];
       isBonoSelected = true;
@@ -271,6 +293,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     ),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.035),
+
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.05,
                       width: MediaQuery.of(context).size.width * 0.84,
@@ -287,97 +310,150 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    isBonoSelected
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              bonos.isNotEmpty && indexBono != 0
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        indexBono = indexBono - 1;
-                                        bonoSelected = bonos[indexBono];
-                                        setConditionsBono(bonoSelected);
-                                        setState(() {
-
-                                        });
-                                      },
-                                      child: Icon(
-                                        Icons.arrow_back_ios,
-                                        color: AppColors.white,
-                                        size:
-                                            MediaQuery.of(context).size.width *
-                                                0.06,
-                                      ))
-                                  : Icon(
-                                      Icons.arrow_back_ios,
-                                      color: Theme.of(context).backgroundColor,
-                                      size: MediaQuery.of(context).size.width *
-                                          0.06,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _buildPageIndicator(),
+                    ),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height*0.01
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height*0.22,
+                        minHeight: MediaQuery.of(context).size.height*0.22,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: PageView.builder(
+                                physics: const BouncingScrollPhysics(),
+                                controller: _pageController,
+                                onPageChanged: (int page) {
+                                  setState(() {
+                                    bonoSelected = bonos[page];
+                                    _currentPage = page;
+                                  });
+                                },
+                                itemCount: bonos.length,
+                                itemBuilder: (context, index) {
+                                  Bono bono = bonos[index];
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
+                                    child:  BonoCard(
+                                        height: MediaQuery.of(context).size.height * 0.22,
+                                        width: MediaQuery.of(context).size.width * 0.84,
+                                        bono: bono,
+                                        brand: widget.brand,
+                                        canExpand: true,
+                                        onlyView: true
                                     ),
-                              BonoCard(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.22,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.84,
-                                  bono: bonoSelected,
-                                  brand: widget.brand,
-                                  canExpand: true,
-                                  onlyView: true),
-                              bonos.isNotEmpty && indexBono != bonos.length - 1
-                                  ? GestureDetector(
-                                  onTap: () {
-                                    indexBono = indexBono + 1;
-                                    bonoSelected = bonos[indexBono];
-                                    setConditionsBono(bonoSelected);
-                                    setState(() {
-
-                                    });
-                                  },
-                                  child: Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: AppColors.white,
-                                    size:
-                                    MediaQuery.of(context).size.width *
-                                        0.06,
-                                  ))
-                                  : Icon(
-                                Icons.arrow_forward_ios,
-                                color: Theme.of(context).backgroundColor,
-                                size: MediaQuery.of(context).size.width *
-                                    0.06,
-                              ),
-                            ],
-                          )
-                        : Container(),
+                                  );
+                                }
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    !seeConditions? Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal:
-                                  MediaQuery.of(context).size.width * 0.06),
-                          child: TextButton(
+
+                    Padding(
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.06, right: MediaQuery.of(context).size.width * 0.06),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
                             child: Text(
                               "Personalizar este bono solo para ${widget.user.firstName!}",
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
                                   ?.copyWith(
-                                      decoration: TextDecoration.underline),
+                                  decoration: TextDecoration.underline),
                             ),
                             style: const ButtonStyle(),
                             onPressed: () async {
-                              seeConditions = !seeConditions;
                               setState(() {
-
+                                seeConditions = !seeConditions;
                               });
                             },
                           ),
-                        ),
-                      ],
-                    ) : conditionsPage(),
+                          IconButton(
+                            alignment: Alignment.centerRight,
+                            icon: Icon(Icons.more_horiz, size: MediaQuery.of(context).size.width*0.06, color: AppColors.grey),
+                            onPressed: () {
+                              setState(() {
+                                seeConditions = !seeConditions;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    seeConditions ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).backgroundColor,
+                              borderRadius: const BorderRadius.all(Radius.circular(10))
+                            ),
+                            child: optionConditionsWrite(
+                              TextInputType.text,
+                              AppLocalizations.of(context)!.expiresAt + "...",
+                              AppLocalizations.of(context)!.expiresAtDesc,
+                              AppLocalizations.of(context)!.titleHint,
+                              AppLocalizations.of(context)!.titleError,
+                              true,
+                              titleController,
+                              'exp',
+                              false
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                          Container(
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).backgroundColor,
+                              borderRadius: const BorderRadius.all(Radius.circular(10))
+                            ),
+                            child: optionConditionsWrite(
+                                TextInputType.number,
+                                AppLocalizations.of(context)!.freeCancel,
+                                AppLocalizations.of(context)!.freeCancelDesc,
+                                AppLocalizations.of(context)!.titleHint,
+                                AppLocalizations.of(context)!.titleError,
+                                true,
+                                freeCancellController,
+                                'ses',
+                                false
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                          Container(
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).backgroundColor,
+                                borderRadius: const BorderRadius.all(Radius.circular(10))
+                            ),
+                            child: optionConditionsWrite(
+                                TextInputType.number,
+                                AppLocalizations.of(context)!.trainsPerWeek,
+                                AppLocalizations.of(context)!.trainsPerWeekDesc,
+                                AppLocalizations.of(context)!.titleHint,
+                                AppLocalizations.of(context)!.titleError,
+                                true,
+                                weeklyController,
+                                'maxw',
+                                false
+                            ),
+                          ),
+                        ],
+                      )
+                    ) : Container(),
 
                     !editBono? SizedBox(height: MediaQuery.of(context).size.height * 0.02) : SizedBox(height: MediaQuery.of(context).size.height * 0.14),
                     !editBono? SizedBox(
@@ -773,20 +849,22 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         Form(
           child: Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.05),
+                horizontal: MediaQuery.of(context).size.width * 0.08),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   optionConditionsWrite(
-                      TextInputType.text,
-                      AppLocalizations.of(context)!.expiresAt + "...",
-                      AppLocalizations.of(context)!.expiresAtDesc,
-                      AppLocalizations.of(context)!.titleHint,
-                      AppLocalizations.of(context)!.titleError,
-                      true,
-                      titleController,
-                      'exp'),
+                    TextInputType.text,
+                    AppLocalizations.of(context)!.expiresAt + "...",
+                    AppLocalizations.of(context)!.expiresAtDesc,
+                    AppLocalizations.of(context)!.titleHint,
+                    AppLocalizations.of(context)!.titleError,
+                    true,
+                    titleController,
+                    'exp',
+                     true
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                   optionConditionsWrite(
                       TextInputType.number,
@@ -796,7 +874,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       AppLocalizations.of(context)!.titleError,
                       true,
                       freeCancellController,
-                      'ses'),
+                      'ses',
+                      true
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                   optionConditionsWrite(
                       TextInputType.number,
@@ -806,7 +886,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       AppLocalizations.of(context)!.titleError,
                       true,
                       weeklyController,
-                      'maxw'),
+                      'maxw',
+                      true
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 ]),
           ),
@@ -823,12 +905,13 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       var errorText,
       bool editable,
       var controller,
-      var variable) {
+      var variable,
+      bool wantPadding) {
     return Column(
       children: [
         Padding(
             padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+            EdgeInsets.only(top: wantPadding ? MediaQuery.of(context).size.height * 0.03 : 0),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -870,8 +953,10 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 SizedBox(width: MediaQuery.of(context).size.width * 0.02),
                 daysSelectoWidget(2, '60', false),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                /*
                 daysSelectoWidget(3, '90', false),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                 */
               ],
             ))
             : variable == 'maxw' || variable == 'ses'
@@ -1275,7 +1360,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       child:
       customized == false? Container(
         height: MediaQuery.of(context).size.width * 0.15,
-        width: MediaQuery.of(context).size.width * 0.2,
+        width: MediaQuery.of(context).size.width * 0.18,
         decoration: BoxDecoration(
             border: Border.all(
               width: isSelectedDays[index] == true
