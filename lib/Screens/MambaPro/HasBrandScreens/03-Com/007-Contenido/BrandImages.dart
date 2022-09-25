@@ -13,7 +13,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/Rectangula
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 
 class BrandImages extends StatefulWidget {
   String brandId;
@@ -88,85 +87,6 @@ class _BrandImagesState extends State<BrandImages> {
       return aDate.compareTo(bDate);
     });
     _imagesUploaded = List.from(_imagesUploaded.reversed);
-    /*
-    imageSliders = _imagesUploaded
-        .map((item) => Container(
-          margin: const EdgeInsets.all(5.0),
-          child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-              child: Stack(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute<void>(
-                          builder: (context) => FullscreenSliderDemo(
-                            initialImage: _imagesUploaded.indexOf(item),
-                            images: _imagesUploaded,
-                          ),
-                        )
-                      );
-                    },
-                    child: Image.network(item.url!, fit: BoxFit.fill, width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height*0.4,)
-                  ),
-                  Positioned(
-                    bottom: -15,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            Color.fromARGB(200, 0, 0, 0),
-                            Color.fromARGB(0, 0, 0, 0)
-                          ],
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('No. ${_imagesUploaded.indexOf(item) + 1} de ${_imagesUploaded.length.toString()}',
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                          ),
-                          IconButton(
-                            onPressed: () async {
-                              var result = await showDialog(
-                                  context: context,
-                                  builder: (_) {
-                                    return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myImagesDeleteDescription);
-                                  }
-                              );
-                              if (result) {
-                                setState(() {
-                                  isLoading = true;
-                                });
-                                await Future.delayed(const Duration(milliseconds: 1000), () async {
-                                  await _brandDataService.deleteBrandContentPictures(widget.brandId, item.id!);
-                                });
-                                getBrandContentImages();
-                              }
-                            },
-                            icon: Icon(
-                              Icons.delete_outline,
-                              color: AppColors.red,
-                              size: MediaQuery.of(context).size.width*0.05
-                            ),
-                            alignment: Alignment.centerRight,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-        ))
-        .toList();
-     */
     setState(() {
       isLoading = false;
     });

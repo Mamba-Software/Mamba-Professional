@@ -618,17 +618,31 @@ class BrandFirebaseCalls {
         .delete();
     // Get a new Image of the Brand
     String newImageUrl = await getRandomBrandPhoto(brandID);
-    // Get all places where we can find the picture
+    // Get all places where we can find the picture in Events
     QuerySnapshot querySnapshot = await _firestore
         .collection(brands)
         .doc(brandID)
         .collection("Events")
         .where("imageUrl", isEqualTo: imageUrl)
         .get();
-    // Update all places where we can find the picture
+    // Update all places where we can find the picture in Events
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       Event event = Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
       await _firestore.collection(events).doc(event.id).update({
+        "imageUrl": newImageUrl,
+      });
+    }
+    // Get all places where we can find the picture in Events
+    QuerySnapshot querySnapshotBonos = await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Bonos")
+        .where("imageUrl", isEqualTo: imageUrl)
+        .get();
+    // Update all places where we can find the picture in Events
+    for (int i = 0; i < querySnapshotBonos.docs.length; i++) {
+      Bono bono = Bono.fromObjectAllData(querySnapshotBonos.docs[i].id, querySnapshotBonos.docs[i]);
+      await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bono.id!).update({
         "imageUrl": newImageUrl,
       });
     }
