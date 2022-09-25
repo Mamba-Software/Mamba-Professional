@@ -205,9 +205,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     getEventMembers(event.id!);
     // Event Bonos
     getBonos();
+    /*
     for(int i = 0; i < event.bonos.length; ++i) {
       bonosSelected.add(event.bonos[i].toString());
-    }
+     */
     // Event Locations
     originalLocationId = event.locationId!;
     getLocation(event.locationId!);
@@ -1753,7 +1754,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
-        bonos: bonosSelected,
       );
       // Add Event
       String eventId = await _addEventCall(event);
@@ -1784,7 +1784,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
-        bonos: bonosSelected,
       );
       // Add Event
       String eventId = await _addEventCall(event);
@@ -1827,7 +1826,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
-              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1872,7 +1870,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
-              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1917,7 +1914,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
-              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -2001,7 +1997,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       numClients: brandClientsSelected.length,
       numTrainers: brandTrainersSelected.length,
       maxMembers: eventMaxMembers,
-      bonos: bonosSelected,
     );
     // Event Members
     List<Usuario> eventTrainers = List.from(brandTrainersSelected);
@@ -2216,7 +2211,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
-        bonos: bonosSelected,
       );
       // Update Event
       await _eventDataService.updateEvent(updatedEvent);

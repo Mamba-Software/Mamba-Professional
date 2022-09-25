@@ -351,8 +351,7 @@ class BrandFirebaseCalls {
   }
 
   Future<Bono> getBonoInfo(String brandId, String bonoId) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-    await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bonoId).get();
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bonoId).get();
     return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 

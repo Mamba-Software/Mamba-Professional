@@ -104,7 +104,7 @@ class FirebaseDatabaseService {
       if (error) return false;
       if (currentUser.imageUrl !=
           "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
-        await this.deleteUserPhoto(user.uid);
+        await deleteUserPhoto(user.uid);
       }
       // Delete Notifications
       await _firestore.collection(users).doc(user.uid).collection(
@@ -479,7 +479,7 @@ class FirebaseDatabaseService {
   }
 
   Future<void> addUserToBrand(String userId, String brandId, int role) async {
-    Usuario user = await this.getUserDetails(userId);
+    Usuario user = await getUserDetails(userId);
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -613,13 +613,13 @@ class FirebaseDatabaseService {
 
   Future<void> deleteBrand(String brandId) async {
     // Delete All Events from Brand
-    await this.deleteBrandEvents(brandId);
+    await deleteBrandEvents(brandId);
     // Delete All Locations from Brand
-    await this.deleteBrandLocations(brandId);
+    await deleteBrandLocations(brandId);
     // Delete All Users from Brand
-    await this.deleteBrandUsers(brandId);
+    await deleteBrandUsers(brandId);
     // Delete Brand Photo
-    await this.deleteBrandPhoto(brandId);
+    await deleteBrandPhoto(brandId);
     // Delete Brand
     await _firestore.collection(brands).doc(brandId).delete();
   }
@@ -898,6 +898,23 @@ class FirebaseDatabaseService {
         );
       }
       return brands;
+    }
+
+    Future<List<Bono>> getEventBonos(String eventId, String brandId) async {
+      List<Bono> bonos = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Bonos")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String bonoId = querySnapshot.docs[i].get("bonoId");
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bonoId).get();
+        bonos.add(
+          Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot)
+        );
+      }
+      return bonos;
     }
 
     Future<Location> getEventLocation(String eventId) async {
@@ -1189,7 +1206,6 @@ class FirebaseDatabaseService {
           "numClients": event.numClients,
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
-          "bonos": event.bonos,
         });
         // If Event is Private
         // Add to Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1219,7 +1235,6 @@ class FirebaseDatabaseService {
             "numClients": event.numClients,
             "numTrainers": event.numTrainers,
             "maxMembers": event.maxMembers,
-            "bonos": event.bonos,
           });
         }
         // Set the Brand Document in "\Events\Brands"
@@ -1231,7 +1246,7 @@ class FirebaseDatabaseService {
               "logoUrl": currentBrand.logoUrl,
             });
         // Set the Location Document in "\Events\Location"
-        Location location = await this.getSingleLocation(event.locationId!);
+        Location location = await getSingleLocation(event.locationId!);
         await _firestore.collection(events).doc(eventID)
             .collection("Locations")
             .doc(event.locationId!)
@@ -1261,7 +1276,6 @@ class FirebaseDatabaseService {
               "numTrainers": event.numTrainers,
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
-              "bonos": event.bonos,
             });
         // If Event is Private
         // Add to Brands/Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1287,7 +1301,6 @@ class FirebaseDatabaseService {
               "numTrainers": event.numTrainers,
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
-              "bonos": event.bonos,
             });
         }
         return eventID;
@@ -1687,16 +1700,16 @@ class FirebaseDatabaseService {
         bool isTrainer) async {
       List<Event> userEvents = [];
       if (isTrainer) {
-        userEvents = await this.getAllTrainerEventsFromBrand(uid, brandId);
+        userEvents = await getAllTrainerEventsFromBrand(uid, brandId);
         for (var i = 0; i < userEvents.length; i++) {
           Event event = userEvents[i];
-          await this.leaveEvent(event.id!, uid, true);
+          await leaveEvent(event.id!, uid, true);
         }
       } else {
-        userEvents = await this.getAllClientEventsFromBrand(uid, brandId);
+        userEvents = await getAllClientEventsFromBrand(uid, brandId);
         for (var i = 0; i < userEvents.length; i++) {
           Event event = userEvents[i];
-          await this.leaveEvent(event.id!, uid, false);
+          await leaveEvent(event.id!, uid, false);
         }
       }
     }
@@ -1756,7 +1769,7 @@ class FirebaseDatabaseService {
     // User Joins Event
     Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
       try {
-        Usuario user = await this.getUserDetails(uid);
+        Usuario user = await getUserDetails(uid);
         Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
         if (invitedDirectly) {
           await _firestore
@@ -1829,7 +1842,7 @@ class FirebaseDatabaseService {
     // User Joins Event
     Future<bool> deleteUserFromUpcomingEvents(String uid, bool isTrainer) async {
       try {
-        List<Event> upcomingEvents = await this.getUserEventsUpcoming(uid);
+        List<Event> upcomingEvents = await getUserEventsUpcoming(uid);
         if (isTrainer) {
           for (int i = 0; i < upcomingEvents.length; i++) {
             Event evt = upcomingEvents[i];
@@ -1844,7 +1857,7 @@ class FirebaseDatabaseService {
                 print(err);
               });
             } else {
-              this.deleteEvent(evt.id!);
+              deleteEvent(evt.id!);
             }
           }
         } else {
@@ -1870,12 +1883,12 @@ class FirebaseDatabaseService {
 
     // Join an Event
     Future<bool> joinEvent(String eid, String uid) async {
-      Event event = await this.getSingleEvent(eid);
+      Event event = await getSingleEvent(eid);
       if (event.joinedMembers.length < event.maxMembers) {
         List<String> eventUsers = [];
-        eventUsers = await this.getEventClients(eid);
+        eventUsers = await getEventClients(eid);
         eventUsers.add(uid);
-        await this.updateEventClients(eid, eventUsers);
+        await updateEventClients(eid, eventUsers);
         return true;
       } else {
         return false;
@@ -1885,7 +1898,7 @@ class FirebaseDatabaseService {
     // Leave an Event
     Future<bool> leaveEvent(String eid, String uid, bool isTrainer) async {
       bool isFound = false;
-      Event event = await this.getSingleEvent(eid);
+      Event event = await getSingleEvent(eid);
       DateTime now = DateTime.now();
       var startDate = DateTime(
         int.parse(event.year!),
@@ -1896,7 +1909,7 @@ class FirebaseDatabaseService {
       );
       List<String> eventUsers = [];
       if (isTrainer) {
-        eventUsers = await this.getEventTrainers(eid);
+        eventUsers = await getEventTrainers(eid);
         for (var i = 0; i < eventUsers.length; i++) {
           String trainerid = eventUsers[i];
           if (trainerid == uid) {
@@ -1909,10 +1922,10 @@ class FirebaseDatabaseService {
             break;
           }
         }
-        if (isFound) await this.updateEventTrainers(eid, eventUsers);
+        if (isFound) await updateEventTrainers(eid, eventUsers);
         return isFound;
       } else {
-        eventUsers = await this.getEventClients(eid);
+        eventUsers = await getEventClients(eid);
         for (var i = 0; i < eventUsers.length; i++) {
           String trainerid = eventUsers[i];
           if (trainerid == uid) {
@@ -1925,7 +1938,7 @@ class FirebaseDatabaseService {
             break;
           }
         }
-        if (isFound) await this.updateEventClients(eid, eventUsers);
+        if (isFound) await updateEventClients(eid, eventUsers);
         return isFound;
       }
     }
@@ -1949,7 +1962,6 @@ class FirebaseDatabaseService {
           "numClients": event.numClients,
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
-          "bonos": event.bonos,
         });
         // If Event is Private
         // Update to Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1975,7 +1987,6 @@ class FirebaseDatabaseService {
             "numClients": event.numClients,
             "numTrainers": event.numTrainers,
             "maxMembers": event.maxMembers,
-            "bonos": event.bonos,
           });
         }
       } catch (e) {
@@ -2042,7 +2053,7 @@ class FirebaseDatabaseService {
             .doc(previousLocation)
             .delete();
         // Add New Location
-        Location location = await this.getSingleLocation(locationId);
+        Location location = await getSingleLocation(locationId);
         await _firestore
             .collection(events)
             .doc(eventId)
@@ -2053,6 +2064,18 @@ class FirebaseDatabaseService {
               "longitude": location.longitude,
               "latitude": location.latitude,
             });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
+    Future<void> updateEventBonos(String eventId, List<String> bonoIds) async {
+      try {
+        // Delete Previous Event Bonos
+        await deleteEventBonos(eventId);
+        // Add New Event Bonos
+        await addEventBonos(eventId,bonoIds);
       } catch (e) {
         print(e.toString());
       }
@@ -2118,6 +2141,52 @@ class FirebaseDatabaseService {
         }).catchError((err) {
           print(err);
         });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+    //Add Event to purchase
+  Future<void> addEventBonos(String eventId, List<String> bonoIds) async {
+    try {
+      for (var i=0; i < bonoIds.length; i++) {
+        String id = bonoIds[i];
+        await _firestore
+        .collection(events)
+        .doc(eventId)
+        .collection("Bonos")
+        .doc(id)
+        .set({
+          "bonoId": id,
+        }).catchError((err) {
+          print(err);
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+    //Add Event to purchase
+  Future<void> deleteEventBonos(String eventId) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+      .collection(events)
+      .doc(eventId)
+      .collection("Bonos")
+      .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String bonoiId = querySnapshot.docs[i].id;
+        await _firestore
+        .collection(events)
+        .doc(eventId)
+        .collection("Bonos")
+        .doc(bonoiId)
+        .delete()
+        .catchError((err) {
+          print(err);
+        });
+      }
     } catch (e) {
       print(e.toString());
     }
@@ -2231,7 +2300,7 @@ class FirebaseDatabaseService {
                 .update({
               "locationId": baseLocation,
             });
-            await this.updateEventLocation(event.id!, baseLocation, locationId);
+            await updateEventLocation(event.id!, baseLocation, locationId);
           }
         }
         // Delete Location
@@ -2253,7 +2322,7 @@ class FirebaseDatabaseService {
               .collection("Locations")
               .get();
           for (int i = 0; i < querySnapshot.docs.length; i++) {
-            await this.deleteLocation(querySnapshot.docs[i].id, null);
+            await deleteLocation(querySnapshot.docs[i].id, null);
           }
         } catch (e) {
           print(e.toString());
@@ -2552,9 +2621,9 @@ class FirebaseDatabaseService {
         role = 5;
       }
       // New Database
-      this.addUserToBrand(request.userId!, request.brandId!, role);
+      addUserToBrand(request.userId!, request.brandId!, role);
       // Delete the Request
-      this.deleteRequestToBrand(request);
+      deleteRequestToBrand(request);
     }
 
     // Has Pending Request To Brand
@@ -2774,7 +2843,7 @@ class FirebaseDatabaseService {
           .where("isRead", isEqualTo: false)
           .get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        await this.markNotificationAsRead(userId, querySnapshot.docs[i].id,);
+        await markNotificationAsRead(userId, querySnapshot.docs[i].id,);
       }
     }
 

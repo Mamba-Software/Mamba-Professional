@@ -118,8 +118,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   final formKeyTime = GlobalKey<FormState>();
   final formKeyMembers = GlobalKey<FormState>();
   // Event Bonos
-  List<Bono> bonos = [];
-  List<String> bonosSelected = [];
+  List<Bono> allBonos = [];
+  List<Bono> eventBonos = [];
+  List<String> selectedBonos = [];
 
   @override
   initState() {
@@ -157,7 +158,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     brandTrainersSelected.add(currentUser);
     isRandomImage = true;
     // Get Event Bonos
-    getBonos();
+    await getBrandBonos();
     // Get Event Location
     getLocation(currentBrand.baseLocation!);    
   }
@@ -199,19 +200,24 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Event Members
     eventMaxMembers = event.maxMembers!;
     membersController.text = "${event.maxMembers!}";
-    getEventMembers(event.id!);
+    await getEventMembers(event.id!);
     // Event Bonos
-    getBonos();
-    for(int i = 0; i < event.bonos.length; ++i) {
-      bonosSelected.add(event.bonos[i].toString());
-    }
+    await getBrandBonos();
+    await getEventBonos();
     // Event Locations
     originalLocationId = event.locationId!;
-    getLocation(event.locationId!);
+    await getLocation(event.locationId!);
   }
 
-  Future<void> getBonos() async {
-    bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+  Future<void> getBrandBonos() async {
+    allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+  }
+
+  Future<void> getEventBonos() async {
+    eventBonos = await _eventDataService.getEventBonos(widget.eventId!, currentBrand.id!);
+    for (Bono bono in eventBonos) {
+      selectedBonos.add(bono.id!);
+    }
   }
 
   Future<void> getEventMembers(String eventId) async {
@@ -787,7 +793,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               },
                                             ),
                                           ),
-                                          bonos.isNotEmpty ? Column(
+                                          allBonos.isNotEmpty ? Column(
                                             children: [
                                               Padding(
                                                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
@@ -827,16 +833,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                         ],
                                       ),
                                     ),
-                                    bonos.isNotEmpty ? SizedBox(
+                                    allBonos.isNotEmpty ? SizedBox(
                                       width: MediaQuery.of(context).size.width,
                                       height: MediaQuery.of(context).size.height*0.21,
                                       child: ListView.builder(
                                           shrinkWrap: true,
                                           physics: const BouncingScrollPhysics(),
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: bonos.length,
+                                          itemCount: allBonos.length,
                                           itemBuilder: (context, int index) {
-                                            var bono = bonos[index];
+                                            var bono = allBonos[index];
                                             return Row(
                                               children: [
                                                 index == 0 ? SizedBox(width: MediaQuery.of(context).size.width * 0.05) : Container(),
@@ -865,17 +871,17 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                             child: MaterialButton(
                                                               onPressed: () {
                                                                 setState(() {
-                                                                  if (bonosSelected.contains(bono.id)) {
-                                                                    bonosSelected.remove(bono.id);
+                                                                  if (selectedBonos.contains(bono.id!)) {
+                                                                    selectedBonos.remove(bono.id!);
                                                                   } else {
-                                                                    bonosSelected.add(bono.id!);
+                                                                    selectedBonos.add(bono.id!);
                                                                   }
                                                                 });
                                                               },
                                                               elevation: 8,
-                                                              color: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
-                                                              textColor: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
-                                                              child: bonosSelected.contains(bono.id)? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
+                                                              color: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
+                                                              textColor: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
+                                                              child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
                                                               padding: null,
                                                               shape: const CircleBorder(),
                                                             ),
@@ -884,7 +890,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                       )
                                                   ),
                                                 ),
-                                                index == bonos.length-1 ? SizedBox(width: MediaQuery.of(context).size.width * 0.01) : Container(),
+                                                index == allBonos.length-1 ? SizedBox(width: MediaQuery.of(context).size.width * 0.01) : Container(),
                                               ],
                                             );
                                           }
@@ -1801,11 +1807,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     setState(() {
       isLoading = true;
     });
-    /*
-    if(!availableBonos) {
-      bonosSelected = [];
-    }
-     */
     // Get Random Photo if no Image Selected
     if (eventImageUrl == null || (eventImageUrl != null && isRandomImage)) {
       eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -1834,12 +1835,13 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
-        bonos: bonosSelected,
       );
       // Add Event
       String eventId = await _addEventCall(event);
       // Add Event Members
       await _addEventMembersCall(eventId, eventMembers);
+      // Add Event Bonos
+      _addEventBonosCall(eventId, selectedBonos);
     } else {
       // Recurrent total
       int days = values.where((item) => item == true).length;
@@ -1865,12 +1867,13 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
-        bonos: bonosSelected,
       );
       // Add Event
       String eventId = await _addEventCall(event);
       // Add Event Members
       await _addEventMembersCall(eventId, eventMembers);
+      // Add Event Bonos
+      _addEventBonosCall(eventId, selectedBonos);
       // Start Recurrence
       List<String> groupEventsIds = [eventId];
       var tempDate = startDate.add(const Duration(days: 1));
@@ -1908,7 +1911,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
-              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1916,6 +1918,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             groupEventsIds.add(eventId);
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
+            // Add Event Bonos
+            _addEventBonosCall(eventId, selectedBonos);
           }
           tempDate = tempDate.add(const Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
@@ -1953,7 +1957,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
-              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -1961,6 +1964,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             groupEventsIds.add(eventId);
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
+            // Add Event Bonos
+            _addEventBonosCall(eventId, selectedBonos);
           }
           tempDate = tempDate.add(const Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
@@ -1998,7 +2003,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               numClients: brandClientsSelected.length,
               numTrainers: brandTrainersSelected.length,
               maxMembers: eventMaxMembers,
-              bonos: bonosSelected,
             );
             // Add Event
             String eventId = await _addEventCall(event);
@@ -2006,6 +2010,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             groupEventsIds.add(eventId);
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
+            // Add Event Bonos
+            _addEventBonosCall(eventId, selectedBonos);
           }
           tempDate = tempDate.add(const Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
@@ -2027,6 +2033,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Event Members
     List<Usuario> eventMembers = List.from(brandTrainersSelected);
     eventMembers.addAll(brandClientsSelected);
+    // Delete Event Bonos
+    List<String> deleteBonos = [];
+    for (Bono bono in eventBonos) {
+      deleteBonos.add(bono.id!);
+    }
+    _deleteEventBonosCall(widget.eventId!);
     // Delete Event Local Notifications
     for (var i=0; i<eventMembers.length; i++) {
       var user = eventMembers[i];
@@ -2036,7 +2048,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Delete Event From Event Group Id in Case it has any.
     if (event.eventGroupId != null) {
       // Get Recurrent Group Ids ..
-      print(event.eventGroupId);
       var eventGroupIds = await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
       // Delete Only This Event..
       eventGroupIds.removeWhere((element) => element == event.id!);
@@ -2053,14 +2064,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
   Future<void> _updateEventFunction() async {
     print("update event");
-    print(bonosSelected);
     setState(() {
       isLoading = true;
-    });/*
-    if(!availableBonos) {
-      bonosSelected = [];
-    }
-     */
+    });
     // Get Random Photo if no Image Selected
     if (isRandomImage) {
       eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
@@ -2085,7 +2091,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       numClients: brandClientsSelected.length,
       numTrainers: brandTrainersSelected.length,
       maxMembers: eventMaxMembers,
-      bonos: bonosSelected,
     );
     // Event Members
     List<Usuario> eventTrainers = List.from(brandTrainersSelected);
@@ -2094,6 +2099,20 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     List<Usuario> eventClientsAdded = List.from(eventClients);
     // Update Event
     await _eventDataService.updateEvent(event);
+    // Update Event Bonos
+    List<String> originalBonos = [];
+    for (Bono bono in eventBonos) {
+      originalBonos.add(bono.id!);
+    }
+    originalBonos.sort((a,b) {
+      return a.compareTo(b);
+    });
+    selectedBonos.sort((a,b) {
+      return a.compareTo(b);
+    });
+    if (selectedBonos != originalBonos) {
+      await _eventDataService.updateEventBonos(event.id!, selectedBonos);
+    }
     // Update Event Location
     if (event.locationId! != originalLocationId) {
       await _eventDataService.updateEventLocation(event.id!, event.locationId!, originalLocationId!);
@@ -2217,6 +2236,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       String eventId = eventGroupIdsList[i];
       // Delete Event Call
       await _eventDataService.deleteEvent(eventId);
+      // Delete Event Bonos
+      _deleteEventBonosCall(eventId);
       // Delete Event Members
       List<Usuario> eventMembers = await _eventDataService.getEventUsers(eventId);
       // Delete Event Local Notifications
@@ -2300,10 +2321,24 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         numClients: brandClientsSelected.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
-        bonos: bonosSelected,
       );
       // Update Event
       await _eventDataService.updateEvent(updatedEvent);
+      // Update Event Bonos
+      List<Bono> eventBonosOrg = await _eventDataService.getEventBonos(eventId, currentBrand.id!);
+      List<String> originalBonos = [];
+      for (Bono bono in eventBonosOrg) {
+        originalBonos.add(bono.id!);
+      }
+      originalBonos.sort((a,b) {
+        return a.compareTo(b);
+      });
+      selectedBonos.sort((a,b) {
+        return a.compareTo(b);
+      });
+      if (selectedBonos != originalBonos) {
+        await _eventDataService.updateEventBonos(eventId, selectedBonos);
+      }
       // Update Event Location
       if (event.locationId! != originalEvent.locationId!) {
         await _eventDataService.updateEventLocation(eventId, event.locationId!, originalEvent.locationId!);
@@ -2435,6 +2470,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       }
     }
+  }
+
+  Future<void> _addEventBonosCall(String eventId, List<String> bonoIds) async {
+    // Add Event Members
+    await _eventDataService.addEventBonos(eventId, bonoIds);
+  }
+
+  Future<void> _deleteEventBonosCall(String eventId) async {
+    // Add Event Members
+    await _eventDataService.deleteEventBonos(eventId);
   }
 
   Future<void> _addEventLocalNotificationsCall(String eventId, String userId, bool isTrainer) async {
