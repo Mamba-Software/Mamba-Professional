@@ -49,6 +49,26 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
     for(int i = 0; i < documents.length; i++) {
       events.add(Event.fromObjectOnlyCoverData(documents[i].id, documents[i]));
     }
+    // Order Notification List Descending Time
+    events.sort((a,b) {
+      var aDate =  DateTime(
+        int.parse(a.year!),
+        int.parse(a.month!),
+        int.parse(a.day!),
+        int.parse(a.hour!),
+        int.parse(a.minute!),
+      );
+      var bDate =  DateTime(
+        int.parse(b.year!),
+        int.parse(b.month!),
+        int.parse(b.day!),
+        int.parse(b.hour!),
+        int.parse(b.minute!),
+      );
+      return aDate.compareTo(bDate);
+    });
+
+
     return events;
   }
 
@@ -596,27 +616,6 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                                 items: eventSliders,
                               ),
                             ),
-                            userEventsToday.length > 1 ? SizedBox(
-                              height: MediaQuery.of(context).size.height*0.05,
-                              width: MediaQuery.of(context).size.width,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: eventSliders.asMap().entries.map((entry) {
-                                  return Container(
-                                    width: _current == entry.key ? 8.0 : 5.0,
-                                    height: _current == entry.key ? 8.0 : 5.0,
-                                    margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: (Theme.of(context).brightness == Brightness.dark
-                                            ? Colors.white
-                                            : Colors.black)
-                                            .withOpacity(_current == entry.key ? 0.9 : 0.4)),
-                                  );
-                                }).toList(),
-                              ),
-                            ) : Container(),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.02,),
                           ],
                         );
                       } else {
@@ -643,80 +642,29 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                           )
                         );
                       }
-                      return Container();
-                      /*
-                    if (userBonos.isNotEmpty) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: widget.height*0.05,
-                            width: widget.width*0.84,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                    AppLocalizations.of(context)!.bonos,
-                                    style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: widget.height*0.02,),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: widget.width*0.08),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: userBonos.length,
-                              itemBuilder: (context,int index) {
-                                Bono bono = userBonos[index];
-                                int sessions = bono.sessions!;
-                                String purchaseId = bono.purchaseId!;
-                                return StreamBuilder<DocumentSnapshot>(
-                                    stream: _brandDataService.getBonoInfoStream(bono.brandId!, bono.id!),
-                                    builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return Container();
-                                      } else {
-                                        bono = Bono.fromObjectAllData(snapshot.data!.id, snapshot.data!);
-                                        bono.setBonoSessions = sessions;
-                                        return StreamBuilder<DocumentSnapshot>(
-                                            stream: _purchaseDataService.getPurchaseInfoStream(purchaseId),
-                                            builder: (context, snapshot) {
-                                              if (!snapshot.hasData) {
-                                                return Container();
-                                              } else {
-                                                Purchase bonoPurchase = Purchase.fromObjectAllData(snapshot.data!.id, snapshot.data!);
-                                                return ClientBonoCard(
-                                                  height: widget.height*0.22,
-                                                  width: widget.width*0.84,
-                                                  bono: bono,
-                                                  brand: currentBrand,
-                                                  purchase: bonoPurchase,
-                                                  canExpand: true,
-                                                  onlyView: false,
-                                                );
-                                              }
-                                            }
-                                        );
-                                      }
-                                    }
-                                );
-                              },
-                            ),
-                          ),
-                          SizedBox(height: widget.height*0.04,),
-                        ],
-                      );
-                    } else {
-                      return Container();
-                    }
-                     */
                     }
                   }
               ),
+              userEventsToday.length > 1 ? SizedBox(
+                height: MediaQuery.of(context).size.height*0.05,
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: eventSliders.asMap().entries.map((entry) {
+                    return Container(
+                      width: _current == entry.key ? 8.0 : 5.0,
+                      height: _current == entry.key ? 8.0 : 5.0,
+                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: (Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black)
+                              .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+                    );
+                  }).toList(),
+                ),
+              ) : SizedBox(height: MediaQuery.of(context).size.height*0.02,),
             ],
           ),
         ),

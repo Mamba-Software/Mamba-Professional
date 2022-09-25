@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import '../../../Data/LibraryModels/lDegradate.dart';
 import '../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
@@ -101,6 +102,12 @@ class BonosUtils {
       Bono bono = Bono.fromObjectAllData(documents[i].id, documents[i]);
       bonos.add(bono);
     }
+    // Check which one has the most buys
+    bonos.sort((a,b) {
+      var aCompras =  a.compras!;
+      var bCompras =  b.compras!;
+      return aCompras.compareTo(bCompras);
+    });
     mostBuys = bonos[0];
     // Return Most Bought Bono
     return mostBuys;
