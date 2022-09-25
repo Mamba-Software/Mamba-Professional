@@ -91,9 +91,12 @@ class BonoCardState extends State<BonoCard> {
       cnt += 1;
     }
     // Apliquem el Expanded Height
-    if (cnt == 1) isExpandedHeight = isExpandedHeight + 0.3;
+    if (cnt == 1) isExpandedHeight = isExpandedHeight + 0.55;
     if (cnt == 2) isExpandedHeight = isExpandedHeight + 0.8;
     if (cnt == 3) isExpandedHeight = isExpandedHeight + 1;
+
+    print(widget.bono.title);
+    print(isExpandedHeight);
   }
 
   @override

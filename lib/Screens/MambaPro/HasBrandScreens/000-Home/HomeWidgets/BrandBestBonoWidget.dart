@@ -121,14 +121,14 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                             ],
                           ),
                         ),
-                        bonoMostBuys != null ? TextButton(
+                        bonoMostBuys == null ? Text("") : TextButton(
                           onPressed: null,
                           child: Text(
                               AppLocalizations.of(context)!.mostBuys,
                               style: Theme.of(context).textTheme.caption,
                               textAlign: TextAlign.center
                           ),
-                        ) : const Text(""),
+                        ),
                       ],
                     ),
                   ),
