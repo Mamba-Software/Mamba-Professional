@@ -4215,49 +4215,80 @@ exports.userPurchasesBono = functions
   const bonoId = purchaseDoc.bonoId;
   const brandId =  purchaseDoc.brandId;
 
-       //Get data of the bono
+  // Get Data of the User
+  const userSnapshot = await db.collection("7777 Users").doc(userId).get();
+  const userDoc = userSnapshot.data();
 
-       const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
-       const bonoDoc = bonoSnapshot.data();
+  //Get data of the bono
+  const bonoSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+  const bonoDoc = bonoSnapshot.data();
 
-       //Add purchases
+  //Add purchases
 
-       await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
-         "purchasedAt": purchaseDoc.purchasedAt,
-         "userId": purchaseDoc.userId,
-         "price": purchaseDoc.price,
-         "paymentMethod": purchaseDoc.paymentMethod,
-       });
+   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
+     "purchasedAt": purchaseDoc.purchasedAt,
+     "userId": purchaseDoc.userId,
+     "price": purchaseDoc.price,
+     "paymentMethod": purchaseDoc.paymentMethod,
+   });
 
-       await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-         "purchasedAt": purchaseDoc.purchasedAt,
-         "bonoId": purchaseDoc.bonoId,
-         "price": purchaseDoc.price,
-         "paymentMethod": purchaseDoc.paymentMethod,
-       });
+   await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+     "purchasedAt": purchaseDoc.purchasedAt,
+     "bonoId": purchaseDoc.bonoId,
+     "price": purchaseDoc.price,
+     "paymentMethod": purchaseDoc.paymentMethod,
+   });
 
-       await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-         "purchasedAt": purchaseDoc.purchasedAt,
-         "bonoId": purchaseDoc.bonoId,
-         "price": purchaseDoc.price,
-         "paymentMethod": purchaseDoc.paymentMethod,
-         "brandId": purchaseDoc.brandId,
-       });
+   await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+     "purchasedAt": purchaseDoc.purchasedAt,
+     "bonoId": purchaseDoc.bonoId,
+     "price": purchaseDoc.price,
+     "paymentMethod": purchaseDoc.paymentMethod,
+     "brandId": purchaseDoc.brandId,
+   });
 
-       await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
-         "title": bonoDoc.title,
-         "sessions": bonoDoc.sessions,
-         "price": purchaseDoc.price,
-         "purchaseId": purchaseId,
-         "brandId": purchaseDoc.brandId,
-         "expirationTime": bonoDoc.expirationTime,
-         "cancelTime": bonoDoc.cancelTime,
-         "weeklySessions": bonoDoc.weeklySessions,
-       });
+   await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
+     "title": bonoDoc.title,
+     "sessions": bonoDoc.sessions,
+     "price": purchaseDoc.price,
+     "purchaseId": purchaseId,
+     "brandId": purchaseDoc.brandId,
+     "expirationTime": bonoDoc.expirationTime,
+     "cancelTime": bonoDoc.cancelTime,
+     "weeklySessions": bonoDoc.weeklySessions,
+   });
 
+   // Send Notification to User
+   if (userDoc.idioma == "es") {
+    payload = {
+      notification: {
+        title: "Bono "+bonoDoc.title.toUpperCase()+" otorgado 🤙",
+        body: "Ya puedes disfrutar de sus "+bonoDoc.sessions+ " intensas sesiones",
+      },
+      data: {
+        route: "Notifications",                
+      },
+    };
+  } else {
+    payload = {
+      notification: {
+        title: "Val "+bonoDoc.title.toUpperCase()+" otorgat 🤙",
+        body: "Ja pots gaudir de "+bonoDoc.sessions+ " intenses sessions",
+      },
+      data: {
+        route: "Notifications",                  
+      },
+    }
+  }
+  functions.logger.log(
+   "Payload",
+   payload
+   );
+  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
 
-       return null;
-     });
+  return null;
+
+  });
 
      // Updates User Bono
      exports.zzzzupdateUserBono = functions
@@ -4348,7 +4379,7 @@ exports.zzzzDeleteUserBono = functions
 
 
             return null;
-});
+  });
 
 // User Purchases Event
 exports.usersPurchasesEvent = functions
