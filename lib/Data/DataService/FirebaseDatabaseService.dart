@@ -384,7 +384,7 @@ class FirebaseDatabaseService {
   // Add Error/ Report Bug
   Future<bool> addError(String title, String description,
       [String? stepsReproduce]) async {
-    var uid = Uuid().v1();
+    var uid = const Uuid().v1();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
@@ -583,7 +583,7 @@ class FirebaseDatabaseService {
       List<double> workShift, int maxMembers) async {
     User? firebaseUser = await getCurrentUser();
     bool firestoreError = false;
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
@@ -628,7 +628,7 @@ class FirebaseDatabaseService {
     // Add each brand to the .../BrandId/images directory
     for (var i=0; i<images.length; i++) {
       var image = images[i];
-      final uid = Uuid().v4();
+      final uid = const Uuid().v4();
       // Upload the image to Firebase Storage
       var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + uid + ".jpeg");
       var uploadTask = storageRef.putFile(image);
@@ -1182,7 +1182,7 @@ class FirebaseDatabaseService {
     // Events Sesions
     // Add Event
     Future<String> addEvent(Event event) async {
-      var eventID = Uuid().v1();
+      var eventID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       try {
         // Create Document in "\Events"
@@ -1579,7 +1579,7 @@ class FirebaseDatabaseService {
     // Get First Events
     Future <List<Event>> getBrandEventsThisMonth(String brandId) async {
     DateTime now = DateTime.now();
-    var temp = now.subtract(Duration(days: 7));
+    var temp = now.subtract(const Duration(days: 7));
     Timestamp tmstp = Timestamp.fromDate(temp);
 
     List<Event> events = [];
@@ -2215,7 +2215,7 @@ class FirebaseDatabaseService {
         String zipCode,
         double latitude,
         double longitude) async {
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore
           .collection(locations).doc(uid).set({
@@ -2424,7 +2424,7 @@ class FirebaseDatabaseService {
 
   //Add bono to brand
   Future<void> addBonoToBrand(String brandId, Bono bono, Condition condition) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -2457,7 +2457,7 @@ class FirebaseDatabaseService {
 
   //Add bono request to brand
   Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, String price, String classes, Timestamp timeRequested) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -2477,7 +2477,7 @@ class FirebaseDatabaseService {
 
   //Add bono request to user
   Future<void> addBonoRequestToUser(String brandId, String userId, String bonoId) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(users)
         .doc(userId)
@@ -2494,7 +2494,7 @@ class FirebaseDatabaseService {
 
   //Add bono to user
   Future<void> addBonoToUser(String brandId, String userId, String bonoId, int sessions, Timestamp time) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(users)
         .doc(userId)
@@ -2583,7 +2583,7 @@ class FirebaseDatabaseService {
     Future<void> sendRequestToBrand(String brandId, String name,
         bool isTrainer) async {
       User? currentUser = await getCurrentUser();
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       DateTime now = DateTime.now();
       final DateFormat formatter = DateFormat('dd-MM-yy');
       final String formatted = formatter.format(now);
@@ -2784,7 +2784,7 @@ class FirebaseDatabaseService {
     // Send Notification
     Future<void> sendNotificationToUser(String userId, String type,
         var parameters) async {
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       DateTime now = DateTime.now();
       final DateFormat formatter = DateFormat('dd-MM-yy');
       final String formatted = formatter.format(now);
@@ -2859,10 +2859,10 @@ class FirebaseDatabaseService {
     // Add Question
     Future<String> addQuestion(String? questionCat, String? questionSpn,
         String? type) async {
-      var questionID = Uuid().v1();
+      var questionID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       bool firestoreError = false;
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore.collection(questions).doc(questionID).set({
           "creatorID": currentUser!.uid,
@@ -2897,10 +2897,10 @@ class FirebaseDatabaseService {
     // Add Group Of Questions
     Future<String> addGroupOfQuestions(String? questionOne, String? questionTwo,
         String? questionThree, String? questionFour) async {
-      var groupOfQuestionsID = Uuid().v1();
+      var groupOfQuestionsID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       bool firestoreError = false;
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore
             .collection(groupOfQuestions)
@@ -2942,10 +2942,10 @@ class FirebaseDatabaseService {
     // Add Answers
     Future<String> addAnswers(String? groupOfQuestionsID, String? answerOne,
         String? answerTwo, String? answerThree, String? answerFour) async {
-      var answerID = Uuid().v1();
+      var answerID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       bool firestoreError = false;
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore.collection(answers).doc(answerID).set({
           "userID": currentUser!.uid,
@@ -3012,7 +3012,7 @@ class FirebaseDatabaseService {
         String? second,
         String? lastMessage) async {
       print(users);
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore.collection(conversations).doc(uid).set({
           "users": users,
@@ -3073,7 +3073,7 @@ class FirebaseDatabaseService {
         String? minute,
         String? second,
         String? conversationId) async {
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore.collection(messages).doc(uid).set({
           "message": message,
