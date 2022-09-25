@@ -278,6 +278,7 @@
   "noMembersFound": "No hem trobat cap membre",
   "noBrandsFound": "No hem trobat marques a prop teu",
   "myRequests": "Sol·licituds",
+  "myRequestsDesc": "Sol·licituds d'afiliació pendents de resposta",
   "request": "Sol·licitud",
   "noRequestsFound": "No hem trobat cap sol·licitud",
   "noImagesFound": "No hem trobat cap imatge",
@@ -517,9 +518,12 @@
   "first": "Primer",
   "alphabetAtoZ":"Ordenar de A-Z",
   "alphabetZtoA": "Ordenar de Z-A",
+  "mostBuys": "Més comprat",
   "bonoBuys": "Vals pendents",
   "preseeBono": "Previsualiza el teu val",
   "acceptBono": "Concedir bono",
   "acceptBonoDesc": "Verifica la informació abans de confirmar la compra del val",
-  "paymentIndication": " ha indicat que ha pagat usant: "
+  "paymentIndication": " ha indicat que ha pagat usant: ",
+  "noBonosCreated": "No s'ha creat cap bo",
+  "createFistBono": "Crea el teu primer val"
 }

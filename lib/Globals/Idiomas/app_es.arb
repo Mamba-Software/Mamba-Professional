@@ -1204,6 +1204,10 @@
   "@myRequests": {
     "description": "Wellcome message"
   },
+  "myRequestsDesc": "Solicitudes de afiliación pendientes de respuesta",
+  "@myRequestsDesc": {
+    "description": "Wellcome message"
+  },
   "request": "Solicitud",
   "@request": {
     "description": "Wellcome message"
@@ -2326,6 +2330,10 @@
   "@alphabetZtoA":{
     "description": "trainsPerWekk Text"
   },
+  "mostBuys": "Más comprado",
+  "@mostBuys":{
+    "description": "trainsPerWekk Text"
+  },
   "bonoBuys": "Bonos pendientes",
   "@bonoBuys":{
     "description": "trainsPerWekk Text"
@@ -2344,6 +2352,14 @@
   },
   "paymentIndication": " ha indicado que ha pagado usando: ",
   "@paymentIndication": {
+    "description": "trainsPerWekk Text"
+  },
+  "noBonosCreated": "No se ha creado ningún bono",
+  "@noBonosCreated": {
+    "description": "trainsPerWekk Text"
+  },
+  "createFistBono": "Crea tu primer bono",
+  "@createFistBono": {
     "description": "trainsPerWekk Text"
   }
 }

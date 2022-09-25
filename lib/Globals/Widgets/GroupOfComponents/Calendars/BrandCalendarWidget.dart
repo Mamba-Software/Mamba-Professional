@@ -22,11 +22,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;
   DateTime? dateTime;
+  CalendarView? calendarView;
   bool? onlyView;
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
 
-  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime, this.onlyView, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime, this.calendarView, this.onlyView, required this.pinned, required this.pinnedChanged}) : super(key: key);
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
@@ -98,6 +99,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   // Init App Bar Title
   initAppBarDateTitle() {
+    // Initial Date Time
     if (widget.dateTime == null) {
       DateTime now = DateTime.now();
       int currentDay = now.weekday;
@@ -124,20 +126,25 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       int currentDay = now.weekday;
       displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 7));
+      _controller.selectedDate = DateTime.now();
     } else {
       DateTime dateTime = widget.dateTime!;
       int currentDay = dateTime.weekday;
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
+      _controller.selectedDate = dateTime;
+    }
+    // Initial Calendar View
+    if (widget.calendarView == null) {
+      _controller.view = CalendarView.day;
+    } else {
+      _controller.view = widget.calendarView;
     }
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    _controller.selectedDate = DateTime.now();
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      setState(() {
-        isLoading = false;
-      });
+    setState(() {
+      isLoading = false;
     });
   }
 
@@ -279,7 +286,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 height: safeAreaHeight*0.08,
                 width: details.bounds.width,
-                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                   borderRadius: const BorderRadius.all(
@@ -342,11 +349,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 height: safeAreaHeight*0.08,
                 width: details.bounds.width,
-                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ?  AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(5),
+                    Radius.circular(5),
                   ),
                 ),
                 child: Column(
@@ -407,7 +414,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 width: details.bounds.width,
                 height: details.bounds.height,
-                padding: EdgeInsets.all(details.bounds.width*0.1),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                   borderRadius: const BorderRadius.all(
@@ -457,7 +464,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 width: details.bounds.width,
                 height: details.bounds.height,
-                padding: EdgeInsets.all(details.bounds.height*0.1),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
@@ -587,7 +594,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 decoration: BoxDecoration(
                   color: event.isPrivate! ?  AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(5),
+                    Radius.circular(5),
                   ),
                 ),
                 child: Column(
@@ -715,7 +722,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               decoration: BoxDecoration(
                 color: event.isPrivate! ?  AppColors.black : appointment.color,
                 borderRadius: const BorderRadius.all(
-                  const Radius.circular(5),
+                  Radius.circular(5),
                 ),
               ),
               child: Column(
@@ -910,7 +917,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
                     child: SfCalendar(
                       cellEndPadding: 0,
-                      view: CalendarView.day,
+                      view: _controller.view!,
                       controller: _controller,
                       showDatePickerButton: true,
                       dataSource: _getCalendarDataSource(),

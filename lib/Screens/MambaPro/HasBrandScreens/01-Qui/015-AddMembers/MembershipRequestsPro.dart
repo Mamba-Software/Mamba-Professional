@@ -72,7 +72,8 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
       RequestToBrand request = RequestToBrand.fromObjectAllData(documents[0].id, documents[0]);
       requests.add(request);
     }
-    */
+     */
+
     return requests;
   }
 
@@ -259,10 +260,12 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                       } else {
                         type = AppLocalizations.of(context)!.client.toLowerCase();
                       }
-                      return ListTile(
-                        leading: Icon(request.isTrainer! ? Icons.record_voice_over : Icons.directions_run, color: Theme.of(context).primaryColor, size: 25,),
-                        title: Container(
-                          child: RichText(
+                      return Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: ListTile(
+                          minLeadingWidth: MediaQuery.of(context).size.width*0.1 ,
+                          leading: Icon(request.isTrainer! ? Icons.record_voice_over : Icons.directions_run, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.1,),
+                          title: RichText(
                             text: TextSpan(
                               style: Theme.of(context).textTheme.bodyText2,
                               children: [
@@ -271,35 +274,34 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                               ],
                             ),
                           ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Text(
+                                  AppLocalizations.of(context)!.requestSent(request.dateSent!),
+                                  style: Theme.of(context).textTheme.caption
+                              ),
+                            ],
+                          ),
+                          onTap: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return RequestConfirmationDialog(
+                                    text: AppLocalizations.of(context)!.requestConfirmation,
+                                    userId: request.userId!,
+                                  );
+                                }
+                            );
+                            if (result != null && result) {
+                              NotificationService().userJoinsBrand(request.userId!, request.brandId!);
+                              _brandDataService.acceptRequestFromUser(request);
+                            } else if (result != null && !result) {
+                              _userDataService.deleteRequestToBrand(request);
+                            }
+                          },
                         ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            Text(
-                                AppLocalizations.of(context)!.requestSent(request.dateSent!),
-                                style: Theme.of(context).textTheme.caption
-                            ),
-                          ],
-                        ),
-                        trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
-                        onTap: () async {
-                          var result = await showDialog(
-                              context: context,
-                              builder: (_) {
-                                return RequestConfirmationDialog(
-                                  text: AppLocalizations.of(context)!.requestConfirmation,
-                                  userId: request.userId!,
-                                );
-                              }
-                          );
-                          if (result != null && result) {
-                            NotificationService().userJoinsBrand(request.userId!, request.brandId!);
-                            _brandDataService.acceptRequestFromUser(request);
-                          } else if (result != null && !result) {
-                            _userDataService.deleteRequestToBrand(request);
-                          }
-                        },
                       );
                     },
                       childCount: requestList.length,
