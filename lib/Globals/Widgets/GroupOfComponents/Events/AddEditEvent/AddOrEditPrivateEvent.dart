@@ -118,9 +118,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
   final formKeyMembers = GlobalKey<FormState>();
-  //Boolean to available bonos
-  List<Bono> bonos = [];
-  List<String> bonosSelected = [];
+  // Event Bonos
+  List<Bono> allBonos = [];
+  List<Bono> eventBonos = [];
+  List<String> selectedBonos = [];
 
   @override
   initState() {
@@ -131,10 +132,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     } else {
       initializeEventInfo();
     }
-  }
-
-  Future<void> getBonos() async {
-    bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
   }
 
   Future<void> initializeEventInfo() async {
@@ -161,8 +158,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     membersController.text = "${eventMaxMembers.toString()}";
     brandTrainersSelected.add(currentUser);
     isRandomImage = true;
+    // Get Event Bonos
+    await getBrandBonos();
+    // Event Location
     getLocation(currentBrand.baseLocation!);
-    getBonos();
+
   }
 
   Future<void> getEventInfo() async {
@@ -202,16 +202,24 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Event Members
     eventMaxMembers = event.maxMembers!;
     membersController.text = "${event.maxMembers!}";
-    getEventMembers(event.id!);
+    await getEventMembers(event.id!);
     // Event Bonos
-    getBonos();
-    /*
-    for(int i = 0; i < event.bonos.length; ++i) {
-      bonosSelected.add(event.bonos[i].toString());
-     */
+    await getBrandBonos();
+    await getEventBonos();
     // Event Locations
     originalLocationId = event.locationId!;
-    getLocation(event.locationId!);
+    await getLocation(event.locationId!);
+  }
+
+  Future<void> getBrandBonos() async {
+    allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+  }
+
+  Future<void> getEventBonos() async {
+    eventBonos = await _eventDataService.getEventBonos(widget.eventId!, currentBrand.id!);
+    for (Bono bono in eventBonos) {
+      selectedBonos.add(bono.id!);
+    }
   }
 
   Future<void> getEventMembers(String eventId) async {
@@ -769,7 +777,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               },
                                             ),
                                           ),
-                                          bonos.isNotEmpty ? Column(
+                                          allBonos.isNotEmpty ? Column(
                                             children: [
                                               Padding(
                                                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
@@ -796,7 +804,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: <Widget>[
                                                       Flexible(
                                                         child: Text(
-                                                          AppLocalizations.of(context)!.bonosDescriptionPrivate,
+                                                          AppLocalizations.of(context)!.bonosDescription,
                                                           style: Theme.of(context).textTheme.caption,
                                                         ),
                                                       ),
@@ -808,16 +816,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         ]
                                     ),
                                   ),
-                                  bonos.isNotEmpty ? SizedBox(
+                                  allBonos.isNotEmpty ? SizedBox(
                                     width: MediaQuery.of(context).size.width,
                                     height: MediaQuery.of(context).size.height*0.21,
                                     child: ListView.builder(
                                         shrinkWrap: true,
                                         physics: const BouncingScrollPhysics(),
                                         scrollDirection: Axis.horizontal,
-                                        itemCount: bonos.length,
+                                        itemCount: allBonos.length,
                                         itemBuilder: (context, int index) {
-                                          var bono = bonos[index];
+                                          var bono = allBonos[index];
                                           return Row(
                                             children: [
                                               index == 0 ? SizedBox(width: MediaQuery.of(context).size.width * 0.05) : Container(),
@@ -846,17 +854,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           child: MaterialButton(
                                                             onPressed: () {
                                                               setState(() {
-                                                                if (bonosSelected.contains(bono.id)) {
-                                                                  bonosSelected.remove(bono.id);
+                                                                if (selectedBonos.contains(bono.id!)) {
+                                                                  selectedBonos.remove(bono.id!);
                                                                 } else {
-                                                                  bonosSelected.add(bono.id!);
+                                                                  selectedBonos.add(bono.id!);
                                                                 }
                                                               });
                                                             },
                                                             elevation: 8,
-                                                            color: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
-                                                            textColor: bonosSelected.contains(bono.id)? AppColors.mainColor : AppColors.grey,
-                                                            child: bonosSelected.contains(bono.id)? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
+                                                            color: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
+                                                            textColor: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
+                                                            child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
                                                             padding: null,
                                                             shape: const CircleBorder(),
                                                           ),
@@ -865,7 +873,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     )
                                                 ),
                                               ),
-                                              index == bonos.length-1 ? SizedBox(width: MediaQuery.of(context).size.width * 0.01) : Container(),
+                                              index == allBonos.length-1 ? SizedBox(width: MediaQuery.of(context).size.width * 0.01) : Container(),
                                             ],
                                           );
                                         }
@@ -1710,6 +1718,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       isLoading = true;
     });
 
+    /*
     if (bonosSelected.isNotEmpty) {
       for (int i = 0; i < eventMembers.length; i++) {
         var user = eventMembers[i];
@@ -1725,6 +1734,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         }
       }
     }
+     */
 
     // Get Random Photo if no Image Selected
     if (eventImageUrl == null || (eventImageUrl != null && isRandomImage)) {
@@ -2347,6 +2357,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     }
   }
 
+  Future<void> _addEventBonosCall(String eventId, List<String> bonoIds) async {
+    // Add Event Members
+    await _eventDataService.addEventBonos(eventId, bonoIds);
+  }
+
+  Future<void> _deleteEventBonosCall(String eventId) async {
+    // Add Event Members
+    await _eventDataService.deleteEventBonos(eventId);
+  }
+
   Future<void> _addEventLocalNotificationsCall(String eventId, String userId, bool isTrainer) async {
     // Local Notifications Service
     if (userId == currentUser.id!) {
@@ -2367,14 +2387,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   void assignBonoUsers(var eventMembers, Event event) async{
     List<Bono> userBonos = [];
     Bono bono = new Bono();
-    if(bonosSelected.isNotEmpty) {
+    if(selectedBonos.isNotEmpty) {
       for (int i = 0; i < eventMembers.length; i++) {
         var user = eventMembers[i];
         userBonos =  await _userDataService.getUserBonos(user.id!);
-        for (int j = 0; j < bonosSelected.length; j++) {
-          bono = userBonos.singleWhere((bon) => bon.id == bonosSelected[j]);
+        for (int j = 0; j < selectedBonos.length; j++) {
+          bono = userBonos.singleWhere((bon) => bon.id == selectedBonos[j]);
             _eventDataService.addEventToPurchase(bono.purchaseId!,event);
-
         }
       }
     }
