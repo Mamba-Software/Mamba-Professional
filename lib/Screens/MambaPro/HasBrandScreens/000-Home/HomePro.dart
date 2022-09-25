@@ -99,6 +99,7 @@ class _HomePro extends State<HomePro> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: CustomScrollView(
         controller: _scrollController,
+        physics: const ClampingScrollPhysics(),
         slivers: [
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).size.height*0.18,

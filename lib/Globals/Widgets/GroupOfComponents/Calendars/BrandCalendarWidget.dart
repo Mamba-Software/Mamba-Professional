@@ -286,7 +286,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 height: safeAreaHeight*0.08,
                 width: details.bounds.width,
-                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                   borderRadius: const BorderRadius.all(
@@ -349,11 +349,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 height: safeAreaHeight*0.08,
                 width: details.bounds.width,
-                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ?  AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(5),
+                    Radius.circular(5),
                   ),
                 ),
                 child: Column(
@@ -414,7 +414,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 width: details.bounds.width,
                 height: details.bounds.height,
-                padding: EdgeInsets.all(details.bounds.width*0.1),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                   borderRadius: const BorderRadius.all(
@@ -464,7 +464,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 width: details.bounds.width,
                 height: details.bounds.height,
-                padding: EdgeInsets.all(details.bounds.height*0.1),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
@@ -594,7 +594,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 decoration: BoxDecoration(
                   color: event.isPrivate! ?  AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(5),
+                    Radius.circular(5),
                   ),
                 ),
                 child: Column(
@@ -722,7 +722,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               decoration: BoxDecoration(
                 color: event.isPrivate! ?  AppColors.black : appointment.color,
                 borderRadius: const BorderRadius.all(
-                  const Radius.circular(5),
+                  Radius.circular(5),
                 ),
               ),
               child: Column(
