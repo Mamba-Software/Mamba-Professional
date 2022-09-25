@@ -43,6 +43,10 @@
   "@user":{
     "description": "Usuario Text"
   },
+  "invitedUser": "Invitado",
+  "@invitedUser":{
+    "description": "Usuario Text"
+  },
   "client": "Cliente",
   "@client":{
     "description": "Cliente Text"
