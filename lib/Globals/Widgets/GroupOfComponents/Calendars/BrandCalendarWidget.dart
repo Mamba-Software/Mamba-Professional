@@ -304,7 +304,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 height: safeAreaHeight*0.08,
                 width: details.bounds.width,
-                padding: const EdgeInsets.all(5),
+                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                   borderRadius: const BorderRadius.all(
@@ -320,7 +320,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         Icon(
                           event.isPrivate! ? Icons.lock_outlined : Icons.groups,
                           color: AppColors.white,
-                          size: safeAreaHeight*0.02,
+                          size: details.bounds.width*0.05,
                         ),
                         SizedBox(width: details.bounds.width*0.02,),
                         Text(
@@ -367,7 +367,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 height: safeAreaHeight*0.08,
                 width: details.bounds.width,
-                padding: const EdgeInsets.all(5),
+                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ?  AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
@@ -383,7 +383,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         Icon(
                           event.isPrivate! ? Icons.lock_outlined : Icons.groups,
                           color: AppColors.white,
-                          size: safeAreaHeight*0.02,
+                          size: details.bounds.width*0.05,
                         ),
                         SizedBox(width: details.bounds.width*0.02,),
                         Text(
