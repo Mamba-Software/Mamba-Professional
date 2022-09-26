@@ -76,6 +76,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
   @override
   void initState() {
     bono = widget.bono;
+    bono.purchaseId = widget.purchase.id;
     brand = widget.brand;
     purchase = widget.purchase;
     condition = Condition(

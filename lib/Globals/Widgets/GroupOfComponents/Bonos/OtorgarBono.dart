@@ -142,6 +142,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   }
 
   Future<void> getPurchase() async {
+    print(bonoSelected.purchaseId);
     Purchase? purchase = await _purchaseDataService.getPurchaseInfo(bonoSelected.purchaseId!);
     startDate = purchase.purchasedAt!.toDate();
   }
@@ -179,7 +180,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     }
 
     if(widget.bonoRequest == null && editBono) {
-      getPurchase();
+      await getPurchase();
     }
 
     setState(() {});
@@ -247,18 +248,19 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Flexible(
-                    child: Text(AppLocalizations.of(context)!.acceptBono,
+                    child: Text(
+                        editBono? AppLocalizations.of(context)!.editBono : AppLocalizations.of(context)!.acceptBono,
                         style: Theme.of(context).textTheme.headline1,
                         textAlign: TextAlign.left),
                   ),
-                  Flexible(
+                  !editBono? Flexible(
                     child: Text(AppLocalizations.of(context)!.acceptBonoDesc,
                         style: Theme.of(context)
                             .textTheme
                             .caption
                             ?.copyWith(height: 1.5),
                         textAlign: TextAlign.center),
-                  ),
+                  ) : Container(),
                 ],
               ),
             ),

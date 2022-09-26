@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 
 
 import '../../../../../Globals/GlobalVars.dart';
@@ -105,7 +106,8 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                 child: Center(
                   child: Text(
                     currentUser!.idioma == 'es'?
-                    DateFormat.LLLL('es').format(currentMonthDate) : DateFormat.LLLL('cat').format(currentMonthDate),
+                        StringUtils().capitalizedAllWords(DateFormat.LLLL('es').format(currentMonthDate))
+                     : StringUtils().capitalizedAllWords(DateFormat.LLLL('cat').format(currentMonthDate)),
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20, color: Colors.black),
                   ),
                 ),

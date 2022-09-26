@@ -78,7 +78,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                   ],
                 ),
                 child: InkWell(
-                  borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                  borderRadius: const BorderRadius.all(Radius.circular(24.0),),
                   onTap: () {},
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +118,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                           Container(
                             height: 74,
                             width: 1,
-                            color: Theme.of(context).dividerColor,
+                            color: Colors.black,
                           ),
                           Expanded(
                             child: Column(
@@ -145,8 +145,10 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                           )
                         ],
                       ),
-                      const Divider(
+                      Container(
                         height: 1,
+                        width: 400,
+                        color: Colors.black,
                       ),
                       CustomCalendarView(
                         minimumDate: widget.minimumDate,
@@ -165,7 +167,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
+                            color: Colors.white,
                             borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                             boxShadow: <BoxShadow>[
                               BoxShadow(
