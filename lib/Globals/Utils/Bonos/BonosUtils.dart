@@ -95,8 +95,8 @@ class BonosUtils {
   }
 
   //Function to transform documents to bonos
-  Bono documentsToBonosMostBuys(List<DocumentSnapshot> documents) {
-    Bono mostBuys = Bono();
+  Bono? documentsToBonosMostBuys(List<DocumentSnapshot> documents) {
+    Bono? mostBuys = Bono();
     List<Bono> bonos = [];
     for (int i = 0; i < documents.length; i++) {
       Bono bono = Bono.fromObjectAllData(documents[i].id, documents[i]);
@@ -108,7 +108,11 @@ class BonosUtils {
       var bCompras =  b.compras!;
       return aCompras.compareTo(bCompras);
     });
-    mostBuys = bonos[0];
+    if (bonos.isNotEmpty) {
+      mostBuys = bonos[0];
+    } else {
+      mostBuys = null;
+    }
     // Return Most Bought Bono
     return mostBuys;
   }
