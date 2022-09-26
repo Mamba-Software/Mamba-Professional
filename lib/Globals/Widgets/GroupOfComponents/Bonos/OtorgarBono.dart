@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:animated_widgets/widgets/opacity_animated.dart';
 import 'package:animated_widgets/widgets/translation_animated.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +17,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -29,9 +32,10 @@ class OtorgarBono extends StatefulWidget {
   Brand brand;
   bool? edit;
   Bono? bono;
+  BonoRequest? bonoRequest;
 
 
-  OtorgarBono({Key? key, required this.user, required this.brand, this.edit, this.bono})
+  OtorgarBono({Key? key, required this.user, required this.brand, this.edit, this.bono, this.bonoRequest})
       : super(key: key);
 
   @override
@@ -43,6 +47,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   final _brandDataService = BrandDataService();
   final _paymentDataService = PaymentDataService();
   final _userDataService = UserDataService();
+
+  final NotificationService _notificationService = NotificationService();
 
   var titleController = TextEditingController();
   var freeCancellController = TextEditingController();
@@ -78,6 +84,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   List<bool> isSelectedDays = [false, false, false, false];
 
   bool noSessions = false;
+  bool isBonoRequest = false;
 
   // Page View Controller
   int _numPages = 3;
@@ -90,7 +97,13 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       editBono = true;
     }
     user = widget.user;
-    paymentMethod = 2;
+    if(widget.bonoRequest != null) {
+      isBonoRequest = true;
+      paymentMethod = widget.bonoRequest?.paymentMethod;
+    }
+    else {
+      paymentMethod = 2;
+    }
     getBonos();
     super.initState();
   }
@@ -132,6 +145,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         bonoSelected = bonos[0];
         _currentPage = 0;
         isBonoSelected = true;
+        setConditionsBono(bonoSelected);
       }
       if (isBonoSelected == false) {
         _topSnackBar.topsnackbar(context, 'Este usuario ya tiene todos los bonos de tu marca', AppColors.red);
@@ -139,15 +153,28 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       }
     } else {
       bonos.add(widget.bono!);
-      bonoSelected = bonos[0];
+      bonoSelected.setBasicData = bonos[0];
+      bonoSelected.setConditionsData = bonos[0].condition!;
       isBonoSelected = true;
-      seeConditions = true;
+      if(isBonoRequest) {
+        seeConditions = false;
+      } else {
+        seeConditions = true;
+      }
       setConditionsBono(bonoSelected);
     }
     setState(() {});
   }
 
   void setConditionsBono(Bono _bono) {
+    priceController.text = _bono.price.toString();
+    if(_bono.sessions == 0) {
+      clasesController.text = '';
+      noSessions = true;
+    }
+    else {
+      clasesController.text = _bono.sessions.toString();
+    }
     freeCancellController.text = (_bono.condition?.cancelTime!).toString();
     weeklyController.text = (_bono.condition?.weeklySessions!).toString();
     clasesController.text = (_bono.sessions!).toString();
@@ -165,6 +192,11 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     } else {
       isSelectedDays[3] = true;
     }
+  }
+
+  double roundDouble(double value, int places) {
+    num mod = pow(10.0, places);
+    return ((value * mod).round().toDouble() / mod);
   }
 
   @override
@@ -395,6 +427,42 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
                       child: Column(
                         children: [
+                          Container(
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).backgroundColor,
+                                borderRadius: const BorderRadius.all(Radius.circular(10))
+                            ),
+                            child: optionTextWrite(
+                                TextInputType.number,
+                                AppLocalizations.of(context)!.sesionsBono,
+                                AppLocalizations.of(context)!.sesionsBonoDesc,
+                                0.toString(),
+                                AppLocalizations.of(context)!.sessionPlease,
+                                true,
+                                clasesController,
+                                false,
+                                'ses'),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                          Container(
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).backgroundColor,
+                                borderRadius: const BorderRadius.all(Radius.circular(10))
+                            ),
+                            child: optionTextWrite(
+                                const TextInputType.numberWithOptions(decimal: true),
+                                AppLocalizations.of(context)!.priceBono,
+                                "",
+                                0.toString(),
+                                AppLocalizations.of(context)!.pricePlease,
+                                true,
+                                priceController,
+                                false,
+                                'price'),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                           Container(
                             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                             decoration: BoxDecoration(
@@ -717,39 +785,88 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       ),
                     ) : Container(),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                    isBonoRequest? TextButton(
+                        child: Text(AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(), style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline), ),
+                        onPressed: () async {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
+                          Navigator.of(context).pop();
+                        }
+                    ) : Container(),
                     isBonoSelected
                         ? GestureDetector(
                             onTap: isLoading
                                 ? null
                                 : () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
+                                    if(canConfirm) {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
 
-                                    if(editBono)
-                                      {
-                                        _userDataService.updateUserBono(user.id!, bonoSelected);
+                                      if (noSessions) {
+                                        bonoSelected.sessions = 0;
                                       }
-                                    else {
-                                      // Build Purchase Object
-                                      Purchase purchase = Purchase();
-                                      purchase.purchasedAt = Timestamp.now();
-                                      purchase.brandId = widget.brand.id!;
-                                      purchase.bonoId = bonoSelected.id!;
-                                      purchase.price = bonoSelected.price!;
-                                      purchase.userId = user.id!;
-                                      purchase.paymentMethod = paymentMethod;
-                                      // Build Purchase Object
+                                      if (editBono) {
+                                        _userDataService.updateUserBono(
+                                            user.id!, bonoSelected);
+                                      }
+                                      else if (isBonoRequest) {
+                                        // Build Purchase Object
+                                        Purchase purchase = Purchase();
+                                        purchase.purchasedAt = Timestamp.now();
+                                        purchase.brandId = widget.brand.id!;
+                                        purchase.bonoId =
+                                            widget.bonoRequest?.bonoId;
+                                        purchase.price = bonoSelected.price;
+                                        purchase.userId =
+                                        widget.bonoRequest?.userId!;
+                                        purchase.paymentMethod = paymentMethod;
+                                        // Notifications Service
+                                        _notificationService.userBuysBono(
+                                            widget.user.id!, widget.brand.id!,
+                                            bonoSelected);
+                                        // Build Purchase Object
+                                        await _paymentDataService
+                                            .addPurchaseToPayments(
+                                            purchase, bonoSelected);
+                                        await _brandDataService
+                                            .deleteBrandBonoRequest(
+                                            widget.brand.id!, widget.user.id!,
+                                            widget.bonoRequest?.id!);
+                                        await _brandDataService
+                                            .updateBonoCompras(
+                                            widget.brand.id!, purchase.bonoId!);
+                                      }
+                                      else {
+                                        // Build Purchase Object
+                                        Purchase purchase = Purchase();
+                                        purchase.purchasedAt = Timestamp.now();
+                                        purchase.brandId = widget.brand.id!;
+                                        purchase.bonoId = bonoSelected.id!;
+                                        purchase.price = bonoSelected.price!;
+                                        purchase.userId = user.id!;
+                                        purchase.paymentMethod = paymentMethod;
+                                        // Build Purchase Object
 
+                                        _notificationService.userBuysBono(
+                                            widget.user.id!, widget.brand.id!,
+                                            bonoSelected);
 
-                                      await _paymentDataService
-                                          .addPurchaseToPayments(purchase);
+                                        await _paymentDataService
+                                            .addPurchaseToPayments(
+                                            purchase, bonoSelected);
 
-                                      await _brandDataService.updateBonoCompras(
-                                          widget.brand.id!, bonoSelected.id!);
+                                        await _brandDataService
+                                            .updateBonoCompras(
+                                            widget.brand.id!, bonoSelected.id!);
+
+                                      }
+                                      await Future.delayed(
+                                          const Duration(seconds: 3));
+                                      Navigator.of(context).pop();
                                     }
-                                    await Future.delayed(const Duration(seconds: 3));
-                                    Navigator.of(context).pop();
                                   },
                             child: Container(
                                 height:
@@ -897,6 +1014,286 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     );
   }
 
+  Widget optionTextWrite(
+      var keyboard,
+      var titleText,
+      var subtitleText,
+      var hintText,
+      var errorText,
+      bool editable,
+      var controller,
+      bool checkBox,
+      var variable) {
+    return Column(
+      children: [
+        Padding(
+            padding:
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                !checkBox && variable != 'ses'
+                    ? Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        titleText,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      subtitleText != ""
+                          ?  Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          subtitleText,
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      )
+                          :  Container(),
+                    ],
+                  ),
+                )
+                    : variable != 'ses'
+                    ? Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        titleText,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1
+                            ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      subtitleText != ""
+                          ? Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          subtitleText,
+                          style:
+                          Theme.of(context).textTheme.caption,
+                        ),
+                      )
+                          : Container(),
+                    ],
+                  ),
+                )
+                    : Container(),
+
+                variable == 'ses'
+                    ? Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        titleText,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline1
+                            ?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
+                      ),
+                      subtitleText != "" ? variable != 'ses'? Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          subtitleText,
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      ) : isSelectedDays[0] == false? Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          subtitleText,
+                          style: Theme.of(context).textTheme.caption,
+                        ),
+                      ) : Container() : Container(),
+                    ],
+                  ),
+                )
+                    : Container(),
+
+                variable == 'ses' && isSelectedDays[0] == false
+                    ? Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Transform.scale(
+                      scale: 1.3,
+                      child: Checkbox(
+                        value: noSessions,
+                        onChanged: setSeeSessions,
+                        checkColor: AppColors.white,
+                        activeColor: Styles.mainColor,
+                      ),
+                    )
+                  ],
+                )
+                    : Container(),
+              ],
+            )),
+        !checkBox && variable != 'ses'
+            ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).size.height * 0.00),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                        keyboardType: keyboard,
+                        inputFormatters:
+                        variable == 'ses' || variable == 'price'
+                            ? [
+                          FilteringTextInputFormatter.allow(
+                              RegExp('[0-9.,]')),
+                        ]
+                            : null,
+                        minLines: 1,
+                        controller: controller,
+                        validator: (val) =>
+                        val!.isEmpty ? errorText : null,
+                        textCapitalization: TextCapitalization.sentences,
+                        onChanged: (val) {
+                          setState(() {
+                               if (variable == 'ses') {
+                                 bonoSelected.sessions = int.parse(val);
+                            } else if (variable == 'price') {
+                              double price =
+                              double.parse(val.replaceAll(',', '.'));
+                              print(roundDouble(price, 2));
+                              bonoSelected.price = roundDouble(price, 2);
+                            }
+                          });
+                        },
+                        style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color: Theme.of(context).disabledColor),
+                        decoration: InputDecoration(
+                          suffixText: variable == 'ses'
+                              ? "sesiones"
+                              : variable == 'price'
+                              ? "euros (€)"
+                              : "",
+                          hintStyle: Theme.of(context).textTheme.caption,
+                          hintText: hintText,
+                          //border: InputBorder.none,
+                          errorBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          disabledBorder: InputBorder.none,
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: editable,
+                      ),
+                    ),
+                  ],
+                )),
+          ],
+        )
+            : variable == 'ses' && !noSessions
+            ? Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: EdgeInsets.only(
+                    bottom:
+                    MediaQuery.of(context).size.height * 0.00),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Flexible(
+                      child: TextFormField(
+                        keyboardType: keyboard,
+                        inputFormatters:
+                        variable == 'ses' || variable == 'price'
+                            ? [
+                          FilteringTextInputFormatter.allow(
+                              RegExp('[0-9.,]')),
+                        ]
+                            : null,
+                        maxLines: variable == 'desc' ? 5 : null,
+                        minLines: 1,
+                        maxLength: variable == 'title'
+                            ? 20
+                            : variable == 'desc'
+                            ? 100
+                            : null,
+                        controller:
+                         controller,
+                        validator: (val) =>
+                        val!.isEmpty ? errorText : null,
+                        textCapitalization: variable == 'title'
+                            ? TextCapitalization.words
+                            : TextCapitalization.sentences,
+                        onChanged: (val) {
+                          setState(() {
+                            if (variable == 'ses') {
+                              bonoSelected.sessions = int.parse(val);
+                            } else if (variable == 'price') {
+                              double price = double.parse(
+                                  val.replaceAll(',', '.'));
+                              print(roundDouble(price, 2));
+                              bonoSelected.price = roundDouble(price, 2);
+                            }
+                          });
+                        },
+                        style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(
+                            color: Theme.of(context).disabledColor),
+                        decoration: InputDecoration(
+                          suffixText: variable == 'ses'
+                              ? "sesiones"
+                              : variable == 'price'
+                              ? "euros (€)"
+                              : "",
+                          hintStyle:
+                          Theme.of(context).textTheme.caption,
+                          hintText: hintText,
+                          //border: InputBorder.none,
+                          errorBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          disabledBorder: InputBorder.none,
+                          enabledBorder: const UnderlineInputBorder(
+                            borderSide:
+                            BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide:
+                            BorderSide(color: Colors.grey),
+                          ),
+                        ),
+                        enabled: editable,
+                      ),
+                    ),
+                  ],
+                )),
+          ],
+        )
+            : Container(),
+      ],
+    );
+  }
+
   Widget optionConditionsWrite(
       var keyboard,
       var titleText,
@@ -948,15 +1345,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 daysSelectoWidget(0, 'No expira', true),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                 daysSelectoWidget(1, '30', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                 daysSelectoWidget(2, '60', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                /*
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                 daysSelectoWidget(3, '90', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                 */
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+
               ],
             ))
             : variable == 'maxw' || variable == 'ses'
@@ -1021,319 +1417,18 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       ],
     );
   }
-/*
-  Widget optionTextWrite(
-      var keyboard,
-      var titleText,
-      var subtitleText,
-      var hintText,
-      var errorText,
-      bool editable,
-      var controller,
-      bool checkBox,
-      var variable) {
-    return Column(
-      children: [
-        Padding(
-            padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                !checkBox && variable != 'ses'
-                    ? Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        titleText,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline1
-                            ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25),
-                      ),
-                      subtitleText != ""
-                          ?  Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          subtitleText,
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                      )
-                          :  Container(),
-                    ],
-                  ),
-                )
-                    : variable != 'ses'
-                    ? Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        titleText,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline1
-                            ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25),
-                      ),
-                      subtitleText != ""
-                          ? Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          subtitleText,
-                          style:
-                          Theme.of(context).textTheme.caption,
-                        ),
-                      )
-                          : Container(),
-                    ],
-                  ),
-                )
-                    : Container(),
 
-                variable == 'ses'
-                    ? Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        titleText,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline1
-                            ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25),
-                      ),
-                      subtitleText != "" ? variable != 'ses'? Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          subtitleText,
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                      ) : isSelectedDays[0] == false? Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          subtitleText,
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                      ) : Container() : Container(),
-                    ],
-                  ),
-                )
-                    : Container(),
+  void setSeeSessions(bool? seeSes) {
+    noSessions = seeSes!;
+    clasesController.text = '';
+    //bonoSelected.sessions = 0;
 
-                variable == 'ses' && isSelectedDays[0] == false
-                    ? Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Transform.scale(
-                      scale: 1.3,
-                      child: Checkbox(
-                        value: noSessions,
-                        onChanged: !widget.edit? setSeeSessions : null,
-                        checkColor: AppColors.white,
-                        activeColor: Styles.mainColor,
-                      ),
-                    )
-                  ],
-                )
-                    : Container(),
-
-                checkBox
-                    ? Container(),
-                    : Container(),
-              ],
-            )),
-        !checkBox && variable != 'ses'
-            ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height * 0.00),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Flexible(
-                      child: TextFormField(
-                        keyboardType: keyboard,
-                        inputFormatters:
-                        variable == 'ses' || variable == 'price'
-                            ? [
-                          FilteringTextInputFormatter.allow(
-                              RegExp('[0-9.,]')),
-                        ]
-                            : null,
-                        initialValue:  variable == 'ses'
-                            ? bonoSelected.sessions.toString()
-                            : variable == 'price'
-                            ? bonoSelected.price.toString()
-                            : null,
-                        minLines: 1,
-                        controller: controller,
-                        validator: (val) =>
-                        val!.isEmpty ? errorText : null,
-                        textCapitalization: variable == 'title'
-                            ? TextCapitalization.words
-                            : TextCapitalization.sentences,
-                        onChanged: (val) {
-                          setState(() {
-                            if (variable == 'ses') {
-                                bonoSelected.sessions = int.parse(val);
-                            } else if (variable == 'price') {
-                              double price =
-                              double.parse(val.replaceAll(',', '.'));
-                              print(roundDouble(price, 2));
-                              bonoSelected.price = roundDouble(price, 2);
-                            }
-                          });
-                        },
-                        style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(
-                            color: Theme.of(context).disabledColor),
-                        decoration: InputDecoration(
-                          suffixText: variable == 'ses'
-                              ? "sesiones"
-                              : variable == 'price'
-                              ? "euros (€)"
-                              : "",
-                          hintStyle: Theme.of(context).textTheme.caption,
-                          hintText: hintText,
-                          //border: InputBorder.none,
-                          errorBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red),
-                          ),
-                          disabledBorder: InputBorder.none,
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                        enabled: editable,
-                      ),
-                    ),
-                  ],
-                )),
-          ],
-        )
-            : variable == 'ses' && !noSessions
-            ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-                padding: EdgeInsets.only(
-                    bottom:
-                    MediaQuery.of(context).size.height * 0.00),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Flexible(
-                      child: TextFormField(
-                        keyboardType: keyboard,
-                        inputFormatters:
-                        variable == 'ses' || variable == 'price'
-                            ? [
-                          FilteringTextInputFormatter.allow(
-                              RegExp('[0-9.,]')),
-                        ]
-                            : null,
-                        initialValue: widget.edit == true
-                            ? variable == 'title'
-                            ? bono.title
-                            : variable == 'desc'
-                            ? bono.description
-                            : variable == 'ses'
-                            ? bono.sessions.toString()
-                            : variable == 'price'
-                            ? bono.price.toString()
-                            : null
-                            : null,
-                        maxLines: variable == 'desc' ? 5 : null,
-                        minLines: 1,
-                        maxLength: variable == 'title'
-                            ? 20
-                            : variable == 'desc'
-                            ? 100
-                            : null,
-                        controller:
-                        widget.edit == true ? null : controller,
-                        validator: (val) =>
-                        val!.isEmpty ? errorText : null,
-                        textCapitalization: variable == 'title'
-                            ? TextCapitalization.words
-                            : TextCapitalization.sentences,
-                        onChanged: (val) {
-                          setState(() {
-                            if (variable == 'title') {
-                              bono.title = val;
-                            } else if (variable == 'desc') {
-                              bono.description = val;
-                            } else if (variable == 'ses') {
-                              bono.sessions = int.parse(val);
-                            } else if (variable == 'price') {
-                              double price = double.parse(
-                                  val.replaceAll(',', '.'));
-                              print(roundDouble(price, 2));
-                              bono.price = roundDouble(price, 2);
-                            }
-                          });
-                        },
-                        style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(
-                            color: Theme.of(context).disabledColor),
-                        decoration: InputDecoration(
-                          suffixText: variable == 'ses'
-                              ? "sesiones"
-                              : variable == 'price'
-                              ? "euros (€)"
-                              : "",
-                          hintStyle:
-                          Theme.of(context).textTheme.caption,
-                          hintText: hintText,
-                          //border: InputBorder.none,
-                          errorBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red),
-                          ),
-                          disabledBorder: InputBorder.none,
-                          enabledBorder: const UnderlineInputBorder(
-                            borderSide:
-                            BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: const UnderlineInputBorder(
-                            borderSide:
-                            BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                        enabled: editable,
-                      ),
-                    ),
-                  ],
-                )),
-          ],
-        )
-            : Container(),
-      ],
-    );
+    setState(() {});
   }
-
- */
 
   Widget daysSelectoWidget(int index, String numberDays, bool customized) {
     return GestureDetector(
       onTap: () {
-        if(widget.edit == false) {
           isSelectedDays[0] = false;
           isSelectedDays[1] = false;
           isSelectedDays[2] = false;
@@ -1355,19 +1450,19 @@ class _OtorgarBonoState extends State<OtorgarBono> {
           //bono.condition!.expirationTime = condition.expirationTime;
 
           setState(() {});
-        }
+
       },
       child:
       customized == false? Container(
         height: MediaQuery.of(context).size.width * 0.15,
-        width: MediaQuery.of(context).size.width * 0.18,
+        width: MediaQuery.of(context).size.width * 0.15,
         decoration: BoxDecoration(
             border: Border.all(
               width: isSelectedDays[index] == true
                   ? 3 : 1,
               color: isSelectedDays[index] == true
                   ? Styles.mainColor
-                  : widget.edit == false? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                  : Theme.of(context).primaryColor,
             ),
             borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Align(
@@ -1378,27 +1473,24 @@ class _OtorgarBonoState extends State<OtorgarBono> {
             children: [
               Text(
                 customized == false ? numberDays : "No expira",
-                style: widget.edit == false? Theme.of(context).textTheme.button : Theme.of(context).textTheme.button!.copyWith(color: Theme.of(context).disabledColor),
-              ),
+                style: Theme.of(context).textTheme.button),
               customized == false
                   ? Text(
                 AppLocalizations.of(context)!.days,
-                style: widget.edit == false? Theme.of(context).textTheme.button : Theme.of(context).textTheme.button!.copyWith(color: Theme.of(context).disabledColor),
-              )
-                  : Container(),
+                style: Theme.of(context).textTheme.button) : Container(),
             ],
           ),
         ),
       ) : !noSessions?
       Container(
         height: MediaQuery.of(context).size.width * 0.15,
-        width: MediaQuery.of(context).size.width * 0.2,
+        width: MediaQuery.of(context).size.width * 0.20,
         decoration: BoxDecoration(
             border: Border.all(
               width: isSelectedDays[index] == true ? 3 : 1,
               color: isSelectedDays[index] == true
                   ? Styles.mainColor
-                  : widget.edit == false? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                  :  Theme.of(context).primaryColor,
             ),
             borderRadius: const BorderRadius.all(Radius.circular(20))),
         child: Align(
@@ -1409,14 +1501,13 @@ class _OtorgarBonoState extends State<OtorgarBono> {
             children: [
               Text(
                 customized == false ? numberDays : "No expira",
-                style: widget.edit == false? Theme.of(context).textTheme.button : Theme.of(context).textTheme.button!.copyWith(color: Theme.of(context).disabledColor),
-              ),
+                style: Theme.of(context).textTheme.button),
+
               customized == false
                   ? Text(
                 AppLocalizations.of(context)!.days,
-                style: widget.edit == false? Theme.of(context).textTheme.button : Theme.of(context).textTheme.button!.copyWith(color: Theme.of(context).disabledColor),
-              )
-                  : Container(),
+                style: Theme.of(context).textTheme.button)
+              : Container(),
             ],
           ),
         ),

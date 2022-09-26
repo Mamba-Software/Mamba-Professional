@@ -46,11 +46,56 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
   // Bottom Sheet
   bool canConfirm = false;
 
+  var titleController = TextEditingController();
+  var freeCancellController = TextEditingController();
+  var weeklyController = TextEditingController();
+  var clasesController = TextEditingController();
+  var priceController = TextEditingController();
+
+  List<bool> isSelectedDays = [false, false, false, false];
+
+  bool noSessions = false;
+
+  Bono bonoSelected = Bono();
+
+  bool seeConditions = false;
+
   @override
   void initState() {
+    setBono();
     super.initState();
     paymentMethod = widget.bonoRequest.paymentMethod;
   }
+
+  Future<void> setBono() async {
+
+      bonoSelected = widget.bono;
+      seeConditions = false;
+      setConditionsBono(bonoSelected);
+
+    setState(() {});
+  }
+
+  void setConditionsBono(Bono _bono) {
+    freeCancellController.text = (_bono.condition?.cancelTime!).toString();
+    weeklyController.text = (_bono.condition?.weeklySessions!).toString();
+    clasesController.text = (_bono.sessions!).toString();
+    priceController.text = (_bono.price!).toString();
+    isSelectedDays[0] = false;
+    isSelectedDays[1] = false;
+    isSelectedDays[2] = false;
+    isSelectedDays[3] = false;
+    if (_bono.condition?.expirationTime == 0) {
+      isSelectedDays[0] = true;
+    } else if (_bono.condition?.expirationTime == 30) {
+      isSelectedDays[1] = true;
+    } else if (_bono.condition?.expirationTime == 60) {
+      isSelectedDays[2] = true;
+    } else {
+      isSelectedDays[3] = true;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -430,7 +475,7 @@ class _ConfirmBuyBonoState extends State<ConfirmBuyBono> {
                         // Notifications Service
                         _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, widget.bono);
                         // Build Purchase Object
-                        await _paymentDataService.addPurchaseToPayments(purchase);
+                        await _paymentDataService.addPurchaseToPayments(purchase, bonoSelected);
                         await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest.id!);
                         await _brandDataService.updateBonoCompras(widget.brand.id!, widget.bonoRequest.bonoId!);
                         Navigator.of(context).pop();

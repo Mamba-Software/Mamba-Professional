@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:uuid/uuid.dart';
 
@@ -16,7 +17,7 @@ class PaymentFirebaseCalls {
 
   //Adders
 
-  Future<void> addPurchaseToPayments(Purchase purchase) async
+  Future<void> addPurchaseToPayments(Purchase purchase, Bono bonoSelected) async
   {
       var uid = Uuid().v4();
       await _firestore
@@ -29,7 +30,11 @@ class PaymentFirebaseCalls {
         "userId": purchase.userId,
         "brandId": purchase.brandId!,
         "bonoId": purchase.bonoId,
-        "price": purchase.price,
+        "price": purchase.price, //bonoSelected.price
+        "sessions": bonoSelected.sessions,
+        "weeklySessions": bonoSelected.condition?.weeklySessions,
+        "cancelTime": bonoSelected.condition?.cancelTime,
+        "expirationTime": bonoSelected.condition?.expirationTime,
         "paymentMethod": purchase.paymentMethod,
       }).catchError((err) {
         print(err);

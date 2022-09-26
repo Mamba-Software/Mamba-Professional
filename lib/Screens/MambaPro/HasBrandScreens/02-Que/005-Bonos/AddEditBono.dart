@@ -1374,7 +1374,11 @@ class _AddEditBonoState extends State<AddEditBono>
         condition.expirationTime = 90;
       }
 
+   /* if(bono.sessions == 0) {
+      bono.sessions = 10000;
+    }
 
+    */
     if (widget.edit == false) {
       _brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
     } else {

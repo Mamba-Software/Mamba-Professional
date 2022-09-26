@@ -4230,6 +4230,10 @@ exports.userPurchasesBono = functions
      "userId": purchaseDoc.userId,
      "price": purchaseDoc.price,
      "paymentMethod": purchaseDoc.paymentMethod,
+     "sessions": purchaseDoc.sessions,
+     "weeklySessions": purchaseDoc.weeklySessions,
+     "cancelTime": purchaseDoc.cancelTime,
+     "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -4237,6 +4241,10 @@ exports.userPurchasesBono = functions
      "bonoId": purchaseDoc.bonoId,
      "price": purchaseDoc.price,
      "paymentMethod": purchaseDoc.paymentMethod,
+     "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -4245,17 +4253,21 @@ exports.userPurchasesBono = functions
      "price": purchaseDoc.price,
      "paymentMethod": purchaseDoc.paymentMethod,
      "brandId": purchaseDoc.brandId,
+    "sessions": purchaseDoc.sessions,
+   "weeklySessions": purchaseDoc.weeklySessions,
+   "cancelTime": purchaseDoc.cancelTime,
+   "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
      "title": bonoDoc.title,
-     "sessions": bonoDoc.sessions,
+     "sessions": purchaseDoc.sessions,
      "price": purchaseDoc.price,
      "purchaseId": purchaseId,
      "brandId": purchaseDoc.brandId,
-     "expirationTime": bonoDoc.expirationTime,
-     "cancelTime": bonoDoc.cancelTime,
-     "weeklySessions": bonoDoc.weeklySessions,
+     "expirationTime": purchaseDoc.expirationTime,
+     "cancelTime": purchaseDoc.cancelTime,
+     "weeklySessions": purchaseDoc.weeklySessions,
    });
 
    // Send Notification to User
@@ -4263,7 +4275,7 @@ exports.userPurchasesBono = functions
     payload = {
       notification: {
         title: "Bono "+bonoDoc.title.toUpperCase()+" otorgado 🤙",
-        body: "Ya puedes disfrutar de sus "+bonoDoc.sessions+ " intensas sesiones",
+        body: "Ya puedes disfrutar de sus "+ purchaseDoc.sessions+ " intensas sesiones",
       },
       data: {
         route: "Notifications",                
@@ -4273,7 +4285,7 @@ exports.userPurchasesBono = functions
     payload = {
       notification: {
         title: "Val "+bonoDoc.title.toUpperCase()+" otorgat 🤙",
-        body: "Ja pots gaudir de "+bonoDoc.sessions+ " intenses sessions",
+        body: "Ja pots gaudir de "+ purchaseDoc.sessions+ " intenses sessions",
       },
       data: {
         route: "Notifications",                  

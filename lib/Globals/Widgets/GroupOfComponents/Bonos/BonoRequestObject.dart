@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ConfirmBuyBono.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
 
 class BonoRequestObject extends StatefulWidget {
   Bono bono;
@@ -127,11 +128,12 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
           builder: (BuildContext context) {
             return FractionallySizedBox(
               heightFactor: 0.95,
-              child: ConfirmBuyBono(
+              child: OtorgarBono(
                 bono: widget.bono,
                 user: widget.user,
                 brand: widget.brand,
                 bonoRequest: widget.bonoRequest,
+                edit: false,
               ),
             );
           },

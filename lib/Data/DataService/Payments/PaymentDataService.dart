@@ -1,4 +1,5 @@
 import 'package:mamba_castelldefels/Data/DataService/Payments/PaymentFirebaseCalls.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 
 import '../../Models/Purchase.dart';
 
@@ -12,7 +13,7 @@ class PaymentDataService {
   // Get Data
 
   // Add Data
-  Future<void> addPurchaseToPayments(Purchase purchase) => _firebase.addPurchaseToPayments(purchase);
+  Future<void> addPurchaseToPayments(Purchase purchase, Bono bonoSelected) => _firebase.addPurchaseToPayments(purchase, bonoSelected);
 
   // Update Data
 
