@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonosWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -35,6 +38,10 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
   final _roomDataService = RoomDataService();
+  final _brandDataService = BrandDataService();
+
+  var _topSnackBar = TopSnackBar();
+
   // Boolean Loading
   bool isLoading = false;
   // Usuario
@@ -46,6 +53,10 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   int totalEvents  = 0;
   int thisMonthEvents  = 0;
   List<Event> listEvents = [];
+  List<Bono> listBonos = [];
+  List<Bono> userBonos = [];
+
+  Bono bonoFound = Bono();
 
   // init Widget state. Loading user info.
   @override
@@ -62,6 +73,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     user = await _userDataService.getUserDetails(widget.userID);
     getEventsDone();
   }
+
 
   // Gets the events passed by the trainer.
   void getEventsDone() async {
@@ -202,6 +214,16 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       textAlign: TextAlign.left
                                   ),
                                   onTap: () async {
+                                    listBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+                                    userBonos = await _userDataService.getUserBonos(user?.id!);
+
+                                    for (int i = 0; i < userBonos.length; ++i) {
+                                      bonoFound = listBonos.firstWhere((element) => element.id == userBonos[i].id);
+                                      if (bonoFound.id != '') {
+                                        listBonos.remove(bonoFound);
+                                      }
+                                    }
+                                    if(listBonos.isNotEmpty) {
                                     Navigator.pop(context);
                                     showModalBottomSheet<bool?>(
                                       context: context,
@@ -213,15 +235,20 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       ),
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       builder: (BuildContext context) {
-                                        return FractionallySizedBox(
-                                          heightFactor: 0.95,
-                                          child: OtorgarBono(
-                                            user: user!,
-                                            brand: currentBrand,
-                                          ),
-                                        );
-                                      },
+
+                                          return FractionallySizedBox(
+                                            heightFactor: 0.95,
+                                            child: OtorgarBono(
+                                              user: user!,
+                                              brand: currentBrand,
+                                            ),
+                                          );
+                                        }
                                     );
+                                  }
+                                  else {
+                                  _topSnackBar.topsnackbar(context, 'Este usuario ya tiene todos los bonos de tu marca', AppColors.red);
+                                  }
 
                                   },
                                 ),

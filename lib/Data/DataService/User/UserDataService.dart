@@ -39,7 +39,7 @@ class UserDataService {
   Future<List<ReceivedNotification>> getLocalNotifications(String userId) => _firebase.getLocalNotifications(userId);
   Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) => _firebase.getIndividualLocalNotification(userId, notificationId);
   Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) => _firebase.findEventLocalNotification(userId, eventId);
-  Future<List<Bono>> getUserBonos(String userId) => _firebase.getUserBonos(userId);
+  Future<List<Bono>> getUserBonos(String? userId) => _firebase.getUserBonos(userId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);

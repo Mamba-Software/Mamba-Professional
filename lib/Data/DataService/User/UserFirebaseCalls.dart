@@ -348,7 +348,7 @@ class UserFirebaseCalls {
     return notis;
   }
 
-  Future<List<Bono>> getUserBonos(String userId) async {
+  Future<List<Bono>> getUserBonos(String? userId) async {
     List<Bono> userBonos = [];
     QuerySnapshot querySnapshot = await _firestore.collection(users)
         .doc(userId)

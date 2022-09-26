@@ -307,7 +307,7 @@ class BonoCardState extends State<BonoCard> {
                                             SizedBox(
                                               width: widget.width * 0.05,
                                             ),
-                                            bono.sessions == 0
+                                            bono.sessions! > 5000
                                                 ? Text(
                                                     AppLocalizations.of(
                                                                 context)!
@@ -450,7 +450,7 @@ class BonoCardState extends State<BonoCard> {
                                               SizedBox(
                                                 height: widget.width * 0.02,
                                               ),
-                                              bono.sessions == 0?
+                                              bono.sessions! > 5000?
                                               Text(
                                                 AppLocalizations.of(
                                                     context)!.ilimitadas.toUpperCase(),
@@ -563,7 +563,7 @@ class BonoCardState extends State<BonoCard> {
                                                   SizedBox(
                                                     width: widget.width * 0.05,
                                                   ),
-                                                  bono.sessions == 0?
+                                                  bono.sessions! > 5000?
                                                   Container()
                                                   :
                                                     Text(

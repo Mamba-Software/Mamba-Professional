@@ -142,14 +142,11 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         }
       }
       if (bonos.isNotEmpty) {
-        bonoSelected = bonos[0];
+        bonoSelected.setBasicData = bonos[0];
+        bonoSelected.setConditionsData = bonos[0].condition!;
         _currentPage = 0;
         isBonoSelected = true;
         setConditionsBono(bonoSelected);
-      }
-      if (isBonoSelected == false) {
-        _topSnackBar.topsnackbar(context, 'Este usuario ya tiene todos los bonos de tu marca', AppColors.red);
-        Navigator.of(context).pop();
       }
     } else {
       bonos.add(widget.bono!);
@@ -168,7 +165,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
 
   void setConditionsBono(Bono _bono) {
     priceController.text = _bono.price.toString();
-    if(_bono.sessions == 0) {
+    if(_bono.sessions! > 5000) {
       clasesController.text = '';
       noSessions = true;
     }
@@ -442,10 +439,11 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                 true,
                                 clasesController,
                                 false,
-                                'ses'),
+                                'ses',
+                            false),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                          Container(
+                          !editBono? Container(
                             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                             decoration: BoxDecoration(
                                 color: Theme.of(context).backgroundColor,
@@ -460,9 +458,10 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                 true,
                                 priceController,
                                 false,
-                                'price'),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                                'price',
+                            false),
+                          ) : Container(),
+                          !editBono? SizedBox(height: MediaQuery.of(context).size.height * 0.01) : Container(),
                           Container(
                             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                             decoration: BoxDecoration(
@@ -800,13 +799,16 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                             onTap: isLoading
                                 ? null
                                 : () async {
-                                    if(canConfirm) {
+                                    if(freeCancellController.text != '' &&
+                                     weeklyController.text != '' &&
+                                        (clasesController.text != '' || noSessions) &&
+                                     priceController.text != '') {
                                       setState(() {
                                         isLoading = true;
                                       });
 
                                       if (noSessions) {
-                                        bonoSelected.sessions = 0;
+                                        bonoSelected.sessions = 10000;
                                       }
                                       if (editBono) {
                                         _userDataService.updateUserBono(
@@ -866,6 +868,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                       await Future.delayed(
                                           const Duration(seconds: 3));
                                       Navigator.of(context).pop();
+                                    }
+                                    else {
+                                      _topSnackBar.topsnackbar(context, 'Se deben rellenar todos los campos personalizados', AppColors.red);
                                     }
                                   },
                             child: Container(
@@ -960,60 +965,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     );
   }
 
-  Widget conditionsPage() {
-    return Column(
-      children: [
-        Form(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.08),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  optionConditionsWrite(
-                    TextInputType.text,
-                    AppLocalizations.of(context)!.expiresAt + "...",
-                    AppLocalizations.of(context)!.expiresAtDesc,
-                    AppLocalizations.of(context)!.titleHint,
-                    AppLocalizations.of(context)!.titleError,
-                    true,
-                    titleController,
-                    'exp',
-                     true
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                  optionConditionsWrite(
-                      TextInputType.number,
-                      AppLocalizations.of(context)!.freeCancel,
-                      AppLocalizations.of(context)!.freeCancelDesc,
-                      AppLocalizations.of(context)!.titleHint,
-                      AppLocalizations.of(context)!.titleError,
-                      true,
-                      freeCancellController,
-                      'ses',
-                      true
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                  optionConditionsWrite(
-                      TextInputType.number,
-                      AppLocalizations.of(context)!.trainsPerWeek,
-                      AppLocalizations.of(context)!.trainsPerWeekDesc,
-                      AppLocalizations.of(context)!.titleHint,
-                      AppLocalizations.of(context)!.titleError,
-                      true,
-                      weeklyController,
-                      'maxw',
-                      true
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                ]),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget optionTextWrite(
       var keyboard,
       var titleText,
@@ -1023,12 +974,13 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       bool editable,
       var controller,
       bool checkBox,
-      var variable) {
+      var variable,
+      bool wantPadding) {
     return Column(
       children: [
         Padding(
             padding:
-            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+            EdgeInsets.only(top: wantPadding ? MediaQuery.of(context).size.height * 0.03 : 0),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[

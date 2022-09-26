@@ -147,7 +147,7 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.description = widget.bono.description;
       bono.price = widget.bono.price;
       bono.sessions = widget.bono.sessions;
-      if (bono.sessions == 0) {
+      if (bono.sessions! > 5000) {
         noSessions = true;
         clasesController.text = '';
       }
@@ -1249,7 +1249,7 @@ class _AddEditBonoState extends State<AddEditBono>
   void setSeeSessions(bool? seeSes) {
     noSessions = seeSes!;
     clasesController.text = '';
-    bono.sessions = 0;
+    bono.sessions = 10000;
 
     setState(() {});
   }
