@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
@@ -360,6 +361,66 @@ class UserFirebaseCalls {
       }
     }
     return userBonos;
+  }
+
+  Future<Event> getLastUserEvent(String? userId) async {
+    List<Event> events = [];
+    List<Event> privateEvents = [];
+    QuerySnapshot querySnapshot = await _firestore.collection(users)
+        .doc(userId)
+        .collection("Events").get();
+    QuerySnapshot querySnapshotPrivate = await _firestore.collection(users)
+        .doc(userId)
+        .collection("Events").doc('Private Events').collection('Private Events').get();
+
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if (querySnapshot.docs[i].id != "Private Events") {
+        events.add(Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+    }
+    for (int i = 0; i < querySnapshotPrivate.docs.length; i++) {
+      privateEvents.add(Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+
+    print(events.length);
+    print(privateEvents.length);
+
+    events.sort((a, b) {
+      return a.doneAt!.toDate().compareTo(b.doneAt!.toDate());
+    });
+
+    privateEvents.sort((a, b) {
+      return a.doneAt!.toDate().compareTo(b.doneAt!.toDate());
+    });
+
+    if(privateEvents.isEmpty)
+      {
+        if(events.isEmpty) {
+          return Event();
+        }
+        else {
+          return events[0];
+        }
+
+      }
+
+    else {
+      if(events.isEmpty) {
+        return privateEvents[0];
+      }
+      else {
+        if(events[0].doneAt!.toDate().compareTo(privateEvents[0].doneAt!.toDate()) == 0)
+        {
+          return events[0];
+        }
+        else {
+          return privateEvents[0];
+        }
+
+      }
+    }
+
+
   }
 
   //Add

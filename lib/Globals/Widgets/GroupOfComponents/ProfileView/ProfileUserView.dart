@@ -247,7 +247,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     );
                                   }
                                   else {
-                                  _topSnackBar.topsnackbar(context, 'Este usuario ya tiene todos los bonos de tu marca', AppColors.red);
+                                  _topSnackBar.topsnackbar(context, AppLocalizations.of(context)!.allBonosInClient, AppColors.red);
                                   }
 
                                   },

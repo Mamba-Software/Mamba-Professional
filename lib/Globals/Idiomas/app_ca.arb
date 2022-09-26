@@ -530,5 +530,9 @@
   "noBonosCreated": "No s'ha creat cap bo",
   "createFistBono": "Crea el teu primer val",
   "userBuysBonoTrainer": "{user} ha comprat el val {bono}",
-  "userBuysBonoTrainerSubtitle": "Pots trobar tots els detalls del seu progrés en el perfil de l'usuari"
+  "userBuysBonoTrainerSubtitle": "Pots trobar tots els detalls del seu progrés en el perfil de l'usuari",
+  "activeClients": "Clients actius",
+  "desactiveClient": "Clients inactius",
+  "personalizedFieldsFirst": "S'han d'omplir tots els camps personalitzats",
+  "allBonosInClient": "Aquest client ja té tots els vals de la teva marca"
 }

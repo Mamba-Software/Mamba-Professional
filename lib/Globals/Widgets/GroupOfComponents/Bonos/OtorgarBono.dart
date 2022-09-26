@@ -870,7 +870,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                       Navigator.of(context).pop();
                                     }
                                     else {
-                                      _topSnackBar.topsnackbar(context, 'Se deben rellenar todos los campos personalizados', AppColors.red);
+                                      _topSnackBar.topsnackbar(context, AppLocalizations.of(context)!.personalizedFieldsFirst, AppColors.red);
                                     }
                                   },
                             child: Container(

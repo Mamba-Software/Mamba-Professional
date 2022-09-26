@@ -2377,5 +2377,23 @@
   "userBuysBonoTrainerSubtitle": "Puedes encontrar todos los detalles de su progreso en el perfil del usuario",
   "@userBuysBonoTrainerSubtitle": {
     "description": "userJoinsBrandUser message"
+  },
+  "activeClients": "Clientes activos",
+  "@activeClients": {
+    "description": "active client message"
+  },
+  "desactiveClient": "Clientes inactivos",
+  "@desactiveClient": {
+    "description": "desactive client message"
+  },
+  "personalizedFieldsFirst": "Se deben rellenar todos los campos personalizados",
+  "@personalizedFieldsFirst": {
+    "description": "personalizedFieldsFirst message"
+  },
+  "allBonosInClient": "Este cliente ya tiene todos los bonos de tu marca",
+  "@allBonosInClient": {
+    "description": "allBonosInClient message"
   }
+
+
 }
