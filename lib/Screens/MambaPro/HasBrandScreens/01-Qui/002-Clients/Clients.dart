@@ -281,6 +281,8 @@ class _Clients extends State<Clients> {
                                                         ListTile(
                                                           onTap: () {
                                                               setStateBottom(() {
+                                                                searchController.clear();
+                                                                filterSearchResults("");
                                                                 filterByClients[0] = !filterByClients[0];
                                                                 setFilters();
                                                                 filteredMembers = _orderFilter.orderFilter(filteredMembers, allClients, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
@@ -304,6 +306,8 @@ class _Clients extends State<Clients> {
                                                         ListTile(
                                                           onTap: () {
                                                              setStateBottom(() {
+                                                               searchController.clear();
+                                                               filterSearchResults("");
                                                                filterByClients[1] = !filterByClients[1];
                                                                setFilters();
                                                                filteredMembers = _orderFilter.orderFilter(filteredMembers, allClients, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
@@ -337,6 +341,8 @@ class _Clients extends State<Clients> {
                                                         ListTile(
                                                           onTap: () {
                                                              setStateBottom(() {
+                                                               searchController.clear();
+                                                               filterSearchResults("");
                                                                orderByClients[0] = !orderByClients[0];
                                                                orderByClients[1] = !orderByClients[1];
                                                                setFilters();
@@ -360,6 +366,8 @@ class _Clients extends State<Clients> {
                                                         ListTile(
                                                           onTap: () {
                                                             setStateBottom(() {
+                                                              searchController.clear();
+                                                              filterSearchResults("");
                                                               orderByClients[1] = !orderByClients[1];
                                                               orderByClients[0] = !orderByClients[0];
                                                               setFilters();
@@ -383,6 +391,8 @@ class _Clients extends State<Clients> {
                                                         ListTile(
                                                           onTap: () {
                                                                setStateBottom(() {
+                                                                 searchController.clear();
+                                                                 filterSearchResults("");
                                                                  orderByClients[2] = !orderByClients[2];
                                                                  orderByClients[3] = !orderByClients[3];
                                                                  setFilters();
@@ -406,6 +416,8 @@ class _Clients extends State<Clients> {
                                                         ListTile(
                                                           onTap: () {
                                                               setStateBottom(() {
+                                                                searchController.clear();
+                                                                filterSearchResults("");
                                                                 orderByClients[3] = !orderByClients[3];
                                                                 orderByClients[2] = !orderByClients[2];
                                                                 setFilters();

@@ -6,8 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Payments/PaymentDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
@@ -23,7 +25,9 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+import '../../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
 import '../../Components/TopSnackBar/TopSnackBar.dart';
 
 
@@ -47,6 +51,11 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   final _brandDataService = BrandDataService();
   final _paymentDataService = PaymentDataService();
   final _userDataService = UserDataService();
+  final _purchaseDataService = PurchaseDataService();
+
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+
 
   final NotificationService _notificationService = NotificationService();
 
@@ -91,6 +100,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   int? _currentPage;
   PageController? _pageController;
 
+  DateTimeRange? _selectedDateRange;
+
   @override
   void initState() {
     if (widget.edit != null && widget.edit == true) {
@@ -100,6 +111,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     if(widget.bonoRequest != null) {
       isBonoRequest = true;
       paymentMethod = widget.bonoRequest?.paymentMethod;
+      startDate = DateTime.now();
     }
     else {
       paymentMethod = 2;
@@ -127,6 +139,11 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
     );
+  }
+
+  Future<void> getPurchase() async {
+    Purchase? purchase = await _purchaseDataService.getPurchaseInfo(bonoSelected.purchaseId!);
+    startDate = purchase.purchasedAt!.toDate();
   }
 
   Future<void> getBonos() async {
@@ -160,10 +177,16 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       }
       setConditionsBono(bonoSelected);
     }
+
+    if(widget.bonoRequest == null && editBono) {
+      getPurchase();
+    }
+
     setState(() {});
   }
 
   void setConditionsBono(Bono _bono) {
+    int? days = _bono.condition?.expirationTime!;
     priceController.text = _bono.price.toString();
     if(_bono.sessions! > 5000) {
       clasesController.text = '';
@@ -182,12 +205,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     isSelectedDays[3] = false;
     if (_bono.condition?.expirationTime == 0) {
       isSelectedDays[0] = true;
-    } else if (_bono.condition?.expirationTime == 30) {
+    }  else {
       isSelectedDays[1] = true;
-    } else if (_bono.condition?.expirationTime == 60) {
-      isSelectedDays[2] = true;
-    } else {
-      isSelectedDays[3] = true;
+       endDate = DateTime.now().add(Duration(days: days!));
     }
   }
 
@@ -360,9 +380,10 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                 physics: const BouncingScrollPhysics(),
                                 controller: _pageController,
                                 onPageChanged: (int page) {
-                                  setState(() {
+                                  setState(() async {
                                     bonoSelected = bonos[page];
                                     _currentPage = page;
+
                                   });
                                 },
                                 itemCount: bonos.length,
@@ -813,6 +834,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                       if (editBono) {
                                         _userDataService.updateUserBono(
                                             user.id!, bonoSelected);
+                                        await Future.delayed(
+                                            const Duration(seconds: 3));
                                       }
                                       else if (isBonoRequest) {
                                         // Build Purchase Object
@@ -863,10 +886,10 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                         await _brandDataService
                                             .updateBonoCompras(
                                             widget.brand.id!, bonoSelected.id!);
+                                        await Future.delayed(
+                                            const Duration(seconds: 3));
 
                                       }
-                                      await Future.delayed(
-                                          const Duration(seconds: 3));
                                       Navigator.of(context).pop();
                                     }
                                     else {
@@ -1292,18 +1315,15 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         variable == 'exp'
             ? Padding(
     padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                daysSelectoWidget(0, 'No expira', true),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                 daysSelectoWidget(1, '30', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                daysSelectoWidget(2, '60', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-                daysSelectoWidget(3, '90', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                SizedBox(height: MediaQuery.of(context).size.width * 0.02),
+                NoExpireWidget(0, 'No expira', true),
+                //SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                //daysSelectoWidget(2, '60', false),
 
               ],
             ))
@@ -1378,30 +1398,30 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     setState(() {});
   }
 
-  Widget daysSelectoWidget(int index, String numberDays, bool customized) {
+  Widget NoExpireWidget(int index, String numberDays, bool customized) {
     return GestureDetector(
       onTap: () {
-          isSelectedDays[0] = false;
-          isSelectedDays[1] = false;
-          isSelectedDays[2] = false;
-          isSelectedDays[3] = false;
-          isSelectedDays[index] = true;
+        isSelectedDays[0] = false;
+        isSelectedDays[1] = false;
+        isSelectedDays[2] = false;
+        isSelectedDays[3] = false;
+        isSelectedDays[index] = true;
 
-          if (isSelectedDays[0]) {
-            bonoSelected.condition?.expirationTime = 0;
-          }
-          if (isSelectedDays[1]) {
-            bonoSelected.condition?.expirationTime = 30;
-          }
-          if (isSelectedDays[2]) {
-            bonoSelected.condition?.expirationTime = 60;
-          }
-          if (isSelectedDays[3]) {
-            bonoSelected.condition?.expirationTime = 90;
-          }
-          //bono.condition!.expirationTime = condition.expirationTime;
+        if (isSelectedDays[0]) {
+          bonoSelected.condition?.expirationTime = 0;
+        }
+        if (isSelectedDays[1]) {
+          bonoSelected.condition?.expirationTime = 30;
+        }
+        if (isSelectedDays[2]) {
+          bonoSelected.condition?.expirationTime = 60;
+        }
+        if (isSelectedDays[3]) {
+          bonoSelected.condition?.expirationTime = 90;
+        }
+        //bono.condition!.expirationTime = condition.expirationTime;
 
-          setState(() {});
+        setState(() {});
 
       },
       child:
@@ -1424,12 +1444,12 @@ class _OtorgarBonoState extends State<OtorgarBono> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                customized == false ? numberDays : "No expira",
-                style: Theme.of(context).textTheme.button),
+                  customized == false ? numberDays : "No expira",
+                  style: Theme.of(context).textTheme.button),
               customized == false
                   ? Text(
-                AppLocalizations.of(context)!.days,
-                style: Theme.of(context).textTheme.button) : Container(),
+                  AppLocalizations.of(context)!.days,
+                  style: Theme.of(context).textTheme.button) : Container(),
             ],
           ),
         ),
@@ -1452,14 +1472,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                customized == false ? numberDays : "No expira",
-                style: Theme.of(context).textTheme.button),
+                  customized == false ? numberDays : "No expira",
+                  style: Theme.of(context).textTheme.button),
 
               customized == false
                   ? Text(
-                AppLocalizations.of(context)!.days,
-                style: Theme.of(context).textTheme.button)
-              : Container(),
+                  AppLocalizations.of(context)!.days,
+                  style: Theme.of(context).textTheme.button)
+                  : Container(),
             ],
           ),
         ),
@@ -1467,4 +1487,137 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     );
   }
 
+  Widget daysSelectoWidget(int index, String numberDays, bool customized) {
+    return Row(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.width * 0.25,
+          width: MediaQuery.of(context).size.width * 0.70,
+          decoration: BoxDecoration(
+              border: Border.all(
+                width: isSelectedDays[index] == true ? 3 : 1,
+                color: isSelectedDays[index] == true
+                    ? Styles.mainColor
+                    :  Theme.of(context).primaryColor,
+              ),
+              borderRadius: const BorderRadius.all(Radius.circular(20))),
+          child: Align(
+            alignment: Alignment.center,
+            //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
+            child: InkWell(
+              onTap: _show,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context)!.from,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.width*0.10,
+                              width: MediaQuery.of(context).size.width*0.26,
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  startDate != null ?  currentUser!.idioma == 'es'? DateFormat.yMd('es').format(startDate!) :  DateFormat.yMd('cat').format(startDate!) : '--/-- ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.width * 0.20,
+                        width: 2,
+                        color: Theme.of(context).dividerColor,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              AppLocalizations.of(context)!.to,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 14,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.width*0.10,
+                              width: MediaQuery.of(context).size.width*0.26,
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  endDate != null ? currentUser!.idioma == 'es'? DateFormat.yMd('es').format(endDate!) : DateFormat.yMd('cat').format(endDate!) :  '--/-- ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+
+  }
+
+  void _show() async {
+    await showDialog<dynamic>(
+      context: context!,
+      builder: (BuildContext context) => CalendarPopupView(
+        barrierDismissible: true,
+        minimumDate: DateTime.now(),
+        initialEndDate: endDate,
+        initialStartDate: startDate,
+        onApplyClick: (DateTime startData, DateTime endData) {
+          setState(() {
+            isSelectedDays[0] = false;
+            isSelectedDays[1] = true;
+            startDate = startData;
+            endDate = endData;
+            bonoSelected.condition?.expirationTime = endDate.difference(startDate).inDays;
+          });
+        },
+      ),
+    );
+  }
 }

@@ -534,5 +534,9 @@
   "activeClients": "Clients actius",
   "desactiveClient": "Clients inactius",
   "personalizedFieldsFirst": "S'han d'omplir tots els camps personalitzats",
-  "allBonosInClient": "Aquest client ja té tots els vals de la teva marca"
+  "allBonosInClient": "Aquest client ja té tots els vals de la teva marca",
+  "from": "Del",
+  "to": "Fins",
+  "activeTrainers": "Entrandors actius",
+  "desactiveTrainers": "Entrandors inactius"
 }

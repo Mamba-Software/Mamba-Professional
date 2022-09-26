@@ -2393,7 +2393,22 @@
   "allBonosInClient": "Este cliente ya tiene todos los bonos de tu marca",
   "@allBonosInClient": {
     "description": "allBonosInClient message"
+  },
+  "from": "Desde",
+  "@from": {
+    "description": "from message"
+  },
+
+  "to": "Hasta",
+  "@to": {
+    "description": "to message"
+  },
+  "activeTrainers": "Entrandores activos",
+  "@activeTrainers": {
+    "description": "activeTrainers message"
+  },
+  "desactiveTrainers": "Entrandores inactivos",
+  "@desactiveTrainers": {
+    "description": "desactiveTrainers message"
   }
-
-
 }
