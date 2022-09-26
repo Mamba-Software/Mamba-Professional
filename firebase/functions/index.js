@@ -4475,10 +4475,6 @@ exports.usersPurchasesEvent = functions
         bonoDocUser.sessions
         );
 
-       await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).update({
-         "sessions": bonoDocUser.sessions - 1,
-       });
-
        return null;
 
 
