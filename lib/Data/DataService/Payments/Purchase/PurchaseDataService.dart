@@ -10,7 +10,7 @@ class PurchaseDataService {
   // Check Data
 
   // Get Data
-  Future<Purchase> getPurchaseInfo(String purchaseId) => _firebase.getPurchaseInfo(purchaseId);
+  Future<Purchase> getPurchaseInfo(String? purchaseId) => _firebase.getPurchaseInfo(purchaseId);
 
   // Add Data
 

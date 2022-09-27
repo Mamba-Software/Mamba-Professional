@@ -28,7 +28,7 @@ class PurchaseFirebaseCalls {
   String library = isProduction ? 'Library' : 'Library';
   String payments = isProduction ? 'Payments' : '7777 Payments';
 
-  Future<Purchase> getPurchaseInfo(String purchaseId) async {
+  Future<Purchase> getPurchaseInfo(String? purchaseId) async {
     Purchase purchase;
     // Get Main Purchase Info
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
