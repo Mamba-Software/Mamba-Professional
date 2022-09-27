@@ -1,7 +1,4 @@
 import 'dart:math';
-
-import 'package:animated_widgets/widgets/opacity_animated.dart';
-import 'package:animated_widgets/widgets/translation_animated.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +22,6 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-
 import '../../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
 import '../../Components/TopSnackBar/TopSnackBar.dart';
 
@@ -100,20 +95,17 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   int? _currentPage;
   PageController? _pageController;
 
-  DateTimeRange? _selectedDateRange;
-
   @override
   void initState() {
+    user = widget.user;
     if (widget.edit != null && widget.edit == true) {
       editBono = true;
     }
-    user = widget.user;
-    if(widget.bonoRequest != null) {
+    if (widget.bonoRequest != null) {
       isBonoRequest = true;
       paymentMethod = widget.bonoRequest?.paymentMethod;
       startDate = DateTime.now();
-    }
-    else {
+    } else {
       paymentMethod = 2;
     }
     getBonos();
@@ -171,7 +163,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       bonoSelected.setBasicData = bonos[0];
       bonoSelected.setConditionsData = bonos[0].condition!;
       isBonoSelected = true;
-      if(isBonoRequest) {
+      if (isBonoRequest) {
         seeConditions = false;
       } else {
         seeConditions = true;
@@ -179,7 +171,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       setConditionsBono(bonoSelected);
     }
 
-    if(widget.bonoRequest == null && editBono) {
+    if (widget.bonoRequest == null && editBono) {
+      print(widget.bono!.purchaseId!);
       await getPurchase();
     }
 
@@ -253,14 +246,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         style: Theme.of(context).textTheme.headline1,
                         textAlign: TextAlign.left),
                   ),
-                  !editBono? Flexible(
+                  Flexible(
                     child: Text(AppLocalizations.of(context)!.acceptBonoDesc,
                         style: Theme.of(context)
                             .textTheme
                             .caption
                             ?.copyWith(height: 1.5),
                         textAlign: TextAlign.center),
-                  ) : Container(),
+                  ),
                 ],
               ),
             ),
@@ -344,7 +337,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     ),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.035),
-
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.05,
                       width: MediaQuery.of(context).size.width * 0.84,
@@ -361,13 +353,17 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: _buildPageIndicator(),
-                    ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height*0.01
-                    ),
+                    bonos.length > 1 ? Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _buildPageIndicator(),
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height*0.01
+                        ),
+                      ],
+                    ) : Container(),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       constraints: BoxConstraints(
@@ -398,7 +394,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                         width: MediaQuery.of(context).size.width * 0.84,
                                         bono: bono,
                                         brand: widget.brand,
-                                        canExpand: true,
+                                        canExpand: false,
                                         onlyView: true
                                     ),
                                   );
@@ -409,7 +405,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       ),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-
                     Padding(
                       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.06, right: MediaQuery.of(context).size.width * 0.06),
                       child: Row(
@@ -417,7 +412,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         children: [
                           TextButton(
                             child: Text(
-                              "Personalizar este bono solo para ${widget.user.firstName!}",
+                              AppLocalizations.of(context)!.personalizeBonoUser(widget.user.firstName!),
                               style: Theme.of(context)
                                   .textTheme
                                   .caption
@@ -425,7 +420,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                   decoration: TextDecoration.underline),
                             ),
                             style: const ButtonStyle(),
-                            onPressed: () async {
+                            onPressed: !widget.edit! ? null : () async {
                               setState(() {
                                 seeConditions = !seeConditions;
                               });
@@ -544,8 +539,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         ],
                       )
                     ) : Container(),
-
-                    !editBono? SizedBox(height: MediaQuery.of(context).size.height * 0.02) : SizedBox(height: MediaQuery.of(context).size.height * 0.14),
+                    !editBono? SizedBox(height: MediaQuery.of(context).size.height * 0.02) : SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                     !editBono? SizedBox(
                       height: MediaQuery.of(context).size.height * 0.05,
                       width: MediaQuery.of(context).size.width * 0.84,
@@ -1314,9 +1308,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 ),
               ],
             )),
-        variable == 'exp'
-            ? Padding(
-    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+        variable == 'exp' ? Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
@@ -1401,7 +1394,36 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   }
 
   Widget NoExpireWidget(int index, String numberDays, bool customized) {
-    return GestureDetector(
+    return !noSessions ? TextButton(
+      child: Text(
+          AppLocalizations.of(context)!.noExpireDate,
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: isSelectedDays[index] == true
+              ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor, decoration: TextDecoration.underline)
+      ),
+      onPressed: () {
+        isSelectedDays[0] = false;
+        isSelectedDays[1] = false;
+        isSelectedDays[2] = false;
+        isSelectedDays[3] = false;
+        isSelectedDays[index] = true;
+
+        if (isSelectedDays[0]) {
+          bonoSelected.condition?.expirationTime = 0;
+        }
+        if (isSelectedDays[1]) {
+          bonoSelected.condition?.expirationTime = 30;
+        }
+        if (isSelectedDays[2]) {
+          bonoSelected.condition?.expirationTime = 60;
+        }
+        if (isSelectedDays[3]) {
+          bonoSelected.condition?.expirationTime = 90;
+        }
+        setState(() {});
+      },
+    ) : Container();
+
+      GestureDetector(
       onTap: () {
         isSelectedDays[0] = false;
         isSelectedDays[1] = false;
@@ -1421,13 +1443,10 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         if (isSelectedDays[3]) {
           bonoSelected.condition?.expirationTime = 90;
         }
-        //bono.condition!.expirationTime = condition.expirationTime;
-
         setState(() {});
 
       },
-      child:
-      customized == false? Container(
+      child: customized == false ? Container(
         height: MediaQuery.of(context).size.width * 0.15,
         width: MediaQuery.of(context).size.width * 0.15,
         decoration: BoxDecoration(
@@ -1491,18 +1510,20 @@ class _OtorgarBonoState extends State<OtorgarBono> {
 
   Widget daysSelectoWidget(int index, String numberDays, bool customized) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: MediaQuery.of(context).size.width * 0.25,
-          width: MediaQuery.of(context).size.width * 0.70,
+          height: MediaQuery.of(context).size.width * 0.21,
+          width: MediaQuery.of(context).size.width * 0.6,
           decoration: BoxDecoration(
-              border: Border.all(
-                width: isSelectedDays[index] == true ? 3 : 1,
-                color: isSelectedDays[index] == true
-                    ? Styles.mainColor
-                    :  Theme.of(context).primaryColor,
-              ),
-              borderRadius: const BorderRadius.all(Radius.circular(20))),
+            border: Border.all(
+              width: isSelectedDays[index] == true ? 1 : 1,
+              color: isSelectedDays[index] == true
+                  ? Styles.mainColor
+                  :  Theme.of(context).primaryColor,
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(20))
+          ),
           child: Align(
             alignment: Alignment.center,
             //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
@@ -1511,7 +1532,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1525,26 +1545,16 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                             Text(
                               AppLocalizations.of(context)!.from,
                               textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Colors.grey.shade700,
-                              ),
+                              style: Theme.of(context).textTheme.caption,
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.01,
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width*0.10,
-                              width: MediaQuery.of(context).size.width*0.26,
+                              height: MediaQuery.of(context).size.width*0.08,
+                              width: MediaQuery.of(context).size.width*0.2,
                               child: FittedBox(
                                 fit: BoxFit.fitWidth,
                                 child: Text(
                                   startDate != null ?  currentUser.idioma == 'es'? DateFormat.yMd('es').format(startDate) :  DateFormat.yMd('cat').format(startDate) : '--/-- ',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyText1,
                                 ),
                               ),
                             ),
@@ -1564,26 +1574,16 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                           children: <Widget>[
                             Text(
                               AppLocalizations.of(context)!.to,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 14,
-                                color: Colors.grey.shade700,
-                              ),
+                              style: Theme.of(context).textTheme.caption,
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.01,
-                            ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width*0.10,
-                              width: MediaQuery.of(context).size.width*0.26,
+                              height: MediaQuery.of(context).size.width*0.08,
+                              width: MediaQuery.of(context).size.width*0.2,
                               child: FittedBox(
                                 fit: BoxFit.fitWidth,
                                 child: Text(
                                   endDate != null ? currentUser.idioma == 'es'? DateFormat.yMd('es').format(endDate) : DateFormat.yMd('cat').format(endDate) :  '--/-- ',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodyText1,
                                 ),
                               ),
                             ),

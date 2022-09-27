@@ -540,5 +540,6 @@
   "activeTrainers": "Entrandors actius",
   "desactiveTrainers": "Entrandors inactius",
   "bonosNecesarios": "Vals necessaris",
-  "seeMap": "Veure mapa"
+  "seeMap": "Veure mapa",
+  "personalizeBonoUser": "Personalitzar aquest val només per {user}"
 }

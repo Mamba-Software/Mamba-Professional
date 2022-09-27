@@ -2418,5 +2418,14 @@
   "seeMap": "Ver mapa",
   "@seeMap": {
     "description": "seeMap message"
+  },
+  "personalizeBonoUser": "Personalizar este bono solo para {user}",
+  "@personalizeBonoUser": {
+    "description": "Member Since message",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -40,8 +40,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   final _roomDataService = RoomDataService();
   final _brandDataService = BrandDataService();
 
-  var _topSnackBar = TopSnackBar();
-
   // Boolean Loading
   bool isLoading = false;
   // Usuario
