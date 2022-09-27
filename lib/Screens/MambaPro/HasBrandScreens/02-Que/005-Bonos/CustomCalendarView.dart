@@ -358,20 +358,24 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
   }
 
   void onDateClick(DateTime date) {
+
     if (startDate == null) {
       startDate = date;
     } else if (startDate != date && endDate == null) {
       endDate = date;
-    } else if (startDate!.day == date.day && startDate!.month == date.month) {
+    } /*else if (startDate!.day == date.day && startDate!.month == date.month) {
       startDate = null;
     } else if (endDate!.day == date.day && endDate!.month == date.month) {
       endDate = null;
-    }
+    }*/
     if (startDate == null && endDate != null) {
       startDate = endDate;
       endDate = null;
     }
     if (startDate != null && endDate != null) {
+      if (date.isAfter(startDate!)) {
+        endDate = date;
+      }
       if (!endDate!.isAfter(startDate!)) {
         final DateTime d = startDate!;
         startDate = endDate;

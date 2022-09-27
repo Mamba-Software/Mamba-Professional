@@ -696,7 +696,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         titleController,
                         'exp'),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    optionConditionsWrite(
+                    !noSessions? optionConditionsWrite(
                         TextInputType.number,
                         AppLocalizations.of(context)!.freeCancel,
                         AppLocalizations.of(context)!.freeCancelDesc,
@@ -704,7 +704,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.titleError,
                         widget.edit ? false : true,
                         freeCancellController,
-                        'ses'),
+                        'ses') : Container(),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     optionConditionsWrite(
                         TextInputType.number,
@@ -1250,6 +1250,10 @@ class _AddEditBonoState extends State<AddEditBono>
     noSessions = seeSes!;
     clasesController.text = '';
     bono.sessions = 10000;
+    if(noSessions) {
+      freeCancellController.text = '0';
+      condition.cancelTime = 0;
+    }
 
     setState(() {});
   }

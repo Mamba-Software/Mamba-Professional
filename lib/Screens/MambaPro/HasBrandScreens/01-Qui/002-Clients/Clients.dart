@@ -77,8 +77,7 @@ class _Clients extends State<Clients> {
     for (var i=0; i< brandUsers.length; i++) {
       Usuario user = brandUsers[i];
       lastEvent = await _userDataService.getLastUserEvent(user.id);
-      print(lastEvent.id);
-      if(lastEvent.id != null && DateTime.now().difference(lastEvent.doneAt!.toDate()) >= const Duration(days: 30))
+      if(lastEvent.id != null && DateTime.now().difference(lastEvent.doneAt!.toDate()).inDays <= 30)
         {
           user.active = true;
           activeClients.add(user);

@@ -159,7 +159,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     brandTrainersSelected.add(currentUser);
     isRandomImage = true;
     // Get Event Bonos
-    await getBrandBonos();
+    //await getBrandBonos(); //DESCOMENTAR EN IMPLEMENTACIO BONOS A EVENT PRIVAT TODO
     // Event Location
     getLocation(currentBrand.baseLocation!);
 
@@ -204,8 +204,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     membersController.text = "${event.maxMembers!}";
     await getEventMembers(event.id!);
     // Event Bonos
-    await getBrandBonos();
-    await getEventBonos();
+    //await getBrandBonos(); //DESCOMENTAR EN IMPLEMENTACIO BONOS A EVENT PRIVAT TODO
+    //await getEventBonos(); //DESCOMENTAR EN IMPLEMENTACIO BONOS A EVENT PRIVAT TODO
     // Event Locations
     originalLocationId = event.locationId!;
     await getLocation(event.locationId!);

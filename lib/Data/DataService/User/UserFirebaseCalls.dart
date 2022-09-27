@@ -386,11 +386,11 @@ class UserFirebaseCalls {
     print(privateEvents.length);
 
     events.sort((a, b) {
-      return a.doneAt!.toDate().compareTo(b.doneAt!.toDate());
+      return b.doneAt!.toDate().compareTo(a.doneAt!.toDate());
     });
 
     privateEvents.sort((a, b) {
-      return a.doneAt!.toDate().compareTo(b.doneAt!.toDate());
+      return b.doneAt!.toDate().compareTo(a.doneAt!.toDate());
     });
 
     if(privateEvents.isEmpty)

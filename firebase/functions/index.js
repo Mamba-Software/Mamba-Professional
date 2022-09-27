@@ -4269,13 +4269,17 @@ exports.userPurchasesBono = functions
      "cancelTime": purchaseDoc.cancelTime,
      "weeklySessions": purchaseDoc.weeklySessions,
    });
-
+    let stringSessions = "";
+    if(purchaseDoc.sessions != 10000)
+    {
+        stringSessions = purchaseDoc.sessions + " ";
+    }
    // Send Notification to User
    if (userDoc.idioma == "es") {
     payload = {
       notification: {
         title: "Bono "+bonoDoc.title.toUpperCase()+" otorgado 🤙",
-        body: "Ya puedes disfrutar de sus "+ purchaseDoc.sessions+ " intensas sesiones",
+        body: "Ya puedes disfrutar de sus "+ stringSessions + "intensas sesiones",
       },
       data: {
         route: "Notifications",                
@@ -4285,7 +4289,7 @@ exports.userPurchasesBono = functions
     payload = {
       notification: {
         title: "Val "+bonoDoc.title.toUpperCase()+" otorgat 🤙",
-        body: "Ja pots gaudir de "+ purchaseDoc.sessions+ " intenses sessions",
+        body: "Ja pots gaudir de les seves "+ stringSessions+ "intenses sessions",
       },
       data: {
         route: "Notifications",                  
