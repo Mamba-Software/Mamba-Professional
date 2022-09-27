@@ -1009,7 +1009,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                           ),
                         ],
                       ) : Container(),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.025),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08, vertical: 10),
                         child: Row(
