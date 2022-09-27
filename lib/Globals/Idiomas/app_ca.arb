@@ -538,5 +538,6 @@
   "from": "Del",
   "to": "Fins",
   "activeTrainers": "Entrandors actius",
-  "desactiveTrainers": "Entrandors inactius"
+  "desactiveTrainers": "Entrandors inactius",
+  "bonosNecesarios": "Vals necessaris"
 }

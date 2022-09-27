@@ -105,7 +105,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                                   height: 4,
                                 ),
                                 Text(
-                                  startDate != null ?  currentUser!.idioma == 'es'? DateFormat.yMd('es').format(startDate!) :  DateFormat.yMd('cat').format(startDate!) : '--/-- ',
+                                  startDate != null ?  currentUser.idioma == 'es'? DateFormat.yMd('es').format(startDate!) :  DateFormat.yMd('cat').format(startDate!) : '--/-- ',
                                   style: const TextStyle(
                                     color: AppColors.black,
                                     fontWeight: FontWeight.bold,
@@ -137,7 +137,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                                   height: 4,
                                 ),
                                 Text(
-                                  endDate != null ? currentUser!.idioma == 'es'? DateFormat.yMd('es').format(endDate!) : DateFormat.yMd('cat').format(endDate!) :  '--/-- ',
+                                  endDate != null ? currentUser.idioma == 'es'? DateFormat.yMd('es').format(endDate!) : DateFormat.yMd('cat').format(endDate!) :  '--/-- ',
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.black),
                                 ),
                               ],

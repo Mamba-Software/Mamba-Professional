@@ -2410,5 +2410,9 @@
   "desactiveTrainers": "Entrandores inactivos",
   "@desactiveTrainers": {
     "description": "desactiveTrainers message"
+  },
+  "bonosNecesarios": "Bonos necesarios",
+  "@bonosNecesarios": {
+    "description": "userJoinsBrandUser message"
   }
 }

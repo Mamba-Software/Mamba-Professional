@@ -1540,7 +1540,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                               child: FittedBox(
                                 fit: BoxFit.fitWidth,
                                 child: Text(
-                                  startDate != null ?  currentUser!.idioma == 'es'? DateFormat.yMd('es').format(startDate!) :  DateFormat.yMd('cat').format(startDate!) : '--/-- ',
+                                  startDate != null ?  currentUser.idioma == 'es'? DateFormat.yMd('es').format(startDate) :  DateFormat.yMd('cat').format(startDate) : '--/-- ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
@@ -1579,7 +1579,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                               child: FittedBox(
                                 fit: BoxFit.fitWidth,
                                 child: Text(
-                                  endDate != null ? currentUser!.idioma == 'es'? DateFormat.yMd('es').format(endDate!) : DateFormat.yMd('cat').format(endDate!) :  '--/-- ',
+                                  endDate != null ? currentUser.idioma == 'es'? DateFormat.yMd('es').format(endDate) : DateFormat.yMd('cat').format(endDate) :  '--/-- ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
@@ -1604,7 +1604,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
 
   void _show() async {
     await showDialog<dynamic>(
-      context: context!,
+      context: context,
       builder: (BuildContext context) => CalendarPopupView(
         barrierDismissible: true,
         minimumDate: DateTime.now(),
