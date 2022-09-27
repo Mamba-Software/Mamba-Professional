@@ -126,4 +126,9 @@ class Bono {
   set setConditionsData(Condition condition) {
     this.condition = condition;
   }
+
+  // Set Basic Data
+  set setPurchaseId(String purchaseId) {
+    this.purchaseId = purchaseId;
+  }
 }

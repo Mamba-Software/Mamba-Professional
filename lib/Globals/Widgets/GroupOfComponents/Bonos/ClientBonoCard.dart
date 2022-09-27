@@ -799,6 +799,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                     ),
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
+                      bono.setPurchaseId = widget.purchase.id!;
                       return FractionallySizedBox(
                         heightFactor: 0.95,
                         child: OtorgarBono(
