@@ -257,6 +257,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                           heightFactor: 0.95,
                                           child: OtorgarBono(
                                             user: user!,
+                                            edit: false,
                                             brand: currentBrand,
                                           ),
                                         );

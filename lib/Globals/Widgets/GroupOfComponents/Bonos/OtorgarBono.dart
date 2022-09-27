@@ -1145,9 +1145,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                if (variable == 'ses') {
                                  bonoSelected.sessions = int.parse(val);
                             } else if (variable == 'price') {
-                              double price =
-                              double.parse(val.replaceAll(',', '.'));
-                              print(roundDouble(price, 2));
+                              double price = double.parse(val.replaceAll(',', '.'));
                               bonoSelected.price = roundDouble(price, 2);
                             }
                           });

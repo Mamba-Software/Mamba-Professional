@@ -68,14 +68,11 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
           },
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(23.0),
               child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(color: Colors.grey.withOpacity(0.2), offset: const Offset(4, 4), blurRadius: 8.0),
-                  ],
+                decoration: const BoxDecoration(
+                  color: AppColors.lightGrey,
+                  borderRadius: BorderRadius.all(Radius.circular(24.0)),
                 ),
                 child: InkWell(
                   borderRadius: const BorderRadius.all(Radius.circular(24.0),),
@@ -85,70 +82,67 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  AppLocalizations.of(context)!.from,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                    color: AppColors.black,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  startDate != null ?  currentUser.idioma == 'es'? DateFormat.yMd('es').format(startDate!) :  DateFormat.yMd('cat').format(startDate!) : '--/-- ',
-                                  style: const TextStyle(
-                                    color: AppColors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: AppColors.black,
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(24.0),
+                              topRight: Radius.circular(24.0),
                           ),
-                          Container(
-                            height: 74,
-                            width: 1,
-                            color: Colors.black,
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  AppLocalizations.of(context)!.to,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 16,
-                                    color: Colors.grey.shade700,
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    AppLocalizations.of(context)!.from,
+                                    textAlign: TextAlign.left,
+                                    style: Theme.of(context).textTheme.caption,
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                Text(
-                                  endDate != null ? currentUser.idioma == 'es'? DateFormat.yMd('es').format(endDate!) : DateFormat.yMd('cat').format(endDate!) :  '--/-- ',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.black),
-                                ),
-                              ],
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Text(
+                                    startDate != null ?  currentUser.idioma == 'es'? DateFormat.yMd('es').format(startDate!) :  DateFormat.yMd('cat').format(startDate!) : '--/-- ',
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.white),
+                                  ),
+                                ],
+                              ),
                             ),
-                          )
-                        ],
+                            Container(
+                              height: 74,
+                              width: 1,
+                              color: AppColors.lightGrey,
+                            ),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    AppLocalizations.of(context)!.to,
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Text(
+                                    endDate != null ? currentUser.idioma == 'es'? DateFormat.yMd('es').format(endDate!) : DateFormat.yMd('cat').format(endDate!) :  '--/-- ',
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.white),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       Container(
                         height: 1,
                         width: 400,
-                        color: Colors.black,
+                        color: AppColors.lightGrey,
                       ),
                       CustomCalendarView(
                         minimumDate: widget.minimumDate,
@@ -167,7 +161,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                         child: Container(
                           height: 48,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.black,
                             borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                             boxShadow: <BoxShadow>[
                               BoxShadow(
@@ -178,10 +172,16 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                             ],
                           ),
                           child: Material(
-                            color: Colors.transparent,
+                            color: AppColors.black,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25.0),
+                              ),
+                            ),
+                            elevation: 4,
                             child: InkWell(
-                              borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                              highlightColor: Colors.transparent,
+                              borderRadius: const BorderRadius.all(Radius.circular(25.0)),
+                              highlightColor: Theme.of(context).primaryColor,
                               onTap: () {
                                 try {
                                   widget.onApplyClick!(startDate!, endDate!);
@@ -191,7 +191,7 @@ class _CalendarPopupViewState extends State<CalendarPopupView> with TickerProvid
                               child:  Center(
                                 child: Text(
                                   AppLocalizations.of(context)!.confirm,
-                                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18, color: AppColors.black),
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                 ),
                               ),
                             ),

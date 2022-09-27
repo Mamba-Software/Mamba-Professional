@@ -94,7 +94,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                           setListOfDate(currentMonthDate);
                         });
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.keyboard_arrow_left,
                         color: Colors.grey,
                       ),
@@ -105,10 +105,10 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
               Expanded(
                 child: Center(
                   child: Text(
-                    currentUser!.idioma == 'es'?
+                    currentUser.idioma == 'es'?
                         StringUtils().capitalizedAllWords(DateFormat.LLLL('es').format(currentMonthDate))
                      : StringUtils().capitalizedAllWords(DateFormat.LLLL('cat').format(currentMonthDate)),
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20, color: Colors.black),
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black, fontSize: 20),
                   ),
                 ),
               ),
@@ -133,7 +133,7 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                           setListOfDate(currentMonthDate);
                         });
                       },
-                      child: Icon(
+                      child: const Icon(
                         Icons.keyboard_arrow_right,
                         color: Colors.grey,
                       ),
@@ -167,9 +167,9 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
         Expanded(
           child: Center(
             child: Text(
-              currentUser!.idioma == 'es'?
+              currentUser.idioma == 'es'?
               DateFormat.E('es').format(dateList[i]) : DateFormat.E('cat').format(dateList[i]),
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.black),
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
             ),
           ),
         ),
@@ -289,24 +289,6 @@ class _CustomCalendarViewState extends State<CustomCalendarView> {
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 9,
-                      right: 0,
-                      left: 0,
-                      child: Container(
-                        height: 6,
-                        width: 6,
-                        decoration: BoxDecoration(
-                            color: DateTime.now().day == date.day &&
-                                DateTime.now().month == date.month &&
-                                DateTime.now().year == date.year
-                                ? getIsInRange(date)
-                                ? Colors.white
-                                : Theme.of(context).primaryColor
-                                : Colors.transparent,
-                            shape: BoxShape.circle),
                       ),
                     ),
                   ],
