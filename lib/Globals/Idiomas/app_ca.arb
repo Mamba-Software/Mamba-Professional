@@ -289,7 +289,7 @@
   "theirLocations": "ubicacions",
   "brandLocations": "Ubicacions {brand}",
   "addLocation": "Afegir ubicació",
-  "historial": "Control",
+  "historial": "Historial",
   "notifications": "Notificacions",
   "mySessions": "Historial de sessions",
   "mySchedule": "La meva agenda",
@@ -534,10 +534,11 @@
   "activeClients": "Clients actius",
   "desactiveClient": "Clients inactius",
   "personalizedFieldsFirst": "S'han d'omplir tots els camps personalitzats",
-  "allBonosInClient": "Aquest client ja té tots els vals de la teva marca",
+  "allBonosInClient": "Ja disposa de tots els vals de la teva marca",
   "from": "Del",
   "to": "Fins",
   "activeTrainers": "Entrandors actius",
   "desactiveTrainers": "Entrandors inactius",
-  "bonosNecesarios": "Vals necessaris"
+  "bonosNecesarios": "Vals necessaris",
+  "seeMap": "Veure mapa"
 }

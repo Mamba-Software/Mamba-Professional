@@ -22,13 +22,32 @@ class PurchaseFirebaseCalls {
 
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
+  String events = isProduction ? 'Events' : '7777 Events';
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
   String library = isProduction ? 'Library' : 'Library';
   String payments = isProduction ? 'Payments' : '7777 Payments';
 
-  Future<Purchase> getPurchaseInfo(String? purchaseId) async {
+  // Check Data
+  Future<bool> checkIfEventInPurchase(String purchaseId, String eventId) async {
+    try {
+      DocumentSnapshot event = await _firestore
+          .collection(payments)
+          .doc("Purchases")
+          .collection("Purchases")
+          .doc(purchaseId)
+          .collection("Events")
+          .doc(eventId)
+          .get();
+      return event.exists;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Get Data
+  Future<Purchase> getPurchaseInfo(String purchaseId) async {
     Purchase purchase;
     // Get Main Purchase Info
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
@@ -42,6 +61,8 @@ class PurchaseFirebaseCalls {
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
         .collection(payments)
+        .doc("Purchases")
+        .collection("Purchases")
         .doc(purchaseId)
         .collection("Events")
         .get();
@@ -52,6 +73,48 @@ class PurchaseFirebaseCalls {
     purchase.setPurchasedEventsData = events;
     return purchase;
   }
+
+  // Add Data
+  Future<void> addEventToPurchase(String purchaseId, String eventId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(events).doc(eventId).get();
+    Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    // Add This to Payments
+    await _firestore
+        .collection(payments)
+        .doc("Purchases")
+        .collection("Purchases")
+        .doc(purchaseId)
+        .collection("Events")
+        .doc(eventId)
+        .set({
+      "isPrivate": event.isPrivate,
+      "title": event.title,
+      "imageUrl": event.imageUrl,
+      "doneAt": event.doneAt,
+      "year": event.year,
+      "month": event.month,
+      "day": event.day,
+      "hour": event.hour,
+      "minute": event.minute,
+      "duration": event.duration,
+      "numTrainers": event.numTrainers,
+      "numClients": event.numClients,
+      "maxMembers": event.maxMembers,
+    });
+  }
+
+  // Delete Data
+  Future<void> deleteEventFromPurchase(String purchaseId, String eventId) async {
+    await _firestore
+        .collection(payments)
+        .doc("Purchases")
+        .collection("Purchases")
+        .doc(purchaseId)
+        .collection("Events")
+        .doc(eventId)
+        .delete();
+  }
+
 
   /////////////////////////////////////////////////////////////// STREAMS
 

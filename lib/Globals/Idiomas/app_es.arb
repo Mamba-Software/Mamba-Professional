@@ -1263,7 +1263,7 @@
   "@addLocation": {
     "description": "Wellcome message"
   },
-  "historial": "Control",
+  "historial": "Historial",
   "@historial": {
     "description": "Wellcome message"
   },
@@ -2390,7 +2390,7 @@
   "@personalizedFieldsFirst": {
     "description": "personalizedFieldsFirst message"
   },
-  "allBonosInClient": "Este cliente ya tiene todos los bonos de tu marca",
+  "allBonosInClient": "Ya dispone de todos los bonos de tu marca",
   "@allBonosInClient": {
     "description": "allBonosInClient message"
   },
@@ -2414,5 +2414,9 @@
   "bonosNecesarios": "Bonos necesarios",
   "@bonosNecesarios": {
     "description": "userJoinsBrandUser message"
+  },
+  "seeMap": "Ver mapa",
+  "@seeMap": {
+    "description": "seeMap message"
   }
 }

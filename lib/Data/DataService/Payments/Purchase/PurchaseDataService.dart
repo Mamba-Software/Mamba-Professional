@@ -8,15 +8,18 @@ class PurchaseDataService {
   final _firebase = PurchaseFirebaseCalls();
 
   // Check Data
+  Future<bool> checkIfEventInPurchase(String purchaseId, String eventId) => _firebase.checkIfEventInPurchase(purchaseId, eventId);
 
   // Get Data
-  Future<Purchase> getPurchaseInfo(String? purchaseId) => _firebase.getPurchaseInfo(purchaseId);
+  Future<Purchase> getPurchaseInfo(String purchaseId) => _firebase.getPurchaseInfo(purchaseId);
 
   // Add Data
+  Future<void> addEventToPurchase(String purchaseId, String eventId) => _firebase.addEventToPurchase(purchaseId, eventId);
 
   // Update Data
 
   // Delete Data
+  Future<void> deleteEventFromPurchase(String purchaseId, String eventId) => _firebase.deleteEventFromPurchase(purchaseId, eventId);
 
   /////////////////////////////////////////////////////////////////// STREAMS
 

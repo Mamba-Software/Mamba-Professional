@@ -61,14 +61,23 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                          AppLocalizations.of(context)!.bonos,
+                          AppLocalizations.of(context)!.activeBono,
                           style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center
+                      ),
+                      TextButton(
+                          child: Text(
+                              AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.historial,
+                              style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
+                          ),
+                          onPressed: () {
+
+                          }
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: widget.height*0.02,),
+                SizedBox(height: widget.height*0.01,),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: widget.width*0.08),
                   child: ListView.builder(
@@ -89,25 +98,26 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                             } else {
                               bono = Bono.fromObjectAllData(snapshot.data!.id, snapshot.data!);
                               bono.setBonoSessions = sessions;
-                              print(bono.title!);
-                              print(bonoUserConditions.expirationTime!);
                               bono.setConditionsData = bonoUserConditions;
                               bono.setBonoPrice = price;
-                              return StreamBuilder<DocumentSnapshot>(
-                                  stream: _purchaseDataService.getPurchaseInfoStream(purchaseId),
+                              return FutureBuilder<Purchase>(
+                                  future: _purchaseDataService.getPurchaseInfo(purchaseId),
                                   builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
+                                    if (snapshot.data == null) {
                                       return Container();
                                     } else {
-                                      Purchase bonoPurchase = Purchase.fromObjectAllData(snapshot.data!.id, snapshot.data!);
-                                      return ClientBonoCard(
-                                        height: widget.height*0.22,
-                                        width: widget.width*0.84,
-                                        bono: bono,
-                                        brand: currentBrand,
-                                        purchase: bonoPurchase,
-                                        canExpand: true,
-                                        onlyView: false,
+                                      Purchase bonoPurchase = snapshot.data!;
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                        child: ClientBonoCard(
+                                          height: widget.height*0.22,
+                                          width: widget.width*0.84,
+                                          bono: bono,
+                                          brand: currentBrand,
+                                          purchase: bonoPurchase,
+                                          canExpand: true,
+                                          onlyView: false,
+                                        ),
                                       );
                                     }
                                   }
@@ -118,7 +128,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                     },
                   ),
                 ),
-                SizedBox(height: widget.height*0.04,),
+                SizedBox(height: widget.height*0.02,),
               ],
             );
           } else {

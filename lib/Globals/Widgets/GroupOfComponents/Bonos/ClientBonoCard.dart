@@ -15,7 +15,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
 import '../../../../Data/LibraryModels/lColor.dart';
 import '../../../../Data/LibraryModels/lDegradate.dart';
-import 'ConfirmBuyBono.dart';
 
 class ClientBonoCard extends StatefulWidget {
   // Variables per omplir Bono i Size
@@ -84,8 +83,6 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       cancelTime: widget.bono.condition!.cancelTime,
       weeklySessions: widget.bono.condition!.weeklySessions,
     );
-    print(bono.title!);
-    print(condition.expirationTime);
     if (widget.isExpanded != null && widget.isExpanded!) {
       isExpanded = true;
     }
@@ -335,7 +332,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                   fit: BoxFit.contain,
                                   child: Row(
                                     children: [
-                                      bono.sessions == 10000 ? Text(
+                                      bono.sessions! > 5000 ? Text(
                                         AppLocalizations.of(
                                             context)!
                                             .sessions
@@ -471,7 +468,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                               SizedBox(
                                                 height: widget.width * 0.02,
                                               ),
-                                              bono.sessions == 10000 ?
+                                              bono.sessions! > 5000 ?
                                               Text(
                                                 AppLocalizations.of(
                                                     context)!.ilimitadas.toUpperCase(),
@@ -584,7 +581,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                   SizedBox(
                                                     width: widget.width * 0.05,
                                                   ),
-                                                  bono.sessions == 10000 ?
+                                                  bono.sessions! > 5000 ?
                                                   Container()
                                                       :
                                                   Text(
@@ -665,7 +662,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                     ),
                                                     Text(
                                                       AppLocalizations.of(context)!.buyDate + ": " + DateTimeUtils().formatDateTimeToStringDDMMYYYY(purchasedDate, Localizations.localeOf(context).languageCode),
-                                                      style: Theme.of(context).textTheme.caption,
+                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
                                                     ),
                                                   ],
                                                 ),
@@ -700,7 +697,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       ),
                                                       Text(
                                                         AppLocalizations.of(context)!.buyDate + ": " + DateTimeUtils().formatDateTimeToStringDDMMYYYY(purchasedDate, Localizations.localeOf(context).languageCode),
-                                                        style: Theme.of(context).textTheme.caption,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
                                                       ),
                                                     ],
                                                   ),
@@ -739,7 +736,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       ),
                                                       Text(
                                                         AppLocalizations.of(context)!.thisWeek+": " + eventsThisWeek.length.toString()+"/${condition.weeklySessions}"+" "+AppLocalizations.of(context)!.sessions.toLowerCase(),
-                                                        style: Theme.of(context).textTheme.caption,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
                                                       ),
                                                     ],
                                                   ),

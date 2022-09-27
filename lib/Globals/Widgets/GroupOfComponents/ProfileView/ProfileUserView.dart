@@ -53,10 +53,11 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   int totalEvents  = 0;
   int thisMonthEvents  = 0;
   List<Event> listEvents = [];
+  // Bonos
+  bool hasAllBrandBonos = false;
+  Bono bonoFound = Bono();
   List<Bono> listBonos = [];
   List<Bono> userBonos = [];
-
-  Bono bonoFound = Bono();
 
   // init Widget state. Loading user info.
   @override
@@ -71,6 +72,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     thisMonthEvents  = 0;
     listEvents = [];
     user = await _userDataService.getUserDetails(widget.userID);
+    checkIfHasAllBrandBonos();
     getEventsDone();
   }
 
@@ -121,6 +123,23 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     });
   }
 
+  // Gets the events passed by the trainer.
+  void checkIfHasAllBrandBonos() async {
+    listBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    userBonos = await _userDataService.getUserBonos(user?.id!);
+    for (int i = 0; i < userBonos.length; ++i) {
+      bonoFound = listBonos.firstWhere((element) => element.id == userBonos[i].id);
+      if (bonoFound.id != '') {
+        listBonos.remove(bonoFound);
+      }
+    }
+    if (listBonos.isEmpty) {
+      setState(() {
+        hasAllBrandBonos = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,8 +156,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             isLoading == true || widget.viewOnly || user!.id! == currentUser.id ? Container() : Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
               child: IconButton(
-                onPressed: () async {
-                  int? result = await showModalBottomSheet<int?>(
+                onPressed: () {
+                  showModalBottomSheet<int?>(
                     context: context,
                     isScrollControlled: true,
                     shape: const RoundedRectangleBorder(
@@ -149,7 +168,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: 0.25,
+                        heightFactor: 0.28,
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height*0.4,
                           width: MediaQuery.of(context).size.width,
@@ -206,24 +225,25 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   leading: Icon(
                                     Icons.confirmation_number_outlined,
                                     size: MediaQuery.of(context).size.width*0.06,
-                                    color: Theme.of(context).primaryColor,
+                                    color: hasAllBrandBonos ? Theme.of(context).primaryColor.withOpacity(0.5) : Theme.of(context).primaryColor,
                                   ),
                                   title: Text(
                                       AppLocalizations.of(context)!.acceptBono,
-                                      style: Theme.of(context).textTheme.bodyText1,
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: hasAllBrandBonos ? Theme.of(context).primaryColor.withOpacity(0.5) : Theme.of(context).primaryColor),
                                       textAlign: TextAlign.left
                                   ),
-                                  onTap: () async {
-                                    listBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
-                                    userBonos = await _userDataService.getUserBonos(user?.id!);
-
-                                    for (int i = 0; i < userBonos.length; ++i) {
-                                      bonoFound = listBonos.firstWhere((element) => element.id == userBonos[i].id);
-                                      if (bonoFound.id != '') {
-                                        listBonos.remove(bonoFound);
-                                      }
-                                    }
-                                    if(listBonos.isNotEmpty) {
+                                  subtitle: hasAllBrandBonos ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 8,),
+                                      Text(
+                                          AppLocalizations.of(context)!.allBonosInClient,
+                                          style: Theme.of(context).textTheme.caption,
+                                          textAlign: TextAlign.left
+                                      ),
+                                    ],
+                                  ) : Container(),
+                                  onTap: hasAllBrandBonos == false ? () async {
                                     Navigator.pop(context);
                                     showModalBottomSheet<bool?>(
                                       context: context,
@@ -235,22 +255,16 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       ),
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       builder: (BuildContext context) {
-
-                                          return FractionallySizedBox(
-                                            heightFactor: 0.95,
-                                            child: OtorgarBono(
-                                              user: user!,
-                                              brand: currentBrand,
-                                            ),
-                                          );
-                                        }
-                                    );
-                                  }
-                                  else {
-                                  _topSnackBar.topsnackbar(context, AppLocalizations.of(context)!.allBonosInClient, AppColors.red);
-                                  }
-
-                                  },
+                                        return FractionallySizedBox(
+                                          heightFactor: 0.95,
+                                          child: OtorgarBono(
+                                            user: user!,
+                                            brand: currentBrand,
+                                          ),
+                                        );
+                                      }
+                                    ).whenComplete(() => checkIfHasAllBrandBonos());
+                                  } : null,
                                 ),
                               ],
                             ),
@@ -269,43 +283,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 ),
               ),
             ),
-            /*
-            !isLoading ? Row(
-              children: [
-                canDeleteFromBrand() ? IconButton(
-                    onPressed: () async {
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return DeleteFromBrandConfirmationDialog(
-                              text: AppLocalizations.of(context)!.deleteFromBrandConfirmation,
-                              userId: widget.userID,
-                            );
-                          }
-                      );
-                      if (result) {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        NotificationService().userLeavesBrand(widget.userID, currentBrand.id!);
-                        // New Database
-                        await Future.delayed(const Duration(milliseconds: 3000));
-                        await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
-                        await _brandDataService.deleteUserFromBrand(widget.userID, currentBrand.id!);
-                        // TODO: Revisar Pq True, yo crec que es per recagar els users a todos los miemrbos
-                        Navigator.pop(context, true);
-                      }
-                    } ,
-                    icon: Icon(Icons.delete_outlined, color: Colors.red, size: MediaQuery.of(context).size.width*0.06,)
-                ) : Container(),
-                widget.viewOnly || user!.id! == currentUser.id ? Container() : IconButton(
-
-                    icon: Icon(Icons.chat_outlined, size: MediaQuery.of(context).size.width*0.06,)
-                ),
-                SizedBox(width: MediaQuery.of(context).size.width*0.01)
-              ],
-            ) : Container(),
-             */
           ],
         ),
         body: isLoading ?
@@ -442,6 +419,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
               ) : SizedBox(height: MediaQuery.of(context).size.height*0.03),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -472,7 +450,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                         int.parse(event.hour!),
                         int.parse(event.minute!),
                       );
-                      String day = DateFormat('EEEE', Localizations.localeOf(context).languageCode).format(startDate);
                       String _month = DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode).format(startDate);
                       if (_month != month) {
                         month = _month;
