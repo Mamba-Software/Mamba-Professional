@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ho
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
+import 'package:provider/provider.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -89,8 +90,8 @@ class _MambaState extends State<Mamba> {
     }).onError((error) {
       print(error.toString());
     });
-    // Defining the Page Controller
-    pageController = PageController(initialPage: currentIndex);
+    // Setting default open to Homepage
+    //pageIndex = 0;
     // Getting User Information
     getUserAndBrand();
     // On StartUp Dialogs
@@ -102,19 +103,18 @@ class _MambaState extends State<Mamba> {
     // First check if minimum version
     print("Checking Minimum App Version...");
     checkMinimumAppVersion();
-    print("Checking if invited into Brand...");
     // Check if invited into Brand
+    print("Checking if invited into Brand...");
     checkBrandInvite();
-    print("Checking Notification Permissions...");
     // Check Notification Permissions
+    print("Checking Notification Permissions...");
     var notificationString = await PermisionsService().checkUserNotificationsPermision();
     if (notificationString == "Provisional" || notificationString == "Unknown") {
       await PermisionsService().askUserNotificationsPermision();
     }
-    print("Checking Location Permissions...");
     // Check Location Permissions
+    print("Checking Location Permissions...");
     await PermisionsService().getUserLocation();
-
   }
 
   // Init Device Sizes
@@ -164,7 +164,6 @@ class _MambaState extends State<Mamba> {
 
   // Check invited by Brand
   void checkBrandInvite() async {
-    print(dynamicLinkBrandId);
     if (dynamicLinkBrandId != null && currentUser.brandsList.isEmpty) {
       // Start up Dialog
       Future.delayed(Duration.zero, () {

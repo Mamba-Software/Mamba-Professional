@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
@@ -26,7 +27,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/Content.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -75,10 +76,12 @@ class _BrandScreenState extends State<BrandScreen> {
   var iconWhen = Icons.keyboard_arrow_up;
   var iconWhere = Icons.keyboard_arrow_up;
 
-  //Index to know which page to load
-  int pageIndex = 0;
   //favourite tabs of user
   List<int> favourites = [];
+
+  // DateTime // Calendar View For Navigation Purposes
+  DateTime? calendarDateTime;
+  CalendarView? calendarView;
 
   @override
   void initState() {
@@ -122,6 +125,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const Notifications(),
+          settings: const RouteSettings(name: 'Notifications'),
         )
     ).whenComplete(() async {
       var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
@@ -137,6 +141,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const ChatCore(),
+          settings: const RouteSettings(name: 'ChatCore'),
         )
     ).whenComplete(() async {
       var temp = await _userDataService.getUnreadConversations(currentUser.id!);
@@ -152,6 +157,7 @@ class _BrandScreenState extends State<BrandScreen> {
         context,
         CupertinoPageRoute<void>(
           builder: (context) => const Profile(),
+          settings: const RouteSettings(name: 'Profile'),
         )
     );
   }
@@ -178,6 +184,8 @@ class _BrandScreenState extends State<BrandScreen> {
           leading: CircularImage(
             size: MediaQuery.of(context).size.width*0.07,
             image: currentBrand.logoUrl,
+            borderWidth: 1,
+            color: AppColors.grey,
           ),
           title: Text(
             currentBrand.name!,
@@ -233,8 +241,8 @@ class _BrandScreenState extends State<BrandScreen> {
     return Container(
       height: safeAreaHeight*0.32,
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: Theme.of(context).backgroundColor,
+      decoration: const BoxDecoration(
+        color: AppColors.darkGrey,
       ),
       child: Column(
         children: [
@@ -253,7 +261,7 @@ class _BrandScreenState extends State<BrandScreen> {
                       child: CircularImage(
                         size: safeAreaHeight * 0.1,
                         image: currentUser.imageUrl,
-                        color: Theme.of(context).primaryColor,
+                        color: AppColors.white,
                         borderWidth: 1,
                       ),
                     ),
@@ -262,7 +270,7 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadNotifications,
                           child: IconButton(
-                            icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.notifications, color: AppColors.white, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToNotificationsScreen,
                           ),
@@ -271,7 +279,7 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadChats,
                           child: IconButton(
-                            icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.chat, color: AppColors.white, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToChatScreen,
                           ),
@@ -291,39 +299,17 @@ class _BrandScreenState extends State<BrandScreen> {
                 Text(
                     currentUser.firstName! + ' ' + currentUser.lastName!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal)
+                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal)
                 ),
                 SizedBox(height: safeAreaHeight * 0.02),
                 Text(
                     currentUser.email!,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color:AppColors.white)
                 ),
               ],
             ),
           ),
-          /*
-          SizedBox(height: safeAreaHeight * 0.01),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-            child: TextButton(
-              onPressed: navigateToSettingsScreen,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.settings,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  SizedBox(width: safeAreaWidth * 0.025),
-                  Text(
-                      AppLocalizations.of(context)!.settings,
-                      style: Theme.of(context).textTheme.bodyText2
-                  ),
-                ],
-              ),
-            ),
-          ),
-          */
         ],
       ),
     );
@@ -609,6 +595,7 @@ class _BrandScreenState extends State<BrandScreen> {
             setState(() {
               isLoading = true;
             });
+            pageIndex = 0;
             NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
             await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
             await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
@@ -665,7 +652,19 @@ class _BrandScreenState extends State<BrandScreen> {
         return HomePro(
             brandId: currentBrand.id!,
             numTrainers: currentBrand.numTrainers!,
-            numClients: currentBrand.numClients!
+            numClients: currentBrand.numClients!,
+            navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView]) async {
+              setState(() {
+                calendarDateTime = dateTime;
+                this.calendarView = calendarView;
+                pageIndex = page;
+              });
+              await Future.delayed(const Duration(seconds: 2));
+              setState(() {
+                calendarDateTime = null;
+                this.calendarView = null;
+              });
+            },
         );
       case 2:
         return Clients(
@@ -713,6 +712,8 @@ class _BrandScreenState extends State<BrandScreen> {
       case 10:
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
+          dateTime: calendarDateTime,
+          calendarView: calendarView,
           pinned: iconStar,
           pinnedChanged: (boolean) {
             handleChangedFavourites();
@@ -727,7 +728,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 7:
-        return Content(
+        return BrandImages(
           brandId: currentBrand.id!,
           pinned: iconStar,
           pinnedChanged: (boolean) {
@@ -735,7 +736,8 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 13:
-        return Content(
+        // Placeholder for Feedback
+        return BrandImages(
           brandId: currentBrand.id!,
           pinned: iconStar,
           pinnedChanged: (boolean) {
@@ -751,7 +753,23 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       default:
-        return HomePro(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers!, numClients: currentBrand.numClients!);
+        return HomePro(
+          brandId: currentBrand.id!,
+          numTrainers: currentBrand.numTrainers!,
+          numClients: currentBrand.numClients!,
+          navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView, bool? addGroupEvent, bool? addPrivateEvent, bool? createBono]) async {
+            setState(() {
+              calendarDateTime = dateTime;
+              this.calendarView = calendarView;
+              pageIndex = page;
+            });
+            await Future.delayed(const Duration(seconds: 2));
+            setState(() {
+              calendarDateTime = null;
+              this.calendarView = null;
+            });
+          },
+        );
     }
   }
 
@@ -769,15 +787,24 @@ class _BrandScreenState extends State<BrandScreen> {
     }
     return Scaffold(
       key: mambaProScaffoldKey,
+      /*
+      appBar: AppBar(
+        toolbarHeight: 0,
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
+        //systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.white),
+      ),
+       */
       drawer: Drawer(
         backgroundColor: Theme.of(context).primaryColorDark,
         child: ListView(
+          physics: const ClampingScrollPhysics(),
           // Remove padding
           padding: EdgeInsets.zero,
           children: [
             // Header
             buildHeader(),
-            Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1,),
+            const Divider(color: AppColors.grey, thickness: 0, height: 1,),
             SizedBox(height: safeAreaHeight * 0.02),
             // Brand Options
             // TODO: Passer Rol en aquesta funció

@@ -19,12 +19,13 @@ import 'EventFeedback.dart';
 
 class EventListTile extends StatefulWidget {
   String eventId;
+  String? userId;
   bool showFeedback;
   bool? showAverage;
   var height;
   var width;
 
-  EventListTile({Key? key, required this.eventId, required this.showFeedback, this.showAverage, required this.height, required this.width}) : super(key: key);
+  EventListTile({Key? key, required this.eventId, required this.userId, required this.showFeedback, this.showAverage, required this.height, required this.width}) : super(key: key);
 
   @override
   _EventListTileState createState() => _EventListTileState();
@@ -114,7 +115,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
     eventHourString = DateFormat('Hm', Localizations.localeOf(context).languageCode).format(eventDate);
     if (widget.showFeedback) {
       // Get Feedback you have been in this event
-      eventFeedbackValue = await _eventDataService.getEventUserFeedback(_event.id!,currentUser.id!);
+      eventFeedbackValue = await _eventDataService.getEventUserFeedback(_event.id!,widget.userId!);
     } else {
       if (widget.showAverage != null && widget.showAverage!) {
         // Get Average Feedback of the Event
@@ -169,7 +170,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
     return eventFeedbackValue != null ?
       buildEventFeedbackIcon(eventFeedbackValue!)
         :
-     widget.showAverage! == false ? buildAnswerFeedbackIcon() : Container();
+    (widget.showAverage != null && widget.showAverage == false) ? buildAnswerFeedbackIcon() : Container();
   }
 
   // Build EventFeedback Value
@@ -359,7 +360,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       RectangularImage(
-                        image: _brand.logoUrl!,
+                        image: _event.imageUrl!,
                         height: widget.width*0.2,
                         width: widget.width*0.2,
                         borderRadius: 5,
@@ -433,7 +434,6 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                         ),
                       ),
                     ),
-
                     widget.showFeedback ? GestureDetector(
                       onTap: canAnswerFeedback ? navigateToFeedbackEventScreen : null,
                       child: SizedBox(
@@ -442,7 +442,7 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
                             child: buildEventFeedbackWidget()
                         ),
                       ),
-                    ) : widget.showAverage! ? SizedBox(
+                    ) : widget.showAverage != null && widget.showAverage! ? SizedBox(
                       width: widget.width*0.12,
                       child: Center(
                           child: buildEventFeedbackWidget()

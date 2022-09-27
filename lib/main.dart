@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BonosRequests.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -38,7 +39,6 @@ late AndroidNotificationChannel channel;
 
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-  currentIndex = 2;
 }
 
 // Starting app function. After initialization, we define the global providers:
@@ -70,7 +70,7 @@ Future<void> main() async {
               create: (_) => FirebaseAnalyticsProvider()
           ),
         ],
-        child: Mamba(),
+        child: const Mamba(),
       )
     );
   }, (error, stackTrace) {
@@ -88,7 +88,7 @@ class Mamba extends StatefulWidget {
 
 class _MambaState extends State<Mamba> with WidgetsBindingObserver {
 
-  var _dynamicLinkUtils = DynamicLinkUtils();
+  final _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
 
   @override
@@ -140,30 +140,30 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                 darkTheme: _appThemes.returnResponsiveDarkTheme(100.vh),
                 locale: language.idioma,
                 supportedLocales: Idiomas.all,
-                localizationsDelegates: [
+                localizationsDelegates: const [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
                 ],
-                home: SplashScreen(),
+                home: const SplashScreen(),
                 onGenerateRoute: (RouteSettings settings) {
                   final args = settings.arguments;
                   switch (settings.name) {
                     case 'SplashScreen':
                       return CupertinoPageRoute(
-                          builder: (_) => SplashScreen(),
-                          settings: RouteSettings(name: 'SplashScreen'),
+                          builder: (_) => const SplashScreen(),
+                          settings: const RouteSettings(name: 'SplashScreen'),
                       );
                     case 'Notifications':
                       return CupertinoPageRoute(
-                          builder: (_) => Notifications(),
-                          settings: RouteSettings(name: 'Notifications'),
+                          builder: (_) => const Notifications(),
+                          settings: const RouteSettings(name: 'Notifications'),
                       );
                     case 'Chat':
                       return CupertinoPageRoute(
-                          builder: (_) => ChatCore(),
-                          settings: RouteSettings(name: 'ChatCore'),
+                          builder: (_) => const ChatCore(),
+                          settings: const RouteSettings(name: 'ChatCore'),
                       );
                     case 'EventPage':
                       String eventId = args as String;
@@ -171,7 +171,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                           builder: (_) => EventPage(
                             eventId: eventId,
                           ),
-                          settings: RouteSettings(name: 'EventPage'),
+                          settings: const RouteSettings(name: 'EventPage'),
                       );
                     case 'EventFeedbackPage':
                       String eventId = args as String;
@@ -179,7 +179,18 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                           builder: (_) => EventFeedback(
                             eventId: eventId,
                           ),
-                          settings: RouteSettings(name: 'EventFeedback'),
+                          settings: const RouteSettings(name: 'EventFeedback'),
+                      );
+                    case 'BonosRequests':
+                      String brandId = args as String;
+                      setState(() {
+                        pageIndex = 5;
+                      });
+                      return CupertinoPageRoute(
+                        builder: (_) => BonosRequests(
+                          brandId: brandId,
+                        ),
+                        settings: const RouteSettings(name: 'BonosRequests'),
                       );
                   }
                 },

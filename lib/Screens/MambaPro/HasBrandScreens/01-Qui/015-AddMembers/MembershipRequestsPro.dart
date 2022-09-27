@@ -51,14 +51,14 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
   initState() {
     super.initState();
     _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-      setState(() {
-        appBarExpanded = true;
-      }) :
-      setState(() {
-        appBarExpanded = false;
-      }),
-      );
+    ..addListener(() => _isAppBarExpanded ?
+    setState(() {
+      appBarExpanded = true;
+    }) :
+    setState(() {
+      appBarExpanded = false;
+    }),
+    );
   }
 
   List<RequestToBrand> documentsToRequests(List<DocumentSnapshot> documents) {
@@ -72,7 +72,8 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
       RequestToBrand request = RequestToBrand.fromObjectAllData(documents[0].id, documents[0]);
       requests.add(request);
     }
-    */
+     */
+
     return requests;
   }
 
@@ -83,28 +84,49 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 height: MediaQuery.of(context).size.height*0.15,
-                color: Theme.of(context).backgroundColor,
+                color: AppColors.darkGrey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                      child: Text(
-                        AppLocalizations.of(context)!.myRequests,
-                        style: Theme.of(context).textTheme.headline1,
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.myRequests,
+                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height*0.08,
+                              width: MediaQuery.of(context).size.width*0.11,
+                              child: TextButton(
+                                onPressed: null,
+                                child: Icon(
+                                  Icons.filter_list,
+                                  color: AppColors.darkGrey,
+                                  size: MediaQuery.of(context).size.width*0.07,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,
@@ -115,7 +137,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -123,6 +145,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
+                      color: AppColors.white,
                       size: MediaQuery.of(context).size.height*0.04,
                     ),
                     onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
@@ -135,7 +158,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                 child: IconButton(
                   icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
@@ -237,10 +260,12 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                       } else {
                         type = AppLocalizations.of(context)!.client.toLowerCase();
                       }
-                      return ListTile(
-                        leading: Icon(request.isTrainer! ? Icons.record_voice_over : Icons.directions_run, color: Theme.of(context).primaryColor, size: 25,),
-                        title: Container(
-                          child: RichText(
+                      return Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: ListTile(
+                          minLeadingWidth: MediaQuery.of(context).size.width*0.1 ,
+                          leading: Icon(request.isTrainer! ? Icons.record_voice_over : Icons.directions_run, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.1,),
+                          title: RichText(
                             text: TextSpan(
                               style: Theme.of(context).textTheme.bodyText2,
                               children: [
@@ -249,35 +274,34 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                               ],
                             ),
                           ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Text(
+                                  AppLocalizations.of(context)!.requestSent(request.dateSent!),
+                                  style: Theme.of(context).textTheme.caption
+                              ),
+                            ],
+                          ),
+                          onTap: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return RequestConfirmationDialog(
+                                    text: AppLocalizations.of(context)!.requestConfirmation,
+                                    userId: request.userId!,
+                                  );
+                                }
+                            );
+                            if (result != null && result) {
+                              NotificationService().userJoinsBrand(request.userId!, request.brandId!);
+                              _brandDataService.acceptRequestFromUser(request);
+                            } else if (result != null && !result) {
+                              _userDataService.deleteRequestToBrand(request);
+                            }
+                          },
                         ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                            Text(
-                                AppLocalizations.of(context)!.requestSent(request.dateSent!),
-                                style: Theme.of(context).textTheme.caption
-                            ),
-                          ],
-                        ),
-                        trailing: Icon(Icons.help_outline, color: Theme.of(context).primaryColor, size: 30,),
-                        onTap: () async {
-                          var result = await showDialog(
-                              context: context,
-                              builder: (_) {
-                                return RequestConfirmationDialog(
-                                  text: AppLocalizations.of(context)!.requestConfirmation,
-                                  userId: request.userId!,
-                                );
-                              }
-                          );
-                          if (result) {
-                            NotificationService().userJoinsBrand(request.userId!, request.brandId!);
-                            _brandDataService.acceptRequestFromUser(request);
-                          } else if (!result) {
-                            _userDataService.deleteRequestToBrand(request);
-                          }
-                        },
                       );
                     },
                       childCount: requestList.length,
@@ -285,7 +309,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                   );
                 } else {
                   return SliverFillRemaining(
-                    hasScrollBody: true,
+                    hasScrollBody: false,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
@@ -295,7 +319,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                             child: Image.asset(Constants.emptyCalendar)
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Text(AppLocalizations.of(context)!.noRequestsFound, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
                         SizedBox(height: MediaQuery.of(context).size.height*0.12),
                       ],
                     ),

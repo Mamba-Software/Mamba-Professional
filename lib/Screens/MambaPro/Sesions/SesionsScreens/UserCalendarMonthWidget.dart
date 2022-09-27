@@ -26,7 +26,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
-  var _eventDataService = new EventDataService();
+  var _eventDataService = EventDataService();
   // Calendar
   final CalendarController _calendarController = CalendarController();
   // Date in the Middle of the Month
@@ -74,8 +74,8 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
         double maxMembers = double.parse(event.maxMembers.toString());
         double bookedCapacity = numClients/maxMembers;
         if(bookedCapacity <= 0.20) color = Colors.green;
-        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
-        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
+        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = const Color(0xFFA8C76C);
+        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = const Color(0xFFECE014);
         else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
         else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
         else if(bookedCapacity == 1) color = Colors.red;
@@ -116,13 +116,13 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: widget.height,
       width: widget.width,
       child: isLoading ? Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             height: widget.height*0.18,
             width: widget.width,
             child: Row(
@@ -132,7 +132,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
+                    SizedBox(
                       width: widget.width*0.08,
                       child: FittedBox(
                         fit: BoxFit.contain,
@@ -145,7 +145,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       height: widget.width*0.05,
                       width: widget.width*0.05,
                       child: FittedBox(
@@ -157,7 +157,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: widget.width*0.08,
                       child: FittedBox(
                         fit: BoxFit.contain,
@@ -178,7 +178,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
           Shimmer.fromColors(
             baseColor: AppColors.grey,
             highlightColor: AppColors.grey.withOpacity(0.5),
-            child: Container(
+            child: SizedBox(
               height: widget.height*0.82,
               width: widget.width,
               child: Column(
@@ -192,105 +192,49 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                       ],
@@ -304,105 +248,49 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
-                          ),
-                        ),
-                        Container(
-                          height: widget.height/9,
-                          width: widget.width/8,
-                          decoration: new BoxDecoration(
-                            color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                       ],
@@ -416,49 +304,161 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                         Container(
                           height: widget.height/9,
                           width: widget.width/8,
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.grey.withOpacity(0.5),
-                            borderRadius: new BorderRadius.all(Radius.circular(5.0),),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
+                          ),
+                        ),
+                        Container(
+                          height: widget.height/9,
+                          width: widget.width/8,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5.0),),
                           ),
                         ),
                       ],
@@ -472,7 +472,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
       ) : Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
+          SizedBox(
             height: widget.height*0.18,
             width: widget.width,
             child: Row(
@@ -482,7 +482,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
+                    SizedBox(
                       width: widget.width*0.08,
                       child: FittedBox(
                         fit: BoxFit.contain,
@@ -495,7 +495,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       height: widget.width*0.05,
                       width: widget.width*0.05,
                       child: FittedBox(
@@ -507,7 +507,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
                         ),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: widget.width*0.08,
                       child: FittedBox(
                         fit: BoxFit.contain,
@@ -525,7 +525,7 @@ class _UserCalendarMonthWidgetState extends State<UserCalendarMonthWidget> {
               ],
             ),
           ),
-          Container(
+          SizedBox(
             height: widget.height*0.82 ,
             width: widget.width,
             child: SfCalendar(

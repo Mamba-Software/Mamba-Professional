@@ -43,6 +43,10 @@
   "@user":{
     "description": "Usuario Text"
   },
+  "invitedUser": "Invitado",
+  "@invitedUser":{
+    "description": "Usuario Text"
+  },
   "client": "Cliente",
   "@client":{
     "description": "Cliente Text"
@@ -771,6 +775,10 @@
   "@add":{
     "description": "Siguiente text"
   },
+  "select": "Seleccionar",
+  "@select":{
+    "description": "Siguiente text"
+  },
   "next": "Siguiente",
   "@next":{
     "description": "Siguiente text"
@@ -883,6 +891,10 @@
   },
   "contact": "Contactar",
   "@contact":{
+    "description": "Cancelar text"
+  },
+  "resend": "Reenviar",
+  "@resend":{
     "description": "Cancelar text"
   },
   "send": "Enviar",
@@ -1042,6 +1054,22 @@
   "@editEvent":{
     "description": "addEvent text"
   },
+  "creating": "Creando",
+  "@creating":{
+    "description": "addEvent text"
+  },
+  "editing": "Editando",
+  "@editing":{
+    "description": "addEvent text"
+  },
+  "updating": "Actualizando",
+  "@updating":{
+    "description": "addEvent text"
+  },
+  "deleting": "Eliminando",
+  "@deletingEvents":{
+    "description": "addEvent text"
+  },
   "updateEvent": "Guardar evento",
   "@updateEvent":{
     "description": "addEvent text"
@@ -1092,6 +1120,14 @@
   },
   "clientsSelectedError": "Hay más clientes que plazas disponibles",
   "@clientsSelectedError":{
+    "description": "noTrainerSelectedError text"
+  },
+  "slot": "plaza",
+  "@slot":{
+    "description": "noTrainerSelectedError text"
+  },
+  "slots": "plazas",
+  "@slots":{
     "description": "noTrainerSelectedError text"
   },
   "totalNumberEvents": "Sesiones realizadas: {number}",
@@ -1172,6 +1208,14 @@
   "@myRequests": {
     "description": "Wellcome message"
   },
+  "myRequestsDesc": "Solicitudes de afiliación pendientes de respuesta",
+  "@myRequestsDesc": {
+    "description": "Wellcome message"
+  },
+  "request": "Solicitud",
+  "@request": {
+    "description": "Wellcome message"
+  },
   "noRequestsFound": "No hemos encontrado ninguna solicitud",
   "@noRequestsFound": {
     "description": "Wellcome message"
@@ -1219,7 +1263,7 @@
   "@addLocation": {
     "description": "Wellcome message"
   },
-  "historial": "Control",
+  "historial": "Historial",
   "@historial": {
     "description": "Wellcome message"
   },
@@ -1267,6 +1311,14 @@
   "@yourImages": {
     "description": "Wellcome message"
   },
+  "randomImageDescription": "Se escogerá una de tus imágenes de marca de manera aleatoria",
+  "@randomImageDescription": {
+    "description": "Wellcome message"
+  },
+  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los miembros de tu marca. Puedes añadir un máximo de 10 imágenes. \n\n En caso de no añadir ninguna imagen, se utilizarán imágenes de librería.",
+  "@yourImagesDescription": {
+    "description": "Wellcome message"
+  },
   "yourSesions": "Mis Sesiones",
   "@yourSesions": {
     "description": "Wellcome message"
@@ -1283,8 +1335,20 @@
   "@editYourInfo": {
     "description": "Wellcome message"
   },
+  "photo": "Imagen",
+  "@photo": {
+    "description": "Wellcome message"
+  },
+  "randomPhoto": "Imagen aleatoria",
+  "@randomPhoto": {
+    "description": "Wellcome message"
+  },
   "photos": "Imágenes",
   "@photos": {
+    "description": "Wellcome message"
+  },
+  "photosDimensions": "Recomendamos orientación Horizontal (16:9)",
+  "@photosDimensions": {
     "description": "Wellcome message"
   },
   "profilePhoto": "Foto de perfil",
@@ -1335,7 +1399,7 @@
       }
     }
   },
-  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imagen/es",
+  "addBrandPhotosMaxLeft": "Puedes añadir un máximo de {left} imágenes",
   "@addBrandPhotosMaxLeft": {
     "description": "Wellcome message",
     "placeholders": {
@@ -1643,6 +1707,63 @@
       }
     }
   },
+  "userSendsBonoRequestBrand": "{name} ha enviado una solicitud de compra",
+  "@userSendsBonoRequestBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "userSendsBonoRequestSubtitleBrand": "Espera confirmación para comprar el bono {bono}",
+  "@userSendsBonoRequestSubtitleBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "userCancelsBonoRequestBrand": "{name} ha cancelado su solicitud de compra",
+  "@userCancelsBonoRequestBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "userCancelsBonoRequestSubtitleBrand": "El bono {bono} le ha dejado de interesar",
+  "@userCancelsBonoRequestSubtitleBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "userBuysBonoBrand": "{name} ha comprado el bono {bono}",
+  "@userBuysBonoBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "userBuysBonoSubtitleBrand": "Puede realizar un total de {sesiones} sesiones",
+  "@userBuysBonoSubtitleBrand": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "sesiones": {
+        "type": "String"
+      }
+    }
+  },
   "myLocationsBaseLocationDesc": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.",
   "@myLocationsBaseLocationDesc": {
     "description": "Wellcome message"
@@ -1857,9 +1978,13 @@
   "@categories":{
     "description": "Categories text"
   },
+  "bono": "Bono",
+  "@bono":{
+    "description": "Bonos text"
+  },
   "bonos": "Bonos",
   "@bonos":{
-    "bonos": "Bonos text"
+    "description": "Bonos text"
   },
   "yourBonos": "Tus bonos",
   "@yourBonos":{
@@ -1873,25 +1998,21 @@
   "@bonosClient":{
     "bonosClient": "Bonos client text"
   },
+  "bonosDescription": "Si este evento no es gratuito, selecciona los bonos con los que te puedes unir",
+  "@bonosDescription":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosDescriptionPrivate": "Selecciona los bonos que debe tener un cliente para poder ser invitado a este evento",
+  "@bonosDescriptionPrivate":{
+    "bonosClient": "Bonos client text"
+  },
   "information": "Información",
   "@information":{
     "information": "Information text"
   },
-  "stats": "Estadísticas",
-  "@stats":{
-    "stats": "Stats text"
-  },
-  "content": "Contenido",
-  "@content":{
-    "content": "Content text"
-  },
   "opinions": "Opiniones",
   "@opinions":{
     "opinions": "opinions text"
-  },
-  "locations": "Ubicaciones",
-  "@locations":{
-    "locations": "locations text"
   },
   "relaxedFeedbackLabel": "Leve",
   "@relaxedFeedbackLabel": {
@@ -2016,5 +2137,299 @@
   "staff": "Staff",
   "@staff": {
     "description": "Donde message"
+  },
+  "buyDate": "Fecha de compra",
+  "@buyDate": {
+    "description": "Donde message"
+  },
+  "bonoRequestDescription": "Compras de bonos pendientes de confirmación",
+  "@bonoRequestDescription": {
+    "description": "Create bono message"
+  },
+  "createBono": "Crear bono",
+  "@createBono": {
+    "description": "Create bono message"
+  },
+  "editBono": "Editar bono",
+  "@editBono": {
+    "description": "Edit bono message"
+  },
+  "nameBono": "Nombre de tu bono",
+  "@nameBono": {
+    "description": "Name bono message"
+  },
+  "descriptionBono": "Descripción de tu bono",
+  "@descriptionBono": {
+    "description": "Description bono message"
+  },
+  "activeBonoQues": "Activar/Desactivar bono",
+  "@activeBonoQues": {
+    "description": "Active bono message"
+  },
+  "activeBonoQuesDesc": "Si esta activo, tus clientes podrán comprarlo. Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
+  "@activeBonoQuesDesc": {
+    "description": "Active bono message"
+  },
+  "sesionsBono": "¿Cuantas sesiones tiene tu bono?",
+  "@sesionsBono": {
+    "description": "Sesions bono message"
+  },
+  "sesionsBonoDesc": "Haz clic para indicar que tu bono no tiene límite de sesiones. En la siguiente pantalla, podrás definir la fecha de expiración.",
+  "@sesionsBonoDesc": {
+    "description": "Sesions bono message"
+  },
+  "priceBono": "¿Qué precio tiene?",
+  "@priceBono": {
+    "description": "Price bono message"
+  },
+  "styleBono": "Estilo del bono",
+  "@styleBono": {
+    "description": "Style bono message"
+  },
+  "colorSolid": "Color sólido",
+  "@colorSolid": {
+    "description": "Solid bono message"
+  },
+  "degradateSolid": "Degradados",
+  "@degradateSolid": {
+    "description": "Degradate bono message"
+  },
+  "metalized": "Metalizados",
+  "@metalized": {
+    "description": "Metalizados bono message"
+  },
+  "orderBy": "Ordenar por",
+  "@orderBy": {
+    "description": "Donde message"
+  },
+  "filterBy": "Filtrar por",
+  "@filterBy": {
+    "description": "Donde message"
+  },
+  "noData": "Sin datos",
+  "@noData": {
+    "description": "Donde message"
+  },
+  "paymentMethod": "Método de pago",
+  "@paymentMethod": {
+    "description": "Donde message"
+  },
+  "paymentMethodConfirm": "Confirma el método de pago por favor.",
+  "@paymentMethodConfirm": {
+    "description": "Donde message"
+  },
+  "cashPaymentMethod": "Efectivo",
+  "@cashPaymentMethod": {
+    "description": "Donde message"
+  },
+  "transferPaymentMethod": "Transferencia",
+  "@transferPaymentMethod": {
+    "description": "Donde message"
+  },
+  "giftPaymentMethod": "Regalo",
+  "@giftPaymentMethod": {
+    "description": "Donde message"
+  },
+  "ilimitadas": "ilimitadas",
+  "@ilimitadas": {
+    "description": "ilimitadas message"
+  },
+  "numberSessions": "Nº sesiones",
+  "@numberSessions": {
+    "description": "numberSessions message"
+  },
+  "buy": "Comprar",
+  "@buy": {
+    "description": "buy message"
+  },
+  "activeBono": "Bonos activos",
+  "@activeBono": {
+    "description": "active message"
+  },
+  "desactiveBono": "Bonos inactivos",
+  "@desactiveBono": {
+    "description": "desactive message"
+  },
+  "active": "Activo",
+  "@active": {
+    "description": "active message"
+  },
+  "desactive": "Inactivo",
+  "@desactive": {
+    "description": "desactive message"
+  },
+  "price": "Precio",
+  "@price": {
+    "description": "price message"
+  },
+  "pricePlease": "Añade el precio por favor",
+  "@pricePlease": {
+    "description": "price message"
+  },
+  "session": "sesión",
+  "@session":{
+    "description": "session Text"
+  },
+  "sessionPlease": "Añade las sesiones por favor",
+  "@sessionPlease":{
+    "description": "session Text"
+  },
+  "conditions": "Condiciones",
+  "@conditions":{
+    "description": "conditions Text"
+  },
+  "expiresAt": "Expira en",
+  "@expiresAt":{
+    "description": "expiresAt Text"
+  },
+  "expiresAtDesc": "Número de días hasta el vencimiento de este bono.",
+  "@expiresAtDesc":{
+    "description": "expiresAt Text"
+  },
+  "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.\n\nDejar valor en 0 para evitar esta condición.",
+  "@freeCancelDesc":{
+    "description": "cancelTimeAt Text"
+  },
+  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana (lunes a domingo).\n\nDejar en 0 para evitar esta condición.",
+  "@trainsPerWeekDesc":{
+    "description": "trainsPerWekk Text"
+  },
+  "noExpireDate":  "No tiene fecha de expiración",
+  "@noExpireDate":{
+    "description": "noExpireDate Text"
+  },
+  "hours":  "Horas antes de la sesión",
+  "@hours":{
+    "description": "hours Text"
+  },
+  "freeCancel":  "Cancelación gratuita",
+  "@freeCancel":{
+    "description": "cancelTimeAt Text"
+  },
+  "cancelTimeAt":  "Cancelación gratuita hasta",
+  "@cancelTimeAt":{
+    "description": "cancelTimeAt Text"
+  },
+  "max": "Máximo",
+  "@max":{
+    "description": "max Text"
+  },
+  "trainsPerWeek":  "Sesiones por semana",
+  "@trainsPerWeek":{
+    "description": "trainsPerWekk Text"
+  },
+  "first": "Primero",
+  "@first":{
+    "description": "trainsPerWekk Text"
+  },
+  "alphabetAtoZ":"Ordenar de A-Z",
+  "@alphabetAtoZ":{
+    "description": "trainsPerWekk Text"
+  },
+  "alphabetZtoA": "Ordenar de Z-A",
+  "@alphabetZtoA":{
+    "description": "trainsPerWekk Text"
+  },
+  "mostBuys": "Más comprado",
+  "@mostBuys":{
+    "description": "trainsPerWekk Text"
+  },
+  "bonoBuys": "Bonos pendientes",
+  "@bonoBuys":{
+    "description": "trainsPerWekk Text"
+  },
+  "preseeBono": "Previsualiza tu bono",
+  "@preseeBono":{
+    "description": "trainsPerWekk Text"
+  },
+  "acceptBono": "Otorgar bono",
+  "@acceptBono":{
+    "description": "trainsPerWekk Text"
+  },
+  "acceptBonoDesc": "Verifica la información antes de confirmar la compra del bono",
+  "@acceptBonoDesc":{
+    "description": "trainsPerWekk Text"
+  },
+  "editBonoClientDesc": "Verifica la información antes de editar el bono del cliente",
+  "@editBonoClientDesc":{
+    "description": "editBonoClientDesc Text"
+  },
+  "paymentIndication": " ha indicado que ha pagado usando: ",
+  "@paymentIndication": {
+    "description": "trainsPerWekk Text"
+  },
+  "noBonosCreated": "No se ha creado ningún bono",
+  "@noBonosCreated": {
+    "description": "trainsPerWekk Text"
+  },
+  "createFistBono": "Crea tu primer bono",
+  "@createFistBono": {
+    "description": "trainsPerWekk Text"
+  },
+  "userBuysBonoTrainer": "{user} ha comprado el bono {bono}",
+  "@userBuysBonoTrainer": {
+    "description": "userJoinsBrandUser message",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      },
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "userBuysBonoTrainerSubtitle": "Puedes encontrar todos los detalles de su progreso en el perfil del usuario",
+  "@userBuysBonoTrainerSubtitle": {
+    "description": "userJoinsBrandUser message"
+  },
+  "activeClients": "Clientes activos",
+  "@activeClients": {
+    "description": "active client message"
+  },
+  "desactiveClient": "Clientes inactivos",
+  "@desactiveClient": {
+    "description": "desactive client message"
+  },
+  "personalizedFieldsFirst": "Se deben rellenar todos los campos personalizados",
+  "@personalizedFieldsFirst": {
+    "description": "personalizedFieldsFirst message"
+  },
+  "allBonosInClient": "Ya dispone de todos los bonos de tu marca",
+  "@allBonosInClient": {
+    "description": "allBonosInClient message"
+  },
+  "from": "Desde",
+  "@from": {
+    "description": "from message"
+  },
+
+  "to": "Hasta",
+  "@to": {
+    "description": "to message"
+  },
+  "activeTrainers": "Entrandores activos",
+  "@activeTrainers": {
+    "description": "activeTrainers message"
+  },
+  "desactiveTrainers": "Entrandores inactivos",
+  "@desactiveTrainers": {
+    "description": "desactiveTrainers message"
+  },
+  "bonosNecesarios": "Bonos necesarios",
+  "@bonosNecesarios": {
+    "description": "userJoinsBrandUser message"
+  },
+  "seeMap": "Ver mapa",
+  "@seeMap": {
+    "description": "seeMap message"
+  },
+  "personalizeBonoUser": "Personalizar este bono solo para {user}",
+  "@personalizeBonoUser": {
+    "description": "Member Since message",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
   }
 }

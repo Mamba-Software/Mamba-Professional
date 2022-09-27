@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -21,11 +22,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;
   DateTime? dateTime;
+  CalendarView? calendarView;
   bool? onlyView;
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
 
-  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime, this.onlyView, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  BrandCalendarWidget({Key? key, required this.brandId, this.dateTime, this.calendarView, this.onlyView, required this.pinned, required this.pinnedChanged}) : super(key: key);
 
   @override
   _BrandCalendarWidgetState createState() => _BrandCalendarWidgetState();
@@ -97,6 +99,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   // Init App Bar Title
   initAppBarDateTitle() {
+    // Initial Date Time
     if (widget.dateTime == null) {
       DateTime now = DateTime.now();
       int currentDay = now.weekday;
@@ -110,6 +113,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     }
   }
 
+  void getUserBrandDetails() async {
+    _brand = await _brandDataService.getBrandDetails(widget.brandId);
+    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
+    initCalendar();
+  }
+
   void initCalendar() {
     // Init App Bar Title
     if (widget.dateTime == null) {
@@ -117,27 +126,26 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       int currentDay = now.weekday;
       displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 7));
+      _controller.selectedDate = DateTime.now();
     } else {
       DateTime dateTime = widget.dateTime!;
       int currentDay = dateTime.weekday;
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
+      _controller.selectedDate = dateTime;
+    }
+    // Initial Calendar View
+    if (widget.calendarView == null) {
+      _controller.view = CalendarView.day;
+    } else {
+      _controller.view = widget.calendarView;
     }
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
-    _controller.selectedDate = DateTime.now();
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      setState(() {
-        isLoading = false;
-      });
+    setState(() {
+      isLoading = false;
     });
-  }
-
-  void getUserBrandDetails() async {
-    _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
-    initCalendar();
   }
 
   Event getEvent(String eventId) {
@@ -152,8 +160,17 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => AddOrEditEvent(
-            locale: Localizations.localeOf(context),
+          builder: (context) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: AddOrEditEvent(
+              locale: Localizations.localeOf(context),
+            ),
           ),
         )
     );
@@ -163,8 +180,17 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => AddOrEditPrivateEvent(
-            locale: Localizations.localeOf(context),
+          builder: (context) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+            },
+            child: AddOrEditPrivateEvent(
+              locale: Localizations.localeOf(context),
+            ),
           ),
         )
     );
@@ -173,7 +199,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Text(
       StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-      style: Theme.of(context).textTheme.headline1,
+      style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
     );
   }
 
@@ -184,14 +210,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         children: [
           Icon(
             Icons.calendar_view_week,
-            color: Theme.of(context).primaryColor,
+            color: AppColors.white,
             size: safeAreaWidth*0.05,
           ),
           FittedBox(
             fit: BoxFit.contain,
             child: Text(
                 AppLocalizations.of(context)!.weekString,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                 textAlign: TextAlign.center
             ),
           ),
@@ -203,14 +229,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         children: [
           Icon(
             Icons.calendar_view_month,
-            color: Theme.of(context).primaryColor,
+            color: AppColors.white,
             size: safeAreaWidth*0.05,
           ),
           FittedBox(
             fit: BoxFit.contain,
             child: Text(
                 AppLocalizations.of(context)!.monthString,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                 textAlign: TextAlign.center
             ),
           ),
@@ -222,14 +248,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         children: [
           Icon(
             Icons.calendar_view_day,
-            color: Theme.of(context).primaryColor,
+            color: AppColors.white,
             size: safeAreaWidth*0.05,
           ),
           FittedBox(
             fit: BoxFit.contain,
             child: Text(
                 AppLocalizations.of(context)!.dayString,
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                 textAlign: TextAlign.center
             ),
           ),
@@ -241,14 +267,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       children: [
         Icon(
           Icons.calendar_view_week,
-          color: Theme.of(context).primaryColor,
+          color: AppColors.white,
           size: safeAreaWidth*0.05,
         ),
         FittedBox(
           fit: BoxFit.contain,
           child: Text(
               AppLocalizations.of(context)!.weekString,
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
               textAlign: TextAlign.center
           ),
         ),
@@ -294,7 +320,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         Icon(
                           event.isPrivate! ? Icons.lock_outlined : Icons.groups,
                           color: AppColors.white,
-                          size: safeAreaHeight*0.02,
+                          size: details.bounds.width*0.05,
                         ),
                         SizedBox(width: details.bounds.width*0.02,),
                         Text(
@@ -345,7 +371,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 decoration: BoxDecoration(
                   color: event.isPrivate! ?  AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(5),
+                    Radius.circular(5),
                   ),
                 ),
                 child: Column(
@@ -357,7 +383,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         Icon(
                           event.isPrivate! ? Icons.lock_outlined : Icons.groups,
                           color: AppColors.white,
-                          size: safeAreaHeight*0.02,
+                          size: details.bounds.width*0.05,
                         ),
                         SizedBox(width: details.bounds.width*0.02,),
                         Text(
@@ -406,7 +432,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 width: details.bounds.width,
                 height: details.bounds.height,
-                padding: EdgeInsets.all(details.bounds.width*0.1),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
                   borderRadius: const BorderRadius.all(
@@ -456,7 +482,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Container(
                 width: details.bounds.width,
                 height: details.bounds.height,
-                padding: EdgeInsets.all(details.bounds.height*0.1),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   color: event.isPrivate! ? AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
@@ -586,7 +612,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 decoration: BoxDecoration(
                   color: event.isPrivate! ?  AppColors.black : appointment.color,
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(5),
+                    Radius.circular(5),
                   ),
                 ),
                 child: Column(
@@ -714,7 +740,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               decoration: BoxDecoration(
                 color: event.isPrivate! ?  AppColors.black : appointment.color,
                 borderRadius: const BorderRadius.all(
-                  const Radius.circular(5),
+                  Radius.circular(5),
                 ),
               ),
               child: Column(
@@ -775,15 +801,16 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 height: MediaQuery.of(context).size.height*0.15,
-                color: Theme.of(context).backgroundColor,
+                color: AppColors.darkGrey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -799,7 +826,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                             fit: BoxFit.fitHeight,
                             child: SizedBox(
                               height: MediaQuery.of(context).size.height*0.08,
-                              width: MediaQuery.of(context).size.width*0.35,
+                              width: MediaQuery.of(context).size.width*0.36,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -812,7 +839,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                     },
                                     child: Text(
                                         AppLocalizations.of(context)!.todayString,
-                                        style: Theme.of(context).textTheme.bodyText1,
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.center
                                     ),
                                   ),
@@ -860,6 +887,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
+                      color: AppColors.white,
                       size: MediaQuery.of(context).size.height*0.04,
                     ),
                     onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
@@ -872,7 +900,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 child: IconButton(
                   icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    color: widget.pinned ? AppColors.red : AppColors.white.withOpacity(0.5),
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
@@ -907,7 +935,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
                     child: SfCalendar(
                       cellEndPadding: 0,
-                      view: CalendarView.day,
+                      view: _controller.view!,
                       controller: _controller,
                       showDatePickerButton: true,
                       dataSource: _getCalendarDataSource(),

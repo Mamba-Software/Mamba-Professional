@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/004-Categories/Categories.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/Content.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -25,7 +25,7 @@ class MambaProUtils {
     if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories);
     if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos);
     if(pageIndex == 8)return Text(AppLocalizations.of(context)!.information);
-    if(pageIndex == 7)return Text(AppLocalizations.of(context)!.content);
+    if(pageIndex == 7)return Text(AppLocalizations.of(context)!.photos);
     if(pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions);
     if(pageIndex == 9)return Text(AppLocalizations.of(context)!.stats);
     if(pageIndex == 10)return Text(AppLocalizations.of(context)!.calendar);
@@ -56,138 +56,6 @@ class MambaProUtils {
     if(pageIndexView == 14) return Icon(Icons.history_outlined, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 15) return Icon(Icons.group_add_outlined, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 16) return Icon(Icons.preview, color: Theme.of(context).primaryColor,);
-    return Container();
-  }
-
-  /*Function to select the action bar in the page to load
-  Widget actionIconsSelector(var context, int pageIndex)
-  {
-    if (pageIndex == 10) return HomePro(brandId:brandId, numTrainers: numTrainers, numClients: numClients, safeAreaWidth: safeAreaWidth, safeAreaHeight: safeAreaHeight,);
-    if (pageIndex == 0) return HomePro(brandId:brandId, numTrainers: numTrainers, numClients: numClients, safeAreaWidth: safeAreaWidth, safeAreaHeight: safeAreaHeight,);
-    return Row(
-      children: [
-        pageIndex == 10 ? IconButton(
-          onPressed: () {
-            if (_controller.view == CalendarView.month) {
-              setState(() {
-                _controller.view = CalendarView.week;
-              });
-            } else {
-              setState(() {
-                _controller.view = CalendarView.month;
-                pageIndex = 10;
-              });
-            }
-          },
-          icon: _controller.view == CalendarView.month ? SizedBox(
-            width: safeAreaWidth*0.15,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.calendar_view_week,
-                  color: Theme.of(context).primaryColor,
-                  size: safeAreaWidth*0.05,
-                ),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                      AppLocalizations.of(context)!.weekString,
-                      style: Theme.of(context).textTheme.bodyText2,
-                      textAlign: TextAlign.center
-                  ),
-                ),
-              ],
-            ),
-          ) : SizedBox(
-            width: safeAreaWidth*0.15,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.calendar_view_month,
-                  color: Theme.of(context).primaryColor,
-                  size: safeAreaWidth*0.05,
-                ),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                      AppLocalizations.of(context)!.monthString,
-                      style: Theme.of(context).textTheme.bodyText2,
-                      textAlign: TextAlign.center
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ) : Container(),
-        Padding(
-          padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-          child: IconButton(
-            icon: pageIndex == 0 ? Container() : Icon (iconStar ? Icons.favorite : Icons.favorite_border, size: MediaQuery.of(context).size.width*0.06,),
-            onPressed: () {
-              setState(() {
-                iconStar = !iconStar;
-                if (iconStar == true) {
-                  favourites.add(pageIndex);
-                }
-                else {
-                  favourites.remove(pageIndex);
-                }
-                favourites.sort();
-                _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
-              }
-              );
-            },
-          ),
-        ),
-      ],
-    );
-
-    if(pageIndex == 0) return HomePro(brandId:brandId, numTrainers: numTrainers, numClients: numClients, safeAreaWidth: safeAreaWidth, safeAreaHeight: safeAreaHeight,);
-    if(pageIndex == 1) return Trainers(brandId:brandId, numTrainers: numTrainers );
-    if(pageIndex == 2) return Clients(brandId: brandId, numClients: numClients,);
-    if(pageIndex == 4) return Categories(brandId:brandId);
-    if(pageIndex == 5) return BonosPro(brandId:brandId);
-    if(pageIndex == 7) return Content(brandId:brandId);
-    if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
-    if(pageIndex == 12) return Logo(brandId:brandId);
-    if(pageIndex == 10) {
-      return BrandCalendarWidgetPro(
-        brandId: brandId,
-        dateTime: middleMonthDate,
-        controller: _controller,
-      );
-    }
-    if(pageIndex == 11) return Locations(brandId:brandId);
-    if(pageIndex == 14) return BrandEventHistoryPage(brandId: brandId);
-    if(pageIndex == 15) return MembershipRequestsPro(brandId: brandId);
-    return Container();
-  }
-   */
-
-  //Function to select the page to load
-  Widget pageSelector(var context,int pageIndex, String brandId, int numTrainers, int numClients, CalendarController _controller, var safeAreaWidth, var safeAreaHeight)
-  {
-    if(pageIndex == 0) return HomePro(brandId:brandId, numTrainers: numTrainers, numClients: numClients);
-    //if(pageIndex == 1) return Trainers(brandId:brandId, numTrainers: numTrainers );
-    //if(pageIndex == 2) return Clients(brandId: brandId, numClients: numClients,);
-    if(pageIndex == 4) return Categories(brandId:brandId);
-    //if(pageIndex == 5) return BonosPro(brandId:brandId);
-    //if(pageIndex == 7) return Content(brandId:brandId);
-    //if(pageIndex == 8) return BrandInfo(locale: Localizations.localeOf(context), brandId:brandId);
-    if(pageIndex == 12) return Logo(brandId:brandId);
-    /*
-    if(pageIndex == 10) {
-      return BrandCalendarWidget(
-        brandId: brandId,
-        dateTime: middleMonthDate,
-      );
-    }
-     */
-    //if(pageIndex == 11) return Locations(brandId:brandId);
-    //if(pageIndex == 14) return BrandEventHistoryPage(brandId: brandId);
-    //if(pageIndex == 15) return MembershipRequestsPro(brandId: brandId);
     return Container();
   }
 

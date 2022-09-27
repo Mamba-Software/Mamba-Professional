@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
@@ -64,6 +66,17 @@ class UserFirebaseCalls {
   Future<int> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
+      return 1;
+    } catch (e) {
+      print(e.toString());
+      return -1;
+    }
+  }
+
+  Future<int> resendEmail(String email) async {
+    try {
+      User? currentUser = await getCurrentUser();
+      currentUser!.sendEmailVerification();
       return 1;
     } catch (e) {
       print(e.toString());
@@ -336,6 +349,80 @@ class UserFirebaseCalls {
     return notis;
   }
 
+  Future<List<Bono>> getUserBonos(String? userId) async {
+    List<Bono> userBonos = [];
+    QuerySnapshot querySnapshot = await _firestore.collection(users)
+        .doc(userId)
+        .collection("Bonos")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if (querySnapshot.docs[i].id != "Bono Requests") {
+        userBonos.add(Bono.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+    }
+    return userBonos;
+  }
+
+  Future<Event> getLastUserEvent(String? userId) async {
+    List<Event> events = [];
+    List<Event> privateEvents = [];
+    QuerySnapshot querySnapshot = await _firestore.collection(users)
+        .doc(userId)
+        .collection("Events").get();
+    QuerySnapshot querySnapshotPrivate = await _firestore.collection(users)
+        .doc(userId)
+        .collection("Events").doc('Private Events').collection('Private Events').get();
+
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if (querySnapshot.docs[i].id != "Private Events") {
+        events.add(Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+    }
+    for (int i = 0; i < querySnapshotPrivate.docs.length; i++) {
+      privateEvents.add(Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+
+    print(events.length);
+    print(privateEvents.length);
+
+    events.sort((a, b) {
+      return b.doneAt!.toDate().compareTo(a.doneAt!.toDate());
+    });
+
+    privateEvents.sort((a, b) {
+      return b.doneAt!.toDate().compareTo(a.doneAt!.toDate());
+    });
+
+    if(privateEvents.isEmpty)
+      {
+        if(events.isEmpty) {
+          return Event();
+        }
+        else {
+          return events[0];
+        }
+
+      }
+
+    else {
+      if(events.isEmpty) {
+        return privateEvents[0];
+      }
+      else {
+        if(events[0].doneAt!.toDate().compareTo(privateEvents[0].doneAt!.toDate()) == 0)
+        {
+          return events[0];
+        }
+        else {
+          return privateEvents[0];
+        }
+
+      }
+    }
+
+
+  }
+
   //Add
 
   Future<int> addUser(String email, String password, String idioma) async {
@@ -361,7 +448,7 @@ class UserFirebaseCalls {
             "imageUrl": null,
             "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
             "isFirst": true,
-            "isTrainer": null,
+            "isTrainer": true,
             "isPrivate": true,
             "gender": null,
             "dateJoined": formatted,
@@ -680,6 +767,17 @@ class UserFirebaseCalls {
     }
   }
 
+  Future<void> updateUserBono(String userId, Bono bono) async {
+
+    await _firestore.collection(users).doc(userId).collection("Bonos").doc(bono.id).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+    });
+  }
+
   //Delete
 
   Future<void> deleteRequestToBrand(RequestToBrand request) async {
@@ -718,6 +816,17 @@ class UserFirebaseCalls {
         .collection(users)
         .doc(userId)
         .collection("Notifications")
+        .snapshots();
+  }
+
+
+
+  //Get bono Requests from brand
+  Stream<QuerySnapshot> getAllBonosFromUser(String userId) {
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Bonos")
         .snapshots();
   }
 

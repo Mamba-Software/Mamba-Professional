@@ -2,6 +2,7 @@
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 
@@ -14,6 +15,7 @@ class Event {
   String? brandID;
   bool? isPrivate;
   String? title;
+  String? imageUrl;
   String? description;
   Timestamp? doneAt;
   Timestamp? createdAt;
@@ -32,6 +34,7 @@ class Event {
 
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
+  List<Bono> bonosList = [];
   Location location = Location();
 
   Event({
@@ -41,6 +44,7 @@ class Event {
     this.brandID,
     this.isPrivate,
     this.title,
+    this.imageUrl,
     this.description,
     this.doneAt,
     this.createdAt,
@@ -61,113 +65,119 @@ class Event {
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   Event.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('eventGroupId')) {
-      this.eventGroupId = documentSnapshot.get("eventGroupId");
+      eventGroupId = documentSnapshot.get("eventGroupId");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('creatorID')) {
-      this.creatorID = documentSnapshot.get("creatorID").toString();
+      creatorID = documentSnapshot.get("creatorID").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
-      this.brandID = documentSnapshot.get("brandID").toString();
+      brandID = documentSnapshot.get("brandID").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
-      this.isPrivate = documentSnapshot.get("isPrivate");
+      isPrivate = documentSnapshot.get("isPrivate");
     } else {
-      this.isPrivate = false;
+      isPrivate = false;
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
-      this.title = documentSnapshot.get("title").toString();
+      title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      imageUrl = documentSnapshot.get("imageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('description')) {
-      this.description = documentSnapshot.get("description").toString();
+      description = documentSnapshot.get("description").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('doneAt')) {
-      this.doneAt = documentSnapshot.get("doneAt");
+      doneAt = documentSnapshot.get("doneAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
-      this.createdAt = documentSnapshot.get("createdAt");
+      createdAt = documentSnapshot.get("createdAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('year')) {
-      this.year = documentSnapshot.get("year").toString();
+      year = documentSnapshot.get("year").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('month')) {
-      this.month = documentSnapshot.get("month").toString();
+      month = documentSnapshot.get("month").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('day')) {
-      this.day = documentSnapshot.get("day").toString();
+      day = documentSnapshot.get("day").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('hour')) {
-      this.hour = documentSnapshot.get("hour").toString();
+      hour = documentSnapshot.get("hour").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('minute')) {
-      this.minute = documentSnapshot.get("minute").toString();
+      minute = documentSnapshot.get("minute").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('duration')) {
-      this.duration = double.parse(documentSnapshot.get("duration").toString());
+      duration = double.parse(documentSnapshot.get("duration").toString());
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('locationId')) {
-      this.locationId = documentSnapshot.get("locationId").toString();
+      locationId = documentSnapshot.get("locationId").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numClients')) {
-      this.numClients = documentSnapshot.get("numClients");
+      numClients = documentSnapshot.get("numClients");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numTrainers')) {
-      this.numTrainers = documentSnapshot.get("numTrainers");
+      numTrainers = documentSnapshot.get("numTrainers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
-      this.maxMembers = documentSnapshot.get("maxMembers");
+      maxMembers = documentSnapshot.get("maxMembers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('joinedMembers')) {
-      this.joinedMembers = documentSnapshot.get("joinedMembers");
+      joinedMembers = documentSnapshot.get("joinedMembers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('selectedTrainers')) {
-      this.selectedTrainers = documentSnapshot.get("selectedTrainers");
+      selectedTrainers = documentSnapshot.get("selectedTrainers");
     }
   }
 
   Event.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
-      this.isPrivate = documentSnapshot.get("isPrivate");
+      isPrivate = documentSnapshot.get("isPrivate");
     } else {
-      this.isPrivate = false;
+      isPrivate = false;
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
-      this.title = documentSnapshot.get("title").toString();
+      title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
+      imageUrl = documentSnapshot.get("imageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('doneAt')) {
-      this.doneAt = documentSnapshot.get("doneAt");
+      doneAt = documentSnapshot.get("doneAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
-      this.createdAt = documentSnapshot.get("createdAt");
+      createdAt = documentSnapshot.get("createdAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('year')) {
-      this.year = documentSnapshot.get("year").toString();
+      year = documentSnapshot.get("year").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('month')) {
-      this.month = documentSnapshot.get("month").toString();
+      month = documentSnapshot.get("month").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('day')) {
-      this.day = documentSnapshot.get("day").toString();
+      day = documentSnapshot.get("day").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('hour')) {
-      this.hour = documentSnapshot.get("hour").toString();
+      hour = documentSnapshot.get("hour").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('minute')) {
-      this.minute = documentSnapshot.get("minute").toString();
+      minute = documentSnapshot.get("minute").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('duration')) {
-      this.duration = double.parse(documentSnapshot.get("duration").toString());
+      duration = double.parse(documentSnapshot.get("duration").toString());
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numClients')) {
-      this.numClients = documentSnapshot.get("numClients");
+      numClients = documentSnapshot.get("numClients");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('numTrainers')) {
-      this.numTrainers = documentSnapshot.get("numTrainers");
+      numTrainers = documentSnapshot.get("numTrainers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
-      this.maxMembers = documentSnapshot.get("maxMembers");
+      maxMembers = documentSnapshot.get("maxMembers");
     }
   }
 
@@ -175,32 +185,38 @@ class Event {
 
   // Set Basic Data
   set setBasicData(Event event) {
-    this.creatorID = event.creatorID;
-    this.brandID = event.brandID;
-    this.title = event.title;
-    this.description = event.description;
-    this.year = event.year;
-    this.month = event.month;
-    this.day = event.day;
-    this.hour = event.hour;
-    this.minute = event.minute;
-    this.duration = event.duration;
-    this.locationId = event.locationId;
-    this.numClients = event.numClients;
-    this.numTrainers = event.numTrainers;
-    this.maxMembers = event.maxMembers;
-    this.joinedMembers = event.joinedMembers;
-    this.selectedTrainers = event.selectedTrainers;
+    creatorID = event.creatorID;
+    brandID = event.brandID;
+    title = event.title;
+    imageUrl = event.imageUrl;
+    description = event.description;
+    year = event.year;
+    month = event.month;
+    day = event.day;
+    hour = event.hour;
+    minute = event.minute;
+    duration = event.duration;
+    locationId = event.locationId;
+    numClients = event.numClients;
+    numTrainers = event.numTrainers;
+    maxMembers = event.maxMembers;
+    joinedMembers = event.joinedMembers;
+    selectedTrainers = event.selectedTrainers;
   }
 
   // Users
   set setUserList(List<Usuario> userList) {
-    this.usersList = userList;
+    usersList = userList;
   }
 
   // Brands
   set setBrandList(List<Brand> brandList) {
-    this.brandsList = brandList;
+    brandsList = brandList;
+  }
+
+  // Bonos
+  set setBonosList(List<Bono> bonosList) {
+    this.bonosList = bonosList;
   }
 
   // Locations

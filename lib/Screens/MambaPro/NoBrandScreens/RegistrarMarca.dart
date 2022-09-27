@@ -138,6 +138,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
             },
           ),
         ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: LoadingView(),
       )
         :
@@ -218,7 +219,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
           ),
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             Expanded(
@@ -327,7 +328,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                       ),
                     ),
                     Scaffold(
-                      resizeToAvoidBottomInset: true,
+                      resizeToAvoidBottomInset: false,
                       body: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Padding(
@@ -385,7 +386,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                       ),
                     ),
                     Scaffold(
-                      resizeToAvoidBottomInset: true,
+                      resizeToAvoidBottomInset: false,
                       body: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Padding(
@@ -548,7 +549,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                       ),
                     ),
                     Scaffold(
-                      resizeToAvoidBottomInset: true,
+                      resizeToAvoidBottomInset: false,
                       body: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Padding(
@@ -1095,9 +1096,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     }, name: nameBrandController.text.trim(), users: []);
     await _brandDataService.updateBrandRoom(result, room.id);
     // Pushing to Splash Screen
-    setState(() {
-      currentIndex = 1;
-    });
     await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
     Navigator.pushAndRemoveUntil(
       context,

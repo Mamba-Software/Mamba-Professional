@@ -3,7 +3,9 @@ import '../../../Constants.dart';
 
 class LoadingView extends StatefulWidget {
   bool? hasLogo;
-  LoadingView({Key? key, this.hasLogo}) : super(key: key);
+  bool? isSmall;
+  String? text;
+  LoadingView({Key? key, this.hasLogo, this.isSmall, this.text}) : super(key: key);
 
   @override
   _LoadingViewState createState() => _LoadingViewState();
@@ -14,30 +16,36 @@ class _LoadingViewState extends State<LoadingView> {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.center,
       children: <Widget>[
         Center(
           child: SizedBox(
-            //width: MediaQuery.of(context).size.width * 0.14,
-            width: 50,
-            //height: MediaQuery.of(context).size.height * 0.07,
-            height: 50,
+            width: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
+            height: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
             child: CircularProgressIndicator(
+              strokeWidth: widget.isSmall != null && widget.isSmall == true ? 2 : 4,
               color: Theme.of(context).colorScheme.secondary,
             ),
           ),
         ),
         widget.hasLogo != null && widget.hasLogo == false ? Container() : Center(
           child: SizedBox(
-            //width: MediaQuery.of(context).size.width * 0.07,
-            width: 25,
-            //height: MediaQuery.of(context).size.height * 0.07,
-            height: 25,
+            width: widget.isSmall != null && widget.isSmall == true ? 12 : 25,
+            height: widget.isSmall != null && widget.isSmall == true ? 12 : 25,
             child: Image(
                 image: AssetImage(Constants.logoSimpleYellow)
             ),
           ),
         ),
+        widget.text != null ? Padding(
+          padding: const EdgeInsets.only(top: 100),
+          child: Text(
+            widget.text!,
+            style: Theme.of(context).textTheme.caption,
+          ),
+        ) : Container(),
       ],
     );
+
   }
 }

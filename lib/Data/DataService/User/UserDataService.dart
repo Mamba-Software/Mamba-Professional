@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserFirebaseCalls.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
@@ -17,6 +19,7 @@ class UserDataService {
   Future<int> signIn(String email, String password) => _firebase.signIn(email, password);
   Future<void> signOut() => _firebase.signOut();
   Future<int> resetPassword(String email) => _firebase.resetPassword(email);
+  Future<int> resendEmail(String email) => _firebase.resendEmail(email);
   Future<bool> deleteUser(String password) => _firebase.deleteUser(password);
 
   // Check Data
@@ -37,6 +40,8 @@ class UserDataService {
   Future<List<ReceivedNotification>> getLocalNotifications(String userId) => _firebase.getLocalNotifications(userId);
   Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) => _firebase.getIndividualLocalNotification(userId, notificationId);
   Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) => _firebase.findEventLocalNotification(userId, eventId);
+  Future<List<Bono>> getUserBonos(String? userId) => _firebase.getUserBonos(userId);
+  Future<Event> getLastUserEvent(String? userId) => _firebase.getLastUserEvent(userId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
@@ -58,6 +63,8 @@ class UserDataService {
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma);
   Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
+  Future<void> updateUserBono(String userId, Bono bono) => _firebase.updateUserBono(userId, bono);
+
 
   // Delete Data
   Future<void> deleteRequestToBrand(RequestToBrand request) => _firebase.deleteRequestToBrand(request);
@@ -70,5 +77,7 @@ class UserDataService {
   // STREAMS
 
   Stream<QuerySnapshot> getAllNotificationsUserStream(String userId) => _firebase.getAllNotificationsUserStream(userId);
+
+  Stream<QuerySnapshot> getAllBonosFromUser(String userId) => _firebase.getAllBonosFromUser(userId);
 
 }

@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
@@ -9,9 +13,11 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
@@ -24,6 +30,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAu
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectClientsEvent.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -40,11 +47,14 @@ class AddOrEditPrivateEvent extends StatefulWidget {
 
 class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with SingleTickerProviderStateMixin{
   // Acceso a Base de Datos
-  var _eventDataService = new EventDataService();
-  var _locationDataService = new LocationDataService();
+  final _eventDataService = EventDataService();
+  final _locationDataService = LocationDataService();
+  final _brandDataService = BrandDataService();
+  final _userDataService = UserDataService();
+  var _topSnackBar = TopSnackBar();
   // Notification Services
-  NotificationService _notificationService = NotificationService();
-  LocalNotificationService _localNotificationService = LocalNotificationService();
+  final NotificationService _notificationService = NotificationService();
+  final LocalNotificationService _localNotificationService = LocalNotificationService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -63,6 +73,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   // Description Controller
   var descriptionController = TextEditingController();
   String? descriptionString;
+  // Event Image
+  bool isRandomImage = true;
+  bool imageError = true;
+  String? eventImageUrl;
   // Location
   String? originalLocationId;
   Location location = Location();
@@ -83,6 +97,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   // Evento Recurrente
   bool modifyAllEventGroup = false;
   bool isRecurrent = false;
+  String? isRecurrentLoadingText;
+  int currentEvent = 1;
+  int totalEvents = 1;
   var oneWeek;
   var twoWeek;
   var oneMonth;
@@ -101,6 +118,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   final formKeyInfo = GlobalKey<FormState>();
   final formKeyTime = GlobalKey<FormState>();
   final formKeyMembers = GlobalKey<FormState>();
+  // Event Bonos
+  List<Bono> allBonos = [];
+  List<Bono> eventBonos = [];
+  List<String> selectedBonos = [];
 
   @override
   initState() {
@@ -125,9 +146,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);
     startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
-    oneWeek = startDate.add(Duration(days: 7));
-    twoWeek = startDate.add(Duration(days: 14));
-    oneMonth= startDate.add(Duration(days: 28));
+    oneWeek = startDate.add(const Duration(days: 7));
+    twoWeek = startDate.add(const Duration(days: 14));
+    oneMonth= startDate.add(const Duration(days: 28));
     doneAt = Timestamp.fromDate(startDate);
     titleController.text = "${currentBrand.name!.replaceAll(RegExp(r"\s+"), "")}";
     titleString = titleController.text;
@@ -136,7 +157,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     durationController.text = "${hour}h ${min}min";
     membersController.text = "${eventMaxMembers.toString()}";
     brandTrainersSelected.add(currentUser);
+    isRandomImage = true;
+    // Get Event Bonos
+    //await getBrandBonos(); //DESCOMENTAR EN IMPLEMENTACIO BONOS A EVENT PRIVAT TODO
+    // Event Location
     getLocation(currentBrand.baseLocation!);
+
   }
 
   Future<void> getEventInfo() async {
@@ -160,22 +186,40 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);
     startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
-    oneWeek = startDate.add(Duration(days: 7));
-    twoWeek = startDate.add(Duration(days: 14));
-    oneMonth= startDate.add(Duration(days: 30));
+    oneWeek = startDate.add(const Duration(days: 7));
+    twoWeek = startDate.add(const Duration(days: 14));
+    oneMonth= startDate.add(const Duration(days: 30));
     doneAt = Timestamp.fromDate(startDate);
     // Event Title
     titleController.text = event.title!;
     titleString = titleController.text;
+    // Event Image
+    eventImageUrl = event.imageUrl;
+    isRandomImage = false;
     // Event Duration
+    duration = event.duration!.toStringAsFixed(2);
     durationController.text = StringUtils().durationToString(event.duration!);
     // Event Members
     eventMaxMembers = event.maxMembers!;
     membersController.text = "${event.maxMembers!}";
-    getEventMembers(event.id!);
+    await getEventMembers(event.id!);
+    // Event Bonos
+    //await getBrandBonos(); //DESCOMENTAR EN IMPLEMENTACIO BONOS A EVENT PRIVAT TODO
+    //await getEventBonos(); //DESCOMENTAR EN IMPLEMENTACIO BONOS A EVENT PRIVAT TODO
     // Event Locations
     originalLocationId = event.locationId!;
-    getLocation(event.locationId!);
+    await getLocation(event.locationId!);
+  }
+
+  Future<void> getBrandBonos() async {
+    allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+  }
+
+  Future<void> getEventBonos() async {
+    eventBonos = await _eventDataService.getEventBonos(widget.eventId!, currentBrand.id!);
+    for (Bono bono in eventBonos) {
+      selectedBonos.add(bono.id!);
+    }
   }
 
   Future<void> getEventMembers(String eventId) async {
@@ -199,6 +243,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future selectDate() async {
+    // TODO: AQUI HI HA UN ERROR QUAN SINICIA EL CREATEEVENT A LES XX:59 Y ES CLICKA AIXO A LES XX+1:01
     DateTime? pickedDateTemp =  await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDateDialog(
@@ -210,6 +255,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     );
     if (pickedDateTemp != null) {
       setState(() {
+        errorDate = false;
         startDate = DateTime(
           pickedDateTemp.year,
           pickedDateTemp.month,
@@ -219,9 +265,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         );
         startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(pickedDateTemp);
         startDateController.text = StringUtils().toCapitalized(startDateController.text);
-        oneWeek = pickedDateTemp.add(Duration(days: 7));
-        twoWeek = pickedDateTemp.add(Duration(days: 14));
-        oneMonth= pickedDateTemp.add(Duration(days: 28));
+        oneWeek = pickedDateTemp.add(const Duration(days: 7));
+        twoWeek = pickedDateTemp.add(const Duration(days: 14));
+        oneMonth= pickedDateTemp.add(const Duration(days: 28));
         if (isRecurrent) {
           values = [false, false, false, false, false, false, false];
           values[startDate.weekday-1] = true;
@@ -231,6 +277,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future selectTime() async {
+    // TODO: AQUI HI HA UN ERROR QUAN SINICIA EL CREATEEVENT A LES XX:59 Y ES CLICKA AIXO A LES XX+1:01
     DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectTimeDialog(
@@ -241,6 +288,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     );
     if (pickedTimeTemp != null) {
       setState(() {
+        errorDate = false;
         startDate = DateTime(
           startDate.year,
           startDate.month,
@@ -249,9 +297,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           pickedTimeTemp.minute,
         );
         startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
-        oneWeek = pickedTimeTemp.add(Duration(days: 7));
-        twoWeek = pickedTimeTemp.add(Duration(days: 14));
-        oneMonth= pickedTimeTemp.add(Duration(days: 28));
+        oneWeek = pickedTimeTemp.add(const Duration(days: 7));
+        twoWeek = pickedTimeTemp.add(const Duration(days: 14));
+        oneMonth= pickedTimeTemp.add(const Duration(days: 28));
       });
     }
   }
@@ -302,7 +350,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 Container(
                   height: MediaQuery.of(context).size.width*0.17,
                   width: MediaQuery.of(context).size.width*0.17,
-                  decoration: new BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Theme.of(context).backgroundColor,
                     border: Border.all(
                       width: 1,
@@ -372,7 +420,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 Container(
                   height: MediaQuery.of(context).size.width*0.17,
                   width: MediaQuery.of(context).size.width*0.17,
-                  decoration: new BoxDecoration(
+                  decoration: BoxDecoration(
                     color: Theme.of(context).backgroundColor,
                     border: Border.all(
                       width: 1,
@@ -422,11 +470,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   Widget build(BuildContext context) {
     return isLoading ? Scaffold(
       appBar: null,
-      body: LoadingView(),
+      body: LoadingView(
+        text: isRecurrentLoadingText
+      ),
     ) :
     Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.14,
+        toolbarHeight: MediaQuery.of(context).size.height*0.12,
         title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
@@ -454,7 +504,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                   var result = await showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return DeleteRecurrentEventDialog();
+                      return const DeleteRecurrentEventDialog();
                     },
                   );
                   if (result != null) {
@@ -502,7 +552,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           SizedBox(width: MediaQuery.of(context).size.width*0.03)
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(0),
+          preferredSize: const Size.fromHeight(0),
           child: IgnorePointer(
             child: Column(
               children: [
@@ -565,7 +615,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 Scaffold(
                   body: SingleChildScrollView(
@@ -573,161 +623,265 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         children: [
                           Form(
                               key: formKeyInfo,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                    child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
-                                                  new Text(
-                                                    AppLocalizations.of(context)!.title,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.title,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: 0),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Flexible(
-                                                child: new TextFormField(
-                                                  controller: titleController,
-                                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      titleString = val;
-                                                    });
-                                                  },
-                                                  style: Theme.of(context).textTheme.bodyText2,
-                                                  decoration: InputDecoration(
-                                                    hintStyle: Theme.of(context).textTheme.caption,
-                                                    hintText: AppLocalizations.of(context)!.titleHint,
-                                                    border: InputBorder.none,
-                                                    focusedBorder: InputBorder.none,
-                                                    enabledBorder: InputBorder.none,
-                                                    errorBorder: InputBorder.none,
-                                                    disabledBorder: InputBorder.none,
-                                                  ),
-                                                  enabled: true,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  new Text(
-                                                    AppLocalizations.of(context)!.description,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: 0.0),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Flexible(
-                                                child: new TextFormField(
-                                                  keyboardType: TextInputType.visiblePassword,
-                                                  controller: descriptionController,
-                                                  minLines: 1,
-                                                  maxLines: 4,
-                                                  onChanged: (val) {
-                                                    setState(() {
-                                                      descriptionString = val;
-                                                    });
-                                                  },
-                                                  style: Theme.of(context).textTheme.bodyText2,
-                                                  decoration: InputDecoration(
-                                                    hintStyle: Theme.of(context).textTheme.caption,
-                                                    hintText:AppLocalizations.of(context)!.descriptionError,
-                                                    border: InputBorder.none,
-                                                    focusedBorder: InputBorder.none,
-                                                    enabledBorder: InputBorder.none,
-                                                    errorBorder: InputBorder.none,
-                                                    disabledBorder: InputBorder.none,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
-                                          child: new Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              new Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  new Text(
-                                                    AppLocalizations.of(context)!.location,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: 15.0),
-                                        child: ListTile(
-                                          leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                                          title: Text(
-                                              location.description!,
-                                            style: Theme.of(context).textTheme.bodyText2,
+                                              )
                                           ),
-                                          trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                                          onTap: () async {
-                                            setState(() {
-                                              isLoading = true;
-                                            });
-                                            var result = await Navigator.push(
-                                                context,
-                                              CupertinoPageRoute<String>(
-                                                builder: (context) => MyLocationsSelect(
-                                                    brandId: currentBrand.id!,
+                                          Padding(
+                                              padding: const EdgeInsets.only(top: 0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    child: TextFormField(
+                                                      controller: titleController,
+                                                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
+                                                      onChanged: (val) {
+                                                        setState(() {
+                                                          titleString = val;
+                                                        });
+                                                      },
+                                                      style: Theme.of(context).textTheme.bodyText2,
+                                                      decoration: InputDecoration(
+                                                        hintStyle: Theme.of(context).textTheme.caption,
+                                                        hintText: AppLocalizations.of(context)!.titleHint,
+                                                        border: InputBorder.none,
+                                                        focusedBorder: InputBorder.none,
+                                                        enabledBorder: InputBorder.none,
+                                                        errorBorder: InputBorder.none,
+                                                        disabledBorder: InputBorder.none,
+                                                      ),
+                                                      enabled: true,
+                                                    ),
                                                   ),
-                                                )
-                                            );
-                                            if (result != null) {
-                                              getLocation(result);
-                                            } else {
-                                              setState(() {
-                                                isLoading = false;
-                                              });
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                    ]
-                                ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.description,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: const EdgeInsets.only(top: 0.0),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    child: TextFormField(
+                                                      keyboardType: TextInputType.visiblePassword,
+                                                      controller: descriptionController,
+                                                      minLines: 1,
+                                                      maxLines: 4,
+                                                      onChanged: (val) {
+                                                        setState(() {
+                                                          descriptionString = val;
+                                                        });
+                                                      },
+                                                      style: Theme.of(context).textTheme.bodyText2,
+                                                      decoration: InputDecoration(
+                                                        hintStyle: Theme.of(context).textTheme.caption,
+                                                        hintText:AppLocalizations.of(context)!.descriptionError,
+                                                        border: InputBorder.none,
+                                                        focusedBorder: InputBorder.none,
+                                                        enabledBorder: InputBorder.none,
+                                                        errorBorder: InputBorder.none,
+                                                        disabledBorder: InputBorder.none,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: <Widget>[
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        AppLocalizations.of(context)!.location,
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 15.0),
+                                            child: ListTile(
+                                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                              title: Text(
+                                                  location.description!,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                              ),
+                                              trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                              onTap: () async {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                var result = await Navigator.push(
+                                                    context,
+                                                  CupertinoPageRoute<String>(
+                                                    builder: (context) => MyLocationsSelect(
+                                                        brandId: currentBrand.id!,
+                                                      ),
+                                                    )
+                                                );
+                                                if (result != null) {
+                                                  getLocation(result);
+                                                } else {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                          allBonos.isNotEmpty ? Column(
+                                            children: [
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            AppLocalizations.of(context)!.bonos,
+                                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                              Padding(
+                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.0),
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    children: <Widget>[
+                                                      Flexible(
+                                                        child: Text(
+                                                          AppLocalizations.of(context)!.bonosDescription,
+                                                          style: Theme.of(context).textTheme.caption,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  )
+                                              ),
+                                            ],
+                                          ) : Container(),
+                                        ]
+                                    ),
+                                  ),
+                                  allBonos.isNotEmpty ? SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height*0.21,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const BouncingScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: allBonos.length,
+                                        itemBuilder: (context, int index) {
+                                          var bono = allBonos[index];
+                                          return Row(
+                                            children: [
+                                              index == 0 ? SizedBox(width: MediaQuery.of(context).size.width * 0.05) : Container(),
+                                              Padding(
+                                                padding: const EdgeInsets.only(right: 16.0),
+                                                child: Container(
+                                                    width: MediaQuery.of(context).size.width * 0.75,
+                                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
+                                                    child: Stack(
+                                                      alignment: Alignment.bottomLeft,
+                                                      children: [
+                                                        Positioned(
+                                                          top: 10,
+                                                          child: BonoCard(
+                                                            height: MediaQuery.of(context).size.height * 0.18,
+                                                            width: MediaQuery.of(context).size.width * 0.7,
+                                                            bono: bono,
+                                                            brand: currentBrand,
+                                                            canExpand: false,
+                                                            onlyView: true,
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          top: -6,
+                                                          left: MediaQuery.of(context).size.width * 0.57,
+                                                          child: MaterialButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                if (selectedBonos.contains(bono.id!)) {
+                                                                  selectedBonos.remove(bono.id!);
+                                                                } else {
+                                                                  selectedBonos.add(bono.id!);
+                                                                }
+                                                              });
+                                                            },
+                                                            elevation: 8,
+                                                            color: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
+                                                            textColor: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
+                                                            child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
+                                                            padding: null,
+                                                            shape: const CircleBorder(),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                ),
+                                              ),
+                                              index == allBonos.length-1 ? SizedBox(width: MediaQuery.of(context).size.width * 0.01) : Container(),
+                                            ],
+                                          );
+                                        }
+                                    ),
+                                  ) : Container(),
+                                ],
                               ),
+                            
                             ),
                         ],
                       )
@@ -749,7 +903,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         width: MediaQuery.of(context).size.width * 0.90,
                                         decoration: BoxDecoration(
                                             color: Theme.of(context).backgroundColor,
-                                            borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                            borderRadius: const BorderRadius.all(Radius.circular(15.0))
                                         ),
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05, horizontal: MediaQuery.of(context).size.width*0.05),
@@ -765,7 +919,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: [
                                                       Icon(Icons.calendar_today_outlined, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
                                                       Container(
-                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
                                                         width: MediaQuery.of(context).size.width*0.45,
                                                         child: GestureDetector(
                                                             onTap: () {
@@ -774,13 +928,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             child: Row(
                                                               mainAxisSize: MainAxisSize.max,
                                                               children: <Widget>[
-                                                                new Flexible(
+                                                                Flexible(
                                                                   child: TextFormField(
                                                                     controller: startDateController,
                                                                     readOnly: true,
                                                                     enabled: false,
                                                                     style: Theme.of(context).textTheme.bodyText2,
-                                                                    decoration: InputDecoration(
+                                                                    decoration: const InputDecoration(
                                                                       border: InputBorder.none,
                                                                       focusedBorder: InputBorder.none,
                                                                       enabledBorder: InputBorder.none,
@@ -800,7 +954,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: [
                                                       Icon(Icons.schedule, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
                                                       Container(
-                                                        padding: EdgeInsets.symmetric(horizontal: 20),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
                                                         width: MediaQuery.of(context).size.width*0.25,
                                                         child: GestureDetector(
                                                             onTap: () {
@@ -809,13 +963,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             child: Row(
                                                               mainAxisSize: MainAxisSize.max,
                                                               children: <Widget>[
-                                                                new Flexible(
+                                                                Flexible(
                                                                   child: TextFormField(
                                                                     controller: startTimeController,
                                                                     readOnly: true,
                                                                     enabled: false,
                                                                     style: Theme.of(context).textTheme.bodyText2,
-                                                                    decoration: InputDecoration(
+                                                                    decoration: const InputDecoration(
                                                                       border: InputBorder.none,
                                                                       focusedBorder: InputBorder.none,
                                                                       enabledBorder: InputBorder.none,
@@ -838,9 +992,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 mainAxisSize: MainAxisSize.max,
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: <Widget>[
-                                                  Icon(Icons.timer, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
+                                                  Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
                                                   Container(
-                                                    padding: EdgeInsets.only(left: 20),
+                                                    padding: const EdgeInsets.only(left: 20),
                                                     width: MediaQuery.of(context).size.width*0.30,
                                                     child: GestureDetector(
                                                         onTap: () {
@@ -850,13 +1004,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           mainAxisSize: MainAxisSize.max,
                                                           mainAxisAlignment: MainAxisAlignment.start,
                                                           children: <Widget>[
-                                                            new Flexible(
+                                                            Flexible(
                                                               child: TextFormField(
                                                                 controller: durationController,
                                                                 readOnly: true,
                                                                 enabled: false,
                                                                 style: Theme.of(context).textTheme.bodyText2,
-                                                                decoration: InputDecoration(
+                                                                decoration: const InputDecoration(
                                                                   border: InputBorder.none,
                                                                   focusedBorder: InputBorder.none,
                                                                   enabledBorder: InputBorder.none,
@@ -877,7 +1031,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         ),
                                       ),
                                       errorDate ? Padding(
-                                        padding: EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                        padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
                                         child: Center(
                                           child: Text(
                                             AppLocalizations.of(context)!.errorDate,
@@ -889,15 +1043,15 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                       widget.eventId == null ? Column(
                                         children: [
                                           Padding(
-                                              padding: EdgeInsets.only(top: 15,),
-                                              child: new Row(
+                                              padding: const EdgeInsets.only(top: 15,),
+                                              child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Text(
                                                     AppLocalizations.of(context)!.recurrentEvent,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
-                                                  SizedBox(width: 10,),
+                                                  const SizedBox(width: 10,),
                                                   Checkbox(
                                                     checkColor: Colors.white,
                                                     fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
@@ -919,8 +1073,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           isRecurrent ? Column(
                                             children: [
                                               Padding(
-                                                  padding: EdgeInsets.only(top: 0),
-                                                  child: new Column(
+                                                  padding: const EdgeInsets.only(top: 0),
+                                                  child: Column(
                                                     mainAxisSize: MainAxisSize.max,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -961,8 +1115,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   )
                                               ),
                                               Padding(
-                                                  padding: EdgeInsets.only(top: 10),
-                                                  child: new Column(
+                                                  padding: const EdgeInsets.only(top: 10),
+                                                  child: Column(
                                                     mainAxisSize: MainAxisSize.max,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
@@ -978,7 +1132,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         children: [
                                                           ListTile(
                                                             dense: true,
-                                                            contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                            contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                                                             title: Text(
                                                               AppLocalizations.of(context)!.thisWeek,
                                                               style: Theme.of(context).textTheme.bodyText2,
@@ -1002,7 +1156,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           ),
                                                           ListTile(
                                                             dense: true,
-                                                            contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                            contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                                                             title: Text(
                                                               AppLocalizations.of(context)!.nextTwoWeek,
                                                               style: Theme.of(context).textTheme.bodyText2,
@@ -1026,7 +1180,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           ),
                                                           ListTile(
                                                             dense: true,
-                                                            contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                                                            contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                                                             title: Text(
                                                               AppLocalizations.of(context)!.wholeMonth,
                                                               style: Theme.of(context).textTheme.bodyText2,
@@ -1059,15 +1213,15 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         ],
                                       ) : Container(),
                                       event.eventGroupId != null ? Padding(
-                                          padding: EdgeInsets.only(top: 15,),
-                                          child: new Row(
+                                          padding: const EdgeInsets.only(top: 15,),
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               Text(
                                                 AppLocalizations.of(context)!.recurrentEvent,
                                                 style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                               ),
-                                              SizedBox(width: 10,),
+                                              const SizedBox(width: 10,),
                                               Checkbox(
                                                 checkColor: Colors.white,
                                                 fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
@@ -1090,21 +1244,21 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                       child: Column(
                         children: [
                           Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 0),
+                              padding: const EdgeInsets.symmetric(horizontal: 0),
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Column(
+                                              Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  new Text(
+                                                  Text(
                                                     AppLocalizations.of(context)!.designatedTrainers,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
@@ -1129,7 +1283,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         child: Container(
                                           width: MediaQuery.of(context).size.width,
                                           child: SingleChildScrollView(
-                                            physics: BouncingScrollPhysics(),
+                                            physics: const BouncingScrollPhysics(),
                                             scrollDirection: Axis.horizontal,
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
@@ -1139,7 +1293,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   height: MediaQuery.of(context).size.height*0.15,
                                                   child: ListView.builder(
                                                       shrinkWrap: true,
-                                                      physics: NeverScrollableScrollPhysics(),
+                                                      physics: const NeverScrollableScrollPhysics(),
                                                       scrollDirection: Axis.horizontal,
                                                       itemCount: brandTrainersSelected.length,
                                                       itemBuilder: (context, int index) {
@@ -1153,7 +1307,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             });
                                                           },
                                                           child: Padding(
-                                                            padding: !(index == brandTrainersSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                            padding: !(index == brandTrainersSelected.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                             child: Column(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
@@ -1217,14 +1371,14 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                       ) : Container(),
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: new Row(
+                                          child: Row(
                                             mainAxisSize: MainAxisSize.max,
                                             children: <Widget>[
-                                              new Column(
+                                              Column(
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
-                                                  new Text(
+                                                  Text(
                                                     AppLocalizations.of(context)!.addDesignatedClients,
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                                   ),
@@ -1249,7 +1403,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         child: Container(
                                           width: MediaQuery.of(context).size.width,
                                           child: SingleChildScrollView(
-                                            physics: BouncingScrollPhysics(),
+                                            physics: const BouncingScrollPhysics(),
                                             scrollDirection: Axis.horizontal,
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
@@ -1259,7 +1413,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   height: MediaQuery.of(context).size.height*0.15,
                                                   child: ListView.builder(
                                                       shrinkWrap: true,
-                                                      physics: NeverScrollableScrollPhysics(),
+                                                      physics: const NeverScrollableScrollPhysics(),
                                                       scrollDirection: Axis.horizontal,
                                                       itemCount: brandClientsSelected.length,
                                                       itemBuilder: (context, int index) {
@@ -1273,7 +1427,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             });
                                                           },
                                                           child: Padding(
-                                                            padding: !(index == brandClientsSelected.length-1) ? EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandClientsSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                            padding: !(index == brandClientsSelected.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandClientsSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
                                                             child: Column(
                                                               mainAxisAlignment: MainAxisAlignment.center,
                                                               children: [
@@ -1421,11 +1575,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                     onPressed: () async {
                       if (_selectedIndex == 0) {
                         if (formKeyInfo.currentState!.validate()){
-                          _tabController!.animateTo(_selectedIndex += 1);
-                          setState(() {
-                            addEventTabValue += 0.33;
-                            tabs[1] = true;
-                          });
+                          if (eventImageUrl == null && isRandomImage == false) {
+                            setState(() {
+                              imageError = true;
+                            });
+                          } else {
+                            _tabController!.animateTo(_selectedIndex += 1);
+                            setState(() {
+                              addEventTabValue += 0.33;
+                              tabs[1] = true;
+                            });
+                          }
                         }
                       } else if (_selectedIndex == 1) {
                         setState(() {
@@ -1461,7 +1621,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                               var result = await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return EditRecurrentEventDialog();
+                                  return const EditRecurrentEventDialog();
                                 },
                               );
                               if (result != null) {
@@ -1552,13 +1712,38 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future<void> _addEventFunction() async {
+    List<Usuario> eventMembers = List.from(brandTrainersSelected);
+    List<Bono> userBonos = [];
     setState(() {
       isLoading = true;
     });
+
+    /*
+    if (bonosSelected.isNotEmpty) {
+      for (int i = 0; i < eventMembers.length; i++) {
+        var user = eventMembers[i];
+        userBonos =  await _userDataService.getUserBonos(user.id!);
+        for (int j = 0; j < bonosSelected.length; j++) {
+          if ((userBonos.singleWhere((bon) => bon.id == bonosSelected[j])).title == null) {
+            setState(() {
+              isLoading = true;
+            });
+            _topSnackBar.topsnackbar(context, 'No se puede crear el evento privado ya que el usuario ' + user.name! + ' no tiene ninguno de los bonos asignados al evento', AppColors.red);
+            return;
+          }
+        }
+      }
+    }
+     */
+
+    // Get Random Photo if no Image Selected
+    if (eventImageUrl == null || (eventImageUrl != null && isRandomImage)) {
+      eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+    }
     // Event Start Date
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Event Members
-    List<Usuario> eventMembers = new List.from(brandTrainersSelected);
+
     eventMembers.addAll(brandClientsSelected);
     if (!isRecurrent) {
       // Creating Event Object
@@ -1566,6 +1751,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         isPrivate: true,
         title: titleController.text,
         description: descriptionController.text,
+        imageUrl: eventImageUrl,
         doneAt: doneAt,
         createdAt: Timestamp.now(),
         year: startDate.year.toString(),
@@ -1584,13 +1770,18 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       // Add Event Members
       await _addEventMembersCall(eventId, eventMembers);
     } else {
-      String eventGroupId = Uuid().v1();
+      // Recurrent total
+      int days = values.where((item) => item == true).length;
+      totalEvents = days*_value;
+      // Event Group Id
+      String eventGroupId = const Uuid().v1();
       // First the First Event
       Event event = Event(
         isPrivate: true,
         eventGroupId: eventGroupId,
         title: titleController.text,
         description: descriptionController.text,
+        imageUrl: eventImageUrl,
         doneAt: doneAt,
         createdAt: Timestamp.now(),
         year: startDate.year.toString(),
@@ -1610,19 +1801,29 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       await _addEventMembersCall(eventId, eventMembers);
       // Start Recurrence
       List<String> groupEventsIds = [eventId];
-      var tempDate = startDate.add(Duration(days: 1));
+      var tempDate = startDate.add(const Duration(days: 1));
       var tempTimestamp = Timestamp.fromDate(tempDate);
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
         for (var i=0; i<6; i++) {
           if (values[weekDay-1]!) {
+            // Updating Loading Text
+            setState(() {
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+            });
+            currentEvent += 1;
+            // Change Image Url if IsRecurrent is Selected
+            if (isRandomImage) {
+              eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+            }
             // Event Object
             event = Event(
               isPrivate: true,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
+              imageUrl: eventImageUrl,
               doneAt: tempTimestamp,
               createdAt: Timestamp.now(),
               year: tempDate.year.toString(),
@@ -1643,7 +1844,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
           }
-          tempDate = tempDate.add(Duration(days: 1));
+          tempDate = tempDate.add(const Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
           weekDay = tempDate.weekday;
         }
@@ -1651,12 +1852,22 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         // Two Weeks
         for (var i=0; i<13; i++) {
           if (values[weekDay-1]!) {
+            // Updating Loading Text
+            setState(() {
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+            });
+            currentEvent += 1;
+            // Change Image Url if IsRecurrent is Selected
+            if (isRandomImage) {
+              eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+            }
             // Event Object
             event = Event(
               isPrivate: true,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
+              imageUrl: eventImageUrl,
               doneAt: tempTimestamp,
               createdAt: Timestamp.now(),
               year: tempDate.year.toString(),
@@ -1677,7 +1888,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
           }
-          tempDate = tempDate.add(Duration(days: 1));
+          tempDate = tempDate.add(const Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
           weekDay = tempDate.weekday;
         }
@@ -1685,12 +1896,22 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         // One Month
         for (var i=0; i<27; i++) {
           if (values[weekDay-1]!) {
+            // Updating Loading Text
+            setState(() {
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+            });
+            currentEvent += 1;
+            // Change Image Url if IsRecurrent is Selected
+            if (isRandomImage) {
+              eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+            }
             // Event Object
             event = Event(
               isPrivate: true,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
+              imageUrl: eventImageUrl,
               doneAt: tempTimestamp,
               createdAt: Timestamp.now(),
               year: tempDate.year.toString(),
@@ -1711,11 +1932,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
             // Add Event Members
             await _addEventMembersCall(eventId, eventMembers);
           }
-          tempDate = tempDate.add(Duration(days: 1));
+          tempDate = tempDate.add(const Duration(days: 1));
           tempTimestamp = Timestamp.fromDate(tempDate);
           weekDay = tempDate.weekday;
         }
       }
+
+      assignBonoUsers(eventMembers, event);
       // Create Entry in /Event Groups
       await _eventDataService.addRecurrentEventGroup(eventGroupId, groupEventsIds);
     }
@@ -1729,7 +1952,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!, true);
     // Event Members
-    List<Usuario> eventMembers = new List.from(brandTrainersSelected);
+    List<Usuario> eventMembers = List.from(brandTrainersSelected);
     eventMembers.addAll(brandClientsSelected);
     // Delete Event Local Notifications
     for (var i=0; i<eventMembers.length; i++) {
@@ -1759,6 +1982,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     setState(() {
       isLoading = true;
     });
+    // Get Random Photo if no Image Selected
+    if (isRandomImage) {
+      eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+    }
     // Event Start Date
     Timestamp doneAt = Timestamp.fromDate(startDate);
     // Creating Event Object
@@ -1767,6 +1994,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       isPrivate: true,
       title: titleController.text,
       description: descriptionController.text,
+      imageUrl: eventImageUrl,
       doneAt: doneAt,
       createdAt: Timestamp.now(),
       year: startDate.year.toString(),
@@ -1781,10 +2009,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       maxMembers: eventMaxMembers,
     );
     // Event Members
-    List<Usuario> eventTrainers = new List.from(brandTrainersSelected);
-    List<Usuario> eventTrainersAdded = new List.from(eventTrainers);
-    List<Usuario> eventClients = new List.from(brandClientsSelected);
-    List<Usuario> eventClientsAdded = new List.from(eventClients);
+    List<Usuario> eventTrainers = List.from(brandTrainersSelected);
+    List<Usuario> eventTrainersAdded = List.from(eventTrainers);
+    List<Usuario> eventClients = List.from(brandClientsSelected);
+    List<Usuario> eventClientsAdded = List.from(eventClients);
     // Update Event
     await _eventDataService.updateEvent(event);
     // Update Event Location
@@ -1897,8 +2125,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       eventGroupIds = eventGroupIds.sublist(0, index);
       await _eventDataService.updateRecurrentEventGroup(event.eventGroupId!, eventGroupIds);
     }
+    // Recurrent total
+    totalEvents = eventGroupIdsList.length - index;
     // Delete All Events After The Index
     for (var i=index; i<eventGroupIdsList.length; i++) {
+      // Updating Loading Text
+      setState(() {
+        isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+      });
+      currentEvent += 1;
+      // Event Id
       String eventId = eventGroupIdsList[i];
       // Delete Event Call
       await _eventDataService.deleteEvent(eventId, true);
@@ -1924,9 +2160,21 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     List<String> eventGroupIdsList = eventGroupIds.cast<String>();
     // Find index of Current Event
     int index = eventGroupIdsList.indexWhere((element) => element == event.id!);
+    // Recurrent total
+    totalEvents = eventGroupIdsList.length - index;
     // Update All Events After The Index
     for (var i=index; i<eventGroupIdsList.length; i++) {
+      // Updating Loading Text
+      setState(() {
+        isRecurrentLoadingText = AppLocalizations.of(context)!.editing +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+      });
+      currentEvent += 1;
+      // Event Id
       String eventId = eventGroupIdsList[i];
+      // Get Random Photo if no Image Selected
+      if (isRandomImage) {
+        eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+      }
       // Original Event Data
       Event originalEvent = await _eventDataService.getSingleEvent(eventId);
       List<Usuario> originalUsers = await _eventDataService.getEventUsers(eventId);
@@ -1960,6 +2208,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         id: eventId,
         title: titleController.text,
         description: descriptionController.text,
+        imageUrl: eventImageUrl,
         doneAt: doneAt,
         createdAt: Timestamp.now(),
         year: updatedStartDate.year.toString(),
@@ -1980,10 +2229,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         await _eventDataService.updateEventLocation(eventId, event.locationId!, originalEvent.locationId!);
       }
       // Event Members
-      List<Usuario> eventTrainers = new List.from(brandTrainersSelected);
-      List<Usuario> eventTrainersAdded = new List.from(eventTrainers);
-      List<Usuario> eventClients = new List.from(brandClientsSelected);
-      List<Usuario> eventClientsAdded = new List.from(eventClients);
+      List<Usuario> eventTrainers = List.from(brandTrainersSelected);
+      List<Usuario> eventTrainersAdded = List.from(eventTrainers);
+      List<Usuario> eventClients = List.from(brandClientsSelected);
+      List<Usuario> eventClientsAdded = List.from(eventClients);
       // Compare Current Members vs Original Members
       /// Start With Trainers
       for (int i = 0; i < eventTrainers.length; i++) {
@@ -2108,6 +2357,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     }
   }
 
+  Future<void> _addEventBonosCall(String eventId, List<String> bonoIds) async {
+    // Add Event Members
+    await _eventDataService.addEventBonos(eventId, bonoIds);
+  }
+
+  Future<void> _deleteEventBonosCall(String eventId) async {
+    // Add Event Members
+    await _eventDataService.deleteEventBonos(eventId);
+  }
+
   Future<void> _addEventLocalNotificationsCall(String eventId, String userId, bool isTrainer) async {
     // Local Notifications Service
     if (userId == currentUser.id!) {
@@ -2122,6 +2381,21 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       await _localNotificationService.deleteEventLocalNotifications(eventId);
     } else {
       await _localNotificationService.deleteRemoteEventLocalNotifications(eventId, userId);
+    }
+  }
+
+  void assignBonoUsers(var eventMembers, Event event) async{
+    List<Bono> userBonos = [];
+    Bono bono = new Bono();
+    if(selectedBonos.isNotEmpty) {
+      for (int i = 0; i < eventMembers.length; i++) {
+        var user = eventMembers[i];
+        userBonos =  await _userDataService.getUserBonos(user.id!);
+        for (int j = 0; j < selectedBonos.length; j++) {
+          bono = userBonos.singleWhere((bon) => bon.id == selectedBonos[j]);
+            _eventDataService.addEventToPurchase(bono.purchaseId!,event);
+        }
+      }
     }
   }
 

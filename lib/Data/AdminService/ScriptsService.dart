@@ -1,3 +1,4 @@
+import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'dart:io';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -21,8 +23,9 @@ class ScriptsDatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   final batch = FirebaseFirestore.instance.batch();
-  var _brandDataService = BrandDataService();
-  var _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  final _userDataService = UserDataService();
+  final _libraryDataService = LibraryDataService();
 
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
@@ -39,6 +42,7 @@ class ScriptsDatabaseService {
   String requests = isProduction ? 'Requests' : '7777 Requests';
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
+  String library = isProduction ? 'Library' : 'Library';
 
   Future<bool> migrateUserDataFebruary6th() async {
     try {
@@ -1077,7 +1081,7 @@ class ScriptsDatabaseService {
             print("Compressing Image...");
             print('\n');
             final filePath = fileImage.absolute.path;
-            final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+            final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
             final splitted = filePath.substring(0, (lastIndex));
             final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
             var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
@@ -1145,7 +1149,7 @@ class ScriptsDatabaseService {
         print("Compressing Image...");
         print('\n');
         final filePath = fileImage.absolute.path;
-        final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+        final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
         final splitted = filePath.substring(0, (lastIndex));
         final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
         var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
@@ -1575,7 +1579,7 @@ class ScriptsDatabaseService {
     }
   }
 
-  Future<bool> migrateEventDataJuyly24th() async {
+  Future<bool> migrateEventDataJuly24th() async {
     try {
       print('\n');
       print('-----------------------------');
@@ -1747,6 +1751,176 @@ class ScriptsDatabaseService {
         print('\n');
       }
 
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> addPhotosToLibrary() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 01 SEPTEMBER 2022');
+      print('-----------------------------\n');
+      print('\n');
+
+      print('Adding Event Photos to Library ... \n');
+      print('-----------------------------\n');
+      print('\n');
+
+      QuerySnapshot querySnapshot = await _firestore.collection(library).doc("Images").collection("Events").get();
+      for (int i = 0; i < querySnapshot.size; i++) {
+        lImage image = lImage.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        // Asset Image to File
+        File fileImage = await ImageUtils().urlToFile(image.url!);
+        // Compress Image
+        var size = await ImageUtils().getImageFileSize(fileImage, 2);
+        print("Current Image Size: "+size);
+        print('\n');
+        print("Compressing Image...");
+        print('\n');
+        final filePath = fileImage.absolute.path;
+        final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
+        final splitted = filePath.substring(0, (lastIndex));
+        final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+        var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
+          fileImage.absolute.path,
+          outPath,
+          quality: 75,
+          rotate: 0,
+        );
+        var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+        print("Compressed Image Size: "+compressedSize);
+        // Upload Image
+        var storageRef = _firebaseStorage.ref().child("library/images/event/" + querySnapshot.docs[i].id.toString() + ".jpeg");
+        var uploadTask = storageRef.putFile(compressedFileImage);
+        await uploadTask.whenComplete(() async {
+          await storageRef.getDownloadURL().then((value) async {
+            await _firestore.collection(library).doc("Images").collection("Events").doc(querySnapshot.docs[i].id.toString()).update({
+              "url": value,
+            });
+          });
+        });
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+
+      }
+
+
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> migrateEventDataSeptember9th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 01 SEPTEMBER 2022');
+      print('-----------------------------\n');
+      print('\n');
+
+      print('Modifying '+this.events+' collection:\n');
+      print('-----------------------------\n');
+      print('\n');
+
+      int usersErrorCnt = 0;
+      int brandErrorCnt = 0;
+      int locationErrorCnt = 0;
+
+      String events = "7777 Events";
+      String users = "7777 Users";
+      String brands = "7777 Brands";
+      String locations = "7777 Locations";
+
+      // PRODUCTION FOR ALL REAL EVENTS
+      QuerySnapshot querySnapshot = await _firestore.collection(events).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('EVENT WITH ID: '+event.id!+" OF BRAND WITH ID: "+event.brandID!);
+        print('\n');
+
+        print('Getting Random Image from Library ...');
+        String imageUrl = await _libraryDataService.getRandomEventPhoto();
+        print('\n');
+        print('Updating Event Image Url ...');
+        await _firestore.collection(events).doc(event.id!).update({
+          "imageUrl": imageUrl,
+        });
+        print('\n');
+
+        try {
+          print('Updating "Users" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotUsers = await _firestore.collection(events).doc(event.id!).collection("Users").get();
+          for (var i=0; i<querySnapshotUsers.size;i++) {
+            Usuario user = Usuario.fromObjectOnlyCoverData(querySnapshotUsers.docs[i].id, querySnapshotUsers.docs[i]);
+            await _firestore.collection(users).doc(user.id!).collection("Events").doc(event.id!).update({
+              "imageUrl": imageUrl,
+            });
+          }
+          print('All Users Updated');
+          print('\n');
+        } catch (e) {
+          print('No document to update: projects/mamba-style/databases/(default)/documents/Users/{userId}/Events/[eventId}');
+          usersErrorCnt += 1;
+        }
+
+        try {
+          print('Updating "Brands" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotBrands = await _firestore.collection(events).doc(event.id!).collection("Brands").get();
+          for (var i=0; i<querySnapshotBrands.size;i++) {
+            Brand brand = Brand.fromObjectOnlyCoverData(querySnapshotBrands.docs[i].id, querySnapshotBrands.docs[i]);
+            await _firestore.collection(brands).doc(brand.id!).collection("Events").doc(event.id!).update({
+              "imageUrl": imageUrl,
+            });
+          }
+          print('All Brands Updated');
+          print('\n');
+        } catch (e) {
+          print('No document to update: projects/mamba-style/databases/(default)/documents/Brands/{brandId}/Events/[eventId}');
+          brandErrorCnt += 1;
+        }
+
+        try {
+          print('Updating "Locations" subcollection');
+          print('-----------------------------\n');
+          QuerySnapshot querySnapshotLocations = await _firestore.collection(events).doc(event.id!).collection("Locations").get();
+          for (var i=0; i<querySnapshotLocations.size;i++) {
+            Location location = Location.fromObjectOnlyCoverData(querySnapshotLocations.docs[i].id, querySnapshotLocations.docs[i]);
+            await _firestore.collection(locations).doc(location.id!).collection("Events").doc(event.id!).update({
+              "imageUrl": imageUrl,
+            });
+          }
+          print('All Locations Updated');
+          print('\n');
+        } catch (e) {
+          print('No document to update: projects/mamba-style/databases/(default)/documents/Locations/{locationId}/Events/[eventId}');
+          locationErrorCnt += 1;
+        }
+
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+
+      print("usersErrorCnt:");
+      print(usersErrorCnt);
+      print("brandErrorCnt:");
+      print(brandErrorCnt);
+      print("locationErrorCnt:");
+      print(locationErrorCnt);
       return true;
     } catch (e) {
       return false;

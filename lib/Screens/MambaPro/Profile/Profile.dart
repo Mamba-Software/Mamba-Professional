@@ -89,9 +89,8 @@ class _ProfileState extends State<Profile> {
   void navigateToFeedbackScreen() {
     Navigator.push(
         context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: FeedBack(),
+        CupertinoPageRoute<Null>(
+          builder: (context) => const FeedBack(),
         )
     ).whenComplete(() {
       setState(() {
@@ -105,9 +104,8 @@ class _ProfileState extends State<Profile> {
   void navigateToSettingsScreen() {
     Navigator.push(
         context,
-        PageTransition(
-          type: PageTransitionType.bottomToTop,
-          child: Settings(),
+        CupertinoPageRoute<Null>(
+            builder: (context) => const Settings(),
         )
     ).whenComplete(() {
       setState(() {
@@ -188,7 +186,7 @@ class _ProfileState extends State<Profile> {
           highlightColor: AppColors.grey.withOpacity(0.5),
           child: Container(
             height: safeAreaHeight * 0.25,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: AppColors.grey,
               shape: BoxShape.circle,
             ),
@@ -202,10 +200,12 @@ class _ProfileState extends State<Profile> {
     return !isLoading ? Material(
       child: GestureDetector(
         onTap: () {
+          /*
           setState(() {
             currentIndex = 2;
           });
           pageController.jumpToPage(currentIndex);
+           */
         },
         child: Container(
           width: safeAreaWidth * 0.81,
@@ -227,7 +227,7 @@ class _ProfileState extends State<Profile> {
                       totalEvents.toString(),
                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       AppLocalizations.of(context)!.allEvents,
                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
@@ -252,7 +252,7 @@ class _ProfileState extends State<Profile> {
                       thisMonthEvents.toString(),
                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
                     ),
-                    SizedBox(height: 2),
+                    const SizedBox(height: 2),
                     Text(
                       AppLocalizations.of(context)!.monthEvents,
                       style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
@@ -466,11 +466,19 @@ class _ProfileState extends State<Profile> {
         title: Text(currentUser.name!, style: Theme.of(context).appBarTheme.titleTextStyle,),
         elevation: 0,
         centerTitle: true,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         right: false,
         left: false,
+        bottom: false,
         child: Column(
           children: [
             Container(
@@ -533,7 +541,7 @@ class _ProfileState extends State<Profile> {
                         boxShadow: <BoxShadow>[
                           BoxShadow(
                             color: AppColors.black.withOpacity(0.1),
-                            offset: Offset(0, 9),
+                            offset: const Offset(0, 9),
                             blurRadius: 5.0,
                             spreadRadius: 0,
                           ),
@@ -575,7 +583,8 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                       Container(
-                        height: safeAreaHeight*0.04,
+                        height: safeAreaHeight*0.06,
+                        padding: EdgeInsets.only(bottom: 16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: buildProfileCarousel.asMap().entries.map((entry) {
@@ -584,7 +593,7 @@ class _ProfileState extends State<Profile> {
                               child: Container(
                                 width: 8.0,
                                 height: 8.0,
-                                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == entry.key ? 0.9 : 0.4)
@@ -635,7 +644,7 @@ class _ProfileState extends State<Profile> {
                                   elevation: 4,
                                   backgroundColor: AppColors.grey,
                                   fixedSize: Size(safeAreaWidth*0.35, safeAreaHeight*0.06),
-                                  side: BorderSide(width: 1.0, color: AppColors.grey),
+                                  side: const BorderSide(width: 1.0, color: AppColors.grey),
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(
                                       Radius.circular(30),
@@ -656,7 +665,7 @@ class _ProfileState extends State<Profile> {
                           Container(
                             width: 8.0,
                             height: 8.0,
-                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == 0 ? 0.9 : 0.4)
@@ -665,7 +674,7 @@ class _ProfileState extends State<Profile> {
                           Container(
                             width: 8.0,
                             height: 8.0,
-                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == 1 ? 0.9 : 0.4)
@@ -674,7 +683,7 @@ class _ProfileState extends State<Profile> {
                           Container(
                             width: 8.0,
                             height: 8.0,
-                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == 1 ? 0.9 : 0.4)

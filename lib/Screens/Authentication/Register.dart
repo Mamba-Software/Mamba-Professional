@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,6 +45,7 @@ class _RegisterState extends State<Register> {
               iconTheme: IconThemeData(
                 color: Colors.white, //change your color here
               ),
+              backgroundColor: Colors.black,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
                 onPressed: () {
@@ -56,10 +56,9 @@ class _RegisterState extends State<Register> {
                   }
                 },
               ),
-              backgroundColor: Theme.of(context).colorScheme.secondary,
             ),
             resizeToAvoidBottomInset: true,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: Colors.black,
             body: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
@@ -73,7 +72,7 @@ class _RegisterState extends State<Register> {
                           children: [
                             Text(
                               AppLocalizations.of(context)!.emailError,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                               textAlign: TextAlign.left,
                             ),
                           ],
@@ -85,16 +84,16 @@ class _RegisterState extends State<Register> {
                             onChanged: (val) {
                               setState(() => email = val);
                             },
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.email,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                 errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 prefixIcon:  Padding(
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.email_outlined,
-                                    color: AppColors.black,
+                                    color: AppColors.white,
                                   ), // icon is 48px widget.
                                 )
                             )
@@ -106,7 +105,7 @@ class _RegisterState extends State<Register> {
                             Expanded(
                               child: Text(
                                 AppLocalizations.of(context)!.passwordError,
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                 textAlign: TextAlign.left,
                               ),
                             ),
@@ -119,10 +118,10 @@ class _RegisterState extends State<Register> {
                               setState(() => password1 = val);
                             },
                             obscureText: !_passwordVisible,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                 errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
@@ -130,7 +129,7 @@ class _RegisterState extends State<Register> {
                                         icon: Icon(
                                           // Based on passwordVisible state choose the icon
                                             _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                            color: AppColors.black,
+                                            color: AppColors.white,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -143,7 +142,7 @@ class _RegisterState extends State<Register> {
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.vpn_key_outlined,
-                                    color: AppColors.black,
+                                    color: AppColors.white,
                                   ), // icon is 48px widget.
                                 )
                             )
@@ -155,10 +154,10 @@ class _RegisterState extends State<Register> {
                               setState(() => password2 = val);
                             },
                             obscureText: !_passwordVisible,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.passworRepeat,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                 errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 suffixIcon: Padding(
                                     padding: EdgeInsets.all(0.0),
@@ -166,7 +165,7 @@ class _RegisterState extends State<Register> {
                                         icon: Icon(
                                           // Based on passwordVisible state choose the icon
                                             _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                          color: AppColors.black,
+                                          color: AppColors.white,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -179,7 +178,7 @@ class _RegisterState extends State<Register> {
                                   padding: EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.vpn_key_outlined,
-                                    color: AppColors.black,
+                                    color: AppColors.white,
                                   ), // icon is 48px widget.
                                 )
                             )

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -113,27 +114,48 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                color: Theme.of(context).backgroundColor,
+                color: AppColors.darkGrey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: kToolbarHeight + MediaQuery.of(context).size.height*0.051),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                      child: Text(
-                        AppLocalizations.of(context)!.eventHistory,
-                        style: Theme.of(context).textTheme.headline1,
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.eventHistory,
+                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height*0.08,
+                              width: MediaQuery.of(context).size.width*0.11,
+                              child: TextButton(
+                                onPressed: null,
+                                child: Icon(
+                                  Icons.filter_list,
+                                  color: AppColors.darkGrey,
+                                  size: MediaQuery.of(context).size.width*0.07,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.035,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                     Container(
                       color: AppColors.grey,
                       height: 1.0,
@@ -144,7 +166,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.eventHistory, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
+            title: appBarExpanded ? Text(AppLocalizations.of(context)!.eventHistory, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -152,6 +174,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
+                      color: AppColors.white,
                       size: MediaQuery.of(context).size.height*0.04,
                     ),
                     onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
@@ -164,7 +187,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                 child: IconButton(
                   icon: Icon(
                     widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red : Theme.of(context).primaryColor.withOpacity(0.5),
+                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
@@ -187,14 +210,14 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                     child: Shimmer.fromColors(
                       baseColor: AppColors.grey,
                       highlightColor: AppColors.grey.withOpacity(0.5),
-                      child: Container(
+                      child: SizedBox(
                         height: safeAreaHeight*0.18,
                         width: safeAreaWidth*0.9,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
+                            SizedBox(
                               height: (safeAreaWidth*0.9)*0.20,
                               width: (safeAreaWidth*0.9)*0.20,
                               child: Column(
@@ -214,7 +237,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                             ),
                             Row(
                               children: [
-                                Container(
+                                SizedBox(
                                   height: safeAreaHeight*18,
                                   width: safeAreaWidth*0.9*0.56,
                                   child: Column(
@@ -269,7 +292,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                                     ],
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   height: safeAreaHeight*15,
                                   width: (safeAreaWidth*0.84)*0.12,
                                   child: Center(
@@ -325,6 +348,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.08),
                       child: EventListTile(
+                        userId: currentUser.id!,
                         eventId: event.id!,
                         showFeedback: false,
                         showAverage: true,
@@ -353,22 +377,20 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
             ),
           ) : SliverFillRemaining(
             hasScrollBody: false,
-            child: Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width*0.25,
-                        child: Image.asset(Constants.emptyCalendar)
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                    Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.12),
-                  ],
-                )
-            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width*0.25,
+                    child: Image.asset(Constants.emptyCalendar)
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.12),
+              ],
+            )
           )
         ],
       ),

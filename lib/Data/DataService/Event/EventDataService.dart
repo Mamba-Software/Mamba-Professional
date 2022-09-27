@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -41,35 +42,43 @@ class EventDataService {
   Future<List<Brand>> getEventBrands(String eventId) => _firebase.getEventBrands(eventId);
   Future<double?> getEventUserFeedback(String eventId, String userId) => _firebase.getEventUserFeedback(eventId, userId);
   Future<double?> getEventAverageUserFeedback(String eventId) => _firebase.getEventAverageUserFeedback(eventId);
-
   Future<dynamic> getRecurrentEventGroup(String eventGroupId) => _firebase.getRecurrentEventGroup(eventGroupId);
+  Future<List<Bono>> getEventBonos(String eventId, String brandId) => _firebase.getEventBonos(eventId, brandId);
 
   // Add Data
   Future<String> addEvent(Event event) => _firebase.addEvent(event);
   Future<void> addRecurrentEventGroup(String eventGroupId, List<String> eventIds) => _firebase.addRecurrentEventGroups(eventGroupId, eventIds);
   Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
   Future<void> addEventFeedback(String eid, String uid, double intensityScore) => _firebase.addEventFeedback(eid, uid, intensityScore);
+  Future<void> addEventToPurchase(String purchaseId, Event event) => _firebase.addEventToPurchase(purchaseId, event);
+  Future<void> addEventBonos(String eventId, List<String> bonoIds) => _firebase.addEventBonos(eventId, bonoIds);
 
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);
   Future<void> updateEventNumberMembers(String eventId, int numberClients, int numberTrainers) => _firebase.updateEventNumberMembers(eventId, numberClients, numberTrainers);
   Future<void> updateRecurrentEventGroup(String eventGroupId, var eventIds) => _firebase.updateRecurrentEventGroup(eventGroupId, eventIds);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
+  Future<void> updateEventBonos(String eventId, List<String> bonoIds) => _firebase.updateEventBonos(eventId, bonoIds);
 
   // Delete Data
   Future<void> deleteEvent(String id, [bool isPrivate = false]) => _firebase.deleteEvent(id, isPrivate);
   Future<void> deleteUserFromEvent(String eid, String uid,) => _firebase.deleteUserFromEvent(eid, uid);
   Future<void> deleteUserFromUpcomingEvents(String uid, bool isTrainer) => _firebase.deleteUserFromUpcomingEvents(uid, isTrainer);
   Future<void> deleteRecurrentEventGroup(String eventGroupId) => _firebase.deleteRecurrentEventGroup(eventGroupId);
+  Future<void> deleteEventBonos(String eventId) => _firebase.deleteEventBonos(eventId);
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Streams
 
   Stream<QuerySnapshot> getUserEventsStream(String userId) => _firebase.getUserEventsStream(userId);
 
+  Stream<QuerySnapshot> getUserEventsTodayStream(String userId) => _firebase.getUserEventsTodayStream(userId);
+
   Stream<QuerySnapshot> getBrandEventsStream(String brandId) => _firebase.getBrandEventsStream(brandId);
 
   Stream<QuerySnapshot> getBrandsEventsTodayStream(String brandId) => _firebase.getBrandsEventsTodayStream(brandId);
+
+
 
 
 }

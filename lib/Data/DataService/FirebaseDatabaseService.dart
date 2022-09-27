@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -46,7 +47,6 @@ class FirebaseDatabaseService {
   String requests = isProduction ? 'Requests' : '7777 Requests';
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
-  String library = isProduction ? 'Library' : '7777 Library';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -104,7 +104,7 @@ class FirebaseDatabaseService {
       if (error) return false;
       if (currentUser.imageUrl !=
           "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
-        await this.deleteUserPhoto(user.uid);
+        await deleteUserPhoto(user.uid);
       }
       // Delete Notifications
       await _firestore.collection(users).doc(user.uid).collection(
@@ -384,7 +384,7 @@ class FirebaseDatabaseService {
   // Add Error/ Report Bug
   Future<bool> addError(String title, String description,
       [String? stepsReproduce]) async {
-    var uid = Uuid().v1();
+    var uid = const Uuid().v1();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
@@ -479,7 +479,7 @@ class FirebaseDatabaseService {
   }
 
   Future<void> addUserToBrand(String userId, String brandId, int role) async {
-    Usuario user = await this.getUserDetails(userId);
+    Usuario user = await getUserDetails(userId);
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -583,7 +583,7 @@ class FirebaseDatabaseService {
       List<double> workShift, int maxMembers) async {
     User? firebaseUser = await getCurrentUser();
     bool firestoreError = false;
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
@@ -613,13 +613,13 @@ class FirebaseDatabaseService {
 
   Future<void> deleteBrand(String brandId) async {
     // Delete All Events from Brand
-    await this.deleteBrandEvents(brandId);
+    await deleteBrandEvents(brandId);
     // Delete All Locations from Brand
-    await this.deleteBrandLocations(brandId);
+    await deleteBrandLocations(brandId);
     // Delete All Users from Brand
-    await this.deleteBrandUsers(brandId);
+    await deleteBrandUsers(brandId);
     // Delete Brand Photo
-    await this.deleteBrandPhoto(brandId);
+    await deleteBrandPhoto(brandId);
     // Delete Brand
     await _firestore.collection(brands).doc(brandId).delete();
   }
@@ -628,7 +628,7 @@ class FirebaseDatabaseService {
     // Add each brand to the .../BrandId/images directory
     for (var i=0; i<images.length; i++) {
       var image = images[i];
-      final uid = Uuid().v4();
+      final uid = const Uuid().v4();
       // Upload the image to Firebase Storage
       var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + uid + ".jpeg");
       var uploadTask = storageRef.putFile(image);
@@ -900,6 +900,23 @@ class FirebaseDatabaseService {
       return brands;
     }
 
+    Future<List<Bono>> getEventBonos(String eventId, String brandId) async {
+      List<Bono> bonos = [];
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(events)
+          .doc(eventId)
+          .collection("Bonos")
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String bonoId = querySnapshot.docs[i].get("bonoId");
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bonoId).get();
+        bonos.add(
+          Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot)
+        );
+      }
+      return bonos;
+    }
+
     Future<Location> getEventLocation(String eventId) async {
       QuerySnapshot querySnapshot = await _firestore
           .collection(events)
@@ -921,7 +938,7 @@ class FirebaseDatabaseService {
             .collection("Users")
             .doc(userId)
             .get();
-        double feedbackScore = _documentSnapshot.get("intensityScore");
+        double feedbackScore = _documentSnapshot.get("intensityScore").toDouble();
         return feedbackScore;
       } catch (e) {
         return null;
@@ -1165,7 +1182,7 @@ class FirebaseDatabaseService {
     // Events Sesions
     // Add Event
     Future<String> addEvent(Event event) async {
-      var eventID = Uuid().v1();
+      var eventID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       try {
         // Create Document in "\Events"
@@ -1176,6 +1193,7 @@ class FirebaseDatabaseService {
           "creatorID": currentUser!.uid,
           "title": event.title,
           "description": event.description,
+          "imageUrl": event.imageUrl,
           "doneAt": event.doneAt,
           "createdAt": event.createdAt,
           "year": event.year,
@@ -1204,6 +1222,7 @@ class FirebaseDatabaseService {
             "creatorID": currentUser.uid,
             "title": event.title,
             "description": event.description,
+            "imageUrl": event.imageUrl,
             "doneAt": event.doneAt,
             "createdAt": event.createdAt,
             "year": event.year,
@@ -1227,7 +1246,7 @@ class FirebaseDatabaseService {
               "logoUrl": currentBrand.logoUrl,
             });
         // Set the Location Document in "\Events\Location"
-        Location location = await this.getSingleLocation(event.locationId!);
+        Location location = await getSingleLocation(event.locationId!);
         await _firestore.collection(events).doc(eventID)
             .collection("Locations")
             .doc(event.locationId!)
@@ -1246,6 +1265,7 @@ class FirebaseDatabaseService {
             set({
               "isPrivate": event.isPrivate,
               "title": event.title,
+              "imageUrl": event.imageUrl,
               "doneAt": event.doneAt,
               "year": event.year,
               "month": event.month,
@@ -1270,6 +1290,7 @@ class FirebaseDatabaseService {
             set({
               "isPrivate": event.isPrivate,
               "title": event.title,
+              "imageUrl": event.imageUrl,
               "doneAt": event.doneAt,
               "year": event.year,
               "month": event.month,
@@ -1558,7 +1579,7 @@ class FirebaseDatabaseService {
     // Get First Events
     Future <List<Event>> getBrandEventsThisMonth(String brandId) async {
     DateTime now = DateTime.now();
-    var temp = now.subtract(Duration(days: 7));
+    var temp = now.subtract(const Duration(days: 7));
     Timestamp tmstp = Timestamp.fromDate(temp);
 
     List<Event> events = [];
@@ -1679,16 +1700,16 @@ class FirebaseDatabaseService {
         bool isTrainer) async {
       List<Event> userEvents = [];
       if (isTrainer) {
-        userEvents = await this.getAllTrainerEventsFromBrand(uid, brandId);
+        userEvents = await getAllTrainerEventsFromBrand(uid, brandId);
         for (var i = 0; i < userEvents.length; i++) {
           Event event = userEvents[i];
-          await this.leaveEvent(event.id!, uid, true);
+          await leaveEvent(event.id!, uid, true);
         }
       } else {
-        userEvents = await this.getAllClientEventsFromBrand(uid, brandId);
+        userEvents = await getAllClientEventsFromBrand(uid, brandId);
         for (var i = 0; i < userEvents.length; i++) {
           Event event = userEvents[i];
-          await this.leaveEvent(event.id!, uid, false);
+          await leaveEvent(event.id!, uid, false);
         }
       }
     }
@@ -1748,7 +1769,7 @@ class FirebaseDatabaseService {
     // User Joins Event
     Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
       try {
-        Usuario user = await this.getUserDetails(uid);
+        Usuario user = await getUserDetails(uid);
         Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
         if (invitedDirectly) {
           await _firestore
@@ -1821,7 +1842,7 @@ class FirebaseDatabaseService {
     // User Joins Event
     Future<bool> deleteUserFromUpcomingEvents(String uid, bool isTrainer) async {
       try {
-        List<Event> upcomingEvents = await this.getUserEventsUpcoming(uid);
+        List<Event> upcomingEvents = await getUserEventsUpcoming(uid);
         if (isTrainer) {
           for (int i = 0; i < upcomingEvents.length; i++) {
             Event evt = upcomingEvents[i];
@@ -1836,7 +1857,7 @@ class FirebaseDatabaseService {
                 print(err);
               });
             } else {
-              this.deleteEvent(evt.id!);
+              deleteEvent(evt.id!);
             }
           }
         } else {
@@ -1862,12 +1883,12 @@ class FirebaseDatabaseService {
 
     // Join an Event
     Future<bool> joinEvent(String eid, String uid) async {
-      Event event = await this.getSingleEvent(eid);
+      Event event = await getSingleEvent(eid);
       if (event.joinedMembers.length < event.maxMembers) {
         List<String> eventUsers = [];
-        eventUsers = await this.getEventClients(eid);
+        eventUsers = await getEventClients(eid);
         eventUsers.add(uid);
-        await this.updateEventClients(eid, eventUsers);
+        await updateEventClients(eid, eventUsers);
         return true;
       } else {
         return false;
@@ -1877,7 +1898,7 @@ class FirebaseDatabaseService {
     // Leave an Event
     Future<bool> leaveEvent(String eid, String uid, bool isTrainer) async {
       bool isFound = false;
-      Event event = await this.getSingleEvent(eid);
+      Event event = await getSingleEvent(eid);
       DateTime now = DateTime.now();
       var startDate = DateTime(
         int.parse(event.year!),
@@ -1888,7 +1909,7 @@ class FirebaseDatabaseService {
       );
       List<String> eventUsers = [];
       if (isTrainer) {
-        eventUsers = await this.getEventTrainers(eid);
+        eventUsers = await getEventTrainers(eid);
         for (var i = 0; i < eventUsers.length; i++) {
           String trainerid = eventUsers[i];
           if (trainerid == uid) {
@@ -1901,10 +1922,10 @@ class FirebaseDatabaseService {
             break;
           }
         }
-        if (isFound) await this.updateEventTrainers(eid, eventUsers);
+        if (isFound) await updateEventTrainers(eid, eventUsers);
         return isFound;
       } else {
-        eventUsers = await this.getEventClients(eid);
+        eventUsers = await getEventClients(eid);
         for (var i = 0; i < eventUsers.length; i++) {
           String trainerid = eventUsers[i];
           if (trainerid == uid) {
@@ -1917,7 +1938,7 @@ class FirebaseDatabaseService {
             break;
           }
         }
-        if (isFound) await this.updateEventClients(eid, eventUsers);
+        if (isFound) await updateEventClients(eid, eventUsers);
         return isFound;
       }
     }
@@ -1927,6 +1948,7 @@ class FirebaseDatabaseService {
       try {
         await _firestore.collection(events).doc(event.id).update({
           "title": event.title,
+          "imageUrl": event.imageUrl,
           "description": event.description,
           "doneAt": event.doneAt,
           "createdAt": event.createdAt,
@@ -1951,6 +1973,7 @@ class FirebaseDatabaseService {
           .doc(event.id!)
           .update({
             "title": event.title,
+            "imageUrl": event.imageUrl,
             "description": event.description,
             "doneAt": event.doneAt,
             "createdAt": event.createdAt,
@@ -2030,7 +2053,7 @@ class FirebaseDatabaseService {
             .doc(previousLocation)
             .delete();
         // Add New Location
-        Location location = await this.getSingleLocation(locationId);
+        Location location = await getSingleLocation(locationId);
         await _firestore
             .collection(events)
             .doc(eventId)
@@ -2041,6 +2064,18 @@ class FirebaseDatabaseService {
               "longitude": location.longitude,
               "latitude": location.latitude,
             });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    // Update Event Location
+    Future<void> updateEventBonos(String eventId, List<String> bonoIds) async {
+      try {
+        // Delete Previous Event Bonos
+        await deleteEventBonos(eventId);
+        // Add New Event Bonos
+        await addEventBonos(eventId,bonoIds);
       } catch (e) {
         print(e.toString());
       }
@@ -2079,6 +2114,84 @@ class FirebaseDatabaseService {
       }
     }
 
+    //Add Event to purchase
+  Future<void> addEventToPurchase(String purchaseId, Event eventDoc) async {
+    try {
+      await _firestore
+        ..collection("7777 Payments")
+            .doc("Purchases")
+            .collection("Purchases")
+            .doc(purchaseId)
+            .collection("Events")
+            .doc(eventDoc.id)
+            .set({
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": eventDoc.numTrainers,
+          "numClients": eventDoc.numClients,
+          "maxMembers": eventDoc.maxMembers,
+        }).catchError((err) {
+          print(err);
+        });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+    //Add Event to purchase
+  Future<void> addEventBonos(String eventId, List<String> bonoIds) async {
+    try {
+      for (var i=0; i < bonoIds.length; i++) {
+        String id = bonoIds[i];
+        await _firestore
+        .collection(events)
+        .doc(eventId)
+        .collection("Bonos")
+        .doc(id)
+        .set({
+          "bonoId": id,
+        }).catchError((err) {
+          print(err);
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+    //Add Event to purchase
+  Future<void> deleteEventBonos(String eventId) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+      .collection(events)
+      .doc(eventId)
+      .collection("Bonos")
+      .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String bonoiId = querySnapshot.docs[i].id;
+        await _firestore
+        .collection(events)
+        .doc(eventId)
+        .collection("Bonos")
+        .doc(bonoiId)
+        .delete()
+        .catchError((err) {
+          print(err);
+        });
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
     // Update Event Is Completed
     Future<void> updateEventCompleted(String id) async {
       await _firestore.collection(events).doc(id).update({
@@ -2102,7 +2215,7 @@ class FirebaseDatabaseService {
         String zipCode,
         double latitude,
         double longitude) async {
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore
           .collection(locations).doc(uid).set({
@@ -2187,7 +2300,7 @@ class FirebaseDatabaseService {
                 .update({
               "locationId": baseLocation,
             });
-            await this.updateEventLocation(event.id!, baseLocation, locationId);
+            await updateEventLocation(event.id!, baseLocation, locationId);
           }
         }
         // Delete Location
@@ -2209,7 +2322,7 @@ class FirebaseDatabaseService {
               .collection("Locations")
               .get();
           for (int i = 0; i < querySnapshot.docs.length; i++) {
-            await this.deleteLocation(querySnapshot.docs[i].id, null);
+            await deleteLocation(querySnapshot.docs[i].id, null);
           }
         } catch (e) {
           print(e.toString());
@@ -2311,7 +2424,7 @@ class FirebaseDatabaseService {
 
   //Add bono to brand
   Future<void> addBonoToBrand(String brandId, Bono bono, Condition condition) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -2321,7 +2434,7 @@ class FirebaseDatabaseService {
       "title": bono.title!,
       "description": bono.description,
       "price": bono.price!,
-      "sessions": bono.classes,
+      "sessions": bono.sessions,
       "isActive": bono.isActive,
       "color": bono.color,
       "compras": 0,
@@ -2336,7 +2449,6 @@ class FirebaseDatabaseService {
         .set({
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
-      "monthlySessions": condition.monthlySessions,
     }).catchError((err) {
       print(err);
     });
@@ -2345,7 +2457,7 @@ class FirebaseDatabaseService {
 
   //Add bono request to brand
   Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, String price, String classes, Timestamp timeRequested) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -2365,7 +2477,7 @@ class FirebaseDatabaseService {
 
   //Add bono request to user
   Future<void> addBonoRequestToUser(String brandId, String userId, String bonoId) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(users)
         .doc(userId)
@@ -2382,7 +2494,7 @@ class FirebaseDatabaseService {
 
   //Add bono to user
   Future<void> addBonoToUser(String brandId, String userId, String bonoId, int sessions, Timestamp time) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(users)
         .doc(userId)
@@ -2412,27 +2524,6 @@ class FirebaseDatabaseService {
     await _firestore.collection(brands).doc(brandID).collection("Users").doc(userId).update({
       "favourites": favourites,
     });
-  }
-
-  //Colors
-
-  Future<List<lColor>> getColors() async {
-    List<lColor> colors = [];
-    try {
-      await _firestore.collection(library).doc('Colors')
-          .collection("Colors")
-          .get()
-          .then((snapshot) {
-        for (DocumentSnapshot doc in snapshot.docs) {
-          colors.add(lColor.fromObjectAllData(doc.id, doc));
-
-        }
-      });
-      return colors;
-    } catch (e) {
-      print(e.toString());
-      return colors;
-    }
   }
 
   Future<List<int>> getUserFavourites(String brandId, String userId) async {
@@ -2492,7 +2583,7 @@ class FirebaseDatabaseService {
     Future<void> sendRequestToBrand(String brandId, String name,
         bool isTrainer) async {
       User? currentUser = await getCurrentUser();
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       DateTime now = DateTime.now();
       final DateFormat formatter = DateFormat('dd-MM-yy');
       final String formatted = formatter.format(now);
@@ -2530,9 +2621,9 @@ class FirebaseDatabaseService {
         role = 5;
       }
       // New Database
-      this.addUserToBrand(request.userId!, request.brandId!, role);
+      addUserToBrand(request.userId!, request.brandId!, role);
       // Delete the Request
-      this.deleteRequestToBrand(request);
+      deleteRequestToBrand(request);
     }
 
     // Has Pending Request To Brand
@@ -2693,7 +2784,7 @@ class FirebaseDatabaseService {
     // Send Notification
     Future<void> sendNotificationToUser(String userId, String type,
         var parameters) async {
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       DateTime now = DateTime.now();
       final DateFormat formatter = DateFormat('dd-MM-yy');
       final String formatted = formatter.format(now);
@@ -2752,7 +2843,7 @@ class FirebaseDatabaseService {
           .where("isRead", isEqualTo: false)
           .get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        await this.markNotificationAsRead(userId, querySnapshot.docs[i].id,);
+        await markNotificationAsRead(userId, querySnapshot.docs[i].id,);
       }
     }
 
@@ -2768,10 +2859,10 @@ class FirebaseDatabaseService {
     // Add Question
     Future<String> addQuestion(String? questionCat, String? questionSpn,
         String? type) async {
-      var questionID = Uuid().v1();
+      var questionID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       bool firestoreError = false;
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore.collection(questions).doc(questionID).set({
           "creatorID": currentUser!.uid,
@@ -2806,10 +2897,10 @@ class FirebaseDatabaseService {
     // Add Group Of Questions
     Future<String> addGroupOfQuestions(String? questionOne, String? questionTwo,
         String? questionThree, String? questionFour) async {
-      var groupOfQuestionsID = Uuid().v1();
+      var groupOfQuestionsID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       bool firestoreError = false;
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore
             .collection(groupOfQuestions)
@@ -2851,10 +2942,10 @@ class FirebaseDatabaseService {
     // Add Answers
     Future<String> addAnswers(String? groupOfQuestionsID, String? answerOne,
         String? answerTwo, String? answerThree, String? answerFour) async {
-      var answerID = Uuid().v1();
+      var answerID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       bool firestoreError = false;
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore.collection(answers).doc(answerID).set({
           "userID": currentUser!.uid,
@@ -2921,7 +3012,7 @@ class FirebaseDatabaseService {
         String? second,
         String? lastMessage) async {
       print(users);
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore.collection(conversations).doc(uid).set({
           "users": users,
@@ -2982,7 +3073,7 @@ class FirebaseDatabaseService {
         String? minute,
         String? second,
         String? conversationId) async {
-      var uid = Uuid().v1();
+      var uid = const Uuid().v1();
       try {
         await _firestore.collection(messages).doc(uid).set({
           "message": message,
@@ -3109,6 +3200,18 @@ class FirebaseDatabaseService {
           .orderBy("day", descending: true)
           .snapshots();
     }
+
+  Stream<QuerySnapshot> getUserEventsTodayStream(String userId) {
+    DateTime today = DateTime.now();
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .where("year", isEqualTo: today.year.toString())
+        .where("month", isEqualTo: today.month.toString())
+        .where("day", isEqualTo: today.day.toString())
+        .snapshots();
+  }
 
     Stream<QuerySnapshot> getBrandEventsStream(String brandId) {
       return _firestore

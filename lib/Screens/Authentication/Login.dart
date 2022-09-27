@@ -2,6 +2,7 @@ import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,8 +47,13 @@ class _LoginState extends State<Login> {
     return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 0,
+              backgroundColor: AppColors.black,
+              systemOverlayStyle: SystemUiOverlayStyle.light,
+            ),
             resizeToAvoidBottomInset: true,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
+            backgroundColor: AppColors.black,
             body: Center(
               child: SingleChildScrollView(
                 child: Form(
@@ -72,16 +78,16 @@ class _LoginState extends State<Login> {
                               email = val;
                             });
                           },
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                           decoration: Styles.textFromInputDecoration.copyWith(
                               labelText: AppLocalizations.of(context)!.email,
-                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                               errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                               prefixIcon:  Padding(
                                 padding: const EdgeInsets.all(0.0),
                                 child: Icon(
                                   Icons.email_outlined,
-                                  color: AppColors.black,
+                                  color: AppColors.white,
                                   size: MediaQuery.of(context).size.width*0.06,
                                 ), // icon is 48px widget.
                               )
@@ -95,11 +101,11 @@ class _LoginState extends State<Login> {
                                 password = val;
                               });
                             },
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                             obscureText: !_passwordVisible,
                             decoration: Styles.textFromInputDecoration.copyWith(
                                 labelText: AppLocalizations.of(context)!.password,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.black),
+                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                 errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                 suffixIcon: Padding(
                                     padding: const EdgeInsets.all(0.0),
@@ -107,7 +113,7 @@ class _LoginState extends State<Login> {
                                         icon: Icon(
                                           // Based on passwordVisible state choose the icon
                                           _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                          color: AppColors.black,
+                                          color: AppColors.white,
                                           size: MediaQuery.of(context).size.width*0.06,
                                         ),
                                         onPressed: () {
@@ -121,7 +127,7 @@ class _LoginState extends State<Login> {
                                   padding: const EdgeInsets.all(0.0),
                                   child: Icon(
                                     Icons.vpn_key_outlined,
-                                    color: AppColors.black,
+                                    color: AppColors.white,
                                     size: MediaQuery.of(context).size.width*0.06,
                                   ), // icon is 48px widget.
                                 )
@@ -164,7 +170,7 @@ class _LoginState extends State<Login> {
                             height: MediaQuery.of(context).size.height*0.06,
                             width: MediaQuery.of(context).size.width*0.50,
                             decoration: BoxDecoration(
-                                color: AppColors.black, borderRadius: BorderRadius.circular(10)
+                                color: AppColors.darkerGrey, borderRadius: BorderRadius.circular(10)
                             ),
                             child: !isLoading ? TextButton(
                               onPressed: () async {
@@ -244,21 +250,29 @@ class _LoginState extends State<Login> {
       int result = await _userDataService.signIn(email.trim(), password);
       if (result == 0) {
         User? user = await _userDataService.getCurrentUser();
-        bool? isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
-        if (isTrainer != null && isTrainer == false) {
-          await _userDataService.signOut();
+        bool? isTrainer;
+        try {
+          isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
+          if (isTrainer != null && isTrainer == false) {
+            await _userDataService.signOut();
+            setState(() {
+              isLoading = false;
+            });
+            showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
+          } else {
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<void>(
+                  builder: (context) => const SplashScreen(),
+                  settings: const RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          }
+        } catch (e) {
           setState(() {
             isLoading = false;
           });
-          showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
-        } else {
-          Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute<void>(
-                builder: (context) => const SplashScreen(),
-                settings: const RouteSettings(name: 'SplashScreen'),
-              )
-          );
+          showInSnackBar(AppLocalizations.of(context)!.loginError);
         }
       } else if (result == -1) {
         setState(() {
@@ -270,7 +284,7 @@ class _LoginState extends State<Login> {
         setState(() {
           isLoading = false;
         });
-        showInSnackBar(AppLocalizations.of(context)!.validateError);
+        showInSnackBar(AppLocalizations.of(context)!.validateError, AppLocalizations.of(context)!.resend+" "+AppLocalizations.of(context)!.email, true, true);
       }
   }
 
@@ -286,18 +300,23 @@ class _LoginState extends State<Login> {
     signIn();
   }
 
-  void showInSnackBar(String value, [String valueBody = "", bool isClickable = false]) {
+  void showInSnackBar(String value, [String valueBody = "", bool isClickable = false, bool resendEmail = false]) {
     Widget snackbar;
     if (isClickable ) {
       snackbar = SnackBar(
         content: GestureDetector(
           onTap: () async {
-            await LaunchApp.openApp(
+            if (resendEmail == false) {
+              await LaunchApp.openApp(
                 androidPackageName: 'com.mamba.mambastyleapp',
                 iosUrlScheme: "mamba-style",
-                appStoreLink: "https://apps.apple.com/app/mamba-style/id1601684650"
-              // openStore: false
-            );
+                appStoreLink: "https://apps.apple.com/app/mamba-style/id1601684650",
+                openStore: true
+              );
+            } else {
+              await _userDataService.resendEmail(email.trim());
+              scaffoldMessengerKey.currentState!.hideCurrentSnackBar();
+            }
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

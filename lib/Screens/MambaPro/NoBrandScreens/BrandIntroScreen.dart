@@ -24,13 +24,13 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
 
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 150),
-      margin: EdgeInsets.symmetric(horizontal: 8.0),
+      duration: const Duration(milliseconds: 150),
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
       height: 8.0,
       width: isActive ? 24.0 : 16.0,
       decoration: BoxDecoration(
         color: isActive ? AppColors.white : AppColors.whiteTrans,
-        borderRadius: BorderRadius.all(Radius.circular(12)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
     );
   }
@@ -41,26 +41,13 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Container(
-          decoration: BoxDecoration(
-            color: AppColors.mainColor
-            /*
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.1, 0.4, 0.7, 0.9],
-                colors: [
-                  AppColors.mainColor,
-                  AppColors.mainColorGrad1,
-                  AppColors.mainColorGrad1,
-                  AppColors.mainColorGrad2,
-                ],
-              ),
-               */
+          decoration: const BoxDecoration(
+            color: AppColors.black,
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.05),
             child: PageView(
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               controller: _pageController,
               onPageChanged: (int page) {
                 setState(() {
@@ -113,7 +100,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                                             color: AppColors.black.withOpacity(0.5),
                                             spreadRadius: 1,
                                             blurRadius: 1,
-                                            offset: Offset(0, 3), // changes position of shadow
+                                            offset: const Offset(0, 3), // changes position of shadow
                                           ),
                                         ],
                                       )
@@ -266,7 +253,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                               onPressed: null,
                               child: Text(
                                 AppLocalizations.of(context)!.skip,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.mainColor),
+                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black,),
                               ),
                             ),
                           ),
@@ -325,7 +312,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                 ),
               ),
           )
-          : Text(''),
+          : const Text(''),
     );
   }
 }

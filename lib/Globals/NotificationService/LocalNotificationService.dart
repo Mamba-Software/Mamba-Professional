@@ -180,28 +180,17 @@ class LocalNotificationService {
     print(payload);
     switch (payload) {
       case "SplashScreen":
-        if (ModalRoute.of(context)?.settings.name == "Mamba") {
-          pageController.jumpToPage(0);
-        } else {
-          currentIndex = 0;
-          await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: currentIndex);
-        }
         break;
       case "Notifications":
-        await Navigator.of(context).pushNamed("Notifications", arguments: 0);
-        pageController.jumpToPage(0);
+        await Navigator.of(context).pushNamed("Notifications", arguments: pageIndex);
         break;
       case "Chat":
-        await Navigator.of(context).pushNamed("Chat", arguments: 0);
-        pageController.jumpToPage(0);
+        await Navigator.of(context).pushNamed("Chat", arguments: pageIndex);
         break;
       case "BrandPage":
-        if (ModalRoute.of(context)?.settings.name == "Mamba") {
-          pageController.jumpToPage(1);
-        } else {
-          currentIndex = 1;
-          await Navigator.of(context).pushNamedAndRemoveUntil("SplashScreen", (Route<dynamic> route) => false, arguments: currentIndex);
-        }
+        break;
+      case 'BonosRequests':
+        await Navigator.of(context).pushNamed("BonosRequests", arguments: currentBrand.id!);
         break;
       default:
         String payloadFeedback = payload.substring(0,2);
@@ -211,7 +200,7 @@ class LocalNotificationService {
           print("Feedback Event Page");
           await Navigator.of(context).pushNamed("EventFeedbackPage", arguments: payloadSubString);
           // Jump to Page 2, Feedback
-          pageController.jumpToPage(2);
+          //pageController.jumpToPage(2);
         } else {
           print("Event Page");
           await Navigator.of(context).pushNamed("EventPage", arguments: payload);

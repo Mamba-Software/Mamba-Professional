@@ -29,6 +29,7 @@ class Usuario {
   String? idioma;
   String? brandID;
   String? sessions;
+  bool? active;
 
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];
@@ -56,6 +57,7 @@ class Usuario {
     this.idioma,
     this.brandID,
     this.sessions,
+    this.active,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -182,6 +184,7 @@ class Usuario {
     this.idioma = user.idioma;
     this.brandID = user.brandID;
     this.sessions = user.sessions;
+    this.active = user.active;
   }
 
   // Requests

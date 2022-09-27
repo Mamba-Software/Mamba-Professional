@@ -335,7 +335,6 @@ class _SettingsState extends State<Settings> {
                       if (result) {
                         setState(() {
                           isLoading = true;
-                          currentIndex = 0;
                         });
                         Future.delayed(const Duration(seconds: 1), () async {
                           _userDataService.signOut().then((value) =>
