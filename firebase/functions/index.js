@@ -4481,5 +4481,34 @@ exports.usersPurchasesEvent = functions
 
      });
 
+// User Purchases Event
+exports.userCancelsPurchaseEvent = functions
+.region("europe-west1")
+.firestore
+.document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.onDelete( async (snap, context) => {
+
+   const purchaseId = context.params.purchaseId;
+   const eventId = context.params.eventId;
+
+   // Get data of the purchase
+
+   const purchaseSnapShot = await db.collection("7777 Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseDoc = purchaseSnapShot.data();
+
+   const userId = purchaseDoc.userId;
+   const bonoId = purchaseDoc.bonoId;
+   const brandId =  purchaseDoc.brandId;
+
+   // Delete Event from Purchases
+
+   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+  return null;
+  });
 
 
