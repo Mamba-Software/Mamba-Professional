@@ -876,6 +876,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                                   } else {
                                                                     selectedBonos.add(bono.id!);
                                                                   }
+                                                                  if(selectedBonos.isNotEmpty) {
+                                                                    print(brandClientsSelected.length);
+                                                                    brandClientsSelected.clear();
+                                                                    print(brandClientsSelected.length);
+                                                                  }
                                                                 });
                                                               },
                                                               elevation: 8,
@@ -1450,7 +1455,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                         ),
                                       ),
 
-
+                                      selectedBonos.isEmpty?
                                       Padding(
                                           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                           child: Row(
@@ -1487,8 +1492,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               )
                                             ],
                                           )
-                                      ),
-                                      Padding(
+                                      ) : Container(),
+                                      selectedBonos.isEmpty?  Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
                                         child: SizedBox(
                                           width: MediaQuery.of(context).size.width,
@@ -1595,8 +1600,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      errorClientsSelected ? Padding(
+                                      ) : Container(),
+                                      selectedBonos.isEmpty?  errorClientsSelected ? Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
                                         child: Center(
                                           child: Text(
@@ -1605,7 +1610,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
-                                      ) : Container(),
+                                      ) : Container() : Container(),
 
                                     ]
                                 )
