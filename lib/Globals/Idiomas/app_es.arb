@@ -2350,6 +2350,10 @@
   "@acceptBonoDesc":{
     "description": "trainsPerWekk Text"
   },
+  "editBonoClientDesc": "Verifica la información antes de editar el bono del cliente",
+  "@editBonoClientDesc":{
+    "description": "editBonoClientDesc Text"
+  },
   "paymentIndication": " ha indicado que ha pagado usando: ",
   "@paymentIndication": {
     "description": "trainsPerWekk Text"

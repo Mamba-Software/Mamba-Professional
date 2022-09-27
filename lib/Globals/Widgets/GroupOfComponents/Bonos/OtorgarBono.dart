@@ -91,7 +91,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   bool isBonoRequest = false;
 
   // Page View Controller
-  int _numPages = 3;
+  int _numPages = 0;
   int? _currentPage;
   PageController? _pageController;
 
@@ -134,15 +134,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   }
 
   Future<void> getPurchase() async {
-    print(bonoSelected.purchaseId);
     Purchase? purchase = await _purchaseDataService.getPurchaseInfo(bonoSelected.purchaseId!);
     startDate = purchase.purchasedAt!.toDate();
+    setConditionsBono(bonoSelected);
   }
 
   Future<void> getBonos() async {
-    if (!editBono) {
+    if (!editBono && !isBonoRequest) {
       bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
-      _numPages = bonos.length;
       userBonos = await _userDataService.getUserBonos(user.id!);
       Bono bonoDelete;
       for (int i = 0; i < userBonos.length; ++i) {
@@ -151,6 +150,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
           bonos.remove(bonoDelete);
         }
       }
+      _numPages = bonos.length;
       if (bonos.isNotEmpty) {
         bonoSelected.setBasicData = bonos[0];
         bonoSelected.setConditionsData = bonos[0].condition!;
@@ -165,15 +165,12 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       isBonoSelected = true;
       if (isBonoRequest) {
         seeConditions = false;
+        setConditionsBono(bonoSelected);
       } else {
         seeConditions = true;
+        await getPurchase();
       }
-      setConditionsBono(bonoSelected);
-    }
 
-    if (widget.bonoRequest == null && editBono) {
-      print(widget.bono!.purchaseId!);
-      await getPurchase();
     }
 
     setState(() {});
@@ -181,6 +178,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
 
   void setConditionsBono(Bono _bono) {
     int? days = _bono.condition?.expirationTime!;
+    print(days);
     priceController.text = _bono.price.toString();
     if(_bono.sessions! > 5000) {
       clasesController.text = '';
@@ -188,6 +186,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     }
     else {
       clasesController.text = _bono.sessions.toString();
+      noSessions = false;
     }
     freeCancellController.text = (_bono.condition?.cancelTime!).toString();
     weeklyController.text = (_bono.condition?.weeklySessions!).toString();
@@ -201,7 +200,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       isSelectedDays[0] = true;
     }  else {
       isSelectedDays[1] = true;
-       endDate = DateTime.now().add(Duration(days: days!));
+       endDate = startDate.add(Duration(days: days!));
     }
   }
 
@@ -247,7 +246,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         textAlign: TextAlign.left),
                   ),
                   Flexible(
-                    child: Text(AppLocalizations.of(context)!.acceptBonoDesc,
+                    child:  Text(!editBono? AppLocalizations.of(context)!.acceptBonoDesc : AppLocalizations.of(context)!.editBonoClientDesc,
                         style: Theme.of(context)
                             .textTheme
                             .caption
@@ -316,7 +315,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                           trailing: IconButton(
                             icon: Icon(
                               Icons.arrow_forward_ios,
-                              color: Theme.of(context).primaryColor,
+                              color: isBonoRequest? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
                               size: MediaQuery.of(context).size.height * 0.03,
                             ),
                             alignment: Alignment.centerRight,
@@ -324,13 +323,16 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                             onPressed: false ? () {} : null,
                           ),
                           onTap: () async {
-                            await Navigator.push(
-                                context,
-                                CupertinoPageRoute<bool?>(
-                                    builder: (context) => ProfileViewUser(
-                                          userID: widget.user.id!,
-                                          viewOnly: false,
-                                        )));
+                            if(isBonoRequest) {
+                              await Navigator.push(
+                                  context,
+                                  CupertinoPageRoute<bool?>(
+                                      builder: (context) =>
+                                          ProfileViewUser(
+                                            userID: widget.user.id!,
+                                            viewOnly: false,
+                                          )));
+                            }
                           },
                         ),
                       ),
@@ -378,8 +380,12 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                 physics: const BouncingScrollPhysics(),
                                 controller: _pageController,
                                 onPageChanged: (int page) {
-                                  setState(() async {
-                                    bonoSelected = bonos[page];
+                                  setState(()  {
+                                    //bonoSelected = bonos[page];
+                                    bonoSelected.setBasicData = bonos[page];
+                                    bonoSelected.setConditionsData = bonos[page].condition!;
+                                    isBonoSelected = true;
+                                    setConditionsBono(bonoSelected);
                                     _currentPage = page;
 
                                   });
@@ -420,7 +426,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                   decoration: TextDecoration.underline),
                             ),
                             style: const ButtonStyle(),
-                            onPressed: !widget.edit! ? null : () async {
+                            onPressed: editBono? null : () async {
                               setState(() {
                                 seeConditions = !seeConditions;
                               });
@@ -429,7 +435,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                           IconButton(
                             alignment: Alignment.centerRight,
                             icon: Icon(Icons.more_horiz, size: MediaQuery.of(context).size.width*0.06, color: AppColors.grey),
-                            onPressed: () {
+                            onPressed: editBono? null : () async {
                               setState(() {
                                 seeConditions = !seeConditions;
                               });
@@ -499,7 +505,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                          Container(
+                          !noSessions? Container(
                             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                             decoration: BoxDecoration(
                               color: Theme.of(context).backgroundColor,
@@ -516,8 +522,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                 'ses',
                                 false
                             ),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                          ) : Container(),
+                          !noSessions? SizedBox(height: MediaQuery.of(context).size.height * 0.01) : Container(),
                           Container(
                             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                             decoration: BoxDecoration(
@@ -1387,6 +1393,10 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     noSessions = seeSes!;
     clasesController.text = '';
     //bonoSelected.sessions = 0;
+    if(noSessions) {
+      freeCancellController.text = '0';
+      bonoSelected.condition?.cancelTime = 0;
+    }
 
     setState(() {});
   }
@@ -1614,7 +1624,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
             isSelectedDays[1] = true;
             startDate = startData;
             endDate = endData;
-            bonoSelected.condition?.expirationTime = endDate.difference(startDate).inDays;
+            bonoSelected.condition?.expirationTime = endDate.difference(startDate).inDays + 1;
           });
         },
       ),

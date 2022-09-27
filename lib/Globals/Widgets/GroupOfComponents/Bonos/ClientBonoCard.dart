@@ -368,7 +368,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                             color:
                                             Colors.white),
                                         textAlign: TextAlign.left,
-                                      ) : condition.weeklySessions != 10000 ? Text(
+                                      ) : condition.expirationTime != 0 ? Text(
                                         AppLocalizations.of(context)!.expiresAt + " " + daysToExpire.toString() + " " + AppLocalizations.of(context)!.days.toLowerCase(),
                                         style: Theme.of(context)
                                             .textTheme
