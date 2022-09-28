@@ -7,18 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
 import 'package:mime/mime.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:intl/intl.dart';
 
@@ -235,6 +230,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  /*
   void _handleMessageTap(types.Message message) async {
     if (message is types.FileMessage) {
       var localPath = message.uri;
@@ -263,6 +259,7 @@ class _ChatPageState extends State<ChatPage> {
                   userID: userId.id!, viewOnly: true)));
     }
   }
+   */
 
   void _handlePreviewDataFetched(
       types.TextMessage message,
