@@ -952,7 +952,9 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserSendRequestToBrand_Trainer": {
         if (brand.id != null) {
-          mambaProScaffoldKey.currentState?.closeDrawer();
+          if (mambaProScaffoldKey.currentState!.isDrawerOpen) {
+            mambaProScaffoldKey.currentState?.closeDrawer();
+          }
           pageIndex = 15;
           Navigator.pop(context);
         }
