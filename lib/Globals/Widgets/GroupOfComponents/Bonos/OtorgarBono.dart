@@ -816,7 +816,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                           await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
                           Navigator.of(context).pop();
                         }
-                    ) : Container(),
+                    ) : SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                     isBonoSelected
                         ? GestureDetector(
                             onTap: isLoading

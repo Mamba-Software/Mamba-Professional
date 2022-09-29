@@ -802,11 +802,20 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                       bono.setPurchaseId = widget.purchase.id!;
                       return FractionallySizedBox(
                         heightFactor: 0.95,
-                        child: OtorgarBono(
-                          user: user,
-                          brand: brand,
-                          edit: true,
-                          bono: bono,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                          },
+                          child: OtorgarBono(
+                            user: user,
+                            brand: brand,
+                            edit: true,
+                            bono: bono,
+                          ),
                         ),
                       );
                     },

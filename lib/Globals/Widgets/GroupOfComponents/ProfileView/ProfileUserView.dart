@@ -255,10 +255,19 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       builder: (BuildContext context) {
                                         return FractionallySizedBox(
                                           heightFactor: 0.95,
-                                          child: OtorgarBono(
-                                            user: user!,
-                                            edit: false,
-                                            brand: currentBrand,
+                                          child: GestureDetector(
+                                            behavior: HitTestBehavior.opaque,
+                                            onTap: () {
+                                              FocusScopeNode currentFocus = FocusScope.of(context);
+                                              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                                FocusManager.instance.primaryFocus?.unfocus();
+                                              }
+                                            },
+                                            child: OtorgarBono(
+                                              user: user!,
+                                              edit: false,
+                                              brand: currentBrand,
+                                            ),
                                           ),
                                         );
                                       }
