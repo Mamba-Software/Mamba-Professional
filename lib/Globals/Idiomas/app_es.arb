@@ -2407,11 +2407,11 @@
   "@to": {
     "description": "to message"
   },
-  "activeTrainers": "Entrandores activos",
+  "activeTrainers": "Staff activa",
   "@activeTrainers": {
     "description": "activeTrainers message"
   },
-  "desactiveTrainers": "Entrandores inactivos",
+  "desactiveTrainers": "Staff inactiva",
   "@desactiveTrainers": {
     "description": "desactiveTrainers message"
   },

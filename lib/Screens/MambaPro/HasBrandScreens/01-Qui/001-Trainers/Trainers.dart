@@ -179,7 +179,7 @@ class _Trainers extends State<Trainers> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           searchClicked == false ? Text(
-                            AppLocalizations.of(context)!.trainers,
+                            AppLocalizations.of(context)!.staff,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                           ) : SizedBox(
                             width: MediaQuery.of(context).size.width*0.65,
