@@ -122,7 +122,9 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                           ),
                         ),
                         bonoMostBuys == null ? Text("") : TextButton(
-                          onPressed: null,
+                          onPressed: () {
+                            widget.navigateToPage(5);
+                          },
                           child: Text(
                               AppLocalizations.of(context)!.mostBuys,
                               style: Theme.of(context).textTheme.caption,
