@@ -1,12 +1,10 @@
 // This file contains all the Global Variabels used throgh the App.
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import '../Data/LibraryModels/lColor.dart';
-import '../Data/LibraryModels/lPaymentMethod.dart';
 
 // IS PRODUCTION ?
 bool isProduction = false;
@@ -18,8 +16,8 @@ List<lColor> currentColors = [];
 List<lDegradate> currentDegradates = [];//0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
 
 // App
-var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambastyleapp";
-var iosAppStoreUrl = "https://apps.apple.com/us/app/mamba-style/id1601684650";
+var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambaprofessionalapp";
+var iosAppStoreUrl = "https://apps.apple.com/es/app/mamba-professional/id1642701679";
 
 // Website
 var websiteES = "https://mambastyle.net/";
