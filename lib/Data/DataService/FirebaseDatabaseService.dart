@@ -162,7 +162,7 @@ class FirebaseDatabaseService {
     // Get Minimum Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
     String minimumAppVersion = _documentSnapshot.get("versionPro");
-    bool isMandatory = _documentSnapshot.get("isMandatory");
+    bool isMandatory = _documentSnapshot.get("isMandatoryPro");
     List<bool> result = [isMandatory];
     if (clientAppVersion == minimumAppVersion) {
       result.insert(0, true);
