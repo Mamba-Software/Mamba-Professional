@@ -74,45 +74,85 @@ class PurchaseFirebaseCalls {
     return purchase;
   }
 
+  Future<List<Purchase>> getAllUserPurchases(String userId) async {
+    List<Purchase> purchases = [];
+    // Get All User Purchases
+    QuerySnapshot querySnapshot = await _firestore
+    .collection(users)
+    .doc(userId)
+    .collection("Purchases")
+    .get();
+
+    // Build Each Purchase
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      String purchaseId = querySnapshot.docs[i].id;
+      // Get Main Purchase Info
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Purchases")
+          .doc(purchaseId)
+          .get();
+      Purchase purchase = Purchase.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      // Get Purchase Events
+      List<Event> events = [];
+      QuerySnapshot querySnapshot2 = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Purchases")
+          .doc(purchaseId)
+          .collection("Events")
+          .get();
+      for (int i = 0; i < querySnapshot2.docs.length; i++) {
+        events.add(Event.fromObjectOnlyCoverData(querySnapshot2.docs[i].id, querySnapshot2.docs[i]));
+      }
+      // Set Purchase Events
+      purchase.setPurchasedEventsData = events;
+      // Add To Purchases List
+      purchases.add(purchase);
+    }
+    return purchases;
+  }
+
   // Add Data
   Future<void> addEventToPurchase(String purchaseId, String eventId) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(events).doc(eventId).get();
     Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     // Add This to Payments
     await _firestore
-        .collection(payments)
-        .doc("Purchases")
-        .collection("Purchases")
-        .doc(purchaseId)
-        .collection("Events")
-        .doc(eventId)
-        .set({
-      "isPrivate": event.isPrivate,
-      "title": event.title,
-      "imageUrl": event.imageUrl,
-      "doneAt": event.doneAt,
-      "year": event.year,
-      "month": event.month,
-      "day": event.day,
-      "hour": event.hour,
-      "minute": event.minute,
-      "duration": event.duration,
-      "numTrainers": event.numTrainers,
-      "numClients": event.numClients,
-      "maxMembers": event.maxMembers,
+      .collection(payments)
+      .doc("Purchases")
+      .collection("Purchases")
+      .doc(purchaseId)
+      .collection("Events")
+      .doc(eventId)
+      .set({
+        "isPrivate": event.isPrivate,
+        "title": event.title,
+        "imageUrl": event.imageUrl,
+        "doneAt": event.doneAt,
+        "year": event.year,
+        "month": event.month,
+        "day": event.day,
+        "hour": event.hour,
+        "minute": event.minute,
+        "duration": event.duration,
+        "numTrainers": event.numTrainers,
+        "numClients": event.numClients,
+        "maxMembers": event.maxMembers,
     });
   }
 
   // Delete Data
   Future<void> deleteEventFromPurchase(String purchaseId, String eventId) async {
     await _firestore
-        .collection(payments)
-        .doc("Purchases")
-        .collection("Purchases")
-        .doc(purchaseId)
-        .collection("Events")
-        .doc(eventId)
-        .delete();
+    .collection(payments)
+    .doc("Purchases")
+    .collection("Purchases")
+    .doc(purchaseId)
+    .collection("Events")
+    .doc(eventId)
+    .delete();
   }
 
 

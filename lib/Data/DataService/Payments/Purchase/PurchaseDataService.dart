@@ -12,6 +12,7 @@ class PurchaseDataService {
 
   // Get Data
   Future<Purchase> getPurchaseInfo(String purchaseId) => _firebase.getPurchaseInfo(purchaseId);
+  Future<List<Purchase>> getAllUserPurchases(String userId) => _firebase.getAllUserPurchases(userId);
 
   // Add Data
   Future<void> addEventToPurchase(String purchaseId, String eventId) => _firebase.addEventToPurchase(purchaseId, eventId);

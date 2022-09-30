@@ -1021,7 +1021,7 @@
   "@during":{
     "description": "Días text"
   },
-  "thisWeek": "Solo esta semana",
+  "thisWeek": "Esta semana",
   "@thisWeek":{
     "description": "Días text"
   },
@@ -2435,5 +2435,9 @@
   "average": "de media",
   "@average": {
     "description": "seeMap message"
+  },
+  "purchaseHistory": "Historial de compras",
+  "@purchaseHistory": {
+    "description": "userJoinsBrandUser message"
   }
 }

@@ -236,7 +236,7 @@
   "selectTime": "Hora",
   "days": "Dies",
   "during": "Durant",
-  "thisWeek": "Només aquesta setmana",
+  "thisWeek": "Aquesta setmana",
   "nextTwoWeek": "Dues setmanes",
   "wholeMonth": "Quatre setmanes",
   "until": "Fins al {date}",
@@ -543,5 +543,6 @@
   "seeMap": "Veure mapa",
   "personalizeBonoUser": "Personalitzar aquest val només per {user}",
   "editBonoClientDesc": "Verifica la información abans d'editar el val del client",
-  "average": "de mitja"
+  "average": "de mitja",
+  "purchaseHistory": "Historial de compres"
 }

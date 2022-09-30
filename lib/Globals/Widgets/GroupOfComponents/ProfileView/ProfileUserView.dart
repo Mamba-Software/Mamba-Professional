@@ -13,7 +13,7 @@ import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonosWidget.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserBonosWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -427,7 +427,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
               ) : SizedBox(height: MediaQuery.of(context).size.height*0.03),
-              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              SizedBox(height: MediaQuery.of(context).size.height*0.03),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
