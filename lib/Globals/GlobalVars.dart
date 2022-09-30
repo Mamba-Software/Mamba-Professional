@@ -9,7 +9,7 @@ import '../Data/LibraryModels/lColor.dart';
 import '../Data/LibraryModels/lPaymentMethod.dart';
 
 // IS PRODUCTION ?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
 var appVersion = "MAMBA v0.0.4";
