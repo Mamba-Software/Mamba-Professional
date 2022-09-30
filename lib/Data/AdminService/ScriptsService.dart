@@ -1835,13 +1835,13 @@ class ScriptsDatabaseService {
       int brandErrorCnt = 0;
       int locationErrorCnt = 0;
 
-      String events = "7777 Events";
-      String users = "7777 Users";
-      String brands = "7777 Brands";
-      String locations = "7777 Locations";
+      String events = "Events";
+      String users = "Users";
+      String brands = "Brands";
+      String locations = "Locations";
 
       // PRODUCTION FOR ALL REAL EVENTS
-      QuerySnapshot querySnapshot = await _firestore.collection(events).get();
+      QuerySnapshot querySnapshot = await _firestore.collection(events).where("month", isEqualTo: 9.toString()).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
         print('=================================================================================');
