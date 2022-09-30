@@ -7,8 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import '../Data/LibraryModels/lColor.dart';
 
 // IS PRODUCTION ?
-bool isProduction = true;
-
+bool isProduction = false;
 
 // App Version
 var appVersion = "MAMBA v0.0.4";
