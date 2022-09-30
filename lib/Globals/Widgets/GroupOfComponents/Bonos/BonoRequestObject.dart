@@ -128,12 +128,21 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
           builder: (BuildContext context) {
             return FractionallySizedBox(
               heightFactor: 0.95,
-              child: OtorgarBono(
-                bono: widget.bono,
-                user: widget.user,
-                brand: widget.brand,
-                bonoRequest: widget.bonoRequest,
-                edit: false,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
+                },
+                child: OtorgarBono(
+                  bono: widget.bono,
+                  user: widget.user,
+                  brand: widget.brand,
+                  bonoRequest: widget.bonoRequest,
+                  edit: false,
+                ),
               ),
             );
           },

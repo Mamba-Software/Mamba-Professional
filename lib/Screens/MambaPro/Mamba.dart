@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
@@ -91,7 +92,7 @@ class _MambaState extends State<Mamba> {
       print(error.toString());
     });
     // Setting default open to Homepage
-    //pageIndex = 0;
+    pageIndex = 0;
     // Getting User Information
     getUserAndBrand();
     // On StartUp Dialogs
@@ -165,17 +166,24 @@ class _MambaState extends State<Mamba> {
   // Check invited by Brand
   void checkBrandInvite() async {
     if (dynamicLinkBrandId != null && currentUser.brandsList.isEmpty) {
-      // Start up Dialog
-      Future.delayed(Duration.zero, () {
-        return showDialog(
-            context: context,
-            builder: (_) {
-              return BrandInviteDialog(
-                  brandId: dynamicLinkBrandId,
-              );
-            }
-        );
-      });
+      await showModalBottomSheet<bool?>(
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20),
+          ),
+        ),
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        builder: (BuildContext context) {
+          return FractionallySizedBox(
+            heightFactor: 0.85,
+            child: BrandInvitePage(
+              brandId: dynamicLinkBrandId,
+            ),
+          );
+        },
+      );
     }
   }
 

@@ -34,25 +34,37 @@ class OrderFilter {
     //activeUsers.removeWhere((item) => item.active! == false);
     //inactiveUsers.removeWhere((item) => item.active! == true);
 
-
+    print('y');
     print(filterSelection);
     print(orderByClientsNumber);
     print(alphabeticOrder);
 
+    print('n');
 
 
-    activeUsers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
 
-    inactiveUsers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
+
 
 
     if (alphabeticOrder == 1) {
-      activeUsers = List.from(activeUsers.reversed);
-      inactiveUsers = List.from(inactiveUsers.reversed);
+      activeUsers.sort((a, b) {
+        return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+      });
+
+      inactiveUsers.sort((a, b) {
+        return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+      });
+     // activeUsers = List.from(activeUsers.reversed);
+     // inactiveUsers = List.from(inactiveUsers.reversed);
+    }
+    else {
+      activeUsers.sort((a, b) {
+        return b.name.toString().toLowerCase().compareTo(a.name.toString().toLowerCase());
+      });
+
+      inactiveUsers.sort((a, b) {
+        return b.name.toString().toLowerCase().compareTo(a.name.toString().toLowerCase());
+      });
     }
     // Filter By
     if (filterSelection == 0) {
@@ -73,7 +85,7 @@ class OrderFilter {
     } else {
       // None Selected
     }
-
+/*
     for(int i = 0; i < filteredUsers.length; ++i)
     {
       for(int j = 0; j < users.length; ++j)
@@ -88,6 +100,7 @@ class OrderFilter {
       }
       found = false;
     }
+ */
     // Return List of Bonos
     return users;
   }

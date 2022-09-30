@@ -12,7 +12,7 @@ import '../Data/LibraryModels/lPaymentMethod.dart';
 bool isProduction = false;
 
 // App Version
-var appVersion = "MAMBA v0.0.11";
+var appVersion = "MAMBA v0.0.4";
 
 List<lColor> currentColors = [];
 List<lDegradate> currentDegradates = [];//0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835

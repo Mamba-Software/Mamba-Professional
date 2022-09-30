@@ -137,6 +137,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     // Initial Calendar View
     if (widget.calendarView == null) {
       _controller.view = CalendarView.day;
+      _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
     } else {
       _controller.view = widget.calendarView;
     }
@@ -833,7 +834,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                   TextButton(
                                     onPressed: () {
                                       setState(() {
-                                        _controller.displayDate = DateTime.now();
+                                        _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
                                         _controller.selectedDate = DateTime.now();
                                       });
                                     },

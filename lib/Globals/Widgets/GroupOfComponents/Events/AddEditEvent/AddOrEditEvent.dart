@@ -793,7 +793,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               },
                                             ),
                                           ),
-                                          allBonos.isNotEmpty ? Column(
+                                          allBonos.isNotEmpty && brandClientsSelected.isEmpty ? Column(
                                             children: [
                                               Padding(
                                                   padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
@@ -833,7 +833,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                         ],
                                       ),
                                     ),
-                                    allBonos.isNotEmpty ? SizedBox(
+                                    allBonos.isNotEmpty  && brandClientsSelected.isEmpty ? SizedBox(
                                       width: MediaQuery.of(context).size.width,
                                       height: MediaQuery.of(context).size.height*0.21,
                                       child: ListView.builder(
@@ -875,11 +875,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                                     selectedBonos.remove(bono.id!);
                                                                   } else {
                                                                     selectedBonos.add(bono.id!);
-                                                                  }
-                                                                  if(selectedBonos.isNotEmpty) {
-                                                                    print(brandClientsSelected.length);
-                                                                    brandClientsSelected.clear();
-                                                                    print(brandClientsSelected.length);
                                                                   }
                                                                 });
                                                               },

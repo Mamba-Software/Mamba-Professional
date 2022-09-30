@@ -121,4 +121,9 @@ class Brand {
   set setEventsList(List<Event> eventsList) {
     this.eventsList = eventsList;
   }
+
+  // Events
+  set setImageList(List<ImageObject> imagesList) {
+    this.imagesList = imagesList;
+  }
 }
