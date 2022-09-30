@@ -834,7 +834,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                   TextButton(
                                     onPressed: () {
                                       setState(() {
-                                        _controller.displayDate = DateTime.now();
+                                        _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
                                         _controller.selectedDate = DateTime.now();
                                       });
                                     },
