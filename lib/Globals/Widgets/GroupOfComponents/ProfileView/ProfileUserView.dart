@@ -450,31 +450,17 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     itemCount: listEvents.length,
                     itemBuilder: (context,int index) {
                       Event event = listEvents[index];
-                      bool addLabel = false;
-                      var startDate =  DateTime(
-                        int.parse(event.year!),
-                        int.parse(event.month!),
-                        int.parse(event.day!),
-                        int.parse(event.hour!),
-                        int.parse(event.minute!),
-                      );
-                      String _month = DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode).format(startDate);
-                      if (_month != month) {
-                        month = _month;
-                        addLabel = true;
-                      }
                       return Column(
                         children: [
-                          addLabel ? Padding(
+                          index == 0 || event.month != listEvents[index-1].month ? Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08, vertical: MediaQuery.of(context).size.width*0.03),
                             child: Column(
                               children: [
-                                //if(index != 0) SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
-                                      Localizations.localeOf(context).languageCode == 'ca' ? month.substring(3).toUpperCase() : StringUtils().toCapitalized(month),
+                                      Localizations.localeOf(context).languageCode == 'ca' ? DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode).format(event.doneAt!.toDate()).substring(3).toUpperCase() : StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode).format(event.doneAt!.toDate())),
                                       style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
                                     ),
                                   ],
