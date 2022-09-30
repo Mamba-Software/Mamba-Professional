@@ -139,7 +139,7 @@ class _NotificationsState extends State<Notifications> {
         if (notification.parameters.length > 4 && notification.parameters[4] != "null") {
           Bono bono = bonos.firstWhere((element) => element.id == notification.parameters[4], orElse: () => Bono());
           if (bono.id == null) {
-            bono = await _brandDataService.getBonoInfo(currentBrand.id!, notification.parameters[4]);
+            bono = await _brandDataService.getBonoInfo(notification.parameters[1], notification.parameters[4]);
           }
           if (bono.id == null) {
             bonos.add(Bono(title: AppLocalizations.of(context)!.deletedEvent.toLowerCase()));
