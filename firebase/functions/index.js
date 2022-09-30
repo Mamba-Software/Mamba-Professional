@@ -12,7 +12,7 @@ const db = admin.firestore();
 
 // Daily Notification For Events
 exports.scheduledDailyFunction = functions
-.region("europe-west1")  
+.region("europe-west1")
 .pubsub
 .schedule('every day 7:00')
 .timeZone('Europe/Madrid')
@@ -435,7 +435,7 @@ exports.eventUpdatesCoverData = functions
           after.locationId,
           );
         // Update Private Event
-        if (after.isPrivate == true) {                 
+        if (after.isPrivate == true) {
          await db
          .collection("Locations")
          .doc(before.locationId)
@@ -462,9 +462,9 @@ exports.eventUpdatesCoverData = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": after.maxMembers,
-        });        
+        });
         // Update Private Event
-        if (after.isPrivate == true) {                 
+        if (after.isPrivate == true) {
          await db
          .collection("Locations")
          .doc(after.locationId)
@@ -512,6 +512,9 @@ exports.eventUpdatesCoverData = functions
       } else if (before.maxMembers != after.maxMembers) {
         coverDataChange = true;
       }
+      else if (before.bonos != after.bonos) {
+              coverDataChange = true;
+       }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -539,9 +542,10 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
-          });          
+            "bonos": after.bonos,
+          });
           // Update Private Event
-          if (after.isPrivate == true) {                 
+          if (after.isPrivate == true) {
            await db
            .collection("Users")
            .doc(id)
@@ -559,6 +563,7 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
          }
        }
@@ -585,9 +590,10 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
-          });                    
+            "bonos": after.bonos,
+          });
           // Update Private Event
-          if (after.isPrivate == true) {                 
+          if (after.isPrivate == true) {
            await db
            .collection("Brands")
            .doc(id)
@@ -605,6 +611,7 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
          }
        }
@@ -631,9 +638,10 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
           // Update Private Event
-          if (after.isPrivate == true) {                 
+          if (after.isPrivate == true) {
            await db
            .collection("Locations")
            .doc(id)
@@ -651,6 +659,7 @@ exports.eventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
+            "bonos": after.bonos,
           });
          }
        }
@@ -784,7 +793,7 @@ exports.userJoinsBrand = functions
         })
       }
 
-      // Creates metadata for new user and adds it.  
+      // Creates metadata for new user and adds it.
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
       metadataRoom["active" + userId] = false;
@@ -1014,7 +1023,7 @@ exports.userLeavesBrand = functions
           );
         if (brandOwnersDoc.idioma == "es") {
           payload = {
-            notification: {               
+            notification: {
               title: "Miembro ha abandonado "+brandDoc.name+" ➖1️⃣ ",
               body: userDoc.firstName+" "+userDoc.lastName+" se ha ido, ahora sois un total de "+numberMembers.toString()+" miembros",
             },
@@ -1230,7 +1239,7 @@ exports.userSendsRequest = functions
               body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
             },
             data: {
-              route: "Notifications",                
+              route: "Notifications",
             },
           };
         } else {
@@ -1240,7 +1249,7 @@ exports.userSendsRequest = functions
               body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
             },
             data: {
-              route: "Notifications",                  
+              route: "Notifications",
             },
           }
         }
@@ -1397,7 +1406,7 @@ exports.userAddsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
         });
-       }    
+       }
      }
      return null;
    });
@@ -1501,7 +1510,7 @@ exports.userJoinsEvent = functions
       // Get the value of the context triggers.
       const eventId = context.params.eventId;
       const userId = context.params.userId;
-      // Get Event Data      
+      // Get Event Data
       const eventSnapshot = await db.collection("Events").doc(eventId).get();
       const eventDoc = eventSnapshot.data();
       functions.logger.log(
@@ -1599,7 +1608,7 @@ exports.userJoinsEvent = functions
         .update({
           "numClients": numClients,
           "numTrainers": numTrainers,
-        });        
+        });
         // If Event Private
         // Update Cover Data Also
         if (eventDoc.isPrivate == true) {
@@ -1675,7 +1684,7 @@ exports.userJoinsEvent = functions
       // Send Notifications
       if (userDoc.isTrainer == false) {
         // Don´t Send Full Notification When it is a Private Event
-        if (eventDoc.isPrivate != true) {            
+        if (eventDoc.isPrivate != true) {
           // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
           if (eventDoc.maxMembers == numClients) {
               // Event is full
@@ -1722,7 +1731,7 @@ exports.userJoinsEvent = functions
                     payload = {
                       notification: {
                         title: "Esdeveniment totalment reservat 💯",
-                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,            
+                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
                       },
                       data: {
                         route: eventId,
@@ -2399,7 +2408,7 @@ exports.zzzzEventUpdatesCoverData = functions
         .doc(eventId)
         .delete();
         // Update Private Event
-        if (after.isPrivate == true) {                 
+        if (after.isPrivate == true) {
          await db
          .collection("7777 Locations")
          .doc(before.locationId)
@@ -2433,7 +2442,7 @@ exports.zzzzEventUpdatesCoverData = functions
           "maxMembers": after.maxMembers,
         });
         // Update Private Event
-        if (after.isPrivate == true) {                 
+        if (after.isPrivate == true) {
          await db
          .collection("7777 Locations")
          .doc(after.locationId)
@@ -2492,7 +2501,7 @@ exports.zzzzEventUpdatesCoverData = functions
         functions.logger.log(
           "Event Users Num =",
           eventUsersSnapshot.size,
-          );        
+          );
         // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
@@ -2514,7 +2523,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "bonos": after.bonos,
           });
           // Update Private Event
-          if (after.isPrivate == true) {                 
+          if (after.isPrivate == true) {
            await db
            .collection("7777 Users")
            .doc(id)
@@ -2562,7 +2571,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "bonos": after.bonos,
           });
           // Update Private Event
-          if (after.isPrivate == true) {                 
+          if (after.isPrivate == true) {
            await db
            .collection("7777 Brands")
            .doc(id)
@@ -2610,7 +2619,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "bonos": after.bonos,
           });
           // Update Private Event
-          if (after.isPrivate == true) {                 
+          if (after.isPrivate == true) {
            await db
            .collection("7777 Locations")
            .doc(id)
@@ -2991,7 +3000,7 @@ exports.zzzzUserLeavesBrand = functions
           );
         if (brandOwnersDoc.idioma == "es") {
           payload = {
-            notification: {               
+            notification: {
               title: "Miembro ha abandonado "+brandDoc.name+" ➖1️⃣ ",
               body: userDoc.firstName+" "+userDoc.lastName+" se ha ido, ahora sois un total de "+numberMembers.toString()+" miembros",
             },
@@ -3207,7 +3216,7 @@ exports.zzzzUserSendsRequest = functions
               body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
             },
             data: {
-              route: "Notifications",                
+              route: "Notifications",
             },
           };
         } else {
@@ -3217,7 +3226,7 @@ exports.zzzzUserSendsRequest = functions
               body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
             },
             data: {
-              route: "Notifications",                  
+              route: "Notifications",
             },
           }
         }
@@ -3375,7 +3384,7 @@ exports.zzzzUserAddsEvent = functions
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
         });
-       }       
+       }
      }
      return null;
    });
@@ -3563,7 +3572,7 @@ exports.zzzzUserJoinsEvent = functions
           "maxMembers": eventDoc.maxMembers,
       });
       */
-      
+
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
       if (eventDoc.isPrivate == true) {
@@ -3724,7 +3733,7 @@ exports.zzzzUserJoinsEvent = functions
                     payload = {
                       notification: {
                         title: "Esdeveniment totalment reservat 💯",
-                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,            
+                        body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
                       },
                       data: {
                         route: eventId,
@@ -4140,8 +4149,387 @@ exports.zzzzChangeMessageStatus = functions
     }
   })
 
-// User Sends Bono Request
-exports.userSendsBonoRequest = functions
+
+//  User Sends Bono Request
+exports.UserSendsBonoRequest = functions
+.region("europe-west1")
+.firestore
+.document("/Brands/{brandId}/Bonos/Bonos Requests/Bonos Requests/{bonoRequestId}")
+.onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const brandId = context.params.brandId;
+      const bonoRequestId = context.params.bonoRequestId;
+
+      // Get Data of the Request
+      //const requestSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").doc("Bonos Requests").collection("Bonos Requests").doc(bonoRequestId).get();
+      const requestDoc = snap.data();
+
+      // Get Data of Bono
+      const bonoSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").doc(requestDoc.bonoId).get();
+      const bonoDoc = snap.data();
+
+       // Get Data of the Brand
+       const brandSnapshot = await db.collection("Brands").doc(brandId).get();
+       const brandDoc = brandSnapshot.data();
+
+       functions.logger.log(
+        "test",
+        brandDoc.adminID
+        );
+
+       const userSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
+       const userDoc = userSnapshot.data();
+
+       if (userDoc.idioma == "es") {
+        payload = {
+          notification: {
+            title: "Nueva solicitud de compra 🤑📈",
+            body: "Tu bono "+bonoDoc.title.toUpperCase()+" tiene mucho éxito",
+          },
+          data: {
+            route: "BonosRequests",
+          },
+        };
+      } else {
+        payload = {
+          notification: {
+            title: "Nova sol·licitud de compra 🤑📈",
+            body: "El teu val "+bonoDoc.title.toUpperCase()+" té molt d'èxit",
+          },
+          data: {
+            route: "BonosRequests",
+          },
+        }
+      }
+      functions.logger.log(
+       "Payload",
+       payload
+       );
+      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+
+
+      return null;
+    });
+
+//  User Purchases Bono
+exports.UserPurchasesBono = functions
+.region("europe-west1")
+.firestore
+.document("/Payments/Purchases/Purchases/{purchaseId}")
+.onCreate( async (snap, context) => {
+
+  const purchaseId = context.params.purchaseId;
+  const purchaseDoc = snap.data();
+
+  const userId = purchaseDoc.userId;
+  const bonoId = purchaseDoc.bonoId;
+  const brandId =  purchaseDoc.brandId;
+
+  // Get Data of the User
+  const userSnapshot = await db.collection("Users").doc(userId).get();
+  const userDoc = userSnapshot.data();
+
+  //Get data of the bono
+  const bonoSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+  const bonoDoc = bonoSnapshot.data();
+
+  //Add purchases
+
+   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
+     "purchasedAt": purchaseDoc.purchasedAt,
+     "userId": purchaseDoc.userId,
+     "price": purchaseDoc.price,
+     "paymentMethod": purchaseDoc.paymentMethod,
+     "sessions": purchaseDoc.sessions,
+     "weeklySessions": purchaseDoc.weeklySessions,
+     "cancelTime": purchaseDoc.cancelTime,
+     "expirationTime": purchaseDoc.expirationTime,
+   });
+
+   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+     "purchasedAt": purchaseDoc.purchasedAt,
+     "bonoId": purchaseDoc.bonoId,
+     "price": purchaseDoc.price,
+     "paymentMethod": purchaseDoc.paymentMethod,
+     "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
+   });
+
+   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
+     "purchasedAt": purchaseDoc.purchasedAt,
+     "bonoId": purchaseDoc.bonoId,
+     "price": purchaseDoc.price,
+     "paymentMethod": purchaseDoc.paymentMethod,
+     "brandId": purchaseDoc.brandId,
+    "sessions": purchaseDoc.sessions,
+   "weeklySessions": purchaseDoc.weeklySessions,
+   "cancelTime": purchaseDoc.cancelTime,
+   "expirationTime": purchaseDoc.expirationTime,
+   });
+
+   await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
+     "title": bonoDoc.title,
+     "sessions": purchaseDoc.sessions,
+     "price": purchaseDoc.price,
+     "purchaseId": purchaseId,
+     "brandId": purchaseDoc.brandId,
+     "expirationTime": purchaseDoc.expirationTime,
+     "cancelTime": purchaseDoc.cancelTime,
+     "weeklySessions": purchaseDoc.weeklySessions,
+   });
+    let stringSessions = "";
+    if(purchaseDoc.sessions != 10000)
+    {
+        stringSessions = purchaseDoc.sessions + " ";
+    }
+   // Send Notification to User
+   if (userDoc.idioma == "es") {
+    payload = {
+      notification: {
+        title: "Bono "+bonoDoc.title.toUpperCase()+" otorgado 🤙",
+        body: "Ya puedes disfrutar de sus "+ stringSessions + "intensas sesiones",
+      },
+      data: {
+        route: "Notifications",
+      },
+    };
+  } else {
+    payload = {
+      notification: {
+        title: "Val "+bonoDoc.title.toUpperCase()+" otorgat 🤙",
+        body: "Ja pots gaudir de les seves "+ stringSessions+ "intenses sessions",
+      },
+      data: {
+        route: "Notifications",
+      },
+    }
+  }
+  functions.logger.log(
+   "Payload",
+   payload
+   );
+  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+
+  return null;
+
+  });
+
+//  Update User Bono
+exports.UpdateUserBono = functions
+.region("europe-west1")
+.firestore
+.document("/Users/{userId}/Bonos/{bonoId}")
+.onUpdate( async (change, context) => {
+
+  const userId = context.params.userId;
+  const bonoId = context.params.bonoId;
+  const before = change.before.data();
+  const bonoDoc = change.after.data();
+
+  if(bonoDoc.title != before.title || bonoDoc.sessions != before.sessions || bonoDoc.price != before.price || bonoDoc.expirationTime != before.expirationTime || bonoDoc.cancelTime != before.cancelTime || bonoDoc.weeklySessions != before.weeklySessions) {
+
+    await db.collection("Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).update({
+     "title": bonoDoc.title,
+     "sessions": bonoDoc.sessions,
+     "price": bonoDoc.price,
+     "expirationTime": bonoDoc.expirationTime,
+     "cancelTime": bonoDoc.cancelTime,
+     "weeklySessions": bonoDoc.weeklySessions,
+   });
+
+    await db.collection("Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).update({
+     "title": bonoDoc.title,
+     "sessions": bonoDoc.sessions,
+     "price": bonoDoc.price,
+     "expirationTime": bonoDoc.expirationTime,
+     "cancelTime": bonoDoc.cancelTime,
+     "weeklySessions": bonoDoc.weeklySessions,
+   });
+  }
+
+
+  return null;
+  });
+
+  //  Create User Bono
+  exports.CreateUserBono = functions
+  .region("europe-west1")
+  .firestore
+  .document("/Users/{userId}/Bonos/{bonoId}")
+  .onCreate( async (snap, context) => {
+
+    const userId = context.params.userId;
+    const bonoId = context.params.bonoId;
+    const bonoDoc = snap.data();
+
+    await db.collection("Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
+     "title": bonoDoc.title,
+     "sessions": bonoDoc.sessions,
+     "price": bonoDoc.price,
+     "purchaseId": bonoDoc.purchaseId,
+     "expirationTime": bonoDoc.expirationTime,
+     "cancelTime": bonoDoc.cancelTime,
+     "weeklySessions": bonoDoc.weeklySessions,
+   });
+
+    await db.collection("Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).set({
+     "title": bonoDoc.title,
+     "sessions": bonoDoc.sessions,
+     "price": bonoDoc.price,
+     "purchaseId": bonoDoc.purchaseId,
+     "expirationTime": bonoDoc.expirationTime,
+     "cancelTime": bonoDoc.cancelTime,
+     "weeklySessions": bonoDoc.weeklySessions,
+   });
+
+
+    return null;
+  });
+
+//  Delete user bono
+exports.DeleteUserBono = functions
+.region("europe-west1")
+.firestore
+.document("/Users/{userId}/Bonos/{bonoId}")
+.onDelete( async (snap, context) => {
+
+   const userId = context.params.userId;
+   const bonoId = context.params.bonoId;
+   const bonoDoc = snap.data();
+
+  await db.collection("Brands").doc(bonoDoc.brandId).collection("Users").doc(userId).collection("Bonos").doc(bonoId).delete();
+
+  await db.collection("Brands").doc(bonoDoc.brandId).collection("Bonos").doc(bonoId).collection("Users").doc(userId).delete();
+
+
+  return null;
+  });
+
+//  User Purchases Event
+exports.UserPurchasesEvent = functions
+.region("europe-west1")
+.firestore
+.document("/Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.onCreate( async (snap, context) => {
+
+  const purchaseId = context.params.purchaseId;
+  const eventId = context.params.eventId;
+
+  const eventDoc = snap.data();
+
+       //Get data of the purchase
+
+       const purchaseSnapShot = await db.collection("Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+       const purchaseDoc = purchaseSnapShot.data();
+
+       const userId = purchaseDoc.userId;
+       const bonoId = purchaseDoc.bonoId;
+       const brandId =  purchaseDoc.brandId;
+
+       //Get data of the bono
+
+       const bonoSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+       const bonoDoc = bonoSnapshot.data();
+
+       //Get data of the bono user
+
+       const bonoSnapshotUser = await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).get();
+       const bonoDocUser = bonoSnapshotUser.data();
+
+       //Add events to purchases
+
+       await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+         "isPrivate": eventDoc.isPrivate,
+         "title": eventDoc.title,
+         "doneAt": eventDoc.doneAt,
+         "year": eventDoc.year,
+         "month": eventDoc.month,
+         "day": eventDoc.day,
+         "hour": eventDoc.hour,
+         "minute": eventDoc.minute,
+         "duration": eventDoc.duration,
+         "numTrainers": eventDoc.numTrainers,
+         "numClients": eventDoc.numClients,
+         "maxMembers": eventDoc.maxMembers,
+       });
+       await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+        "isPrivate": eventDoc.isPrivate,
+        "title": eventDoc.title,
+        "doneAt": eventDoc.doneAt,
+        "year": eventDoc.year,
+        "month": eventDoc.month,
+        "day": eventDoc.day,
+        "hour": eventDoc.hour,
+        "minute": eventDoc.minute,
+        "duration": eventDoc.duration,
+        "numTrainers": eventDoc.numTrainers,
+        "numClients": eventDoc.numClients,
+        "maxMembers": eventDoc.maxMembers,
+      });
+
+       await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+        "isPrivate": eventDoc.isPrivate,
+        "title": eventDoc.title,
+        "doneAt": eventDoc.doneAt,
+        "year": eventDoc.year,
+        "month": eventDoc.month,
+        "day": eventDoc.day,
+        "hour": eventDoc.hour,
+        "minute": eventDoc.minute,
+        "duration": eventDoc.duration,
+        "numTrainers": eventDoc.numTrainers,
+        "numClients": eventDoc.numClients,
+        "maxMembers": eventDoc.maxMembers,
+      });
+
+       functions.logger.log(
+        "Bono Session",
+        bonoDocUser.sessions
+        );
+
+       return null;
+
+
+
+     });
+
+//  User Cancels Purchase Event
+exports.UserCancelsPurchaseEvent = functions
+.region("europe-west1")
+.firestore
+.document("/Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.onDelete( async (snap, context) => {
+
+   const purchaseId = context.params.purchaseId;
+   const eventId = context.params.eventId;
+
+   // Get data of the purchase
+
+   const purchaseSnapShot = await db.collection("Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseDoc = purchaseSnapShot.data();
+
+   const userId = purchaseDoc.userId;
+   const bonoId = purchaseDoc.bonoId;
+   const brandId =  purchaseDoc.brandId;
+
+   // Delete Event from Purchases
+
+   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+  return null;
+  });
+
+
+
+
+// ZZZZ User Sends Bono Request
+exports.zzzzUserSendsBonoRequest = functions
 .region("europe-west1")
 .firestore
 .document("/7777 Brands/{brandId}/Bonos/Bonos Requests/Bonos Requests/{bonoRequestId}")
@@ -4177,7 +4565,7 @@ exports.userSendsBonoRequest = functions
             body: "Tu bono "+bonoDoc.title.toUpperCase()+" tiene mucho éxito",
           },
           data: {
-            route: "BonosRequests",                
+            route: "BonosRequests",
           },
         };
       } else {
@@ -4187,7 +4575,7 @@ exports.userSendsBonoRequest = functions
             body: "El teu val "+bonoDoc.title.toUpperCase()+" té molt d'èxit",
           },
           data: {
-            route: "BonosRequests",                  
+            route: "BonosRequests",
           },
         }
       }
@@ -4201,8 +4589,8 @@ exports.userSendsBonoRequest = functions
       return null;
     });
 
-// User Purchases Bono
-exports.userPurchasesBono = functions
+// ZZZZ User Purchases Bono
+exports.zzzzUserPurchasesBono = functions
 .region("europe-west1")
 .firestore
 .document("/7777 Payments/Purchases/Purchases/{purchaseId}")
@@ -4282,7 +4670,7 @@ exports.userPurchasesBono = functions
         body: "Ya puedes disfrutar de sus "+ stringSessions + "intensas sesiones",
       },
       data: {
-        route: "Notifications",                
+        route: "Notifications",
       },
     };
   } else {
@@ -4292,7 +4680,7 @@ exports.userPurchasesBono = functions
         body: "Ja pots gaudir de les seves "+ stringSessions+ "intenses sessions",
       },
       data: {
-        route: "Notifications",                  
+        route: "Notifications",
       },
     }
   }
@@ -4306,8 +4694,8 @@ exports.userPurchasesBono = functions
 
   });
 
-// Updates User Bono
-exports.zzzzupdateUserBono = functions
+// ZZZZ Update User Bono
+exports.zzzzUpdateUserBono = functions
 .region("europe-west1")
 .firestore
 .document("/7777 Users/{userId}/Bonos/{bonoId}")
@@ -4343,8 +4731,8 @@ exports.zzzzupdateUserBono = functions
   return null;
   });
 
-  // Creates User Bono
-  exports.zzzzcreateUserBono = functions
+  // ZZZZ Create User Bono
+  exports.zzzzCreateUserBono = functions
   .region("europe-west1")
   .firestore
   .document("/7777 Users/{userId}/Bonos/{bonoId}")
@@ -4378,7 +4766,7 @@ exports.zzzzupdateUserBono = functions
     return null;
   });
 
-// User Deletes Location
+// ZZZZ Delete user bono
 exports.zzzzDeleteUserBono = functions
 .region("europe-west1")
 .firestore
@@ -4397,8 +4785,8 @@ exports.zzzzDeleteUserBono = functions
   return null;
   });
 
-// User Purchases Event
-exports.usersPurchasesEvent = functions
+// ZZZZ User Purchases Event
+exports.zzzzUserPurchasesEvent = functions
 .region("europe-west1")
 .firestore
 .document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
@@ -4485,8 +4873,8 @@ exports.usersPurchasesEvent = functions
 
      });
 
-// User Purchases Event
-exports.userCancelsPurchaseEvent = functions
+// ZZZZ User Cancels Purchase Event
+exports.zzzzUserCancelsPurchaseEvent = functions
 .region("europe-west1")
 .firestore
 .document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
@@ -4514,5 +4902,7 @@ exports.userCancelsPurchaseEvent = functions
 
   return null;
   });
+
+
 
 

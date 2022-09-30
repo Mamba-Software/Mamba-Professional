@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserBonoEventHistoryPage.dart';
 import '../../../../Data/LibraryModels/lColor.dart';
 import '../../../../Data/LibraryModels/lDegradate.dart';
 
@@ -63,7 +64,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
   final _lColor = lColor();
   // Booleans
   bool isExpanded = false;
-  double isExpandedHeight = 2.5;
+  double isExpandedHeight = 2.7;
   // Client Current Bono Stats
   bool isFinished = false;
   int sessionsDone = 0;
@@ -94,6 +95,19 @@ class ClientBonoCardState extends State<ClientBonoCard> {
 
   Future<void> getUser() async {
     user = await _userDataService.getUserDetails(purchase.userId!);
+  }
+
+  // Navigate to Event History Screen
+  void navigateToBonoEventHistoryScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+            builder: (context) => UserBonoEventHistoryPage(
+              userId: widget.purchase.userId!,
+              bonoEvents: widget.purchase.events,
+            )
+        )
+    );
   }
 
 
@@ -152,7 +166,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       cancelTime: widget.bono.condition!.cancelTime,
       weeklySessions: widget.bono.condition!.weeklySessions,
     );
-    isExpandedHeight = 2.5;
+    isExpandedHeight = 2.7;
     calculateExpandedHeight();
     calculateCurrentBonoStats();
   }
@@ -405,6 +419,24 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                         color: AppColors.white
                                     )),
                               ),
+                            ),
+                          ],
+                        )  : purchase.events.isNotEmpty ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            TextButton(
+                                child: Text(
+                                  AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.sessions.toLowerCase(),
+                                  style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
+                                  textAlign: TextAlign.left,
+                                ),
+                                style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: const Size(50, 30),
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    alignment: Alignment.centerLeft
+                                ),
+                                onPressed: navigateToBonoEventHistoryScreen
                             ),
                           ],
                         ) : Container(),
@@ -662,7 +694,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                     ),
                                                     Text(
                                                       AppLocalizations.of(context)!.buyDate + ": " + DateTimeUtils().formatDateTimeToStringDDMMYYYY(purchasedDate, Localizations.localeOf(context).languageCode),
-                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
+                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
                                                     ),
                                                   ],
                                                 ),
@@ -697,7 +729,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       ),
                                                       Text(
                                                         AppLocalizations.of(context)!.buyDate + ": " + DateTimeUtils().formatDateTimeToStringDDMMYYYY(purchasedDate, Localizations.localeOf(context).languageCode),
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
                                                       ),
                                                     ],
                                                   ),
@@ -736,7 +768,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                       ),
                                                       Text(
                                                         AppLocalizations.of(context)!.thisWeek+": " + eventsThisWeek.length.toString()+"/${condition.weeklySessions}"+" "+AppLocalizations.of(context)!.sessions.toLowerCase(),
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
+                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
                                                       ),
                                                     ],
                                                   ),
@@ -802,11 +834,20 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                       bono.setPurchaseId = widget.purchase.id!;
                       return FractionallySizedBox(
                         heightFactor: 0.95,
-                        child: OtorgarBono(
-                          user: user,
-                          brand: brand,
-                          edit: true,
-                          bono: bono,
+                        child: GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                          },
+                          child: OtorgarBono(
+                            user: user,
+                            brand: brand,
+                            edit: true,
+                            bono: bono,
+                          ),
                         ),
                       );
                     },

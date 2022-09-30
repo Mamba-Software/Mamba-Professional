@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseDataService.dart';
@@ -6,11 +7,14 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserBonosHistoryPage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class UserBonosWidget extends StatefulWidget {
   String userId;
@@ -41,44 +45,64 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
     super.initState();
   }
 
+  // Navigate to Event History Screen
+  void navigateToBonoHistoryScreen() {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+            builder: (context) => UserBonosHistoryPage(
+              userId: widget.userId,
+            )
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _userDataService.getAllBonosFromUser(widget.userId),
-      builder: (context, snapshot) {
-        if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
-          return Container();
-        } else {
-          userBonos = _bonosUtils.documentsToBonosUser(snapshot.data!.docs, true, true);
-          if (userBonos.isNotEmpty) {
-            return Column(
-              children: [
-                SizedBox(
-                  height: widget.height*0.05,
+    return Column(
+      children: [
+        SizedBox(
+          height: widget.height*0.05,
+          width: widget.width*0.84,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                  AppLocalizations.of(context)!.activeBono,
+                  style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center
+              ),
+              TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.historial,
+                      style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
+                  ),
+                  onPressed: navigateToBonoHistoryScreen
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: widget.height*0.01,),
+        StreamBuilder<QuerySnapshot>(
+          stream: _userDataService.getAllBonosFromUser(widget.userId),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: SizedBox(
+                  height: widget.height*0.22,
                   width: widget.width*0.84,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                          AppLocalizations.of(context)!.activeBono,
-                          style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center
-                      ),
-                      TextButton(
-                          child: Text(
-                              AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.historial,
-                              style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
-                          ),
-                          onPressed: () {
-
-                          }
-                      ),
-                    ],
+                  child: LoadingView(
+                    hasLogo: false,
+                    isSmall: true,
                   ),
                 ),
-                SizedBox(height: widget.height*0.01,),
-                Padding(
+              );
+            } else {
+              userBonos = _bonosUtils.documentsToBonosUser(snapshot.data!.docs, true, true);
+              if (userBonos.isNotEmpty) {
+                return Padding(
                   padding: EdgeInsets.symmetric(horizontal: widget.width*0.08),
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -94,7 +118,17 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                           stream: _brandDataService.getBonoInfoStream(bono.brandId!, bono.id!),
                           builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
                             if (!snapshot.hasData) {
-                              return Container();
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: SizedBox(
+                                  height: widget.height*0.22,
+                                  width: widget.width*0.84,
+                                  child: LoadingView(
+                                    hasLogo: false,
+                                    isSmall: true,
+                                  ),
+                                ),
+                              );
                             } else {
                               bono = Bono.fromObjectAllData(snapshot.data!.id, snapshot.data!);
                               bono.setBonoSessions = sessions;
@@ -104,7 +138,17 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                                   future: _purchaseDataService.getPurchaseInfo(purchaseId),
                                   builder: (context, snapshot) {
                                     if (snapshot.data == null) {
-                                      return Container();
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                        child: SizedBox(
+                                          height: widget.height*0.22,
+                                          width: widget.width*0.84,
+                                          child: LoadingView(
+                                            hasLogo: false,
+                                            isSmall: true,
+                                          ),
+                                        ),
+                                      );
                                     } else {
                                       Purchase bonoPurchase = snapshot.data!;
                                       return Padding(
@@ -127,15 +171,27 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                       );
                     },
                   ),
-                ),
-                SizedBox(height: widget.height*0.02,),
-              ],
-            );
-          } else {
-            return Container();
+                );
+              } else {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width*0.25,
+                        child: Image.asset(Constants.emptyCalendar)
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                    Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                  ],
+                );
+              }
+            }
           }
-        }
-      }
+        ),
+      ],
     );
   }
 }

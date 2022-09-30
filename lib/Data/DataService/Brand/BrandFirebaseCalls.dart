@@ -179,9 +179,15 @@ class BrandFirebaseCalls {
   //Getters
 
   Future<Brand> getBrandDetails(String brandID) async {
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
-    await _firestore.collection(brands).doc(brandID).get();
-    return Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandID).get();
+    Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    List<ImageObject> contentImages = [];
+    QuerySnapshot querySnapshot2 = await _firestore.collection(brands).doc(brand.id!).collection("Images").get();
+    for (int i = 0; i < querySnapshot2.docs.length; i++) {
+      contentImages.add(ImageObject.fromObjectAllData(querySnapshot2.docs[i].id, querySnapshot2.docs[i]));
+    }
+    brand.setImageList = contentImages;
+    return brand;
   }
 
   Future<Brand> getBrandCoverDetails(String brandID) async {
