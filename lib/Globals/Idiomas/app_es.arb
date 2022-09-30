@@ -2431,5 +2431,9 @@
         "type": "String"
       }
     }
+  },
+  "average": "de media",
+  "@average": {
+    "description": "seeMap message"
   }
 }

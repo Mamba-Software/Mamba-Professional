@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
@@ -193,21 +193,37 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
   // Build EventFeedback Value
   Widget buildEventFeedbackIcon(double eventFeedbackValue) {
       return SizedBox(
-        width: widget.width*0.1,
+        width: widget.width*0.3,
         child: FittedBox(
           fit: BoxFit.fitWidth,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          child: Column(
             children: [
-              SizedBox(
-                width: widget.width*0.04,
-                child: Image.asset(Constants.fireEmojiImage),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: widget.width*0.04,
+                    child: Image.asset(Constants.fireEmojiImage),
+                  ),
+                  Text(
+                    eventFeedbackValue.toString(),
+                    style: Theme.of(context).textTheme.bodyText1,
+                    textAlign: TextAlign.center
+                  ),
+                ],
               ),
-              Text(
-                eventFeedbackValue.toString(),
-                style: Theme.of(context).textTheme.bodyText1,
-                textAlign: TextAlign.center
-              ),
+
+              widget.showAverage != null && widget.showAverage! ? SizedBox(
+                width: widget.width*0.1,
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                      AppLocalizations.of(context)!.average,
+                      style: Theme.of(context).textTheme.caption,
+                      textAlign: TextAlign.center
+                  ),
+                ),
+              ) : Container(),
             ],
           ),
         ),
