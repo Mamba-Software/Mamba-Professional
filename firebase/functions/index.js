@@ -512,9 +512,6 @@ exports.eventUpdatesCoverData = functions
       } else if (before.maxMembers != after.maxMembers) {
         coverDataChange = true;
       }
-      else if (before.bonos != after.bonos) {
-              coverDataChange = true;
-       }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -541,8 +538,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,          
           });
           // Update Private Event
           if (after.isPrivate == true) {
@@ -562,8 +558,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,            
           });
          }
        }
@@ -589,8 +584,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,            
           });
           // Update Private Event
           if (after.isPrivate == true) {
@@ -610,8 +604,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,            
           });
          }
        }
@@ -637,8 +630,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,            
           });
           // Update Private Event
           if (after.isPrivate == true) {
@@ -658,8 +650,7 @@ exports.eventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,            
           });
          }
        }
@@ -2490,9 +2481,6 @@ exports.zzzzEventUpdatesCoverData = functions
       } else if (before.maxMembers != after.maxMembers) {
         coverDataChange = true;
       }
-       else if (before.bonos != after.bonos) {
-              coverDataChange = true;
-       }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -2520,7 +2508,6 @@ exports.zzzzEventUpdatesCoverData = functions
             "minute": after.minute,
             "duration": after.duration,
             "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
           });
           // Update Private Event
           if (after.isPrivate == true) {
@@ -2540,8 +2527,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,            
           });
          }
        }
@@ -2567,8 +2553,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,          
           });
           // Update Private Event
           if (after.isPrivate == true) {
@@ -2588,8 +2573,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,          
           });
          }
        }
@@ -2615,8 +2599,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,            
           });
           // Update Private Event
           if (after.isPrivate == true) {
@@ -2636,8 +2619,7 @@ exports.zzzzEventUpdatesCoverData = functions
             "hour": after.hour,
             "minute": after.minute,
             "duration": after.duration,
-            "maxMembers": after.maxMembers,
-            "bonos": after.bonos,
+            "maxMembers": after.maxMembers,          
           });
          }
        }
