@@ -4400,81 +4400,79 @@ exports.UserPurchasesEvent = functions
 
   const eventDoc = snap.data();
 
-       //Get data of the purchase
+   //Get data of the purchase
 
-       const purchaseSnapShot = await db.collection("Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
-       const purchaseDoc = purchaseSnapShot.data();
+   const purchaseSnapShot = await db.collection("Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseDoc = purchaseSnapShot.data();
 
-       const userId = purchaseDoc.userId;
-       const bonoId = purchaseDoc.bonoId;
-       const brandId =  purchaseDoc.brandId;
+   const userId = purchaseDoc.userId;
+   const bonoId = purchaseDoc.bonoId;
+   const brandId =  purchaseDoc.brandId;
 
-       //Get data of the bono
+   //Get data of the bono
 
-       const bonoSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
-       const bonoDoc = bonoSnapshot.data();
+   const bonoSnapshot = await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).get();
+   const bonoDoc = bonoSnapshot.data();
 
-       //Get data of the bono user
+   //Get data of the bono user
 
-       const bonoSnapshotUser = await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).get();
-       const bonoDocUser = bonoSnapshotUser.data();
+   const bonoSnapshotUser = await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).get();
+   const bonoDocUser = bonoSnapshotUser.data();
 
-       //Add events to purchases
+   //Add events to purchases
 
-       await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
-         "isPrivate": eventDoc.isPrivate,
-         "title": eventDoc.title,
-         "doneAt": eventDoc.doneAt,
-         "year": eventDoc.year,
-         "month": eventDoc.month,
-         "day": eventDoc.day,
-         "hour": eventDoc.hour,
-         "minute": eventDoc.minute,
-         "duration": eventDoc.duration,
-         "numTrainers": eventDoc.numTrainers,
-         "numClients": eventDoc.numClients,
-         "maxMembers": eventDoc.maxMembers,
-       });
-       await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
-        "isPrivate": eventDoc.isPrivate,
-        "title": eventDoc.title,
-        "doneAt": eventDoc.doneAt,
-        "year": eventDoc.year,
-        "month": eventDoc.month,
-        "day": eventDoc.day,
-        "hour": eventDoc.hour,
-        "minute": eventDoc.minute,
-        "duration": eventDoc.duration,
-        "numTrainers": eventDoc.numTrainers,
-        "numClients": eventDoc.numClients,
-        "maxMembers": eventDoc.maxMembers,
-      });
+   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+     "isPrivate": eventDoc.isPrivate,
+     "title": eventDoc.title,
+     "doneAt": eventDoc.doneAt,
+     "year": eventDoc.year,
+     "month": eventDoc.month,
+     "day": eventDoc.day,
+     "hour": eventDoc.hour,
+     "minute": eventDoc.minute,
+     "duration": eventDoc.duration,
+     "numTrainers": eventDoc.numTrainers,
+     "numClients": eventDoc.numClients,
+     "maxMembers": eventDoc.maxMembers,
+   });
+   await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+    "isPrivate": eventDoc.isPrivate,
+    "title": eventDoc.title,
+    "doneAt": eventDoc.doneAt,
+    "year": eventDoc.year,
+    "month": eventDoc.month,
+    "day": eventDoc.day,
+    "hour": eventDoc.hour,
+    "minute": eventDoc.minute,
+    "duration": eventDoc.duration,
+    "numTrainers": eventDoc.numTrainers,
+    "numClients": eventDoc.numClients,
+    "maxMembers": eventDoc.maxMembers,
+  });
 
-       await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
-        "isPrivate": eventDoc.isPrivate,
-        "title": eventDoc.title,
-        "doneAt": eventDoc.doneAt,
-        "year": eventDoc.year,
-        "month": eventDoc.month,
-        "day": eventDoc.day,
-        "hour": eventDoc.hour,
-        "minute": eventDoc.minute,
-        "duration": eventDoc.duration,
-        "numTrainers": eventDoc.numTrainers,
-        "numClients": eventDoc.numClients,
-        "maxMembers": eventDoc.maxMembers,
-      });
+   await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+    "isPrivate": eventDoc.isPrivate,
+    "title": eventDoc.title,
+    "doneAt": eventDoc.doneAt,
+    "year": eventDoc.year,
+    "month": eventDoc.month,
+    "day": eventDoc.day,
+    "hour": eventDoc.hour,
+    "minute": eventDoc.minute,
+    "duration": eventDoc.duration,
+    "numTrainers": eventDoc.numTrainers,
+    "numClients": eventDoc.numClients,
+    "maxMembers": eventDoc.maxMembers,
+  });
 
-       functions.logger.log(
-        "Bono Session",
-        bonoDocUser.sessions
-        );
+   functions.logger.log(
+    "Bono Session",
+    bonoDocUser.sessions
+    );
 
-       return null;
+   return null;
 
-
-
-     });
+ });
 
 //  User Cancels Purchase Event
 exports.UserCancelsPurchaseEvent = functions
