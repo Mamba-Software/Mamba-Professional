@@ -4234,9 +4234,9 @@ exports.UserPurchasesBono = functions
      "price": purchaseDoc.price,
      "paymentMethod": purchaseDoc.paymentMethod,
      "sessions": purchaseDoc.sessions,
-      "weeklySessions": purchaseDoc.weeklySessions,
-      "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime,
+     "weeklySessions": purchaseDoc.weeklySessions,
+     "cancelTime": purchaseDoc.cancelTime,
+     "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -4245,10 +4245,10 @@ exports.UserPurchasesBono = functions
      "price": purchaseDoc.price,
      "paymentMethod": purchaseDoc.paymentMethod,
      "brandId": purchaseDoc.brandId,
-    "sessions": purchaseDoc.sessions,
-   "weeklySessions": purchaseDoc.weeklySessions,
-   "cancelTime": purchaseDoc.cancelTime,
-   "expirationTime": purchaseDoc.expirationTime,
+     "sessions": purchaseDoc.sessions,
+     "weeklySessions": purchaseDoc.weeklySessions,
+     "cancelTime": purchaseDoc.cancelTime,
+     "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -4262,9 +4262,8 @@ exports.UserPurchasesBono = functions
      "weeklySessions": purchaseDoc.weeklySessions,
    });
     let stringSessions = "";
-    if(purchaseDoc.sessions != 10000)
-    {
-        stringSessions = purchaseDoc.sessions + " ";
+    if (purchaseDoc.sessions != 10000) {
+      stringSessions = purchaseDoc.sessions + " ";
     }
    // Send Notification to User
    if (userDoc.idioma == "es") {
