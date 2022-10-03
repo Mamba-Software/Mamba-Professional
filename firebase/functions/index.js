@@ -445,6 +445,10 @@ exports.eventUpdatesCoverData = functions
          .doc(eventId)
          .delete();
        }
+        let imageUrl = "";
+        if (after.imageUrl != null) {
+          imageUrl = after.imageUrl;        
+        }
         // Add Event to New Location
         await db
         .collection("Locations")
@@ -452,7 +456,7 @@ exports.eventUpdatesCoverData = functions
         .collection("Events")
         .doc(eventId).set({
           "title": after.title,
-          "imageUrl": after.imageUrl,
+          "imageUrl": imageUrl,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -474,7 +478,7 @@ exports.eventUpdatesCoverData = functions
          .doc(eventId)
          .set({
           "title": after.title,
-          "imageUrl": after.imageUrl,
+          "imageUrl": imageUrl,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -512,6 +516,10 @@ exports.eventUpdatesCoverData = functions
       } else if (before.maxMembers != after.maxMembers) {
         coverDataChange = true;
       }
+      let imageUrl = "";
+      if (after.imageUrl != null) {
+        imageUrl = after.imageUrl;        
+      }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -531,7 +539,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
-            "imageUrl": after.imageUrl,
+            "imageUrl": imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -551,7 +559,7 @@ exports.eventUpdatesCoverData = functions
            .doc(eventId)
            .update({
             "title": after.title,
-            "imageUrl": after.imageUrl,
+            "imageUrl": imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -577,7 +585,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
-            "imageUrl": after.imageUrl,
+            "imageUrl": imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -597,7 +605,7 @@ exports.eventUpdatesCoverData = functions
            .doc(eventId)
            .update({
             "title": after.title,
-            "imageUrl": after.imageUrl,
+            "imageUrl": imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -623,7 +631,7 @@ exports.eventUpdatesCoverData = functions
           .doc(eventId)
           .update({
             "title": after.title,
-            "imageUrl": after.imageUrl,
+            "imageUrl": imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -643,7 +651,7 @@ exports.eventUpdatesCoverData = functions
            .doc(eventId)
            .update({
             "title": after.title,
-            "imageUrl": after.imageUrl,
+            "imageUrl": imageUrl,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -1351,6 +1359,10 @@ exports.userAddsEvent = functions
         });
       }
       */
+      let imageUrl = "";
+      if (eventDoc.imageUrl != null) {
+        imageUrl = eventDoc.imageUrl;        
+      }
       // Add Event to Locations Event Subcollection
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
@@ -1361,7 +1373,7 @@ exports.userAddsEvent = functions
         .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
+          "imageUrl": imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -1385,7 +1397,7 @@ exports.userAddsEvent = functions
          .doc(eventId).set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
+          "imageUrl": imageUrl,
           "doneAt": eventDoc.doneAt,
           "year": eventDoc.year,
           "month": eventDoc.month,
@@ -1542,6 +1554,10 @@ exports.userJoinsEvent = functions
       if (eventDoc.isPrivate != undefined) {
         isPrivate == eventDoc.isPrivate;
       }
+      let imageUrl = "";
+      if (eventDoc.imageUrl != null) {
+        imageUrl = eventDoc.imageUrl;        
+      }
       // Add Event To Users Event Subcollection
       await db
       .collection("Users")
@@ -1550,7 +1566,7 @@ exports.userJoinsEvent = functions
       .doc(eventId).set({
         "isPrivate": isPrivate,
         "title": eventDoc.title,
-        "imageUrl": eventDoc.imageUrl,
+        "imageUrl": imageUrl,
         "doneAt": eventDoc.doneAt,
         "year": eventDoc.year,
         "month": eventDoc.month,
@@ -1574,7 +1590,7 @@ exports.userJoinsEvent = functions
        .doc(eventId).set({
         "isPrivate": eventDoc.isPrivate,
         "title": eventDoc.title,
-        "imageUrl": eventDoc.imageUrl,
+        "imageUrl": imageUrl,
         "doneAt": eventDoc.doneAt,
         "year": eventDoc.year,
         "month": eventDoc.month,

@@ -1,3 +1,4 @@
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,6 +26,7 @@ class ScriptsDatabaseService {
   final batch = FirebaseFirestore.instance.batch();
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
+  final _eventDataService = EventDataService();
   final _libraryDataService = LibraryDataService();
 
   // Firebase collections
@@ -1841,7 +1843,7 @@ class ScriptsDatabaseService {
       String locations = "Locations";
 
       // PRODUCTION FOR ALL REAL EVENTS
-      QuerySnapshot querySnapshot = await _firestore.collection(events).where("month", isEqualTo: 9.toString()).get();
+      QuerySnapshot querySnapshot = await _firestore.collection(events).where("month", isEqualTo: 10.toString()).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
         print('=================================================================================');
@@ -1921,6 +1923,97 @@ class ScriptsDatabaseService {
       print(brandErrorCnt);
       print("locationErrorCnt:");
       print(locationErrorCnt);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> migrateEventDataOctober3th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 01 SEPTEMBER 2022');
+      print('-----------------------------\n');
+      print('\n');
+
+      print('Modifying '+this.events+' collection:\n');
+      print('-----------------------------\n');
+      print('\n');
+
+      int usersErrorCnt = 0;
+      int brandErrorCnt = 0;
+      int locationErrorCnt = 0;
+
+      String events = "Events";
+      String users = "Users";
+      String brands = "Brands";
+      String locations = "Locations";
+
+      // PRODUCTION FOR ALL REAL EVENTS
+      QuerySnapshot querySnapshot = await _firestore.collection(events).where("month", isEqualTo: 10.toString()).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('EVENT WITH ID: '+event.id!+" OF BRAND WITH ID: "+event.brandID!);
+        print('\n');
+
+        // Get Event Users
+        List<Usuario> eventUsers = [];
+        QuerySnapshot querySnapshot2 = await _firestore
+            .collection(events)
+            .doc(event.id!)
+            .collection("Users")
+            .get();
+        for (int i = 0; i < querySnapshot2.docs.length; i++) {
+          eventUsers.add(Usuario.fromObjectOnlyCoverData(
+              querySnapshot2.docs[i].id, querySnapshot2.docs[i]));
+        }
+        // Delete Each User from Event
+        for (Usuario user in eventUsers) {
+          print('USER WITH ID: '+user.id!+" AND NAME: "+user.name!);
+          // Delete From Event
+          try {
+            await _firestore
+            .collection(events)
+            .doc(event.id!)
+            .collection("Users")
+            .doc(user.id!)
+            .delete();
+          } catch (e) {
+            print(e.toString());
+          }
+          // Add to Event
+          Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
+          try {
+            await _firestore
+            .collection(events)
+            .doc(event.id!)
+            .collection("Users")
+            .doc(user.id!)
+            .set({
+              "name": user.name,
+              "firstName": user.firstName,
+              "lastName": user.lastName,
+              "nick": user.nick,
+              "imageUrl": user.imageUrl,
+              "noImageUrl": user.noImageUrl,
+              "isTrainer": user.isTrainer,
+              "isPrivate": user.isPrivate,
+              "joinedAt": joinedAt,
+              "notificationToken": user.notificationToken,
+            });
+          } catch (e) {
+            print(e.toString());
+          }
+        }
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+
       return true;
     } catch (e) {
       return false;
