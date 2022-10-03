@@ -1980,18 +1980,12 @@ class ScriptsDatabaseService {
         print("NumClients: "+numClients.toString());
         print("NumTrainers: "+numTrainers.toString());
 
-        // Get the Brands User and Update Members
-        QuerySnapshot querySnapshot3 = await _firestore
-        .collection(events)
-        .doc(event.id!)
-        .collection("Locations")
-        .get();
-
-        for (int i = 0; i < querySnapshot3.docs.length; i++) {
-          Location location = Location.fromObjectOnlyCoverData(querySnapshot3.docs[i].id, querySnapshot3.docs[i]);
+        // Update Users Events
+        for (Usuario user in eventUsers) {
+          print("Solving User "+user.name!.toUpperCase());
           await _firestore
-          .collection(locations)
-          .doc(location.id!)
+          .collection(users)
+          .doc(user.id!)
           .collection("Events")
           .doc(event.id!)
           .set({
@@ -2010,8 +2004,6 @@ class ScriptsDatabaseService {
             "maxMembers": event.maxMembers,
           });
         }
-        print("Locations Event Updated");
-
         print('\n');
         print('=================================================================================');
         print('=================================================================================');
