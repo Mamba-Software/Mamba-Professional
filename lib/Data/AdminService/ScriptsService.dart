@@ -1961,57 +1961,62 @@ class ScriptsDatabaseService {
 
         // Get Event Users
         List<Usuario> eventUsers = [];
+        int numClients = 0;
+        int numTrainers = 0;
         QuerySnapshot querySnapshot2 = await _firestore
             .collection(events)
             .doc(event.id!)
             .collection("Users")
             .get();
         for (int i = 0; i < querySnapshot2.docs.length; i++) {
-          eventUsers.add(Usuario.fromObjectOnlyCoverData(
-              querySnapshot2.docs[i].id, querySnapshot2.docs[i]));
-        }
-        // Delete Each User from Event
-        for (Usuario user in eventUsers) {
-          print('USER WITH ID: '+user.id!+" AND NAME: "+user.name!);
-          // Delete From Event
-          try {
-            await _firestore
-            .collection(events)
-            .doc(event.id!)
-            .collection("Users")
-            .doc(user.id!)
-            .delete();
-          } catch (e) {
-            print(e.toString());
-          }
-          // Add to Event
-          Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
-          try {
-            await _firestore
-            .collection(events)
-            .doc(event.id!)
-            .collection("Users")
-            .doc(user.id!)
-            .set({
-              "name": user.name,
-              "firstName": user.firstName,
-              "lastName": user.lastName,
-              "nick": user.nick,
-              "imageUrl": user.imageUrl,
-              "noImageUrl": user.noImageUrl,
-              "isTrainer": user.isTrainer,
-              "isPrivate": user.isPrivate,
-              "joinedAt": joinedAt,
-              "notificationToken": user.notificationToken,
-            });
-          } catch (e) {
-            print(e.toString());
+          Usuario usuario = Usuario.fromObjectOnlyCoverData(querySnapshot2.docs[i].id, querySnapshot2.docs[i]);
+          eventUsers.add(usuario);
+          if (usuario.isTrainer!) {
+            numTrainers += 1;
+          } else {
+            numClients += 1;
           }
         }
+        print("NumClients: "+numClients.toString());
+        print("NumTrainers: "+numTrainers.toString());
+
+        // Get the Brands User and Update Members
+        QuerySnapshot querySnapshot3 = await _firestore
+        .collection(events)
+        .doc(event.id!)
+        .collection("Locations")
+        .get();
+
+        for (int i = 0; i < querySnapshot3.docs.length; i++) {
+          Location location = Location.fromObjectOnlyCoverData(querySnapshot3.docs[i].id, querySnapshot3.docs[i]);
+          await _firestore
+          .collection(locations)
+          .doc(location.id!)
+          .collection("Events")
+          .doc(event.id!)
+          .set({
+            "isPrivate": event.isPrivate,
+            "title": event.title,
+            "imageUrl": event.imageUrl ?? "",
+            "doneAt": event.doneAt,
+            "year": event.year,
+            "month": event.month,
+            "day": event.day,
+            "hour": event.hour,
+            "minute": event.minute,
+            "duration": event.duration,
+            "numTrainers": numTrainers,
+            "numClients": numClients,
+            "maxMembers": event.maxMembers,
+          });
+        }
+        print("Locations Event Updated");
+
         print('\n');
         print('=================================================================================');
         print('=================================================================================');
         print('\n');
+
       }
 
       return true;
