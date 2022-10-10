@@ -27,6 +27,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
@@ -372,6 +373,7 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
         ),
         SizedBox(height: safeAreaHeight * 0.01),
+        listTilePro(9),
         listTilePro(8),
         listTilePro(7),
         listTilePro(11),
@@ -665,6 +667,14 @@ class _BrandScreenState extends State<BrandScreen> {
                 this.calendarView = null;
               });
             },
+        );
+      case 9:
+        return Stats(
+          brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 2:
         return Clients(
