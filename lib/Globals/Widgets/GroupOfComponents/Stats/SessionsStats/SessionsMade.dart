@@ -31,10 +31,10 @@ class SessionsMadeState extends State<SessionsMade> {
   Widget build(BuildContext context) {
     final List<SalesData> chartData = [
       SalesData(DateTime.now(), 35),
-      SalesData(DateTime.now().add(Duration(days: 800)), 28),
       SalesData(DateTime.now().add(Duration(days: 360)), 34),
+      SalesData(DateTime.now().add(Duration(days: 800)), 28),
+      SalesData(DateTime.now().add(Duration(days: 950)), 40),
       SalesData(DateTime.now().add(Duration(days: 1300)), 32),
-      SalesData(DateTime.now().add(Duration(days: 950)), 40)
     ];
     return isLoading? LoadingView() :   Center(
             child: Container(
