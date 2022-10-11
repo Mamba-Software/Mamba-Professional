@@ -10,6 +10,9 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+
+import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
+
 class Stats extends StatefulWidget {
   String brandId;
   bool pinned;
@@ -324,6 +327,10 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     return Column(
       children: [
         statsTitle('Entrenos realizados'),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+          child: SessionsMade(),
+        ),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
         statsTitle('Demanda de días'),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
