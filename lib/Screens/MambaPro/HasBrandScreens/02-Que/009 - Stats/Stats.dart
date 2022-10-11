@@ -14,13 +14,14 @@ class Stats extends StatefulWidget {
   String brandId;
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
-  Stats({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  int? initIndex;
+  Stats({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged, this.initIndex}) : super(key: key);
 
   @override
   _StatsState createState() => _StatsState();
 }
 
-class _StatsState extends State<Stats> {
+class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   // App Bar and Scroll View
   ScrollController? _scrollController;
@@ -34,18 +35,25 @@ class _StatsState extends State<Stats> {
   // Boolean Loading
   bool isLoading = true;
   bool isFirstBuild = true;
+
+  TabController? _tabController;
+  int _selectedIndex = 0;
+  List<bool> tabs = [true, false, false, false, false];
+
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
-  final _eventDataService = EventDataService();
   // Brand
   Brand brand = Brand();
-  // AlL Events From Brand
-  List<Event> listEvents = [];
-  // Index for Lazy Scroll
-  int lastIndex = 9;
+
+  double addStatsValue = 0.25;
 
   @override
   void initState() {
+    _tabController = TabController(length: 4, vsync: this);
+    if(widget.initIndex != null)
+      {
+        _selectedIndex = widget.initIndex!;
+      }
     super.initState();
     _scrollController = ScrollController()
       ..addListener(() => _isAppBarExpanded ?
@@ -56,16 +64,6 @@ class _StatsState extends State<Stats> {
         appBarExpanded = false;
       }),
       );
-    initEventHistory();
-  }
-
-  Future<void> initEventHistory() async {
-    await getBrandDetails();
-    await getBrandFirstEvents();
-    //await Future.delayed(const Duration(milliseconds: 2000));
-    setState(() {
-      isLoading = false;
-    });
   }
   
   // Init Device Sizes
@@ -81,23 +79,6 @@ class _StatsState extends State<Stats> {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
   }
 
-  // Gets the Events Done by the Brand
-  Future<void> getBrandFirstEvents() async {
-    listEvents = await _eventDataService.getBrandFirstCompletedEventsLimit(widget.brandId, 10);
-  }
-
-  // Gets the Events Done by the Brand
-  Future<void> getBrandMoreEvents(String lastEventId) async {
-    var temp = listEvents;
-    var moreEvents = await _eventDataService.getBrandMoreCompletedEventsLimit(widget.brandId, lastEventId, 10);
-    temp.addAll(moreEvents);
-    if (mounted) {
-      setState(() {
-        listEvents = temp;
-        lastIndex += 10;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +92,7 @@ class _StatsState extends State<Stats> {
         slivers: [
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.15,
+            expandedHeight: MediaQuery.of(context).size.height*0.2,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: true,
@@ -125,37 +106,12 @@ class _StatsState extends State<Stats> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.stats,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
-                          ),
-                          FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height*0.08,
-                              width: MediaQuery.of(context).size.width*0.11,
-                              child: TextButton(
-                                onPressed: null,
-                                child: Icon(
-                                  Icons.filter_list,
-                                  color: AppColors.darkGrey,
-                                  size: MediaQuery.of(context).size.width*0.07,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
+                      child: Text(
+                        AppLocalizations.of(context)!.stats,
+                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                       ),
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
-                    Container(
-                      color: AppColors.grey,
-                      height: 1.0,
-                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.08,),
                   ],
                 ),
               ),
@@ -195,6 +151,65 @@ class _StatsState extends State<Stats> {
                 ),
               ),
             ],
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(0),
+              child: Column(
+                children: [
+                  TabBar(
+                    isScrollable: true,
+                    controller: _tabController,
+                    indicatorColor: Colors.transparent,
+                    onTap: (index) {
+                      _selectedIndex = index;
+                      if(_selectedIndex == 0)
+                      {
+                        addStatsValue = 0.25;
+                        tabs[0] = true;
+                      }
+                      else if(_selectedIndex == 1)
+                      {
+                        addStatsValue = 0.50;
+                        tabs[1] = true;
+                      }
+                      else if(_selectedIndex == 2)
+                      {
+                        addStatsValue = 0.75;
+                        tabs[3] = true;
+                      }
+                      else if(_selectedIndex == 3)
+                      {
+                        addStatsValue = 1;
+                        tabs[4] = true;
+                      }
+                      setState(() {
+
+                      });
+                    },
+                    tabs: [
+                      selectedTab(AppLocalizations.of(context)!.events, 0, 0.20),
+                      selectedTab(AppLocalizations.of(context)!.clients, 1, 0.20),
+                      selectedTab(AppLocalizations.of(context)!.staff, 2, 0.15),
+                      selectedTab('Facturación', 3, 0.25),
+
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.08,),
+              child: Column(
+                children: [
+                  _selectedIndex == 0? eventsStatsPage() :
+                  _selectedIndex == 1? clientsStatsPage() :
+                  _selectedIndex == 2? staffStatsPage() :
+                  _selectedIndex == 3? factStatsPage() : Container(),
+
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -249,4 +264,104 @@ class _StatsState extends State<Stats> {
       ) ,
     );
   }
+  Widget selectedTab(String text, int index, double width)
+  {
+    return Tab(
+      child: Align(
+        alignment: Alignment.bottomLeft,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+                text,
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+            _selectedIndex == index? Container(
+              width: MediaQuery.of(context).size.width*width,
+              height: 3,
+              //Theme.of(context).scaffoldBackgroundColor,
+              color: Theme.of(context).colorScheme.secondary,
+            ) : Container(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget statsTitle(String text)
+  {
+    return Padding(
+        padding:
+        EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+             Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    text,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1
+                        ?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15),
+                  ),
+
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+  Widget eventsStatsPage()
+  {
+    return Column(
+      children: [
+        statsTitle('Entrenos realizados'),
+        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+        statsTitle('Demanda de días'),
+        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+        statsTitle('Hora más demandada'),
+        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+        statsTitle('Franja más demandada'),
+        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+        statsTitle('Historico de franjas'),
+      ],
+    );
+  }
+  Widget clientsStatsPage()
+  {
+    return Column(
+      children: [
+        statsTitle('Numero clientes'),
+        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+      ],
+    );
+  }
+  Widget staffStatsPage()
+  {
+    return Column(
+      children: [
+        statsTitle('Entrenadores'),
+        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+      ],
+    );
+  }
+  Widget factStatsPage()
+  {
+    return Column(
+      children: [
+        statsTitle('Facturación total'),
+        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+      ],
+    );
+  }
 }
+
+

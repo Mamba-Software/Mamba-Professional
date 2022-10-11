@@ -672,6 +672,7 @@ class _BrandScreenState extends State<BrandScreen> {
         return Stats(
           brandId: currentBrand.id!,
           pinned: iconStar,
+          initIndex: 0,
           pinnedChanged: (boolean) {
             handleChangedFavourites();
           },
