@@ -1,12 +1,16 @@
 // ignore_for_file: avoid_print
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -32,12 +36,18 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   bool get _isAppBarExpanded {
     return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
   }
+
+  final DateFormat formatter = DateFormat('dd-MM-yyyy');
+
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
   // Boolean Loading
   bool isLoading = true;
   bool isFirstBuild = true;
+
+  DateTime  endDate = DateTime.now().subtract(Duration(days: 30));
+  DateTime startDate = DateTime.now().subtract(Duration(days: 60));
 
   TabController? _tabController;
   int _selectedIndex = 0;
@@ -50,6 +60,8 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   double addStatsValue = 0.25;
 
+  List<Event> events = [], filteredEvents = [];
+
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
@@ -57,6 +69,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       {
         _selectedIndex = widget.initIndex!;
       }
+    getCollections();
     super.initState();
     _scrollController = ScrollController()
       ..addListener(() => _isAppBarExpanded ?
@@ -82,6 +95,18 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
   }
 
+  Future<void> getCollections() async {
+
+    if(_selectedIndex == 0)
+      {
+        events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
+        setState(() {
+          filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
+          isLoading = false;
+        });
+      }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +234,6 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                   _selectedIndex == 1? clientsStatsPage() :
                   _selectedIndex == 2? staffStatsPage() :
                   _selectedIndex == 3? factStatsPage() : Container(),
-
                 ],
               ),
             ),
@@ -217,9 +241,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         ],
       ),
       bottomSheet: GestureDetector(
-        onTap: () {
-          //TODO CALENDAR
-        },
+        onTap: _show, //TODO CALENDAR
         child: Container(
           height: MediaQuery.of(context).size.height*0.12,
           width: double.infinity,
@@ -231,36 +253,41 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
             ),
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start, //change here don't //worked
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Align(
                 alignment: FractionalOffset.centerLeft,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.04, horizontal: MediaQuery.of(context).size.height*0.06),
-                  child: Text(
-                      '01-07 Agosto 2022',
-                      style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor)
-                  ),
-                ),
-              ),
-              Align(
-                alignment: FractionalOffset.centerRight,
-                child: Padding(
-                  padding:  EdgeInsets.only( left: MediaQuery.of(context).size.height*0.06),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height*0.12,
-                    width: MediaQuery.of(context).size.width*0.265,
-                    color: Styles.mainColorTrans,
-                    child:  Align(
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.event,
-                        color: Styles.mainColor,
-                        size: MediaQuery.of(context).size.width*0.07,
-                      ),
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02, horizontal: MediaQuery.of(context).size.height*0.06),
+                  child: Column(
+                    children: [ Text(
+                        formatter.format(startDate).toString(),
+                        style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor)
                     ),
+                      Text(
+                          ' a ',
+                          style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor)
+                      ),
+                      Text(
+                        formatter.format(endDate).toString(),
+                          style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor)
+                      ),
+                  ],
                   ),
                 ),
               ),
+              new Spacer(),
+          Container(
+            height: MediaQuery.of(context).size.height*0.12,
+            width: MediaQuery.of(context).size.width*0.27,
+            color: Styles.mainColorTrans,
+            child:  Icon(
+                Icons.event,
+                color: Styles.mainColor,
+                size: MediaQuery.of(context).size.width*0.07,
+              ),
+        ),
             ],
           ),
         ),
@@ -324,12 +351,19 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   }
   Widget eventsStatsPage()
   {
+    if(isLoading)
+      {
+        return  Padding(
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.25),
+          child:  LoadingView(),
+        );
+      }
     return Column(
       children: [
         statsTitle('Entrenos realizados'),
         Padding(
           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-          child: SessionsMade(),
+          child: SessionsMade(events: filteredEvents),
         ),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
         statsTitle('Demanda de días'),
@@ -367,6 +401,26 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         statsTitle('Facturación total'),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
       ],
+    );
+  }
+
+  void _show() async {
+    await showDialog<dynamic>(
+      context: context,
+      builder: (BuildContext context) => CalendarPopupView(
+        barrierDismissible: true,
+        minimumDate: DateTime.now(),
+        initialEndDate: endDate,
+        initialStartDate: startDate,
+        onApplyClick: (DateTime startData, DateTime endData) {
+             setState(() {
+            startDate = startData;
+            endDate = endData;
+            filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
+
+             });
+        },
+      ),
     );
   }
 }

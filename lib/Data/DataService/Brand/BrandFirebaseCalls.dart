@@ -361,6 +361,62 @@ class BrandFirebaseCalls {
     return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
+  Future<List<Event>> getAllEventsFromBrandList(String brandId) async {
+    Timestamp now = Timestamp.fromDate(DateTime.now());
+    List<Event> events = [];
+
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if(querySnapshot.docs[i].id != 'Private Events') {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+    }
+
+    querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events").doc('Private Events').collection('Private Events')
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
+
+    }
+
+    //GET UBUNTU
+    /*
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('Brands')
+        .doc('2bd419fe-1a38-4764-b3c5-49728da3ef3d')
+        .collection("Events")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if(querySnapshot.docs[i].id != 'Private Events') {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+    }
+
+     querySnapshot = await _firestore
+        .collection('Brands')
+        .doc('2bd419fe-1a38-4764-b3c5-49728da3ef3d')
+        .collection("Events").doc('Private Events').collection('Private Events')
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+
+    }
+
+     */
+    return events;
+  }
+
   //Add
 
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {
