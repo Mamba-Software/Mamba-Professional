@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,11 +13,15 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
+import '../../../../Styles/AppColors/AppColors.dart';
+
 class SessionsMade extends StatefulWidget {
   List<Event> events;
+  List<Event> bakcEvents;
 
   SessionsMade({
     required this.events,
+    required this.bakcEvents,
     Key? key,
   }) : super(key: key);
 
@@ -25,10 +31,13 @@ class SessionsMade extends StatefulWidget {
 
 class SessionsMadeState extends State<SessionsMade> {
   bool isLoading = true;
+  int maxNumber = 4;
   // Models i base de Dades
   Brand brand = Brand();
-  List <Event> filteredEvents = [];
-  ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enableSelectionZooming: true);
+  List <Event> filteredEvents = [], filteredBackEvents = [];
+  ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
+    enablePanning: true);
+  double difference = 0;
   TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y número de entrenos');
 
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
@@ -41,7 +50,9 @@ class SessionsMadeState extends State<SessionsMade> {
   @override
   void initState() {
     filteredEvents = widget.events;
+    filteredBackEvents = widget.bakcEvents;
     orderEvents();
+    calculateDifference();
     mountStat();
     isLoading = false;
     super.initState();
@@ -51,7 +62,9 @@ class SessionsMadeState extends State<SessionsMade> {
   void didUpdateWidget(SessionsMade oldWidget) {
     super.didUpdateWidget(oldWidget);
     filteredEvents = widget.events;
+    filteredBackEvents = widget.bakcEvents;
     totalEvents = [];
+    calculateDifference();
     orderEvents();
     mountStat();
   }
@@ -61,6 +74,15 @@ class SessionsMadeState extends State<SessionsMade> {
     return filteredEvents.sort((a, b){ //sorting in ascending order
       return a.doneAt!.compareTo(b.doneAt!);
     });
+  }
+
+  calculateDifference()
+  {
+    print(filteredBackEvents.length);
+    print(filteredEvents.length);
+      difference = (filteredEvents.length -  filteredBackEvents.length)/ filteredBackEvents.length * 100;
+
+    difference = roundDouble(difference, 2);
   }
 
   void mountStat()
@@ -77,9 +99,10 @@ class SessionsMadeState extends State<SessionsMade> {
         if(time != null && time2 != time)
           {
             totalEvent = TotalEvents(time, sumEvents);
-            print(totalEvent.events);
-            print(totalEvent.day);
             totalEvents.add(totalEvent);
+            if(sumEvents > maxNumber) {
+              maxNumber = sumEvents;
+            }
             sumEvents = 0;
           }
         else {
@@ -88,40 +111,100 @@ class SessionsMadeState extends State<SessionsMade> {
 
         time = time2;
       }
-    print('he');
     print (totalEvents.length);
   }
 
   @override
   Widget build(BuildContext context) {
-    return isLoading? LoadingView() :   Center(
-            child: Container(
-                child: SfCartesianChart(
-                    primaryXAxis: CategoryAxis(),
-                    tooltipBehavior: _tooltipBehavior,
-                  enableSideBySideSeriesPlacement: false,
+    return isLoading? LoadingView() :   Column(
+      children: [
+        Align(
+          alignment: Alignment.topLeft,
+            child: Row(
+              children: [
+                Text(
+                    filteredEvents.length.toString(),
+          style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
 
-                  series: <ChartSeries>[
-                      // Renders line chart
-                      SplineSeries<TotalEvents, String>(
+        ),
+                Padding(
+                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
+                  child: Text(
+                    difference < 0? difference.toString() + '%' :
+                    '+' + difference.toString() + '%',
+                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
 
-                        markerSettings: MarkerSettings(
-                            isVisible: true,
-                            height:  5,
-                            width:  5,
-                            shape: DataMarkerType.circle,
-                            color: Styles.mainColor),
-                        width: 2,
-                        color: Styles.mainColor,
-                          dataSource: totalEvents,
-                          xValueMapper: (TotalEvents events, _) => events.day,
-                          yValueMapper: (TotalEvents events, _) => events.events,
-                      )
-                    ]
+                  ),
+                ),
+              ],
+            ),),
+        Center(
+                child: Container(
+                    child: SfCartesianChart(
+                        zoomPanBehavior: _zoomPanBehavior,
+                      backgroundColor: Colors.transparent,
+                        borderColor: Colors.transparent,
+                        plotAreaBorderColor: Colors.transparent,
+                        plotAreaBorderWidth: 1,
+                        primaryXAxis: CategoryAxis(
+                          //Hide the gridlines of x-axis
+                          majorGridLines: MajorGridLines(width: 0),
+                          isVisible: false,
+                          //Hide the axis line of x-axis
+                          axisLine: AxisLine(width: 0),
+                        ),
+                        primaryYAxis: NumericAxis(
+                          enableAutoIntervalOnZooming: false,
+                          opposedPosition: true,
+                          interval: 1,
+                          //maximum: double.parse(maxNumber.toString()),
+                          //isVisible: false,
+                          //Hide the gridlines of x-axis
+                          majorGridLines: MajorGridLines(width: 0),
+                          //Hide the axis line of x-axis
+                          axisLine: AxisLine(width: 0),
+                        ),
+                        axes: [],
+                        indicators: [],
+                        legend: null,
+                        tooltipBehavior: _tooltipBehavior,
+                      enableSideBySideSeriesPlacement: false,
+                      series: <ChartSeries>[
+                          // Renders line chart
+                        SplineAreaSeries<TotalEvents, String>(
+                            borderColor: Styles.mainColor,
+                          borderWidth: 2,
+                            markerSettings: MarkerSettings(
+                                isVisible: true,
+                                height:  5,
+                                width:  5,
+                                shape: DataMarkerType.circle,
+                                color: Styles.mainColor),
+
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Styles.mainColor,
+                                Colors.black12,
+                              ],
+                            ),
+                              dataSource: totalEvents,
+                              xValueMapper: (TotalEvents events, _) => events.day,
+                              yValueMapper: (TotalEvents events, _) => events.events,
+                          )
+                        ]
+                    )
                 )
-            )
-        );
+            ),
+      ],
+    );
 
+  }
+
+  double roundDouble(double value, int places) {
+    num mod = pow(10.0, places);
+    return ((value * mod).round().toDouble() / mod);
   }
 
 }

@@ -49,6 +49,9 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   DateTime  endDate = DateTime.now().subtract(Duration(days: 30));
   DateTime startDate = DateTime.now().subtract(Duration(days: 60));
 
+  DateTime  backEndDate = DateTime.now().subtract(Duration(days: 60));
+  DateTime backStartDate = DateTime.now().subtract(Duration(days: 90));
+
   TabController? _tabController;
   int _selectedIndex = 0;
   List<bool> tabs = [true, false, false, false, false];
@@ -60,7 +63,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   double addStatsValue = 0.25;
 
-  List<Event> events = [], filteredEvents = [];
+  List<Event> events = [], filteredEvents = [], filteredBackEvents = [];
 
   @override
   void initState() {
@@ -101,10 +104,20 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       {
         events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
         setState(() {
-          filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
-          isLoading = false;
+          applyFilteredEvents();
+           isLoading = false;
         });
       }
+
+  }
+
+  void applyFilteredEvents()
+  {
+    filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
+    int days = daysBetween(startDate, endDate);
+    DateTime  backEndDate = endDate.subtract(Duration(days: days));
+    DateTime backStartDate = startDate.subtract(Duration(days: days));
+    filteredBackEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(backStartDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(backEndDate)) < 0).toList();
 
   }
 
@@ -363,7 +376,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         statsTitle('Entrenos realizados'),
         Padding(
           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-          child: SessionsMade(events: filteredEvents),
+          child: SessionsMade(events: filteredEvents, bakcEvents: filteredBackEvents,),
         ),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
         statsTitle('Demanda de días'),
@@ -416,12 +429,17 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
              setState(() {
             startDate = startData;
             endDate = endData;
-            filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
-
+           applyFilteredEvents();
              });
         },
       ),
     );
+  }
+
+  int daysBetween(DateTime from, DateTime to) {
+    from = DateTime(from.year, from.month, from.day);
+    to = DateTime(to.year, to.month, to.day);
+    return (to.difference(from).inHours / 24).round();
   }
 }
 

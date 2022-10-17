@@ -364,7 +364,7 @@ class BrandFirebaseCalls {
   Future<List<Event>> getAllEventsFromBrandList(String brandId) async {
     Timestamp now = Timestamp.fromDate(DateTime.now());
     List<Event> events = [];
-
+/*
     QuerySnapshot querySnapshot = await _firestore
         .collection(brands)
         .doc(brandId)
@@ -386,10 +386,10 @@ class BrandFirebaseCalls {
       events.add(Event.fromObjectOnlyCoverData(
           querySnapshot.docs[i].id, querySnapshot.docs[i]));
 
-    }
+    }*/
 
     //GET UBUNTU
-    /*
+
     QuerySnapshot querySnapshot = await _firestore
         .collection('Brands')
         .doc('2bd419fe-1a38-4764-b3c5-49728da3ef3d')
@@ -413,7 +413,7 @@ class BrandFirebaseCalls {
 
     }
 
-     */
+
     return events;
   }
 
