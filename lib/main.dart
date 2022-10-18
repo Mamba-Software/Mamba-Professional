@@ -55,7 +55,9 @@ Future<void> main() async {
     // Firebase Dynamic Links
     DynamicLinkUtils().retrieveDynamicLink();
     // Firebase Crashlytics
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    if (isProduction) {
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    }
     // Run App
     runApp(
       MultiProvider(
