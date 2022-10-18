@@ -156,7 +156,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
             child: SfDateRangePicker(
               enableMultiView: true,
               navigationDirection: DateRangePickerNavigationDirection.vertical,
-              selectionMode: DateRangePsickerSelectionMode.range,
+              selectionMode: DateRangePickerSelectionMode.range,
               headerHeight: 0,
               headerStyle: DateRangePickerHeaderStyle(backgroundColor: Theme.of(context).scaffoldBackgroundColor),
               monthViewSettings: const DateRangePickerMonthViewSettings(enableSwipeSelection: false),
