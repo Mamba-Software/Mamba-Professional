@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
 import '../../../../../../../Data/Models/Event.dart';
@@ -405,6 +406,25 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   }
 
   void _show() async {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.85,
+          child: SelectCalendarDate(
+            brandId: currentBrand.id!,
+          ),
+        );
+      },
+    );
+    /*
     await showDialog<dynamic>(
       context: context,
       builder: (BuildContext context) => CalendarPopupView(
@@ -422,6 +442,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         },
       ),
     );
+     */
   }
 }
 
