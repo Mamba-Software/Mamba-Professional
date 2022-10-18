@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,26 +16,26 @@ import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 import '../../../../Styles/AppColors/AppColors.dart';
 
-class SessionsMade extends StatefulWidget {
+class DayOffer extends StatefulWidget {
   List<Event> events;
-  List<Event> bakcEvents;
 
-  SessionsMade({
+  DayOffer({
     required this.events,
-    required this.bakcEvents,
     Key? key,
   }) : super(key: key);
 
   @override
-  SessionsMadeState createState() => SessionsMadeState();
+  DayOfferState createState() => DayOfferState();
 }
 
-class SessionsMadeState extends State<SessionsMade> {
+class DayOfferState extends State<DayOffer> {
   bool isLoading = true;
-  int maxNumber = 4;
+
   // Models i base de Dades
   Brand brand = Brand();
-  List <Event> filteredEvents = [], filteredBackEvents = [];
+  List <Event> filteredEvents = [];
+
+  List<int> weekDays = [0,0,0,0,0,0,0];
   ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
@@ -47,24 +48,31 @@ class SessionsMadeState extends State<SessionsMade> {
 
   Timestamp tm = Timestamp.fromDate(DateTime.now().subtract(Duration(days: 5)));
 
+  double maxValue = 0;
+  int maxValueInt = 0;
+  String maxValueStr = '';
+
+  int totalSumClients = 0;
+
   @override
   void initState() {
     filteredEvents = widget.events;
-    filteredBackEvents = widget.bakcEvents;
     orderEvents();
-    calculateDifference();
     mountStat();
     isLoading = false;
     super.initState();
   }
 
   @override
-  void didUpdateWidget(SessionsMade oldWidget) {
+  void didUpdateWidget(DayOffer oldWidget) {
     super.didUpdateWidget(oldWidget);
     filteredEvents = widget.events;
-    filteredBackEvents = widget.bakcEvents;
+    weekDays = [0,0,0,0,0,0,0];
     totalEvents = [];
-    calculateDifference();
+     maxValue = 0;
+     maxValueInt = 0;
+     maxValueStr = '';
+    totalSumClients = 0;
     orderEvents();
     mountStat();
   }
@@ -76,87 +84,93 @@ class SessionsMadeState extends State<SessionsMade> {
     });
   }
 
-  calculateDifference()
-  {
-    print(filteredBackEvents.length);
-    print(filteredEvents.length);
-      difference = (filteredEvents.length -  filteredBackEvents.length)/ filteredBackEvents.length * 100;
-
-    difference = roundDouble(difference, 2);
-  }
-
   void mountStat()
   {
-    TotalEvents totalEvent;
-    String? time;
-    String? time2;
-    int sumEvents = 0;
-    for(int i = 0; i < filteredEvents.length; ++i)
-      {
-        time2 = formatter.format(filteredEvents[i].doneAt!.toDate());
-        //print(filteredEvents[i].id);
-        //print(filteredEvents[i].doneAt!.toDate());
-        if(time != null && time2 != time)
-          {
-            totalEvent = TotalEvents(time, sumEvents);
-            totalEvents.add(totalEvent);
-            if(sumEvents > maxNumber) {
-              maxNumber = sumEvents;
-            }
-            sumEvents = 0;
-          }
-        else {
-          sumEvents = sumEvents + 1;
-        }
+    for(int i = 0; i < filteredEvents.length; ++i) {
+      print(filteredEvents[i].doneAt!.toDate());
+      print(filteredEvents[i].doneAt!.toDate().weekday);
+      sumToWeekDay(i, 0, filteredEvents[i].numClients!);
+      sumToWeekDay(i, 1,filteredEvents[i].numClients!);
+      sumToWeekDay(i, 2, filteredEvents[i].numClients!);
+      sumToWeekDay(i, 3, filteredEvents[i].numClients!);
+      sumToWeekDay(i, 4, filteredEvents[i].numClients!);
+      sumToWeekDay(i, 5, filteredEvents[i].numClients!);
+      sumToWeekDay(i, 6, filteredEvents[i].numClients!);
+    }
 
-        time = time2;
+    addDayInTotalEvent('Lun.', 0);
+    addDayInTotalEvent('Mar.', 1);
+    addDayInTotalEvent('Mierc.', 2);
+    addDayInTotalEvent('Jue.', 3);
+    addDayInTotalEvent('Vier.', 4);
+    addDayInTotalEvent('Sab.', 5);
+    addDayInTotalEvent('Dom.', 6);
+
+    maxValueStr = maxValueInt.toString() + '%';
+
+    totalEvents = totalEvents.reversed.toList();
+    }
+
+
+  void addDayInTotalEvent(String day, int number) {
+    TotalEvents totalEvent;
+    if(roundDouble(weekDays[number] /totalSumClients,2)*100 > maxValue)
+      {
+        maxValue = roundDouble(weekDays[number] /totalSumClients,2)*100;
+        maxValueInt = maxValue.round();
       }
-    print (totalEvents.length);
+    totalEvent = new TotalEvents(day, roundDouble(weekDays[number] /totalSumClients, 2));
+    totalEvents.add(totalEvent);
+    print(totalEvent.percentatge);
+    print(totalEvent.day);
+  }
+
+  void sumToWeekDay(int i, int number, int clients) {
+    int day = number + 1;
+    if (filteredEvents[i].doneAt!.toDate().weekday == day) {
+      totalSumClients = totalSumClients + clients;
+      weekDays[number] = weekDays[number] + clients;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return isLoading? LoadingView() :   Column(
       children: [
-        Align(
-          alignment: Alignment.topLeft,
-            child: Row(
-              children: [
-                Text(
-                    filteredEvents.length.toString(),
-          style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
-
-        ),
-                Padding(
-                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
-                  child: Text(
-                    difference < 0? difference.toString() + '%' :
-                    '+' + difference.toString() + '%',
-                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
-
-                  ),
-                ),
-              ],
-            ),),
         Center(
                 child: Container(
                     child: SfCartesianChart(
+                        onDataLabelRender:(DataLabelRenderArgs args){
+                         print(args.text);
+                         print(maxValueStr);
+                          if(args.text == maxValueStr)
+                            {
+                              args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor))!;
+                            }
+                          else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).secondaryHeaderColor))!;
+
+
+                        },
                         zoomPanBehavior: _zoomPanBehavior,
                       backgroundColor: Colors.transparent,
                         borderColor: Colors.transparent,
                         plotAreaBorderColor: Colors.transparent,
                         plotAreaBorderWidth: 1,
-                        primaryXAxis: CategoryAxis(
+                        primaryYAxis: NumericAxis(
+
+                          numberFormat: NumberFormat.percentPattern(),
+                          placeLabelsNearAxisLine: true,
                           //Hide the gridlines of x-axis
                           majorGridLines: MajorGridLines(width: 0),
                           isVisible: false,
                           //Hide the axis line of x-axis
                           axisLine: AxisLine(width: 0),
+
                         ),
-                        primaryYAxis: NumericAxis(
-                          enableAutoIntervalOnZooming: false,
-                          opposedPosition: true,
-                          interval: 1,
+                        primaryXAxis: CategoryAxis(
+                          labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor))!
+                          ,
+                          placeLabelsNearAxisLine: true,
                           //maximum: double.parse(maxNumber.toString()),
                           //isVisible: false,
                           //Hide the gridlines of x-axis
@@ -167,31 +181,38 @@ class SessionsMadeState extends State<SessionsMade> {
                         axes: [],
                         indicators: [],
                         legend: null,
-                        tooltipBehavior: _tooltipBehavior,
+                       // tooltipBehavior: _tooltipBehavior,
                       enableSideBySideSeriesPlacement: false,
                       series: <ChartSeries>[
-                          // Renders line chart
-                        SplineAreaSeries<TotalEvents, String>(
+
+                        // Renders line chart
+                        BarSeries<TotalEvents, String>(
+                          spacing: 1,
+                          width: 0.3,
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
                             borderColor: Styles.mainColor,
-                          borderWidth: 2,
+                          borderWidth: 0,
+                            /*
                             markerSettings: MarkerSettings(
                                 isVisible: true,
                                 height:  5,
                                 width:  5,
                                 shape: DataMarkerType.circle,
                                 color: Styles.mainColor),
-
+*/
                             gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
+                              begin: Alignment.centerRight,
+                              end: Alignment.centerLeft,
                               colors: [
-                                Styles.mainColor,
+                                AppColors.mainColor,
                                 AppColors.mainColor.withOpacity(0.2),
                               ],
                             ),
                               dataSource: totalEvents,
+
+                              dataLabelSettings: DataLabelSettings(isVisible: true),
                               xValueMapper: (TotalEvents events, _) => events.day,
-                              yValueMapper: (TotalEvents events, _) => events.events,
+                              yValueMapper: (TotalEvents events, _) => events.percentatge,
                           )
                         ]
                     )
@@ -210,7 +231,7 @@ class SessionsMadeState extends State<SessionsMade> {
 }
 
 class TotalEvents {
-  TotalEvents(this.day, this.events);
+  TotalEvents(this.day, this.percentatge);
   final String day;
-  final int events;
+  final double percentatge;
 }

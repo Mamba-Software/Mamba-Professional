@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -380,6 +381,10 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         ),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
         statsTitle('Demanda de días'),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+          child: DayOffer(events: filteredEvents),
+        ),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
         statsTitle('Hora más demandada'),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
