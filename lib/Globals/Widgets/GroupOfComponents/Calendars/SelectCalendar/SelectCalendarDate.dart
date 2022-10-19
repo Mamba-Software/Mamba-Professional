@@ -43,8 +43,6 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
   String _range = '';
   String _rangeCount = '';
 
-  DateRangePickerNavigationMode _navigationMode = DateRangePickerNavigationMode.scroll;
-
   /// The method for [DateRangePickerSelectionChanged] callback, which will be
   /// called whenever a selection changed on the date picker widget.
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
@@ -73,12 +71,18 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
         _rangeCount = args.value.length.toString();
       }
     });
+    print('Selected date: $_selectedDate');
+    print('Selected date count: $_dateCount');
+    print('Selected range: $_range');
+    print('Selected ranges count: $_rangeCount');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height*0.18,
+        titleSpacing: 0,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -93,6 +97,40 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                 ),
               ),
             ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width*0.9,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                          AppLocalizations.of(context)!.cancel,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.left
+                      )
+                  ),
+                  Text(
+                      _range,
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.left
+                  ),
+                  TextButton(
+                      onPressed: () {
+
+                      },
+                      child: Text(
+                          AppLocalizations.of(context)!.update,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.left
+                      )
+                  ),
+                ],
+              ),
+            ),
+            Divider(color: Theme.of(context).backgroundColor, thickness: 1),
             SizedBox(
               width: MediaQuery.of(context).size.width*0.9,
               child: Row(
@@ -126,42 +164,53 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        toolbarHeight: MediaQuery.of(context).size.height*0.1,
+
         elevation: 0,
       ),
-      body: Stack(
+      body: Column(
         children: <Widget>[
-          Positioned(
-            left: 0,
-            right: 0,
-            top: 0,
-            height: 80,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text('Selected date: $_selectedDate'),
-                Text('Selected date count: $_dateCount'),
-                Text('Selected range: $_range'),
-                Text('Selected ranges count: $_rangeCount')
-              ],
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              child: SfDateRangePicker(
+                onSelectionChanged: _onSelectionChanged,
+                minDate: DateTime(2020, 02, 05),
+                maxDate: DateTime.now().subtract(const Duration(days: 1)),
+                selectionMode: DateRangePickerSelectionMode.range,
+                todayHighlightColor: Theme.of(context).primaryColor,
+                enableMultiView: true,
+                navigationMode: DateRangePickerNavigationMode.scroll,
+                navigationDirection: DateRangePickerNavigationDirection.vertical,
+                headerHeight: MediaQuery.of(context).size.height*0.05,
+                headerStyle: DateRangePickerHeaderStyle(
+                    textAlign: TextAlign.left,
+                    textStyle: Theme.of(context).textTheme.headline3,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor
+                ),
+                monthFormat: 'LLLL',
+                monthCellStyle: DateRangePickerMonthCellStyle(
+                  textStyle: Theme.of(context).textTheme.bodyText2,
+                  todayCellDecoration: BoxDecoration(
+                    border: Border.all(color: Colors.transparent, width: 1),
+                    shape: BoxShape.circle
+                  ),
+                  disabledDatesTextStyle: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).backgroundColor.withOpacity(0.89)),
+                ),
+                monthViewSettings: DateRangePickerMonthViewSettings(
+                  firstDayOfWeek: 1,
+                  dayFormat: 'E',
+                  enableSwipeSelection: false,
+                  viewHeaderStyle: DateRangePickerViewHeaderStyle(
+                    textStyle: Theme.of(context).textTheme.caption,
+                  ),
+                ),
+                selectionTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
+                startRangeSelectionColor: Theme.of(context).primaryColor,
+                endRangeSelectionColor: Theme.of(context).primaryColor,
+                rangeSelectionColor: Theme.of(context).primaryColorDark.withOpacity(0.5),
+                rangeTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
+              ),
             ),
-          ),
-          Positioned(
-            left: 0,
-            top: 80,
-            right: 0,
-            bottom: 0,
-            child: SfDateRangePicker(
-              enableMultiView: true,
-              navigationDirection: DateRangePickerNavigationDirection.vertical,
-              selectionMode: DateRangePickerSelectionMode.range,
-              headerHeight: 0,
-              headerStyle: DateRangePickerHeaderStyle(backgroundColor: Theme.of(context).scaffoldBackgroundColor),
-              monthViewSettings: const DateRangePickerMonthViewSettings(enableSwipeSelection: false),
-              navigationMode: _navigationMode,
-            )
           )
         ],
       )

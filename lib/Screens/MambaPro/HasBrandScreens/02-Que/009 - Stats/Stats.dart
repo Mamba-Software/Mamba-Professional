@@ -417,7 +417,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          heightFactor: 0.85,
+          heightFactor: 0.95,
           child: SelectCalendarDate(
             brandId: currentBrand.id!,
           ),
