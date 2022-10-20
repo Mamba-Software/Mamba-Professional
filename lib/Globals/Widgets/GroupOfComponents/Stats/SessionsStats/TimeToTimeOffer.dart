@@ -81,7 +81,11 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
       {
         return 1;
       }
-      else return 0;
+      else
+        {
+          return 0;
+        }
+      return 0;
     });
   }
 
@@ -185,6 +189,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
                   ),
                   primaryXAxis: CategoryAxis(
+                    interval: 1,
                     majorTickLines: MajorTickLines(
                       width: 0,
                     ),
