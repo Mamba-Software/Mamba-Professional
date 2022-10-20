@@ -17,11 +17,11 @@ import '../../../../Styles/AppColors/AppColors.dart';
 
 class SessionsMade extends StatefulWidget {
   List<Event> events;
-  List<Event> bakcEvents;
+  List<Event> backEvents;
 
   SessionsMade({
     required this.events,
-    required this.bakcEvents,
+    required this.backEvents,
     Key? key,
   }) : super(key: key);
 
@@ -45,12 +45,10 @@ class SessionsMadeState extends State<SessionsMade> {
   List<TotalEvents> totalEvents = [];
   final _brandDataService = BrandDataService();
 
-  Timestamp tm = Timestamp.fromDate(DateTime.now().subtract(Duration(days: 5)));
-
   @override
   void initState() {
     filteredEvents = widget.events;
-    filteredBackEvents = widget.bakcEvents;
+    filteredBackEvents = widget.backEvents;
     orderEvents();
     calculateDifference();
     mountStat();
@@ -62,7 +60,7 @@ class SessionsMadeState extends State<SessionsMade> {
   void didUpdateWidget(SessionsMade oldWidget) {
     super.didUpdateWidget(oldWidget);
     filteredEvents = widget.events;
-    filteredBackEvents = widget.bakcEvents;
+    filteredBackEvents = widget.backEvents;
     totalEvents = [];
     calculateDifference();
     orderEvents();
@@ -78,9 +76,19 @@ class SessionsMadeState extends State<SessionsMade> {
 
   calculateDifference()
   {
-      difference = (filteredEvents.length -  filteredBackEvents.length)/ filteredBackEvents.length * 100;
-
-    difference = roundDouble(difference, 2);
+    print(filteredBackEvents.length);
+    print(filteredEvents.length);
+    if(filteredBackEvents.length != 0 && filteredEvents.length != 0) {
+      difference = ((filteredEvents.length - filteredBackEvents.length) /
+          ((filteredBackEvents.length + filteredEvents.length)/2)) * 100;
+      if (difference != 0) {
+        print(difference);
+        difference = roundDouble(difference, 2);
+      }
+    }
+    else {
+      difference = 0;
+    }
   }
 
   void mountStat()
@@ -152,6 +160,9 @@ class SessionsMadeState extends State<SessionsMade> {
                           axisLine: AxisLine(width: 0),
                         ),
                         primaryYAxis: NumericAxis(
+                          majorTickLines: MajorTickLines(
+                            width: 0,
+                          ),
                           enableAutoIntervalOnZooming: false,
                           opposedPosition: true,
                           interval: 1,

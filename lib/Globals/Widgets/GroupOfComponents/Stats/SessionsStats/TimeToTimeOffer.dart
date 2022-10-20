@@ -37,7 +37,11 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
   Map<String, int> mapHours = {};
 
+  List<TimeDemand> timeDemand = [];
+
   String timeOffered = '';
+
+  final DateFormat formatter = DateFormat.Hm();
 
 
 
@@ -55,90 +59,98 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
     super.didUpdateWidget(oldWidget);
     filteredEvents = widget.events;
     timeOffered = '';
+    timeDemand = [];
     mapHours.clear();
     orderEvents();
     mountStat();
+    orderTimeOffer();
   }
 
   void orderEvents()
   {
     return filteredEvents.sort((a, b){ //sorting in ascending order
-      return a.doneAt!.compareTo(b.doneAt!);
+      if(int.parse(a.hour!) == int.parse(b.hour!))
+        {
+          if(int.parse(a.minute!) >= int.parse(b.minute!))
+            {
+              return 1;
+            }
+          else return 0;
+        }
+      else if(int.parse(a.hour!) > int.parse(b.hour!))
+      {
+        return 1;
+      }
+      else return 0;
     });
   }
 
-  void mountStat()
-  {print('dsaf');
+  void orderTimeOffer()
+  {
+
+  }
+
+  void mountStat() {
     String hourMinuteIni = '';
     String hourMinuteEnd = '';
     String totalHour = '';
     double hourMinuteEndVal = 0;
-    int maxHour=0;
-    int hoursFinal, minutesFinal = 0;
+    int maxHour = 0;
+    int hoursFinal,
+        minutesFinal = 0;
     String minute = '';
     String hour = '';
+    Event event;
     DateTime dt = DateTime.now();
-    for(int i = 0; i < filteredEvents.length; ++i) {
-      print('dsaf');
-      if(filteredEvents[i].minute! == '0')
-      {
-        minute = '00';
-      }
-      else minute = filteredEvents[i].minute!;
+    for (int i = 0; i < filteredEvents.length; ++i) {
+      event = filteredEvents[i];
+      var startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      var hour = event.duration.toString().split(".")[0];
+      var min = event.duration!.toStringAsFixed(2).split(".")[1];
+      var endDate = startDate.add(
+          Duration(hours: int.parse(hour), minutes: int.parse(min)));
+      print((DateFormat.Hm().format(startDate)));
+      print((DateFormat.Hm().format(startDate)));
 
-      if(filteredEvents[i].hour!.length == 1)
-      {
-        hour = '0' + filteredEvents[i].hour!;
-      }
-      else {
-        hour = filteredEvents[i].hour!;
-      }
-
-      hourMinuteIni = hour + ':' + minute;
-
-      /*
-
-      if(filteredEvents[i].duration! < 1)
-        {
-          hoursFinal = 0;
-        }
-      else {
-        hoursFinal = filteredEvents[i].duration!.toInt();
-      }*/
-      print('dsaf');
-      //minutesFinal = int.parse(((filteredEvents[i].duration! - hoursFinal) * 100).toString());
-      //dt = filteredEvents[i].doneAt!.toDate().add( Duration(hours: hoursFinal, minutes: minutesFinal));
-
-      hourMinuteEndVal = roundDouble((double.parse(filteredEvents[i].hour!) + ((double.parse(filteredEvents[i].minute!)) * 0.01)) + filteredEvents[i].duration!,3);
-
-      hourMinuteEnd = hourMinuteEndVal.toString();
-      print(hourMinuteEndVal);
-      print(hourMinuteEndVal.toString());
-
-      if(hourMinuteEnd.length < 5)
-        {
-          hourMinuteEnd = '0' + hourMinuteEnd;
-        }
-
-      hourMinuteEnd = hourMinuteEnd.replaceFirst('.', ':');
-
-      totalHour = hourMinuteIni + ' - ' + hourMinuteEnd;
+      totalHour = DateFormat.Hm().format(startDate) + ' - ' +
+          DateFormat.Hm().format(endDate);
 
       if (!mapHours.containsKey(totalHour)) {
-        mapHours[totalHour] = filteredEvents[i].numClients!;
+        mapHours[totalHour] = event.numClients!;
       }
       else {
         mapHours.update(
-            totalHour, (value) => value + filteredEvents[i].numClients!);
+            totalHour, (value) => value + event.numClients!);
       }
     }
-    print(mapHours);
-    mapHours.forEach((key, value) {
-      if(value>maxHour) {
-        maxHour = value;
-        timeOffered = key;
-      }
-    });
+
+      mapHours.forEach((key, value) {
+        if(value>maxHour) {
+          maxHour = value;
+          timeOffered = key;
+        }
+      });
+
+
+      mapHours.forEach((k, v)
+          {
+            print(maxHour);
+            print(v);
+            if(v == maxHour) {
+              timeDemand.add(TimeDemand(k, v, AppColors.mainColor));
+            }
+            else {
+              timeDemand.add(TimeDemand(k, v, AppColors.grey));
+            }
+
+          });
+
   }
 
 
@@ -149,10 +161,57 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
     return isLoading? LoadingView() :
       Align(
       alignment: Alignment.topLeft,
-      child:  Text(
-        timeOffered,
-        style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
-      ),);
+      child:   Center(
+          child: Container(
+              child: SfCartesianChart(
+                  plotAreaBorderWidth: 0,
+                  primaryYAxis: NumericAxis(
+                    majorTickLines: MajorTickLines(
+                      width: 0,
+                    ),
+
+                    //Hide the gridlines of x-axis
+                      //majorGridLines: MajorGridLines(width: 0),
+                    majorGridLines: MajorGridLines(
+                        dashArray: <double>[5,5]
+                    ),
+                    minorGridLines: MinorGridLines(
+                        dashArray: <double>[5,5]
+                    ),
+                    isVisible: true,
+                    //Hide the axis line of x-axis
+                    axisLine: AxisLine(width: 0),
+                    borderWidth: 0,
+
+                  ),
+                  primaryXAxis: CategoryAxis(
+                    majorTickLines: MajorTickLines(
+                      width: 0,
+                    ),
+                    labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 12))!
+                    ,
+                    labelRotation: 90,
+                    placeLabelsNearAxisLine: true,
+                    //maximum: double.parse(maxNumber.toString()),
+                    //isVisible: false,
+                    //Hide the gridlines of x-axis
+                    majorGridLines: MajorGridLines(width: 0),
+                    //Hide the axis line of x-axis
+                    axisLine: AxisLine(width: 0),
+                  ),
+                  series: <ChartSeries<TimeDemand, String>>[
+                    ColumnSeries<TimeDemand, String>(
+                        dataSource: timeDemand,
+                        xValueMapper: (TimeDemand data, _) => data.time,
+                        yValueMapper: (TimeDemand data, _) => data.demand,
+                        pointColorMapper: (TimeDemand data, _) => data.color,
+                        // Sets the corner radius
+                        borderRadius: BorderRadius.all(Radius.circular(5))
+                    )
+                  ]
+              )
+          )
+      ));
 
   }
 
@@ -163,8 +222,9 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
 }
 
-class TotalEvents {
-  TotalEvents(this.day, this.percentatge);
-  final String day;
-  final double percentatge;
+class TimeDemand {
+  TimeDemand(this.time, this.demand, this.color);
+  final String time;
+  final int demand;
+  final Color? color;
 }

@@ -112,13 +112,17 @@ class DayOfferState extends State<DayOffer> {
 
   void addDayInTotalEvent(String day, int number) {
     TotalEvents totalEvent;
-    if(roundDouble(weekDays[number] /totalSumClients,2)*100 > maxValue)
-      {
-        maxValue = roundDouble(weekDays[number] /totalSumClients,2)*100;
+    if (totalSumClients != 0) {
+      if (roundDouble(weekDays[number] / totalSumClients, 2) * 100 > maxValue) {
+        maxValue = roundDouble(weekDays[number] / totalSumClients, 2) * 100;
         maxValueInt = maxValue.round();
       }
-    totalEvent = new TotalEvents(day, roundDouble(weekDays[number] /totalSumClients, 2));
-    totalEvents.add(totalEvent);
+
+      totalEvent =
+      new TotalEvents(day, roundDouble(weekDays[number] / totalSumClients, 2));
+      totalEvents.add(totalEvent);
+    }
+
   }
 
   void sumToWeekDay(int i, int number, int clients) {
@@ -162,6 +166,9 @@ class DayOfferState extends State<DayOffer> {
 
                         ),
                         primaryXAxis: CategoryAxis(
+                          majorTickLines: MajorTickLines(
+                            width: 0,
+                          ),
                           labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor))!
                           ,
                           placeLabelsNearAxisLine: true,

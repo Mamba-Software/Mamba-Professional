@@ -117,7 +117,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   void applyFilteredEvents()
   {
-    filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
+    filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) <= 0).toList();
     int days = daysBetween(startDate, endDate);
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
@@ -364,13 +364,13 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         );
       }
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.10),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15),
       child: Column(
         children: [
           statsTitle('Entrenos realizados'),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-            child: SessionsMade(events: filteredEvents, bakcEvents: filteredBackEvents,),
+            child: SessionsMade(events: filteredEvents, backEvents: filteredBackEvents,),
           ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
           statsTitle('Demanda de días'),
@@ -445,8 +445,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       setState(() {
         startDate = result.first;
         endDate = result.last;
-        filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
-        applyFilteredEvents();
+         applyFilteredEvents();
       });
     }
   }
