@@ -11,12 +11,14 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
+import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeOffer.dart';
 
 class Stats extends StatefulWidget {
   String brandId;
@@ -372,26 +374,35 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           child:  LoadingView(),
         );
       }
-    return Column(
-      children: [
-        statsTitle('Entrenos realizados'),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-          child: SessionsMade(events: filteredEvents, bakcEvents: filteredBackEvents,),
-        ),
-        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-        statsTitle('Demanda de días'),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-          child: DayOffer(events: filteredEvents),
-        ),
-        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-        statsTitle('Hora más demandada'),
-        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-        statsTitle('Franja más demandada'),
-        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-        statsTitle('Historico de franjas'),
-      ],
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.10),
+      child: Column(
+        children: [
+          statsTitle('Entrenos realizados'),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            child: SessionsMade(events: filteredEvents, bakcEvents: filteredBackEvents,),
+          ),
+          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+          statsTitle('Demanda de días'),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            child: DayOffer(events: filteredEvents),
+          ),
+          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+          statsTitle('Hora más demandada'),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            child: TimeOffer(events: filteredEvents),
+          ),
+          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+          statsTitle('Demanda de franjas'),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            child: TimeToTimeOffer(events: filteredEvents),
+          ),
+        ],
+      ),
     );
   }
   Widget clientsStatsPage()

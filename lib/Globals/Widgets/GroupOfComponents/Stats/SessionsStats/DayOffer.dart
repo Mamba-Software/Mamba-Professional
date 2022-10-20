@@ -87,8 +87,6 @@ class DayOfferState extends State<DayOffer> {
   void mountStat()
   {
     for(int i = 0; i < filteredEvents.length; ++i) {
-      print(filteredEvents[i].doneAt!.toDate());
-      print(filteredEvents[i].doneAt!.toDate().weekday);
       sumToWeekDay(i, 0, filteredEvents[i].numClients!);
       sumToWeekDay(i, 1,filteredEvents[i].numClients!);
       sumToWeekDay(i, 2, filteredEvents[i].numClients!);
@@ -121,8 +119,6 @@ class DayOfferState extends State<DayOffer> {
       }
     totalEvent = new TotalEvents(day, roundDouble(weekDays[number] /totalSumClients, 2));
     totalEvents.add(totalEvent);
-    print(totalEvent.percentatge);
-    print(totalEvent.day);
   }
 
   void sumToWeekDay(int i, int number, int clients) {
@@ -141,8 +137,6 @@ class DayOfferState extends State<DayOffer> {
                 child: Container(
                     child: SfCartesianChart(
                         onDataLabelRender:(DataLabelRenderArgs args){
-                         print(args.text);
-                         print(maxValueStr);
                           if(args.text == maxValueStr)
                             {
                               args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor))!;

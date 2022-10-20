@@ -78,8 +78,6 @@ class SessionsMadeState extends State<SessionsMade> {
 
   calculateDifference()
   {
-    print(filteredBackEvents.length);
-    print(filteredEvents.length);
       difference = (filteredEvents.length -  filteredBackEvents.length)/ filteredBackEvents.length * 100;
 
     difference = roundDouble(difference, 2);
