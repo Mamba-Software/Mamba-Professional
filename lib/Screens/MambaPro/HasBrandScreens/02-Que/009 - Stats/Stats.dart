@@ -47,8 +47,8 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   bool isLoading = true;
   bool isFirstBuild = true;
 
-  DateTime  endDate = DateTime.now().subtract(Duration(days: 30));
-  DateTime startDate = DateTime.now().subtract(Duration(days: 60));
+  DateTime  endDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime startDate = DateTime.now().subtract(const Duration(days: 60));
 
   TabController? _tabController;
   int _selectedIndex = 0;
@@ -257,29 +257,17 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.start, //change here don't //worked
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Align(
-                alignment: FractionalOffset.centerLeft,
+              Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02, horizontal: MediaQuery.of(context).size.height*0.06),
-                  child: Column(
-                    children: [ Text(
-                        formatter.format(startDate).toString(),
-                        style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor)
-                    ),
-                      Text(
-                          ' a ',
-                          style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor)
-                      ),
-                      Text(
-                        formatter.format(endDate).toString(),
-                          style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor)
-                      ),
-                  ],
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02, horizontal: MediaQuery.of(context).size.height*0.02),
+                  child: Text(
+                    '${DateFormat('d MMM, yy\'').format(startDate)}  - '' ${DateFormat('d MMM, yy\'').format(endDate)}',
+                    style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
-              new Spacer(),
-          Container(
+              Container(
             height: MediaQuery.of(context).size.height*0.12,
             width: MediaQuery.of(context).size.width*0.27,
             color: Styles.mainColorTrans,
@@ -406,7 +394,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   }
 
   void _show() async {
-    showModalBottomSheet<void>(
+    List<DateTime>? result = await showModalBottomSheet<List<DateTime>>(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -419,30 +407,18 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         return FractionallySizedBox(
           heightFactor: 0.95,
           child: SelectCalendarDate(
-            brandId: currentBrand.id!,
+            dateRange: [startDate, endDate],
           ),
         );
       },
     );
-    /*
-    await showDialog<dynamic>(
-      context: context,
-      builder: (BuildContext context) => CalendarPopupView(
-        barrierDismissible: true,
-        minimumDate: DateTime.now(),
-        initialEndDate: endDate,
-        initialStartDate: startDate,
-        onApplyClick: (DateTime startData, DateTime endData) {
-             setState(() {
-            startDate = startData;
-            endDate = endData;
-            filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
-
-             });
-        },
-      ),
-    );
-     */
+    if (result != null) {
+      setState(() {
+        startDate = result.first;
+        endDate = result.last;
+        filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) < 0).toList();
+      });
+    }
   }
 }
 

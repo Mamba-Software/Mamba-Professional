@@ -7,9 +7,9 @@ import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SelectCalendarDate extends StatefulWidget {
-  String brandId;
+  List<DateTime> dateRange;
 
-  SelectCalendarDate({Key? key, required this.brandId}) : super(key: key);
+  SelectCalendarDate({Key? key, required this.dateRange}) : super(key: key);
 
   @override
   _SelectCalendarDateState createState() => _SelectCalendarDateState();
@@ -17,31 +17,17 @@ class SelectCalendarDate extends StatefulWidget {
 
 class _SelectCalendarDateState extends State<SelectCalendarDate> {
 
-  // App Bar and Scroll View
-  ScrollController? _scrollController;
-  // Acceso a Base de Datos
-  final _brandDataService = BrandDataService();
-  // Boolean Loading
-  bool isLoading = false;
-  // Bool Max Images Added
-  bool maxImagesAdded = false;
-  // Max Number of Images
-  final int _maxImages = 10;
-  // Images uploaded
-  List<ImageObject> _imagesUploaded = [];
-  List<Widget> imageSliders = [];
+  final ScrollController _controller = ScrollController(initialScrollOffset: 50 * 3);
+  final DateRangePickerController _dateRangePickerController = DateRangePickerController();
+  String _range = '';
+  List<DateTime> dateRangeTemp = [];
 
   @override
   void initState() {
+    _range = '${DateFormat('MMMd').format(widget.dateRange.first)} -'' ${DateFormat('MMMd').format(widget.dateRange.last)}';
+    _dateRangePickerController.displayDate = widget.dateRange.first;
     super.initState();
-    _scrollController = ScrollController();
-    isLoading = true;
   }
-
-  String _selectedDate = '';
-  String _dateCount = '';
-  String _range = '';
-  String _rangeCount = '';
 
   /// The method for [DateRangePickerSelectionChanged] callback, which will be
   /// called whenever a selection changed on the date picker widget.
@@ -60,21 +46,11 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
     /// multi range.
     setState(() {
       if (args.value is PickerDateRange) {
-        _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
-        // ignore: lines_longer_than_80_chars
-            ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
-      } else if (args.value is DateTime) {
-        _selectedDate = args.value.toString();
-      } else if (args.value is List<DateTime>) {
-        _dateCount = args.value.length.toString();
-      } else {
-        _rangeCount = args.value.length.toString();
+        _range = '${DateFormat('MMMd').format(args.value.startDate)} -'' ${DateFormat('MMMd').format(args.value.endDate ?? args.value.startDate)}';
+        dateRangeTemp = [args.value.startDate, args.value.endDate ?? args.value.startDate];
       }
     });
-    print('Selected date: $_selectedDate');
-    print('Selected date count: $_dateCount');
     print('Selected range: $_range');
-    print('Selected ranges count: $_rangeCount');
   }
 
   @override
@@ -86,7 +62,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
         title: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
             Container(
               height: MediaQuery.of(context).size.height*0.007,
               width: MediaQuery.of(context).size.width*0.15,
@@ -97,6 +73,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                 ),
               ),
             ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01),
             SizedBox(
               width: MediaQuery.of(context).size.width*0.9,
               child: Row(
@@ -114,12 +91,12 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                   ),
                   Text(
                       _range,
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.headline3,
                       textAlign: TextAlign.left
                   ),
                   TextButton(
                       onPressed: () {
-
+                        Navigator.pop(context, dateRangeTemp);
                       },
                       child: Text(
                           AppLocalizations.of(context)!.update,
@@ -132,32 +109,129 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
             ),
             Divider(color: Theme.of(context).backgroundColor, thickness: 1),
             SizedBox(
-              width: MediaQuery.of(context).size.width*0.9,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(
+              height: MediaQuery.of(context).size.height*0.04,
+              width: MediaQuery.of(context).size.width,
+              child: ListView(
+                controller: _controller,
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        _dateRangePickerController.selectedRange = PickerDateRange(DateTime.now().subtract(const Duration(days: 8)), DateTime.now().subtract(const Duration(days: 1)));
+                        _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 8));
                       },
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all( 12),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )
+                      ),
                       child: Text(
-                          AppLocalizations.of(context)!.cancel,
-                          style: Theme.of(context).textTheme.bodyText2,
-                          textAlign: TextAlign.left
-                      )
+                        AppLocalizations.of(context)!.lastNDays(7.toString()),
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ),
                   ),
-                  TextButton(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton(
                       onPressed: () {
-
+                        _dateRangePickerController.selectedRange = PickerDateRange(DateTime.now().subtract(const Duration(days: 15)), DateTime.now().subtract(const Duration(days: 1)));
+                        _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 15));
                       },
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all( 12),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )
+                      ),
                       child: Text(
-                          AppLocalizations.of(context)!.update,
-                          style: Theme.of(context).textTheme.bodyText2,
-                          textAlign: TextAlign.left
-                      )
+                        AppLocalizations.of(context)!.lastNDays(14.toString()),
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _dateRangePickerController.selectedRange = PickerDateRange(DateTime.now().subtract(const Duration(days: 31)), DateTime.now().subtract(const Duration(days: 1)));
+                        _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 31));
+                      },
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all( 12),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.lastNDays(30.toString()),
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        DateTime now = DateTime.now();
+                        DateTime firstDayOfMonth = DateTime(now.year, now.month-1, 1);
+                        DateTime lastDayOfMonth = DateTime(now.year, now.month, 1).subtract(const Duration(days: 1));
+                        _dateRangePickerController.selectedRange = PickerDateRange(firstDayOfMonth, lastDayOfMonth);
+                        _dateRangePickerController.displayDate = firstDayOfMonth;
+                      },
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all( 12),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.previousMonth,
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _dateRangePickerController.selectedRange = PickerDateRange(DateTime.now().subtract(const Duration(days: 91)), DateTime.now().subtract(const Duration(days: 1)));
+                        _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 91));
+                      },
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all( 12),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.lastNDays(90.toString()),
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ),
                   ),
                 ],
-              ),
+              )
             ),
             Divider(color: Theme.of(context).backgroundColor, thickness: 1),
           ],
@@ -170,9 +244,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+            child: Container(
+              margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, bottom: MediaQuery.of(context).size.width*0.05),
               child: SfDateRangePicker(
+                controller: _dateRangePickerController,
                 onSelectionChanged: _onSelectionChanged,
                 minDate: DateTime(2020, 02, 05),
                 maxDate: DateTime.now().subtract(const Duration(days: 1)),
@@ -187,7 +262,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     textStyle: Theme.of(context).textTheme.headline3,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor
                 ),
-                monthFormat: 'LLLL',
+                monthFormat: 'MMMM',
                 monthCellStyle: DateRangePickerMonthCellStyle(
                   textStyle: Theme.of(context).textTheme.bodyText2,
                   todayCellDecoration: BoxDecoration(
@@ -198,12 +273,14 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                 ),
                 monthViewSettings: DateRangePickerMonthViewSettings(
                   firstDayOfWeek: 1,
+                  numberOfWeeksInView: 6,
                   dayFormat: 'E',
                   enableSwipeSelection: false,
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: Theme.of(context).textTheme.caption,
                   ),
                 ),
+                initialSelectedRange: PickerDateRange(widget.dateRange.first, widget.dateRange.last),
                 selectionTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                 startRangeSelectionColor: Theme.of(context).primaryColor,
                 endRangeSelectionColor: Theme.of(context).primaryColor,
