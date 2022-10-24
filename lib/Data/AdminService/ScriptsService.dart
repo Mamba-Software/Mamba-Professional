@@ -1821,6 +1821,7 @@ class ScriptsDatabaseService {
     }
   }
 
+
   Future<bool> migrateEventDataSeptember9th() async {
     try {
       print('\n');
@@ -1846,7 +1847,7 @@ class ScriptsDatabaseService {
       QuerySnapshot querySnapshot = await _firestore.collection(events).where("month", isEqualTo: 10.toString()).get();
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        print('=================================================================================');
+        print('=======================s==========================================================');
         print('=================================================================================');
         print('EVENT WITH ID: '+event.id!+" OF BRAND WITH ID: "+event.brandID!);
         print('\n');
