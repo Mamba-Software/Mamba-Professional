@@ -116,6 +116,7 @@
   "camera": "Càmara",
   "change": "Canviar",
   "welcomeMes": "¡Benvingut a Mamba {name}!",
+  "rolesDescription": "Administra els permisos de la teva marca",
   "owner": "Propietari",
   "administrador": "Administrador",
   "creator": "Creador",

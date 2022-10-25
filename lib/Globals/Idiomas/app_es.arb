@@ -521,6 +521,10 @@
       }
     }
   },
+  "rolesDescription": "Administra los permisos de tu marca",
+  "@rolesDescription":{
+    "description": "createBrand Text"
+  },
   "owner": "Propietario",
   "@owner":{
     "description": "createBrand Text"

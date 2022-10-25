@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -15,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../../Data/Models/Event.dart';
 
@@ -108,6 +110,7 @@ class _Trainers extends State<Trainers> {
     // Return Future Delayed
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
+      allMembers = allTrainers;
       isLoading = false;
     });
   }
@@ -132,6 +135,32 @@ class _Trainers extends State<Trainers> {
 
   String getUsersFullName(Usuario user) {
     return "${user.firstName} ${user.lastName}";
+  }
+
+  String returnBrandRoleString(Usuario user) {
+    switch (user.brandRole) {
+      case 1:
+        return AppLocalizations.of(context)!.owner;
+      case 2:
+        return AppLocalizations.of(context)!.administrador;
+      case 3:
+        return AppLocalizations.of(context)!.trainer;
+      default:
+        return AppLocalizations.of(context)!.trainer;
+    }
+  }
+
+  // Navigate to Bonos Request Screen
+  void navigateToRolesScreen() {
+    Navigator.push(
+      context,
+      CupertinoPageRoute<void>(
+        builder: (context) => BrandRoles(
+          brandId: widget.brandId,
+          trainers: allTrainers,
+        ),
+      )
+    );
   }
 
   @override
@@ -498,7 +527,7 @@ class _Trainers extends State<Trainers> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded || searchClicked ? Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: Colors.white),) : Container(),
+            title: appBarExpanded || searchClicked ? Text(AppLocalizations.of(context)!.staff, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: Colors.white),) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -531,6 +560,49 @@ class _Trainers extends State<Trainers> {
                 ),
               ),
             ],
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                GestureDetector(
+                  onTap: navigateToRolesScreen,
+                  child: Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                    height: MediaQuery.of(context).size.height*0.1,
+                    width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.manage_accounts,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: MediaQuery.of(context).size.width*0.10,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                        Flexible(
+                          child: Text(
+                            AppLocalizations.of(context)!.rolesDescription,
+                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+              ],
+            ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 10,)),
           isLoading ? SliverList(
@@ -625,7 +697,7 @@ class _Trainers extends State<Trainers> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "@${user.nick!}",
+                      returnBrandRoleString(user),
                       style: Theme.of(context).textTheme.caption,
                     ),
                   ],

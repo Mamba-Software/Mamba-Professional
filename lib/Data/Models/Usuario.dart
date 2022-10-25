@@ -159,6 +159,9 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
       sessions = documentSnapshot.get("sessions").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('role')) {
+      brandRole = documentSnapshot.get("role");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////

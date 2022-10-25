@@ -304,7 +304,11 @@ class _BrandScreenState extends State<BrandScreen> {
                     maxLines: 1,
                 ),
                 SizedBox(height: safeAreaHeight * 0.02),
-                buildBrandRole(),
+                Text(
+                  returnBrandRoleString(),
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.caption,
+                ),
               ],
             ),
           ),
@@ -313,32 +317,16 @@ class _BrandScreenState extends State<BrandScreen> {
     );
   }
 
-  Widget buildBrandRole() {
+  String returnBrandRoleString() {
     switch (currentUser.brandRole) {
       case 1:
-        return Text(
-            AppLocalizations.of(context)!.owner,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.caption,
-        );
+        return AppLocalizations.of(context)!.owner;
       case 2:
-        return Text(
-            AppLocalizations.of(context)!.administrador,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.caption,
-        );
+        return AppLocalizations.of(context)!.administrador;
       case 3:
-        return Text(
-            AppLocalizations.of(context)!.trainer,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.caption,
-        );
+        return AppLocalizations.of(context)!.trainer;
       default:
-        return Text(
-          AppLocalizations.of(context)!.trainer,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.caption,
-        );
+        return AppLocalizations.of(context)!.trainer;
     }
   }
 
