@@ -51,7 +51,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
     // Accept the user to Brand
     int role = 0;
     if (currentUser.isTrainer!) {
-      role = 5;
+      role = 3;
     }
     pageIndex = 0;
     NotificationService().userJoinsBrand(currentUser.id!,widget.brandId);

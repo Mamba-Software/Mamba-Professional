@@ -361,6 +361,16 @@ class BrandFirebaseCalls {
     return Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
+  Future<int> getUserBrandRole(String brandId, String userId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).get();
+    try {
+      return _documentSnapshot.get("role");
+    } catch (e) {
+      return 3;
+    }
+
+  }
+
   //Add
 
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {

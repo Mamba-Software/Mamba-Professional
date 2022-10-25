@@ -298,21 +298,48 @@ class _BrandScreenState extends State<BrandScreen> {
                 SizedBox(height: safeAreaHeight * 0.03),
                 Text(
                     currentUser.firstName! + ' ' + currentUser.lastName!,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal)
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                 ),
                 SizedBox(height: safeAreaHeight * 0.02),
-                Text(
-                    currentUser.email!,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color:AppColors.white)
-                ),
+                buildBrandRole(),
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget buildBrandRole() {
+    switch (currentUser.brandRole) {
+      case 1:
+        return Text(
+            AppLocalizations.of(context)!.owner,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption,
+        );
+      case 2:
+        return Text(
+            AppLocalizations.of(context)!.administrador,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption,
+        );
+      case 3:
+        return Text(
+            AppLocalizations.of(context)!.trainer,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.caption,
+        );
+      default:
+        return Text(
+          AppLocalizations.of(context)!.trainer,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.caption,
+        );
+    }
   }
 
   Widget buildBrandListOptions() {

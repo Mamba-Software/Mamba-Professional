@@ -52,7 +52,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
     // Accept the user to Brand
     int role = 0;
     if (currentUser.isTrainer!) {
-      role = 5;
+      role = 3;
     }
     await _brandDataService.addUserToBrand(currentUser.id!,widget.brandId, role);
     // Wait for CF

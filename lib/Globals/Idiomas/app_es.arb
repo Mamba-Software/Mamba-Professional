@@ -521,8 +521,12 @@
       }
     }
   },
-  "owner": "Propietario/a",
+  "owner": "Propietario",
   "@owner":{
+    "description": "createBrand Text"
+  },
+  "administrador": "Administrador",
+  "@administrador":{
     "description": "createBrand Text"
   },
   "creator": "Creador",
