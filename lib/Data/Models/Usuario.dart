@@ -33,6 +33,7 @@ class Usuario {
 
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];
+  int brandRole = 0;
   List<Event> eventsList = [];
 
   Usuario({
@@ -63,100 +64,100 @@ class Usuario {
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   Usuario.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
-      this.notificationToken = documentSnapshot.get("notificationToken").toString();
+      notificationToken = documentSnapshot.get("notificationToken").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('email')) {
-      this.email = documentSnapshot.get("email").toString();
+      email = documentSnapshot.get("email").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
-      this.name = documentSnapshot.get("name").toString();
+      name = documentSnapshot.get("name").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {
-      this.firstName = documentSnapshot.get("firstName").toString();
+      firstName = documentSnapshot.get("firstName").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastName')) {
-      this.lastName = documentSnapshot.get("lastName").toString();
+      lastName = documentSnapshot.get("lastName").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('nick')) {
-      this.nick = documentSnapshot.get("nick").toString();
+      nick = documentSnapshot.get("nick").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
-      this.imageUrl = documentSnapshot.get("imageUrl").toString();
+      imageUrl = documentSnapshot.get("imageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('noImageUrl')) {
-      this.noImageUrl = documentSnapshot.get("noImageUrl").toString();
+      noImageUrl = documentSnapshot.get("noImageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isFirst')) {
-      this.isFirst = documentSnapshot.get("isFirst");
+      isFirst = documentSnapshot.get("isFirst");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isTrainer')) {
-      this.isTrainer = documentSnapshot.get("isTrainer");
+      isTrainer = documentSnapshot.get("isTrainer");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
-      this.isPrivate = documentSnapshot.get("isPrivate");
+      isPrivate = documentSnapshot.get("isPrivate");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isAdmin')) {
-      this.isAdmin = documentSnapshot.get("isAdmin");
+      isAdmin = documentSnapshot.get("isAdmin");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isDark')) {
-      this.isDark = documentSnapshot.get("isDark");
+      isDark = documentSnapshot.get("isDark");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('gender')) {
-      this.gender = documentSnapshot.get("gender");
+      gender = documentSnapshot.get("gender");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
-      this.dateJoined = documentSnapshot.get("dateJoined").toString();
+      dateJoined = documentSnapshot.get("dateJoined").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateOfBirth')) {
-      this.dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
+      dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('testGroup')) {
-      this.testGroup = documentSnapshot.get("testGroup").toString();
+      testGroup = documentSnapshot.get("testGroup").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('idioma')) {
-      this.idioma = documentSnapshot.get("idioma").toString();
+      idioma = documentSnapshot.get("idioma").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
-      this.brandID = documentSnapshot.get("brandID").toString();
+      brandID = documentSnapshot.get("brandID").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
-      this.sessions = documentSnapshot.get("sessions").toString();
+      sessions = documentSnapshot.get("sessions").toString();
     }
   }
 
   Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = documentId;
+    id = documentId;
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('name')) {
-      this.name = documentSnapshot.get("name").toString();
+      name = documentSnapshot.get("name").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firstName')) {
-      this.firstName = documentSnapshot.get("firstName").toString();
+      firstName = documentSnapshot.get("firstName").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastName')) {
-      this.lastName = documentSnapshot.get("lastName").toString();
+      lastName = documentSnapshot.get("lastName").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('nick')) {
-      this.nick = documentSnapshot.get("nick").toString();
+      nick = documentSnapshot.get("nick").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('imageUrl')) {
-      this.imageUrl = documentSnapshot.get("imageUrl").toString();
+      imageUrl = documentSnapshot.get("imageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('noImageUrl')) {
-      this.noImageUrl = documentSnapshot.get("noImageUrl").toString();
+      noImageUrl = documentSnapshot.get("noImageUrl").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isTrainer')) {
-      this.isTrainer = documentSnapshot.get("isTrainer");
+      isTrainer = documentSnapshot.get("isTrainer");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isPrivate')) {
-      this.isPrivate = documentSnapshot.get("isPrivate");
+      isPrivate = documentSnapshot.get("isPrivate");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('notificationToken')) {
-      this.notificationToken = documentSnapshot.get("notificationToken").toString();
+      notificationToken = documentSnapshot.get("notificationToken").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
-      this.sessions = documentSnapshot.get("sessions").toString();
+      sessions = documentSnapshot.get("sessions").toString();
     }
   }
 
@@ -164,37 +165,42 @@ class Usuario {
 
   // Set Basic Data
   set setBasicData(Usuario user) {
-    this.name = user.name;
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
-    this.nick = user.nick;
-    this.email = user.email;
-    this.imageUrl = user.imageUrl;
-    this.noImageUrl = user.noImageUrl;
-    this.isTrainer = user.isTrainer;
-    this.isPrivate = user.isPrivate;
-    this.isFirst = user.isFirst;
-    this.isAdmin = user.isAdmin;
-    this.isDark = user.isDark;
-    this.notificationToken = user.notificationToken;
-    this.gender = user.gender;
-    this.dateJoined = user.dateJoined;
-    this.dateOfBirth = user.dateOfBirth;
-    this.testGroup = user.testGroup;
-    this.idioma = user.idioma;
-    this.brandID = user.brandID;
-    this.sessions = user.sessions;
-    this.active = user.active;
+    name = user.name;
+    firstName = user.firstName;
+    lastName = user.lastName;
+    nick = user.nick;
+    email = user.email;
+    imageUrl = user.imageUrl;
+    noImageUrl = user.noImageUrl;
+    isTrainer = user.isTrainer;
+    isPrivate = user.isPrivate;
+    isFirst = user.isFirst;
+    isAdmin = user.isAdmin;
+    isDark = user.isDark;
+    notificationToken = user.notificationToken;
+    gender = user.gender;
+    dateJoined = user.dateJoined;
+    dateOfBirth = user.dateOfBirth;
+    testGroup = user.testGroup;
+    idioma = user.idioma;
+    brandID = user.brandID;
+    sessions = user.sessions;
+    active = user.active;
   }
 
   // Requests
   set setRequestList(List<RequestToBrand> requestList) {
-    this.requestsList = requestList;
+    requestsList = requestList;
   }
 
   // Brands
   set setBrandList(List<Brand> brandList) {
-    this.brandsList = brandList;
+    brandsList = brandList;
+  }
+
+  // Brands
+  set setBrandRole(int role) {
+    brandRole = role;
   }
 
   // Events
