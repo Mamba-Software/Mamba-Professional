@@ -417,6 +417,32 @@ class BrandFirebaseCalls {
     return events;
   }
 
+  Future<List<Usuario>> getBrandUsersWithDateJoined(String brandId) async {
+    List<Usuario> users = [];
+    Usuario user;
+    List<Brand> brandList = [];
+    Brand brand;
+    try {
+      await _firestore.collection(brands).doc(brandId)
+          .collection("Users")
+          .get()
+          .then((snapshot) async {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          //user = Usuario.fromObjectAllData(doc.id, doc);
+          user = await getUserDetails(doc.id);
+          brandList = await getAllBrandsFromUser(doc.id);
+          brand = brandList.firstWhere((element) => element.id == brandId);
+          user.dateJoinedBrand = brand.dateJoined;
+          users.add(user);
+        }
+      });
+      return users;
+    } catch (e) {
+      print(e.toString());
+      return users;
+    }
+  }
+
   //Add
 
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {

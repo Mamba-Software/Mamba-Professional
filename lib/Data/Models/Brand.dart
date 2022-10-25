@@ -88,6 +88,9 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('logoUrl')) {
       logoUrl = documentSnapshot.get("logoUrl").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
+      dateJoined = documentSnapshot.get("dateJoined").toString();
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
@@ -18,6 +19,7 @@ import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
+import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeOffer.dart';
 
@@ -69,6 +71,8 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   List<Event> events = [], filteredEvents = [], filteredBackEvents = [];
 
+  List<Usuario> users = [], filteredUsers = [], filteredBackUsers = [];
+
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
@@ -103,16 +107,21 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   }
 
   Future<void> getCollections() async {
+    events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
+    users = await _brandDataService.getBrandUsersWithDateJoined(widget.brandId);
 
-    if(_selectedIndex == 0)
-      {
-        events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
-        setState(() {
-          applyFilteredEvents();
-           isLoading = false;
-        });
-      }
+      setState(() {
+      applyAllFilters();
+        isLoading = false;
+      });
 
+
+  }
+
+  void applyAllFilters()
+  {
+    applyFilteredEvents();
+    applyFilteredUsers();
   }
 
   void applyFilteredEvents()
@@ -122,6 +131,21 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
     filteredBackEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(backStartDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(backEndDate)) < 0).toList();
+
+  }
+
+  void applyFilteredUsers()
+  {
+    var dateTime2 = DateFormat('dd-MM-yy').parse(users[0].dateJoinedBrand!);
+
+
+
+    filteredUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoinedBrand!).compareTo(DateFormat('dd-MM-yy').parse(startDate.toString())) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoinedBrand!).compareTo(DateFormat('dd-MM-yy').parse(endDate.toString())) <= 0).toList();
+    int days = daysBetween(startDate, endDate);
+    DateTime  backEndDate = endDate.subtract(Duration(days: days));
+    DateTime backStartDate = startDate.subtract(Duration(days: days));
+    print(filteredUsers);
+    filteredBackUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoinedBrand!).compareTo(DateFormat('dd-MM-yy').parse(backEndDate.toString())) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoinedBrand!).compareTo(DateFormat('dd-MM-yy').parse(backStartDate.toString())) <= 0).toList();
 
   }
 
@@ -204,7 +228,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                     isScrollable: true,
                     controller: _tabController,
                     indicatorColor: Colors.transparent,
-                    onTap: (index) {
+                    onTap: (index) async {
                       _selectedIndex = index;
                       if(_selectedIndex == 0)
                       {
@@ -226,7 +250,8 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                         addStatsValue = 1;
                         tabs[4] = true;
                       }
-                      setState(() {
+
+                      setState(()  {
 
                       });
                     },
@@ -235,7 +260,6 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                       selectedTab(AppLocalizations.of(context)!.clients, 1, 0.20),
                       selectedTab(AppLocalizations.of(context)!.staff, 2, 0.15),
                       selectedTab('Facturación', 3, 0.25),
-
                     ],
                   ),
                 ],
@@ -309,7 +333,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           children: [
             Text(
                 text,
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.bold)
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.bold)
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01,),
             _selectedIndex == index? Container(
@@ -396,11 +420,23 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   }
   Widget clientsStatsPage()
   {
-    return Column(
-      children: [
-        statsTitle('Numero clientes'),
-        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-      ],
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15),
+      child: Column(
+        children: [
+          statsTitle('Numero clientes'),
+          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+          statsTitle('Media de edad'),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            child: AgeRange(users: filteredUsers),
+          ),
+          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+          statsTitle('Género'),
+          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+          statsTitle('Clientes con más entrenos'),
+        ],
+      ),
     );
   }
   Widget staffStatsPage()
@@ -445,7 +481,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       setState(() {
         startDate = result.first;
         endDate = result.last;
-         applyFilteredEvents();
+         applyAllFilters();
       });
     }
   }

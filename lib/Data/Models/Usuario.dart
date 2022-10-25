@@ -30,6 +30,7 @@ class Usuario {
   String? brandID;
   String? sessions;
   bool? active;
+  String? dateJoinedBrand;
 
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];
@@ -58,6 +59,7 @@ class Usuario {
     this.brandID,
     this.sessions,
     this.active,
+    this.dateJoinedBrand,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -124,6 +126,9 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
       this.sessions = documentSnapshot.get("sessions").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoinedBrand')) {
+      this.dateJoinedBrand = documentSnapshot.get("dateJoinedBrand").toString();
+    }
   }
 
   Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -158,6 +163,9 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
       this.sessions = documentSnapshot.get("sessions").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoinedBrand')) {
+      this.dateJoinedBrand = documentSnapshot.get("dateJoinedBrand").toString();
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -185,6 +193,7 @@ class Usuario {
     this.brandID = user.brandID;
     this.sessions = user.sessions;
     this.active = user.active;
+    this.dateJoinedBrand = user.dateJoinedBrand;
   }
 
   // Requests
