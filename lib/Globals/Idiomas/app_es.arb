@@ -521,6 +521,10 @@
       }
     }
   },
+  "roles": "Roles",
+  "@roles":{
+    "description": "createBrand Text"
+  },
   "rolesDescription": "Administra los permisos de tu marca",
   "@rolesDescription":{
     "description": "createBrand Text"

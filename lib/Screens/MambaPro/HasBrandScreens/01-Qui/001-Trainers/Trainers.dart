@@ -73,6 +73,7 @@ class _Trainers extends State<Trainers> {
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandTrainers(widget.brandId);
+    allMembers = [];
     allTrainers = [];
     Event lastEvent = Event();
     for (var i=0; i< brandUsers.length; i++) {
@@ -151,16 +152,22 @@ class _Trainers extends State<Trainers> {
   }
 
   // Navigate to Bonos Request Screen
-  void navigateToRolesScreen() {
-    Navigator.push(
+  Future<void> navigateToRolesScreen() async {
+    var result = await Navigator.push(
       context,
-      CupertinoPageRoute<void>(
+      CupertinoPageRoute<bool?>(
         builder: (context) => BrandRoles(
           brandId: widget.brandId,
           trainers: allTrainers,
         ),
       )
     );
+    if (result == null || result == true) {
+      setState(() {
+        isLoading = true;
+      });
+      getAllUsers();
+    }
   }
 
   @override

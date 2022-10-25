@@ -453,7 +453,7 @@ class _BonosProState extends State<BonosPro> {
                     onTap: navigateToBonosRequestScreen,
                     child: Container(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                      height: MediaQuery.of(context).size.height*0.15,
+                      height: MediaQuery.of(context).size.height*0.1,
                       width: MediaQuery.of(context).size.width*0.9,
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),

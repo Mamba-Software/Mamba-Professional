@@ -49,6 +49,7 @@ class BrandDataService {
   Future<void> updateBono(String brandId, Bono bono, Condition condition) => _firebase.updateBono(brandId, bono, condition);
   Future<void> updateBonoCompras(String brandID, String bonoId) => _firebase.updateBonoCompras(brandID, bonoId);
   Future<void> updateBonoActive(String brandID, String bonoId, bool isActive) => _firebase.updateBonoActive(brandID, bonoId, isActive);
+  Future<void> updateUserBrandRole(String userId, String brandId, int role) => _firebase.updateUserBrandRole(userId, brandId, role);
 
   // Delete Data
   Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
@@ -61,6 +62,9 @@ class BrandDataService {
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS
+
+  // Users
+  Stream<QuerySnapshot> getBrandTrainersStream(String brandId) => _firebase.getBrandTrainersStream(brandId);
 
   // Requests
   Stream<QuerySnapshot> getBrandRequestsStream(String brandId) => _firebase.getBrandRequestsStream(brandId);

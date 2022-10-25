@@ -598,6 +598,12 @@ class BrandFirebaseCalls {
     });
   }
 
+  Future<void> updateUserBrandRole(String userId, String brandId, int role) async {
+    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).update({
+      "role": role,
+    });
+  }
+
   //Delete
 
   Future<void> deleteBrand(String brandId) async {
@@ -733,6 +739,15 @@ class BrandFirebaseCalls {
   }
 
   //STREAMS
+
+  Stream<QuerySnapshot> getBrandTrainersStream(String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .where("isTrainer", isEqualTo: true)
+        .snapshots();
+  }
 
   Stream<QuerySnapshot> getBrandRequestsStream(String brandId) {
     return _firestore
