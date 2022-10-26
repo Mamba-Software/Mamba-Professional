@@ -3,6 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import '../../../../../../Data/Models/Usuario.dart';
 import '../../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 
@@ -201,6 +202,28 @@ class _BrandRolesState extends State<BrandRoles> {
     }
   }
 
+  // Navigate to Bonos Request Screen
+  void navigateToRolesInformationModal(int role) async {
+    showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.935,
+          child: RolesInfo(
+            role: role,
+          )
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -247,8 +270,8 @@ class _BrandRolesState extends State<BrandRoles> {
                           ),
                           IconButton(
                             icon: Icon(Icons.info_outline, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColor,),
-                            onPressed: null,
                             padding: EdgeInsets.zero,
+                            onPressed: () {navigateToRolesInformationModal(1);},
                           ),
                         ],
                       ),
@@ -330,7 +353,7 @@ class _BrandRolesState extends State<BrandRoles> {
                           ),
                           IconButton(
                             icon: Icon(Icons.info_outline, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColor,),
-                            onPressed: null,
+                            onPressed: () {navigateToRolesInformationModal(2);},
                             padding: EdgeInsets.zero,
                           ),
                         ],
@@ -415,7 +438,7 @@ class _BrandRolesState extends State<BrandRoles> {
                           ),
                           IconButton(
                             icon: Icon(Icons.info_outline, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColor,),
-                            onPressed: null,
+                            onPressed: () {navigateToRolesInformationModal(3);},
                             padding: EdgeInsets.zero,
                           ),
                         ],
