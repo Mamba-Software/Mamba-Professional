@@ -52,6 +52,15 @@ class _BrandRolesState extends State<BrandRoles> {
         allTrainers.add(user);
       }
     }
+    allOwners.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    allAdmins.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    allTrainers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
     setState(() {
       this.allOwners = allOwners;
       this.allAdmins = allAdmins;
