@@ -417,6 +417,8 @@ class _Clients extends State<Clients> {
                                                                 return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
                                                               });
                                                             });
+                                                            // Navigator Pop
+                                                            Navigator.pop(context);
                                                           },
                                                           title: Text(
                                                               AppLocalizations.of(context)!.alphabetAtoZ,
@@ -452,6 +454,8 @@ class _Clients extends State<Clients> {
                                                               allMembers = List.from(allMembers.reversed);
                                                               filteredMembers = List.from(filteredMembers.reversed);
                                                             });
+                                                            // Navigator Pop
+                                                            Navigator.pop(context);
                                                           },
                                                           title: Text(
                                                               AppLocalizations.of(context)!.alphabetZtoA,

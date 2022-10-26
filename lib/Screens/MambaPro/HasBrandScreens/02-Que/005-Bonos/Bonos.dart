@@ -205,7 +205,7 @@ class _BonosProState extends State<BonosPro> {
                                       return StatefulBuilder(
                                         builder: (BuildContext context, StateSetter setStateBottom) {
                                           return FractionallySizedBox(
-                                            heightFactor: 0.56,
+                                            heightFactor: 0.45,
                                             child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
                                               width: MediaQuery.of(context).size.width,
                                               child: Padding(
@@ -227,6 +227,8 @@ class _BonosProState extends State<BonosPro> {
                                                         setStateBottom(() {
                                                           filterByBonos[0] = !filterByBonos[0];
                                                         });
+                                                        // Navigator Pop
+                                                        Navigator.pop(context);
                                                       },
                                                       title: Text(
                                                           AppLocalizations.of(context)!.activeBono,
@@ -243,6 +245,8 @@ class _BonosProState extends State<BonosPro> {
                                                         setStateBottom(() {
                                                           filterByBonos[1] = !filterByBonos[1];
                                                         });
+                                                        // Navigator Pop
+                                                        Navigator.pop(context);
                                                       },
                                                       title: Text(
                                                           AppLocalizations.of(context)!.desactiveBono,
@@ -270,6 +274,8 @@ class _BonosProState extends State<BonosPro> {
                                                           orderByBonos[0] = !orderByBonos[0];
                                                           orderByBonos[1] = !orderByBonos[1];
                                                         });
+                                                        // Navigator Pop
+                                                        Navigator.pop(context);
                                                       },
                                                       title: Text(
                                                           AppLocalizations.of(context)!.alphabetAtoZ,
@@ -287,6 +293,8 @@ class _BonosProState extends State<BonosPro> {
                                                           orderByBonos[1] = !orderByBonos[1];
                                                           orderByBonos[0] = !orderByBonos[0];
                                                         });
+                                                        // Navigator Pop
+                                                        Navigator.pop(context);
                                                       },
                                                       title: Text(
                                                           AppLocalizations.of(context)!.alphabetZtoA,
@@ -298,7 +306,7 @@ class _BonosProState extends State<BonosPro> {
                                                         child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
                                                       ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
                                                     ),
-
+                                                    /*
                                                     ListTile(
                                                       onTap: () {
                                                         setStateBottom(() {
@@ -333,6 +341,7 @@ class _BonosProState extends State<BonosPro> {
                                                         child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
                                                       ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
                                                     ),
+                                                     */
                                                   ],
                                                 ),
                                               ),

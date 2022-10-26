@@ -57,53 +57,43 @@ class _Trainers extends State<Trainers> {
   // Members Page
   List<Usuario> allMembers = [];
   List<Usuario> filteredMembers = [];
+  // Trainers Roles
+  List<Usuario> allOwners = [];
+  List<Usuario> allAdmins = [];
   List<Usuario> allTrainers = [];
 
   List<Usuario> activeClients = [];
   List<Usuario> inactiveClients = [];
 
-  var _orderFilter = OrderFilter();
   int filterClientsNumber = 0;
   int orderByClientsNumber = 0;
   int alphabeticOrder = 0;
-  List<bool> filterByClients = [true, true];
-  List<bool> orderByClients = [true, false, true, false];
+  List<bool> filterByTrainers = [true, true, true];
+  List<bool> orderByTrainers = [true, false];
 
   var chatUsers = [];
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandTrainers(widget.brandId);
     allMembers = [];
-    allTrainers = [];
-    Event lastEvent = Event();
     for (var i=0; i< brandUsers.length; i++) {
       Usuario user = brandUsers[i];
-      /*
-      lastEvent = await _userDataService.getLastUserEvent(user.id);
-      if(lastEvent.id != null && DateTime.now().difference(lastEvent.doneAt!.toDate()).inDays <= 30)
-      {
-        user.active = true;
-        activeClients.add(user);
+      allMembers.add(user);
+      if (user.brandRole == 1) {
+        allOwners.add(user);
+      } else if (user.brandRole == 2) {
+        allAdmins.add(user);
+      } else {
+        allTrainers.add(user);
       }
-      else {
-        user.active = false;
-        inactiveClients.add(user);
-      }
-       */
-      allTrainers.add(user);
     }
     /*
     for (var i=0; i< 10; i++) {
       Usuario user = brandUsers[0];
       allTrainers.add(user);
     }
-     */
-    // Sort Trainers
-    allTrainers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
+    */
     // Add All Members
-    allMembers.addAll(allTrainers);
     allMembers.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
     });
@@ -111,9 +101,28 @@ class _Trainers extends State<Trainers> {
     // Return Future Delayed
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
-      allMembers = allTrainers;
+      allMembers = filteredMembers;
       isLoading = false;
     });
+  }
+
+  void filterByRoles() {
+    // Filter By
+    allMembers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    filteredMembers = List.from(allMembers);
+    if (filterByTrainers[0] == false) {
+      filteredMembers.removeWhere((element) => element.brandRole == 1);
+    }
+    if (filterByTrainers[1] == false) {
+      filteredMembers.removeWhere((element) => element.brandRole == 2);
+    }
+    if (filterByTrainers[2] == false) {
+      filteredMembers.removeWhere((element) => element.brandRole == 3);
+    }
+    // Navigator Pop
+    Navigator.pop(context);
   }
 
   void filterSearchResults(String query) {
@@ -158,7 +167,7 @@ class _Trainers extends State<Trainers> {
       CupertinoPageRoute<bool?>(
         builder: (context) => BrandRoles(
           brandId: widget.brandId,
-          trainers: allTrainers,
+          trainers: allMembers,
         ),
       )
     );
@@ -297,7 +306,7 @@ class _Trainers extends State<Trainers> {
                                           return StatefulBuilder(
                                             builder: (BuildContext context, StateSetter setStateBottom) {
                                               return FractionallySizedBox(
-                                                heightFactor: 0.25,
+                                                heightFactor: 0.5,
                                                 child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
                                                   width: MediaQuery.of(context).size.width,
                                                   child: Padding(
@@ -306,7 +315,6 @@ class _Trainers extends State<Trainers> {
                                                       mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                       children: [
-                                                        /*
                                                         ListTile(
                                                           title: Text(
                                                               AppLocalizations.of(context)!.filterBy,
@@ -320,22 +328,36 @@ class _Trainers extends State<Trainers> {
                                                             setStateBottom(() {
                                                               searchController.clear();
                                                               filterSearchResults("");
-                                                              filterByClients[0] = !filterByClients[0];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
+                                                              filterByTrainers[0] = !filterByTrainers[0];
+                                                              filterByRoles();
                                                             });
-                                                            setState(() {
-
-                                                            });
-
                                                           },
                                                           title: Text(
-                                                              AppLocalizations.of(context)!.activeTrainers,
+                                                              AppLocalizations.of(context)!.owner,
                                                               style: Theme.of(context).textTheme.bodyText1,
                                                               textAlign: TextAlign.left
                                                           ),
-                                                          trailing: filterByClients[0] ? SizedBox(
+                                                          trailing: filterByTrainers[0] ? SizedBox(
+                                                            width: MediaQuery.of(context).size.width * 0.15,
+                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                        ),
+                                                        ListTile(
+                                                          onTap: () {
+                                                            setStateBottom(() {
+
+                                                              searchController.clear();
+                                                              filterSearchResults("");
+                                                              filterByTrainers[1] = !filterByTrainers[1];
+                                                              filterByRoles();
+                                                            });
+                                                          },
+                                                          title: Text(
+                                                              AppLocalizations.of(context)!.administrador,
+                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                              textAlign: TextAlign.left
+                                                          ),
+                                                          trailing: filterByTrainers[1] ? SizedBox(
                                                             width: MediaQuery.of(context).size.width * 0.15,
                                                             child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
                                                           ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
@@ -345,79 +367,20 @@ class _Trainers extends State<Trainers> {
                                                             setStateBottom(() {
                                                               searchController.clear();
                                                               filterSearchResults("");
-                                                              filterByClients[1] = !filterByClients[1];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
+                                                              filterByTrainers[2] = !filterByTrainers[2];
+                                                              filterByRoles();
                                                             });
-                                                            setState(() {
-
-                                                            });
-
                                                           },
                                                           title: Text(
-                                                              AppLocalizations.of(context)!.desactiveTrainers,
+                                                              AppLocalizations.of(context)!.trainer,
                                                               style: Theme.of(context).textTheme.bodyText1,
                                                               textAlign: TextAlign.left
                                                           ),
-                                                          trailing: filterByClients[1] ? SizedBox(
+                                                          trailing: filterByTrainers[2] ? SizedBox(
                                                             width: MediaQuery.of(context).size.width * 0.15,
                                                             child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
                                                           ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
                                                         ),
-
-                                                         ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              orderByClients[2] = !orderByClients[2];
-                                                              orderByClients[3] = !orderByClients[3];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
-                                                            });
-                                                            setState(() {
-
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.activeTrainers +" "+AppLocalizations.of(context)!.first.toLowerCase(),
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[2] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              orderByClients[3] = !orderByClients[3];
-                                                              orderByClients[2] = !orderByClients[2];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
-                                                            });
-                                                            setState(() {
-
-                                                            });
-
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.desactiveTrainers +" "+AppLocalizations.of(context)!.first.toLowerCase(),
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[3] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                         */
 
                                                         ListTile(
                                                           title: Text(
@@ -431,15 +394,8 @@ class _Trainers extends State<Trainers> {
                                                         ListTile(
                                                           onTap: () {
                                                             setStateBottom(() {
-                                                              /*
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                               */
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              orderByClients[1] = !orderByClients[1];
+                                                              orderByTrainers[0] = !orderByTrainers[0];
+                                                              orderByTrainers[1] = !orderByTrainers[1];
                                                             });
                                                             setState(() {
                                                               // Sort Trainers Alphabetically
@@ -451,13 +407,15 @@ class _Trainers extends State<Trainers> {
                                                                 return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
                                                               });
                                                             });
+                                                            // Navigator Pop
+                                                            Navigator.pop(context);
                                                           },
                                                           title: Text(
                                                               AppLocalizations.of(context)!.alphabetAtoZ,
                                                               style: Theme.of(context).textTheme.bodyText1,
                                                               textAlign: TextAlign.left
                                                           ),
-                                                          trailing: orderByClients[0] ? SizedBox(
+                                                          trailing: orderByTrainers[0] ? SizedBox(
                                                             width: MediaQuery.of(context).size.width * 0.15,
                                                             child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
                                                           ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
@@ -465,14 +423,8 @@ class _Trainers extends State<Trainers> {
                                                         ListTile(
                                                           onTap: () {
                                                             setStateBottom(() {
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              orderByClients[1] = !orderByClients[1];
-                                                              /*
-                                                              orderByClients[1] = !orderByClients[1];
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                               */
+                                                              orderByTrainers[0] = !orderByTrainers[0];
+                                                              orderByTrainers[1] = !orderByTrainers[1];
                                                             });
                                                             // Sort Trainers Alphabetically
                                                             allMembers.sort((a, b) {
@@ -486,13 +438,15 @@ class _Trainers extends State<Trainers> {
                                                                 allMembers = List.from(allMembers.reversed);
                                                                 filteredMembers = List.from(filteredMembers.reversed);
                                                             });
+                                                            // Navigator Pop
+                                                            Navigator.pop(context);
                                                           },
                                                           title: Text(
                                                               AppLocalizations.of(context)!.alphabetZtoA,
                                                               style: Theme.of(context).textTheme.bodyText1,
                                                               textAlign: TextAlign.left
                                                           ),
-                                                          trailing: orderByClients[1] ? SizedBox(
+                                                          trailing: orderByTrainers[1] ? SizedBox(
                                                             width: MediaQuery.of(context).size.width * 0.15,
                                                             child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
                                                           ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
@@ -771,38 +725,6 @@ class _Trainers extends State<Trainers> {
         ],
       ),
     );
-  }
-
-  void setFilters()
-  {
-    if (filterByClients[0] && filterByClients[1]) {
-      // Active/Inactive Selected
-      filterClientsNumber = 0;
-    } else if (filterByClients[0]) {
-      // Active Selected
-      filterClientsNumber = 1;
-    } else if(filterByClients[1]) {
-      // Inactive Selected
-      filterClientsNumber = 2;
-    } else {
-      // None Selected
-      filterClientsNumber = 3;
-    }
-    // OrderBy
-    if (orderByClients[0]) {
-      // A-Z
-      alphabeticOrder = 0;
-    } else {
-      // Z-A
-      alphabeticOrder = 1;
-    }
-    if (orderByClients[2]) {
-      // Active First
-      orderByClientsNumber = 0;
-    } else {
-      // InActive First
-      orderByClientsNumber = 1;
-    }
   }
 
   @override
