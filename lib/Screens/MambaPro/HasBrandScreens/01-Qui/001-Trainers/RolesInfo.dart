@@ -1,75 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Payments/PaymentDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
-class RolesInfo extends StatefulWidget {
-  int role;
-
-  RolesInfo({Key? key, required this.role}) : super(key: key);
-
-  @override
-  _RolesInfoState createState() => _RolesInfoState();
-}
-
-class _RolesInfoState extends State<RolesInfo> {
-  // Brand Service
-  final _brandDataService = BrandDataService();
-  final _paymentDataService = PaymentDataService();
-  final _userDataService = UserDataService();
-  final _purchaseDataService = PurchaseDataService();
-
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
-
-
-  final NotificationService _notificationService = NotificationService();
-
-  var titleController = TextEditingController();
-  var freeCancellController = TextEditingController();
-  var weeklyController = TextEditingController();
-  var clasesController = TextEditingController();
-  var priceController = TextEditingController();
-
-  // Booleans
-  bool isLoading = false;
-  bool isFirstBuild = true;
-
-  // Payment Method
-  int? paymentMethod;
-  String originalPaymentString = "";
-
-  // Bottom Sheet
-  bool canConfirm = false;
-
-  Usuario user = Usuario();
-
-  List<Bono> bonos = [];
-  List<Bono> userBonos = [];
-
-  Bono bonoSelected = Bono();
-  bool isBonoSelected = false;
-
-  int indexBono = 0;
-
-  bool editBono = false;
-  bool seeConditions = false;
-
-  List<bool> isSelectedDays = [false, false, false, false];
-
-  bool noSessions = false;
-  bool isBonoRequest = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+class RolesInfo extends StatelessWidget {
+  const RolesInfo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1444,5 +1378,4 @@ class _RolesInfoState extends State<RolesInfo> {
       ),
     );
   }
-
 }

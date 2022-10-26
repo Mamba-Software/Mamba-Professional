@@ -203,7 +203,7 @@ class _BrandRolesState extends State<BrandRoles> {
   }
 
   // Navigate to Bonos Request Screen
-  void navigateToRolesInformationModal(int role) async {
+  void navigateToRolesInformationModal() async {
     showModalBottomSheet<bool?>(
       context: context,
       isScrollControlled: true,
@@ -214,11 +214,9 @@ class _BrandRolesState extends State<BrandRoles> {
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
-        return FractionallySizedBox(
+        return const FractionallySizedBox(
           heightFactor: 0.935,
-          child: RolesInfo(
-            role: role,
-          )
+          child: RolesInfo()
         );
       },
     );
@@ -233,6 +231,19 @@ class _BrandRolesState extends State<BrandRoles> {
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02),
+            child: IconButton(
+              icon: Icon(
+                Icons.info_outline,
+                color: Theme.of(context).primaryColor,
+                size: MediaQuery.of(context).size.width*0.06,
+              ),
+              onPressed: navigateToRolesInformationModal,
+            ),
+          ),
+        ],
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -259,7 +270,7 @@ class _BrandRolesState extends State<BrandRoles> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -267,11 +278,6 @@ class _BrandRolesState extends State<BrandRoles> {
                             AppLocalizations.of(context)!.owner,
                             style: Theme.of(context).textTheme.bodyText1,
                             textAlign: TextAlign.left,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.info_outline, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColor,),
-                            padding: EdgeInsets.zero,
-                            onPressed: () {navigateToRolesInformationModal(1);},
                           ),
                         ],
                       ),
@@ -327,7 +333,7 @@ class _BrandRolesState extends State<BrandRoles> {
                           );
                         }
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.width * 0.025)
+                    SizedBox(height: MediaQuery.of(context).size.width * 0.05)
                   ],
                 ),
               ),
@@ -342,7 +348,7 @@ class _BrandRolesState extends State<BrandRoles> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -350,11 +356,6 @@ class _BrandRolesState extends State<BrandRoles> {
                             AppLocalizations.of(context)!.administrador,
                             style: Theme.of(context).textTheme.bodyText1,
                             textAlign: TextAlign.left,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.info_outline, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColor,),
-                            onPressed: () {navigateToRolesInformationModal(2);},
-                            padding: EdgeInsets.zero,
                           ),
                         ],
                       ),
@@ -427,7 +428,7 @@ class _BrandRolesState extends State<BrandRoles> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -435,11 +436,6 @@ class _BrandRolesState extends State<BrandRoles> {
                             AppLocalizations.of(context)!.trainer,
                             style: Theme.of(context).textTheme.bodyText1,
                             textAlign: TextAlign.left,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.info_outline, size: MediaQuery.of(context).size.width*0.06, color: Theme.of(context).primaryColor,),
-                            onPressed: () {navigateToRolesInformationModal(3);},
-                            padding: EdgeInsets.zero,
                           ),
                         ],
                       ),
@@ -497,7 +493,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         SizedBox(height: MediaQuery.of(context).size.width * 0.025)
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.width * 0.025)
+                    SizedBox(height: MediaQuery.of(context).size.width * 0.05)
                   ],
                 ),
               ),
