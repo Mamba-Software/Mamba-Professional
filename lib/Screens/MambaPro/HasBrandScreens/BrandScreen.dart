@@ -22,6 +22,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
@@ -304,16 +305,45 @@ class _BrandScreenState extends State<BrandScreen> {
                     maxLines: 1,
                 ),
                 SizedBox(height: safeAreaHeight * 0.02),
-                Text(
-                  returnBrandRoleString(),
-                  textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.caption,
+                TextButton(
+                  onPressed: navigateToRolesInformationModal,
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerLeft),
+                  child: Text(
+                    returnBrandRoleString(),
+                    textAlign: TextAlign.left,
+                    //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                    style: Theme.of(context).textTheme.caption,
+                  )
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  // Navigate to Bonos Request Screen
+  void navigateToRolesInformationModal() async {
+    showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+            heightFactor: 0.9,
+            child: RolesInfo()
+        );
+      },
     );
   }
 

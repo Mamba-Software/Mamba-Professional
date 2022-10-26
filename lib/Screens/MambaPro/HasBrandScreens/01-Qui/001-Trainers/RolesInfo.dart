@@ -23,7 +23,7 @@ class RolesInfo extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
               width: MediaQuery.of(context).size.width * 0.84,
