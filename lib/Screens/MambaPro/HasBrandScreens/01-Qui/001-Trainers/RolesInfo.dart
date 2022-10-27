@@ -55,7 +55,7 @@ class RolesInfo extends StatelessWidget {
               children: [
                 Container(
                   height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.4,
+                  width: MediaQuery.of(context).size.width * 0.3,
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
@@ -65,7 +65,7 @@ class RolesInfo extends StatelessWidget {
                 ),
                 Container(
                   height: MediaQuery.of(context).size.height * 0.05,
-                  width: MediaQuery.of(context).size.width * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.6,
                   decoration: BoxDecoration(
                     color: Theme.of(context).backgroundColor,
                     borderRadius: const BorderRadius.only(
@@ -184,7 +184,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -235,7 +235,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -318,7 +318,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -369,7 +369,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -420,7 +420,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -503,7 +503,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -554,7 +554,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -605,7 +605,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -656,7 +656,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -707,7 +707,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -758,7 +758,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -841,7 +841,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -892,7 +892,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -943,7 +943,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -994,7 +994,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -1045,7 +1045,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -1128,7 +1128,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -1179,7 +1179,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -1230,7 +1230,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -1281,7 +1281,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
@@ -1332,7 +1332,7 @@ class RolesInfo extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const SizedBox(width: 10),
+                                  const SizedBox(width: 0),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
                                   const SizedBox(width: 20),
                                   Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),

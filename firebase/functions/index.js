@@ -811,12 +811,17 @@ exports.userJoinsBrand = functions
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
+      // Update Date Joined Users/Brand
       await db.doc("/Users/"+userId+"/Brands/"+brandId+"").set({
         "name": brandDoc.name,
         "logoUrl": brandDoc.logoUrl,
         "dateJoined": formatted,
         "myMonthlySessions": 0,
         "myTotalSessions": 0,
+      });
+      // Update Date Joined Users/Brand
+      await db.doc("/Brands/"+brandId+"/Users/"+userId+"").update({
+        "dateJoined": formatted, 
       });
       functions.logger.log(
         "userId",
@@ -2796,13 +2801,18 @@ exports.zzzzUserJoinsBrand = functions
       }
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
-      var formatted = day+"-"+month+"-"+result;
+      var formatted = day+"-"+month+"-"+result;          
+      // Update Date Joined Users/Brand
       await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
         "name": brandDoc.name,
         "logoUrl": brandDoc.logoUrl,
-        "dateJoined": formatted,
+        "dateJoined": formatted,      
         "myMonthlySessions": 0,
         "myTotalSessions": 0,
+      });
+      // Update Date Joined Users/Brand
+      await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
+        "dateJoined": formatted, 
       });
       functions.logger.log(
         "userId",
