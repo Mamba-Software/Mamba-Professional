@@ -1635,6 +1635,16 @@ exports.userJoinsEvent = functions
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
         const id = eventBrandsSnapshot.docs[i].id;
+        // Update Last Event At
+        await db
+        .collection("Brands")
+        .doc(id)
+        .collection("Users")
+        .doc(userId)
+        .update({
+          "lastEventAt": eventDoc.doneAt,
+        });
+        // Update Cover Data
         await db
         .collection("Brands")
         .doc(id)
@@ -3627,7 +3637,17 @@ exports.zzzzUserJoinsEvent = functions
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
-        const id = eventBrandsSnapshot.docs[i].id;
+        const id = eventBrandsSnapshot.docs[i].id;      
+        // Update Last Event At
+        await db
+        .collection("7777 Brands")
+        .doc(id)
+        .collection("Users")
+        .doc(userId)
+        .update({
+          "lastEventAt": eventDoc.doneAt,
+        });
+        // Update Cover Data
         await db
         .collection("7777 Brands")
         .doc(id)
