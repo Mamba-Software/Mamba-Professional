@@ -2029,10 +2029,8 @@ class ScriptsDatabaseService {
       print('--------------');
       print('\n');
 
-      String events = "7777 Events";
-      String users = "7777 Users";
-      String brands = "7777 Brands";
-      String locations = "7777 Locations";
+      String users = "Users";
+      String brands = "Brands";
 
       // REAL MIGRATION FOR REAL DATA OF USERS
       QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
@@ -2044,49 +2042,71 @@ class ScriptsDatabaseService {
         print('=================================================================================');
         print('BRAND WITH ID: '+brand.id!+" AND NAME: "+brand.name!);
         print('\n');
-        print('Adding "Users" subcollection');
+        print('Updating "Users" subcollection');
         print('-----------------------------\n');
-        QuerySnapshot querySnapshotUsers = await _firestore.collection(users).where("brandID", isEqualTo: brandId).get();
+        QuerySnapshot querySnapshotUsers = await _firestore.collection(brands).doc(brandId).collection("Users").get();
         for (var i=0; i<querySnapshotUsers.docs.length;i++) {
           String userId = querySnapshotUsers.docs[i].id;
-          DocumentSnapshot _documentSnapshot = querySnapshotUsers.docs[i];
+          DocumentSnapshot _documentSnapshot = await _firestore.collection(users).doc(userId).get();
+          // Get User Data
           Usuario user = Usuario.fromObjectAllData(userId, _documentSnapshot);
-          print('User with ID : '+userId);
-          int role = 0;
-          if (_documentSnapshot.get("isTrainer")) {
-            if (userId == brand.adminID) {
-              role = 1;
-            } else {
-              role = 5;
-            }
+          print('User with ID : '+userId+" and Name: "+user.name!);
+          // Get Date Joined Brand
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 = await _firestore.collection(users).doc(userId).collection("Brands").doc(brandId).get();
+          String dateJoined = _documentSnapshot2.get("dateJoined");
+          // Get Last Event of User
+          QuerySnapshot querySnapshotUserEvents = await _firestore.collection(users).doc(userId).collection("Events").get();
+          List<Event> events = [];
+          for (int i = 0; i < querySnapshotUserEvents.docs.length; i++) {
+            events.add(Event.fromObjectOnlyCoverData(querySnapshotUserEvents.docs[i].id, querySnapshotUserEvents.docs[i]));
           }
-          await _firestore
-              .collection(brands)
-              .doc(brandId)
-              .collection("Users")
-              .doc(userId)
-              .set({
-            "name": user.name,
-            "firstName": user.firstName,
-            "lastName": user.lastName,
-            "nick": user.nick,
-            "imageUrl": user.imageUrl,
-            "noImageUrl": user.noImageUrl,
-            "isTrainer": user.isTrainer,
-            "isPrivate": user.isPrivate,
-            "notificationToken": user.notificationToken,
-            "role": role,
+          events.sort((a, b) {
+            return b.doneAt!.toDate().compareTo(a.doneAt!.toDate());
           });
+          if (events.isNotEmpty) {
+            Event lastEvent = events[0];
+            // Update Brand / Users
+            await _firestore
+            .collection(brands)
+            .doc(brandId)
+            .collection("Users")
+            .doc(userId)
+            .update({
+              "lastEventAt": lastEvent.doneAt,
+              "dateJoined": dateJoined,
+              "gender": user.gender,
+              "dateOfBirth": user.dateOfBirth,
+            });
+            // Updates
+            print("lastEventAt: "+lastEvent.doneAt.toString());
+            print("dateJoined: "+dateJoined);
+            print("gender: "+user.gender.toString());
+            print("dateOfBirth: "+user.dateOfBirth!);
+          } else {
+            // Update Brand / Users
+            await _firestore
+            .collection(brands)
+            .doc(brandId)
+            .collection("Users")
+            .doc(userId)
+            .update({
+              "dateJoined": dateJoined,
+              "gender": user.gender,
+              "dateOfBirth": user.dateOfBirth,
+            });
+            // Updates
+            print("lastEventAt: "+"No Events Done");
+            print("dateJoined: "+dateJoined);
+            print("gender: "+user.gender.toString());
+            print("dateJoined: "+user.dateOfBirth!);
+          }
         }
-        print('All Users Added');
+        print('All Users Updated');
         print('\n');
         print('=================================================================================');
         print('=================================================================================');
         print('\n');
       }
-
-
-
 
       return true;
     } catch (e) {
