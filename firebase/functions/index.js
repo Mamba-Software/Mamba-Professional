@@ -821,7 +821,9 @@ exports.userJoinsBrand = functions
       });
       // Update Date Joined Users/Brand
       await db.doc("/Brands/"+brandId+"/Users/"+userId+"").update({
-        "dateJoined": formatted, 
+        "dateJoined": formatted,
+        "gender": userDoc.gender,
+        "dateOfBirth": userDoc.dateOfBirth,
       });
       functions.logger.log(
         "userId",
@@ -2812,7 +2814,9 @@ exports.zzzzUserJoinsBrand = functions
       });
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
-        "dateJoined": formatted, 
+        "dateJoined": formatted,
+        "gender": userDoc.gender,
+        "dateOfBirth": userDoc.dateOfBirth, 
       });
       functions.logger.log(
         "userId",

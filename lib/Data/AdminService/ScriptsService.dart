@@ -1821,7 +1821,6 @@ class ScriptsDatabaseService {
     }
   }
 
-
   Future<bool> migrateEventDataSeptember9th() async {
     try {
       print('\n');
@@ -2011,6 +2010,83 @@ class ScriptsDatabaseService {
         print('\n');
 
       }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> migrateUserDataOctober27th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 8TH FEBRUARY 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Brands/Users collection:\n');
+      print('--------------');
+      print('\n');
+
+      String events = "7777 Events";
+      String users = "7777 Users";
+      String brands = "7777 Brands";
+      String locations = "7777 Locations";
+
+      // REAL MIGRATION FOR REAL DATA OF USERS
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String brandId = querySnapshot.docs[i].id;
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).get();
+        Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('BRAND WITH ID: '+brand.id!+" AND NAME: "+brand.name!);
+        print('\n');
+        print('Adding "Users" subcollection');
+        print('-----------------------------\n');
+        QuerySnapshot querySnapshotUsers = await _firestore.collection(users).where("brandID", isEqualTo: brandId).get();
+        for (var i=0; i<querySnapshotUsers.docs.length;i++) {
+          String userId = querySnapshotUsers.docs[i].id;
+          DocumentSnapshot _documentSnapshot = querySnapshotUsers.docs[i];
+          Usuario user = Usuario.fromObjectAllData(userId, _documentSnapshot);
+          print('User with ID : '+userId);
+          int role = 0;
+          if (_documentSnapshot.get("isTrainer")) {
+            if (userId == brand.adminID) {
+              role = 1;
+            } else {
+              role = 5;
+            }
+          }
+          await _firestore
+              .collection(brands)
+              .doc(brandId)
+              .collection("Users")
+              .doc(userId)
+              .set({
+            "name": user.name,
+            "firstName": user.firstName,
+            "lastName": user.lastName,
+            "nick": user.nick,
+            "imageUrl": user.imageUrl,
+            "noImageUrl": user.noImageUrl,
+            "isTrainer": user.isTrainer,
+            "isPrivate": user.isPrivate,
+            "notificationToken": user.notificationToken,
+            "role": role,
+          });
+        }
+        print('All Users Added');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+
+
+
 
       return true;
     } catch (e) {
