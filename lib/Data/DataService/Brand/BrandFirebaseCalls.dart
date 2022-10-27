@@ -371,6 +371,88 @@ class BrandFirebaseCalls {
 
   }
 
+  Future<List<Event>> getAllEventsFromBrandList(String brandId) async {
+    Timestamp now = Timestamp.fromDate(DateTime.now());
+    List<Event> events = [];
+/*
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if(querySnapshot.docs[i].id != 'Private Events') {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+    }
+
+    querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Events").doc('Private Events').collection('Private Events')
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
+
+    }*/
+
+    //GET UBUNTU
+
+    QuerySnapshot querySnapshot = await _firestore
+        .collection('Brands')
+        .doc('2bd419fe-1a38-4764-b3c5-49728da3ef3d')
+        .collection("Events")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      if(querySnapshot.docs[i].id != 'Private Events') {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      }
+    }
+
+     querySnapshot = await _firestore
+        .collection('Brands')
+        .doc('2bd419fe-1a38-4764-b3c5-49728da3ef3d')
+        .collection("Events").doc('Private Events').collection('Private Events')
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+        events.add(Event.fromObjectOnlyCoverData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]));
+
+    }
+
+
+    return events;
+  }
+
+  Future<List<Usuario>> getBrandUsersWithDateJoined(String brandId) async {
+    List<Usuario> users = [];
+    Usuario user;
+    List<Brand> brandList = [];
+    Brand brand;
+    try {
+      await _firestore.collection(brands).doc(brandId)
+          .collection("Users")
+          .get()
+          .then((snapshot) async {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          //user = Usuario.fromObjectAllData(doc.id, doc);
+          user = await getUserDetails(doc.id);
+          brandList = await getAllBrandsFromUser(doc.id);
+          brand = brandList.firstWhere((element) => element.id == brandId);
+          user.dateJoinedBrand = brand.dateJoined;
+          users.add(user);
+        }
+      });
+      return users;
+    } catch (e) {
+      print(e.toString());
+      return users;
+    }
+  }
+
   //Add
 
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {

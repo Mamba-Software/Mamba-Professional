@@ -550,5 +550,7 @@
   "personalizeBonoUser": "Personalitzar aquest val només per {user}",
   "editBonoClientDesc": "Verifica la información abans d'editar el val del client",
   "average": "de mitja",
-  "purchaseHistory": "Historial de compres"
+  "purchaseHistory": "Historial de compres",
+  "lastNDays": "Últims {days} Dies",
+  "previousMonth": "Mes Anterior"
 }

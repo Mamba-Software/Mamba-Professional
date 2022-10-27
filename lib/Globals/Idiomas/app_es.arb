@@ -2463,5 +2463,18 @@
   "purchaseHistory": "Historial de compras",
   "@purchaseHistory": {
     "description": "userJoinsBrandUser message"
+  },
+  "lastNDays": "Últimos {days} Días",
+  "@lastNDays": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "previousMonth": "Mes Anterior",
+  "@lastMonth": {
+    "description": "Wellcome message"
   }
 }
