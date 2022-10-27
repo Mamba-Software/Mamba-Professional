@@ -238,7 +238,11 @@ exports.userUpdatesCoverData = functions
         coverDataChange = true;
       } else if (before.notificationToken != after.notificationToken) {
         coverDataChange = true;
-      }
+      } else if (before.gender != after.gender) {
+        coverDataChange = true;
+      } else if (before.dateOfBirth != after.dateOfBirth) {
+        coverDataChange = true;
+      } 
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -266,6 +270,8 @@ exports.userUpdatesCoverData = functions
             "noImageUrl": after.noImageUrl,
             "isTrainer": after.isTrainer,
             "isPrivate": after.isPrivate,
+            "gender": after.gender,
+            "dateOfBirth": after.dateOfBirth,
             "notificationToken": after.notificationToken,
           });
         }
@@ -291,6 +297,8 @@ exports.userUpdatesCoverData = functions
             "noImageUrl": after.noImageUrl,
             "isTrainer": after.isTrainer,
             "isPrivate": after.isPrivate,
+            "gender": after.gender,
+            "dateOfBirth": after.dateOfBirth,
             "notificationToken": after.notificationToken,
           });
         }
@@ -2240,7 +2248,11 @@ exports.zzzzUserUpdatesCoverData = functions
         coverDataChange = true;
       } else if (before.notificationToken != after.notificationToken) {
         coverDataChange = true;
-      }
+      } else if (before.gender != after.gender) {
+        coverDataChange = true;
+      } else if (before.dateOfBirth != after.dateOfBirth) {
+        coverDataChange = true;
+      } 
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -2267,7 +2279,9 @@ exports.zzzzUserUpdatesCoverData = functions
             "imageUrl": after.imageUrl,
             "noImageUrl": after.noImageUrl,
             "isTrainer": after.isTrainer,
-            "isPrivate": after.isPrivate,
+            "isPrivate": after.isPrivate,            
+            "gender": after.gender,
+            "dateOfBirth": after.dateOfBirth,
             "notificationToken": after.notificationToken,
           });
         }
@@ -2293,6 +2307,8 @@ exports.zzzzUserUpdatesCoverData = functions
             "noImageUrl": after.noImageUrl,
             "isTrainer": after.isTrainer,
             "isPrivate": after.isPrivate,
+            "gender": after.gender,
+            "dateOfBirth": after.dateOfBirth,
             "notificationToken": after.notificationToken,
           });
         }
