@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -10,7 +9,6 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/OrderFilter/OrderFilter.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -18,7 +16,6 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../../../Data/Models/Event.dart';
 
 class Trainers extends StatefulWidget {
   String brandId;
@@ -61,10 +58,11 @@ class _Trainers extends State<Trainers> {
   List<Usuario> allOwners = [];
   List<Usuario> allAdmins = [];
   List<Usuario> allTrainers = [];
-
-  List<Usuario> activeClients = [];
-  List<Usuario> inactiveClients = [];
-
+  // Page View Controller
+  int _numPages = 0;
+  int? _currentPage;
+  PageController? _pageController;
+  // Filters
   int filterClientsNumber = 0;
   int orderByClientsNumber = 0;
   int alphabeticOrder = 0;
@@ -307,7 +305,8 @@ class _Trainers extends State<Trainers> {
                                             builder: (BuildContext context, StateSetter setStateBottom) {
                                               return FractionallySizedBox(
                                                 heightFactor: 0.5,
-                                                child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
+                                                child: SizedBox(
+                                                  height: MediaQuery.of(context).size.height * 0.5,
                                                   width: MediaQuery.of(context).size.width,
                                                   child: Padding(
                                                     padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
@@ -323,64 +322,106 @@ class _Trainers extends State<Trainers> {
                                                           ),
                                                           dense: true,
                                                         ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              filterByTrainers[0] = !filterByTrainers[0];
-                                                              filterByRoles();
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.owner,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: filterByTrainers[0] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
+                                                        SizedBox(
+                                                          height: MediaQuery.of(context).size.height * 0.22,
+                                                          width: MediaQuery.of(context).size.width,
+                                                          child: PageView(
+                                                            physics: const NeverScrollableScrollPhysics(),
+                                                            controller: _pageController,
+                                                            onPageChanged: (int page) {
+                                                            },
+                                                            children: <Widget>[
+                                                              Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      print("hola");
+                                                                      _pageController?.nextPage(
+                                                                        duration: const Duration(milliseconds: 500),
+                                                                        curve: Curves.ease,
+                                                                      );
+                                                                    },
+                                                                    title: Text(
+                                                                        AppLocalizations.of(context)!.roles,
+                                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                                        textAlign: TextAlign.left
+                                                                    ),
+                                                                    trailing: SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                      child: Center(
+                                                                          child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      setStateBottom(() {
+                                                                        searchController.clear();
+                                                                        filterSearchResults("");
+                                                                        filterByTrainers[0] = !filterByTrainers[0];
+                                                                        filterByRoles();
+                                                                      });
+                                                                    },
+                                                                    title: Text(
+                                                                        AppLocalizations.of(context)!.owner,
+                                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                                        textAlign: TextAlign.left
+                                                                    ),
+                                                                    trailing: filterByTrainers[0] ? SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      setStateBottom(() {
 
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              filterByTrainers[1] = !filterByTrainers[1];
-                                                              filterByRoles();
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.administrador,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
+                                                                        searchController.clear();
+                                                                        filterSearchResults("");
+                                                                        filterByTrainers[1] = !filterByTrainers[1];
+                                                                        filterByRoles();
+                                                                      });
+                                                                    },
+                                                                    title: Text(
+                                                                        AppLocalizations.of(context)!.administrador,
+                                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                                        textAlign: TextAlign.left
+                                                                    ),
+                                                                    trailing: filterByTrainers[1] ? SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      setStateBottom(() {
+                                                                        searchController.clear();
+                                                                        filterSearchResults("");
+                                                                        filterByTrainers[2] = !filterByTrainers[2];
+                                                                        filterByRoles();
+                                                                      });
+                                                                    },
+                                                                    title: Text(
+                                                                        AppLocalizations.of(context)!.trainer,
+                                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                                        textAlign: TextAlign.left
+                                                                    ),
+                                                                    trailing: filterByTrainers[2] ? SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
                                                           ),
-                                                          trailing: filterByTrainers[1] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
                                                         ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              filterByTrainers[2] = !filterByTrainers[2];
-                                                              filterByRoles();
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.trainer,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: filterByTrainers[2] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
+
+
 
                                                         ListTile(
                                                           title: Text(
