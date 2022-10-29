@@ -55,10 +55,12 @@ class _BonosProState extends State<BonosPro> {
   // Boolean Loading
   bool isFirstBuild = true;
   bool isDark = false;
+
   // Filtrar bonos
+  bool hasFilter = false;
+  List<bool> filterByBonos = [true, true];
+
   int filterBonosNumber = 0;
-  List<bool> filterByBonos = [true, false];
-  // Ordernar bonos
   int orderByBonosNumber = 0;
   int alphabeticOrder = 0;
   List<bool> orderByBonos = [true, false, true, false];
@@ -142,6 +144,23 @@ class _BonosProState extends State<BonosPro> {
     );
   }
 
+  String returnFilteredActiveBonosString() {
+    String activeStaff = "";
+    int cnt = 0;
+    if (filterByBonos[0]) {
+      activeStaff += AppLocalizations.of(context)!.yes+", ";
+      cnt += 1;
+    }
+    if (filterByBonos[1]) {
+      activeStaff += AppLocalizations.of(context)!.no;
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return activeStaff.split(", ")[0];
+    }
+    return activeStaff;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isFirstBuild) {
@@ -185,213 +204,203 @@ class _BonosProState extends State<BonosPro> {
                             height: MediaQuery.of(context).size.height * 0.08,
                             width: MediaQuery.of(context).size.width * 0.40,
                           ),
-                          FittedBox(
-                            fit: BoxFit.fitHeight,
+
+                          Padding(
+                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.025),
                             child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.08,
-                              width: MediaQuery.of(context).size.width * 0.11,
-                              child: TextButton(
-                                onPressed: () async {
-                                  await showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20),
-                                      ),
-                                    ),
-                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                    builder: (BuildContext context) {
-                                      return StatefulBuilder(
-                                        builder: (BuildContext context, StateSetter setStateBottom) {
-                                          return FractionallySizedBox(
-                                            heightFactor: 0.45,
-                                            child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
-                                              width: MediaQuery.of(context).size.width,
-                                              child: Padding(
-                                                padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  children: [
-                                                    ListTile(
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.filterBy,
-                                                          style: Theme.of(context).textTheme.caption,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      dense: true,
-                                                    ),
-                                                    ListTile(
-                                                      onTap: () {
-                                                        setStateBottom(() {
-                                                          filterByBonos[0] = !filterByBonos[0];
-                                                        });
-                                                        // Navigator Pop
-                                                        Navigator.pop(context);
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.activeBono,
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: filterByBonos[0] ? SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                    ),
-                                                    ListTile(
-                                                      onTap: () {
-                                                        setStateBottom(() {
-                                                          filterByBonos[1] = !filterByBonos[1];
-                                                        });
-                                                        // Navigator Pop
-                                                        Navigator.pop(context);
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.desactiveBono,
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: filterByBonos[1] ? SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                    ),
+                              height: MediaQuery.of(context).size.width*0.09,
+                              width: MediaQuery.of(context).size.width*0.09,
+                              child: ClipOval(
+                                child: Material(
+                                  color: hasFilter ? AppColors.white : Colors.transparent, // Button color
+                                  child: InkWell(
+                                    splashColor: Theme.of(context).backgroundColor, // Splash color
+                                    onTap: () async {
+                                      await showModalBottomSheet<int?>(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20),
+                                          ),
+                                        ),
+                                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                                        builder: (BuildContext context) {
+                                          // Page View Controller
+                                          final PageController _pageController = PageController(initialPage: 0);
+                                          int _currentPage = 0;
+                                          // Widget
+                                          return StatefulBuilder(
+                                            builder: (BuildContext context, StateSetter setStateBottom) {
+                                              return FractionallySizedBox(
+                                                heightFactor: 0.25,
+                                                child: SizedBox(
+                                                  height: MediaQuery.of(context).size.height * 0.5,
+                                                  width: MediaQuery.of(context).size.width,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                      children: [
+                                                        ListTile(
+                                                          title: Text(
+                                                              AppLocalizations.of(context)!.filterBy,
+                                                              style: Theme.of(context).textTheme.caption,
+                                                              textAlign: TextAlign.left
+                                                          ),
+                                                          trailing: TextButton(
+                                                            child: Text(
+                                                                AppLocalizations.of(context)!.clear,
+                                                                style: Theme.of(context).textTheme.caption
+                                                            ),
+                                                            onPressed: () {
+                                                              setStateBottom(() {
+                                                                filterByBonos[0] = true;
+                                                                filterByBonos[1] = true;
+                                                              });
+                                                              // Navigator Pop
+                                                              Navigator.pop(context);
+                                                            },
+                                                          ),
+                                                          dense: true,
+                                                          onTap: _currentPage == 0 ? null : () {
+                                                            _pageController.previousPage(
+                                                              duration: const Duration(milliseconds: 500),
+                                                              curve: Curves.ease,
+                                                            );
+                                                          },
+                                                        ),
+                                                        SizedBox(
+                                                          height: MediaQuery.of(context).size.height * 0.15,
+                                                          width: MediaQuery.of(context).size.width,
+                                                          child: PageView(
+                                                            physics: const NeverScrollableScrollPhysics(),
+                                                            controller: _pageController,
+                                                            onPageChanged: (int page) {
+                                                              setStateBottom(() {
+                                                                _currentPage = page;
+                                                              });
+                                                            },
+                                                            children: <Widget>[
+                                                              Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      _pageController.nextPage(
+                                                                        duration: const Duration(milliseconds: 500),
+                                                                        curve: Curves.ease,
+                                                                      );
+                                                                    },
+                                                                    title: Text(
+                                                                        AppLocalizations.of(context)!.bono+" "+AppLocalizations.of(context)!.active+"s",
+                                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                                        textAlign: TextAlign.left
+                                                                    ),
+                                                                    subtitle: Text(
+                                                                        returnFilteredActiveBonosString(),
+                                                                        style: Theme.of(context).textTheme.caption,
+                                                                        textAlign: TextAlign.left
+                                                                    ),
+                                                                    trailing: SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                      child: Center(
+                                                                          child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Column(
+                                                                children: [
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      // Check if the Only True
+                                                                      var filterActive = List.from(filterByBonos);
+                                                                      filterActive.retainWhere((element) => element == true);
+                                                                      if (!(filterActive.length == 1 && filterByBonos[0])) {
+                                                                        filterByBonos[0] = !filterByBonos[0];
+                                                                        // Navigator Pop
+                                                                        Navigator.pop(context);
+                                                                      }
+                                                                    },
+                                                                    title: Text(
+                                                                        AppLocalizations.of(context)!.yes,
+                                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                                        textAlign: TextAlign.left
+                                                                    ),
+                                                                    trailing: filterByBonos[0] ? SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                  ListTile(
+                                                                    onTap: () {
+                                                                      // Check if the Only True
+                                                                      var filterActive = List.from(filterByBonos);
+                                                                      filterActive.retainWhere((element) => element == true);
+                                                                      if (!(filterActive.length == 1 && filterByBonos[1])) {
+                                                                        filterByBonos[1] = !filterByBonos[1];
+                                                                        // Navigator Pop
+                                                                        Navigator.pop(context);
+                                                                      }
 
-                                                    ListTile(
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.orderBy,
-                                                          style: Theme.of(context).textTheme.caption,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      dense: true,
+                                                                    },
+                                                                    title: Text(
+                                                                        AppLocalizations.of(context)!.no,
+                                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                                        textAlign: TextAlign.left
+                                                                    ),
+                                                                    trailing: filterByBonos[1] ? SizedBox(
+                                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-
-                                                    ListTile(
-                                                      onTap: () {
-                                                        setStateBottom(() {
-                                                          orderByBonos[0] = !orderByBonos[0];
-                                                          orderByBonos[1] = !orderByBonos[1];
-                                                        });
-                                                        // Navigator Pop
-                                                        Navigator.pop(context);
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.alphabetAtoZ,
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: orderByBonos[0] ? SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                    ),
-                                                    ListTile(
-                                                      onTap: () {
-                                                        setStateBottom(() {
-                                                          orderByBonos[1] = !orderByBonos[1];
-                                                          orderByBonos[0] = !orderByBonos[0];
-                                                        });
-                                                        // Navigator Pop
-                                                        Navigator.pop(context);
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.alphabetZtoA,
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: orderByBonos[1] ? SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                    ),
-                                                    /*
-                                                    ListTile(
-                                                      onTap: () {
-                                                        setStateBottom(() {
-                                                          orderByBonos[2] = !orderByBonos[2];
-                                                          orderByBonos[3] = !orderByBonos[3];
-                                                        });
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.activeBono+" "+AppLocalizations.of(context)!.first.toLowerCase(),
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: orderByBonos[2] ? SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                    ),
-                                                    ListTile(
-                                                      onTap: () {
-                                                        setStateBottom(() {
-                                                          orderByBonos[3] = !orderByBonos[3];
-                                                          orderByBonos[2] = !orderByBonos[2];
-                                                        });
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.desactiveBono+" "+AppLocalizations.of(context)!.first.toLowerCase(),
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: orderByBonos[3] ? SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                    ),
-                                                     */
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
+                                              );
+                                            } ,
                                           );
-                                        } ,
-                                      );
+                                        },
+                                      ).whenComplete(() {
+                                        setState(() {
+                                          // Filter By
+                                          if (filterByBonos[0] && filterByBonos[1]) {
+                                            // Active/Inactive Selected
+                                            hasFilter = false;
+                                            filterBonosNumber = 0;
+                                          } else if (filterByBonos[0]) {
+                                            // Active Selected
+                                            filterBonosNumber = 1;
+                                            hasFilter = true;
+                                          } else if(filterByBonos[1]) {
+                                            // Inactive Selected
+                                            filterBonosNumber = 2;
+                                            hasFilter = true;
+                                          } else {
+                                            // None Selected
+                                            filterBonosNumber = 3;
+                                          }
+                                        });
+                                      });
                                     },
-                                  ).whenComplete(() {
-                                    setState(() {
-                                      // Filter By
-                                      if (filterByBonos[0] && filterByBonos[1]) {
-                                        // Active/Inactive Selected
-                                        filterBonosNumber = 0;
-                                      } else if (filterByBonos[0]) {
-                                        // Active Selected
-                                        filterBonosNumber = 1;
-                                      } else if(filterByBonos[1]) {
-                                        // Inactive Selected
-                                        filterBonosNumber = 2;
-                                      } else {
-                                        // None Selected
-                                        filterBonosNumber = 3;
-                                      }
-                                      // OrderBy
-                                      if (orderByBonos[0]) {
-                                        // A-Z
-                                        alphabeticOrder = 0;
-                                      } else {
-                                        // Z-A
-                                        alphabeticOrder = 1;
-                                      }
-                                      if (orderByBonos[2]) {
-                                        // Active First
-                                        orderByBonosNumber = 0;
-                                      } else {
-                                        // InActive First
-                                        orderByBonosNumber = 1;
-                                      }
-                                    });
-                                  });
-                                },
-                                child: Icon(
-                                  Icons.filter_list,
-                                  color: AppColors.white,
-                                  size: MediaQuery.of(context).size.width * 0.07,
+                                    child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
+                                      Icons.filter_list,
+                                      color: hasFilter ? AppColors.darkGrey :  AppColors.white,
+                                      size: MediaQuery.of(context).size.width*0.07,
+                                    )),
+                                  ),
                                 ),
                               ),
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
