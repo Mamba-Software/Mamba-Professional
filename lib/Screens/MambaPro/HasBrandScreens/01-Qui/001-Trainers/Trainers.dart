@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -98,6 +99,24 @@ class _Trainers extends State<Trainers> {
     });
   }
 
+  void filterSearchResults(String query) {
+    List<Usuario> usersFiltered = [];
+    if (query.isNotEmpty || query != "") {
+      for (var item in allMembers) {
+        if (item.name!.toLowerCase().startsWith(query)) {
+          usersFiltered.add(item);
+        }
+      }
+      setState(() {
+        filteredMembers = usersFiltered;
+      });
+    } else {
+      setState(() {
+        filteredMembers = allMembers;
+      });
+    }
+  }
+
   void filterByRolesAndActive() {
     // Filter By
     allMembers.sort((a, b) {
@@ -157,28 +176,6 @@ class _Trainers extends State<Trainers> {
 
     // Navigator Pop
     Navigator.pop(context);
-  }
-
-  void filterSearchResults(String query) {
-    List<Usuario> usersFiltered = [];
-    if (query.isNotEmpty || query != "") {
-      for (var item in allMembers) {
-        if (item.name!.toLowerCase().startsWith(query)) {
-          usersFiltered.add(item);
-        }
-      }
-      setState(() {
-        filteredMembers = usersFiltered;
-      });
-    } else {
-      setState(() {
-        filteredMembers = allMembers;
-      });
-    }
-  }
-
-  String getUsersFullName(Usuario user) {
-    return "${user.firstName} ${user.lastName}";
   }
 
   String returnBrandRoleString(Usuario user) {
@@ -813,9 +810,9 @@ class _Trainers extends State<Trainers> {
                 ),
               );
             },
-            childCount: widget.numTrainers,
+              childCount: widget.numTrainers,
             ),
-          ) :
+          ) : filteredMembers.isNotEmpty ?
           SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               Usuario user = filteredMembers[index];
@@ -827,7 +824,7 @@ class _Trainers extends State<Trainers> {
                   borderWidth: 1.0,
                 ),
                 title: Text(
-                  getUsersFullName(user),
+                  user.name!,
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -895,7 +892,22 @@ class _Trainers extends State<Trainers> {
                 },
               );
             },
-            childCount: filteredMembers.length,               // 1000 list items
+              childCount: filteredMembers.length,               // 1000 list items
+            ),
+          ) : SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width*0.30,
+                    child: Image.asset(Constants.emptyCalendar)
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.12),
+              ],
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 10,)),
