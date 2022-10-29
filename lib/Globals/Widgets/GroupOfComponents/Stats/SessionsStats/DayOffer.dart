@@ -143,9 +143,9 @@ class DayOfferState extends State<DayOffer> {
                         onDataLabelRender:(DataLabelRenderArgs args){
                           if(args.text == maxValueStr)
                             {
-                              args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor))!;
+                              args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor));
                             }
-                          else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).secondaryHeaderColor))!;
+                          else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).secondaryHeaderColor));
 
 
                         },
@@ -169,8 +169,7 @@ class DayOfferState extends State<DayOffer> {
                           majorTickLines: MajorTickLines(
                             width: 0,
                           ),
-                          labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor))!
-                          ,
+                          labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor)),
                           placeLabelsNearAxisLine: true,
                           //maximum: double.parse(maxNumber.toString()),
                           //isVisible: false,

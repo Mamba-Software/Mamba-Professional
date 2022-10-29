@@ -198,19 +198,6 @@ class _BrandRolesState extends State<BrandRoles> {
     return "${user.firstName} ${user.lastName}";
   }
 
-  String returnBrandRoleString(Usuario user) {
-    switch (user.brandRole) {
-      case 1:
-        return AppLocalizations.of(context)!.owner;
-      case 2:
-        return AppLocalizations.of(context)!.administrador;
-      case 3:
-        return AppLocalizations.of(context)!.trainer;
-      default:
-        return AppLocalizations.of(context)!.trainer;
-    }
-  }
-
   // Navigate to Bonos Request Screen
   void navigateToRolesInformationModal() async {
     showModalBottomSheet<bool?>(
@@ -240,6 +227,7 @@ class _BrandRolesState extends State<BrandRoles> {
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
+        /*
         actions: [
           Padding(
             padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02),
@@ -253,6 +241,7 @@ class _BrandRolesState extends State<BrandRoles> {
             ),
           ),
         ],
+        */
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -279,7 +268,7 @@ class _BrandRolesState extends State<BrandRoles> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -287,6 +276,15 @@ class _BrandRolesState extends State<BrandRoles> {
                             AppLocalizations.of(context)!.owner,
                             style: Theme.of(context).textTheme.bodyText1,
                             textAlign: TextAlign.left,
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: Theme.of(context).primaryColor,
+                              size: MediaQuery.of(context).size.width*0.06,
+                            ),
+                            splashColor: Colors.transparent,
+                            onPressed: navigateToRolesInformationModal,
                           ),
                         ],
                       ),
@@ -318,7 +316,7 @@ class _BrandRolesState extends State<BrandRoles> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    returnBrandRoleString(user),
+                                    "@"+user.nick!,
                                     style: Theme.of(context).textTheme.caption,
                                   ),
                                 ],
@@ -357,7 +355,7 @@ class _BrandRolesState extends State<BrandRoles> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -365,6 +363,15 @@ class _BrandRolesState extends State<BrandRoles> {
                             AppLocalizations.of(context)!.administrador,
                             style: Theme.of(context).textTheme.bodyText1,
                             textAlign: TextAlign.left,
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: Theme.of(context).primaryColor,
+                              size: MediaQuery.of(context).size.width*0.06,
+                            ),
+                            splashColor: Colors.transparent,
+                            onPressed: navigateToRolesInformationModal,
                           ),
                         ],
                       ),
@@ -396,7 +403,7 @@ class _BrandRolesState extends State<BrandRoles> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    returnBrandRoleString(user),
+                                    "@"+user.nick!,
                                     style: Theme.of(context).textTheme.caption,
                                   ),
                                 ],
@@ -437,7 +444,7 @@ class _BrandRolesState extends State<BrandRoles> {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -445,6 +452,15 @@ class _BrandRolesState extends State<BrandRoles> {
                             AppLocalizations.of(context)!.trainer,
                             style: Theme.of(context).textTheme.bodyText1,
                             textAlign: TextAlign.left,
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.info_outline,
+                              color: Theme.of(context).primaryColor,
+                              size: MediaQuery.of(context).size.width*0.06,
+                            ),
+                            splashColor: null,
+                            onPressed: navigateToRolesInformationModal,
                           ),
                         ],
                       ),
@@ -476,7 +492,7 @@ class _BrandRolesState extends State<BrandRoles> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    returnBrandRoleString(user),
+                                    "@"+user.nick!,
                                     style: Theme.of(context).textTheme.caption,
                                   ),
                                 ],

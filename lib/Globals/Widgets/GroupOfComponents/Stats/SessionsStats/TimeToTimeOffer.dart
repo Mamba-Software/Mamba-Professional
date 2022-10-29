@@ -193,8 +193,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
                     majorTickLines: MajorTickLines(
                       width: 0,
                     ),
-                    labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 12))!
-                    ,
+                    labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 12)),
                     labelRotation: 90,
                     placeLabelsNearAxisLine: true,
                     //maximum: double.parse(maxNumber.toString()),

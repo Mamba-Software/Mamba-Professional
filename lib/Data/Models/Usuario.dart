@@ -31,6 +31,7 @@ class Usuario {
   String? sessions;
   bool? active;
   String? dateJoinedBrand;
+  Timestamp? lastEventAt;
 
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];
@@ -169,6 +170,9 @@ class Usuario {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoinedBrand')) {
       dateJoinedBrand = documentSnapshot.get("dateJoinedBrand").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastEventAt')) {
+      lastEventAt = documentSnapshot.get("lastEventAt");
     }
   }
 
