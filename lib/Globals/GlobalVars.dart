@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
 // IS PRODUCTION ?
@@ -47,6 +48,9 @@ String? timeZoneName;
 
 // Page Controller Mamba Professional
 int pageIndex = 0;
+
+// Analytics Mix Panel
+Mixpanel? mixpanel;
 
 // Key Scaffold Mamba Pro
 final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();

@@ -32,9 +32,6 @@ import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
-// Mix Panel
-Mixpanel? mixpanel;
-
 // Initialize the [FlutterLocalNotificationsPlugin] package.
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 // Create a [AndroidNotificationChannel] for heads up notifications

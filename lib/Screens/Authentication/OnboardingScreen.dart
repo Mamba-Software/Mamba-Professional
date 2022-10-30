@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool nickOkay = false;
   bool nickUsed = false;
   // Date Of Birth
-  DateTime startDate = DateTime.now();
+  DateTime startDate = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day, 0, 0);
   TextEditingController startDateController = TextEditingController();
   String nullDate = "";
   bool errorDate = false;
@@ -147,6 +148,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     await _userDataService.updateUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, true);
     await _userDataService.addUserNickname(currentUser.id!, nick);
     _notificationService!.wellcomeUser(currentUser.id!);
+    sendMixPanelDataUsers();
     Navigator.pushReplacement(
         context,
         CupertinoPageRoute<void>(
@@ -155,6 +157,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         )
     );
   }
+
+  void sendMixPanelDataUsers() {
+    // Send User Mix Panel Data
+    mixpanel!.getPeople().set("email", currentUser.email);
+    mixpanel!.getPeople().set("firstLoginDate", DateTime.now().toString());
+    String genderString = "";
+    if (gender == 0) genderString = "Male";
+    if (gender == 1) genderString = "Female";
+    if (gender == 2) genderString = "Other";
+    mixpanel!.getPeople().set("gender", genderString);
+    startDate = DateTime(startDate.year, startDate.month, startDate.day);
+    mixpanel!.getPeople().set("dateOfBirth", startDate.toString());
+    mixpanel!.getPeople().set("language", currentUser.idioma!);
+    mixpanel!.getPeople().set("isPrivate", true);
+    mixpanel!.getPeople().set("isTrainer", true);
+  }
+
 
   @override
   Widget build(BuildContext context) {

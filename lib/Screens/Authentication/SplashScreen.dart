@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,12 +53,34 @@ class _SplashScreenState extends State<SplashScreen> {
     currentDegradates = await _libraryDataService.getDegradates();
   }
 
+  void sendMixPanelDataUsers() {
+    // Send User Mix Panel Data
+    mixpanel!.getPeople().set("email", currentUser.email);
+    String genderString = "";
+    if (currentUser.gender == 0) genderString = "Male";
+    if (currentUser.gender == 1) genderString = "Female";
+    if (currentUser.gender == 2) genderString = "Other";
+    mixpanel!.getPeople().set("gender", genderString);
+    mixpanel!.getPeople().set("language", currentUser.idioma!);
+    mixpanel!.getPeople().set("isPrivate", true);
+    mixpanel!.getPeople().set("isTrainer", true);
+    var dateOfBirthSplit = currentUser.dateOfBirth!.split("-");
+    DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]), int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);
+    mixpanel!.getPeople().set("dateOfBirth", dateOfBirth.toString());
+    var firstLoginDateSplit = currentUser.dateJoined!.split("-");
+    DateTime firstLoginDate = DateTime(int.parse(firstLoginDateSplit[2]), int.parse(firstLoginDateSplit[1]), int.parse(firstLoginDateSplit[0]), 0, 0);
+    // TODO: AFEGIR UN IF PER A QUE NOMES ACTUALITZACIO AIXO PER ALS USUARIS ABANS D'AQUESTA ACTUALITZACIO
+    mixpanel!.getPeople().set("firstLoginDate", firstLoginDate.toString());
+    mixpanel!.getPeople().set("lastLoginDate", DateTime.now().toString());
+  }
+
   void checkAndGetUserDetails() async {
     //_userDataService.signOut();
     // 1. We get the Firebase User
     User? firebaseUser = await _userDataService.getCurrentUser();
     // 2. Check if we have a user logged in.
     if (firebaseUser != null) {
+      mixpanel?.identify(firebaseUser.uid);
       // 2.1 User is logged in.
       // 3. Check if we are in production enviroment
       if (isProduction) {
@@ -93,6 +116,7 @@ class _SplashScreenState extends State<SplashScreen> {
             );
           } else {
             if (!(currentUser.isFirst!)) {
+              sendMixPanelDataUsers();
               Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute<void>(
@@ -153,6 +177,7 @@ class _SplashScreenState extends State<SplashScreen> {
           );
         } else {
           if (!(currentUser.isFirst!)) {
+            sendMixPanelDataUsers();
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<void>(
