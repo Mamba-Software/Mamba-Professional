@@ -166,6 +166,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
             elevation: 4,
             floating: true,
             pinned: true,
+            //snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -284,7 +285,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       bottomSheet: GestureDetector(
         onTap: _show, //TODO CALENDAR
         child: Container(
-          height: MediaQuery.of(context).size.height*0.12,
+          height: MediaQuery.of(context).size.height*0.1,
           width: double.infinity,
          // color: Theme.of(context).backgroundColor,
           decoration: BoxDecoration(
