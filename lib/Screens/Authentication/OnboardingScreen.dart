@@ -91,10 +91,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
+    mixpanel!.timeEvent("onboarding_userdata_image");
     File? temp = await ImageUtils().pickImage();
     setState(() {
       _image = temp;
     });
+    mixpanel!.track('onboarding_userdata_image');
   }
 
   Future<void> checkIfNickExists(String nick) async {
@@ -143,6 +145,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> addUser() async {
+    mixpanel!.track('onboarding_finish');
     _notificationService = NotificationService();
     String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
     await _userDataService.updateUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, true);
@@ -174,6 +177,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     mixpanel!.getPeople().set("isTrainer", true);
   }
 
+  @override
+  void initState() {
+    mixpanel!.track('onboarding_wellcome');
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +215,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 physics: const ClampingScrollPhysics(),
                 controller: _pageController,
                 onPageChanged: (int page) {
+                  if (page == 0) {
+                    mixpanel!.track('onboarding_wellcome');
+                  } else if (page == 1) {
+                    mixpanel!.track('onboarding_trainers');
+                  } else if (page == 2) {
+                    mixpanel!.track('onboarding_userdata');
+                  }
                   setState(() {
                     _currentPage = page;
                   });
