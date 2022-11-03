@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/ClientsStats/GenderGroup.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
@@ -109,7 +110,6 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   Future<void> getCollections() async {
     events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
     users = await _brandDataService.getBrandUsersWithDateJoined(widget.brandId);
-
       setState(() {
       applyAllFilters();
         isLoading = false;
@@ -136,16 +136,13 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   void applyFilteredUsers()
   {
-    var dateTime2 = DateFormat('dd-MM-yy').parse(users[0].dateJoinedBrand!);
 
+    filteredUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(startDate) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(endDate) <= 0).toList();
 
-
-    filteredUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoinedBrand!).compareTo(DateFormat('dd-MM-yy').parse(startDate.toString())) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoinedBrand!).compareTo(DateFormat('dd-MM-yy').parse(endDate.toString())) <= 0).toList();
     int days = daysBetween(startDate, endDate);
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
-    print(filteredUsers);
-    filteredBackUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoinedBrand!).compareTo(DateFormat('dd-MM-yy').parse(backEndDate.toString())) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoinedBrand!).compareTo(DateFormat('dd-MM-yy').parse(backStartDate.toString())) <= 0).toList();
+    filteredBackUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(backEndDate) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(backStartDate) <= 0).toList();
 
   }
 
@@ -434,6 +431,17 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
           statsTitle('Género'),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                GenderGroup(users: filteredUsers, resize: false),
+                GenderGroup(users: users, resize: true),
+
+              ],
+            ),
+          ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
           statsTitle('Clientes con más entrenos'),
         ],

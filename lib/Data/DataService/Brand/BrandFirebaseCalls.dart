@@ -438,11 +438,10 @@ class BrandFirebaseCalls {
           .get()
           .then((snapshot) async {
         for (DocumentSnapshot doc in snapshot.docs) {
-          //user = Usuario.fromObjectAllData(doc.id, doc);
-          user = await getUserDetails(doc.id);
-          brandList = await getAllBrandsFromUser(doc.id);
-          brand = brandList.firstWhere((element) => element.id == brandId);
-          user.dateJoinedBrand = brand.dateJoined;
+          user = Usuario.fromObjectAllData(doc.id, doc);
+          //user = await getUserDetails(doc.id);
+          //brandList = await getAllBrandsFromUser(doc.id);
+          //brand = brandList.firstWhere((element) => element.id == brandId);
           users.add(user);
         }
       });

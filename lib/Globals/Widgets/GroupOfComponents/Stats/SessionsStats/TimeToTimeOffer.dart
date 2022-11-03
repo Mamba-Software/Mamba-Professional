@@ -119,8 +119,8 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate = startDate.add(
           Duration(hours: int.parse(hour), minutes: int.parse(min)));
-      print((DateFormat.Hm().format(startDate)));
-      print((DateFormat.Hm().format(startDate)));
+     // print((DateFormat.Hm().format(startDate)));
+     // print((DateFormat.Hm().format(startDate)));
 
       totalHour = DateFormat.Hm().format(startDate) + ' - ' +
           DateFormat.Hm().format(endDate);
@@ -144,8 +144,6 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
       mapHours.forEach((k, v)
           {
-            print(maxHour);
-            print(v);
             if(v == maxHour) {
               timeDemand.add(TimeDemand(k, v, AppColors.mainColor));
             }

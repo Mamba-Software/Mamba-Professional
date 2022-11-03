@@ -234,7 +234,29 @@ class AgeRangeState extends State<AgeRange> {
                               dataLabelSettings: DataLabelSettings(isVisible: true),
                               xValueMapper: (ClientsAge events, _) => events.range,
                               yValueMapper: (ClientsAge events, _) => events.age,
-                          )
+                          ),
+                        BarSeries<ClientsAge, String>(
+                          spacing: 1,
+                          opacity: 0.9,
+                          width: 0.6,
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          borderColor: Styles.mainColor,
+                          borderWidth: 0,
+                          /*
+                            markerSettings: MarkerSettings(
+                                isVisible: true,
+                                height:  5,
+                                width:  5,
+                                shape: DataMarkerType.circle,
+                                color: Styles.mainColor),
+*/
+                          color: AppColors.grey,
+                          dataSource: clientsAgeTotalList,
+
+                          dataLabelSettings: DataLabelSettings(isVisible: true),
+                          xValueMapper: (ClientsAge events, _) => events.range,
+                          yValueMapper: (ClientsAge events, _) => events.age,
+                        )
                         ]
                     )
                 )

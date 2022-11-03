@@ -76,13 +76,13 @@ class SessionsMadeState extends State<SessionsMade> {
 
   calculateDifference()
   {
-    print(filteredBackEvents.length);
-    print(filteredEvents.length);
+   // print(filteredBackEvents.length);
+   // print(filteredEvents.length);
     if(filteredBackEvents.length != 0 && filteredEvents.length != 0) {
       difference = ((filteredEvents.length - filteredBackEvents.length) /
           ((filteredBackEvents.length + filteredEvents.length)/2)) * 100;
       if (difference != 0) {
-        print(difference);
+      //  print(difference);
         difference = roundDouble(difference, 2);
       }
     }
@@ -117,7 +117,6 @@ class SessionsMadeState extends State<SessionsMade> {
 
         time = time2;
       }
-    print (totalEvents.length);
   }
 
   @override
