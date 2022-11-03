@@ -139,9 +139,11 @@ class _QRScannerState extends State<QRScanner> {
       isLoading = true;
     });
     try {
+      mixpanel!.track('scan_qr_code_brand_found');
       await launchUrl(Uri.parse(result!.code!), mode: LaunchMode.externalApplication);
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     } catch (e) {
+      mixpanel!.track('scan_qr_code_brand_not_found');
       await Future.delayed(Duration.zero, () {
         return showDialog(
             context: context,
