@@ -17,6 +17,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ho
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:provider/provider.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
@@ -111,7 +112,24 @@ class _MambaState extends State<Mamba> {
     print("Checking Notification Permissions...");
     var notificationString = await PermisionsService().checkUserNotificationsPermision();
     if (notificationString == "Provisional" || notificationString == "Unknown") {
-      await PermisionsService().askUserNotificationsPermision();
+      mixpanel!.track('notifications_permission_ask');
+      PermissionStatus permission = await PermisionsService().askUserNotificationsPermision();
+      switch (permission) {
+        case PermissionStatus.denied:
+          mixpanel!.track('notifications_permission_denied');
+          break;
+        case PermissionStatus.granted:
+          mixpanel!.track('notifications_permission_granted');
+          break;
+        case PermissionStatus.unknown:
+          mixpanel!.track('notifications_permission_unknown');
+          break;
+        case PermissionStatus.provisional:
+          mixpanel!.track('notifications_permission_provisional');
+          break;
+        default:
+          break;
+      }
     }
     // Check Location Permissions
     print("Checking Location Permissions...");
@@ -130,9 +148,8 @@ class _MambaState extends State<Mamba> {
   void checkMinimumAppVersion() async {
     // Check version
     List<bool> result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
-    print(result[0]);
-    print(result[1]);
     if (result[0] == false) {
+      mixpanel!.track('minimum_app_version_open', properties: {'isMandatory': result[1]});
       if (result[1]) {
         Future.delayed(Duration.zero, () {
           showDialog(
@@ -149,16 +166,17 @@ class _MambaState extends State<Mamba> {
           );
         });
       } else {
-        Future.delayed(Duration.zero, () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AppUpdateDialog(
-                isMandatory: false,
-              );
-            },
-          );
-        });
+        var returnDialog = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AppUpdateDialog(
+              isMandatory: false,
+            );
+          },
+        );
+        if (returnDialog == null) {
+          mixpanel!.track('minimum_app_version_close', properties: {'isMandatory': false});
+        }
       }
     }
   }
@@ -184,6 +202,7 @@ class _MambaState extends State<Mamba> {
           );
         },
       );
+      mixpanel!.track('brand_invite_modal_close', properties: {'Brand': dynamicLinkBrandId});
     }
   }
 
