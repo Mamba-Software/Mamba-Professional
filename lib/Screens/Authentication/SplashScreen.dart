@@ -64,6 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
     mixpanel!.getPeople().set("language", currentUser.idioma!);
     mixpanel!.getPeople().set("isPrivate", true);
     mixpanel!.getPeople().set("isTrainer", true);
+    mixpanel!.getPeople().set("isProduction", isProduction);
     var dateOfBirthSplit = currentUser.dateOfBirth!.split("-");
     DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]), int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);
     mixpanel!.getPeople().set("dateOfBirth", dateOfBirth.toString());
@@ -246,11 +247,13 @@ class _SplashScreenState extends State<SplashScreen> {
       currentBrand = await _brandDataService.getBrandDetails(brand.id!);
       hasBrand = true;
       print("This user has a Brand");
+      mixpanel!.getPeople().set("Brands", [currentBrand.id!]);
     } else {
       // Empty Current Brand
       currentBrand = Brand();
       hasBrand = false;
       print("User with NO Brand");
+      mixpanel!.getPeople().set("Brands", []);
     }
   }
 
