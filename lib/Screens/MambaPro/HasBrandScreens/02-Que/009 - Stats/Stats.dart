@@ -427,7 +427,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           statsTitle('Media de edad'),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-            child: AgeRange(users: filteredUsers),
+            child: AgeRange(users: filteredUsers, allUsers: users,),
           ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
           statsTitle('Género'),
