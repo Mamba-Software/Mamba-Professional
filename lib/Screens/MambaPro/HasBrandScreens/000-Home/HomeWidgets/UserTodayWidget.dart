@@ -115,6 +115,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
 
   // Navigate to Event Screen on Tap
   void navigateToEventScreen(String eventId) {
+    mixpanel!.track('brand_homepage_user_event_view');
     // Navigate to Event Screen
     Navigator.push(
       context,

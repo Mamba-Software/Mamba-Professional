@@ -40,6 +40,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
 
   // Navigate to Add Bonos
   Future<void> navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) async {
+    mixpanel!.track('brand_homepage_add_bono');
     await Navigator.push(
       context,
       CupertinoPageRoute<void>(
@@ -106,6 +107,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                       children: [
                         TextButton(
                           onPressed: () {
+                            mixpanel!.track('brand_homepage_bonos_title');
                             widget.navigateToPage(5);
                           },
                           child: Row(
@@ -123,6 +125,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                         ),
                         bonoMostBuys == null ? Text("") : TextButton(
                           onPressed: () {
+                            mixpanel!.track('brand_homepage_bonos_most_buys');
                             widget.navigateToPage(5);
                           },
                           child: Text(

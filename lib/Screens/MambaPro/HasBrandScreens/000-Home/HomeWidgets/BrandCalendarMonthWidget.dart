@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
@@ -137,6 +138,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                       children: [
                         TextButton(
                           onPressed: () {
+                            mixpanel!.track('brand_homepage_calendar_title');
                             widget.navigateToPage(10, DateTime.now(), CalendarView.day);
                           },
                           child: Row(
@@ -153,6 +155,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                         ),
                         TextButton(
                           onPressed: () {
+                            mixpanel!.track('brand_homepage_calendar_today');
                             setState(() {
                               _calendarController.displayDate = DateTime.now();
                               _calendarController.selectedDate = DateTime.now();
@@ -227,6 +230,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                                 });
                               },
                               onTap: (CalendarTapDetails details) {
+                                mixpanel!.track('brand_homepage_calendar_date');
                                 widget.navigateToPage(10, details.date, CalendarView.month);
                               },
                             );
