@@ -196,7 +196,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                   },
                   child: Container(
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                    height: MediaQuery.of(context).size.height*0.15,
+                    height: MediaQuery.of(context).size.height*0.1,
                     width: MediaQuery.of(context).size.width*0.9,
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
@@ -216,7 +216,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
                         Flexible(
                           child: Text(
-                            AppLocalizations.of(context)!.scanQRCode + " o " + AppLocalizations.of(context)!.copyCodeMessage.toLowerCase(),
+                            AppLocalizations.of(context)!.copyCodeMessage,
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
                             textAlign: TextAlign.center,
                           ),

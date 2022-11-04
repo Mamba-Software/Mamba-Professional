@@ -521,8 +521,24 @@
       }
     }
   },
-  "owner": "Propietario/a",
+  "roles": "Roles",
+  "@roles":{
+    "description": "createBrand Text"
+  },
+  "rolesDescription": "Administra los permisos de tu marca",
+  "@rolesDescription":{
+    "description": "createBrand Text"
+  },
+  "rolesInfoDescription": "Visualiza los permisos de cada tipo de rol",
+  "@rolesInfoDescription":{
+    "description": "createBrand Text"
+  },
+  "owner": "Propietario",
   "@owner":{
+    "description": "createBrand Text"
+  },
+  "administrador": "Administrador",
+  "@administrador":{
     "description": "createBrand Text"
   },
   "creator": "Creador",
@@ -945,6 +961,10 @@
   "@copyCorrectLocation":{
     "description": "inviteCode text"
   },
+  "member": "Miembro",
+  "@members":{
+    "description": "Añadir Miembros text"
+  },
   "members": "Miembros",
   "@members":{
     "description": "Añadir Miembros text"
@@ -1301,6 +1321,10 @@
   },
   "yourInfo": "Tus datos",
   "@yourInfo": {
+    "description": "Wellcome message"
+  },
+  "brand": "Marca",
+  "@brand": {
     "description": "Wellcome message"
   },
   "yourBrand": "Tu marca",
@@ -2439,5 +2463,18 @@
   "purchaseHistory": "Historial de compras",
   "@purchaseHistory": {
     "description": "userJoinsBrandUser message"
+  },
+  "lastNDays": "Últimos {days} Días",
+  "@lastNDays": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "previousMonth": "Mes Anterior",
+  "@lastMonth": {
+    "description": "Wellcome message"
   }
 }

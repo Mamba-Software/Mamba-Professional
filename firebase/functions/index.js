@@ -238,7 +238,11 @@ exports.userUpdatesCoverData = functions
         coverDataChange = true;
       } else if (before.notificationToken != after.notificationToken) {
         coverDataChange = true;
-      }
+      } else if (before.gender != after.gender) {
+        coverDataChange = true;
+      } else if (before.dateOfBirth != after.dateOfBirth) {
+        coverDataChange = true;
+      } 
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -266,6 +270,8 @@ exports.userUpdatesCoverData = functions
             "noImageUrl": after.noImageUrl,
             "isTrainer": after.isTrainer,
             "isPrivate": after.isPrivate,
+            "gender": after.gender,
+            "dateOfBirth": after.dateOfBirth,
             "notificationToken": after.notificationToken,
           });
         }
@@ -291,6 +297,8 @@ exports.userUpdatesCoverData = functions
             "noImageUrl": after.noImageUrl,
             "isTrainer": after.isTrainer,
             "isPrivate": after.isPrivate,
+            "gender": after.gender,
+            "dateOfBirth": after.dateOfBirth,
             "notificationToken": after.notificationToken,
           });
         }
@@ -811,12 +819,19 @@ exports.userJoinsBrand = functions
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
+      // Update Date Joined Users/Brand
       await db.doc("/Users/"+userId+"/Brands/"+brandId+"").set({
         "name": brandDoc.name,
         "logoUrl": brandDoc.logoUrl,
         "dateJoined": formatted,
         "myMonthlySessions": 0,
         "myTotalSessions": 0,
+      });
+      // Update Date Joined Users/Brand
+      await db.doc("/Brands/"+brandId+"/Users/"+userId+"").update({
+        "dateJoined": formatted,
+        "gender": userDoc.gender,
+        "dateOfBirth": userDoc.dateOfBirth,
       });
       functions.logger.log(
         "userId",
@@ -1635,6 +1650,16 @@ exports.userJoinsEvent = functions
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
         const id = eventBrandsSnapshot.docs[i].id;
+        // Update Last Event At
+        await db
+        .collection("Brands")
+        .doc(id)
+        .collection("Users")
+        .doc(userId)
+        .update({
+          "lastEventAt": eventDoc.doneAt,
+        });
+        // Update Cover Data
         await db
         .collection("Brands")
         .doc(id)
@@ -2223,7 +2248,11 @@ exports.zzzzUserUpdatesCoverData = functions
         coverDataChange = true;
       } else if (before.notificationToken != after.notificationToken) {
         coverDataChange = true;
-      }
+      } else if (before.gender != after.gender) {
+        coverDataChange = true;
+      } else if (before.dateOfBirth != after.dateOfBirth) {
+        coverDataChange = true;
+      } 
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -2250,7 +2279,9 @@ exports.zzzzUserUpdatesCoverData = functions
             "imageUrl": after.imageUrl,
             "noImageUrl": after.noImageUrl,
             "isTrainer": after.isTrainer,
-            "isPrivate": after.isPrivate,
+            "isPrivate": after.isPrivate,            
+            "gender": after.gender,
+            "dateOfBirth": after.dateOfBirth,
             "notificationToken": after.notificationToken,
           });
         }
@@ -2276,6 +2307,8 @@ exports.zzzzUserUpdatesCoverData = functions
             "noImageUrl": after.noImageUrl,
             "isTrainer": after.isTrainer,
             "isPrivate": after.isPrivate,
+            "gender": after.gender,
+            "dateOfBirth": after.dateOfBirth,
             "notificationToken": after.notificationToken,
           });
         }
@@ -2786,13 +2819,20 @@ exports.zzzzUserJoinsBrand = functions
       }
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
-      var formatted = day+"-"+month+"-"+result;
+      var formatted = day+"-"+month+"-"+result;          
+      // Update Date Joined Users/Brand
       await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
         "name": brandDoc.name,
         "logoUrl": brandDoc.logoUrl,
-        "dateJoined": formatted,
+        "dateJoined": formatted,      
         "myMonthlySessions": 0,
         "myTotalSessions": 0,
+      });
+      // Update Date Joined Users/Brand
+      await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
+        "dateJoined": formatted,
+        "gender": userDoc.gender,
+        "dateOfBirth": userDoc.dateOfBirth, 
       });
       functions.logger.log(
         "userId",
@@ -3627,7 +3667,17 @@ exports.zzzzUserJoinsEvent = functions
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
-        const id = eventBrandsSnapshot.docs[i].id;
+        const id = eventBrandsSnapshot.docs[i].id;      
+        // Update Last Event At
+        await db
+        .collection("7777 Brands")
+        .doc(id)
+        .collection("Users")
+        .doc(userId)
+        .update({
+          "lastEventAt": eventDoc.doneAt,
+        });
+        // Update Cover Data
         await db
         .collection("7777 Brands")
         .doc(id)

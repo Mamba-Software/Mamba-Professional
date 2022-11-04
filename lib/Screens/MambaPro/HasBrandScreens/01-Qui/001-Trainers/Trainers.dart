@@ -7,16 +7,16 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/OrderFilter/OrderFilter.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../../../Data/Models/Event.dart';
 
 class Trainers extends StatefulWidget {
   String brandId;
@@ -55,52 +55,38 @@ class _Trainers extends State<Trainers> {
   // Members Page
   List<Usuario> allMembers = [];
   List<Usuario> filteredMembers = [];
+  // Trainers Roles
+  List<Usuario> allOwners = [];
+  List<Usuario> allAdmins = [];
   List<Usuario> allTrainers = [];
 
-  List<Usuario> activeClients = [];
-  List<Usuario> inactiveClients = [];
-
-  var _orderFilter = OrderFilter();
-  int filterClientsNumber = 0;
-  int orderByClientsNumber = 0;
-  int alphabeticOrder = 0;
-  List<bool> filterByClients = [true, true];
-  List<bool> orderByClients = [true, false, true, false];
+  // Filters
+  bool hasFilter = false;
+  List<bool> filterByTrainers = [true, true, true, true, true];
 
   var chatUsers = [];
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandTrainers(widget.brandId);
-    allTrainers = [];
-    Event lastEvent = Event();
+    allMembers = [];
     for (var i=0; i< brandUsers.length; i++) {
       Usuario user = brandUsers[i];
-      /*
-      lastEvent = await _userDataService.getLastUserEvent(user.id);
-      if(lastEvent.id != null && DateTime.now().difference(lastEvent.doneAt!.toDate()).inDays <= 30)
-      {
-        user.active = true;
-        activeClients.add(user);
+      allMembers.add(user);
+      if (user.brandRole == 1) {
+        allOwners.add(user);
+      } else if (user.brandRole == 2) {
+        allAdmins.add(user);
+      } else {
+        allTrainers.add(user);
       }
-      else {
-        user.active = false;
-        inactiveClients.add(user);
-      }
-       */
-      allTrainers.add(user);
     }
     /*
     for (var i=0; i< 10; i++) {
       Usuario user = brandUsers[0];
       allTrainers.add(user);
     }
-     */
-    // Sort Trainers
-    allTrainers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
+    */
     // Add All Members
-    allMembers.addAll(allTrainers);
     allMembers.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
     });
@@ -108,6 +94,7 @@ class _Trainers extends State<Trainers> {
     // Return Future Delayed
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
+      allMembers = filteredMembers;
       isLoading = false;
     });
   }
@@ -130,8 +117,138 @@ class _Trainers extends State<Trainers> {
     }
   }
 
-  String getUsersFullName(Usuario user) {
-    return "${user.firstName} ${user.lastName}";
+  void filterByRolesAndActive() {
+    // Filter By
+    allMembers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    filteredMembers = List.from(allMembers);
+    int cnt = 0;
+    if (filterByTrainers[0] == false) {
+      filteredMembers.removeWhere((element) => element.brandRole == 1);
+    } else {
+      cnt += 1;
+    }
+    if (filterByTrainers[1] == false) {
+      filteredMembers.removeWhere((element) => element.brandRole == 2);
+    } else {
+      cnt += 1;
+    }
+    if (filterByTrainers[2] == false) {
+      filteredMembers.removeWhere((element) => element.brandRole == 3);
+    } else {
+      cnt += 1;
+    }
+    if (filterByTrainers[3] == false) {
+      filteredMembers.removeWhere((element) {
+        DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 31));
+        if (element.lastEventAt == null) {
+          return false;
+        } else {
+          return oneMonthAgo.isBefore(element.lastEventAt!.toDate());
+        }
+      });
+    } else {
+      cnt += 1;
+    }
+    if (filterByTrainers[4] == false) {
+      filteredMembers.removeWhere((element) {
+        DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 31));
+        if (element.lastEventAt == null) {
+          return true;
+        } else {
+          return oneMonthAgo.isAfter(element.lastEventAt!.toDate());
+        }
+      });
+    } else {
+      cnt += 1;
+    }
+    // Has Filter Update
+    if (cnt == 5) {
+      setState(() {
+        hasFilter = false;
+      });
+    } else {
+      setState(() {
+        hasFilter = true;
+      });
+    }
+
+    // Navigator Pop
+    Navigator.pop(context);
+  }
+
+  String returnBrandRoleString(Usuario user) {
+    switch (user.brandRole) {
+      case 1:
+        return AppLocalizations.of(context)!.owner;
+      case 2:
+        return AppLocalizations.of(context)!.administrador;
+      case 3:
+        return AppLocalizations.of(context)!.trainer;
+      default:
+        return AppLocalizations.of(context)!.trainer;
+    }
+  }
+
+  String returnFilteredRolesString() {
+    String filteredRoles = "";
+    int cnt = 0;
+    if (filterByTrainers[0]) {
+      filteredRoles += AppLocalizations.of(context)!.owner+", ";
+      cnt += 1;
+    }
+    if (filterByTrainers[1]) {
+      filteredRoles += AppLocalizations.of(context)!.administrador+", ";
+      cnt += 1;
+    }
+    if (filterByTrainers[2]) {
+      filteredRoles += AppLocalizations.of(context)!.trainer;
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return filteredRoles.split(", ")[0];
+    }
+    if (cnt == 2 && filterByTrainers[2] == false) {
+      return filteredRoles.split(", ")[0]+", "+filteredRoles.split(", ")[1];
+    }
+    return filteredRoles;
+  }
+
+  String returnFilteredActiveStaffString() {
+    String activeStaff = "";
+    int cnt = 0;
+    if (filterByTrainers[3]) {
+      activeStaff += AppLocalizations.of(context)!.yes+", ";
+      cnt += 1;
+    }
+    if (filterByTrainers[4]) {
+      activeStaff += AppLocalizations.of(context)!.no;
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return activeStaff.split(", ")[0];
+    }
+    return activeStaff;
+  }
+
+  // Navigate to Bonos Request Screen
+  Future<void> navigateToRolesScreen() async {
+    var result = await Navigator.push(
+      context,
+      CupertinoPageRoute<bool?>(
+        builder: (context) => BrandRoles(
+          brandId: widget.brandId,
+          trainers: allMembers,
+        ),
+      )
+    );
+    if (result == null || result == true) {
+      setState(() {
+        isLoading = true;
+      });
+      getAllUsers();
+    }
   }
 
   @override
@@ -246,240 +363,287 @@ class _Trainers extends State<Trainers> {
                                       size: MediaQuery.of(context).size.width*0.07,
                                     ),
                                   ),
-                                  IconButton(
-                                    onPressed: () async {
-                                      int? result = await showModalBottomSheet<int?>(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(20),
-                                          ),
-                                        ),
-                                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                                        builder: (BuildContext context) {
-                                          return StatefulBuilder(
-                                            builder: (BuildContext context, StateSetter setStateBottom) {
-                                              return FractionallySizedBox(
-                                                heightFactor: 0.25,
-                                                child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
-                                                  width: MediaQuery.of(context).size.width,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                      children: [
-                                                        /*
-                                                        ListTile(
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.filterBy,
-                                                              style: Theme.of(context).textTheme.caption,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          dense: true,
+                                  ClipOval(
+                                    child: Material(
+                                      color: hasFilter ? AppColors.white : Colors.transparent, // Button color
+                                      child: InkWell(
+                                        splashColor: Theme.of(context).backgroundColor, // Splash color
+                                        onTap: () async {
+                                          await showModalBottomSheet<int?>(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20),
+                                              ),
+                                            ),
+                                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                                            builder: (BuildContext context) {
+                                              // Page View Controller
+                                              final PageController _pageController = PageController(initialPage: 0);
+                                              int _currentPage = 0;
+                                              bool isRoles = true;
+                                              // Widget
+                                              return StatefulBuilder(
+                                                builder: (BuildContext context, StateSetter setStateBottom) {
+                                                  return FractionallySizedBox(
+                                                    heightFactor: 0.3,
+                                                    child: SizedBox(
+                                                      height: MediaQuery.of(context).size.height * 0.5,
+                                                      width: MediaQuery.of(context).size.width,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment.start,
+                                                          children: [
+                                                            ListTile(
+                                                              title: Text(
+                                                                  AppLocalizations.of(context)!.filterBy,
+                                                                  style: Theme.of(context).textTheme.caption,
+                                                                  textAlign: TextAlign.left
+                                                              ),
+                                                              trailing: TextButton(
+                                                                  child: Text(
+                                                                      AppLocalizations.of(context)!.clear,
+                                                                      style: Theme.of(context).textTheme.caption
+                                                                  ),
+                                                                  onPressed: () {
+                                                                    setStateBottom(() {
+                                                                      searchController.clear();
+                                                                      filterSearchResults("");
+                                                                      filterByTrainers = [true, true, true, true, true];
+                                                                      filterByRolesAndActive();
+                                                                    });
+                                                                  }
+                                                              ),
+                                                              dense: true,
+                                                              onTap: _currentPage == 0 ? null : () {
+                                                                _pageController.previousPage(
+                                                                  duration: const Duration(milliseconds: 500),
+                                                                  curve: Curves.ease,
+                                                                );
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              height: MediaQuery.of(context).size.height * 0.21,
+                                                              width: MediaQuery.of(context).size.width,
+                                                              child: PageView(
+                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                controller: _pageController,
+                                                                onPageChanged: (int page) {
+                                                                  setStateBottom(() {
+                                                                    _currentPage = page;
+                                                                  });
+                                                                },
+                                                                children: <Widget>[
+                                                                  Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            isRoles = true;
+                                                                          });
+                                                                          _pageController.nextPage(
+                                                                            duration: const Duration(milliseconds: 500),
+                                                                            curve: Curves.ease,
+                                                                          );
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.roles,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        subtitle: Text(
+                                                                            returnFilteredRolesString(),
+                                                                            style: Theme.of(context).textTheme.caption,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(
+                                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            isRoles = false;
+                                                                          });
+                                                                          _pageController.nextPage(
+                                                                            duration: const Duration(milliseconds: 500),
+                                                                            curve: Curves.ease,
+                                                                          );
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.active+" "+AppLocalizations.of(context)!.lastNDays(30.toString()),
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        subtitle: Text(
+                                                                            returnFilteredActiveStaffString(),
+                                                                            style: Theme.of(context).textTheme.caption,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(
+                                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  isRoles ? Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            // Check if the Only True
+                                                                            var filterRoles = filterByTrainers.sublist(0,3);
+                                                                            filterRoles.retainWhere((element) => element == true);
+                                                                            if (!(filterRoles.length == 1 && filterByTrainers[0])) {
+                                                                              searchController.clear();
+                                                                              filterSearchResults("");
+                                                                              filterByTrainers[0] = !filterByTrainers[0];
+                                                                              filterByRolesAndActive();
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.owner,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: filterByTrainers[0] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            // Check if the Only True
+                                                                            var filterRoles = filterByTrainers.sublist(0,3);
+                                                                            filterRoles.retainWhere((element) => element == true);
+                                                                            if (!(filterRoles.length == 1 && filterByTrainers[1])) {
+                                                                              searchController.clear();
+                                                                              filterSearchResults("");
+                                                                              filterByTrainers[1] = !filterByTrainers[1];
+                                                                              filterByRolesAndActive();
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.administrador,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: filterByTrainers[1] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            // Check if the Only True
+                                                                            var filterRoles = filterByTrainers.sublist(0,3);
+                                                                            filterRoles.retainWhere((element) => element == true);
+                                                                            if (!(filterRoles.length == 1 && filterByTrainers[2])) {
+                                                                              searchController.clear();
+                                                                              filterSearchResults("");
+                                                                              filterByTrainers[2] = !filterByTrainers[2];
+                                                                              filterByRolesAndActive();
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.trainer,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: filterByTrainers[2] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                    ],
+                                                                  ) :
+                                                                  Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            // Check if the Only True
+                                                                            var filterActive = filterByTrainers.sublist(3);
+                                                                            filterActive.retainWhere((element) => element == true);
+                                                                            if (!(filterActive.length == 1 && filterByTrainers[3])) {
+                                                                              searchController.clear();
+                                                                              filterSearchResults("");
+                                                                              filterByTrainers[3] = !filterByTrainers[3];
+                                                                              filterByRolesAndActive();
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.yes,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: filterByTrainers[3] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            // Check if the Only True
+                                                                            var filterActive = filterByTrainers.sublist(3);
+                                                                            filterActive.retainWhere((element) => element == true);
+                                                                            if (!(filterActive.length == 1 && filterByTrainers[4])) {
+                                                                              searchController.clear();
+                                                                              filterSearchResults("");
+                                                                              filterByTrainers[4] = !filterByTrainers[4];
+                                                                              filterByRolesAndActive();
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.no,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: filterByTrainers[4] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              filterByClients[0] = !filterByClients[0];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
-                                                            });
-                                                            setState(() {
-
-                                                            });
-
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.activeTrainers,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: filterByClients[0] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              filterByClients[1] = !filterByClients[1];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
-                                                            });
-                                                            setState(() {
-
-                                                            });
-
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.desactiveTrainers,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: filterByClients[1] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-
-                                                         ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              orderByClients[2] = !orderByClients[2];
-                                                              orderByClients[3] = !orderByClients[3];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
-                                                            });
-                                                            setState(() {
-
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.activeTrainers +" "+AppLocalizations.of(context)!.first.toLowerCase(),
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[2] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              orderByClients[3] = !orderByClients[3];
-                                                              orderByClients[2] = !orderByClients[2];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
-                                                            });
-                                                            setState(() {
-
-                                                            });
-
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.desactiveTrainers +" "+AppLocalizations.of(context)!.first.toLowerCase(),
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[3] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                         */
-
-                                                        ListTile(
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.orderBy,
-                                                              style: Theme.of(context).textTheme.caption,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          dense: true,
-                                                        ),
-
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              /*
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                               */
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              orderByClients[1] = !orderByClients[1];
-                                                            });
-                                                            setState(() {
-                                                              // Sort Trainers Alphabetically
-                                                              allMembers.sort((a, b) {
-                                                                return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-                                                              });
-                                                              // Sort Trainers Alphabetically
-                                                              filteredMembers.sort((a, b) {
-                                                                return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-                                                              });
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.alphabetAtoZ,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[0] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              orderByClients[1] = !orderByClients[1];
-                                                              /*
-                                                              orderByClients[1] = !orderByClients[1];
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                               */
-                                                            });
-                                                            // Sort Trainers Alphabetically
-                                                            allMembers.sort((a, b) {
-                                                              return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-                                                            });
-                                                            // Sort Trainers Alphabetically
-                                                            filteredMembers.sort((a, b) {
-                                                              return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-                                                            });
-                                                            setState(() {
-                                                                allMembers = List.from(allMembers.reversed);
-                                                                filteredMembers = List.from(filteredMembers.reversed);
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.alphabetZtoA,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[1] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
+                                                  );
+                                                } ,
                                               );
-                                            } ,
+                                            },
                                           );
                                         },
-                                      );
-                                    },
-                                    alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.zero,
-                                    icon: Icon(
-                                      Icons.filter_list,
-                                      color: AppColors.white,
-                                      size: MediaQuery.of(context).size.width*0.07,
+                                        child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
+                                          Icons.filter_list,
+                                          color: hasFilter ? AppColors.darkGrey :  AppColors.white,
+                                          size: MediaQuery.of(context).size.width*0.07,
+                                        )),
+                                      ),
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -498,7 +662,7 @@ class _Trainers extends State<Trainers> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded || searchClicked ? Text(AppLocalizations.of(context)!.trainers, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: Colors.white),) : Container(),
+            title: appBarExpanded || searchClicked ? Text(AppLocalizations.of(context)!.staff, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: Colors.white),) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -531,6 +695,49 @@ class _Trainers extends State<Trainers> {
                 ),
               ),
             ],
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                GestureDetector(
+                  onTap: navigateToRolesScreen,
+                  child: Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                    height: MediaQuery.of(context).size.height*0.1,
+                    width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.manage_accounts,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: MediaQuery.of(context).size.width*0.10,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                        Flexible(
+                          child: Text(
+                            AppLocalizations.of(context)!.rolesDescription,
+                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+              ],
+            ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 10,)),
           isLoading ? SliverList(
@@ -603,9 +810,9 @@ class _Trainers extends State<Trainers> {
                 ),
               );
             },
-            childCount: widget.numTrainers,
+              childCount: widget.numTrainers,
             ),
-          ) :
+          ) : filteredMembers.isNotEmpty ?
           SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               Usuario user = filteredMembers[index];
@@ -617,7 +824,7 @@ class _Trainers extends State<Trainers> {
                   borderWidth: 1.0,
                 ),
                 title: Text(
-                  getUsersFullName(user),
+                  user.name!,
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -625,7 +832,7 @@ class _Trainers extends State<Trainers> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "@${user.nick!}",
+                      returnBrandRoleString(user),
                       style: Theme.of(context).textTheme.caption,
                     ),
                   ],
@@ -685,45 +892,28 @@ class _Trainers extends State<Trainers> {
                 },
               );
             },
-            childCount: filteredMembers.length,               // 1000 list items
+              childCount: filteredMembers.length,               // 1000 list items
+            ),
+          ) : SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width*0.30,
+                    child: Image.asset(Constants.emptyCalendar)
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                SizedBox(height: MediaQuery.of(context).size.height*0.12),
+              ],
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 10,)),
         ],
       ),
     );
-  }
-
-  void setFilters()
-  {
-    if (filterByClients[0] && filterByClients[1]) {
-      // Active/Inactive Selected
-      filterClientsNumber = 0;
-    } else if (filterByClients[0]) {
-      // Active Selected
-      filterClientsNumber = 1;
-    } else if(filterByClients[1]) {
-      // Inactive Selected
-      filterClientsNumber = 2;
-    } else {
-      // None Selected
-      filterClientsNumber = 3;
-    }
-    // OrderBy
-    if (orderByClients[0]) {
-      // A-Z
-      alphabeticOrder = 0;
-    } else {
-      // Z-A
-      alphabeticOrder = 1;
-    }
-    if (orderByClients[2]) {
-      // Active First
-      orderByClientsNumber = 0;
-    } else {
-      // InActive First
-      orderByClientsNumber = 1;
-    }
   }
 
   @override

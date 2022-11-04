@@ -51,24 +51,14 @@ class _Clients extends State<Clients> {
   bool searchClicked = false;
   var searchController = TextEditingController();
 
-
-
   // Members Page
   List<Usuario> allMembers = [];
   List<Usuario> filteredMembers = [];
   List<Usuario> allClients = [];
 
-  List<Usuario> activeClients = [];
-  List<Usuario> inactiveClients = [];
-
-  var _orderFilter = OrderFilter();
-  int filterClientsNumber = 0;
-  int orderByClientsNumber = 0;
-  int alphabeticOrder = 0;
+  // Filters
+  bool hasFilter = false;
   List<bool> filterByClients = [true, true];
-  List<bool> orderByClients = [true, false, true, false];
-
-  var chatUsers = [];
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandClients(widget.brandId);
@@ -132,8 +122,67 @@ class _Clients extends State<Clients> {
     }
   }
 
-  String getUsersFullName(Usuario user) {
-    return "${user.firstName} ${user.lastName}";
+  void filterByActive() {
+    // Filter By
+    allMembers.sort((a, b) {
+      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
+    });
+    filteredMembers = List.from(allMembers);
+    int cnt = 0;
+    if (filterByClients[0] == false) {
+      filteredMembers.removeWhere((element) {
+        DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 31));
+        if (element.lastEventAt == null) {
+          return false;
+        } else {
+          return oneMonthAgo.isBefore(element.lastEventAt!.toDate());
+        }
+      });
+    } else {
+      cnt += 1;
+    }
+    if (filterByClients[1] == false) {
+      filteredMembers.removeWhere((element) {
+        DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 31));
+        if (element.lastEventAt == null) {
+          return true;
+        } else {
+          return oneMonthAgo.isAfter(element.lastEventAt!.toDate());
+        }
+      });
+    } else {
+      cnt += 1;
+    }
+    // Has Filter Update
+    if (cnt == 2) {
+      setState(() {
+        hasFilter = false;
+      });
+    } else {
+      setState(() {
+        hasFilter = true;
+      });
+    }
+
+    // Navigator Pop
+    Navigator.pop(context);
+  }
+
+  String returnFilteredActiveClientsString() {
+    String activeStaff = "";
+    int cnt = 0;
+    if (filterByClients[0]) {
+      activeStaff += AppLocalizations.of(context)!.yes+", ";
+      cnt += 1;
+    }
+    if (filterByClients[1]) {
+      activeStaff += AppLocalizations.of(context)!.no;
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return activeStaff.split(", ")[0];
+    }
+    return activeStaff;
   }
 
   @override
@@ -249,239 +298,180 @@ class _Clients extends State<Clients> {
                                       size: MediaQuery.of(context).size.width*0.07,
                                     ),
                                   ),
-                                  IconButton(
-                                    onPressed: () async {
-                                      int? result = await showModalBottomSheet<int?>(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(20),
-                                          ),
-                                        ),
-                                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                                        builder: (BuildContext context) {
-                                          return StatefulBuilder(
-                                            builder: (BuildContext context, StateSetter setStateBottom) {
-                                              return FractionallySizedBox(
-                                                heightFactor: 0.25,
-                                                child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
-                                                  width: MediaQuery.of(context).size.width,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                      children: [
-                                                        /*
-                                                        ListTile(
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.filterBy,
-                                                              style: Theme.of(context).textTheme.caption,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          dense: true,
+                                  ClipOval(
+                                    child: Material(
+                                      color: hasFilter ? AppColors.white : Colors.transparent, // Button color
+                                      child: InkWell(
+                                        splashColor: Theme.of(context).backgroundColor, // Splash color
+                                        onTap: () async {
+                                          await showModalBottomSheet<int?>(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20),
+                                              ),
+                                            ),
+                                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                                            builder: (BuildContext context) {
+                                              // Page View Controller
+                                              final PageController _pageController = PageController(initialPage: 0);
+                                              int _currentPage = 0;
+                                              // Widget
+                                              return StatefulBuilder(
+                                                builder: (BuildContext context, StateSetter setStateBottom) {
+                                                  return FractionallySizedBox(
+                                                    heightFactor: 0.25,
+                                                    child: SizedBox(
+                                                      height: MediaQuery.of(context).size.height * 0.5,
+                                                      width: MediaQuery.of(context).size.width,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment.start,
+                                                          children: [
+                                                            ListTile(
+                                                              title: Text(
+                                                                  AppLocalizations.of(context)!.filterBy,
+                                                                  style: Theme.of(context).textTheme.caption,
+                                                                  textAlign: TextAlign.left
+                                                              ),
+                                                              trailing: TextButton(
+                                                                  child: Text(
+                                                                      AppLocalizations.of(context)!.clear,
+                                                                      style: Theme.of(context).textTheme.caption
+                                                                  ),
+                                                                  onPressed: () {
+                                                                    setStateBottom(() {
+                                                                      searchController.clear();
+                                                                      filterSearchResults("");
+                                                                      filterByClients = [true, true];
+                                                                      filterByActive();
+                                                                    });
+                                                                  }
+                                                              ),
+                                                              dense: true,
+                                                              onTap: _currentPage == 0 ? null : () {
+                                                                _pageController.previousPage(
+                                                                  duration: const Duration(milliseconds: 500),
+                                                                  curve: Curves.ease,
+                                                                );
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              height: MediaQuery.of(context).size.height * 0.15,
+                                                              width: MediaQuery.of(context).size.width,
+                                                              child: PageView(
+                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                controller: _pageController,
+                                                                onPageChanged: (int page) {
+                                                                  setStateBottom(() {
+                                                                    _currentPage = page;
+                                                                  });
+                                                                },
+                                                                children: <Widget>[
+                                                                  Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          _pageController.nextPage(
+                                                                            duration: const Duration(milliseconds: 500),
+                                                                            curve: Curves.ease,
+                                                                          );
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.active+" "+AppLocalizations.of(context)!.lastNDays(30.toString()),
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        subtitle: Text(
+                                                                            returnFilteredActiveClientsString(),
+                                                                            style: Theme.of(context).textTheme.caption,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(
+                                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            // Check if the Only True
+                                                                            var filterActive = List.from(filterByClients);
+                                                                            filterActive.retainWhere((element) => element == true);
+                                                                            if (!(filterActive.length == 1 && filterByClients[0])) {
+                                                                              searchController.clear();
+                                                                              filterSearchResults("");
+                                                                              filterByClients[0] = !filterByClients[0];
+                                                                              filterByActive();
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.yes,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: filterByClients[0] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            // Check if the Only True
+                                                                            var filterActive = List.from(filterByClients);
+                                                                            filterActive.retainWhere((element) => element == true);
+                                                                            if (!(filterActive.length == 1 && filterByClients[1])) {
+                                                                              searchController.clear();
+                                                                              filterSearchResults("");
+                                                                              filterByClients[1] = !filterByClients[1];
+                                                                              filterByActive();
+                                                                            }
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.no,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: filterByClients[1] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                              setStateBottom(() {
-                                                                searchController.clear();
-                                                                filterSearchResults("");
-                                                                filterByClients[0] = !filterByClients[0];
-                                                                setFilters();
-                                                                filteredMembers = _orderFilter.orderFilter(filteredMembers, allClients, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                                allMembers = filteredMembers;
-                                                              });
-                                                              setState(() {
-
-                                                              });
-
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.activeClients,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: filterByClients[0] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                             setStateBottom(() {
-                                                               searchController.clear();
-                                                               filterSearchResults("");
-                                                               filterByClients[1] = !filterByClients[1];
-                                                               setFilters();
-                                                               filteredMembers = _orderFilter.orderFilter(filteredMembers, allClients, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                               allMembers = filteredMembers;
-                                                             });
-                                                             setState(() {
-
-                                                             });
-
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.desactiveClient,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: filterByClients[1] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              orderByClients[2] = !orderByClients[2];
-                                                              orderByClients[3] = !orderByClients[3];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allClients, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
-                                                            });
-                                                            setState(() {
-
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.activeClients+" "+AppLocalizations.of(context)!.first.toLowerCase(),
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[2] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-                                                              orderByClients[3] = !orderByClients[3];
-                                                              orderByClients[2] = !orderByClients[2];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allClients, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                              allMembers = filteredMembers;
-                                                            });
-                                                            setState(() {
-
-                                                            });
-
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.desactiveClient+" "+AppLocalizations.of(context)!.first.toLowerCase(),
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[3] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        */
-
-                                                        ListTile(
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.orderBy,
-                                                              style: Theme.of(context).textTheme.caption,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          dense: true,
-                                                        ),
-
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              /*
-                                                              searchController.clear();
-                                                              filterSearchResults("");
-
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                               */
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              orderByClients[1] = !orderByClients[1];
-                                                            });
-                                                            setState(() {
-                                                              // Sort Trainers Alphabetically
-                                                              allMembers.sort((a, b) {
-                                                                return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-                                                              });
-                                                              // Sort Trainers Alphabetically
-                                                              filteredMembers.sort((a, b) {
-                                                                return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-                                                              });
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.alphabetAtoZ,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[0] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-                                                        ListTile(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              orderByClients[1] = !orderByClients[1];
-                                                              /*
-                                                              orderByClients[1] = !orderByClients[1];
-                                                              orderByClients[0] = !orderByClients[0];
-                                                              setFilters();
-                                                              filteredMembers = _orderFilter.orderFilter(filteredMembers, allTrainers, activeClients, inactiveClients, filterClientsNumber, orderByClientsNumber, alphabeticOrder);
-                                                               */
-                                                            });
-                                                            // Sort Trainers Alphabetically
-                                                            allMembers.sort((a, b) {
-                                                              return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-                                                            });
-                                                            // Sort Trainers Alphabetically
-                                                            filteredMembers.sort((a, b) {
-                                                              return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-                                                            });
-                                                            setState(() {
-                                                              allMembers = List.from(allMembers.reversed);
-                                                              filteredMembers = List.from(filteredMembers.reversed);
-                                                            });
-                                                          },
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.alphabetZtoA,
-                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                              textAlign: TextAlign.left
-                                                          ),
-                                                          trailing: orderByClients[1] ? SizedBox(
-                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                        ),
-
-                                                      ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ),
+                                                  );
+                                                } ,
                                               );
-                                            } ,
+                                            },
                                           );
                                         },
-                                      );
-                                    },
-                                    alignment: Alignment.centerRight,
-                                    padding: EdgeInsets.zero,
-                                    icon: Icon(
-                                      Icons.filter_list,
-                                      color: AppColors.white,
-                                      size: MediaQuery.of(context).size.width*0.07,
+                                        child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
+                                          Icons.filter_list,
+                                          color: hasFilter ? AppColors.darkGrey :  AppColors.white,
+                                          size: MediaQuery.of(context).size.width*0.07,
+                                        )),
+                                      ),
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -667,7 +657,7 @@ class _Clients extends State<Clients> {
                   borderWidth: 1.0,
                 ),
                 title: Text(
-                  getUsersFullName(user),
+                  user.name!,
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -758,39 +748,7 @@ class _Clients extends State<Clients> {
       ),
     );
   }
-
-  void setFilters()
-  {
-    if (filterByClients[0] && filterByClients[1]) {
-      // Active/Inactive Selected
-      filterClientsNumber = 0;
-    } else if (filterByClients[0]) {
-      // Active Selected
-      filterClientsNumber = 1;
-    } else if(filterByClients[1]) {
-      // Inactive Selected
-      filterClientsNumber = 2;
-    } else {
-      // None Selected
-      filterClientsNumber = 3;
-    }
-    // OrderBy
-    if (orderByClients[0]) {
-      // A-Z
-      alphabeticOrder = 0;
-    } else {
-      // Z-A
-      alphabeticOrder = 1;
-    }
-    if (orderByClients[2]) {
-      // Active First
-      orderByClientsNumber = 0;
-    } else {
-      // InActive First
-      orderByClientsNumber = 1;
-    }
-  }
-
+  
   @override
   void dispose() {
     super.dispose();

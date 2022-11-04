@@ -1821,7 +1821,6 @@ class ScriptsDatabaseService {
     }
   }
 
-
   Future<bool> migrateEventDataSeptember9th() async {
     try {
       print('\n');
@@ -2010,6 +2009,103 @@ class ScriptsDatabaseService {
         print('=================================================================================');
         print('\n');
 
+      }
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> migrateUserDataOctober27th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 8TH FEBRUARY 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Brands/Users collection:\n');
+      print('--------------');
+      print('\n');
+
+      String users = "Users";
+      String brands = "Brands";
+
+      // REAL MIGRATION FOR REAL DATA OF USERS
+      QuerySnapshot querySnapshot = await _firestore.collection(brands).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String brandId = querySnapshot.docs[i].id;
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).get();
+        Brand brand = Brand.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('BRAND WITH ID: '+brand.id!+" AND NAME: "+brand.name!);
+        print('\n');
+        print('Updating "Users" subcollection');
+        print('-----------------------------\n');
+        QuerySnapshot querySnapshotUsers = await _firestore.collection(brands).doc(brandId).collection("Users").get();
+        for (var i=0; i<querySnapshotUsers.docs.length;i++) {
+          String userId = querySnapshotUsers.docs[i].id;
+          DocumentSnapshot _documentSnapshot = await _firestore.collection(users).doc(userId).get();
+          // Get User Data
+          Usuario user = Usuario.fromObjectAllData(userId, _documentSnapshot);
+          print('User with ID : '+userId+" and Name: "+user.name!);
+          // Get Date Joined Brand
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 = await _firestore.collection(users).doc(userId).collection("Brands").doc(brandId).get();
+          String dateJoined = _documentSnapshot2.get("dateJoined");
+          // Get Last Event of User
+          QuerySnapshot querySnapshotUserEvents = await _firestore.collection(users).doc(userId).collection("Events").get();
+          List<Event> events = [];
+          for (int i = 0; i < querySnapshotUserEvents.docs.length; i++) {
+            events.add(Event.fromObjectOnlyCoverData(querySnapshotUserEvents.docs[i].id, querySnapshotUserEvents.docs[i]));
+          }
+          events.sort((a, b) {
+            return b.doneAt!.toDate().compareTo(a.doneAt!.toDate());
+          });
+          if (events.isNotEmpty) {
+            Event lastEvent = events[0];
+            // Update Brand / Users
+            await _firestore
+            .collection(brands)
+            .doc(brandId)
+            .collection("Users")
+            .doc(userId)
+            .update({
+              "lastEventAt": lastEvent.doneAt,
+              "dateJoined": dateJoined,
+              "gender": user.gender,
+              "dateOfBirth": user.dateOfBirth,
+            });
+            // Updates
+            print("lastEventAt: "+lastEvent.doneAt.toString());
+            print("dateJoined: "+dateJoined);
+            print("gender: "+user.gender.toString());
+            print("dateOfBirth: "+user.dateOfBirth!);
+          } else {
+            // Update Brand / Users
+            await _firestore
+            .collection(brands)
+            .doc(brandId)
+            .collection("Users")
+            .doc(userId)
+            .update({
+              "dateJoined": dateJoined,
+              "gender": user.gender,
+              "dateOfBirth": user.dateOfBirth,
+            });
+            // Updates
+            print("lastEventAt: "+"No Events Done");
+            print("dateJoined: "+dateJoined);
+            print("gender: "+user.gender.toString());
+            print("dateJoined: "+user.dateOfBirth!);
+          }
+        }
+        print('All Users Updated');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
       }
 
       return true;

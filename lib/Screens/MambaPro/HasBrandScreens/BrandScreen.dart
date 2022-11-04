@@ -22,11 +22,13 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/002-Clients/Clients.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/Bonos.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
@@ -298,14 +300,25 @@ class _BrandScreenState extends State<BrandScreen> {
                 SizedBox(height: safeAreaHeight * 0.03),
                 Text(
                     currentUser.firstName! + ' ' + currentUser.lastName!,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal)
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
                 ),
                 SizedBox(height: safeAreaHeight * 0.02),
-                Text(
-                    currentUser.email!,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color:AppColors.white)
+                TextButton(
+                  onPressed: navigateToRolesInformationModal,
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerLeft),
+                  child: Text(
+                    returnBrandRoleString(),
+                    textAlign: TextAlign.left,
+                    //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                    style: Theme.of(context).textTheme.caption,
+                  )
                 ),
               ],
             ),
@@ -313,6 +326,39 @@ class _BrandScreenState extends State<BrandScreen> {
         ],
       ),
     );
+  }
+
+  // Navigate to Bonos Request Screen
+  void navigateToRolesInformationModal() async {
+    showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+            heightFactor: 0.9,
+            child: RolesInfo()
+        );
+      },
+    );
+  }
+
+  String returnBrandRoleString() {
+    switch (currentUser.brandRole) {
+      case 1:
+        return AppLocalizations.of(context)!.owner;
+      case 2:
+        return AppLocalizations.of(context)!.administrador;
+      case 3:
+        return AppLocalizations.of(context)!.trainer;
+      default:
+        return AppLocalizations.of(context)!.trainer;
+    }
   }
 
   Widget buildBrandListOptions() {
@@ -372,6 +418,7 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
         ),
         SizedBox(height: safeAreaHeight * 0.01),
+        listTilePro(9),
         listTilePro(8),
         listTilePro(7),
         listTilePro(11),
@@ -670,6 +717,15 @@ class _BrandScreenState extends State<BrandScreen> {
                 this.calendarView = null;
               });
             },
+        );
+      case 9:
+        return Stats(
+          brandId: currentBrand.id!,
+          pinned: iconStar,
+          initIndex: 0,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
         );
       case 2:
         mixpanel!.track('brand_clients_view');

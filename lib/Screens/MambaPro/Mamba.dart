@@ -219,6 +219,8 @@ class _MambaState extends State<Mamba> {
       Brand brand = currentUser.brandsList[0];
       currentBrand.setBasicData = await _brandDataService.getBrandDetails(brand.id!);
       currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
+      // Get Role in Brand
+      currentUser.setBrandRole = await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
     }
     setState(() {
       isLoading = false;

@@ -55,6 +55,9 @@ Future<void> main() async {
     // Firebase Dynamic Links
     DynamicLinkUtils().retrieveDynamicLink();
     // Firebase Crashlytics
+    if (isProduction) {
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    }
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     // Init MixPanel
     mixpanel = await Mixpanel.init(

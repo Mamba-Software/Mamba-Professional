@@ -536,7 +536,9 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                           Text(
                               currentUser.firstName!,
                               style: Theme.of(context).textTheme.headline1,
-                              textAlign: TextAlign.center
+                              textAlign: TextAlign.left,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                           ),
                         ],
                       ),
