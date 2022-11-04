@@ -584,6 +584,7 @@ class _BrandScreenState extends State<BrandScreen> {
           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
         ),
         onTap: () async {
+          mixpanel!.track('exit_brand_dialog_open');
           // Leaves Brand
           var result = await showDialog(
               context: context,
@@ -592,6 +593,7 @@ class _BrandScreenState extends State<BrandScreen> {
               }
           );
           if (result) {
+            mixpanel!.track('exit_brand_confirmed');
             setState(() {
               isLoading = true;
             });
@@ -617,6 +619,7 @@ class _BrandScreenState extends State<BrandScreen> {
           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
         ),
         onTap: () async {
+          mixpanel!.track('delete_brand_dialog_open');
           var result = await showDialog(
               context: context,
               builder: (_) {
@@ -624,6 +627,7 @@ class _BrandScreenState extends State<BrandScreen> {
               }
           );
           if (result) {
+            mixpanel!.track('delete_brand_confirmed');
             setState(() {
               isLoading = true;
             });
@@ -649,6 +653,7 @@ class _BrandScreenState extends State<BrandScreen> {
   Widget buildBodyNavigation() {
     switch (pageIndex) {
       case 0:
+        mixpanel!.track('brand_homepage_view');
         return HomePro(
             brandId: currentBrand.id!,
             numTrainers: currentBrand.numTrainers!,
@@ -667,6 +672,7 @@ class _BrandScreenState extends State<BrandScreen> {
             },
         );
       case 2:
+        mixpanel!.track('brand_clients_view');
         return Clients(
           brandId: currentBrand.id!,
           numClients: currentBrand.numClients!,
@@ -676,6 +682,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 1:
+        mixpanel!.track('brand_trainers_view');
         return Trainers(
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
@@ -685,6 +692,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 15:
+        mixpanel!.track('brand_membership_requests_view');
         return MembershipRequestsPro(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -693,6 +701,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 8:
+        mixpanel!.track('brand_info_view');
         return BrandInfo(
           locale: Localizations.localeOf(context),
           brandId: currentBrand.id!,
@@ -702,6 +711,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 5:
+        mixpanel!.track('brand_bonos_view');
         return BonosPro(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -710,6 +720,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 10:
+        mixpanel!.track('brand_calendar_view');
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
           dateTime: calendarDateTime,
@@ -720,6 +731,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 14:
+        mixpanel!.track('brand_event_history_view');
         return BrandEventHistoryPage(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -728,15 +740,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 7:
-        return BrandImages(
-          brandId: currentBrand.id!,
-          pinned: iconStar,
-          pinnedChanged: (boolean) {
-            handleChangedFavourites();
-          },
-        );
-      case 13:
-        // Placeholder for Feedback
+        mixpanel!.track('brand_images_view');
         return BrandImages(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -745,6 +749,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 11:
+        mixpanel!.track('brand_locations_view');
         return Locations(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -753,6 +758,7 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       default:
+        mixpanel!.track('brand_homepage_view');
         return HomePro(
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
