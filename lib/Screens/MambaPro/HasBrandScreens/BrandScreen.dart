@@ -216,6 +216,40 @@ class _BrandScreenState extends State<BrandScreen> {
                     favourites.remove(_pageIndex);
                     favourites.sort();
                     _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
+                    switch (pageIndex) {
+                      case 9:
+                        mixpanel!.track('drawer_stats_pinned_off');
+                        break;
+                      case 2:
+                        mixpanel!.track('drawer_clients_pinned_off');
+                        break;
+                      case 1:
+                        mixpanel!.track('drawer_trainers_pinned_off');
+                        break;
+                      case 15:
+                        mixpanel!.track('drawer_membership_requests_pinned_off');
+                        break;
+                      case 8:
+                        mixpanel!.track('drawer_brand_info_pinned_off');
+                        break;
+                      case 5:
+                        mixpanel!.track('drawer_bonos_pinned_off');
+                        break;
+                      case 10:
+                        mixpanel!.track('drawer_calendar_pinned_off');
+                        break;
+                      case 14:
+                        mixpanel!.track('drawer_event_history_pinned_off');
+                        break;
+                      case 7:
+                        mixpanel!.track('drawer_images_pinned_off');
+                        break;
+                      case 11:
+                        mixpanel!.track('drawer_locations_pinned_off');
+                        break;
+                      default:
+                        break;
+                    }
                   }
                   );
                 },
