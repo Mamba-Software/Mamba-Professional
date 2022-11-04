@@ -129,8 +129,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     _tabController = TabController(length: 3, vsync: this);
     if (widget.eventId != null) {
       getEventInfo();
+      mixpanel!.track('edit_event_info', properties: {'isPrivate': true});
     } else {
       initializeEventInfo();
+      mixpanel!.track('add_event_info', properties: {'isPrivate': true});
     }
   }
 
@@ -1541,10 +1543,20 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                     heroTag: "4",
                     onPressed: () {
                       if (_selectedIndex == 1) {
+                        if (widget.eventId != null) {
+                          mixpanel!.track('edit_event_info', properties: {'isPrivate': true});
+                        } else {
+                          mixpanel!.track('add_event_info', properties: {'isPrivate': true});
+                        }
                         setState(() {
                           tabs[1] = false;
                         });
                       } else if (_selectedIndex == 2) {
+                        if (widget.eventId != null) {
+                          mixpanel!.track('edit_event_datetime', properties: {'isPrivate': true});
+                        } else {
+                          mixpanel!.track('add_event_datetime', properties: {'isPrivate': true});
+                        }
                         setState(() {
                           tabs[2] = false;
                         });
@@ -1580,11 +1592,22 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                               imageError = true;
                             });
                           } else {
+                            if (widget.eventId != null) {
+                              mixpanel!.track('edit_event_datetime', properties: {'isPrivate': true});
+                            } else {
+                              mixpanel!.track('add_event_datetime', properties: {'isPrivate': true});
+                            }
                             _tabController!.animateTo(_selectedIndex += 1);
                             setState(() {
                               addEventTabValue += 0.33;
                               tabs[1] = true;
                             });
+                          }
+                        } else {
+                          if (widget.eventId != null) {
+                            mixpanel!.track('edit_event_info_error', properties: {'isPrivate': true});
+                          } else {
+                            mixpanel!.track('add_event_info_error', properties: {'isPrivate': true});
                           }
                         }
                       } else if (_selectedIndex == 1) {
@@ -1592,25 +1615,45 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                           errorDate = false;
                         });
                         if (validateDateAndTime(startDate, double.parse(duration))) {
+                          if (widget.eventId != null) {
+                            mixpanel!.track('edit_event_members', properties: {'isPrivate': true});
+                          } else {
+                            mixpanel!.track('add_event_members', properties: {'isPrivate': true});
+                          }
                           _tabController!.animateTo(_selectedIndex += 1);
                           setState(() {
                             addEventTabValue += 0.33;
                             tabs[2] = true;
                           });
                         } else {
+                          if (widget.eventId != null) {
+                            mixpanel!.track('edit_event_datetime_error', properties: {'isPrivate': true});
+                          } else {
+                            mixpanel!.track('add_event_datetime_error', properties: {'isPrivate': true});
+                          }
                           setState(() {
                             errorDate = true;
                           });
                         }
                       } else if (_selectedIndex == 2) {
-                        if (brandTrainersSelected.length == 0) {
+                        if (brandTrainersSelected.isEmpty) {
                           setState(() {
                             errorNoTrainerSelected = true;
                           });
-                        } else if (brandClientsSelected.length == 0) {
+                          if (widget.eventId != null) {
+                            mixpanel!.track('edit_event_trainers_error', properties: {'isPrivate': true});
+                          } else {
+                            mixpanel!.track('add_event_trainers_error', properties: {'isPrivate': true});
+                          }
+                        } else if (brandClientsSelected.isEmpty) {
                           setState(() {
                             errorClientsSelected = true;
                           });
+                          if (widget.eventId != null) {
+                            mixpanel!.track('edit_event_clients_error', properties: {'isPrivate': true});
+                          } else {
+                            mixpanel!.track('add_event_clients_error', properties: {'isPrivate': true});
+                          }
                         } else {
                           if (widget.eventId == null) {
                             _addEventFunction();
@@ -1712,6 +1755,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future<void> _addEventFunction() async {
+    mixpanel!.timeEvent("add_event_completed");
     List<Usuario> eventMembers = List.from(brandTrainersSelected);
     List<Bono> userBonos = [];
     setState(() {
@@ -1769,6 +1813,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       String eventId = await _addEventCall(event);
       // Add Event Members
       await _addEventMembersCall(eventId, eventMembers);
+      mixpanel!.track('add_event_completed', properties: {'isPrivate': true, 'isRecurrent': false});
     } else {
       // Recurrent total
       int days = values.where((item) => item == true).length;
@@ -1937,15 +1982,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           weekDay = tempDate.weekday;
         }
       }
-
       assignBonoUsers(eventMembers, event);
       // Create Entry in /Event Groups
       await _eventDataService.addRecurrentEventGroup(eventGroupId, groupEventsIds);
+      mixpanel!.track('add_event_completed', properties: {'isPrivate': true, 'isRecurrent': true});
     }
     Navigator.pop(context);
   }
 
   Future<void> _deleteEventFunction() async {
+    mixpanel!.timeEvent("delete_event_completed");
     setState(() {
       isLoading = true;
     });
@@ -1974,11 +2020,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         await _eventDataService.deleteRecurrentEventGroup(event.eventGroupId!);
       }
     }
+    mixpanel!.track('delete_event_completed', properties: {'isPrivate': true, 'isRecurrent': false});
     // Pop to Last Page
     Navigator.pop(context, false);
   }
 
   Future<void> _updateEventFunction() async {
+    mixpanel!.timeEvent("edit_event_completed");
     setState(() {
       isLoading = true;
     });
@@ -2104,12 +2152,14 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Client Added "+user.id.toString());
     }
+    mixpanel!.track('edit_event_completed', properties: {'isPrivate': true, 'isRecurrent': false});
     Navigator.pop(context, true);
   }
 
   // Recurrent Events
 
   Future<void> _deleteRecurrentEventFunction() async {
+    mixpanel!.timeEvent("delete_event_completed");
     setState(() {
       isLoading = true;
     });
@@ -2147,11 +2197,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         await _deleteEventLocalNotificationsCall(event.id!, user.id!);
       }
     }
+    mixpanel!.track('delete_event_completed', properties: {'isPrivate': true, 'isRecurrent': true});
     // Pop to Last Page
     Navigator.pop(context, false);
   }
 
   Future<void> _updateRecurrentEventFunction() async {
+    mixpanel!.timeEvent('edit_event_completed');
     setState(() {
       isLoading = true;
     });
@@ -2319,6 +2371,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         print("Client Added "+user.id.toString());
       }
     }
+    mixpanel!.track('edit_event_completed', properties: {'isPrivate': true, 'isRecurrent': true});
     // Pop to Get Back
     Navigator.pop(context, true);
   }
