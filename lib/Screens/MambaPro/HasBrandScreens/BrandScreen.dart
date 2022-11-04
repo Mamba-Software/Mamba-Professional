@@ -341,7 +341,7 @@ class _BrandScreenState extends State<BrandScreen> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
         return const FractionallySizedBox(
-            heightFactor: 0.9,
+            heightFactor: 0.935,
             child: RolesInfo()
         );
       },
