@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
@@ -30,13 +31,14 @@ class _FeedBackState extends State<FeedBack> {
   @override
   void initState() {
     super.initState();
-    this.checkIfAnswered();
+    mixpanel!.track('user_profile_feedback_view');
+    checkIfAnswered();
   }
 
   Future<void> checkIfAnswered() async {
-    this.groupOfQuestions = await _feedbackDataService.getActiveGroupOfQuestions();
+    groupOfQuestions = await _feedbackDataService.getActiveGroupOfQuestions();
     if (groupOfQuestions != null) {
-      alreadyAnswered = await _feedbackDataService.checkIfAnswersExist(this.groupOfQuestions!.id);
+      alreadyAnswered = await _feedbackDataService.checkIfAnswersExist(groupOfQuestions!.id);
     } else {
       alreadyAnswered = true;
     }
@@ -82,6 +84,7 @@ class _FeedBackState extends State<FeedBack> {
               padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
               child: ListTile(
                 onTap: () async {
+                  mixpanel!.track('user_profile_feedback_report_bug_open');
                   Navigator.push(
                     context,
                       CupertinoPageRoute<String>(
@@ -178,7 +181,7 @@ class _FeedBackState extends State<FeedBack> {
                       builder: (context) => UserFeedBack(
                     ),
                   )).whenComplete(() {
-                      this.checkIfAnswered();
+                      checkIfAnswered();
                   });
               },
               child: Stack(
