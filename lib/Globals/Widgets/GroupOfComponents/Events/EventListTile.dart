@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
@@ -134,6 +135,9 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
 
   // Navigate to Event Screen
   void navigateToEventScreen() {
+    mixpanel!.track('brand_event_history_event_view', properties: {
+      'hasFeedbackAverage' : widget.showAverage != null && widget.showAverage! && eventFeedbackValue != null ? true : false
+    });
     Navigator.push(
       context,
       CupertinoPageRoute<void>(
