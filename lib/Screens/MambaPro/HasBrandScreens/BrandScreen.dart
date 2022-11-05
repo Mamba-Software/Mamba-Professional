@@ -364,6 +364,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Navigate to Bonos Request Screen
   void navigateToRolesInformationModal() async {
+    mixpanel!.track('drawer_trainer_roles_info');
     showModalBottomSheet<bool?>(
       context: context,
       isScrollControlled: true,
