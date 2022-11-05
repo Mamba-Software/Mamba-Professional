@@ -138,6 +138,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   }
 
   Future<void> navigateToEditLogoScreen() async {
+    mixpanel!.track('brand_info_logo_change');
     await Navigator.push(
         context,
         CupertinoPageRoute<void>(
@@ -159,10 +160,13 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
       if (nameBrandControllerTemp.trim() != currentBrand.name! && nameBrandControllerTemp != "") {
         isUpdated = true;
+        mixpanel!.track('brand_info_name_change');
       } else if (descriptionControllerTemp.trim() != currentBrand.description! && descriptionControllerTemp != "") {
         isUpdated = true;
+        mixpanel!.track('brand_info_description_change');
       } else if (startTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,)) || endTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,))) {
         isUpdated = true;
+        mixpanel!.track('brand_info_workshit_change');
       } else {
         isUpdated = false;
       }
@@ -257,6 +261,11 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_info_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_info_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });
@@ -797,6 +806,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               }
               await _brandDataService.updateBrandInfo(widget.brandId, nameBrandController.text, descriptionController.text, members, _workShift);
               await getBrand();
+              mixpanel!.track('brand_info_changes_done');
             }
           },
           backgroundColor: Colors.green,
