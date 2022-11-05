@@ -38,6 +38,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
 
   @override
   void initState() {
+    mixpanel!.track('user_profile_settings_edit_info');
     super.initState();
   }
 
@@ -143,11 +144,15 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     if (!isLoading) {
       if (firstNameController.text.trim() != currentUser.lastName! && firstNameControllerTemp != "") {
         isUpdated = true;
+        mixpanel!.track('user_profile_settings_edit_info_name_change');
       } else if (lastNameController.text.trim() != currentUser.firstName! && lastNameControllerTemp != "") {
         isUpdated = true;
+        mixpanel!.track('user_profile_settings_edit_info_surname_change');
       } else if (genderTemp != currentUser.gender! && genderTemp != null) {
         isUpdated = true;
+        mixpanel!.track('user_profile_settings_edit_info_gender_change');
       } else if (startDateController.text != currentUser.dateOfBirth) {
+        mixpanel!.track('user_profile_settings_edit_info_birthdate_change');
         isUpdated = true;
       } else {
         isUpdated = false;
@@ -410,6 +415,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                 });
                 currentUser.name = currentUser.firstName!+" "+currentUser.lastName!;
                 await _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
+                mixpanel!.track('user_profile_settings_edit_info_completed');
               }
               await Future.delayed(const Duration(seconds: 1));
               Navigator.pop(context);
