@@ -260,6 +260,7 @@ class _Clients extends State<Clients> {
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
+                                    mixpanel!.track('brand_clients_search_clean');
                                     searchController.clear();
                                     filterSearchResults("");
                                   },
@@ -284,6 +285,11 @@ class _Clients extends State<Clients> {
                                 children: [
                                   IconButton(
                                     onPressed: () {
+                                      if (searchClicked == false) {
+                                        mixpanel!.track('brand_clients_search_button');
+                                      } else {
+                                        mixpanel!.track('brand_clients_search_close');
+                                      }
                                       setState(() {
                                         searchClicked = !searchClicked;
                                         searchController.clear();
@@ -304,6 +310,7 @@ class _Clients extends State<Clients> {
                                       child: InkWell(
                                         splashColor: Theme.of(context).backgroundColor, // Splash color
                                         onTap: () async {
+                                          mixpanel!.track('brand_clients_filter_button');
                                           await showModalBottomSheet<int?>(
                                             context: context,
                                             isScrollControlled: true,
@@ -343,6 +350,7 @@ class _Clients extends State<Clients> {
                                                                       style: Theme.of(context).textTheme.caption
                                                                   ),
                                                                   onPressed: () {
+                                                                    mixpanel!.track('brand_clients_filter_clean');
                                                                     setStateBottom(() {
                                                                       searchController.clear();
                                                                       filterSearchResults("");
@@ -353,6 +361,7 @@ class _Clients extends State<Clients> {
                                                               ),
                                                               dense: true,
                                                               onTap: _currentPage == 0 ? null : () {
+                                                                mixpanel!.track('brand_clients_filter_back');
                                                                 _pageController.previousPage(
                                                                   duration: const Duration(milliseconds: 500),
                                                                   curve: Curves.ease,
@@ -375,6 +384,7 @@ class _Clients extends State<Clients> {
                                                                     children: [
                                                                       ListTile(
                                                                         onTap: () {
+                                                                          mixpanel!.track('brand_clients_filter_active');
                                                                           _pageController.nextPage(
                                                                             duration: const Duration(milliseconds: 500),
                                                                             curve: Curves.ease,
@@ -411,6 +421,7 @@ class _Clients extends State<Clients> {
                                                                               searchController.clear();
                                                                               filterSearchResults("");
                                                                               filterByClients[0] = !filterByClients[0];
+                                                                              mixpanel!.track('brand_clients_filter_active', properties: {'Values': [filterByClients[0] ? 'Yes' : ' ', filterByClients[1] ? 'No' : ' ' ]});
                                                                               filterByActive();
                                                                             }
                                                                           });
@@ -435,6 +446,7 @@ class _Clients extends State<Clients> {
                                                                               searchController.clear();
                                                                               filterSearchResults("");
                                                                               filterByClients[1] = !filterByClients[1];
+                                                                              mixpanel!.track('brand_clients_filter_active', properties: {'Values': [filterByClients[0] ? 'Yes' : ' ', filterByClients[1] ? 'No' : ' ' ]});
                                                                               filterByActive();
                                                                             }
                                                                           });
@@ -563,6 +575,11 @@ class _Clients extends State<Clients> {
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_clients_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_clients_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });
@@ -681,6 +698,7 @@ class _Clients extends State<Clients> {
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.all(0),
                   onPressed: () async {
+                    mixpanel!.track('brand_clients_chat_button');
                     types.User otherUser = types.User(
                       firstName: user.firstName,
                       lastName: user.lastName,
@@ -703,10 +721,12 @@ class _Clients extends State<Clients> {
                     });
                     if (!deleteRoom!) {
                       _roomDataService.deleteRoom(room.id);
+                      mixpanel!.track('brand_clients_chat_empty');
                     }
                   },
                 ),
                 onTap: () async {
+                  mixpanel!.track('brand_clients_profile_view');
                   var result = await Navigator.push(
                       context,
                       CupertinoPageRoute<bool?>(

@@ -47,6 +47,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
 
   // Navigate to Event History Screen
   void navigateToBonoHistoryScreen() {
+    mixpanel!.track('profile_view_purchase_history');
     Navigator.push(
         context,
         CupertinoPageRoute<void>(

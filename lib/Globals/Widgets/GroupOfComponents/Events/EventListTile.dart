@@ -135,9 +135,13 @@ class _EventListTileState extends State<EventListTile> with TickerProviderStateM
 
   // Navigate to Event Screen
   void navigateToEventScreen() {
-    mixpanel!.track('brand_event_history_event_view', properties: {
-      'hasFeedbackAverage' : widget.showAverage != null && widget.showAverage! && eventFeedbackValue != null ? true : false
-    });
+    if (widget.showFeedback) {
+      mixpanel!.track('profile_view_event_view');
+    } else {
+      mixpanel!.track('brand_event_history_event_view', properties: {
+        'hasFeedbackAverage' : widget.showAverage != null && widget.showAverage! && eventFeedbackValue != null ? true : false
+      });
+    }
     Navigator.push(
       context,
       CupertinoPageRoute<void>(
