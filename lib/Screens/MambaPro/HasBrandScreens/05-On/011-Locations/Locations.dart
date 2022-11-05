@@ -200,6 +200,7 @@ class _LocationsState extends State<Locations> {
                                 height: MediaQuery.of(context).size.height*0.08,
                                 child: IconButton(
                                   onPressed: () async {
+                                    mixpanel!.timeEvent('brand_locations_added');
                                     // Generate a new token here
                                     final sessionToken = const Uuid().v4();
                                     final language = currentUser.idioma;
@@ -251,6 +252,7 @@ class _LocationsState extends State<Locations> {
                                       await _locationDataService.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
                                       await Future.delayed(const Duration(seconds: 4));
                                       getAllLocations();
+                                      mixpanel!.track('brand_locations_added');
                                     } else {
                                       setState(() {
                                         isLoading = false;
@@ -277,8 +279,6 @@ class _LocationsState extends State<Locations> {
                     ),
                   ],
                 ),
-
-
               ),
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
@@ -308,6 +308,11 @@ class _LocationsState extends State<Locations> {
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_locations_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_locations_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });
