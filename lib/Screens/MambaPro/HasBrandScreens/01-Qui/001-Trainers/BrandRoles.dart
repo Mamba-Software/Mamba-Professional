@@ -82,7 +82,7 @@ class _BrandRolesState extends State<BrandRoles> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setStateBottom) {
             return FractionallySizedBox(
-              heightFactor: 0.3,
+              heightFactor: 0.33,
               child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
                 width: MediaQuery.of(context).size.width,
                 child: Padding(
@@ -200,6 +200,7 @@ class _BrandRolesState extends State<BrandRoles> {
 
   // Navigate to Bonos Request Screen
   void navigateToRolesInformationModal() async {
+    mixpanel!.track('brand_trainers_roles_info');
     showModalBottomSheet<bool?>(
       context: context,
       isScrollControlled: true,

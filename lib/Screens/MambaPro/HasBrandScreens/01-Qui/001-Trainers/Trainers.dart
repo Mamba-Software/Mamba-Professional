@@ -234,6 +234,7 @@ class _Trainers extends State<Trainers> {
 
   // Navigate to Bonos Request Screen
   Future<void> navigateToRolesScreen() async {
+    mixpanel!.track('brand_trainers_roles_view');
     var result = await Navigator.push(
       context,
       CupertinoPageRoute<bool?>(
@@ -325,6 +326,7 @@ class _Trainers extends State<Trainers> {
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
+                                    mixpanel!.track('brand_trainers_search_clean');
                                     searchController.clear();
                                     filterSearchResults("");
                                   },
@@ -349,6 +351,11 @@ class _Trainers extends State<Trainers> {
                                 children: [
                                   IconButton(
                                     onPressed: () {
+                                      if (searchClicked == false) {
+                                        mixpanel!.track('brand_trainers_search_button');
+                                      } else {
+                                        mixpanel!.track('brand_trainers_search_close');
+                                      }
                                       setState(() {
                                         searchController.clear();
                                         filterSearchResults("");
@@ -369,6 +376,7 @@ class _Trainers extends State<Trainers> {
                                       child: InkWell(
                                         splashColor: Theme.of(context).backgroundColor, // Splash color
                                         onTap: () async {
+                                          mixpanel!.track('brand_trainers_filter_button');
                                           await showModalBottomSheet<int?>(
                                             context: context,
                                             isScrollControlled: true,
@@ -387,7 +395,7 @@ class _Trainers extends State<Trainers> {
                                               return StatefulBuilder(
                                                 builder: (BuildContext context, StateSetter setStateBottom) {
                                                   return FractionallySizedBox(
-                                                    heightFactor: 0.3,
+                                                    heightFactor: 0.33,
                                                     child: SizedBox(
                                                       height: MediaQuery.of(context).size.height * 0.5,
                                                       width: MediaQuery.of(context).size.width,
@@ -409,6 +417,7 @@ class _Trainers extends State<Trainers> {
                                                                       style: Theme.of(context).textTheme.caption
                                                                   ),
                                                                   onPressed: () {
+                                                                    mixpanel!.track('brand_trainers_filter_clean');
                                                                     setStateBottom(() {
                                                                       searchController.clear();
                                                                       filterSearchResults("");
@@ -419,6 +428,7 @@ class _Trainers extends State<Trainers> {
                                                               ),
                                                               dense: true,
                                                               onTap: _currentPage == 0 ? null : () {
+                                                                mixpanel!.track('brand_trainers_filter_back');
                                                                 _pageController.previousPage(
                                                                   duration: const Duration(milliseconds: 500),
                                                                   curve: Curves.ease,
@@ -444,6 +454,7 @@ class _Trainers extends State<Trainers> {
                                                                           setStateBottom(() {
                                                                             isRoles = true;
                                                                           });
+                                                                          mixpanel!.track('brand_trainers_filter_roles');
                                                                           _pageController.nextPage(
                                                                             duration: const Duration(milliseconds: 500),
                                                                             curve: Curves.ease,
@@ -471,6 +482,7 @@ class _Trainers extends State<Trainers> {
                                                                           setStateBottom(() {
                                                                             isRoles = false;
                                                                           });
+                                                                          mixpanel!.track('brand_trainers_filter_active');
                                                                           _pageController.nextPage(
                                                                             duration: const Duration(milliseconds: 500),
                                                                             curve: Curves.ease,
@@ -507,6 +519,9 @@ class _Trainers extends State<Trainers> {
                                                                               searchController.clear();
                                                                               filterSearchResults("");
                                                                               filterByTrainers[0] = !filterByTrainers[0];
+                                                                              mixpanel!.track('brand_trainers_filter_roles', properties: {
+                                                                                'Values': [filterByTrainers[0] ? 'Owner' : ' ', filterByTrainers[1] ? 'Admin' : ' ', filterByTrainers[2] ? 'Coach' : ' ' ]
+                                                                              });
                                                                               filterByRolesAndActive();
                                                                             }
                                                                           });
@@ -531,6 +546,9 @@ class _Trainers extends State<Trainers> {
                                                                               searchController.clear();
                                                                               filterSearchResults("");
                                                                               filterByTrainers[1] = !filterByTrainers[1];
+                                                                              mixpanel!.track('brand_trainers_filter_roles', properties: {
+                                                                              'Values': [filterByTrainers[0] ? 'Owner' : ' ', filterByTrainers[1] ? 'Admin' : ' ', filterByTrainers[2] ? 'Coach' : ' ' ]
+                                                                              });
                                                                               filterByRolesAndActive();
                                                                             }
                                                                           });
@@ -555,6 +573,9 @@ class _Trainers extends State<Trainers> {
                                                                               searchController.clear();
                                                                               filterSearchResults("");
                                                                               filterByTrainers[2] = !filterByTrainers[2];
+                                                                              mixpanel!.track('brand_trainers_filter_roles', properties: {
+                                                                              'Values': [filterByTrainers[0] ? 'Owner' : ' ', filterByTrainers[1] ? 'Admin' : ' ', filterByTrainers[2] ? 'Coach' : ' ' ]
+                                                                              });
                                                                               filterByRolesAndActive();
                                                                             }
                                                                           });
@@ -583,6 +604,7 @@ class _Trainers extends State<Trainers> {
                                                                               searchController.clear();
                                                                               filterSearchResults("");
                                                                               filterByTrainers[3] = !filterByTrainers[3];
+                                                                              mixpanel!.track('brand_trainers_filter_active', properties: {'Values': [filterByTrainers[3] ? 'Yes' : ' ', filterByTrainers[4] ? 'No' : ' ' ]});
                                                                               filterByRolesAndActive();
                                                                             }
                                                                           });
@@ -607,6 +629,7 @@ class _Trainers extends State<Trainers> {
                                                                               searchController.clear();
                                                                               filterSearchResults("");
                                                                               filterByTrainers[4] = !filterByTrainers[4];
+                                                                              mixpanel!.track('brand_trainers_filter_active', properties: {'Values': [filterByTrainers[3] ? 'Yes' : ' ', filterByTrainers[4] ? 'No' : ' ' ]});
                                                                               filterByRolesAndActive();
                                                                             }
                                                                           });
@@ -687,6 +710,11 @@ class _Trainers extends State<Trainers> {
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_trainers_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_trainers_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });
@@ -848,6 +876,7 @@ class _Trainers extends State<Trainers> {
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.all(0),
                   onPressed: () async {
+                    mixpanel!.track('brand_trainers_chat_button');
                     types.User otherUser = types.User(
                       firstName: user.firstName,
                       lastName: user.lastName,
@@ -870,10 +899,12 @@ class _Trainers extends State<Trainers> {
                     });
                     if (!deleteRoom!) {
                       _roomDataService.deleteRoom(room.id);
+                      mixpanel!.track('brand_trainers_chat_empty');
                     }
                   },
                 ),
                 onTap: () async {
+                  mixpanel!.track('brand_trainers_profile_view');
                   var result = await Navigator.push(
                       context,
                       CupertinoPageRoute<bool?>(
