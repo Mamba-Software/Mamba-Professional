@@ -5,7 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -13,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/ClientsStats/GenderGroup.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/BonosPurchased.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
@@ -61,7 +64,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   TabController? _tabController;
   int _selectedIndex = 0;
-  List<bool> tabs = [true, false, false, false, false];
+  List<bool> tabs = [true, false, false];
 
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
@@ -74,13 +77,18 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   List<Usuario> users = [], filteredUsers = [], filteredBackUsers = [];
 
+  List<Purchase> purchases = [], filteredPurchases = [], filteredBackPurchases = [];
+
+  List<Bono> bonos = [];
+
   @override
   void initState() {
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     if(widget.initIndex != null)
       {
         _selectedIndex = widget.initIndex!;
       }
+    getBrandDetails();
     getCollections();
     super.initState();
     _scrollController = ScrollController()
@@ -110,6 +118,10 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   Future<void> getCollections() async {
     events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
     users = await _brandDataService.getBrandUsersWithDateJoined(widget.brandId);
+    purchases = await _brandDataService.getBrandPurchases(widget.brandId);
+    bonos = await _brandDataService.getAllBonosFromBrandList(widget.brandId);
+    //purchases = await _brandDataService.getBrandPurchases("807b18da-3164-4527-8d32-3ece9cb3c13c");
+    //bonos = await _brandDataService.getAllBonosFromBrandList("807b18da-3164-4527-8d32-3ece9cb3c13c");
       setState(() {
       applyAllFilters();
         isLoading = false;
@@ -122,6 +134,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   {
     applyFilteredEvents();
     applyFilteredUsers();
+    applyFilteredPurchases();
   }
 
   void applyFilteredEvents()
@@ -131,6 +144,16 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
     filteredBackEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(backStartDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(backEndDate)) < 0).toList();
+
+  }
+
+  void applyFilteredPurchases()
+  {
+    filteredPurchases = purchases.where((element) => element.purchasedAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 && element.purchasedAt!.compareTo(Timestamp.fromDate(endDate)) <= 0).toList();
+    int days = daysBetween(startDate, endDate);
+    DateTime  backEndDate = endDate.subtract(Duration(days: days));
+    DateTime backStartDate = startDate.subtract(Duration(days: days));
+    filteredBackPurchases = purchases.where((element) => element.purchasedAt!.compareTo(Timestamp.fromDate(backStartDate)) > 0 && element.purchasedAt!.compareTo(Timestamp.fromDate(backEndDate)) < 0).toList();
 
   }
 
@@ -241,7 +264,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                       else if(_selectedIndex == 2)
                       {
                         addStatsValue = 0.75;
-                        tabs[3] = true;
+                        tabs[2] = true;
                       }
                       else if(_selectedIndex == 3)
                       {
@@ -256,8 +279,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                     tabs: [
                       selectedTab(AppLocalizations.of(context)!.events, 0, 0.20),
                       selectedTab(AppLocalizations.of(context)!.clients, 1, 0.20),
-                      selectedTab(AppLocalizations.of(context)!.staff, 2, 0.15),
-                      selectedTab('Facturación', 3, 0.25),
+                      selectedTab('Facturación', 2, 0.25),
                     ],
                   ),
                 ],
@@ -266,13 +288,12 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.08,),
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.00,),
               child: Column(
                 children: [
                   _selectedIndex == 0? eventsStatsPage() :
                   _selectedIndex == 1? clientsStatsPage() :
-                  _selectedIndex == 2? staffStatsPage() :
-                  _selectedIndex == 3? factStatsPage() : Container(),
+                  _selectedIndex == 2? factStatsPage() : Container(),
                 ],
               ),
             ),
@@ -381,12 +402,12 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     if(isLoading)
       {
         return  Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.25),
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.25, ),
           child:  LoadingView(),
         );
       }
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
       child: Column(
         children: [
           statsTitle('Entrenos realizados'),
@@ -419,7 +440,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   Widget clientsStatsPage()
   {
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
       child: Column(
         children: [
           statsTitle('Numero clientes'),
@@ -461,7 +482,28 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   {
     return Column(
       children: [
-        statsTitle('Facturación total'),
+        Padding(
+          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
+          child: Column(
+            children: [
+              statsTitle('Facturación total'),
+              Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
+          child: Column(
+            children: [
+              statsTitle('Bonos'),
+            ],
+          ),
+        ),
+
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+          child: BonosPurchased(purchases: filteredPurchases, bonos: bonos, brand: brand,),
+        ),
         Divider(color: Theme.of(context).backgroundColor, thickness: 2),
       ],
     );

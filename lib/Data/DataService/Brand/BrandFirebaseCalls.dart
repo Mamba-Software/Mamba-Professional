@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -32,6 +33,7 @@ class BrandFirebaseCalls {
   String users = isProduction ? 'Users' : '7777 Users';
   String events = isProduction ? 'Events' : '7777 Events';
   String locations = isProduction ? 'Locations' : '7777 Locations';
+  String payments = isProduction ? 'Payments' : '7777 Payments';
 
   //Utils
 
@@ -449,6 +451,29 @@ class BrandFirebaseCalls {
     } catch (e) {
       print(e.toString());
       return users;
+    }
+  }
+
+  Future<List<Purchase>> getBrandPurchases(String brandId) async {
+    List<Purchase> purchases = [];
+    Purchase purchase;
+    try {
+      await _firestore.collection(payments).doc('Purchases')
+          .collection("Purchases").where("brandId", isEqualTo: brandId)
+          .get()
+          .then((snapshot) async {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          purchase = Purchase.fromObjectAllData(doc.id, doc);
+          //user = await getUserDetails(doc.id);
+          //brandList = await getAllBrandsFromUser(doc.id);
+          //brand = brandList.firstWhere((element) => element.id == brandId);
+          purchases.add(purchase);
+        }
+      });
+      return purchases;
+    } catch (e) {
+      print(e.toString());
+      return purchases;
     }
   }
 
