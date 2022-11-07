@@ -435,7 +435,7 @@ class BrandFirebaseCalls {
     List<Brand> brandList = [];
     Brand brand;
     try {
-      await _firestore.collection(brands).doc(brandId)
+      await _firestore.collection('Brands').doc(brandId)
           .collection("Users")
           .get()
           .then((snapshot) async {
@@ -458,7 +458,7 @@ class BrandFirebaseCalls {
     List<Purchase> purchases = [];
     Purchase purchase;
     try {
-      await _firestore.collection(payments).doc('Purchases')
+      await _firestore.collection('Payments').doc('Purchases')
           .collection("Purchases").where("brandId", isEqualTo: brandId)
           .get()
           .then((snapshot) async {
@@ -474,6 +474,24 @@ class BrandFirebaseCalls {
     } catch (e) {
       print(e.toString());
       return purchases;
+    }
+  }
+
+  Future<List<Bono>> getAllBonosFromBrandListProd(String brandId) async {
+    List<Bono> bonos = [];
+    try {
+      await _firestore.collection('Brands').doc(brandId)
+          .collection("Bonos")
+          .get()
+          .then((snapshot) {
+        for (DocumentSnapshot doc in snapshot.docs) {
+          bonos.add(Bono.fromObjectAllData(doc.id, doc));
+        }
+      });
+      return bonos;
+    } catch (e) {
+      print(e.toString());
+      return bonos;
     }
   }
 

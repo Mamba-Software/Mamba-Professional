@@ -19,11 +19,9 @@ import '../../../../Styles/AppColors/AppColors.dart';
 
 class AgeRange extends StatefulWidget {
   List<Usuario> users;
-  List<Usuario> allUsers;
 
   AgeRange({
     required this.users,
-    required this.allUsers,
     Key? key,
   }) : super(key: key);
 
@@ -40,7 +38,6 @@ class AgeRangeState extends State<AgeRange> {
   List <Usuario> users = [];
 
   List<int> clientsAge = [0,0,0,0,0,0,0];
-  List<int> allClientsAge = [0,0,0,0,0,0,0];
   ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
@@ -63,9 +60,7 @@ class AgeRangeState extends State<AgeRange> {
   @override
   void initState() {
     filteredUsers = widget.users;
-    users = widget.allUsers;
     mountStat();
-    mountStatAllUsers();
     isLoading = false;
     super.initState();
   }
@@ -74,17 +69,13 @@ class AgeRangeState extends State<AgeRange> {
   void didUpdateWidget(AgeRange oldWidget) {
     super.didUpdateWidget(oldWidget);
     filteredUsers = widget.users;
-    users = widget.allUsers;
     clientsAge = [0,0,0,0,0,0,0];
-    allClientsAge = [0,0,0,0,0,0,0];
     clientsAgeTotalList = [];
-    allClientsAgeTotalList = [];
      maxValue = 0;
      maxValueInt = 0;
      maxValueStr = '';
     totalSumClients = 0;
     mountStat();
-    mountStatAllUsers();
   }
 
   calculateAge(DateTime birthDate) {
@@ -151,51 +142,6 @@ class AgeRangeState extends State<AgeRange> {
     clientsAgeTotalList = clientsAgeTotalList.reversed.toList();
     }
 
-  void mountStatAllUsers()
-  {
-    int age;
-    for(int i = 0; i < users.length; ++i) {
-      age = calculateAge(DateFormat('dd-MM-yy').parse(users[i].dateOfBirth!));
-      if(age < 12 )
-      {
-        allClientsAge[0] = allClientsAge[0] + 1;
-      }
-      else if(age >= 12 && age < 16)
-      {
-        allClientsAge[1] = allClientsAge[1] + 1;
-      }
-      else if(age >= 16 && age < 26)
-      {
-        allClientsAge[2] = allClientsAge[2] + 1;
-      }
-      else if(age >= 26 && age < 35)
-      {
-        allClientsAge[3] = allClientsAge[3] + 1;
-      }
-      else if(age >= 35 && age < 50)
-      {
-        allClientsAge[4] = allClientsAge[4] + 1;
-      }
-      else if(age >= 50 && age < 65)
-      {
-        allClientsAge[5] = allClientsAge[5] + 1;
-      }
-      else {
-        allClientsAge[6] = allClientsAge[6] + 1;
-      }
-    }
-
-    addDayInTotalEventAllClients('-12.', 0);
-    addDayInTotalEventAllClients('12-16.', 1);
-    addDayInTotalEventAllClients('16-26.', 2);
-    addDayInTotalEventAllClients('26-35.', 3);
-    addDayInTotalEventAllClients('35-50.', 4);
-    addDayInTotalEventAllClients('50-65.', 5);
-    addDayInTotalEventAllClients('+85', 6);
-
-    allClientsAgeTotalList = allClientsAgeTotalList.reversed.toList();
-  }
-
 
   void addDayInTotalEvent(String range, int number) {
     ClientsAge clientsAgeTotal;
@@ -211,14 +157,6 @@ class AgeRangeState extends State<AgeRange> {
 
   }
 
-  void addDayInTotalEventAllClients(String range, int number) {
-    ClientsAge clientsAgeTotal;
-    clientsAgeTotal =
-    new ClientsAge(range, allClientsAge[number]);
-    allClientsAgeTotalList.add(clientsAgeTotal);
-
-
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -272,28 +210,7 @@ class AgeRangeState extends State<AgeRange> {
 
                         // Renders line chart
 
-                        BarSeries<ClientsAge, String>(
-                          spacing: 1,
-                          width: 0.3,
-                          opacity: 0.1,
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          borderColor: Styles.mainColor,
-                          borderWidth: 0,
-                          /*
-                            markerSettings: MarkerSettings(
-                                isVisible: true,
-                                height:  5,
-                                width:  5,
-                                shape: DataMarkerType.circle,
-                                color: Styles.mainColor),
-*/
-                          color: AppColors.grey,
-                          dataSource: allClientsAgeTotalList,
 
-                          //dataLabelSettings: DataLabelSettings(isVisible: true, textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.grey)),
-                          xValueMapper: (ClientsAge events, _) => events.range,
-                          yValueMapper: (ClientsAge events, _) => events.age,
-                        ),
                         BarSeries<ClientsAge, String>(
                           spacing: 1,
                           width: 0.3,

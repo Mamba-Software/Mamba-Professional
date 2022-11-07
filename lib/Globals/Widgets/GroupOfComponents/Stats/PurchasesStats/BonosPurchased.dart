@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -43,7 +44,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
   ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y número de entrenos');
+  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y benefici');
 
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
@@ -64,6 +65,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
   void initState() {
     filteredPurchase = widget.purchases;
     bonos = widget.bonos;
+    _numPages = bonos.length;
     mountStat();
     isLoading = false;
     super.initState();
@@ -87,7 +89,6 @@ class BonosPurchasedState extends State<BonosPurchased> {
       bonoStat = new BonoStat(purchasesList.length, getMoney(purchasesList), makeBonoStats(purchasesList));
       bonoStats.add(bonoStat);
     }
-    print(bonoStats);
   }
 
   List<TotalBenefit> makeBonoStats( List<Purchase> purchasesList)
@@ -102,6 +103,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
       return a.purchasedAt!.compareTo(b.purchasedAt!);
     });
     for(int j = 0; j < purchasesList.length; ++j) {
+
       time2 = formatter.format(purchasesList[j].purchasedAt!.toDate());
       //print(filteredEvents[i].id);
       //print(filteredEvents[i].doneAt!.toDate());
@@ -109,10 +111,20 @@ class BonosPurchasedState extends State<BonosPurchased> {
       {
         totalBenefit = TotalBenefit(time, sumBenefit);
         totalBenefits.add(totalBenefit);
-        sumBenefit = 0;
+        sumBenefit = purchasesList[j].price!;
+        if(j == purchasesList.length - 1)
+          {
+            totalBenefit = TotalBenefit(time2, sumBenefit);
+            totalBenefits.add(totalBenefit);
+          }
       }
       else {
         sumBenefit = sumBenefit + purchasesList[j].price!;
+        if(j == purchasesList.length - 1)
+        {
+          totalBenefit = TotalBenefit(time2, sumBenefit);
+          totalBenefits.add(totalBenefit);
+        }
       }
       time = time2;
     }
@@ -124,7 +136,6 @@ class BonosPurchasedState extends State<BonosPurchased> {
   double getMoney(List<Purchase> purchasesList) {
     double money = 0;
     for(int j = 0; j < purchasesList.length; ++j) {
-      print(purchasesList[j].price);
       money = money + purchasesList[j].price!;
     }
     return money;
@@ -191,68 +202,116 @@ class BonosPurchasedState extends State<BonosPurchased> {
           ),
         ),
 
-        Center(
-                child: Container(
-                    child: SfCartesianChart(
-                        zoomPanBehavior: _zoomPanBehavior,
-                      backgroundColor: Colors.transparent,
-                        borderColor: Colors.transparent,
-                        plotAreaBorderColor: Colors.transparent,
-                        plotAreaBorderWidth: 1,
-                        primaryXAxis: CategoryAxis(
-                          //Hide the gridlines of x-axis
-                          majorGridLines: MajorGridLines(width: 0),
-                          isVisible: false,
-                          //Hide the axis line of x-axis
-                          axisLine: AxisLine(width: 0),
+        Padding(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04,bottom: MediaQuery.of(context).size.height*0.10, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.04),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.4,
+                        height: MediaQuery.of(context).size.width*0.25,
+                        decoration: BoxDecoration(
+                          color: AppColors.darkGrey,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
-                        primaryYAxis: NumericAxis(
-                          majorTickLines: MajorTickLines(
-                            width: 0,
-                          ),
-                          enableAutoIntervalOnZooming: false,
-                          opposedPosition: true,
-                          interval: 1,
-                          //maximum: double.parse(maxNumber.toString()),
-                          //isVisible: false,
-                          //Hide the gridlines of x-axis
-                          majorGridLines: MajorGridLines(width: 0),
-                          //Hide the axis line of x-axis
-                          axisLine: AxisLine(width: 0),
-                        ),
-                        axes: [],
-                        indicators: [],
-                        legend: null,
-                        tooltipBehavior: _tooltipBehavior,
-                      enableSideBySideSeriesPlacement: false,
-                      series: <ChartSeries>[
-                          // Renders line chart
-                        SplineAreaSeries<TotalBenefit, String>(
-                            borderColor: Styles.mainColor,
-                          borderWidth: 2,
-                            markerSettings: MarkerSettings(
-                                isVisible: true,
-                                height:  5,
-                                width:  5,
-                                shape: DataMarkerType.circle,
-                                color: Styles.mainColor),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(bonoStats[index].money!.toString()  + ' €',
+                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text('Benefici'),
+                          ]
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.4,
+                      height: MediaQuery.of(context).size.width*0.25,
+                      decoration: BoxDecoration(
+                        color: AppColors.darkGrey,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(bonoStats[index].purchases!.toString(),
+                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text('Compres'),
+                          ]
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Center(
+                      child: Container(
+                          child: SfCartesianChart(
+                              zoomPanBehavior: _zoomPanBehavior,
+                            backgroundColor: Colors.transparent,
+                              borderColor: Colors.transparent,
+                              plotAreaBorderColor: Colors.transparent,
+                              plotAreaBorderWidth: 1,
+                              primaryXAxis: CategoryAxis(
+                                //Hide the gridlines of x-axis
+                                majorGridLines: MajorGridLines(width: 0),
+                                isVisible: false,
+                                //Hide the axis line of x-axis
+                                axisLine: AxisLine(width: 0),
+                              ),
+                              primaryYAxis: NumericAxis(
+    labelFormat: '{value}€',
+                                majorTickLines: MajorTickLines(
+                                  width: 0,
+                                ),
+                                enableAutoIntervalOnZooming: false,
+                                opposedPosition: true,
+                                interval: 10,
+                                //maximum: double.parse(maxNumber.toString()),
+                                //isVisible: false,
+                                //Hide the gridlines of x-axis
+                                majorGridLines: MajorGridLines(width: 0),
+                                //Hide the axis line of x-axis
+                                axisLine: AxisLine(width: 0),
+                              ),
+                              axes: [],
+                              indicators: [],
+                              legend: null,
+                              tooltipBehavior: _tooltipBehavior,
+                            enableSideBySideSeriesPlacement: false,
+                            series: <ChartSeries>[
+                                // Renders line chart
+                              SplineAreaSeries<TotalBenefit, String>(
+                                  borderColor: Styles.mainColor,
+                                borderWidth: 2,
+                                  markerSettings: MarkerSettings(
+                                      isVisible: true,
+                                      height:  5,
+                                      width:  5,
+                                      shape: DataMarkerType.circle,
+                                      color: Styles.mainColor),
 
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Styles.mainColor,
-                                AppColors.mainColor.withOpacity(0.2),
-                              ],
-                            ),
-                              dataSource: bonoStats[index].totalBenefits,
-                              xValueMapper: (TotalBenefit events, _) => events.day,
-                              yValueMapper: (TotalBenefit events, _) => events.money,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Styles.mainColor,
+                                      AppColors.mainColor.withOpacity(0.2),
+                                    ],
+                                  ),
+                                    dataSource: bonoStats[index].totalBenefits,
+                                    xValueMapper: (TotalBenefit events, _) => events.day,
+                                    yValueMapper: (TotalBenefit events, _) => events.money,
+                                )
+                              ]
                           )
-                        ]
-                    )
-                )
-            ),
+                      )
+                  ),
+            ],
+          ),
+        ),
 
 
       ],

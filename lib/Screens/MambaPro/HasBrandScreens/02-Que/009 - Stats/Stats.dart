@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/ClientsStats/GenderGroup.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/BonosPurchased.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/TotalBenefit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
@@ -24,6 +25,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';
+import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/ClientNumber.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeOffer.dart';
 
@@ -117,11 +119,11 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   Future<void> getCollections() async {
     events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
-    users = await _brandDataService.getBrandUsersWithDateJoined(widget.brandId);
-    purchases = await _brandDataService.getBrandPurchases(widget.brandId);
-    bonos = await _brandDataService.getAllBonosFromBrandList(widget.brandId);
-    //purchases = await _brandDataService.getBrandPurchases("807b18da-3164-4527-8d32-3ece9cb3c13c");
-    //bonos = await _brandDataService.getAllBonosFromBrandList("807b18da-3164-4527-8d32-3ece9cb3c13c");
+    users = await _brandDataService.getBrandUsersWithDateJoined('2bd419fe-1a38-4764-b3c5-49728da3ef3d');
+    //purchases = await _brandDataService.getBrandPurchases(widget.brandId);
+    //bonos = await _brandDataService.getAllBonosFromBrandList(widget.brandId);
+    purchases = await _brandDataService.getBrandPurchases("807b18da-3164-4527-8d32-3ece9cb3c13c");
+    bonos = await _brandDataService.getAllBonosFromBrandListProd("807b18da-3164-4527-8d32-3ece9cb3c13c");
       setState(() {
       applyAllFilters();
         isLoading = false;
@@ -165,7 +167,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     int days = daysBetween(startDate, endDate);
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
-    filteredBackUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(backEndDate) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(backStartDate) <= 0).toList();
+    filteredBackUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(backStartDate) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(backEndDate) <= 0).toList();
 
   }
 
@@ -444,11 +446,15 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       child: Column(
         children: [
           statsTitle('Numero clientes'),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            child: ClientNumber(users: filteredUsers, backUsers: filteredBackUsers, allUsers: users),
+          ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
           statsTitle('Media de edad'),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-            child: AgeRange(users: filteredUsers, allUsers: users,),
+            child: AgeRange(users: filteredUsers),
           ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
           statsTitle('Género'),
@@ -458,13 +464,10 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 GenderGroup(users: filteredUsers, resize: false),
-                GenderGroup(users: users, resize: true),
-
               ],
             ),
           ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-          statsTitle('Clientes con más entrenos'),
         ],
       ),
     );
@@ -487,6 +490,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           child: Column(
             children: [
               statsTitle('Facturación total'),
+              TotalBenefitPurchases(purchases: filteredPurchases, backPurchases: filteredBackPurchases),
               Divider(color: Theme.of(context).backgroundColor, thickness: 2),
             ],
           ),

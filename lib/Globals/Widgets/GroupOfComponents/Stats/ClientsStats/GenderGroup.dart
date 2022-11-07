@@ -179,8 +179,7 @@ class GenderGroupState extends State<GenderGroup> {
         Center(
                 child: Container(
                     child: SfCircularChart(
-                      title: ChartTitle(text:widget.resize? 'Total' : 'Filtrat', textStyle: Theme.of(context).textTheme.bodyText1),
-                        legend: Legend(isVisible: true,position: LegendPosition.bottom, textStyle: Theme.of(context).textTheme.bodyText2),
+                         legend: Legend(isVisible: true,position: LegendPosition.bottom, textStyle: Theme.of(context).textTheme.bodyText2),
                         series: <CircularSeries>[
                           // Render pie chart
                           PieSeries<GenderGroupClass, String>(
