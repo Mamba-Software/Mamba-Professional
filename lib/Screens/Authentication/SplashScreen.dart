@@ -70,8 +70,10 @@ class _SplashScreenState extends State<SplashScreen> {
     mixpanel!.getPeople().set("dateOfBirth", dateOfBirth.toString());
     var firstLoginDateSplit = currentUser.dateJoined!.split("-");
     DateTime firstLoginDate = DateTime(int.parse(firstLoginDateSplit[2]), int.parse(firstLoginDateSplit[1]), int.parse(firstLoginDateSplit[0]), 0, 0);
-    // TODO: AFEGIR UN IF PER A QUE NOMES ACTUALITZACIO AIXO PER ALS USUARIS ABANS D'AQUESTA ACTUALITZACIO
-    mixpanel!.getPeople().set("firstLoginDate", firstLoginDate.toString());
+    if (firstLoginDate.isBefore(DateTime(2022,11,15))) {
+      /// Only update the First Login Date If Is Before the Mix Panel Update
+      mixpanel!.getPeople().set("firstLoginDate", firstLoginDate.toString());
+    }
     mixpanel!.getPeople().set("lastLoginDate", DateTime.now().toString());
   }
 
