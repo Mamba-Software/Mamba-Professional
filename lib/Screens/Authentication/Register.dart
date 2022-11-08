@@ -264,6 +264,7 @@ class _RegisterState extends State<Register> {
         setState(() {
           isLoading = false;
         });
+        mixpanel!.track('mamba_register_existing_email_error');
         showInSnackBar(AppLocalizations.of(context)!.sameEmail);
       } else {
         setState(() {
