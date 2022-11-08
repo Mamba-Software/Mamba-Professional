@@ -58,7 +58,6 @@ Future<void> main() async {
     if (isProduction) {
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     }
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     // Init MixPanel
     mixpanel = await Mixpanel.init(
         "c573538be2d62355bb2f0968ff42c181",
