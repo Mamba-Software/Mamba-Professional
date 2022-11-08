@@ -86,6 +86,7 @@ class _SettingsState extends State<Settings> {
 
   // Navigate to Theme Screen
   void navigateToThemeScreen() {
+    mixpanel!.track('user_profile_settings_theme');
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
@@ -721,6 +722,9 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                     } else {
                       idiomaChanged = false;
                     }
+                    mixpanel!.track('user_profile_settings_language', properties: {
+                      'value' : _locale!.languageCode
+                    });
                     Provider.of<LanguageProvider>(context, listen: false).setLocale(_locale!);
                     widget.idiomaChanged(idiomaChanged);
                   }),
