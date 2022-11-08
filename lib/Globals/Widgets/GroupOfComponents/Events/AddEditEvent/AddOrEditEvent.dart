@@ -1886,7 +1886,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       await _addEventMembersCall(eventId, eventMembers);
       // Add Event Bonos
       _addEventBonosCall(eventId, selectedBonos);
-      mixpanel!.track('add_event_completed', properties: {'isPrivate': false, 'isRecurrent': false});
+      mixpanel!.track('add_event_completed', properties: {
+        'descriptionLength': event.description!.length.toString(),
+        'isPrivate': false,
+        'isRecurrent': false,
+        'doneAt': event.doneAt!.toDate().toString(),
+        'duration': event.duration.toString(),
+        'numClients': event.numClients!.toString(),
+        'numTrainers': event.numTrainers!.toString(),
+        'maxMembers': event.maxMembers!.toString(),
+      });
     } else {
       // Recurrent total
       int days = values.where((item) => item == true).length;
@@ -2065,7 +2074,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       }
       // Create Entry in /Event Groups
       await _eventDataService.addRecurrentEventGroup(eventGroupId, groupEventsIds);
-      mixpanel!.track('add_event_completed', properties: {'isPrivate': false, 'isRecurrent': true});
+      mixpanel!.track('add_event_completed', properties: {
+        'descriptionLength': event.description!.length.toString(),
+        'isPrivate': false,
+        'isRecurrent': true,
+        'doneAt': event.doneAt!.toDate().toString(),
+        'duration': event.duration.toString(),
+        'numClients': event.numClients!.toString(),
+        'numTrainers': event.numTrainers!.toString(),
+        'maxMembers': event.maxMembers!.toString(),
+      });
     }
     Navigator.pop(context);
   }
@@ -2250,7 +2268,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Client Added "+user.id.toString());
     }
-    mixpanel!.track('edit_event_completed', properties: {'isPrivate': false, 'isRecurrent': false});
+    mixpanel!.track('edit_event_completed', properties: {
+      'descriptionLength': event.description!.length.toString(),
+      'isPrivate': false,
+      'isRecurrent': false,
+      'doneAt': event.doneAt!.toDate().toString(),
+      'duration': event.duration.toString(),
+      'numClients': event.numClients!.toString(),
+      'numTrainers': event.numTrainers!.toString(),
+      'maxMembers': event.maxMembers!.toString(),
+    });
     Navigator.pop(context, true);
   }
 
@@ -2486,7 +2513,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         print("Client Added "+user.id.toString());
       }
     }
-    mixpanel!.track('edit_event_completed', properties: {'isPrivate': false, 'isRecurrent': true});
+    mixpanel!.track('edit_event_completed', properties: {
+      'descriptionLength': event.description!.length.toString(),
+      'isPrivate': false,
+      'isRecurrent': true,
+      'doneAt': event.doneAt!.toDate().toString(),
+      'duration': event.duration.toString(),
+      'numClients': event.numClients!.toString(),
+      'numTrainers': event.numTrainers!.toString(),
+      'maxMembers': event.maxMembers!.toString(),
+    });
     // Pop to Get Back
     Navigator.pop(context, true);
   }

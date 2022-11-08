@@ -1813,7 +1813,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       String eventId = await _addEventCall(event);
       // Add Event Members
       await _addEventMembersCall(eventId, eventMembers);
-      mixpanel!.track('add_event_completed', properties: {'isPrivate': true, 'isRecurrent': false});
+      mixpanel!.track('add_event_completed', properties: {
+        'descriptionLength': event.description!.length.toString(),
+        'isPrivate': true,
+        'isRecurrent': false,
+        'doneAt': event.doneAt!.toDate().toString(),
+        'duration': event.duration.toString(),
+        'numClients': event.numClients!.toString(),
+        'numTrainers': event.numTrainers!.toString(),
+        'maxMembers': event.maxMembers!.toString(),
+      });
     } else {
       // Recurrent total
       int days = values.where((item) => item == true).length;
@@ -1985,7 +1994,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       assignBonoUsers(eventMembers, event);
       // Create Entry in /Event Groups
       await _eventDataService.addRecurrentEventGroup(eventGroupId, groupEventsIds);
-      mixpanel!.track('add_event_completed', properties: {'isPrivate': true, 'isRecurrent': true});
+      mixpanel!.track('add_event_completed', properties: {
+        'descriptionLength': event.description!.length.toString(),
+        'isPrivate': true,
+        'isRecurrent': true,
+        'doneAt': event.doneAt!.toDate().toString(),
+        'duration': event.duration.toString(),
+        'numClients': event.numClients!.toString(),
+        'numTrainers': event.numTrainers!.toString(),
+        'maxMembers': event.maxMembers!.toString(),
+      });
     }
     Navigator.pop(context);
   }
@@ -2152,7 +2170,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Client Added "+user.id.toString());
     }
-    mixpanel!.track('edit_event_completed', properties: {'isPrivate': true, 'isRecurrent': false});
+    mixpanel!.track('edit_event_completed', properties: {
+      'descriptionLength': event.description!.length.toString(),
+      'isPrivate': true,
+      'isRecurrent': false,
+      'doneAt': event.doneAt!.toDate().toString(),
+      'duration': event.duration.toString(),
+      'numClients': event.numClients!.toString(),
+      'numTrainers': event.numTrainers!.toString(),
+      'maxMembers': event.maxMembers!.toString(),
+    });
     Navigator.pop(context, true);
   }
 
@@ -2371,7 +2398,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         print("Client Added "+user.id.toString());
       }
     }
-    mixpanel!.track('edit_event_completed', properties: {'isPrivate': true, 'isRecurrent': true});
+    mixpanel!.track('edit_event_completed', properties: {
+      'descriptionLength': event.description!.length.toString(),
+      'isPrivate': true,
+      'isRecurrent': true,
+      'doneAt': event.doneAt!.toDate().toString(),
+      'duration': event.duration.toString(),
+      'numClients': event.numClients!.toString(),
+      'numTrainers': event.numTrainers!.toString(),
+      'maxMembers': event.maxMembers!.toString(),
+    });
     // Pop to Get Back
     Navigator.pop(context, true);
   }
