@@ -35,6 +35,7 @@ class AgeRangeState extends State<AgeRange> {
   // Models i base de Dades
   Brand brand = Brand();
   List <Usuario> filteredUsers = [];
+  List <Usuario> users = [];
 
   List<int> clientsAge = [0,0,0,0,0,0,0];
   ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
@@ -45,6 +46,7 @@ class AgeRangeState extends State<AgeRange> {
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
   List<ClientsAge> clientsAgeTotalList = [];
+  List<ClientsAge> allClientsAgeTotalList = [];
   final _brandDataService = BrandDataService();
 
   Timestamp tm = Timestamp.fromDate(DateTime.now().subtract(Duration(days: 5)));
@@ -155,6 +157,7 @@ class AgeRangeState extends State<AgeRange> {
 
   }
 
+
   @override
   Widget build(BuildContext context) {
     return isLoading? LoadingView() :   Column(
@@ -168,7 +171,6 @@ class AgeRangeState extends State<AgeRange> {
                               args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor));
                             }
                           else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).secondaryHeaderColor));
-
 
                         },
                         zoomPanBehavior: _zoomPanBehavior,
@@ -207,13 +209,15 @@ class AgeRangeState extends State<AgeRange> {
                       series: <ChartSeries>[
 
                         // Renders line chart
+
+
                         BarSeries<ClientsAge, String>(
                           spacing: 1,
                           width: 0.3,
                           borderRadius: BorderRadius.all(Radius.circular(30)),
-                            borderColor: Styles.mainColor,
+                          borderColor: Styles.mainColor,
                           borderWidth: 0,
-                            /*
+                          /*
                             markerSettings: MarkerSettings(
                                 isVisible: true,
                                 height:  5,
@@ -221,20 +225,20 @@ class AgeRangeState extends State<AgeRange> {
                                 shape: DataMarkerType.circle,
                                 color: Styles.mainColor),
 */
-                            gradient: LinearGradient(
-                              begin: Alignment.centerRight,
-                              end: Alignment.centerLeft,
-                              colors: [
-                                AppColors.mainColor,
-                                AppColors.mainColor.withOpacity(0.2),
-                              ],
-                            ),
-                              dataSource: clientsAgeTotalList,
+                          gradient: LinearGradient(
+                            begin: Alignment.centerRight,
+                            end: Alignment.centerLeft,
+                            colors: [
+                              AppColors.mainColor,
+                              AppColors.mainColor.withOpacity(0.2),
+                            ],
+                          ),
+                          dataSource: clientsAgeTotalList,
 
-                              dataLabelSettings: DataLabelSettings(isVisible: true),
-                              xValueMapper: (ClientsAge events, _) => events.range,
-                              yValueMapper: (ClientsAge events, _) => events.age,
-                          )
+                          dataLabelSettings: DataLabelSettings(isVisible: true),
+                          xValueMapper: (ClientsAge events, _) => events.range,
+                          yValueMapper: (ClientsAge events, _) => events.age,
+                        ),
                         ]
                     )
                 )

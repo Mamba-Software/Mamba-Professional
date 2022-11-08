@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'dart:io';
 import '../../Models/Bono.dart';
 import '../../Models/Condition.dart';
+import '../../Models/Purchase.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class BrandDataService {
@@ -35,6 +36,8 @@ class BrandDataService {
   Future<int> getUserBrandRole(String brandId, String userId) => _firebase.getUserBrandRole(brandId, userId);
   Future<List<Event>> getAllEventsFromBrandList(String brandId) => _firebase.getAllEventsFromBrandList(brandId);
   Future<List<Usuario>> getBrandUsersWithDateJoined(String brandId) => _firebase.getBrandUsersWithDateJoined(brandId);
+  Future<List<Purchase>> getBrandPurchases(String brandId) => _firebase.getBrandPurchases(brandId);
+  Future<List<Bono>> getAllBonosFromBrandListProd(String brandId) => _firebase.getAllBonosFromBrandListProd(brandId);
 
   // Add Data
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);

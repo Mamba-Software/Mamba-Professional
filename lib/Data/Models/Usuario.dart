@@ -30,7 +30,6 @@ class Usuario {
   String? brandID;
   String? sessions;
   bool? active;
-  String? dateJoinedBrand;
   Timestamp? lastEventAt;
 
   List<RequestToBrand> requestsList = [];
@@ -61,7 +60,6 @@ class Usuario {
     this.brandID,
     this.sessions,
     this.active,
-    this.dateJoinedBrand,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -128,9 +126,6 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
       sessions = documentSnapshot.get("sessions").toString();
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoinedBrand')) {
-      dateJoinedBrand = documentSnapshot.get("dateJoinedBrand").toString();
-    }
   }
 
   Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -168,9 +163,6 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('role')) {
       brandRole = documentSnapshot.get("role");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoinedBrand')) {
-      dateJoinedBrand = documentSnapshot.get("dateJoinedBrand").toString();
-    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastEventAt')) {
       lastEventAt = documentSnapshot.get("lastEventAt");
     }
@@ -201,7 +193,6 @@ class Usuario {
     brandID = user.brandID;
     sessions = user.sessions;
     active = user.active;
-    dateJoinedBrand = user.dateJoinedBrand;
   }
 
   // Requests

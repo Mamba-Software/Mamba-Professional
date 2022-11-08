@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -15,41 +16,44 @@ import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 import '../../../../Styles/AppColors/AppColors.dart';
 
-class SessionsMade extends StatefulWidget {
-  List<Event> events;
-  List<Event> backEvents;
+class TotalBenefitPurchases extends StatefulWidget {
+  List<Purchase> purchases;
+  List<Purchase> backPurchases;
 
-  SessionsMade({
-    required this.events,
-    required this.backEvents,
+  TotalBenefitPurchases({
+    required this.purchases,
+    required this.backPurchases,
     Key? key,
   }) : super(key: key);
 
   @override
-  SessionsMadeState createState() => SessionsMadeState();
+  TotalBenefitPurchasesState createState() => TotalBenefitPurchasesState();
 }
 
-class SessionsMadeState extends State<SessionsMade> {
+class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
   bool isLoading = true;
-  int maxNumber = 4;
-  // Models i base de Dades
-  Brand brand = Brand();
-  List <Event> filteredEvents = [], filteredBackEvents = [];
+
+
+  List <Purchase> filteredPurchases = [], filteredBackPurchases = [];
   ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y número de entrenos');
+  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y benefici');
 
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
-  List<TotalEvents> totalEvents = [];
-  final _brandDataService = BrandDataService();
+  List<TotalBenefit> totalBenefits = [];
+
+  double money = 0;
+
+  double backMoney = 0;
 
   @override
   void initState() {
-    filteredEvents = widget.events;
-    filteredBackEvents = widget.backEvents;
-    orderEvents();
+    filteredPurchases = widget.purchases;
+    filteredBackPurchases = widget.backPurchases;
+    orderPurchases();
+    getMoney();
     calculateDifference();
     mountStat();
     isLoading = false;
@@ -57,20 +61,24 @@ class SessionsMadeState extends State<SessionsMade> {
   }
 
   @override
-  void didUpdateWidget(SessionsMade oldWidget) {
+  void didUpdateWidget(TotalBenefitPurchases oldWidget) {
     super.didUpdateWidget(oldWidget);
-    filteredEvents = widget.events;
-    filteredBackEvents = widget.backEvents;
-    totalEvents = [];
+    filteredPurchases = widget.purchases;
+    filteredBackPurchases = widget.backPurchases;
+    totalBenefits = [];
+    money = 0;
+    backMoney = 0;
+    getMoney();
     calculateDifference();
-    orderEvents();
+    orderPurchases();
     mountStat();
+
   }
 
-  void orderEvents()
+  void orderPurchases()
   {
-    return filteredEvents.sort((a, b){ //sorting in ascending order
-      return a.doneAt!.compareTo(b.doneAt!);
+    return filteredPurchases.sort((a, b){ //sorting in ascending order
+      return a.purchasedAt!.compareTo(b.purchasedAt!);
     });
   }
 
@@ -78,9 +86,9 @@ class SessionsMadeState extends State<SessionsMade> {
   {
    // print(filteredBackEvents.length);
    // print(filteredEvents.length);
-    if(filteredBackEvents.length != 0 && filteredEvents.length != 0) {
-      difference = ((filteredEvents.length - filteredBackEvents.length) /
-          ((filteredBackEvents.length + filteredEvents.length)/2)) * 100;
+    if(backMoney != 0 && money != 0) {
+      difference = ((money - backMoney) /
+          ((backMoney + money)/2)) * 100;
       if (difference != 0) {
       //  print(difference);
         difference = roundDouble(difference, 2);
@@ -91,42 +99,50 @@ class SessionsMadeState extends State<SessionsMade> {
     }
   }
 
+  void getMoney() {
+
+    for(int j = 0; j < filteredPurchases.length; ++j) {
+      money = money + filteredPurchases[j].price!;
+    }
+
+    for(int j = 0; j < filteredBackPurchases.length; ++j) {
+      backMoney = backMoney + filteredBackPurchases[j].price!;
+    }
+
+  }
+
   void mountStat()
   {
-    TotalEvents totalEvent;
+    TotalBenefit totalBenefit;
     String? time;
     String? time2;
-    int sumEvents = 0;
-    for(int i = 0; i < filteredEvents.length; ++i)
+    double sumBenefit = 0;
+    for(int j = 0; j < filteredPurchases.length; ++j) {
+      time2 = formatter.format(filteredPurchases[j].purchasedAt!.toDate());
+      //print(filteredEvents[i].id);
+      //print(filteredEvents[i].doneAt!.toDate());
+      if(time != null && time2 != time)
       {
-        time2 = formatter.format(filteredEvents[i].doneAt!.toDate());
-        //print(filteredEvents[i].id);
-        //print(filteredEvents[i].doneAt!.toDate());
-        if(time != null && time2 != time)
-          {
-            totalEvent = TotalEvents(time, sumEvents);
-            totalEvents.add(totalEvent);
-            if(sumEvents > maxNumber) {
-              maxNumber = sumEvents;
-            }
-            sumEvents = 1;
-            if(i == filteredEvents.length - 1)
-            {
-              totalEvent = TotalEvents(time2, sumEvents);
-              totalEvents.add(totalEvent);
-            }
-          }
-        else {
-          sumEvents = sumEvents + 1;
-          if(i == filteredEvents.length - 1)
-          {
-            totalEvent = TotalEvents(time2, sumEvents);
-            totalEvents.add(totalEvent);
-          }
+        totalBenefit = TotalBenefit(time, sumBenefit);
+        totalBenefits.add(totalBenefit);
+        sumBenefit = filteredPurchases[j].price!;
+        if(j == filteredPurchases.length - 1)
+        {
+          totalBenefit = TotalBenefit(time2, sumBenefit);
+          totalBenefits.add(totalBenefit);
         }
-
-        time = time2;
       }
+      else {
+        sumBenefit = sumBenefit + filteredPurchases[j].price!;
+        if(j == filteredPurchases.length - 1)
+        {
+          totalBenefit = TotalBenefit(time2, sumBenefit);
+          totalBenefits.add(totalBenefit);
+        }
+      }
+      time = time2;
+    }
+
   }
 
   @override
@@ -138,7 +154,7 @@ class SessionsMadeState extends State<SessionsMade> {
             child: Row(
               children: [
                 Text(
-                    filteredEvents.length.toString(),
+                  money.toString() + '€',
           style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
 
         ),
@@ -169,12 +185,13 @@ class SessionsMadeState extends State<SessionsMade> {
                           axisLine: AxisLine(width: 0),
                         ),
                         primaryYAxis: NumericAxis(
+                          labelFormat: '{value}€',
                           majorTickLines: MajorTickLines(
                             width: 0,
                           ),
                           enableAutoIntervalOnZooming: false,
                           opposedPosition: true,
-                          interval: 1,
+                          interval: 30,
                           //maximum: double.parse(maxNumber.toString()),
                           //isVisible: false,
                           //Hide the gridlines of x-axis
@@ -189,7 +206,7 @@ class SessionsMadeState extends State<SessionsMade> {
                       enableSideBySideSeriesPlacement: false,
                       series: <ChartSeries>[
                           // Renders line chart
-                        SplineAreaSeries<TotalEvents, String>(
+                        SplineAreaSeries<TotalBenefit, String>(
                             borderColor: Styles.mainColor,
                           borderWidth: 2,
                             markerSettings: MarkerSettings(
@@ -207,9 +224,9 @@ class SessionsMadeState extends State<SessionsMade> {
                                 AppColors.mainColor.withOpacity(0.2),
                               ],
                             ),
-                              dataSource: totalEvents,
-                              xValueMapper: (TotalEvents events, _) => events.day,
-                              yValueMapper: (TotalEvents events, _) => events.events,
+                              dataSource: totalBenefits,
+                              xValueMapper: (TotalBenefit events, _) => events.day,
+                              yValueMapper: (TotalBenefit events, _) => events.money,
                           )
                         ]
                     )
@@ -227,8 +244,8 @@ class SessionsMadeState extends State<SessionsMade> {
 
 }
 
-class TotalEvents {
-  TotalEvents(this.day, this.events);
+class TotalBenefit {
+  TotalBenefit(this.day, this.money);
   final String day;
-  final int events;
+  final double money;
 }

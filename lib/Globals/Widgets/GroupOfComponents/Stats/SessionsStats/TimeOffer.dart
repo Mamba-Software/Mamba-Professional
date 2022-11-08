@@ -95,7 +95,7 @@ class TimeOfferState extends State<TimeOffer> {
             hourMinute, (value) => value + filteredEvents[i].numClients!);
       }
     }
-    print(mapHours);
+    //print(mapHours);
     mapHours.forEach((key, value) {
       if(value>maxHour) {
         maxHour = value;
