@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
@@ -39,6 +40,7 @@ class _LoginState extends State<Login> {
 
   @override
   initState() {
+    mixpanel!.track('mamba_login_view');
     super.initState();
   }
 
@@ -260,6 +262,7 @@ class _LoginState extends State<Login> {
             });
             showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
           } else {
+            mixpanel!.track('mamba_login_completed');
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<void>(
@@ -279,11 +282,13 @@ class _LoginState extends State<Login> {
           isLoading = false;
           email = emailTemp;
         });
+        mixpanel!.track('mamba_login_notfound_error');
         showInSnackBar(AppLocalizations.of(context)!.loginError);
       } else if (result == -2) {
         setState(() {
           isLoading = false;
         });
+        mixpanel!.track('mamba_login_validate_email_error');
         showInSnackBar(AppLocalizations.of(context)!.validateError, AppLocalizations.of(context)!.resend+" "+AppLocalizations.of(context)!.email, true, true);
       }
   }
