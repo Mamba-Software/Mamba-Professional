@@ -173,8 +173,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     startDate = DateTime(startDate.year, startDate.month, startDate.day);
     mixpanel!.getPeople().set("dateOfBirth", startDate.toString());
     mixpanel!.getPeople().set("language", currentUser.idioma!);
-    mixpanel!.getPeople().set("isPrivate", true);
-    mixpanel!.getPeople().set("isTrainer", true);
     mixpanel!.getPeople().set("isProduction", isProduction);
   }
 

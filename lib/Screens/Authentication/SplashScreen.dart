@@ -62,8 +62,6 @@ class _SplashScreenState extends State<SplashScreen> {
     if (currentUser.gender == 2) genderString = "Other";
     mixpanel!.getPeople().set("gender", genderString);
     mixpanel!.getPeople().set("language", currentUser.idioma!);
-    mixpanel!.getPeople().set("isPrivate", true);
-    mixpanel!.getPeople().set("isTrainer", true);
     mixpanel!.getPeople().set("isProduction", isProduction);
     var dateOfBirthSplit = currentUser.dateOfBirth!.split("-");
     DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]), int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);
