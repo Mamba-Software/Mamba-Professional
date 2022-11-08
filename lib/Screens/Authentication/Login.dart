@@ -260,6 +260,7 @@ class _LoginState extends State<Login> {
             setState(() {
               isLoading = false;
             });
+            mixpanel!.track('mamba_login_wrong_app_error');
             showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
           } else {
             mixpanel!.track('mamba_login_completed');
