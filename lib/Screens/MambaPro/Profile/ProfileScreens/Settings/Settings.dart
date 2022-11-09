@@ -347,7 +347,7 @@ class _SettingsState extends State<Settings> {
                           _userDataService.signOut().then((value) =>
                               Navigator.pushAndRemoveUntil(
                                 context,
-                                CupertinoPageRoute<Null>(
+                                CupertinoPageRoute<void>(
                                   builder: (context) => const Login(),
                                   settings: const RouteSettings(name: 'Login'),
                                 ),
@@ -601,7 +601,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             mixpanel!.track('user_profile_settings_delete_account_completed');
                             Navigator.pushAndRemoveUntil(
                               context,
-                              CupertinoPageRoute<Null>(
+                              CupertinoPageRoute<void>(
                                 builder: (context) => const Login(),
                                 settings: const RouteSettings(name: 'Login'),
                               ),
