@@ -155,6 +155,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
               child: IconButton(
                 onPressed: () {
+                  mixpanel!.track('profile_view_more_options_button');
                   showModalBottomSheet<int?>(
                     context: context,
                     isScrollControlled: true,
