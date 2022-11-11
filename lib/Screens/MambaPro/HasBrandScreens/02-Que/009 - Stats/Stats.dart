@@ -376,7 +376,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   {
     return Padding(
         padding:
-        EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03, left:  MediaQuery.of(context).size.width*0.07),
+        EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03, left:  MediaQuery.of(context).size.width*0.05),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[

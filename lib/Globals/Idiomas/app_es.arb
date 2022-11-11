@@ -2499,5 +2499,33 @@
   "historic": "Histórico",
   "@historic": {
     "description": "Wellcome message"
+  },
+  "mon": "Lun.",
+  "@mon": {
+    "description": "mon day"
+  },
+  "tue": "Mar.",
+  "@tue": {
+    "description": "tue day"
+  },
+  "wed": "Mierc.",
+  "@wed": {
+    "description": "wed day"
+  },
+  "thur": "Jue.",
+  "@thur": {
+    "description": "thur day"
+  },
+  "vier": "Vier.",
+  "@vier": {
+    "description": "vier day"
+  },
+  "sab": "Sab.",
+  "@sab": {
+    "description": "sab day"
+  },
+  "sun": "Dom.",
+  "@sun": {
+    "description": "sun day"
   }
 }

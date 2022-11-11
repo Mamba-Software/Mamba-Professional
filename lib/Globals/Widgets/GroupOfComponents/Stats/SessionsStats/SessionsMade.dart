@@ -142,7 +142,7 @@ class SessionsMadeState extends State<SessionsMade> {
     return isLoading? LoadingView() :   Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.06),
+          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
           child: Align(
             alignment: Alignment.topLeft,
               child: Row(
@@ -164,67 +164,70 @@ class SessionsMadeState extends State<SessionsMade> {
                 ],
               ),),
         ),
-        Center(
-                child: Container(
-                    child: SfCartesianChart(
-                      backgroundColor: Colors.transparent,
-                        borderColor: Colors.transparent,
-                        plotAreaBorderColor: Colors.transparent,
-                        plotAreaBorderWidth: 1,
-                        primaryXAxis: CategoryAxis(
-                          //Hide the gridlines of x-axis
-                          majorGridLines: MajorGridLines(width: 0),
-                          isVisible: false,
-                          //Hide the axis line of x-axis
-                          axisLine: AxisLine(width: 0),
-                        ),
-                        primaryYAxis: NumericAxis(
-                          majorTickLines: MajorTickLines(
-                            width: 0,
+        Padding(
+          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.03),
+          child: Center(
+                  child: Container(
+                      child: SfCartesianChart(
+                        backgroundColor: Colors.transparent,
+                          borderColor: Colors.transparent,
+                          plotAreaBorderColor: Colors.transparent,
+                          plotAreaBorderWidth: 1,
+                          primaryXAxis: CategoryAxis(
+                            //Hide the gridlines of x-axis
+                            majorGridLines: MajorGridLines(width: 0),
+                            isVisible: false,
+                            //Hide the axis line of x-axis
+                            axisLine: AxisLine(width: 0),
                           ),
-                          enableAutoIntervalOnZooming: false,
-                          opposedPosition: true,
-                          interval: 1,
-                          //maximum: double.parse(maxNumber.toString()),
-                          //isVisible: false,
-                          //Hide the gridlines of x-axis
-                          majorGridLines: MajorGridLines(width: 0),
-                          //Hide the axis line of x-axis
-                          axisLine: AxisLine(width: 0),
-                        ),
-                        axes: [],
-                        indicators: [],
-                        legend: null,
-                        tooltipBehavior: _tooltipBehavior,
-                      enableSideBySideSeriesPlacement: false,
-                      series: <ChartSeries>[
-                          // Renders line chart
-                        SplineAreaSeries<TotalEvents, String>(
-                            borderColor: Styles.mainColor,
-                          borderWidth: 2,
+                          primaryYAxis: NumericAxis(
+                            majorTickLines: MajorTickLines(
+                              width: 0,
+                            ),
+                            enableAutoIntervalOnZooming: false,
+                            opposedPosition: true,
+                            interval: 1,
+                            //maximum: double.parse(maxNumber.toString()),
+                            //isVisible: false,
+                            //Hide the gridlines of x-axis
+                            majorGridLines: MajorGridLines(width: 0),
+                            //Hide the axis line of x-axis
+                            axisLine: AxisLine(width: 0),
+                          ),
+                          axes: [],
+                          indicators: [],
+                          legend: null,
+                          tooltipBehavior: _tooltipBehavior,
+                        enableSideBySideSeriesPlacement: false,
+                        series: <ChartSeries>[
+                            // Renders line chart
+                          SplineAreaSeries<TotalEvents, String>(
+                              borderColor: Styles.mainColor,
+                            borderWidth: 2,
+
                             markerSettings: MarkerSettings(
-                                isVisible: true,
-                                height:  10,
-                                width:  10,
+                                isVisible: false,
+                                height:  1,
+                                width:  1,
                                 shape: DataMarkerType.circle,
                                 color: Styles.mainColor),
-
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Styles.mainColor,
-                                AppColors.mainColor.withOpacity(0.2),
-                              ],
-                            ),
-                              dataSource: totalEvents,
-                              xValueMapper: (TotalEvents events, _) => events.day,
-                              yValueMapper: (TotalEvents events, _) => events.events,
-                          )
-                        ]
-                    )
-                )
-            ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Styles.mainColor,
+                                  AppColors.mainColor.withOpacity(0.2),
+                                ],
+                              ),
+                                dataSource: totalEvents,
+                                xValueMapper: (TotalEvents events, _) => events.day,
+                                yValueMapper: (TotalEvents events, _) => events.events,
+                            )
+                          ]
+                      )
+                  )
+              ),
+        ),
       ],
     );
 

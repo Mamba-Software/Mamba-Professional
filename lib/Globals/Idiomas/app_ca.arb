@@ -556,6 +556,13 @@
   "facturation": "Facturació",
   "eventsDone": "Events realitzats",
   "labelSessionMade": "Dia i número d'events",
-  "daysDemand": "Demanda de dies"
-  "historic": "Històric"
+  "daysDemand": "Demanda de dies",
+  "historic": "Històric",
+  "mon": "Dill.",
+  "tue": "Dim.",
+  "wed": "Dimecr.",
+  "thur": "Dij.",
+  "vier": "Div.",
+  "sab": "Diss.",
+  "sun": "Dium."
 }
