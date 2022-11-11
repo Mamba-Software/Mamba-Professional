@@ -2476,5 +2476,24 @@
   "previousMonth": "Mes Anterior",
   "@lastMonth": {
     "description": "Wellcome message"
+  },
+
+  "facturation": "Facturación",
+  "@facturation": {
+    "description": "facturation message"
+  },
+
+  "eventsDone": "Eventos realizados",
+  "@eventsDone": {
+    "description": "eventsDone message"
+  },
+
+  "labelSessionMade": "Día y número de eventos",
+  "@labelSessionMade": {
+    "description": "labelSessionMade message"
+  },
+  "daysDemand": "Demanda de días",
+  "@daysDemand": {
+    "description": "daysDemand message"
   }
 }

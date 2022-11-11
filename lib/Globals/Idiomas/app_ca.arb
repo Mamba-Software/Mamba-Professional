@@ -552,5 +552,9 @@
   "average": "de mitja",
   "purchaseHistory": "Historial de compres",
   "lastNDays": "Últims {days} Dies",
-  "previousMonth": "Mes Anterior"
+  "previousMonth": "Mes Anterior",
+  "facturation": "Facturació",
+  "eventsDone": "Events realitzats",
+  "labelSessionMade": "Dia i número d'events",
+  "daysDemand": "Demanda de dies"
 }

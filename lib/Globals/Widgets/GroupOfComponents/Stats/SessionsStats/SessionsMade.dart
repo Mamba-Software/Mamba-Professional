@@ -8,10 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../Styles/AppColors/AppColors.dart';
 
@@ -31,22 +32,31 @@ class SessionsMade extends StatefulWidget {
 
 class SessionsMadeState extends State<SessionsMade> {
   bool isLoading = true;
-  int maxNumber = 4;
   // Models i base de Dades
   Brand brand = Brand();
   List <Event> filteredEvents = [], filteredBackEvents = [];
-  ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
-    enablePanning: true);
+  /*ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
+    enablePanning: true);*/
   double difference = 0;
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y número de entrenos');
+  TooltipBehavior _tooltipBehavior =  TooltipBehavior(enable: false);
 
-  final DateFormat formatter = DateFormat('dd-MM-yyyy');
+  final DateFormat formatterCat = DateFormat.yMMMMd('ca_CAT');
+  final DateFormat formatterEsp = DateFormat.yMMMMd('es_ES');
+  DateFormat formatter = DateFormat.yMMMMd('es_ES');
 
   List<TotalEvents> totalEvents = [];
   final _brandDataService = BrandDataService();
 
   @override
   void initState() {
+    if(currentUser.idioma == 'es')
+      {
+        formatter = formatterEsp;
+      }
+    else if(currentUser.idioma == 'ca')
+      {
+        formatter = formatterCat;
+      }
     filteredEvents = widget.events;
     filteredBackEvents = widget.backEvents;
     orderEvents();
@@ -106,9 +116,6 @@ class SessionsMadeState extends State<SessionsMade> {
           {
             totalEvent = TotalEvents(time, sumEvents);
             totalEvents.add(totalEvent);
-            if(sumEvents > maxNumber) {
-              maxNumber = sumEvents;
-            }
             sumEvents = 1;
             if(i == filteredEvents.length - 1)
             {
@@ -131,32 +138,35 @@ class SessionsMadeState extends State<SessionsMade> {
 
   @override
   Widget build(BuildContext context) {
+    _tooltipBehavior =  TooltipBehavior(enable: true, header: AppLocalizations.of(context)!.labelSessionMade);
     return isLoading? LoadingView() :   Column(
       children: [
-        Align(
-          alignment: Alignment.topLeft,
-            child: Row(
-              children: [
-                Text(
-                    filteredEvents.length.toString(),
-          style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
+        Padding(
+          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.06),
+          child: Align(
+            alignment: Alignment.topLeft,
+              child: Row(
+                children: [
+                  Text(
+                      filteredEvents.length.toString(),
+            style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
 
-        ),
-                Padding(
-                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
-                  child: Text(
-                    difference < 0? difference.toString() + '%' :
-                    '+' + difference.toString() + '%',
-                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+          ),
+                  Padding(
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
+                    child: Text(
+                      difference < 0? difference.toString() + '%' :
+                      '+' + difference.toString() + '%',
+                      style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
 
+                    ),
                   ),
-                ),
-              ],
-            ),),
+                ],
+              ),),
+        ),
         Center(
                 child: Container(
                     child: SfCartesianChart(
-                        zoomPanBehavior: _zoomPanBehavior,
                       backgroundColor: Colors.transparent,
                         borderColor: Colors.transparent,
                         plotAreaBorderColor: Colors.transparent,
@@ -194,8 +204,8 @@ class SessionsMadeState extends State<SessionsMade> {
                           borderWidth: 2,
                             markerSettings: MarkerSettings(
                                 isVisible: true,
-                                height:  5,
-                                width:  5,
+                                height:  10,
+                                width:  10,
                                 shape: DataMarkerType.circle,
                                 color: Styles.mainColor),
 

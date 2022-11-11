@@ -281,7 +281,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                     tabs: [
                       selectedTab(AppLocalizations.of(context)!.events, 0, 0.20),
                       selectedTab(AppLocalizations.of(context)!.clients, 1, 0.20),
-                      selectedTab('Facturación', 2, 0.25),
+                      selectedTab(AppLocalizations.of(context)!.facturation, 2, 0.25),
                     ],
                   ),
                 ],
@@ -373,7 +373,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   {
     return Padding(
         padding:
-        EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+        EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03, left:  MediaQuery.of(context).size.width*0.07),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
@@ -409,16 +409,16 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         );
       }
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, right: MediaQuery.of(context).size.width*0.06),
       child: Column(
         children: [
-          statsTitle('Entrenos realizados'),
+          statsTitle(AppLocalizations.of(context)!.eventsDone),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
             child: SessionsMade(events: filteredEvents, backEvents: filteredBackEvents,),
           ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-          statsTitle('Demanda de días'),
+          statsTitle(AppLocalizations.of(context)!.daysDemand),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
             child: DayOffer(events: filteredEvents),

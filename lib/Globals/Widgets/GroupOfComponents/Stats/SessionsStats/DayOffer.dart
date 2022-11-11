@@ -36,15 +36,8 @@ class DayOfferState extends State<DayOffer> {
   List <Event> filteredEvents = [];
 
   List<int> weekDays = [0,0,0,0,0,0,0];
-  ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
-    enablePanning: true);
-  double difference = 0;
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y número de entrenos');
-
-  final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
   List<TotalEvents> totalEvents = [];
-  final _brandDataService = BrandDataService();
 
   Timestamp tm = Timestamp.fromDate(DateTime.now().subtract(Duration(days: 5)));
 
@@ -149,7 +142,6 @@ class DayOfferState extends State<DayOffer> {
 
 
                         },
-                        zoomPanBehavior: _zoomPanBehavior,
                       backgroundColor: Colors.transparent,
                         borderColor: Colors.transparent,
                         plotAreaBorderColor: Colors.transparent,
