@@ -63,8 +63,10 @@ class _BrandImagesState extends State<BrandImages> {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
+    mixpanel!.timeEvent('brand_images_added');
     List<File>? temp = await ImageUtils().pickMultipleImage();
     if ((temp!.length) > (_maxImages-_imagesUploaded.length)) {
+      mixpanel!.track('brand_images_max_images_error');
       setState(() {
         maxImagesAdded = true;
       });
@@ -75,6 +77,7 @@ class _BrandImagesState extends State<BrandImages> {
       });
       await _brandDataService.addBrandContentPictures(widget.brandId, temp);
       getBrandContentImages();
+      mixpanel!.track('brand_images_added');
     }
   }
 
@@ -176,6 +179,11 @@ class _BrandImagesState extends State<BrandImages> {
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_images_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_images_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });
@@ -341,6 +349,7 @@ class _BrandImagesState extends State<BrandImages> {
                                     }
                                 );
                                 if (result) {
+                                  mixpanel!.track('brand_images_delete');
                                   setState(() {
                                     isLoading = true;
                                   });

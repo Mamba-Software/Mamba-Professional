@@ -158,6 +158,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   }
 
   void _addEvent() {
+    mixpanel!.track('brand_calendar_plan_event', properties: {'isPrivate': false});
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
@@ -178,6 +179,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   }
 
   void _addPrivateEvent() {
+    mixpanel!.track('brand_calendar_plan_event', properties: {'isPrivate': true});
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
@@ -292,7 +294,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       if (isCompleted) {
         return GestureDetector(
           onTap: () {
-            navigateToEventScreen(appointment.id.toString());
+            navigateToEventScreen(appointment.id.toString(), isCompleted);
           },
           child: Center(
             child: Material(
@@ -355,7 +357,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       } else {
         return GestureDetector(
           onTap: () {
-            navigateToEventScreen(appointment.id.toString());
+            navigateToEventScreen(appointment.id.toString(), isCompleted);
           },
           child: Center(
             child: Material(
@@ -420,7 +422,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       if (isCompleted) {
         return GestureDetector(
           onTap: () {
-            navigateToEventScreen(appointment.id.toString());
+            navigateToEventScreen(appointment.id.toString(), isCompleted);
           },
           child: Center(
             child: Material(
@@ -470,7 +472,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       } else {
         return GestureDetector(
           onTap: () {
-            navigateToEventScreen(appointment.id.toString());
+            navigateToEventScreen(appointment.id.toString(), isCompleted);
           },
           child: Center(
             child: Material(
@@ -533,7 +535,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       if (isCompleted) {
         return GestureDetector(
           onTap: () {
-            navigateToEventScreen(appointment.id.toString());
+            navigateToEventScreen(appointment.id.toString(), isCompleted);
           },
           child: Center(
             child: Material(
@@ -596,7 +598,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       } else {
         return GestureDetector(
           onTap: () {
-            navigateToEventScreen(appointment.id.toString());
+            navigateToEventScreen(appointment.id.toString(), isCompleted);
           },
           child: Center(
             child: Material(
@@ -661,7 +663,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     if (isCompleted) {
       return GestureDetector(
         onTap: () {
-          navigateToEventScreen(appointment.id.toString());
+          navigateToEventScreen(appointment.id.toString(), isCompleted);
         },
         child: Center(
           child: Material(
@@ -724,7 +726,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     } else {
       return GestureDetector(
         onTap: () {
-          navigateToEventScreen(appointment.id.toString());
+          navigateToEventScreen(appointment.id.toString(), isCompleted);
         },
         child: Center(
           child: Material(
@@ -833,6 +835,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                 children: [
                                   TextButton(
                                     onPressed: () {
+                                      mixpanel!.track('brand_calendar_today');
                                       setState(() {
                                         _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
                                         _controller.selectedDate = DateTime.now();
@@ -847,14 +850,17 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                   TextButton(
                                     onPressed: () {
                                       if (_controller.view == CalendarView.day) {
+                                        mixpanel!.track('brand_calendar_week');
                                         setState(() {
                                           _controller.view = CalendarView.week;
                                         });
                                       } else if (_controller.view == CalendarView.week) {
+                                        mixpanel!.track('brand_calendar_month');
                                         setState(() {
                                           _controller.view = CalendarView.month;
                                         });
                                       } else if (_controller.view == CalendarView.month){
+                                        mixpanel!.track('brand_calendar_day');
                                         setState(() {
                                           _controller.view = CalendarView.day;
                                         });
@@ -905,6 +911,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_calendar_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_calendar_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });
@@ -1223,11 +1234,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     return events;
   }
 
-  void navigateToEventScreen(String eventId) {
+  void navigateToEventScreen(String eventId, bool isCompleted) {
+    mixpanel!.track('brand_calendar_event_view', properties: {'Calendar View': _controller.view.toString(), 'isCompleted': isCompleted});
     // Navigate to Event Screen
     Navigator.push(
         context,
-        CupertinoPageRoute<Null>(
+        CupertinoPageRoute<void>(
           builder: (context) => EventPage(
             eventId: eventId,
             onlyView: widget.onlyView,

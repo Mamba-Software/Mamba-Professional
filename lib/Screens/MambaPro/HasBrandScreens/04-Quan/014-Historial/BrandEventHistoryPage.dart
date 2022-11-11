@@ -191,6 +191,11 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_event_history_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_event_history_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });
@@ -335,7 +340,7 @@ class _BrandEventHistoryPageState extends State<BrandEventHistoryPage> {
           listEvents.isNotEmpty ?
           LazyLoadScrollView(
             onEndOfPage: () {
-              print("Getting more events ...");
+              mixpanel!.track('brand_event_history_more_events');
               getBrandMoreEvents(listEvents[lastIndex].id!);
             },
             scrollOffset: safeAreaHeight.toInt(),

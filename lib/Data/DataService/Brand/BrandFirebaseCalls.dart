@@ -577,7 +577,7 @@ class BrandFirebaseCalls {
     // Accept the user to Brand
     int role = 0;
     if (request.isTrainer!) {
-      role = 5;
+      role = 3;
     }
     // New Database
     this.addUserToBrand(request.userId!, request.brandId!, role);

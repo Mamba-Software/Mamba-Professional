@@ -27,10 +27,12 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
+    mixpanel!.timeEvent('user_profile_settings_picture');
     File? temp = await ImageUtils().pickImage();
     setState(() {
       _image = temp;
     });
+    mixpanel!.track('user_profile_settings_picture');
   }
 
   // Upload Image
@@ -44,6 +46,7 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
       isLoading = false;
       _image = null;
     });
+    mixpanel!.track('user_profile_settings_picture_change_completed');
   }
 
   // Gets the user info from firebase.
@@ -57,6 +60,7 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
 
   @override
   void initState() {
+    mixpanel!.timeEvent('user_profile_settings_picture_change');
     isLoading = true;
     getUser();
     super.initState();

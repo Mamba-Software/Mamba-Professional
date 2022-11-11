@@ -93,6 +93,7 @@ class _BonosProState extends State<BonosPro> {
 
   // Navigate to Bonos Request Screen
   void navigateToBonosRequestScreen() {
+    mixpanel!.track('brand_bonos_confirmation_requests');
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
@@ -216,6 +217,7 @@ class _BonosProState extends State<BonosPro> {
                                   child: InkWell(
                                     splashColor: Theme.of(context).backgroundColor, // Splash color
                                     onTap: () async {
+                                      mixpanel!.track('brand_bonos_filter_button');
                                       await showModalBottomSheet<int?>(
                                         context: context,
                                         isScrollControlled: true,
@@ -255,6 +257,7 @@ class _BonosProState extends State<BonosPro> {
                                                                 style: Theme.of(context).textTheme.caption
                                                             ),
                                                             onPressed: () {
+                                                              mixpanel!.track('brand_bonos_filter_clean');
                                                               setStateBottom(() {
                                                                 filterByBonos[0] = true;
                                                                 filterByBonos[1] = true;
@@ -265,6 +268,7 @@ class _BonosProState extends State<BonosPro> {
                                                           ),
                                                           dense: true,
                                                           onTap: _currentPage == 0 ? null : () {
+                                                            mixpanel!.track('brand_bonos_filter_back');
                                                             _pageController.previousPage(
                                                               duration: const Duration(milliseconds: 500),
                                                               curve: Curves.ease,
@@ -287,6 +291,7 @@ class _BonosProState extends State<BonosPro> {
                                                                 children: [
                                                                   ListTile(
                                                                     onTap: () {
+                                                                      mixpanel!.track('brand_bonos_filter_active');
                                                                       _pageController.nextPage(
                                                                         duration: const Duration(milliseconds: 500),
                                                                         curve: Curves.ease,
@@ -320,6 +325,7 @@ class _BonosProState extends State<BonosPro> {
                                                                       filterActive.retainWhere((element) => element == true);
                                                                       if (!(filterActive.length == 1 && filterByBonos[0])) {
                                                                         filterByBonos[0] = !filterByBonos[0];
+                                                                        mixpanel!.track('brand_bonos_filter_active', properties: {'Values': [filterByBonos[0] ? 'Yes' : ' ', filterByBonos[1] ? 'No' : ' ' ]});
                                                                         // Navigator Pop
                                                                         Navigator.pop(context);
                                                                       }
@@ -341,6 +347,7 @@ class _BonosProState extends State<BonosPro> {
                                                                       filterActive.retainWhere((element) => element == true);
                                                                       if (!(filterActive.length == 1 && filterByBonos[1])) {
                                                                         filterByBonos[1] = !filterByBonos[1];
+                                                                        mixpanel!.track('brand_bonos_filter_active', properties: {'Values': [filterByBonos[0] ? 'Yes' : ' ', filterByBonos[1] ? 'No' : ' ' ]});
                                                                         // Navigator Pop
                                                                         Navigator.pop(context);
                                                                       }
@@ -454,6 +461,11 @@ class _BonosProState extends State<BonosPro> {
                     size: MediaQuery.of(context).size.width * 0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_bonos_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_bonos_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });

@@ -155,6 +155,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
               child: IconButton(
                 onPressed: () {
+                  mixpanel!.track('profile_view_more_options_button');
                   showModalBottomSheet<int?>(
                     context: context,
                     isScrollControlled: true,
@@ -194,6 +195,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       textAlign: TextAlign.left
                                   ),
                                   onTap: () async {
+                                    mixpanel!.track('profile_view_chat_button');
                                     types.User otherUser = types.User(
                                       firstName: user!.firstName,
                                       lastName: user!.lastName,
@@ -216,6 +218,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     });
                                     if (!deleteRoom!) {
                                       _roomDataService.deleteRoom(room.id);
+                                      mixpanel!.track('profile_view_chat_empty');
                                     }
                                   },
                                 ),
@@ -242,6 +245,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     ],
                                   ) : Container(),
                                   onTap: hasAllBrandBonos == false ? () async {
+                                    mixpanel!.track('profile_view_give_bono');
                                     Navigator.pop(context);
                                     showModalBottomSheet<bool?>(
                                       context: context,
@@ -303,8 +307,9 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             children: [
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
               GestureDetector(
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    mixpanel!.timeEvent('profile_view_picture_click');
+                    await Navigator.push(
                         context,
                         CupertinoPageRoute<void>(
                             builder: (context) => FullScreenPage(
@@ -327,6 +332,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                             )
                         )
                     );
+                    mixpanel!.track('profile_view_picture_click');
                   },
                   child: CircularImage(
                     size: MediaQuery.of(context).size.width*0.45,

@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Sett
 import 'package:page_transition/page_transition.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 // Profile Page
 class Profile extends StatefulWidget {
@@ -49,6 +50,7 @@ class _ProfileState extends State<Profile> {
     super.initState();
     isLoading = true;
     initProfileHome();
+    mixpanel!.track('user_profile_view');
   }
 
   // Init for Brand 000-Home
@@ -117,6 +119,7 @@ class _ProfileState extends State<Profile> {
 
   // Navigate to FullScreenImage Screen
   void navigateToFullScreenImage() {
+    mixpanel!.timeEvent('user_profile_picture_click');
     Navigator.push(
       context,
       CupertinoPageRoute<Null>(
@@ -140,6 +143,7 @@ class _ProfileState extends State<Profile> {
         )
       )
     );
+    mixpanel!.track('user_profile_picture_click');
   }
 
   // Build the Widget of the User Name
@@ -310,6 +314,7 @@ class _ProfileState extends State<Profile> {
               width: safeAreaWidth*0.4,
               child: OutlinedButton(
                 onPressed: () {
+                  mixpanel!.track('user_profile_share_app');
                   _sharePlusUtils.shareMambaLink(currentUser.firstName!);
                 },
                 child: Text(
@@ -367,7 +372,10 @@ class _ProfileState extends State<Profile> {
             Container(
               width: safeAreaWidth*0.4,
               child: OutlinedButton(
-                onPressed: navigateToFeedbackScreen,
+                onPressed: () {
+                  mixpanel!.track('user_profile_feedback_open');
+                  navigateToFeedbackScreen();
+                },
                 child: Text(
                   AppLocalizations.of(context)!.giveFeedback,
                   style: Theme.of(context).textTheme.bodyText1,
@@ -450,9 +458,10 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> launchEmail() async {
-    final url = 'mailto:mambastylecastelldefels@gmail.com';
-    if (await canLaunch(url)) {
-      await launch(url);
+    mixpanel!.track('user_profile_email_mamba');
+    const url = 'mailto:mambastylecastelldefels@gmail.com';
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
     }
   }
 

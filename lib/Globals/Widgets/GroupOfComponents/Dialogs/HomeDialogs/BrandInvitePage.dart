@@ -31,13 +31,14 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
   List<Usuario> brandTrainers = [];
   @override
   void initState() {
+
     initDialog();
     super.initState();
   }
 
   Future<void> initDialog() async {
+    mixpanel!.track('brand_invite_modal_open', properties: {'Brand': widget.brandId});
     brand = await _brandDataService.getBrandDetails(widget.brandId);
-    print(brand.imagesList);
     // Brand Trainers
     brandTrainers = await _brandDataService.getBrandTrainers(widget.brandId);
     setState(() {
@@ -46,6 +47,7 @@ class _BrandInvitePageState extends State<BrandInvitePage> {
   }
 
   Future<void> joinBrand() async {
+    mixpanel!.track('brand_invite_modal_join_brand', properties: {'Brand': widget.brandId});
     setState(() {
       isBodyLoading = true;
     });

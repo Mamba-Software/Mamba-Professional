@@ -86,6 +86,7 @@ class _SettingsState extends State<Settings> {
 
   // Navigate to Theme Screen
   void navigateToThemeScreen() {
+    mixpanel!.track('user_profile_settings_theme');
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
@@ -95,6 +96,7 @@ class _SettingsState extends State<Settings> {
   }
   // Navigate to Theme Screen
   void navigateToFeedbackScreen() {
+    mixpanel!.track('user_profile_settings_feedback');
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
@@ -105,6 +107,7 @@ class _SettingsState extends State<Settings> {
 
   @override
   void initState() {
+    mixpanel!.track('user_profile_settings_view');
     super.initState();
   }
 
@@ -274,6 +277,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   TextButton(
                     onPressed: () async {
+                      mixpanel!.track('user_profile_settings_share_app');
                       _sharePlusUtils.shareMambaLink(currentUser.firstName!);
                     },
                     child: Row(
@@ -304,12 +308,13 @@ class _SettingsState extends State<Settings> {
                   ),
                   TextButton(
                     onPressed: () async {
+                      mixpanel!.track('user_profile_settings_terms_conditions');
                       if (Localizations.localeOf(context).languageCode == 'es') {
-                        if (!await launch(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
+                        if (!await launchUrlString(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
                       } else if (Localizations.localeOf(context).languageCode == 'ca') {
-                        if (!await launch(termsAndConditionsCA)) throw 'Could not launch $termsAndConditionsCA';
+                        if (!await launchUrlString(termsAndConditionsCA)) throw 'Could not launch $termsAndConditionsCA';
                       } else {
-                        if (!await launch(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
+                        if (!await launchUrlString(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
                       }
                     },
                     child: Row(
@@ -326,6 +331,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   TextButton(
                     onPressed: () async {
+                      mixpanel!.track('user_profile_settings_close_session_open');
                       var result = await showDialog(
                           context: context,
                           builder: (_) {
@@ -333,6 +339,7 @@ class _SettingsState extends State<Settings> {
                           }
                       );
                       if (result) {
+                        mixpanel!.track('user_profile_settings_close_session_closed');
                         setState(() {
                           isLoading = true;
                         });
@@ -340,7 +347,7 @@ class _SettingsState extends State<Settings> {
                           _userDataService.signOut().then((value) =>
                               Navigator.pushAndRemoveUntil(
                                 context,
-                                CupertinoPageRoute<Null>(
+                                CupertinoPageRoute<void>(
                                   builder: (context) => const Login(),
                                   settings: const RouteSettings(name: 'Login'),
                                 ),
@@ -365,6 +372,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   TextButton(
                     onPressed: () async {
+                      mixpanel!.track('user_profile_settings_delete_account_open');
                       showDialog(
                           context: context,
                           builder: (_) {
@@ -386,6 +394,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   TextButton(
                     onPressed: () async {
+                      mixpanel!.track('user_profile_settings_app_store');
                       await StoreRedirect.redirect(
                         androidAppId: "com.mamba.mambastyleapp",
                         iOSAppId: "1601684650",
@@ -411,6 +420,7 @@ class _SettingsState extends State<Settings> {
   }
 
   Future<void> launchEmail() async {
+    mixpanel!.track('user_profile_settings_email_mamba');
     const url = 'mailto:mambastylecastelldefels@gmail.com';
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
@@ -588,9 +598,10 @@ class _DeleteDialogState extends State<DeleteDialog> {
                               }
                             }
                             currentUser.setBrandList = [];
+                            mixpanel!.track('user_profile_settings_delete_account_completed');
                             Navigator.pushAndRemoveUntil(
                               context,
-                              CupertinoPageRoute<Null>(
+                              CupertinoPageRoute<void>(
                                 builder: (context) => const Login(),
                                 settings: const RouteSettings(name: 'Login'),
                               ),
@@ -711,6 +722,9 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                     } else {
                       idiomaChanged = false;
                     }
+                    mixpanel!.track('user_profile_settings_language', properties: {
+                      'value' : _locale!.languageCode
+                    });
                     Provider.of<LanguageProvider>(context, listen: false).setLocale(_locale!);
                     widget.idiomaChanged(idiomaChanged);
                   }),

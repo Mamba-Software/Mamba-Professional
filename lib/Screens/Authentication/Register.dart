@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,6 +33,13 @@ class _RegisterState extends State<Register> {
   bool _passwordVisible = false;
   String password1 = '';
   String password2 = '';
+
+  @override
+  void initState() {
+    mixpanel!.track('mamba_register_view');
+    mixpanel!.timeEvent('mamba_register_completed');
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -248,6 +256,7 @@ class _RegisterState extends State<Register> {
           isLoading = false;
         });
         showInSnackBar(AppLocalizations.of(context)!.validate);
+        mixpanel!.track('mamba_register_completed');
         Future.delayed(Duration(seconds: 5), () async {
           Navigator.pop(context, email.trim());
         });
@@ -255,6 +264,7 @@ class _RegisterState extends State<Register> {
         setState(() {
           isLoading = false;
         });
+        mixpanel!.track('mamba_register_existing_email_error');
         showInSnackBar(AppLocalizations.of(context)!.sameEmail);
       } else {
         setState(() {

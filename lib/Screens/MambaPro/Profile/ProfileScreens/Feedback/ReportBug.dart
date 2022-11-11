@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/FeedBack/FeedbackDataService.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
@@ -61,6 +62,7 @@ class _ReportBugState extends State<ReportBug> {
         ),
       );
       clearControllers();
+      mixpanel!.track('user_profile_feedback_report_bug_succeeded');
     }
   }
 

@@ -162,6 +162,11 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                     size: MediaQuery.of(context).size.width*0.06,
                   ),
                   onPressed: () {
+                    if (widget.pinned == true) {
+                      mixpanel!.track('brand_membership_requests_pinned_off');
+                    } else {
+                      mixpanel!.track('brand_membership_requests_pinned_on');
+                    }
                     setState(() {
                       widget.pinned = !widget.pinned;
                     });
@@ -177,6 +182,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
                 GestureDetector(
                   onTap: () async {
+                    mixpanel!.track('brand_membership_requests_share_link');
                     showModalBottomSheet<void>(
                       context: context,
                       isScrollControlled: true,
@@ -285,6 +291,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                             ],
                           ),
                           onTap: () async {
+                            mixpanel!.track('brand_membership_requests_open');
                             var result = await showDialog(
                                 context: context,
                                 builder: (_) {
@@ -294,12 +301,19 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                                   );
                                 }
                             );
-                            if (result != null && result) {
-                              NotificationService().userJoinsBrand(request.userId!, request.brandId!);
-                              _brandDataService.acceptRequestFromUser(request);
-                            } else if (result != null && !result) {
-                              _userDataService.deleteRequestToBrand(request);
+                            if (result == null) {
+                              mixpanel!.track('brand_membership_requests_close');
+                            } else {
+                              if (result) {
+                                NotificationService().userJoinsBrand(request.userId!, request.brandId!);
+                                _brandDataService.acceptRequestFromUser(request);
+                                mixpanel!.track('brand_membership_requests_accept');
+                              } else {
+                                _userDataService.deleteRequestToBrand(request);
+                                mixpanel!.track('brand_membership_requests_delete');
+                              }
                             }
+
                           },
                         ),
                       );

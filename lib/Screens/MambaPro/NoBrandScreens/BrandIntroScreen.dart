@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -50,6 +51,15 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
               physics: const ClampingScrollPhysics(),
               controller: _pageController,
               onPageChanged: (int page) {
+                if (page == 0) {
+                  mixpanel!.track('register_brand_onboarding_cover');
+                } else if (page == 1) {
+                  mixpanel!.track('register_brand_onboarding_info');
+                } else if (page == 2) {
+                  mixpanel!.track('register_brand_onboarding_location');
+                } else if (page == 3) {
+                  mixpanel!.track('register_brand_onboarding_workday');
+                }
                 setState(() {
                   _currentPage = page;
                 });
@@ -66,6 +76,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () {
+                                mixpanel!.track('register_brand_onboarding_skip');
                                 Navigator.pop(context, true);
                               },
                               child: Text(
@@ -147,6 +158,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () {
+                                mixpanel!.track('register_brand_onboarding_skip');
                                 Navigator.pop(context, true);
                               },
                               child: Text(
@@ -199,6 +211,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
                             alignment: Alignment.centerRight,
                             child: TextButton(
                               onPressed: () {
+                                mixpanel!.track('register_brand_onboarding_skip');
                                 Navigator.pop(context, true);
                               },
                               child: Text(
@@ -298,6 +311,7 @@ class _BrandIntroScreenState extends State<BrandIntroScreen> {
       bottomSheet: _currentPage == _numPages - 1
           ? GestureDetector(
             onTap: () {
+              mixpanel!.track('register_brand_onboarding_go');
               Navigator.pop(context, true);
             },
             child: Container(

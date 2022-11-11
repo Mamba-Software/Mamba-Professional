@@ -99,13 +99,16 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   void initState() {
     user = widget.user;
     if (widget.edit != null && widget.edit == true) {
+      mixpanel!.track('edit_bono_view');
       editBono = true;
     }
     if (widget.bonoRequest != null) {
+      mixpanel!.track('bono_confirmation_view');
       isBonoRequest = true;
       paymentMethod = widget.bonoRequest?.paymentMethod;
       startDate = DateTime.now();
     } else {
+      mixpanel!.track('give_bono_view');
       paymentMethod = 2;
     }
     getBonos();
@@ -323,7 +326,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                             onPressed: false ? () {} : null,
                           ),
                           onTap: () async {
-                            if(isBonoRequest) {
+                            if (isBonoRequest) {
+                              mixpanel!.track('bono_confirmation_user_page');
                               await Navigator.push(
                                   context,
                                   CupertinoPageRoute<bool?>(
@@ -814,6 +818,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                             isLoading = true;
                           });
                           await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
+                          mixpanel!.track('bono_confirmation_deleted');
                           Navigator.of(context).pop();
                         }
                     ) : SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -834,6 +839,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                         bonoSelected.sessions = 10000;
                                       }
                                       if (editBono) {
+                                        mixpanel!.track('edit_bono_confirmed');
                                         _userDataService.updateUserBono(
                                             user.id!, bonoSelected);
                                         await Future.delayed(
@@ -865,6 +871,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                         await _brandDataService
                                             .updateBonoCompras(
                                             widget.brand.id!, purchase.bonoId!);
+                                        mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
                                       }
                                       else {
                                         // Build Purchase Object
@@ -890,7 +897,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                             widget.brand.id!, bonoSelected.id!);
                                         await Future.delayed(
                                             const Duration(seconds: 3));
-
+                                        mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
                                       }
                                       Navigator.of(context).pop();
                                     }

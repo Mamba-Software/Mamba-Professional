@@ -189,6 +189,7 @@ class _HomePro extends State<HomePro> {
                       size: MediaQuery.of(context).size.height*0.035,
                     ),
                     onPressed: () {
+                      mixpanel!.track('brand_homepage_share_link');
                       showModalBottomSheet<void>(
                         context: context,
                         isScrollControlled: true,
@@ -219,6 +220,7 @@ class _HomePro extends State<HomePro> {
                 children: [
                   UserTodayWidget(
                     onClicked: (boolean) {
+                      mixpanel!.track('brand_homepage_user_this_week');
                       widget.navigateToPage(10, DateTime.now(), CalendarView.week);
                     },
                   ),
@@ -230,6 +232,7 @@ class _HomePro extends State<HomePro> {
                     width: MediaQuery.of(context).size.width * 0.84,
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
+                      mixpanel!.track('brand_homepage_membership_requests');
                       widget.navigateToPage(15);
                     },
                   ),
@@ -238,6 +241,7 @@ class _HomePro extends State<HomePro> {
                     width: MediaQuery.of(context).size.width * 0.84,
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
+                      mixpanel!.track('brand_homepage_bono_confirmation_requests');
                       navigateToBonosRequestScreen();
                     },
                   ),
@@ -260,6 +264,7 @@ class _HomePro extends State<HomePro> {
                             width: MediaQuery.of(context).size.width * 0.4,
                             isPrivate: false,
                             onClicked: (bool? value) {
+                              mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': false});
                               widget.navigateToPage(10,DateTime.now(),CalendarView.day);
                             },
                           ),
@@ -268,6 +273,7 @@ class _HomePro extends State<HomePro> {
                             width: MediaQuery.of(context).size.width * 0.4,
                             isPrivate: true,
                             onClicked: (bool? value) {
+                              mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': true});
                               widget.navigateToPage(10,DateTime.now(),CalendarView.day);
                             },
                           ),

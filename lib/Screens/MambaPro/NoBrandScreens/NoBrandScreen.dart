@@ -58,6 +58,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
 
   @override
   void initState() {
+    mixpanel!.track('no_brands_homepage');
     super.initState();
   }
 
@@ -300,6 +301,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
         :
       GestureDetector(
         onTap: () async {
+          mixpanel!.track('register_brand_onboarding_cover');
           bool? result = await Navigator.push(
               context,
               CupertinoPageRoute<bool>(
@@ -307,15 +309,16 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
               )
           );
           if (result != null && result) {
-            Navigator.push(
+            var result2 = await Navigator.push(
                 context,
-                CupertinoPageRoute<Null>(
+                CupertinoPageRoute<bool>(
                   builder: (context) => RegistrarMarca(
                     locale: Localizations.localeOf(context),
                   ),
                   settings: const RouteSettings(name: 'RegistrarMarca'),
                 )
             );
+            if (result2 == null) mixpanel!.track('register_brand_closed');
           }
         },
         child: Material(
@@ -442,7 +445,8 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
         :
       GestureDetector(
         onTap: () async {
-          showModalBottomSheet<void>(
+          mixpanel!.track('scan_qr_code_open');
+          var result = await showModalBottomSheet<bool>(
             context: context,
             isScrollControlled: true,
             shape: const RoundedRectangleBorder(
@@ -458,6 +462,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
               );
             },
           );
+          if (result == null) mixpanel!.track('scan_qr_code_close');
         },
         child: Material(
           elevation: 4,

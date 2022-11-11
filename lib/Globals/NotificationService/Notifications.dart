@@ -55,6 +55,7 @@ class _NotificationsState extends State<Notifications> {
   @override
   initState() {
     super.initState();
+    mixpanel!.track('user_notifications_view');
     isLoading = true;
     getFirstNotificationsLimit10();
     scrollController.addListener(() async {
@@ -62,6 +63,7 @@ class _NotificationsState extends State<Notifications> {
         if (scrollController.position.pixels != 0) {
           if (notificationsList.length >= 10) {
             await getMoreNotificationsLimit10(notificationsList[lastIndex]);
+            mixpanel!.track('user_notifications_get_more');
           }
         }
       }
@@ -288,6 +290,7 @@ class _NotificationsState extends State<Notifications> {
               style: Theme.of(context).textTheme.bodyText2,
             ),
             onPressed: () async {
+              mixpanel!.track('user_notifications_all_read');
               for (NotificationEvent notif in notificationsList) {
                 setState(() {
                   notif.isRead = true;
@@ -904,6 +907,10 @@ class _NotificationsState extends State<Notifications> {
     Usuario user = usersList[index];
     Brand brand = brandsList[index];
     Event event = eventList[index];
+
+    mixpanel!.track('user_notifications_tap', properties: {
+      'type': notification.type
+    });
 
     switch(notification.type!) {
       case "Wellcome_User": {

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:store_redirect/store_redirect.dart';
 
@@ -15,9 +16,9 @@ class AppUpdateDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
+      insetPadding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 30, left: 20, right: 20),
+        padding: const EdgeInsets.only(top: 40, bottom: 30, left: 20, right: 20),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -51,7 +52,7 @@ class AppUpdateDialog extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.error_outline,
                                 color: AppColors.white,
                               ),
@@ -91,12 +92,13 @@ class AppUpdateDialog extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white,),
                     ),
                     onPressed: () async {
+                      mixpanel!.track('minimum_app_version_update', properties: {'isMandatory': isMandatory});
                       await StoreRedirect.redirect(
                         androidAppId: "com.mamba.mambastyleapp",
                         iOSAppId: "1601684650",
                       );
-                      await Future.delayed(Duration(seconds: 3));
-                      Navigator.of(context).pop();
+                      await Future.delayed(const Duration(seconds: 3));
+                      Navigator.pop(context, true);
                     },
                   ),
                 ],
@@ -108,14 +110,14 @@ class AppUpdateDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(70, 70), // button width and height
+                      size: const Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Theme.of(context).colorScheme.secondary,
                           child: InkWell(
                             onTap: () async {
                             },
-                            child: Icon(Icons.update_outlined, color: Colors.white, size: 40,), // icon
+                            child: const Icon(Icons.update_outlined, color: Colors.white, size: 40,), // icon
                           ),
                         ),
                       ),

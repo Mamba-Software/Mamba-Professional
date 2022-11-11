@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,7 +54,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool nickOkay = false;
   bool nickUsed = false;
   // Date Of Birth
-  DateTime startDate = DateTime.now();
+  DateTime startDate = DateTime(DateTime.now().year,DateTime.now().month, DateTime.now().day, 0, 0);
   TextEditingController startDateController = TextEditingController();
   String nullDate = "";
   bool errorDate = false;
@@ -90,10 +91,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
+    mixpanel!.timeEvent("onboarding_userdata_image");
     File? temp = await ImageUtils().pickImage();
     setState(() {
       _image = temp;
     });
+    mixpanel!.track('onboarding_userdata_image');
   }
 
   Future<void> checkIfNickExists(String nick) async {
@@ -142,11 +145,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Future<void> addUser() async {
+    mixpanel!.track('onboarding_finish');
     _notificationService = NotificationService();
     String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
     await _userDataService.updateUser(currentUser.id!, name,firstNameController.text.trim(), lastNameController.text.trim(), nick, startDateController.text, gender!, _image, true);
     await _userDataService.addUserNickname(currentUser.id!, nick);
     _notificationService!.wellcomeUser(currentUser.id!);
+    sendMixPanelDataUsers();
     Navigator.pushReplacement(
         context,
         CupertinoPageRoute<void>(
@@ -154,6 +159,27 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           settings: const RouteSettings(name: 'SplashScreen'),
         )
     );
+  }
+
+  void sendMixPanelDataUsers() {
+    // Send User Mix Panel Data
+    mixpanel!.getPeople().set("email", currentUser.email);
+    mixpanel!.getPeople().set("firstLoginDate", DateTime.now().toString());
+    String genderString = "";
+    if (gender == 0) genderString = "Male";
+    if (gender == 1) genderString = "Female";
+    if (gender == 2) genderString = "Other";
+    mixpanel!.getPeople().set("gender", genderString);
+    startDate = DateTime(startDate.year, startDate.month, startDate.day);
+    mixpanel!.getPeople().set("dateOfBirth", startDate.toString());
+    mixpanel!.getPeople().set("language", currentUser.idioma!);
+    mixpanel!.getPeople().set("isProduction", isProduction);
+  }
+
+  @override
+  void initState() {
+    mixpanel!.track('onboarding_wellcome');
+    super.initState();
   }
 
   @override
@@ -188,6 +214,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 physics: const ClampingScrollPhysics(),
                 controller: _pageController,
                 onPageChanged: (int page) {
+                  if (page == 0) {
+                    mixpanel!.track('onboarding_wellcome');
+                  } else if (page == 1) {
+                    mixpanel!.track('onboarding_trainers');
+                  } else if (page == 2) {
+                    mixpanel!.track('onboarding_userdata');
+                  }
                   setState(() {
                     _currentPage = page;
                   });
