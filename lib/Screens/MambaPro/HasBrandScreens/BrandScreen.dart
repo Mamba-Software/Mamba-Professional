@@ -427,7 +427,8 @@ class _BrandScreenState extends State<BrandScreen> {
         SizedBox(height: safeAreaHeight * 0.01),
         listTilePro(10),
         listTilePro(5),
-        listTilePro(14),
+        listTilePro(9),
+
 
         SizedBox(height: safeAreaHeight * 0.01),
         Padding(
@@ -441,7 +442,7 @@ class _BrandScreenState extends State<BrandScreen> {
         SizedBox(height: safeAreaHeight * 0.01),
         listTilePro(2),
         listTilePro(1),
-        listTilePro(15),
+        currentUser.brandRole < 2 ? listTilePro(15) : Container(),
 
         SizedBox(height: safeAreaHeight * 0.01),
         Padding(
@@ -453,9 +454,9 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
         ),
         SizedBox(height: safeAreaHeight * 0.01),
-        listTilePro(9),
         listTilePro(8),
         listTilePro(7),
+        listTilePro(14),
         listTilePro(11),
 
 

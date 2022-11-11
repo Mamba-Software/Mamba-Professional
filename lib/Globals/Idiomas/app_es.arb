@@ -303,7 +303,7 @@
   "@sessionsToDo":{
     "description": "Sesiones Text"
   },
-  "stats": "Control y Análisis",
+  "stats": "Estadísticas",
   "@stats":{
     "description": "Análisis Text"
   },

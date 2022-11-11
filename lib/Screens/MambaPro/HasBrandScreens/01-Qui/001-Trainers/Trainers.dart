@@ -724,7 +724,7 @@ class _Trainers extends State<Trainers> {
               ),
             ],
           ),
-          SliverToBoxAdapter(
+          currentUser.brandRole < 3 ? SliverToBoxAdapter(
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
@@ -764,10 +764,10 @@ class _Trainers extends State<Trainers> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
               ],
             ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: 10,)),
+          ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
           isLoading ? SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               return Padding(

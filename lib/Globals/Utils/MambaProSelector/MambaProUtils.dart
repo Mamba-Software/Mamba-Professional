@@ -52,7 +52,7 @@ class MambaProUtils {
     if(pageIndexView == 10) return Icon(Icons.calendar_month_outlined, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 11) return Icon(Icons.pin_drop_outlined, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 6) return Icon(Icons.chat_bubble_outline, color: Theme.of(context).primaryColor,);
-    if(pageIndexView == 9) return Icon(Icons.query_stats_outlined, color: Theme.of(context).primaryColor,);
+    if(pageIndexView == 9) return Icon(Icons.leaderboard_outlined, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 14) return Icon(Icons.history_outlined, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 15) return Icon(Icons.group_add_outlined, color: Theme.of(context).primaryColor,);
     if(pageIndexView == 16) return Icon(Icons.preview, color: Theme.of(context).primaryColor,);
