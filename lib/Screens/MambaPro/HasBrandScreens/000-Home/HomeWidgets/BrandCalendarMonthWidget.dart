@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -153,19 +155,15 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                             ],
                           ),
                         ),
-                        TextButton(
-                          onPressed: () {
-                            mixpanel!.track('brand_homepage_calendar_today');
-                            setState(() {
-                              _calendarController.displayDate = DateTime.now();
-                              _calendarController.selectedDate = DateTime.now();
-                            });
-                          },
-                          child: Text(
-                              AppLocalizations.of(context)!.todayString,
-                              style: Theme.of(context).textTheme.caption,
-                              textAlign: TextAlign.center
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                                DateTimeUtils().formatDateTimeToStringMM(_calendarController.displayDate!, Localizations.localeOf(context).languageCode),
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.center
+                            ),
+                            SizedBox(width: widget.width*0.04),
+                          ],
                         ),
                       ],
                     ),
