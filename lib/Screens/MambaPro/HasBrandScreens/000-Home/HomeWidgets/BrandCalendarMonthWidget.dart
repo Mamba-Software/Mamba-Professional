@@ -99,6 +99,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
   @override
   void initState() {
     super.initState();
+    _calendarController.displayDate = DateTime.now();
   }
 
   @override

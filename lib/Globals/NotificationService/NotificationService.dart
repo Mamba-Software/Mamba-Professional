@@ -160,7 +160,7 @@ class NotificationService {
     var parameters = ["null", brandId, "null", "null", bono.id];
     _userDataService.sendNotificationToUser(userId, "UserBuysBono_User", parameters);
     // Notification to All Brand Trainers
-    parameters = [userId, "null", "null", "null", bono.id,];
+    parameters = [userId, brandId, "null", "null", bono.id,];
     List<Usuario> listUsers = await _brandDataService.getBrandTrainers(brandId);
     for (var i=0; i<listUsers.length; i++) {
       Usuario trainer = listUsers[i];
@@ -170,5 +170,4 @@ class NotificationService {
       }
     }
   }
-
 }
