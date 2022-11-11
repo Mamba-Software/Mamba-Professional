@@ -2495,5 +2495,9 @@
   "daysDemand": "Demanda de días",
   "@daysDemand": {
     "description": "daysDemand message"
+  },
+  "historic": "Histórico",
+  "@historic": {
+    "description": "Wellcome message"
   }
 }

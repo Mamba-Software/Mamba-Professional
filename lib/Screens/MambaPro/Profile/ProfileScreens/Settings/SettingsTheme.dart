@@ -273,15 +273,22 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
               isLoading = true;
             });
             bool? isDark;
+            String value = "";
             if (_value == 1) {
               isDark = false;
+              value = "Light";
             } else if (_value == 2) {
               isDark = true;
+              value = "Dark";
             } else if (_value == 3) {
               isDark = null;
+              value = "System";
             }
             currentUser.isDark = isDark;
             await _userDataService.updateUserThemePreferences(currentUser.id!, currentUser.isDark);
+            mixpanel!.track('user_profile_settings_theme_updated', properties: {
+              'value' : value
+            });
             Future.delayed(const Duration(milliseconds: 500), () {
               Navigator.pop(context);
             });

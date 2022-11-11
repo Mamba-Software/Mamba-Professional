@@ -62,6 +62,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
   }
 
   void _onLaunchCoordinates() {
+    mixpanel!.track('brand_locations_tap');
     MapsLauncher.launchCoordinates(location.latitude!, location.longitude!, location.description!);
   }
 
@@ -253,6 +254,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                               await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
                               // Notifying update
                               widget.locationChanged(true);
+                              mixpanel!.track('brand_locations_edited');
                             }
                           } else {
                             var result = await showDialog(
@@ -266,6 +268,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                               await _locationDataService.deleteLocation(location.id!, currentBrand.baseLocation!);
                               //print("Deleted");
                               widget.locationChanged(true);
+                              mixpanel!.track('brand_locations_deleted');
                             }
                           }
                         },

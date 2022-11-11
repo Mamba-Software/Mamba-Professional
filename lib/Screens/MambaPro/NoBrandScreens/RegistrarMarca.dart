@@ -114,6 +114,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
 
   @override
   void initState() {
+    mixpanel!.track('register_brand_cover');
     _tabController = TabController(length: 4, vsync: this);
     gPlace = googlePlace.GooglePlace(Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
     startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0,));
@@ -891,14 +892,17 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                     heroTag: "72",
                     onPressed: () {
                       if (_selectedIndex == 1) {
+                        mixpanel!.track('register_brand_cover');
                         setState(() {
                           tabs[1] = false;
                         });
                       } else if (_selectedIndex == 2) {
+                        mixpanel!.track('register_brand_info');
                         setState(() {
                           tabs[2] = false;
                         });
                       } else if (_selectedIndex == 3) {
+                        mixpanel!.track('register_brand_location');
                         setState(() {
                           tabs[3] = false;
                         });
@@ -936,7 +940,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             addEventTabValue += 0.25;
                             tabs[1] = true;
                           });
-                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandInfo();
+                          mixpanel!.track('register_brand_info');
                         }
                       } else if (_selectedIndex == 1) {
                         if (validateInfo()) {
@@ -945,7 +949,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             addEventTabValue += 0.25;
                             tabs[2] = true;
                           });
-                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandLocation();
+                          mixpanel!.track('register_brand_location');
                         }
                       } else if (_selectedIndex == 2) {
                         if (validateLocation()) {
@@ -955,7 +959,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             addEventTabValue += 0.25;
                             tabs[3] = true;
                           });
-                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandCalendar();
+                          mixpanel!.track('register_brand_workday');
                         }
                       } else if (_selectedIndex == 3) {
                         if (validateTime()) {
@@ -963,7 +967,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                             isLoading = true;
                           });
                           await registerBrand();
-                          Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandFinished();
                         }
                       }
                     },
@@ -1065,6 +1068,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   }
 
   Future<void> registerBrand() async {
+    mixpanel!.track('register_brand_completed');
     // Get Data About The Times Of The Brand
     DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
     DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);

@@ -1,4 +1,5 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 class PermisionsService {
 
@@ -75,13 +76,15 @@ class PermisionsService {
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
+      mixpanel!.track('location_permission_ask');
       if (permission == LocationPermission.deniedForever) {
         // Permissions are denied forever, handle appropriately.
+        mixpanel!.track('location_permission_deniedForever');
         return Future.error(
             'Location permissions are permanently denied, we cannot request permissions.');
       }
-
       if (permission == LocationPermission.denied) {
+        mixpanel!.track('location_permission_denied');
         // Permissions are denied, next time you could try
         // requesting permissions again (this is also where
         // Android's shouldShowRequestPermissionRationale
@@ -89,6 +92,12 @@ class PermisionsService {
         // your App should show an explanatory UI now.
         return Future.error(
             'Location permissions are denied');
+      }
+      if (permission == LocationPermission.always) {
+        mixpanel!.track('location_permission_always');
+      }
+      if (permission == LocationPermission.whileInUse) {
+        mixpanel!.track('location_permission_whileInUse');
       }
     }
 

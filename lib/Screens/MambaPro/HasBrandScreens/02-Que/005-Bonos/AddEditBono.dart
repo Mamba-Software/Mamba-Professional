@@ -158,11 +158,12 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.isDegradate = widget.bono.isDegradate;
       bono.opacity = widget.bono.opacity;
       getCondition();
-
+      mixpanel!.track('edit_bono_info');
     } else {
       isSelectedDays[1] = true;
       freeCancellController.text = '0';
       weeklyController.text = '0';
+      mixpanel!.track('add_bono_info');
     }
     for (int i = 0; i < currentColors.length; ++i) {
       color = Color(int.parse(currentColors[i].hexa!));
@@ -288,118 +289,118 @@ class _AddEditBonoState extends State<AddEditBono>
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(0),
                 child: IgnorePointer(
-                    child: Column(
-                  children: [
-                    TabBar(
-                      controller: _tabController,
-                      indicatorColor: Colors.transparent,
-                      onTap: (index) {
-                        _selectedIndex = index;
-                      },
-                      tabs: [
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.info_outlined,
-                                  color: tabs[0]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                )
-                              ],
+                  child: Column(
+                    children: [
+                      TabBar(
+                        controller: _tabController,
+                        indicatorColor: Colors.transparent,
+                        onTap: (index) {
+                          _selectedIndex = index;
+                        },
+                        tabs: [
+                          Tab(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.info_outlined,
+                                    color: tabs[0]
+                                        ? Theme.of(context).colorScheme.secondary
+                                        : Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.06,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.euro,
-                                  color: tabs[1]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                )
-                              ],
+                          Tab(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.euro,
+                                    color: tabs[1]
+                                        ? Theme.of(context).colorScheme.secondary
+                                        : Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.06,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.format_list_numbered,
-                                  color: tabs[2]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                )
-                              ],
+                          Tab(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.format_list_numbered,
+                                    color: tabs[2]
+                                        ? Theme.of(context).colorScheme.secondary
+                                        : Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.06,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.palette_outlined,
-                                  color: tabs[3]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                )
-                              ],
+                          Tab(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.palette_outlined,
+                                    color: tabs[3]
+                                        ? Theme.of(context).colorScheme.secondary
+                                        : Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.06,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Tab(
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.playlist_add_check,
-                                  color: tabs[4]
-                                      ? Theme.of(context).colorScheme.secondary
-                                      : Theme.of(context)
-                                          .scaffoldBackgroundColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
-                                )
-                              ],
+                          Tab(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.playlist_add_check,
+                                    color: tabs[4]
+                                        ? Theme.of(context).colorScheme.secondary
+                                        : Theme.of(context)
+                                            .scaffoldBackgroundColor,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.06,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    LinearProgressIndicator(
-                      value: addBonosTabValue,
-                      backgroundColor:
-                          Theme.of(context).scaffoldBackgroundColor,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
+                        ],
+                      ),
+                      LinearProgressIndicator(
+                        value: addBonosTabValue,
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
                   ],
                 )),
               ),
@@ -453,24 +454,44 @@ class _AddEditBonoState extends State<AddEditBono>
                               heroTag: "4",
                               onPressed: () {
                                 if (_selectedIndex == 1) {
+                                  if (widget.edit) {
+                                    mixpanel!.track('edit_bono_info');
+                                  } else {
+                                    mixpanel!.track('add_bono_info');
+                                  }
                                   setState(() {
                                     tabs[1] = false;
                                     FocusManager.instance.primaryFocus
                                         ?.unfocus();
                                   });
                                 } else if (_selectedIndex == 2) {
+                                  if (widget.edit) {
+                                    mixpanel!.track('edit_bono_price');
+                                  } else {
+                                    mixpanel!.track('add_bono_price');
+                                  }
                                   setState(() {
                                     tabs[2] = false;
                                     FocusManager.instance.primaryFocus
                                         ?.unfocus();
                                   });
                                 } else if (_selectedIndex == 3) {
+                                  if (widget.edit) {
+                                    mixpanel!.track('edit_bono_conditions');
+                                  } else {
+                                    mixpanel!.track('add_bono_conditions');
+                                  }
                                   setState(() {
                                     tabs[3] = false;
                                     FocusManager.instance.primaryFocus
                                         ?.unfocus();
                                   });
                                 } else if (_selectedIndex == 4) {
+                                  if (widget.edit) {
+                                    mixpanel!.track('edit_bono_style');
+                                  } else {
+                                    mixpanel!.track('add_bono_style');
+                                  }
                                   setState(() {
                                     tabs[4] = false;
                                     FocusManager.instance.primaryFocus
@@ -520,6 +541,17 @@ class _AddEditBonoState extends State<AddEditBono>
                                 tabs[1] = true;
                                 FocusManager.instance.primaryFocus?.unfocus();
                               });
+                              if (widget.edit) {
+                                mixpanel!.track('edit_bono_price');
+                              } else {
+                                mixpanel!.track('add_bono_price');
+                              }
+                            } else {
+                              if (widget.edit) {
+                                mixpanel!.track('edit_bono_info_error');
+                              } else {
+                                mixpanel!.track('add_bono_info_error');
+                              }
                             }
                           } else if (_selectedIndex == 1) {
                             if (formKePrice.currentState!.validate()) {
@@ -529,8 +561,18 @@ class _AddEditBonoState extends State<AddEditBono>
                               Timer(const Duration(milliseconds: 100), test);
                               addBonosTabValue += 0.20;
                               tabs[2] = true;
-                              priceController.text =
-                                  bono.price!.toStringAsFixed(2);
+                              priceController.text = bono.price!.toStringAsFixed(2);
+                              if (widget.edit) {
+                                mixpanel!.track('edit_bono_conditions');
+                              } else {
+                                mixpanel!.track('add_bono_conditions');
+                              }
+                            } else {
+                              if (widget.edit) {
+                                mixpanel!.track('edit_bono_price_error');
+                              } else {
+                                mixpanel!.track('add_bono_price_error');
+                              }
                             }
                           } else if (_selectedIndex == 2) {
                             _tabController!.animateTo(_selectedIndex += 1);
@@ -539,6 +581,11 @@ class _AddEditBonoState extends State<AddEditBono>
                               tabs[3] = true;
                               FocusManager.instance.primaryFocus?.unfocus();
                             });
+                            if (widget.edit) {
+                              mixpanel!.track('edit_bono_style');
+                            } else {
+                              mixpanel!.track('add_bono_style');
+                            }
                           } else if (_selectedIndex == 3) {
                             _tabController!.animateTo(_selectedIndex += 1);
                             setState(() {
@@ -546,6 +593,11 @@ class _AddEditBonoState extends State<AddEditBono>
                               tabs[4] = true;
                               FocusManager.instance.primaryFocus?.unfocus();
                             });
+                            if (widget.edit) {
+                              mixpanel!.track('edit_bono_preview');
+                            } else {
+                              mixpanel!.track('add_bono_preview');
+                            }
                           } else {
                             _addBono();
                           }
@@ -1385,8 +1437,34 @@ class _AddEditBonoState extends State<AddEditBono>
     */
     if (widget.edit == false) {
       _brandDataService.addBonoToBrand(widget.brand.id!, bono, condition);
+      mixpanel!.track('add_bono_completed', properties: {
+        'descriptionLength':bono.description!.length.toString(),
+        'isActive':bono.isActive!,
+        'sessions':bono.sessions!.toString(),
+        'price':bono.price!.toString(),
+        'expirationTime':condition.expirationTime!.toString(),
+        'cancelTime':condition.cancelTime!.toString(),
+        'weeklySessions':condition.weeklySessions!.toString(),
+        'opacity':bono.opacity!.toString(),
+        'hasImage':bono.imageUrl != null ? true : false,
+        'isDegradate':bono.isDegradate!,
+        'color':bono.color!,
+      });
     } else {
       _brandDataService.updateBono(widget.brand.id!, bono, condition);
+      mixpanel!.track('edit_bono_completed', properties: {
+        'descriptionLength':bono.description!.length.toString(),
+        'isActive':bono.isActive!,
+        'sessions':bono.sessions!.toString(),
+        'price':bono.price!.toString(),
+        'expirationTime':condition.expirationTime!.toString(),
+        'cancelTime':condition.cancelTime!.toString(),
+        'weeklySessions':condition.weeklySessions!.toString(),
+        'opacity':bono.opacity!.toString(),
+        'hasImage':bono.imageUrl != null ? true : false,
+        'isDegradate':bono.isDegradate!,
+        'color':bono.color!,
+      });
     }
     Navigator.pop(context);
   }

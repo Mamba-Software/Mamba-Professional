@@ -41,6 +41,7 @@ class _ChatCoreState extends State<ChatCore> {
   @override
   void initState() {
     super.initState();
+    mixpanel!.track('user_chats_view');
     initializeFlutterFire();
   }
 

@@ -269,6 +269,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   }
 
   void _onLaunchCoordinates(latLng) {
+    mixpanel!.track('event_view_location_tap', properties: {'isPrivate': event!.isPrivate!});
     MapsLauncher.launchCoordinates(location.latitude!, location.longitude!, location.description!);
   }
 
@@ -1044,6 +1045,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     var trainer = eventTrainers[index];
                                     return GestureDetector(
                                       onTap: () {
+                                        mixpanel!.track('event_view_trainer_tap', properties: {'isPrivate': event!.isPrivate!});
                                         Navigator.push(context, CupertinoPageRoute<void>(
                                             builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false)));
                                       },
@@ -1158,6 +1160,10 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     var clientFeedback = eventClientsFeedback[index];
                                     return GestureDetector(
                                       onTap: () {
+                                        mixpanel!.track('event_view_client_tap', properties: {
+                                          'isPrivate': event!.isPrivate!,
+                                          'hasFeedback': clientFeedback != null ? true : false,
+                                        });
                                         Navigator.push(context, CupertinoPageRoute<void>(
                                             builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
                                       },
@@ -1235,6 +1241,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             child: FloatingActionButton.extended(
               heroTag: "9",
               onPressed: () async {
+                mixpanel!.track('event_view_edit_button', properties: {'isPrivate': event!.isPrivate!});
                 bool? result;
                 if (event!.isPrivate!) {
                   result = await Navigator.push(

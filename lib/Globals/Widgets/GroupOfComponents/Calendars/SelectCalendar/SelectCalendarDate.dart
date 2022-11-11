@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SelectCalendarDate extends StatefulWidget {
   List<DateTime> dateRange;
+  DateTime brandDateJoined;
 
-  SelectCalendarDate({Key? key, required this.dateRange}) : super(key: key);
+  SelectCalendarDate({Key? key, required this.dateRange, required this.brandDateJoined}) : super(key: key);
 
   @override
   _SelectCalendarDateState createState() => _SelectCalendarDateState();
@@ -113,7 +112,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
               width: MediaQuery.of(context).size.width,
               child: ListView(
                 controller: _controller,
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
@@ -230,6 +229,28 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _dateRangePickerController.selectedRange = PickerDateRange(widget.brandDateJoined, DateTime.now().subtract(const Duration(days: 1)));
+                        _dateRangePickerController.displayDate = widget.brandDateJoined;
+                      },
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all( 12),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.historic,
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ),
+                  ),
                 ],
               )
             ),
@@ -249,7 +270,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
               child: SfDateRangePicker(
                 controller: _dateRangePickerController,
                 onSelectionChanged: _onSelectionChanged,
-                minDate: DateTime(2020, 02, 05),
+                minDate: DateTime(widget.brandDateJoined.year, 1, 1, 0, 0),
                 maxDate: DateTime.now().subtract(const Duration(days: 1)),
                 selectionMode: DateRangePickerSelectionMode.range,
                 todayHighlightColor: Theme.of(context).primaryColor,

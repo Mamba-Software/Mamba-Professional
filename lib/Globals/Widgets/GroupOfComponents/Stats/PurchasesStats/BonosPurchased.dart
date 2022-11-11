@@ -221,7 +221,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(bonoStats[index].money!.toString()  + ' €',
+                            Text(bonoStats[index].money.toString()  + ' €',
                               style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text('Benefici'),
                           ]
@@ -237,7 +237,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(bonoStats[index].purchases!.toString(),
+                            Text(bonoStats[index].purchases.toString(),
                               style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text('Compres'),
                           ]

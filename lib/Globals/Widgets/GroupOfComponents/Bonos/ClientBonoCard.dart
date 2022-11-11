@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -99,6 +100,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
 
   // Navigate to Event History Screen
   void navigateToBonoEventHistoryScreen() {
+    mixpanel!.track('profile_view_bono_events_history');
     Navigator.push(
         context,
         CupertinoPageRoute<void>(

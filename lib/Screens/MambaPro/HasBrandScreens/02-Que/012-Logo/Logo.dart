@@ -31,10 +31,12 @@ class _LogoState extends State<Logo> {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
+    mixpanel!.timeEvent('brand_info_logo_picture');
     File? temp = await ImageUtils().pickImage();
     setState(() {
       _image = temp;
     });
+    mixpanel!.track('brand_info_logo_picture');
   }
 
   // Upload Image
@@ -48,6 +50,7 @@ class _LogoState extends State<Logo> {
       isLoading = false;
       _image = null;
     });
+    mixpanel!.track('brand_info_logo_change_completed');
   }
 
   // Gets the user info from firebase.

@@ -17,6 +17,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BonosRequests.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -31,7 +32,6 @@ import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
-
 // Initialize the [FlutterLocalNotificationsPlugin] package.
 late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 // Create a [AndroidNotificationChannel] for heads up notifications
@@ -58,6 +58,12 @@ Future<void> main() async {
     if (isProduction) {
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     }
+    // Init MixPanel
+    mixpanel = await Mixpanel.init(
+        "c573538be2d62355bb2f0968ff42c181",
+        trackAutomaticEvents: true,
+        optOutTrackingDefault: false
+    );
     // Run App
     runApp(
       MultiProvider(
