@@ -72,6 +72,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   final _brandDataService = BrandDataService();
   // Brand
   Brand brand = Brand();
+  DateTime dateJoinedBrand = DateTime.now();
 
   double addStatsValue = 0.25;
 
@@ -115,6 +116,8 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   // Gets the Events Done by the Brand
   Future<void> getBrandDetails() async {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
+    var dateJoinedSplit = brand.dateJoined!.split("-");
+    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]), int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
   }
 
   Future<void> getCollections() async {
@@ -330,7 +333,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
               ),
               Container(
             height: MediaQuery.of(context).size.height*0.12,
-            width: MediaQuery.of(context).size.width*0.27,
+            width: MediaQuery.of(context).size.height*0.12,
             color: Styles.mainColorTrans,
             child:  Icon(
                 Icons.event,
@@ -528,6 +531,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           heightFactor: 0.95,
           child: SelectCalendarDate(
             dateRange: [startDate, endDate],
+            brandDateJoined: dateJoinedBrand,
           ),
         );
       },

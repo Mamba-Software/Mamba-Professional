@@ -2476,5 +2476,9 @@
   "previousMonth": "Mes Anterior",
   "@lastMonth": {
     "description": "Wellcome message"
+  },
+  "historic": "Histórico",
+  "@historic": {
+    "description": "Wellcome message"
   }
 }

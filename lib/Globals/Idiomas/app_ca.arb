@@ -552,5 +552,6 @@
   "average": "de mitja",
   "purchaseHistory": "Historial de compres",
   "lastNDays": "Últims {days} Dies",
-  "previousMonth": "Mes Anterior"
+  "previousMonth": "Mes Anterior",
+  "historic": "Històric"
 }
