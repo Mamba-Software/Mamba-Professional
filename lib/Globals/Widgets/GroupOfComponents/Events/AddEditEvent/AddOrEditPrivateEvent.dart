@@ -38,8 +38,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class AddOrEditPrivateEvent extends StatefulWidget {
   Locale locale;
   String? eventId;
+  DateTime? dateTime;
 
-  AddOrEditPrivateEvent({Key? key, required this.locale, this.eventId}) : super(key: key);
+  AddOrEditPrivateEvent({Key? key, required this.locale, this.eventId, this.dateTime}) : super(key: key);
 
   @override
   _AddOrEditPrivateEventState createState() => _AddOrEditPrivateEventState();
@@ -137,13 +138,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future<void> initializeEventInfo() async {
-    startDate = DateTime(
-      startDate.year,
-      startDate.month,
-      startDate.day,
-      startDate.hour+1,
-      0,
-    );
+    if (widget.dateTime == null) {
+      startDate = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+        startDate.hour+1,
+        0,
+      );
+    } else {
+      startDate = widget.dateTime!;
+    }
     // Define Start Date Controller
     startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);

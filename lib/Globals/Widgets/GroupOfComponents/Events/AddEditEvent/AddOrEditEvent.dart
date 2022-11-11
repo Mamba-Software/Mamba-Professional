@@ -39,8 +39,9 @@ import '../../../../../Data/Models/Bono.dart';
 class AddOrEditEvent extends StatefulWidget {
   Locale locale;
   String? eventId;
+  DateTime? dateTime;
 
-  AddOrEditEvent({Key? key, required this.locale, this.eventId}) : super(key: key);
+  AddOrEditEvent({Key? key, required this.locale, this.eventId, this.dateTime}) : super(key: key);
 
   @override
   _AddOrEditEventState createState() => _AddOrEditEventState();
@@ -136,13 +137,17 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future<void> initializeEventInfo() async {
-    startDate = DateTime(
-      startDate.year,
-      startDate.month,
-      startDate.day,
-      startDate.hour+1,
-      0,
-    );
+    if (widget.dateTime == null) {
+      startDate = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+        startDate.hour+1,
+        0,
+      );
+    } else {
+      startDate = widget.dateTime!;
+    }
     // Define Start Date Controller
     startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);

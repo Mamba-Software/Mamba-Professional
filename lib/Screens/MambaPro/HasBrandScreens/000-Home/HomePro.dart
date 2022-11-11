@@ -227,7 +227,7 @@ class _HomePro extends State<HomePro> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
-                  BrandRequestsWidget(
+                  currentUser.brandRole < 3 ? BrandRequestsWidget(
                     height: MediaQuery.of(context).size.height * 0.1,
                     width: MediaQuery.of(context).size.width * 0.84,
                     brandId: currentBrand.id!,
@@ -235,8 +235,8 @@ class _HomePro extends State<HomePro> {
                       mixpanel!.track('brand_homepage_membership_requests');
                       widget.navigateToPage(15);
                     },
-                  ),
-                  BrandBonoRequestsWidget(
+                  ) : Container(),
+                  currentUser.brandRole < 3 ? BrandBonoRequestsWidget(
                     height: MediaQuery.of(context).size.height * 0.1,
                     width: MediaQuery.of(context).size.width * 0.84,
                     brandId: currentBrand.id!,
@@ -244,7 +244,7 @@ class _HomePro extends State<HomePro> {
                       mixpanel!.track('brand_homepage_bono_confirmation_requests');
                       navigateToBonosRequestScreen();
                     },
-                  ),
+                  ) : Container(),
                   BrandBestBonoWidget(
                     brandId: currentBrand.id!,
                     navigateToPage: (int page) {
@@ -254,34 +254,38 @@ class _HomePro extends State<HomePro> {
                   Column(
                     children: [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.04,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PlanEventWidget(
-                            height: MediaQuery.of(context).size.height * 0.07,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            isPrivate: false,
-                            onClicked: (bool? value) {
-                              mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': false});
-                              widget.navigateToPage(10,DateTime.now(),CalendarView.day);
-                            },
-                          ),
-                          PlanEventWidget(
-                            height: MediaQuery.of(context).size.height * 0.07,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            isPrivate: true,
-                            onClicked: (bool? value) {
-                              mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': true});
-                              widget.navigateToPage(10,DateTime.now(),CalendarView.day);
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(
                         height: MediaQuery.of(context).size.height * 0.02,
                       ),
+                      currentUser.brandRole < 3 ? Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              PlanEventWidget(
+                                height: MediaQuery.of(context).size.height * 0.07,
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                isPrivate: false,
+                                onClicked: (bool? value) {
+                                  mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': false});
+                                  widget.navigateToPage(10,DateTime.now(),CalendarView.day);
+                                },
+                              ),
+                              PlanEventWidget(
+                                height: MediaQuery.of(context).size.height * 0.07,
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                isPrivate: true,
+                                onClicked: (bool? value) {
+                                  mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': true});
+                                  widget.navigateToPage(10,DateTime.now(),CalendarView.day);
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.02,
+                          ),
+                        ],
+                      ) : Container(),
                       BrandCalendarMonthWidget(
                         brandId: currentBrand.id!,
                         height: MediaQuery.of(context).size.height * 0.41,

@@ -172,7 +172,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
-          TextButton(
+          currentUser.brandRole < 3 ? TextButton(
               child: Text(
                   AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
                   style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
@@ -182,7 +182,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                   isTrainer = true;
                 });
               }
-          ),
+          ) : Container(),
         ],
       ),
     ) : Scaffold(

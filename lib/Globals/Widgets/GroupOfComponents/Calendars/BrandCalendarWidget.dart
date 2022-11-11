@@ -115,7 +115,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   void getUserBrandDetails() async {
     _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    if (currentUser.isTrainer! && (widget.onlyView == false || widget.onlyView == null)) canEdit = true;
+    if (currentUser.brandRole < 3) {
+      canEdit = true;
+    } else {
+      canEdit = false;
+    }
+
     initCalendar();
   }
 
@@ -126,13 +131,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       int currentDay = now.weekday;
       displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 7));
-      _controller.selectedDate = DateTime.now();
+      //_controller.selectedDate = DateTime.now();
     } else {
       DateTime dateTime = widget.dateTime!;
       int currentDay = dateTime.weekday;
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
-      _controller.selectedDate = dateTime;
+      //_controller.selectedDate = dateTime;
     }
     // Initial Calendar View
     if (widget.calendarView == null) {
@@ -157,7 +162,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     return Event();
   }
 
-  void _addEvent() {
+  void _addEvent([DateTime? dateTime]) {
     mixpanel!.track('brand_calendar_plan_event', properties: {'isPrivate': false});
     Navigator.push(
         context,
@@ -172,13 +177,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             },
             child: AddOrEditEvent(
               locale: Localizations.localeOf(context),
+              dateTime: dateTime,
             ),
           ),
         )
     );
   }
 
-  void _addPrivateEvent() {
+  void _addPrivateEvent([DateTime? dateTime]) {
     mixpanel!.track('brand_calendar_plan_event', properties: {'isPrivate': true});
     Navigator.push(
         context,
@@ -193,6 +199,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             },
             child: AddOrEditPrivateEvent(
               locale: Localizations.localeOf(context),
+              dateTime: dateTime,
             ),
           ),
         )
@@ -838,8 +845,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                       mixpanel!.track('brand_calendar_today');
                                       setState(() {
                                         _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
-                                        _controller.selectedDate = DateTime.now();
                                       });
+                                      if (_controller.view == CalendarView.month) {
+                                        setState(() {
+                                          _controller.selectedDate = DateTime.now();
+                                        });
+                                      }
                                     },
                                     child: Text(
                                         AppLocalizations.of(context)!.todayString,
@@ -858,11 +869,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                         mixpanel!.track('brand_calendar_month');
                                         setState(() {
                                           _controller.view = CalendarView.month;
+                                          _controller.selectedDate = DateTime(_controller.displayDate!.year, _controller.displayDate!.month, 1, 0, 0);
                                         });
                                       } else if (_controller.view == CalendarView.month){
                                         mixpanel!.track('brand_calendar_day');
                                         setState(() {
                                           _controller.view = CalendarView.day;
+                                        });
+                                        setState(() {
+                                          _controller.selectedDate = null;
                                         });
                                       }
                                     },
@@ -959,12 +974,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                       initialDisplayDate: widget.dateTime,
                       initialSelectedDate: widget.dateTime,
                       selectionDecoration: _controller.view == CalendarView.month ? BoxDecoration(
-                        border: Border.all(width: 0.5, color: Theme.of(context).colorScheme.secondary),
+                        border: Border.all(width: 1, color: Theme.of(context).primaryColor.withOpacity(0.5)),
                         borderRadius: const BorderRadius.all(
-                          Radius.circular(10.0),
+                          Radius.circular(5.0),
                         ),
                       ) : BoxDecoration(
-                          border: Border.all(width: 0.1, color: Colors.transparent)
+                        border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondary),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(5.0),
+                        ),
                       ),
                       headerHeight: 0,
                       headerStyle: CalendarHeaderStyle(
@@ -1248,14 +1266,102 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     );
   }
 
-  void onTapCalendar(CalendarTapDetails details) {
-    if (_controller.view == CalendarView.week) {
-
-    } else {
+  Future<void> onTapCalendar(CalendarTapDetails details) async {
+    if (details.date!.isAfter(DateTime.now()) && canEdit && _controller.view != CalendarView.month) {
       setState(() {
         _controller.selectedDate = details.date;
       });
+      await showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          builder: (BuildContext context) {
+            return FractionallySizedBox(
+              heightFactor: 0.3,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                  child: Column(
+                    mainAxisAlignment:
+                    MainAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Text(
+                            AppLocalizations.of(context)!.add,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left
+                        ),
+                        dense: true,
+                      ),
+                      ListTile(
+                        onTap: () {
+                          mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': false});
+                          Navigator.pop(context);
+                          _addEvent(details.date);
+                        },
+                        title: Text(
+                            AppLocalizations.of(context)!.groupEvent,
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textAlign: TextAlign.left
+                        ),
+                        subtitle: Text(
+                            AppLocalizations.of(context)!.groupEventDesc,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left
+                        ),
+                        leading: const Icon(
+                          Icons.groups,
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': true});
+                          Navigator.pop(context);
+                          _addPrivateEvent(details.date);
+                        },
+                        title: Text(
+                            AppLocalizations.of(context)!.privateEvent,
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textAlign: TextAlign.left
+                        ),
+                        subtitle: Text(
+                            AppLocalizations.of(context)!.privateEventDesc,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left
+                        ),
+                        leading: const Icon(
+                          Icons.lock_outlined,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+      );
+      setState(() {
+        _controller.selectedDate = null;
+      });
+    } else {
+      if (_controller.view != CalendarView.month) {
+        setState(() {
+          _controller.selectedDate = null;
+        });
+      } else {
+        setState(() {
+          _controller.selectedDate = details.date;
+        });
+      }
     }
+
   }
 
 }
