@@ -456,8 +456,8 @@ class _BrandScreenState extends State<BrandScreen> {
         SizedBox(height: safeAreaHeight * 0.01),
         listTilePro(8),
         listTilePro(7),
-        listTilePro(14),
         listTilePro(11),
+        listTilePro(14),
 
 
 
