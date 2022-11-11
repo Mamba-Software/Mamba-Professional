@@ -41,7 +41,7 @@ class _AdminState extends State<Admin> {
                   fit: BoxFit.contain,
                   height: 32,
                 ),
-                SizedBox(width: 15),
+                const SizedBox(width: 15),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text("ADMIN", style: Styles.whiteTextStyle.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
@@ -51,7 +51,7 @@ class _AdminState extends State<Admin> {
             centerTitle: true,
             elevation: 10,
             automaticallyImplyLeading: false,
-            iconTheme: IconThemeData(
+            iconTheme: const IconThemeData(
               color: Colors.white, //change your color here
             ),
           ),
@@ -73,16 +73,16 @@ class EachList extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return new Card(
-      margin: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
+      margin: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 0.0),
       child: ListTile(
         leading: CircleAvatar(
           radius: 25.0,
           child: new Text(name[0]),
           backgroundColor: Styles.mainColorTrans,
         ),
-        trailing: Icon(Icons.east),
-        title: Text(name,style: TextStyle(fontSize: 20.0),),
-        subtitle: Text("Admin Tool"),
+        trailing: const Icon(Icons.east),
+        title: Text(name,style: const TextStyle(fontSize: 20.0),),
+        subtitle: const Text("Admin Tool"),
         onTap: (){
           this.returnPage(this.index, context);
 
@@ -98,9 +98,9 @@ class EachList extends StatelessWidget{
       case 0:
         Navigator.push(
             context,
-            CupertinoPageRoute<Null>(
+            CupertinoPageRoute<void>(
               builder: (context) => AdminTool(title: name),
-              settings: RouteSettings(name: 'AdminTool'),
+              settings: const RouteSettings(name: 'AdminTool'),
             )
         );
         break;
@@ -112,9 +112,9 @@ class EachList extends StatelessWidget{
       case 2:
         Navigator.push(
             context,
-            CupertinoPageRoute<Null>(
+            CupertinoPageRoute<void>(
               builder: (context) => AdminFeedBack(title: name),
-              settings: RouteSettings(name: 'AdminFeedBack'),
+              settings: const RouteSettings(name: 'AdminFeedBack'),
             )
         );
         break;
