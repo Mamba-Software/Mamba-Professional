@@ -22,13 +22,13 @@ import '../../../../Styles/AppColors/AppColors.dart';
 
 class ClientNumber extends StatefulWidget {
   List<Usuario> users;
-  List<Usuario> backUsers;
   List<Usuario> allUsers;
+  List<Usuario> activeUsers;
 
   ClientNumber({
     required this.users,
-    required this.backUsers,
     required this.allUsers,
+    required this.activeUsers,
     Key? key,
   }) : super(key: key);
 
@@ -38,14 +38,14 @@ class ClientNumber extends StatefulWidget {
 
 class ClientNumberState extends State<ClientNumber> {
   bool isLoading = true;
-  List <Usuario> filteredUsers = [], filteredBackUsers = [];
+  List <Usuario> filteredUsers = [], activeUsers = [];
   String clientsUpdated = '0';
 
 
   @override
   void initState() {
     filteredUsers = widget.users;
-    filteredBackUsers = widget.backUsers;
+    activeUsers = widget.activeUsers;
     mountStat();
     isLoading = false;
     super.initState();
@@ -55,7 +55,7 @@ class ClientNumberState extends State<ClientNumber> {
   void didUpdateWidget(ClientNumber oldWidget) {
     super.didUpdateWidget(oldWidget);
     filteredUsers = widget.users;
-    filteredBackUsers = widget.backUsers;
+    activeUsers = widget.activeUsers;
     mountStat();
   }
 
@@ -100,10 +100,10 @@ class ClientNumberState extends State<ClientNumber> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('+' + filteredBackUsers.length.toString(),
+                            Text('+' + activeUsers.length.toString(),
                               style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 30, fontWeight: FontWeight.normal),),
-                            Text('Altas'),
-                            Text('Clientes pasadas')
+                            Text('Clientes'),
+                            Text('Activos en estas fechas')
                           ]
                       ),
                     ),

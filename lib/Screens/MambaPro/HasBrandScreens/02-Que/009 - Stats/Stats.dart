@@ -78,7 +78,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   List<Event> events = [], filteredEvents = [], filteredBackEvents = [];
 
-  List<Usuario> users = [], filteredUsers = [], filteredBackUsers = [];
+  List<Usuario> users = [], filteredUsers = [], filteredBackUsers = [], activeUsers = [];
 
   List<Purchase> purchases = [], filteredPurchases = [], filteredBackPurchases = [];
 
@@ -166,7 +166,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   {
 
     filteredUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(startDate) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(endDate) <= 0).toList();
-
+    activeUsers = users.where((element) => element.lastEventAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 && element.lastEventAt!.compareTo(Timestamp.fromDate(endDate)) <= 0).toList();
     int days = daysBetween(startDate, endDate);
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
@@ -468,7 +468,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           statsTitle('Numero clientes'),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-            child: ClientNumber(users: filteredUsers, backUsers: filteredBackUsers, allUsers: users),
+            child: ClientNumber(users: filteredUsers,  activeUsers: activeUsers, allUsers: users),
           ),
           Divider(color: Theme.of(context).backgroundColor, thickness: 2),
           statsTitle('Media de edad'),
