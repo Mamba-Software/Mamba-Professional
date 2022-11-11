@@ -95,6 +95,67 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
   }
 
   void mountStat() {
+
+    int maxHour = 0;
+    Event event;
+    mapHours["08 \n - \n 10"] = 0;
+    mapHours["10 \n - \n 12"] = 0;
+    mapHours["12 \n - \n 14"] = 0;
+    mapHours["14 \n - \n 16"] = 0;
+    mapHours["16 \n - \n 18"] = 0;
+    mapHours["18 \n - \n 20"] = 0;
+    mapHours["20 \n - \n 22"] = 0;
+    //mapHours["21 \n - \n 23"] = 0;
+
+    for (int i = 0; i < filteredEvents.length; ++i) {
+      event = filteredEvents[i];
+      setHour(8,10,"08 \n - \n 10",event);
+      setHour(10,12,"10 \n - \n 12",event);
+      setHour(12,14,"12 \n - \n 14",event);
+      setHour(14,16,"14 \n - \n 16",event);
+      setHour(16,18,"16 \n - \n 18",event);
+      setHour(18,20,"18 \n - \n 20",event);
+      setHour(20,22,"20 \n - \n 22",event);
+      //setHour(21,23,"21 \n - \n 23",event);
+    }
+
+    mapHours.forEach((key, value) {
+      if(value>maxHour) {
+        maxHour = value;
+        timeOffered = key;
+      }
+    });
+
+
+    mapHours.forEach((k, v)
+    {
+      if(v == maxHour) {
+        timeDemand.add(TimeDemand(k, v, AppColors.mainColor));
+      }
+      else {
+        timeDemand.add(TimeDemand(k, v, AppColors.grey));
+      }
+
+    });
+
+  }
+
+  setHour(int initHour, int endHour, String totalHour, Event event)
+  {
+    if(int.parse(event.hour!) >= initHour && int.parse(event.hour!) < endHour)
+    {
+
+      if (!mapHours.containsKey(totalHour)) {
+        mapHours[totalHour] = event.numClients!;
+      }
+      else {
+        mapHours.update(
+            totalHour, (value) => value + event.numClients!);
+      }
+    }
+  }
+
+  void mountStatOld() {
     String hourMinuteIni = '';
     String hourMinuteEnd = '';
     String totalHour = '';
@@ -161,19 +222,23 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
   @override
   Widget build(BuildContext context) {
     return isLoading? LoadingView() :
-      Align(
-      alignment: Alignment.topLeft,
-      child:   Center(
+    Padding(
+      padding:
+      EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.01),
+      child: Center(
           child: Container(
               child: SfCartesianChart(
                   plotAreaBorderWidth: 0,
+
                   primaryYAxis: NumericAxis(
                     majorTickLines: MajorTickLines(
                       width: 0,
                     ),
+                    labelStyle: TextStyle(color: Colors.transparent),
+                    labelPosition: ChartDataLabelPosition.inside,
 
                     //Hide the gridlines of x-axis
-                      //majorGridLines: MajorGridLines(width: 0),
+                    //majorGridLines: MajorGridLines(width: 0),
                     majorGridLines: MajorGridLines(
                         dashArray: <double>[5,5]
                     ),
@@ -192,7 +257,6 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
                       width: 0,
                     ),
                     labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 12)),
-                    labelRotation: 90,
                     placeLabelsNearAxisLine: true,
                     //maximum: double.parse(maxNumber.toString()),
                     //isVisible: false,
@@ -213,7 +277,8 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
                   ]
               )
           )
-      ));
+      ),
+    );
 
   }
 

@@ -148,7 +148,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     int days = daysBetween(startDate, endDate);
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
-    filteredBackEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(backStartDate)) > 0 && element.doneAt!.compareTo(Timestamp.fromDate(backEndDate)) < 0).toList();
+    filteredBackEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(backStartDate)) >= 0 && element.doneAt!.compareTo(Timestamp.fromDate(backEndDate)) <= 0).toList();
 
   }
 
@@ -158,7 +158,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     int days = daysBetween(startDate, endDate);
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
-    filteredBackPurchases = purchases.where((element) => element.purchasedAt!.compareTo(Timestamp.fromDate(backStartDate)) > 0 && element.purchasedAt!.compareTo(Timestamp.fromDate(backEndDate)) < 0).toList();
+    filteredBackPurchases = purchases.where((element) => element.purchasedAt!.compareTo(Timestamp.fromDate(backStartDate)) >= 0 && element.purchasedAt!.compareTo(Timestamp.fromDate(backEndDate)) <= 0).toList();
 
   }
 
@@ -402,6 +402,16 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           ],
         ));
   }
+
+  Widget dividerStats()
+  {
+    return Padding(
+      padding:
+      EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
+      child: Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+    );
+  }
+
   Widget eventsStatsPage()
   {
     if(isLoading)
@@ -420,20 +430,20 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
             child: SessionsMade(events: filteredEvents, backEvents: filteredBackEvents,),
           ),
-          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+          dividerStats(),
           statsTitle(AppLocalizations.of(context)!.daysDemand),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-            child: DayOffer(events: filteredEvents),
+            child: DayOffer(events: filteredEvents, context: context,),
           ),
-          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-          statsTitle('Hora más demandada'),
+          dividerStats(),
+          statsTitle(AppLocalizations.of(context)!.timeOffer),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
             child: TimeOffer(events: filteredEvents),
           ),
-          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-          statsTitle('Demanda de franjas'),
+          dividerStats(),
+          statsTitle(AppLocalizations.of(context)!.timeToTimeOffer),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
             child: TimeToTimeOffer(events: filteredEvents),
@@ -444,6 +454,13 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   }
   Widget clientsStatsPage()
   {
+    if(isLoading)
+    {
+      return  Padding(
+        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.25, ),
+        child:  LoadingView(),
+      );
+    }
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
       child: Column(
@@ -486,6 +503,13 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   }
   Widget factStatsPage()
   {
+    if(isLoading)
+    {
+      return  Padding(
+        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.25, ),
+        child:  LoadingView(),
+      );
+    }
     return Column(
       children: [
         Padding(

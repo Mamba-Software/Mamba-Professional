@@ -2516,16 +2516,24 @@
   "@thur": {
     "description": "thur day"
   },
-  "vier": "Vier.",
-  "@vier": {
+  "fri": "Vier.",
+  "@fri": {
     "description": "vier day"
   },
-  "sab": "Sab.",
-  "@sab": {
-    "description": "sab day"
+  "sat": "Sab.",
+  "@sat": {
+    "description": "sat day"
   },
   "sun": "Dom.",
   "@sun": {
     "description": "sun day"
+  },
+  "timeOffer": "Hora más demandada",
+  "@timeOffer": {
+    "description": "timeOffer day"
+  },
+  "timeToTimeOffer": "Demanda de franjas",
+  "@timeToTimeOffer": {
+    "description": "timeToTimeOffer day"
   }
 }

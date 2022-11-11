@@ -13,14 +13,17 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../Styles/AppColors/AppColors.dart';
 
 class DayOffer extends StatefulWidget {
   List<Event> events;
+  var context;
 
   DayOffer({
     required this.events,
+    required this.context,
     Key? key,
   }) : super(key: key);
 
@@ -89,13 +92,13 @@ class DayOfferState extends State<DayOffer> {
       sumToWeekDay(i, 6, filteredEvents[i].numClients!);
     }
 
-    addDayInTotalEvent('Lun.', 0);
-    addDayInTotalEvent('Mar.', 1);
-    addDayInTotalEvent('Mierc.', 2);
-    addDayInTotalEvent('Jue.', 3);
-    addDayInTotalEvent('Vier.', 4);
-    addDayInTotalEvent('Sab.', 5);
-    addDayInTotalEvent('Dom.', 6);
+    addDayInTotalEvent(AppLocalizations.of(widget.context)!.mon, 0);
+    addDayInTotalEvent(AppLocalizations.of(widget.context)!.tue, 1);
+    addDayInTotalEvent(AppLocalizations.of(widget.context)!.wed, 2);
+    addDayInTotalEvent(AppLocalizations.of(widget.context)!.thur, 3);
+    addDayInTotalEvent(AppLocalizations.of(widget.context)!.fri, 4);
+    addDayInTotalEvent(AppLocalizations.of(widget.context)!.sat, 5);
+    addDayInTotalEvent(AppLocalizations.of(widget.context)!.sun, 6);
 
     maxValueStr = maxValueInt.toString() + '%';
 
@@ -130,86 +133,89 @@ class DayOfferState extends State<DayOffer> {
   Widget build(BuildContext context) {
     return isLoading? LoadingView() :   Column(
       children: [
-        Center(
-                child: Container(
-                    child: SfCartesianChart(
-                        onDataLabelRender:(DataLabelRenderArgs args){
-                          if(args.text == maxValueStr)
-                            {
-                              args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor));
-                            }
-                          else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).secondaryHeaderColor));
+        Padding(
+          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.03),
+          child: Center(
+                  child: Container(
+                      child: SfCartesianChart(
+                          onDataLabelRender:(DataLabelRenderArgs args){
+                            if(args.text == maxValueStr)
+                              {
+                                args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor));
+                              }
+                            else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).secondaryHeaderColor));
 
 
-                        },
-                      backgroundColor: Colors.transparent,
-                        borderColor: Colors.transparent,
-                        plotAreaBorderColor: Colors.transparent,
-                        plotAreaBorderWidth: 1,
-                        primaryYAxis: NumericAxis(
+                          },
+                        backgroundColor: Colors.transparent,
+                          borderColor: Colors.transparent,
+                          plotAreaBorderColor: Colors.transparent,
+                          plotAreaBorderWidth: 1,
+                          primaryYAxis: NumericAxis(
 
-                          numberFormat: NumberFormat.percentPattern(),
-                          placeLabelsNearAxisLine: true,
-                          //Hide the gridlines of x-axis
-                          majorGridLines: MajorGridLines(width: 0),
-                          isVisible: false,
-                          //Hide the axis line of x-axis
-                          axisLine: AxisLine(width: 0),
+                            numberFormat: NumberFormat.percentPattern(),
+                            placeLabelsNearAxisLine: true,
+                            //Hide the gridlines of x-axis
+                            majorGridLines: MajorGridLines(width: 0),
+                            isVisible: false,
+                            //Hide the axis line of x-axis
+                            axisLine: AxisLine(width: 0),
 
-                        ),
-                        primaryXAxis: CategoryAxis(
-                          majorTickLines: MajorTickLines(
-                            width: 0,
                           ),
-                          labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor)),
-                          placeLabelsNearAxisLine: true,
-                          //maximum: double.parse(maxNumber.toString()),
-                          //isVisible: false,
-                          //Hide the gridlines of x-axis
-                          majorGridLines: MajorGridLines(width: 0),
-                          //Hide the axis line of x-axis
-                          axisLine: AxisLine(width: 0),
-                        ),
-                        axes: [],
-                        indicators: [],
-                        legend: null,
-                       // tooltipBehavior: _tooltipBehavior,
-                      enableSideBySideSeriesPlacement: false,
-                      series: <ChartSeries>[
-
-                        // Renders line chart
-                        BarSeries<TotalEvents, String>(
-                          spacing: 1,
-                          width: 0.3,
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                            borderColor: Styles.mainColor,
-                          borderWidth: 0,
-                            /*
-                            markerSettings: MarkerSettings(
-                                isVisible: true,
-                                height:  5,
-                                width:  5,
-                                shape: DataMarkerType.circle,
-                                color: Styles.mainColor),
-*/
-                            gradient: LinearGradient(
-                              begin: Alignment.centerRight,
-                              end: Alignment.centerLeft,
-                              colors: [
-                                AppColors.mainColor,
-                                AppColors.mainColor.withOpacity(0.2),
-                              ],
+                          primaryXAxis: CategoryAxis(
+                            majorTickLines: MajorTickLines(
+                              width: 0,
                             ),
-                              dataSource: totalEvents,
+                            labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor)),
+                            placeLabelsNearAxisLine: true,
+                            //maximum: double.parse(maxNumber.toString()),
+                            //isVisible: false,
+                            //Hide the gridlines of x-axis
+                            majorGridLines: MajorGridLines(width: 0),
+                            //Hide the axis line of x-axis
+                            axisLine: AxisLine(width: 0),
+                          ),
+                          axes: [],
+                          indicators: [],
+                          legend: null,
+                         // tooltipBehavior: _tooltipBehavior,
+                        enableSideBySideSeriesPlacement: false,
+                        series: <ChartSeries>[
 
-                              dataLabelSettings: DataLabelSettings(isVisible: true),
-                              xValueMapper: (TotalEvents events, _) => events.day,
-                              yValueMapper: (TotalEvents events, _) => events.percentatge,
-                          )
-                        ]
-                    )
-                )
-            ),
+                          // Renders line chart
+                          BarSeries<TotalEvents, String>(
+                            spacing: 1,
+                            width: 0.3,
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                              borderColor: Styles.mainColor,
+                            borderWidth: 0,
+                              /*
+                              markerSettings: MarkerSettings(
+                                  isVisible: true,
+                                  height:  5,
+                                  width:  5,
+                                  shape: DataMarkerType.circle,
+                                  color: Styles.mainColor),
+*/
+                              gradient: LinearGradient(
+                                begin: Alignment.centerRight,
+                                end: Alignment.centerLeft,
+                                colors: [
+                                  AppColors.mainColor,
+                                  AppColors.mainColor.withOpacity(0.2),
+                                ],
+                              ),
+                                dataSource: totalEvents,
+
+                                dataLabelSettings: DataLabelSettings(isVisible: true),
+                                xValueMapper: (TotalEvents events, _) => events.day,
+                                yValueMapper: (TotalEvents events, _) => events.percentatge,
+                            )
+                          ]
+                      )
+                  )
+              ),
+        ),
       ],
     );
 

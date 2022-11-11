@@ -558,11 +558,13 @@
   "labelSessionMade": "Dia i número d'events",
   "daysDemand": "Demanda de dies",
   "historic": "Històric",
-  "mon": "Dill.",
-  "tue": "Dim.",
-  "wed": "Dimecr.",
-  "thur": "Dij.",
-  "vier": "Div.",
-  "sab": "Diss.",
-  "sun": "Dium."
+  "mon": "Dll.",
+  "tue": "Dm.",
+  "wed": "Dx.",
+  "thur": "Dj.",
+  "fri": "Dv.",
+  "sat": "Ds.",
+  "sun": "Dim.",
+  "timeOffer": "Hora més demandada",
+  "timeToTimeOffer": "Demanda de franges"
 }

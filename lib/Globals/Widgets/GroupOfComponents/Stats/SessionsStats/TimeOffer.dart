@@ -107,12 +107,16 @@ class TimeOfferState extends State<TimeOffer> {
   @override
   Widget build(BuildContext context) {
     return isLoading? LoadingView() :
-      Align(
-      alignment: Alignment.topLeft,
-      child:  Text(
-        timeOffered,
-        style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
-      ),);
+      Padding(
+        padding:
+        EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
+        child: Align(
+        alignment: Alignment.topLeft,
+        child:  Text(
+          timeOffered,
+          style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
+        ),),
+      );
 
   }
 
