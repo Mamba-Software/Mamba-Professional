@@ -146,6 +146,9 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     if (startDate.isBefore(DateTime.now())) {
       canEdit = false;
     }
+    if (currentUser.brandRole > 2) {
+      canEdit = false;
+    }
     startDateController.text = DateFormat('EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode).format(startDate);
     datetitle = DateFormat('EEEE d MMMM', Localizations.localeOf(context).languageCode).format(startDate);
     startDateController.text = StringUtils().toCapitalized(startDateController.text);
@@ -497,7 +500,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                               baseColor: AppColors.grey,
                               highlightColor: AppColors.grey.withOpacity(0.5),
                               child: Container(
-                                height: MediaQuery.of(context).size.height*0.2,
+                                height: MediaQuery.of(context).size.height*0.13,
                                 width: MediaQuery.of(context).size.width*0.84,
                                 decoration: const BoxDecoration(
                                     color: AppColors.grey,
@@ -887,7 +890,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                     children: [
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                       Container(
-                        height: MediaQuery.of(context).size.height*0.2,
+                        height: MediaQuery.of(context).size.height*0.13,
                         width: MediaQuery.of(context).size.width*0.84,
                         decoration: BoxDecoration(
                             color: Theme.of(context).backgroundColor,
