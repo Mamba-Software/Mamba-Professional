@@ -905,6 +905,7 @@ class RolesInfo extends StatelessWidget {
                           ),
                         ],
                       ),
+                      /*
                       Row(
                         children: [
                           Container(
@@ -956,7 +957,7 @@ class RolesInfo extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Row(
+                       Row(
                         children: [
                           Container(
                             height: MediaQuery.of(context).size.height * 0.05,
@@ -1007,6 +1008,7 @@ class RolesInfo extends StatelessWidget {
                           ),
                         ],
                       ),
+                       */
                       Row(
                         children: [
                           Container(
