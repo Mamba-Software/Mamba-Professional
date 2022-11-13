@@ -460,16 +460,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
             physics: const ClampingScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
-                child: isLoading
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.height * 0.25,
-                        ),
-                        child: LoadingView(),
-                      )
-                    : Container(),
-              ),
-              SliverToBoxAdapter(
                 child: eventsStatsPage(),
               ),
             ],
@@ -485,16 +475,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
             physics: const ClampingScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
-                child: isLoading
-                    ? Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height * 0.25,
-                  ),
-                  child: LoadingView(),
-                )
-                    : Container(),
-              ),
-              SliverToBoxAdapter(
                 child: clientsStatsPage(),
               ),
             ],
@@ -509,16 +489,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           builder: (context) => CustomScrollView(
             physics: const ClampingScrollPhysics(),
             slivers: [
-              SliverToBoxAdapter(
-                child: isLoading
-                    ? Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height * 0.25,
-                  ),
-                  child: LoadingView(),
-                )
-                    : Container(),
-              ),
               SliverToBoxAdapter(
                 child: factStatsPage(),
               ),
