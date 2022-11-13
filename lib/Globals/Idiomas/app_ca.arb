@@ -576,5 +576,7 @@
   "totals": "totals",
   "male": "Masculí",
   "female": "Femení",
-  "others": "Altres"
+  "others": "Altres",
+  "labelInvoiceMade": "Dia i benefici",
+  "totalInvoice": "Facturació total"
 }

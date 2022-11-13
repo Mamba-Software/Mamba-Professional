@@ -88,8 +88,8 @@ class GenderGroupState extends State<GenderGroup> {
 
 
     genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mainColor));
-    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.grey));
-    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.black));
+    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.black));
+    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.grey));
 
     genderGrouped.sort((a, b){
       if(a.total >= b.total) return 0;

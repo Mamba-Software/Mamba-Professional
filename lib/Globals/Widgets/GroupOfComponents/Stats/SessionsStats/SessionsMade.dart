@@ -206,9 +206,9 @@ class SessionsMadeState extends State<SessionsMade> {
                             borderWidth: 2,
 
                             markerSettings: MarkerSettings(
-                                isVisible: false,
-                                height:  1,
-                                width:  1,
+                                isVisible: totalEvents.length == 1? true : false,
+                                height:  10,
+                                width:  10,
                                 shape: DataMarkerType.circle,
                                 color: Styles.mainColor),
                               gradient: LinearGradient(

@@ -2575,5 +2575,13 @@
   "others": "Otros",
   "@others": {
     "description": "others day"
+  },
+  "labelInvoiceMade": "Día y beneficio",
+  "@labelInvoiceMade": {
+    "description": "labelInvoiceMade message"
+  },
+  "totalInvoice": "Facturación total",
+  "@totalInvoice": {
+    "description": "totalInvoice message"
   }
 }

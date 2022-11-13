@@ -524,20 +524,26 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
-          child: Column(
-            children: [
-              statsTitle('Facturación total'),
-              TotalBenefitPurchases(purchases: filteredPurchases, backPurchases: filteredBackPurchases),
-              Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-            ],
+          padding: EdgeInsets.only( right: MediaQuery.of(context).size.width*0.00),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00, right: MediaQuery.of(context).size.width*0.06),
+            child: Column(
+              children: [
+                statsTitle(AppLocalizations.of(context)!.totalInvoice),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+                  child: TotalBenefitPurchases(purchases: filteredPurchases, backPurchases: filteredBackPurchases),
+                ),
+                dividerStats(),
+              ],
+            ),
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
+          padding: EdgeInsets.only( right: MediaQuery.of(context).size.width*0.06),
           child: Column(
             children: [
-              statsTitle('Bonos'),
+              statsTitle(AppLocalizations.of(context)!.bonos),
             ],
           ),
         ),
@@ -546,7 +552,6 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
           child: BonosPurchased(purchases: filteredPurchases, bonos: bonos, brand: brand,),
         ),
-        Divider(color: Theme.of(context).backgroundColor, thickness: 2),
       ],
     );
   }

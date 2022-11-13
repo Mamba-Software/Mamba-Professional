@@ -5,20 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
+import '../../../../GlobalVars.dart';
 import '../../../../Styles/AppColors/AppColors.dart';
 
 class TotalBenefitPurchases extends StatefulWidget {
   List<Purchase> purchases;
   List<Purchase> backPurchases;
+
 
   TotalBenefitPurchases({
     required this.purchases,
@@ -38,9 +38,11 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
   ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y benefici');
+  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Dia i benefici');
 
-  final DateFormat formatter = DateFormat('dd-MM-yyyy');
+  final DateFormat formatterCat = DateFormat.yMMMMd('ca_CAT');
+  final DateFormat formatterEsp = DateFormat.yMMMMd('es_ES');
+  DateFormat formatter = DateFormat.yMMMMd('es_ES');
 
   List<TotalBenefit> totalBenefits = [];
 
@@ -50,6 +52,14 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
 
   @override
   void initState() {
+    if(currentUser.idioma == 'es')
+    {
+      formatter = formatterEsp;
+    }
+    else if(currentUser.idioma == 'ca')
+    {
+      formatter = formatterCat;
+    }
     filteredPurchases = widget.purchases;
     filteredBackPurchases = widget.backPurchases;
     orderPurchases();
@@ -147,28 +157,32 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
 
   @override
   Widget build(BuildContext context) {
+    _tooltipBehavior =  TooltipBehavior(enable: true, header: AppLocalizations.of(context)!.labelInvoiceMade);
     return isLoading? LoadingView() :   Column(
       children: [
-        Align(
-          alignment: Alignment.topLeft,
-            child: Row(
-              children: [
-                Text(
-                  money.toString() + '€',
-          style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
+        Padding(
+          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
+          child: Align(
+            alignment: Alignment.topLeft,
+              child: Row(
+                children: [
+                  Text(
+                    money.toString() + '€',
+            style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
 
-        ),
-                Padding(
-                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
-                  child: Text(
-                    difference < 0? difference.toString() + '%' :
-                    '+' + difference.toString() + '%',
-                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+          ),
+                  Padding(
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
+                    child: Text(
+                      difference < 0? difference.toString() + '%' :
+                      '+' + difference.toString() + '%',
+                      style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
 
+                    ),
                   ),
-                ),
-              ],
-            ),),
+                ],
+              ),),
+        ),
         Center(
                 child: Container(
                     child: SfCartesianChart(
@@ -191,7 +205,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                           ),
                           enableAutoIntervalOnZooming: false,
                           opposedPosition: true,
-                          interval: 30,
+                          interval: 100,
                           //maximum: double.parse(maxNumber.toString()),
                           //isVisible: false,
                           //Hide the gridlines of x-axis
@@ -210,9 +224,9 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                             borderColor: Styles.mainColor,
                           borderWidth: 2,
                             markerSettings: MarkerSettings(
-                                isVisible: true,
-                                height:  5,
-                                width:  5,
+                                isVisible: totalBenefits.length == 1? true : false,
+                                height:  10,
+                                width:  10,
                                 shape: DataMarkerType.circle,
                                 color: Styles.mainColor),
 
