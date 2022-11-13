@@ -13,17 +13,19 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../../../Styles/AppColors/AppColors.dart';
 
 class GenderGroup extends StatefulWidget {
   List<Usuario> users;
   bool resize;
+  var context;
 
   GenderGroup({
     required this.users,
     required this.resize,
+    required this.context,
     Key? key,
   }) : super(key: key);
 
@@ -43,8 +45,6 @@ class GenderGroupState extends State<GenderGroup> {
   List<GenderGroupClass> genderGrouped = [];
 
   int explodeIndex = -1;
-
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y número de entrenos');
 
 
 
@@ -87,14 +87,21 @@ class GenderGroupState extends State<GenderGroup> {
 
 
 
-    genderGrouped.add(new GenderGroupClass('Masculino', totalMen, AppColors.mainColor));
-    genderGrouped.add(new GenderGroupClass('Femenino', totalWomen, AppColors.grey));
-    genderGrouped.add(new GenderGroupClass('Otros', totalOthers, AppColors.black));
+    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mainColor));
+    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.grey));
+    genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.black));
 
     genderGrouped.sort((a, b){
-      if(a.total > b.total) return 0;
-      else return -1;
+      if(a.total >= b.total) return 0;
+      else return 1;
     });
+
+    /*
+    if((genderGrouped[0].total >= genderGrouped[1].total) && (genderGrouped[0].total >= genderGrouped[2].total)) {
+      genderGrouped[0].color = AppColors.mainColor;
+      genderGrouped[1].color = Colors.black;
+      genderGrouped[2].color = AppColors.grey;
+    }*/
 
     for(int i = 0; i < genderGrouped.length; ++i) {
       if(i == 0)
@@ -103,7 +110,7 @@ class GenderGroupState extends State<GenderGroup> {
         }
       else if(i == 1)
         {
-          genderGrouped[i].color = Colors.blue.shade500;
+          genderGrouped[i].color = AppColors.black;
         }
       else
         {
@@ -112,6 +119,8 @@ class GenderGroupState extends State<GenderGroup> {
     }
 
     }
+
+    /*
 
     checkWhosBigger()
     {
@@ -143,13 +152,13 @@ class GenderGroupState extends State<GenderGroup> {
         else if (totalWomen < totalOthers)
         {
           //totalOthers el mes gran
-          genderGrouped.add(new GenderGroupClass('Otros', totalOthers, AppColors.mainColor));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.mainColor));
           explodeIndex = 2;
         }
         else
         {
-          genderGrouped.add(new GenderGroupClass('Femenino', totalWomen, AppColors.mainColor));
-          genderGrouped.add(new GenderGroupClass('Otros', totalOthers, AppColors.mainColorTrans));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.mainColor));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.mainColorTrans));
 
           //totalOthers i totalWomen iguals
         }
@@ -157,18 +166,18 @@ class GenderGroupState extends State<GenderGroup> {
       else {
         if(totalMen == totalOthers)
         {
-          genderGrouped.add(new GenderGroupClass('Femenino', totalWomen, AppColors.mainColor));
-          genderGrouped.add(new GenderGroupClass('Masculino', totalMen, AppColors.mainColorTrans));
-          genderGrouped.add(new GenderGroupClass('Otros', totalOthers, AppColors.grey));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.mainColor));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mainColorTrans));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.others, totalOthers, AppColors.grey));
           //els tres iguals
         }
         else {
-          genderGrouped.add(new GenderGroupClass('Femenino', totalWomen, AppColors.mainColor));
-          genderGrouped.add(new GenderGroupClass('Masculino', totalMen, AppColors.mainColorTrans));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.female, totalWomen, AppColors.mainColor));
+          genderGrouped.add(new GenderGroupClass(AppLocalizations.of(widget.context)!.male, totalMen, AppColors.mainColorTrans));
           //totalMen i totalWomen igual
         }
       }
-    }
+    } */
 
 
   @override

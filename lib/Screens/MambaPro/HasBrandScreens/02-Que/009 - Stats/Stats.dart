@@ -128,11 +128,24 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
     purchases = await _brandDataService.getBrandPurchases("807b18da-3164-4527-8d32-3ece9cb3c13c");
     bonos = await _brandDataService.getAllBonosFromBrandListProd("807b18da-3164-4527-8d32-3ece9cb3c13c");
       setState(() {
-      applyAllFilters();
+        setActiveUsers();
+        applyAllFilters();
         isLoading = false;
       });
 
 
+  }
+
+  void setActiveUsers()
+  {
+    activeUsers = users;
+    for(int i = 0; i < users.length; ++i){
+      if(users[i].lastEventAt == null)
+      {
+        activeUsers.remove(users[i]);
+      }
+    }
+    activeUsers = activeUsers.where((element) => element.lastEventAt!.compareTo(Timestamp.fromDate(DateTime.now().subtract(Duration(days: 30)))) >= 0 && element.lastEventAt!.compareTo(Timestamp.fromDate(DateTime.now())) <= 0).toList();
   }
 
   void applyAllFilters()
@@ -166,7 +179,6 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   {
 
     filteredUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(startDate) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(endDate) <= 0).toList();
-    activeUsers = users.where((element) => element.lastEventAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 && element.lastEventAt!.compareTo(Timestamp.fromDate(endDate)) <= 0).toList();
     int days = daysBetween(startDate, endDate);
     DateTime  backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
@@ -462,32 +474,31 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       );
     }
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, right: MediaQuery.of(context).size.width*0.06),
       child: Column(
         children: [
-          statsTitle('Numero clientes'),
+          statsTitle(AppLocalizations.of(context)!.numberClients),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02, bottom: MediaQuery.of(context).size.height * 0.02, left:  MediaQuery.of(context).size.width*0.05),
             child: ClientNumber(users: filteredUsers,  activeUsers: activeUsers, allUsers: users),
           ),
-          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-          statsTitle('Media de edad'),
+          dividerStats(),
+          statsTitle(AppLocalizations.of(context)!.ageRange),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
             child: AgeRange(users: filteredUsers),
           ),
-          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
-          statsTitle('Género'),
+          dividerStats(),
+          statsTitle(AppLocalizations.of(context)!.gender),
           Padding(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                GenderGroup(users: filteredUsers, resize: false),
+                GenderGroup(users: filteredUsers, resize: false, context: context,),
               ],
             ),
           ),
-          Divider(color: Theme.of(context).backgroundColor, thickness: 2),
         ],
       ),
     );

@@ -566,5 +566,15 @@
   "sat": "Ds.",
   "sun": "Dim.",
   "timeOffer": "Hora més demandada",
-  "timeToTimeOffer": "Demanda de franges"
+  "timeToTimeOffer": "Demanda de franges",
+  "numberClients": "Número de clients",
+  "ageRange": "Mitjana d'edat",
+  "gender": "Gènere",
+  "newClient": "Altes",
+  "actives": "Actius",
+  "atThisMoment": "actualment",
+  "totals": "totals",
+  "male": "Masculí",
+  "female": "Femení",
+  "others": "Altres"
 }
