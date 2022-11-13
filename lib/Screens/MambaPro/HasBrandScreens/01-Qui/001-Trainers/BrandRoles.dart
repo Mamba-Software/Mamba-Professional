@@ -322,7 +322,7 @@ class _BrandRolesState extends State<BrandRoles> {
                                   ),
                                 ],
                               ),
-                              trailing: user.id! != currentUser.id || user.id != currentBrand.adminID ? IconButton(
+                              trailing: user.id! != currentUser.id ? IconButton(
                                 icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
                                 alignment: Alignment.centerRight,
                                 padding: const EdgeInsets.all(0),

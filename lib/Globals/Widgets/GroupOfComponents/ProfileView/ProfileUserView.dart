@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteFromBrandConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
@@ -122,7 +123,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   }
 
   // Gets the events passed by the trainer.
-  void checkIfHasAllBrandBonos() async {
+  Future<void> checkIfHasAllBrandBonos() async {
     listBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
     userBonos = await _userDataService.getUserBonos(user?.id!);
     for (int i = 0; i < userBonos.length; ++i) {
@@ -167,7 +168,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: 0.28,
+                        heightFactor: user!.isTrainer! == false ? 0.35 : 0.25,
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height*0.4,
                           width: MediaQuery.of(context).size.width,
@@ -222,7 +223,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     }
                                   },
                                 ),
-                                ListTile(
+                                user!.isTrainer! == false ? ListTile(
                                   leading: Icon(
                                     Icons.confirmation_number_outlined,
                                     size: MediaQuery.of(context).size.width*0.06,
@@ -243,7 +244,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                           textAlign: TextAlign.left
                                       ),
                                     ],
-                                  ) : Container(),
+                                  ) : null,
                                   onTap: hasAllBrandBonos == false ? () async {
                                     mixpanel!.track('profile_view_give_bono');
                                     Navigator.pop(context);
@@ -275,9 +276,38 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                           ),
                                         );
                                       }
-                                    ).whenComplete(() => checkIfHasAllBrandBonos());
+                                    ).whenComplete( () async {
+                                      await checkIfHasAllBrandBonos();
+                                    });
                                   } : null,
-                                ),
+                                ) : Container(),
+                                canDeleteFromBrand() ? ListTile(
+                                  leading: Icon(
+                                    Icons.person_remove,
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                    color: AppColors.red,
+                                  ),
+                                  title: Text(
+                                      AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.member.toLowerCase(),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.red,),
+                                      textAlign: TextAlign.left
+                                  ),
+                                  onTap: () async {
+                                    Navigator.pop(context);
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return DeleteFromBrandConfirmationDialog(
+                                            userId: widget.userID,
+                                            text: AppLocalizations.of(context)!.deleteFromBrandConfirmation,
+                                          );
+                                        }
+                                    );
+                                    if (result) {
+                                      //await _brandDataService.join(userId, brandId)
+                                    }
+                                  },
+                                ) : Container(),
                               ],
                             ),
                           ),
@@ -532,31 +562,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     if (widget.viewOnly || currentUser.id! == user!.id! ) {
       return false;
     } else {
-      // Si es entrenador i mira a un client
-      if (currentUser.isTrainer! && !(user!.isTrainer!)) {
-        return true;
-      }
-      // Si es entrenador i mira a un entrenador, ha de ser admin ID.
-      if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID) {
-        return true;
-      }
-      return false;
-    }
-  }
-
-  bool canDeleteFromEvent(int numTrainers) {
-    if (widget.viewOnly) {
-      return false;
-    } else {
-      // Si es entrenador i mira a un client
-      if (currentUser.isTrainer! && !(user!.isTrainer!)) {
-        return true;
-      }
-      // Si es entrenador i mira a un entrenador, ha de ser admin ID.
-      if (currentUser.isTrainer! && user!.isTrainer! && currentUser.id! == currentBrand.adminID && numTrainers > 1) {
-        return true;
-      }
-      return false;
+      return currentUser.brandRole < 2 ? true : false;
     }
   }
 }

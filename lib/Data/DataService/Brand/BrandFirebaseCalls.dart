@@ -92,7 +92,7 @@ class BrandFirebaseCalls {
               .update({
             "locationId": baseLocation,
           });
-          await this.updateEventLocation(event.id!, baseLocation, locationId);
+          await updateEventLocation(event.id!, baseLocation, locationId);
         }
       }
       // Delete Location
@@ -114,7 +114,7 @@ class BrandFirebaseCalls {
           .doc(previousLocation)
           .delete();
       // Add New Location
-      Location location = await this.getSingleLocation(locationId);
+      Location location = await getSingleLocation(locationId);
       await _firestore
           .collection(events)
           .doc(eventId)
@@ -528,7 +528,7 @@ class BrandFirebaseCalls {
   }
 
   Future<void> addUserToBrand(String userId, String brandId, int role) async {
-    Usuario user = await this.getUserDetails(userId);
+    Usuario user = await getUserDetails(userId);
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -580,9 +580,9 @@ class BrandFirebaseCalls {
       role = 3;
     }
     // New Database
-    this.addUserToBrand(request.userId!, request.brandId!, role);
+    addUserToBrand(request.userId!, request.brandId!, role);
     // Delete the Request
-    this.deleteRequestToBrand(request);
+    deleteRequestToBrand(request);
   }
 
   Future<void> addBonoToBrand(String brandId, Bono bono, Condition condition) async {
@@ -732,24 +732,33 @@ class BrandFirebaseCalls {
 
   Future<void> deleteBrand(String brandId) async {
     // Delete All Events from Brand
-    await this.deleteBrandEvents(brandId);
+    await deleteBrandEvents(brandId);
     // Delete All Locations from Brand
-    await this.deleteBrandLocations(brandId);
+    await deleteBrandLocations(brandId);
     // Delete All Users from Brand
-    await this.deleteBrandUsers(brandId);
+    await deleteBrandUsers(brandId);
     // Delete Brand Photo
-    await this.deleteBrandPhoto(brandId);
+    await deleteBrandPhoto(brandId);
     // Delete Brand
     await _firestore.collection(brands).doc(brandId).delete();
   }
 
   Future<void> deleteUserFromBrand(String userId, String brandId) async {
+    // Delete From Brand/Users
     await _firestore
         .collection(brands)
         .doc(brandId)
         .collection("Users")
         .doc(userId)
         .delete();
+    // Delete From Users/Brands
+    await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .delete();
+
   }
 
   Future<void> deleteBrandContentPictures(String brandID, String imageId, String? imageUrl) async {
@@ -832,7 +841,7 @@ class BrandFirebaseCalls {
             .collection("Locations")
             .get();
         for (int i = 0; i < querySnapshot.docs.length; i++) {
-          await this.deleteLocation(querySnapshot.docs[i].id, null);
+          await deleteLocation(querySnapshot.docs[i].id, null);
         }
       } catch (e) {
         print(e.toString());
@@ -860,6 +869,23 @@ class BrandFirebaseCalls {
         .collection("Bonos Requests")
         .doc(bonoRequestId)
         .delete();
+  }
+
+  // Delete Brand Bono Request
+  Future<void> deleteUserBrandBonos(String brandId, String userId) async {
+    // Delete in Users/Bonos from Brand Id
+    QuerySnapshot querySnapshot = await _firestore.collection(users)
+        .doc(userId)
+        .collection("Bonos")
+        .where("brandId", isEqualTo: brandId)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      await _firestore.collection(users)
+          .doc(userId)
+          .collection("Bonos")
+          .where("brandId", isEqualTo: brandId)
+          .get();
+    }
   }
 
   //STREAMS

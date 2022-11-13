@@ -150,11 +150,11 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
                       CircularImage(
                         size: MediaQuery.of(context).size.width*0.25,
                         image: user.imageUrl,
-                        color: Theme.of(context).colorScheme.secondary,
-                        borderWidth: 2,
+                        color: Theme.of(context).backgroundColor,
+                        borderWidth: 1,
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width*0.9,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.10),

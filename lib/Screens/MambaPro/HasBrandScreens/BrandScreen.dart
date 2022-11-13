@@ -659,42 +659,7 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   Widget buildBrandLeaveOption() {
-    return currentUser.id != currentBrand.adminID ?
-    ListTile(
-        leading: Icon(Icons.logout, color: Colors.red, size: MediaQuery.of(context).size.width*0.07),
-        title: Text(
-          AppLocalizations.of(context)!.exitBrand,
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
-        ),
-        onTap: () async {
-          mixpanel!.track('exit_brand_dialog_open');
-          // Leaves Brand
-          var result = await showDialog(
-              context: context,
-              builder: (_) {
-                return ConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
-              }
-          );
-          if (result) {
-            mixpanel!.track('exit_brand_confirmed');
-            setState(() {
-              isLoading = true;
-            });
-            pageIndex = 0;
-            NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
-            await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
-            await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) => const SplashScreen(),
-                  settings: const RouteSettings(name: 'SplashScreen'),
-                )
-            );
-          }
-        }
-    )
-        :
+    return currentUser.brandRole < 2 ?
     ListTile(
         leading: Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.07),
         title: Text(
@@ -726,6 +691,41 @@ class _BrandScreenState extends State<BrandScreen> {
                   const SplashScreen(),
                   settings: const RouteSettings(
                       name: 'SplashScreen'),
+                )
+            );
+          }
+        }
+    ) :
+    ListTile(
+        leading: Icon(Icons.logout, color: Colors.red, size: MediaQuery.of(context).size.width*0.07),
+        title: Text(
+          AppLocalizations.of(context)!.exitBrand,
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
+        ),
+        onTap: () async {
+          mixpanel!.track('exit_brand_dialog_open');
+          // Leaves Brand
+          var result = await showDialog(
+              context: context,
+              builder: (_) {
+                return ConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
+              }
+          );
+          if (result) {
+            mixpanel!.track('exit_brand_confirmed');
+            setState(() {
+              isLoading = true;
+            });
+            pageIndex = 0;
+            NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+            await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+            await _brandDataService.deleteUserBrandBonos(currentUser.id!, currentBrand.id!);
+            await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<void>(
+                  builder: (context) => const SplashScreen(),
+                  settings: const RouteSettings(name: 'SplashScreen'),
                 )
             );
           }
