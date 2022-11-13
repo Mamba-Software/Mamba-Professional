@@ -305,7 +305,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                 selectionTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                 startRangeSelectionColor: Theme.of(context).primaryColor,
                 endRangeSelectionColor: Theme.of(context).primaryColor,
-                rangeSelectionColor: Theme.of(context).primaryColorDark.withOpacity(0.5),
+                rangeSelectionColor: Theme.of(context).backgroundColor,
                 rangeTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColor),
               ),
             ),

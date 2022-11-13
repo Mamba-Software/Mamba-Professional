@@ -2583,5 +2583,13 @@
   "totalInvoice": "Facturación total",
   "@totalInvoice": {
     "description": "totalInvoice message"
+  },
+  "benefit": "Beneficio",
+  "@benefit": {
+    "description": "benefit message"
+  },
+  "boughts": "Compras",
+  "@boughts": {
+    "description": "boughts message"
   }
 }

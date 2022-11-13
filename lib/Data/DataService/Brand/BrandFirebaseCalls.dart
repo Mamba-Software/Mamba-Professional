@@ -373,10 +373,10 @@ class BrandFirebaseCalls {
 
   }
 
-  Future<List<Event>> getAllEventsFromBrandList(String brandId) async {
+  Future<List<Event>> getAllEventsFromBrandStats(String brandId) async {
     Timestamp now = Timestamp.fromDate(DateTime.now());
     List<Event> events = [];
-/*
+
     QuerySnapshot querySnapshot = await _firestore
         .collection(brands)
         .doc(brandId)
@@ -398,44 +398,18 @@ class BrandFirebaseCalls {
       events.add(Event.fromObjectOnlyCoverData(
           querySnapshot.docs[i].id, querySnapshot.docs[i]));
 
-    }*/
-
-    //GET UBUNTU
-
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('Brands')
-        .doc('2bd419fe-1a38-4764-b3c5-49728da3ef3d')
-        .collection("Events")
-        .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      if(querySnapshot.docs[i].id != 'Private Events') {
-        events.add(Event.fromObjectOnlyCoverData(
-            querySnapshot.docs[i].id, querySnapshot.docs[i]));
-      }
     }
-
-     querySnapshot = await _firestore
-        .collection('Brands')
-        .doc('2bd419fe-1a38-4764-b3c5-49728da3ef3d')
-        .collection("Events").doc('Private Events').collection('Private Events')
-        .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-        events.add(Event.fromObjectOnlyCoverData(
-            querySnapshot.docs[i].id, querySnapshot.docs[i]));
-
-    }
-
 
     return events;
   }
 
-  Future<List<Usuario>> getBrandUsersWithDateJoined(String brandId) async {
+  Future<List<Usuario>> getBrandUsersStats(String brandId) async {
     List<Usuario> users = [];
     Usuario user;
     List<Brand> brandList = [];
     Brand brand;
     try {
-      await _firestore.collection('Brands').doc(brandId)
+      await _firestore.collection(brands).doc(brandId)
           .collection("Users")
           .get()
           .then((snapshot) async {
@@ -458,7 +432,7 @@ class BrandFirebaseCalls {
     List<Purchase> purchases = [];
     Purchase purchase;
     try {
-      await _firestore.collection('Payments').doc('Purchases')
+      await _firestore.collection(payments).doc('Purchases')
           .collection("Purchases").where("brandId", isEqualTo: brandId)
           .get()
           .then((snapshot) async {
@@ -477,10 +451,10 @@ class BrandFirebaseCalls {
     }
   }
 
-  Future<List<Bono>> getAllBonosFromBrandListProd(String brandId) async {
+  Future<List<Bono>> getAllBonosFromBrandStats(String brandId) async {
     List<Bono> bonos = [];
     try {
-      await _firestore.collection('Brands').doc(brandId)
+      await _firestore.collection(brands).doc(brandId)
           .collection("Bonos")
           .get()
           .then((snapshot) {

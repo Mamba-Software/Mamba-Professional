@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -20,10 +21,11 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/Purc
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
+import '../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/ClientNumber.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
@@ -34,19 +36,28 @@ class Stats extends StatefulWidget {
   bool pinned;
   ValueChanged<bool?> pinnedChanged;
   int? initIndex;
-  Stats({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged, this.initIndex}) : super(key: key);
+
+  Stats(
+      {Key? key,
+      required this.brandId,
+      required this.pinned,
+      required this.pinnedChanged,
+      this.initIndex})
+      : super(key: key);
 
   @override
   _StatsState createState() => _StatsState();
 }
 
-class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
-
+class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
+
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    return _scrollController!.hasClients &&
+        _scrollController!.offset >
+            (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
 
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
@@ -54,14 +65,15 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
+
   // Boolean Loading
   bool isLoading = true;
   bool isFirstBuild = true;
 
-  DateTime  endDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime endDate = DateTime.now().subtract(const Duration(days: 30));
   DateTime startDate = DateTime.now().subtract(const Duration(days: 60));
 
-  DateTime  backEndDate = DateTime.now().subtract(Duration(days: 60));
+  DateTime backEndDate = DateTime.now().subtract(Duration(days: 60));
   DateTime backStartDate = DateTime.now().subtract(Duration(days: 90));
 
   TabController? _tabController;
@@ -70,6 +82,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
+
   // Brand
   Brand brand = Brand();
   DateTime dateJoinedBrand = DateTime.now();
@@ -78,112 +91,164 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
 
   List<Event> events = [], filteredEvents = [], filteredBackEvents = [];
 
-  List<Usuario> users = [], filteredUsers = [], filteredBackUsers = [], activeUsers = [];
+  List<Usuario> users = [],
+      filteredUsers = [],
+      filteredBackUsers = [],
+      activeUsers = [];
 
-  List<Purchase> purchases = [], filteredPurchases = [], filteredBackPurchases = [];
+  List<Purchase> purchases = [],
+      filteredPurchases = [],
+      filteredBackPurchases = [];
 
   List<Bono> bonos = [];
 
   @override
   void initState() {
     _tabController = TabController(length: 3, vsync: this);
-    if(widget.initIndex != null)
-      {
-        _selectedIndex = widget.initIndex!;
-      }
+    if (widget.initIndex != null) {
+      _selectedIndex = widget.initIndex!;
+    }
     getBrandDetails();
     getCollections();
     super.initState();
     _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-      setState(() {
-        appBarExpanded = true;
-      }) :
-      setState(() {
-        appBarExpanded = false;
-      }),
+      ..addListener(
+        () => _isAppBarExpanded
+            ? setState(() {
+                appBarExpanded = true;
+              })
+            : setState(() {
+                appBarExpanded = false;
+              }),
       );
   }
-  
+
   // Init Device Sizes
   initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    safeAreaHeight = MediaQuery.of(context).size.height -
+        AppBar().preferredSize.height -
+        MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
+    print("Device H and W: " +
+        MediaQuery.of(context).size.height.toString() +
+        " " +
+        MediaQuery.of(context).size.width.toString());
+    print("SafeArea H and W: " +
+        safeAreaHeight.toString() +
+        " " +
+        safeAreaWidth.toString());
   }
 
   // Gets the Events Done by the Brand
   Future<void> getBrandDetails() async {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
     var dateJoinedSplit = brand.dateJoined!.split("-");
-    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]), int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
+    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]),
+        int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
   }
 
   Future<void> getCollections() async {
-    events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
-    users = await _brandDataService.getBrandUsersWithDateJoined('2bd419fe-1a38-4764-b3c5-49728da3ef3d');
+    events = await _brandDataService.getAllEventsFromBrandStats(widget.brandId);
+    users = await _brandDataService
+        .getBrandUsersStats(widget.brandId);
     //purchases = await _brandDataService.getBrandPurchases(widget.brandId);
     //bonos = await _brandDataService.getAllBonosFromBrandList(widget.brandId);
-    purchases = await _brandDataService.getBrandPurchases("807b18da-3164-4527-8d32-3ece9cb3c13c");
-    bonos = await _brandDataService.getAllBonosFromBrandListProd("807b18da-3164-4527-8d32-3ece9cb3c13c");
-      setState(() {
-        setActiveUsers();
-        applyAllFilters();
-        isLoading = false;
-      });
-
-
+    purchases = await _brandDataService
+        .getBrandPurchases(widget.brandId);
+    bonos = await _brandDataService
+        .getAllBonosFromBrandStats(widget.brandId);
+    setState(() {
+      setActiveUsers();
+      applyAllFilters();
+      isLoading = false;
+    });
   }
 
-  void setActiveUsers()
-  {
+  void setActiveUsers() {
     activeUsers = users;
-    for(int i = 0; i < users.length; ++i){
-      if(users[i].lastEventAt == null)
-      {
+    for (int i = 0; i < users.length; ++i) {
+      if (users[i].lastEventAt == null) {
         activeUsers.remove(users[i]);
       }
     }
-    activeUsers = activeUsers.where((element) => element.lastEventAt!.compareTo(Timestamp.fromDate(DateTime.now().subtract(Duration(days: 30)))) >= 0 && element.lastEventAt!.compareTo(Timestamp.fromDate(DateTime.now())) <= 0).toList();
+    activeUsers = activeUsers
+        .where((element) =>
+            element.lastEventAt!.compareTo(Timestamp.fromDate(
+                    DateTime.now().subtract(Duration(days: 30)))) >=
+                0 &&
+            element.lastEventAt!
+                    .compareTo(Timestamp.fromDate(DateTime.now())) <=
+                0)
+        .toList();
   }
 
-  void applyAllFilters()
-  {
+  void applyAllFilters() {
     applyFilteredEvents();
     applyFilteredUsers();
     applyFilteredPurchases();
   }
 
-  void applyFilteredEvents()
-  {
-    filteredEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 && element.doneAt!.compareTo(Timestamp.fromDate(endDate)) <= 0).toList();
+  void applyFilteredEvents() {
+    filteredEvents = events
+        .where((element) =>
+            element.doneAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 &&
+            element.doneAt!.compareTo(Timestamp.fromDate(endDate)) <= 0)
+        .toList();
     int days = daysBetween(startDate, endDate);
-    DateTime  backEndDate = endDate.subtract(Duration(days: days));
+    DateTime backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
-    filteredBackEvents = events.where((element) => element.doneAt!.compareTo(Timestamp.fromDate(backStartDate)) >= 0 && element.doneAt!.compareTo(Timestamp.fromDate(backEndDate)) <= 0).toList();
-
+    filteredBackEvents = events
+        .where((element) =>
+            element.doneAt!.compareTo(Timestamp.fromDate(backStartDate)) >= 0 &&
+            element.doneAt!.compareTo(Timestamp.fromDate(backEndDate)) <= 0)
+        .toList();
   }
 
-  void applyFilteredPurchases()
-  {
-    filteredPurchases = purchases.where((element) => element.purchasedAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 && element.purchasedAt!.compareTo(Timestamp.fromDate(endDate)) <= 0).toList();
+  void applyFilteredPurchases() {
+    filteredPurchases = purchases
+        .where((element) =>
+            element.purchasedAt!.compareTo(Timestamp.fromDate(startDate)) >=
+                0 &&
+            element.purchasedAt!.compareTo(Timestamp.fromDate(endDate)) <= 0)
+        .toList();
     int days = daysBetween(startDate, endDate);
-    DateTime  backEndDate = endDate.subtract(Duration(days: days));
+    DateTime backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
-    filteredBackPurchases = purchases.where((element) => element.purchasedAt!.compareTo(Timestamp.fromDate(backStartDate)) >= 0 && element.purchasedAt!.compareTo(Timestamp.fromDate(backEndDate)) <= 0).toList();
-
+    filteredBackPurchases = purchases
+        .where((element) =>
+            element.purchasedAt!.compareTo(Timestamp.fromDate(backStartDate)) >=
+                0 &&
+            element.purchasedAt!.compareTo(Timestamp.fromDate(backEndDate)) <=
+                0)
+        .toList();
   }
 
-  void applyFilteredUsers()
-  {
-
-    filteredUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(startDate) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(endDate) <= 0).toList();
+  void applyFilteredUsers() {
+    filteredUsers = users
+        .where((element) =>
+            DateFormat('dd-MM-yy')
+                    .parse(element.dateJoined!)
+                    .compareTo(startDate) >=
+                0 &&
+            DateFormat('dd-MM-yy')
+                    .parse(element.dateJoined!)
+                    .compareTo(endDate) <=
+                0)
+        .toList();
     int days = daysBetween(startDate, endDate);
-    DateTime  backEndDate = endDate.subtract(Duration(days: days));
+    DateTime backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
-    filteredBackUsers = users.where((element) => DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(backStartDate) >= 0 && DateFormat('dd-MM-yy').parse(element.dateJoined!).compareTo(backEndDate) <= 0).toList();
-
+    filteredBackUsers = users
+        .where((element) =>
+            DateFormat('dd-MM-yy')
+                    .parse(element.dateJoined!)
+                    .compareTo(backStartDate) >=
+                0 &&
+            DateFormat('dd-MM-yy')
+                    .parse(element.dateJoined!)
+                    .compareTo(backEndDate) <=
+                0)
+        .toList();
   }
 
   @override
@@ -193,136 +258,156 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       isFirstBuild = false;
     }
     return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.2,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            elevation: 4,
-            floating: true,
-            pinned: true,
-            //snap: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: AppColors.darkGrey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
-                      child: Text(
+      body: DefaultTabController(
+        length: 3,
+        initialIndex: _selectedIndex,
+        child: ExtendedNestedScrollView(
+          pinnedHeaderSliverHeightBuilder: () {
+            return MediaQuery.of(context).size.height * 0.17;
+          },
+          controller: _scrollController,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                backgroundColor: AppColors.darkGrey,
+                expandedHeight: MediaQuery.of(context).size.height * 0.2,
+                systemOverlayStyle: SystemUiOverlayStyle.light,
+                elevation: 4,
+                floating: true,
+                pinned: true,
+                forceElevated: innerBoxIsScrolled,
+                //snap: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    color: AppColors.darkGrey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.05,
+                              right: MediaQuery.of(context).size.width * 0.025),
+                          child: Text(
+                            AppLocalizations.of(context)!.stats,
+                            style:
+                                Theme.of(context).textTheme.headline1?.copyWith(
+                                      color: AppColors.white,
+                                    ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.08,
+                        ),
+                      ],
+                    ),
+                  ),
+                  titlePadding: EdgeInsets.zero,
+                  //centerTitle: true,
+                ),
+                title: appBarExpanded
+                    ? Text(
                         AppLocalizations.of(context)!.stats,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
+                        style: Theme.of(context)
+                            .appBarTheme
+                            .titleTextStyle
+                            ?.copyWith(
+                              color: AppColors.white,
+                            ),
+                      )
+                    : Container(),
+                centerTitle: true,
+                leading: Builder(
+                  builder: (BuildContext innerContext) => Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.02),
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.menu,
+                          color: AppColors.white,
+                          size: MediaQuery.of(context).size.height * 0.04,
+                        ),
+                        onPressed: () =>
+                            mambaProScaffoldKey.currentState?.openDrawer()),
+                  ),
+                ),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: MediaQuery.of(context).size.width * 0.01),
+                    child: IconButton(
+                      icon: Icon(
+                        widget.pinned
+                            ? Icons.push_pin
+                            : Icons.push_pin_outlined,
+                        color: widget.pinned
+                            ? AppColors.red
+                            : AppColors.white.withOpacity(0.5),
+                        size: MediaQuery.of(context).size.width * 0.06,
                       ),
+                      onPressed: () {
+                        setState(() {
+                          widget.pinned = !widget.pinned;
+                        });
+                        widget.pinnedChanged(widget.pinned);
+                      },
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.08,),
-                  ],
-                ),
-              ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
-            ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.stats, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
-            centerTitle: true,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: MediaQuery.of(context).size.height*0.04,
-                    ),
-                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
-                ),
-              ),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
                   ),
-                  onPressed: () {
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                ],
               ),
-            ],
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(0),
-              child: Column(
-                children: [
+              SliverPersistentHeader(
+                delegate: _SliverAppBarDelegate(
                   TabBar(
-                    isScrollable: true,
-                    controller: _tabController,
-                    indicatorColor: Colors.transparent,
-                    onTap: (index) async {
-                      _selectedIndex = index;
-                      if(_selectedIndex == 0)
-                      {
-                        addStatsValue = 0.25;
-                        tabs[0] = true;
-                      }
-                      else if(_selectedIndex == 1)
-                      {
-                        addStatsValue = 0.50;
-                        tabs[1] = true;
-                      }
-                      else if(_selectedIndex == 2)
-                      {
-                        addStatsValue = 0.75;
-                        tabs[2] = true;
-                      }
-                      else if(_selectedIndex == 3)
-                      {
-                        addStatsValue = 1;
-                        tabs[4] = true;
-                      }
-
-                      setState(()  {
-
-                      });
-                    },
+                    indicatorWeight: 4,
+                    indicatorColor: Theme.of(context).colorScheme.secondary,
+                    labelColor: Theme.of(context).primaryColor,
+                    unselectedLabelColor: Theme.of(context).primaryColor,
                     tabs: [
-                      selectedTab(AppLocalizations.of(context)!.events, 0, 0.20),
-                      selectedTab(AppLocalizations.of(context)!.clients, 1, 0.20),
-                      currentUser.brandRole < 3 ? selectedTab(AppLocalizations.of(context)!.facturation, 2, 0.25) : Container(),
+                      Tab(
+                        text: AppLocalizations.of(context)!.events,
+                      ),
+                      Tab(
+                        text: AppLocalizations.of(context)!.clients,
+                      ),
+                      Tab(
+                        text: AppLocalizations.of(context)!.facturation,
+                      ),
                     ],
+                    onTap: (index) {
+                      switch (index) {
+                        case 0:
+                          mixpanel!.track('brand_stats_view_events_tab');
+                          break;
+                        case 1:
+                          mixpanel!.track('brand_stats_view_clients_tab');
+                          break;
+                        case 2:
+                          mixpanel!.track('brand_stats_view_fact_tab');
+                          break;
+                      }
+                    },
                   ),
-                ],
+                ),
+                pinned: false,
               ),
-            ),
+            ];
+          },
+          body: TabBarView(
+            physics: const ClampingScrollPhysics(),
+            children: [
+              buildEventsStatsPage(),
+              buildClientsStatsPage(),
+              buildFactStatsPage(),
+            ],
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.00,),
-              child: Column(
-                children: [
-                  _selectedIndex == 0? eventsStatsPage() :
-                  _selectedIndex == 1? clientsStatsPage() :
-                  _selectedIndex == 2? factStatsPage() : Container(),
-                ],
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
       bottomSheet: GestureDetector(
         onTap: _show, //TODO CALENDAR
         child: Container(
-          height: MediaQuery.of(context).size.height*0.1,
+          height: MediaQuery.of(context).size.height * 0.1,
           width: double.infinity,
-         // color: Theme.of(context).backgroundColor,
+          // color: Theme.of(context).backgroundColor,
           decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
             border: Border(
@@ -330,69 +415,125 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
             ),
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start, //change here don't //worked
+            mainAxisAlignment: MainAxisAlignment.start,
+            //change here don't //worked
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02, horizontal: MediaQuery.of(context).size.height*0.02),
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height * 0.02,
+                      horizontal: MediaQuery.of(context).size.height * 0.02),
                   child: Text(
-                    '${DateFormat('d MMM, yy\'').format(startDate)}  - '' ${DateFormat('d MMM, yy\'').format(endDate)}',
-                    style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor),
+                    '${DateFormat('d MMM, yy\'').format(startDate)}  - '
+                    ' ${DateFormat('d MMM, yy\'').format(endDate)}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3!
+                        .copyWith(color: Theme.of(context).primaryColor),
                     textAlign: TextAlign.center,
                   ),
                 ),
               ),
               Container(
-            height: MediaQuery.of(context).size.height*0.12,
-            width: MediaQuery.of(context).size.height*0.12,
-            color: Styles.mainColorTrans,
-            child:  Icon(
-                Icons.event,
-                color: Styles.mainColor,
-                size: MediaQuery.of(context).size.width*0.07,
+                height: MediaQuery.of(context).size.height * 0.12,
+                width: MediaQuery.of(context).size.height * 0.12,
+                color: Styles.mainColorTrans,
+                child: Icon(
+                  Icons.event,
+                  color: Styles.mainColor,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                ),
               ),
-        ),
             ],
           ),
         ),
-      ) ,
+      ),
     );
   }
-  Widget selectedTab(String text, int index, double width)
-  {
+
+  Widget buildEventsStatsPage() => SafeArea(
+        top: false,
+        bottom: false,
+        child: Builder(
+          builder: (context) => CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: eventsStatsPage(),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget buildClientsStatsPage() => SafeArea(
+        top: false,
+        bottom: false,
+        child: Builder(
+          builder: (context) => CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: clientsStatsPage(),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget buildFactStatsPage() => SafeArea(
+        top: false,
+        bottom: false,
+        child: Builder(
+          builder: (context) => CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: factStatsPage(),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget selectedTab(String text, int index, double width) {
     return Tab(
       child: Align(
         alignment: Alignment.bottomLeft,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text(
-                text,
-                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorLight, fontWeight: FontWeight.bold)
+            Text(text,
+                style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                    color: Theme.of(context).primaryColorLight,
+                    fontWeight: FontWeight.bold)),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.01,
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01,),
-            _selectedIndex == index? Container(
-              width: MediaQuery.of(context).size.width*width,
-              height: 3,
-              //Theme.of(context).scaffoldBackgroundColor,
-              color: Theme.of(context).colorScheme.secondary,
-            ) : Container(),
+            _selectedIndex == index
+                ? Container(
+                    width: MediaQuery.of(context).size.width * width,
+                    height: 3,
+                    //Theme.of(context).scaffoldBackgroundColor,
+                    color: Theme.of(context).colorScheme.secondary,
+                  )
+                : Container(),
           ],
         ),
       ),
     );
   }
 
-  Widget statsTitle(String text)
-  {
+  Widget statsTitle(String text) {
     return Padding(
-        padding:
-        EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03, left:  MediaQuery.of(context).size.width*0.05),
+        padding: EdgeInsets.only(
+            top: MediaQuery.of(context).size.height * 0.03,
+            left: MediaQuery.of(context).size.width * 0.05),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-             Flexible(
+            Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -403,11 +544,8 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                     style: Theme.of(context)
                         .textTheme
                         .headline1
-                        ?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15),
+                        ?.copyWith(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
-
                 ],
               ),
             ),
@@ -415,87 +553,112 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
         ));
   }
 
-  Widget dividerStats()
-  {
+  Widget dividerStats() {
     return Padding(
-      padding:
-      EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
+      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
       child: Divider(color: Theme.of(context).backgroundColor, thickness: 2),
     );
   }
 
-  Widget eventsStatsPage()
-  {
-    if(isLoading)
-      {
-        return  Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.25, ),
-          child:  LoadingView(),
-        );
-      }
+  Widget eventsStatsPage() {
+    if (isLoading) {
+      return Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.25,
+        ),
+        child: LoadingView(),
+      );
+    }
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, right: MediaQuery.of(context).size.width*0.06),
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.15,
+          right: MediaQuery.of(context).size.width * 0.06),
       child: Column(
         children: [
           statsTitle(AppLocalizations.of(context)!.eventsDone),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-            child: SessionsMade(events: filteredEvents, backEvents: filteredBackEvents,),
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.02),
+            child: SessionsMade(
+              events: filteredEvents,
+              backEvents: filteredBackEvents,
+            ),
           ),
           dividerStats(),
           statsTitle(AppLocalizations.of(context)!.daysDemand),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-            child: DayOffer(events: filteredEvents, context: context,),
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.02),
+            child: DayOffer(
+              events: filteredEvents,
+              context: context,
+            ),
           ),
           dividerStats(),
           statsTitle(AppLocalizations.of(context)!.timeOffer),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.02),
             child: TimeOffer(events: filteredEvents),
           ),
           dividerStats(),
           statsTitle(AppLocalizations.of(context)!.timeToTimeOffer),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.02),
             child: TimeToTimeOffer(events: filteredEvents),
           ),
         ],
       ),
     );
   }
-  Widget clientsStatsPage()
-  {
-    if(isLoading)
-    {
-      return  Padding(
-        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.25, ),
-        child:  LoadingView(),
+
+  Widget clientsStatsPage() {
+    if (isLoading) {
+      return Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.25,
+        ),
+        child: LoadingView(),
       );
     }
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.15, right: MediaQuery.of(context).size.width*0.06),
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).size.height * 0.15,
+          right: MediaQuery.of(context).size.width * 0.06),
       child: Column(
         children: [
           statsTitle(AppLocalizations.of(context)!.numberClients),
           Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02, bottom: MediaQuery.of(context).size.height * 0.02, left:  MediaQuery.of(context).size.width*0.05),
-            child: ClientNumber(users: filteredUsers,  activeUsers: activeUsers, allUsers: users),
+            padding: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.02,
+                bottom: MediaQuery.of(context).size.height * 0.02,
+                left: MediaQuery.of(context).size.width * 0.05),
+            child: ClientNumber(
+                users: filteredUsers,
+                activeUsers: activeUsers,
+                allUsers: users),
           ),
           dividerStats(),
           statsTitle(AppLocalizations.of(context)!.ageRange),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.02),
             child: AgeRange(users: filteredUsers),
           ),
           dividerStats(),
           statsTitle(AppLocalizations.of(context)!.gender),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
+            padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.height * 0.02),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                GenderGroup(users: filteredUsers, resize: false, context: context,),
+                GenderGroup(
+                  users: filteredUsers,
+                  resize: false,
+                  context: context,
+                ),
               ],
             ),
           ),
@@ -503,8 +666,8 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       ),
     );
   }
-  Widget staffStatsPage()
-  {
+
+  Widget staffStatsPage() {
     return Column(
       children: [
         statsTitle('Entrenadores'),
@@ -512,27 +675,34 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       ],
     );
   }
-  Widget factStatsPage()
-  {
-    if(isLoading)
-    {
-      return  Padding(
-        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.25, ),
-        child:  LoadingView(),
+
+  Widget factStatsPage() {
+    if (isLoading) {
+      return Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.25,
+        ),
+        child: LoadingView(),
       );
     }
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only( right: MediaQuery.of(context).size.width*0.00),
+          padding:
+              EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.00),
           child: Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00, right: MediaQuery.of(context).size.width*0.06),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * 0.00,
+                right: MediaQuery.of(context).size.width * 0.06),
             child: Column(
               children: [
                 statsTitle(AppLocalizations.of(context)!.totalInvoice),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-                  child: TotalBenefitPurchases(purchases: filteredPurchases, backPurchases: filteredBackPurchases),
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height * 0.02),
+                  child: TotalBenefitPurchases(
+                      purchases: filteredPurchases,
+                      backPurchases: filteredBackPurchases),
                 ),
                 dividerStats(),
               ],
@@ -540,17 +710,22 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only( right: MediaQuery.of(context).size.width*0.06),
+          padding:
+              EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.06),
           child: Column(
             children: [
               statsTitle(AppLocalizations.of(context)!.bonos),
             ],
           ),
         ),
-
         Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
-          child: BonosPurchased(purchases: filteredPurchases, bonos: bonos, brand: brand,),
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.02),
+          child: BonosPurchased(
+            purchases: filteredPurchases,
+            bonos: bonos,
+            brand: brand,
+          ),
         ),
       ],
     );
@@ -577,10 +752,14 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
       },
     );
     if (result != null) {
+      mixpanel!.track('brand_stats_view_dates', properties: {
+        'startDate': result.first,
+        'endDate': result.last,
+      });
       setState(() {
         startDate = result.first;
         endDate = result.last;
-         applyAllFilters();
+        applyAllFilters();
       });
     }
   }
@@ -592,4 +771,31 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
   }
 }
 
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
 
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Material(
+      elevation: 4,
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: _tabBar,
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
+  }
+}

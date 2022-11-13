@@ -182,6 +182,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                     physics: const BouncingScrollPhysics(),
                     controller: _pageController,
                     onPageChanged: (int page) {
+                      mixpanel!.track('brand_stats_view_fact_tab_bono_changed', properties: {
+                        'bono id': bonos[index].id,
+                        'bono title': bonos[index].title,
+                        'bono price': bonos[index].price.toString(),
+                        'bono sessions': bonos[index].sessions,
+                        'bono total invoice': bonoStats[index].money.toString(),
+                        'bono total boughts': bonoStats[index].purchases.toString(),
+                      });
                       setState(()  {
                         //bonoSelected = bonos[page];
                        // bonoSelected.setBasicData = bonos[page];
@@ -235,7 +243,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                           children: [
                             Text(bonoStats[index].money.toString()  + ' €',
                               style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
-                            Text('Benefici'),
+                            Text( AppLocalizations.of(context)!.benefit),
                           ]
                       ),
                     ),
@@ -251,7 +259,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                           children: [
                             Text(bonoStats[index].purchases.toString(),
                               style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
-                            Text('Compres'),
+                            Text( AppLocalizations.of(context)!.boughts),
                           ]
                       ),
                     ),
@@ -301,21 +309,15 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                     borderColor: Styles.mainColor,
                                   borderWidth: 2,
                                     markerSettings: MarkerSettings(
+                                      borderColor: AppColors.mainColor,
                                         isVisible:  bonoStats[index].totalBenefits.length == 1? true : false,
                                         height:  10,
                                         width:  10,
                                         shape: DataMarkerType.circle,
-                                        color: Styles.mainColor),
+                                        color: AppColors.mainColor),
 
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Styles.mainColor,
-                                        AppColors.mainColor.withOpacity(0.2),
-                                      ],
-                                    ),
-                                      dataSource: bonoStats[index].totalBenefits,
+                                  color: Colors.transparent,
+                                  dataSource: bonoStats[index].totalBenefits,
                                       xValueMapper: (TotalBenefit events, _) => events.day,
                                       yValueMapper: (TotalBenefit events, _) => events.money,
                                   )
