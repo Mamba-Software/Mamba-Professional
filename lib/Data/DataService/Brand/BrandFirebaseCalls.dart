@@ -886,6 +886,14 @@ class BrandFirebaseCalls {
           .collection("Bonos")
           .doc(querySnapshot.docs[i].id)
           .delete();
+      // Borrar a la Brand/Users/Bonos
+      await _firestore.collection(brands)
+          .doc(brandId)
+          .collection("Users")
+          .doc(userId)
+          .collection("Bonos")
+          .doc(querySnapshot.docs[i].id)
+          .delete();
       // Delete in Brand/Bonos/Users
       await _firestore.collection(brands)
           .doc(brandId)

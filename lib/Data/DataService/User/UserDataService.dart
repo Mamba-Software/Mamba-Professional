@@ -72,7 +72,7 @@ class UserDataService {
   Future<void> deleteRequestToBrand(RequestToBrand request) => _firebase.deleteRequestToBrand(request);
   Future<void> deleteUserNickname(String nickname) => _firebase.deleteUserNickname(nickname);
   Future<void> deleteUserBonoRequest(String userId, String brandId, String bonoId) => _firebase.deleteUserBonoRequest(userId,brandId ,bonoId);
-
+  Future<void> deleteUserBono(String userId, String brandId, String bonoId) => _firebase.deleteUserBono(userId, brandId, bonoId);
   Future<void> deleteLocalNotification(String userId, String notificationId) => _firebase.deleteLocalNotification(userId, notificationId);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

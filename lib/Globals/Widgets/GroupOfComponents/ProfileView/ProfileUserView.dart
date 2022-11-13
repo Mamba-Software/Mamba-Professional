@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -40,6 +42,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   final _eventDataService = EventDataService();
   final _roomDataService = RoomDataService();
   final _brandDataService = BrandDataService();
+  final _purchaseDataService = PurchaseDataService();
 
   // Boolean Loading
   bool isLoading = false;
@@ -73,9 +76,46 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     listEvents = [];
     user = await _userDataService.getUserDetails(widget.userID);
     checkIfHasAllBrandBonos();
+    userBonos.isNotEmpty ? checkIfUserBonosHaveExpired() : null;
     getEventsDone();
   }
 
+  // Check If User Bonos Have Expired
+  Future<void> checkIfUserBonosHaveExpired() async {
+    List<Bono> userBonos = await _userDataService.getUserBonos(widget.userID);
+    for (Bono bono in userBonos) {
+      Purchase purchase = await _purchaseDataService.getPurchaseInfo(bono.purchaseId!);
+      // Sessions Done
+      int sessionsDone = purchase.events.length;
+      if (bono.sessions == sessionsDone) {
+        mixpanel!.track('profile_view_bono_deleted', properties: {
+          'Bono': bono.id!,
+          'Purchase': purchase.id!,
+          'Brand': purchase.brandId!,
+        });
+        await _userDataService.deleteUserBono(widget.userID, purchase.brandId!, bono.id!);
+      }
+      // After Expiration Date
+      if (bono.condition!.expirationTime! != 0) {
+        DateTime purchasedDate = purchase.purchasedAt!.toDate();
+        purchasedDate = DateTime(
+          purchasedDate.year,
+          purchasedDate.month,
+          purchasedDate.day+1,
+        );
+        DateTime expirationDate = purchasedDate.add(Duration(days:bono.condition!.expirationTime!));
+        DateTime now = DateTime.now();
+        if (now.isAfter(expirationDate)) {
+          mixpanel!.track('profile_view_bono_deleted', properties: {
+            'Bono': bono.id!,
+            'Purchase': purchase.id!,
+            'Brand': purchase.brandId!,
+          });
+          await _userDataService.deleteUserBono(widget.userID, purchase.brandId!, bono.id!);
+        }
+      }
+    }
+  }
 
   // Gets the events passed by the trainer.
   void getEventsDone() async {

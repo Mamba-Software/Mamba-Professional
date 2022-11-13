@@ -54,7 +54,6 @@ class _Clients extends State<Clients> {
   // Members Page
   List<Usuario> allMembers = [];
   List<Usuario> filteredMembers = [];
-  List<Usuario> allClients = [];
 
   // Filters
   bool hasFilter = false;
@@ -62,37 +61,17 @@ class _Clients extends State<Clients> {
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandClients(widget.brandId);
-    allClients = [];
-    Event lastEvent = Event();
+    allMembers = [];
     for (var i=0; i< brandUsers.length; i++) {
       Usuario user = brandUsers[i];
-      /*
-      lastEvent = await _userDataService.getLastUserEvent(user.id);
-      if(lastEvent.id != null && DateTime.now().difference(lastEvent.doneAt!.toDate()).inDays <= 30)
-        {
-          user.active = true;
-          activeClients.add(user);
-        }
-      else {
-        user.active = false;
-        inactiveClients.add(user);
-      }
-       */
-      allClients.add(user);
+      allMembers.add(user);
     }
-
     /*
     for (var i=0; i< 10; i++) {
       Usuario user = brandUsers[0];
       allClients.add(user);
     }
     */
-    // Sort Clients
-    allClients.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
-    // Add All Members
-    allMembers.addAll(allClients);
     allMembers.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
     });
@@ -740,7 +719,6 @@ class _Clients extends State<Clients> {
                     setState(() {
                       isLoading = true;
                     });
-                    await Future.delayed(const Duration(milliseconds: 1000));
                     await getAllUsers();
                   }
                 },

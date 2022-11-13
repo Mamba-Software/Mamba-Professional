@@ -814,6 +814,32 @@ class UserFirebaseCalls {
         "Bonos Requests").doc(querySnapshot.docs[0].id).delete();
   }
 
+  //Get the user bonos
+  Future<void> deleteUserBono(String userId, String brandId, String bonoId) async {
+    // Borrar a Users
+    await _firestore.collection(users)
+        .doc(userId)
+        .collection("Bonos")
+        .doc(bonoId)
+        .delete();
+    // Borrar a la Brand/Users/Bonos
+    await _firestore.collection(brands)
+        .doc(brandId)
+        .collection("Users")
+        .doc(userId)
+        .collection("Bonos")
+        .doc(bonoId)
+        .delete();
+    // Borrar a la Brand/Bonos/Users
+    await _firestore.collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bonoId)
+        .collection("Users")
+        .doc(userId)
+        .delete();
+  }
+
   Future<void> deleteLocalNotification(String userId, String notificationId) async {
     await _firestore
         .collection(users)
