@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
@@ -20,12 +19,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/Purc
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/TotalBenefit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
-import 'package:shimmer/shimmer.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import '../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/ClientNumber.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
@@ -57,7 +52,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   bool get _isAppBarExpanded {
     return _scrollController!.hasClients &&
         _scrollController!.offset >
-            (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
+            (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
 
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
@@ -70,11 +65,11 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   bool isLoading = true;
   bool isFirstBuild = true;
 
-  DateTime endDate = DateTime.now().subtract(const Duration(days: 30));
-  DateTime startDate = DateTime.now().subtract(const Duration(days: 60));
+  DateTime endDate = DateTime.now().subtract(const Duration(days: 1));
+  DateTime startDate = DateTime.now().subtract(const Duration(days: 8));
 
-  DateTime backEndDate = DateTime.now().subtract(Duration(days: 60));
-  DateTime backStartDate = DateTime.now().subtract(Duration(days: 90));
+  DateTime backEndDate = DateTime.now().subtract(const Duration(days: 9));
+  DateTime backStartDate = DateTime.now().subtract(const Duration(days: 16));
 
   TabController? _tabController;
   int _selectedIndex = 0;
@@ -174,7 +169,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     activeUsers = activeUsers
         .where((element) =>
             element.lastEventAt!.compareTo(Timestamp.fromDate(
-                    DateTime.now().subtract(Duration(days: 30)))) >=
+                    DateTime.now().subtract(const Duration(days: 30)))) >=
                 0 &&
             element.lastEventAt!
                     .compareTo(Timestamp.fromDate(DateTime.now())) <=
@@ -258,7 +253,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
       isFirstBuild = false;
     }
     return Scaffold(
-      body: DefaultTabController(
+      body: currentUser.brandRole < 2 ? DefaultTabController(
         length: 3,
         initialIndex: _selectedIndex,
         child: ExtendedNestedScrollView(
@@ -270,9 +265,9 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
             return <Widget>[
               SliverAppBar(
                 backgroundColor: AppColors.darkGrey,
-                expandedHeight: MediaQuery.of(context).size.height * 0.2,
+                expandedHeight: MediaQuery.of(context).size.height * 0.13,
                 systemOverlayStyle: SystemUiOverlayStyle.light,
-                elevation: 4,
+                elevation: 0,
                 floating: true,
                 pinned: true,
                 forceElevated: innerBoxIsScrolled,
@@ -297,7 +292,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                           ),
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.08,
+                          height: MediaQuery.of(context).size.height * 0.015,
                         ),
                       ],
                     ),
@@ -358,10 +353,11 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
               SliverPersistentHeader(
                 delegate: _SliverAppBarDelegate(
                   TabBar(
-                    indicatorWeight: 4,
-                    indicatorColor: Theme.of(context).colorScheme.secondary,
+                    indicatorWeight: 3,
+                    indicatorColor: AppColors.grey,
                     labelColor: Theme.of(context).primaryColor,
                     unselectedLabelColor: Theme.of(context).primaryColor,
+                    labelStyle: Theme.of(context).textTheme.bodyText2,
                     tabs: [
                       Tab(
                         text: AppLocalizations.of(context)!.events,
@@ -388,16 +384,153 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     },
                   ),
                 ),
-                pinned: false,
+                pinned: true,
               ),
             ];
           },
           body: TabBarView(
-            physics: const ClampingScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               buildEventsStatsPage(),
               buildClientsStatsPage(),
               buildFactStatsPage(),
+            ],
+          ),
+        ),
+      ) : DefaultTabController(
+        length: 2,
+        initialIndex: _selectedIndex,
+        child: ExtendedNestedScrollView(
+          pinnedHeaderSliverHeightBuilder: () {
+            return MediaQuery.of(context).size.height * 0.17;
+          },
+          controller: _scrollController,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                backgroundColor: AppColors.darkGrey,
+                expandedHeight: MediaQuery.of(context).size.height * 0.13,
+                systemOverlayStyle: SystemUiOverlayStyle.light,
+                elevation: 0,
+                floating: true,
+                pinned: true,
+                forceElevated: innerBoxIsScrolled,
+                //snap: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    color: AppColors.darkGrey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width * 0.05,
+                              right: MediaQuery.of(context).size.width * 0.025),
+                          child: Text(
+                            AppLocalizations.of(context)!.stats,
+                            style:
+                            Theme.of(context).textTheme.headline1?.copyWith(
+                              color: AppColors.white,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.015,
+                        ),
+                      ],
+                    ),
+                  ),
+                  titlePadding: EdgeInsets.zero,
+                  //centerTitle: true,
+                ),
+                title: appBarExpanded
+                    ? Text(
+                  AppLocalizations.of(context)!.stats,
+                  style: Theme.of(context)
+                      .appBarTheme
+                      .titleTextStyle
+                      ?.copyWith(
+                    color: AppColors.white,
+                  ),
+                )
+                    : Container(),
+                centerTitle: true,
+                leading: Builder(
+                  builder: (BuildContext innerContext) => Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.02),
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.menu,
+                          color: AppColors.white,
+                          size: MediaQuery.of(context).size.height * 0.04,
+                        ),
+                        onPressed: () =>
+                            mambaProScaffoldKey.currentState?.openDrawer()),
+                  ),
+                ),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: MediaQuery.of(context).size.width * 0.01),
+                    child: IconButton(
+                      icon: Icon(
+                        widget.pinned
+                            ? Icons.push_pin
+                            : Icons.push_pin_outlined,
+                        color: widget.pinned
+                            ? AppColors.red
+                            : AppColors.white.withOpacity(0.5),
+                        size: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          widget.pinned = !widget.pinned;
+                        });
+                        widget.pinnedChanged(widget.pinned);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SliverPersistentHeader(
+                delegate: _SliverAppBarDelegate(
+                  TabBar(
+                    indicatorWeight: 3,
+                    indicatorColor: AppColors.grey,
+                    labelColor: Theme.of(context).primaryColor,
+                    unselectedLabelColor: Theme.of(context).primaryColor,
+                    labelStyle: Theme.of(context).textTheme.bodyText2,
+                    tabs: [
+                      Tab(
+                        text: AppLocalizations.of(context)!.events,
+                      ),
+                      Tab(
+                        text: AppLocalizations.of(context)!.clients,
+                      ),
+                    ],
+                    onTap: (index) {
+                      switch (index) {
+                        case 0:
+                          mixpanel!.track('brand_stats_view_events_tab');
+                          break;
+                        case 1:
+                          mixpanel!.track('brand_stats_view_clients_tab');
+                          break;
+                      }
+                    },
+                  ),
+                ),
+                pinned: true,
+              ),
+            ];
+          },
+          body: TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            children: [
+              buildEventsStatsPage(),
+              buildClientsStatsPage(),
             ],
           ),
         ),
@@ -786,9 +919,14 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Material(
-      elevation: 4,
+      elevation: 0,
       child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        decoration: const BoxDecoration(
+          color: AppColors.darkGrey,
+          border: Border(
+            bottom: BorderSide(width: 1.0, color: AppColors.grey),
+          ),
+        ),
         child: _tabBar,
       ),
     );
