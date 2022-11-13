@@ -218,6 +218,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
   Future<void> getBrandBonos() async {
     allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    allBonos.removeWhere((element) => element.isActive == false);
   }
 
   Future<void> getEventBonos() async {
@@ -345,148 +346,75 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Widget buildAddUserButton(bool isTrainer) {
-    if (isTrainer) {
-      return GestureDetector(
-        onTap: () async {
-          List<Usuario>? selectedTrainers = await Navigator.push(
-              context,
-              CupertinoPageRoute<List<Usuario>>(
-                builder: (context) => SelectTrainersEvent(
-                  selectedTrainers: brandTrainersSelected,
+    return GestureDetector(
+      onTap: () async {
+        List<Usuario>? selectedTrainers = await Navigator.push(
+            context,
+            CupertinoPageRoute<List<Usuario>>(
+              builder: (context) => SelectTrainersEvent(
+                selectedTrainers: brandTrainersSelected,
+              ),
+            )
+        );
+        if (selectedTrainers != null) {
+          setState(() {
+            brandTrainersSelected = selectedTrainers;
+            errorNoTrainerSelected = false;
+          });
+        }
+      }, //: null,
+      child: Padding(
+        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.width*0.17,
+                width: MediaQuery.of(context).size.width*0.17,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).backgroundColor,
+                  border: Border.all(
+                    width: 1,
+                    color: Theme.of(context).primaryColor,
+                    style: BorderStyle.solid,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      spreadRadius: 3,
+                      blurRadius: 4,
+                    ),
+                  ],
+                  shape: BoxShape.circle,
                 ),
-              )
-          );
-          if (selectedTrainers != null) {
-            setState(() {
-              brandTrainersSelected = selectedTrainers;
-              errorNoTrainerSelected = false;
-            });
-          }
-        }, //: null,
-        child: Padding(
-          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.width*0.17,
-                  width: MediaQuery.of(context).size.width*0.17,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
-                    border: Border.all(
-                      width: 1,
+                child: Center(
+                  child: Icon(
+                      Icons.person_add_alt_1,
                       color: Theme.of(context).primaryColor,
-                      style: BorderStyle.solid,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        spreadRadius: 3,
-                        blurRadius: 4,
-                      ),
-                    ],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                        Icons.person_add_alt_1,
-                        color: Theme.of(context).primaryColor,
-                        size:  MediaQuery.of(context).size.width*0.05
-                    ),
+                      size:  MediaQuery.of(context).size.width*0.05
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.add,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width*0.025),
+              SizedBox(
+                width: MediaQuery.of(context).size.width*0.2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.add,
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
-    } else {
-      return GestureDetector(
-        onTap: () async {
-          List<Usuario>? selectedClients = await Navigator.push(
-              context,
-              CupertinoPageRoute<List<Usuario>>(
-                builder: (context) => SelectClientsEvent(
-                  selectedUsers: brandClientsSelected,
-                  maxClients: eventMaxMembers,
-                ),
-              )
-          );
-          if (selectedClients != null) {
-            setState(() {
-              brandClientsSelected = selectedClients;
-              errorClientsSelected = false;
-            });
-          }
-        },
-        child: Padding(
-          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.width*0.17,
-                  width: MediaQuery.of(context).size.width*0.17,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
-                    border: Border.all(
-                      width: 1,
-                      color: Theme.of(context).primaryColor,
-                      style: BorderStyle.solid,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        spreadRadius: 3,
-                        blurRadius: 4,
-                      ),
-                    ],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                        Icons.person_add_alt_1,
-                        color: Theme.of(context).primaryColor,
-                        size:  MediaQuery.of(context).size.width*0.05
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.add,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
+      ),
+    );
   }
 
   @override
@@ -1456,164 +1384,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                           ),
                                         ),
                                       ),
-
-                                      selectedBonos.isEmpty?
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.addDesignatedClients,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width: MediaQuery.of(context).size.width*0.03,
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    "( "+brandClientsSelected.length.toString(),
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                  ),
-                                                  Text(
-                                                    " / ",
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                  ),
-                                                  Text(
-                                                    eventMaxMembers.toString()+" )",
-                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          )
-                                      ) : Container(),
-                                      selectedBonos.isEmpty?  Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context).size.width,
-                                          child: SingleChildScrollView(
-                                            physics: const BouncingScrollPhysics(),
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                buildAddUserButton(false),
-                                                SizedBox(
-                                                  height: MediaQuery.of(context).size.height*0.15,
-                                                  child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const NeverScrollableScrollPhysics(),
-                                                      scrollDirection: Axis.horizontal,
-                                                      itemCount: brandClientsSelected.length,
-                                                      itemBuilder: (context, int index) {
-                                                        var trainer = brandClientsSelected[index];
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            var temp = brandClientsSelected;
-                                                            temp.remove(trainer);
-                                                            setState(() {
-                                                              brandClientsSelected = temp;
-                                                            });
-                                                          },
-                                                          child: Padding(
-                                                            padding: !(index == brandClientsSelected.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandClientsSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Stack(
-                                                                  alignment: Alignment.topRight,
-                                                                  children: [
-                                                                    CircularImage(
-                                                                      size: MediaQuery.of(context).size.width*0.17,
-                                                                      image: trainer.imageUrl,
-                                                                      color: Theme.of(context).primaryColor,
-                                                                      borderWidth: 1,
-                                                                    ),
-                                                                    Positioned(
-                                                                      top: 0,
-                                                                      left: MediaQuery.of(context).size.width*0.12,
-                                                                      child: CircleAvatar(
-                                                                        backgroundColor: AppColors.red,
-                                                                        radius: MediaQuery.of(context).size.width*0.025,
-                                                                        child: Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.035,),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: MediaQuery.of(context).size.width*0.02,
-                                                                ),
-                                                                SizedBox(
-                                                                  width: MediaQuery.of(context).size.width*0.2,
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: [
-                                                                      Text(
-                                                                        trainer.firstName!,
-                                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                                        textAlign: TextAlign.center,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                /*
-                                                                    Container(
-                                                                      width: MediaQuery.of(context).size.width*0.2,
-                                                                      width: MediaQuery.of(context).size.widtdurh*0.2,
-                                                                      child: Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        children: [
-                                                                          Text(
-                                                                            trainer.firstName!,
-                                                                            style: Theme.of(context).textTheme.bodyText2,
-                                                                            textAlign: TextAlign.center,
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width: MediaQuery.of(context).size.width*0.01,
-                                                                          ),
-                                                                          SizedBox(
-                                                                            width: MediaQuery.of(context).size.width*0.05,
-                                                                            child: IconButton(
-                                                                              icon: Icon(Icons.remove_circle, color: Theme.of(context).colorScheme.secondary,),
-                                                                              onPressed: () {
-                                                                              },
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                     */
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ) : Container(),
-                                      selectedBonos.isEmpty?  errorClientsSelected ? Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                        child: Center(
-                                          child: Text(
-                                            AppLocalizations.of(context)!.clientsSelectedError,
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ) : Container() : Container(),
-
                                     ]
                                 )
                             ),
@@ -1905,6 +1675,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       // Recurrent total
       int days = values.where((item) => item == true).length;
       totalEvents = days*_value;
+      if (_value == 3) {
+        totalEvents += days;
+      }
       // Event Group Id
       String eventGroupId = const Uuid().v1();
       // First the First Event
@@ -2045,7 +1818,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             }
             // Event Object
             event = Event(
-              //isPrivate: false,
+              isPrivate: false,
               eventGroupId: eventGroupId,
               title: titleController.text,
               description: descriptionController.text,
