@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
@@ -147,6 +148,19 @@ class UserFirebaseCalls {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
         .collection(users).doc(uid).get();
     return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+  }
+
+  Future<Brand?> getUserBrands(String uid) async {
+    QuerySnapshot querySnapshot = await _firestore
+    .collection(users)
+    .doc(uid)
+    .collection("Brands")
+    .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      return Brand.fromObjectOnlyCoverData(querySnapshot.docs[0].id, querySnapshot.docs[0]);
+    } else {
+      return null;
+    }
   }
 
   Future<Usuario> getUserCoverDetails(String uid) async {

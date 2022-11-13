@@ -740,7 +740,8 @@ class _Clients extends State<Clients> {
                     setState(() {
                       isLoading = true;
                     });
-                    getAllUsers();
+                    await Future.delayed(const Duration(milliseconds: 1000));
+                    await getAllUsers();
                   }
                 },
               );

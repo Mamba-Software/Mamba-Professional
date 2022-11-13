@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -20,11 +23,15 @@ class DeleteFromBrandConfirmationDialog extends StatefulWidget {
 
 class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfirmationDialog> {
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
+  final _eventDataService = EventDataService();
+  final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
+  bool isLoadingBody = false;
   // User Requesting
   Usuario user = Usuario();
+  Brand? brand = Brand();
 
   @override
   void initState() {
@@ -36,9 +43,18 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
   // Gets the user info from firebase.
   void getUser() async {
     user = await _userDataService.getUserDetails(widget.userId);
+    brand = await _userDataService.getUserBrands(widget.userId);
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> deleteUser() async {
+    await _eventDataService.deleteUserFromUpcomingEvents(widget.userId, user.isTrainer!);
+    if (user.isTrainer! == false) {
+      await _brandDataService.deleteUserBrandBonos(brand!.id!, widget.userId);
+    }
+    await _brandDataService.deleteUserFromBrand(widget.userId, brand!.id!);
   }
 
   @override
@@ -46,7 +62,7 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
     return isLoading ?
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: Container(
           height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
@@ -64,9 +80,9 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
         :
       Dialog(
         backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: Container(
-          padding: EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
+          padding: const EdgeInsets.only(top: 80, bottom: 10, left: 10, right: 10),
           height: MediaQuery.of(context).size.height*0.3,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -111,8 +127,19 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
                             AppLocalizations.of(context)!.delete,
                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                           ),
-                          icon: Icon(Icons.person_remove, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
-                          onPressed: () {
+                          icon: isLoadingBody ? SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.05,
+                            height: MediaQuery.of(context).size.height * 0.025,
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          ) : Icon(Icons.person_remove, size: MediaQuery.of(context).size.width*0.06, color: Colors.white,),
+                          onPressed: () async {
+                            setState(() {
+                              isLoadingBody = true;
+                            });
+                            await deleteUser();
                             Navigator.pop(context, true);
                           },
                         ),

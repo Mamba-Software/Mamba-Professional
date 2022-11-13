@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserFirebaseCalls.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
@@ -28,6 +29,7 @@ class UserDataService {
 
   // Get Data
   Future<Usuario> getUserDetails(String userId) => _firebase.getUserDetails(userId);
+  Future<Brand?> getUserBrands(String userId) => _firebase.getUserBrands(userId);
   Future<Usuario> getUserCoverDetails(String userId) => _firebase.getUserCoverDetails(userId);
   Future<List<RequestToBrand>> getUserRequests(String userId) => _firebase.getUserRequests(userId);
   Future<List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) => _firebase.getUserFirstNotificationsLimit10(userId);

@@ -1856,6 +1856,14 @@ class FirebaseDatabaseService {
                   .catchError((err) {
                 print(err);
               });
+              // Update Event Asistants
+              await _firestore
+              .collection(events)
+              .doc(evt.id)
+              .update({
+                "numClients": evt.numClients,
+                "numTrainers": evt.numTrainers!-1,
+              });
             } else {
               deleteEvent(evt.id!);
             }
@@ -1871,6 +1879,14 @@ class FirebaseDatabaseService {
                 .delete()
                 .catchError((err) {
               print(err);
+            });
+            // Update Event Asistants
+            await _firestore
+            .collection(events)
+            .doc(evt.id)
+            .update({
+              "numClients": evt.numClients!-1,
+              "numTrainers": evt.numTrainers,
             });
           }
         }

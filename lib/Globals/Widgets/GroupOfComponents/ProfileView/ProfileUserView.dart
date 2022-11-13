@@ -43,6 +43,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
 
   // Boolean Loading
   bool isLoading = false;
+  bool isDeleted = false;
   // Usuario
   Usuario? user;
   // Birthday
@@ -148,7 +149,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context, isDeleted);
             },
           ),
           actions: [
@@ -304,7 +305,9 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                         }
                                     );
                                     if (result) {
-                                      //await _brandDataService.join(userId, brandId)
+                                      setState(() {
+                                        isDeleted = true;
+                                      });
                                     }
                                   },
                                 ) : Container(),

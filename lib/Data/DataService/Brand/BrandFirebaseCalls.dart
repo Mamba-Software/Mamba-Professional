@@ -873,18 +873,27 @@ class BrandFirebaseCalls {
 
   // Delete Brand Bono Request
   Future<void> deleteUserBrandBonos(String brandId, String userId) async {
-    // Delete in Users/Bonos from Brand Id
+    // Get Active Bonos From Brand
     QuerySnapshot querySnapshot = await _firestore.collection(users)
         .doc(userId)
         .collection("Bonos")
         .where("brandId", isEqualTo: brandId)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
+      // Delete in Users/Bonos from Brand Id
       await _firestore.collection(users)
           .doc(userId)
           .collection("Bonos")
-          .where("brandId", isEqualTo: brandId)
-          .get();
+          .doc(querySnapshot.docs[i].id)
+          .delete();
+      // Delete in Brand/Bonos/Users
+      await _firestore.collection(brands)
+          .doc(brandId)
+          .collection("Bonos")
+          .doc(querySnapshot.docs[i].id)
+          .collection("Users")
+          .doc(userId)
+          .delete();
     }
   }
 

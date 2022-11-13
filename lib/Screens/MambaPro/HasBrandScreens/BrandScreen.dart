@@ -719,7 +719,6 @@ class _BrandScreenState extends State<BrandScreen> {
             pageIndex = 0;
             NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
             await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
-            await _brandDataService.deleteUserBrandBonos(currentUser.id!, currentBrand.id!);
             await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
             Navigator.pushReplacement(
                 context,
