@@ -724,7 +724,7 @@ class _Trainers extends State<Trainers> {
               ),
             ],
           ),
-          currentUser.brandRole < 3 ? SliverToBoxAdapter(
+          currentUser.brandRole < 2 ? SliverToBoxAdapter(
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
