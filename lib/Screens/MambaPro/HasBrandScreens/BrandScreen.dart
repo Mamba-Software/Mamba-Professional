@@ -442,7 +442,7 @@ class _BrandScreenState extends State<BrandScreen> {
         SizedBox(height: safeAreaHeight * 0.01),
         listTilePro(2),
         listTilePro(1),
-        currentUser.brandRole < 2 ? listTilePro(15) : Container(),
+        currentUser.brandRole < 3 ? listTilePro(15) : Container(),
 
         SizedBox(height: safeAreaHeight * 0.01),
         Padding(

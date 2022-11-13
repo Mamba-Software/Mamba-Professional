@@ -35,6 +35,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   // Form To Validate
   final formKeyInfo = GlobalKey<FormState>();
   ScrollController? _scrollController;
+  bool canEdit = false;
   // Name Brand Controller
   // Logo Image
   var nameBrandController = TextEditingController();
@@ -85,6 +86,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         appBarExpanded = false;
       }),
     );
+    canEdit = currentUser.brandRole < 2 ? true : false;
     // Name Description
     nameBrandController.text = currentBrand.name!;
     descriptionController.text = currentBrand.description!;
@@ -138,17 +140,19 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   }
 
   Future<void> navigateToEditLogoScreen() async {
-    mixpanel!.track('brand_info_logo_change');
-    await Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => Logo(
-              brandId: currentBrand.id!
-          ),
-        )
-    ).whenComplete(() async {
-      await getBrand();
-    });
+    if (canEdit) {
+      mixpanel!.track('brand_info_logo_change');
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => Logo(
+                brandId: currentBrand.id!
+            ),
+          )
+      ).whenComplete(() async {
+        await getBrand();
+      });
+    }
   }
 
   @override
@@ -325,6 +329,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal),
                           textAlign: TextAlign.center,
                           textCapitalization: TextCapitalization.words,
+                          enabled: canEdit,
                           decoration: InputDecoration(
                             hintStyle: Theme.of(context).textTheme.caption,
                             hintText: AppLocalizations.of(context)!.nameBrandError,
@@ -368,6 +373,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           minLines: 1,
                           maxLines: 5,
                           maxLength: 250,
+                          enabled: canEdit,
                           style: Theme.of(context).textTheme.bodyText2,
                           decoration: InputDecoration(
                             hintStyle: Theme.of(context).textTheme.caption,
@@ -458,7 +464,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           TextButton(
-                            onPressed: () async {
+                            onPressed: canEdit ? () async {
                               DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
                                   context: context,
                                   builder: (_) => SelectTimeDialog(
@@ -473,7 +479,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                   startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute,));
                                 });
                               }
-                            },
+                            } : null,
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
@@ -490,7 +496,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           Text("-",
                               style: Theme.of(context).textTheme.headline3),
                           TextButton(
-                            onPressed: () async {
+                            onPressed: canEdit ? () async {
                               DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
                                   context: context,
                                   builder: (_) => SelectTimeDialog(
@@ -505,7 +511,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                   endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
                                 });
                               }
-                            },
+                            } : null,
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(

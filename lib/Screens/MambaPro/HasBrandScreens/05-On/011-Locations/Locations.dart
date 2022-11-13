@@ -44,6 +44,7 @@ class _LocationsState extends State<Locations> {
   googlePlace.DetailsResult? detailsResult;
   // Boolean Loading
   bool isLoading = false;
+  bool canEdit = false;
   String loadingText = "";
   // Search Controller
   var searchClientsController = TextEditingController();
@@ -119,6 +120,7 @@ class _LocationsState extends State<Locations> {
         width: MediaQuery.of(context).size.width,
         locationId: i.id!,
         brandId: currentBrand.id!,
+        canEdit: canEdit,
         locationChanged: (boolean) async {
           if (boolean == true) {
             setState(() {
@@ -155,6 +157,7 @@ class _LocationsState extends State<Locations> {
         appBarExpanded = false;
       }),
       );
+    canEdit = currentUser.brandRole < 2 ? true : false;
     isLoading = true;
     gPlace = googlePlace.GooglePlace(Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
     if (Platform.isAndroid) {
@@ -198,7 +201,7 @@ class _LocationsState extends State<Locations> {
                             fit: BoxFit.fitHeight,
                             child: SizedBox(
                                 height: MediaQuery.of(context).size.height*0.08,
-                                child: IconButton(
+                                child: canEdit ? IconButton(
                                   onPressed: () async {
                                     mixpanel!.timeEvent('brand_locations_added');
                                     // Generate a new token here
@@ -264,6 +267,15 @@ class _LocationsState extends State<Locations> {
                                   icon: Icon(
                                     Icons.add_location_alt_outlined,
                                     color: AppColors.white,
+                                    size: MediaQuery.of(context).size.width*0.08,
+                                  ),
+                                ) : IconButton(
+                                  onPressed: null,
+                                  alignment: Alignment.centerRight,
+                                  padding: EdgeInsets.zero,
+                                  icon: Icon(
+                                    Icons.add_location_alt_outlined,
+                                    color: Colors.transparent,
                                     size: MediaQuery.of(context).size.width*0.08,
                                   ),
                                 ),

@@ -20,10 +20,11 @@ class LocationImageTile extends StatefulWidget {
   String locationId;
   String brandId;
   ValueChanged<bool?> locationChanged;
+  bool canEdit;
   var height;
   var width;
 
-  LocationImageTile({Key? key, required this.brandId, required this.locationId, required this.locationChanged, required this.height, required this.width}) : super(key: key);
+  LocationImageTile({Key? key, required this.brandId, required this.locationId, required this.locationChanged, required this.height, required this.width, required this.canEdit}) : super(key: key);
 
   @override
   _LocationImageTileState createState() => _LocationImageTileState();
@@ -199,7 +200,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  widget.canEdit ? SizedBox(
                     height: widget.height*0.25,
                     width: widget.width*0.2,
                     child: FittedBox(
@@ -311,7 +312,7 @@ class _LocationImageTileState extends State<LocationImageTile> {
                         ),
                       ),
                     ),
-                  ),
+                  ) : Container(),
                 ],
               ),
             ),

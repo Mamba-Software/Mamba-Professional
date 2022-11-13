@@ -37,6 +37,7 @@ class _BrandImagesState extends State<BrandImages> {
   final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
+  bool canEdit = false;
   // Bool Max Images Added
   bool maxImagesAdded = false;
   // Max Number of Images
@@ -57,6 +58,7 @@ class _BrandImagesState extends State<BrandImages> {
         appBarExpanded = false;
       }),
       );
+    canEdit = currentUser.brandRole < 2 ? true : false;
     isLoading = true;
     getBrandContentImages();
   }
@@ -231,7 +233,7 @@ class _BrandImagesState extends State<BrandImages> {
                         ),
                       ),
                     ) : Container(),
-                    _imagesUploaded.length < _maxImages ? Column(
+                    _imagesUploaded.length < _maxImages && canEdit ? Column(
                       children: [
                         GestureDetector(
                           onTap: getImage,
@@ -286,7 +288,6 @@ class _BrandImagesState extends State<BrandImages> {
                         SizedBox(height: MediaQuery.of(context).size.height*0.03),
                       ],
                     ) : Container(),
-
                   ],
                 ),
               )
@@ -328,7 +329,7 @@ class _BrandImagesState extends State<BrandImages> {
                         image: image.url,
                       ),
                     ),
-                    Positioned(
+                    canEdit ? Positioned(
                       top: 4,
                       right: 4,
                       child: Padding(
@@ -367,7 +368,7 @@ class _BrandImagesState extends State<BrandImages> {
                           ),
                         ),
                       ),
-                    ),
+                    ) : Container(),
                   ],
                 ),
               );
