@@ -46,6 +46,8 @@ class GenderGroupState extends State<GenderGroup> {
 
   int explodeIndex = -1;
 
+  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, tooltipPosition: TooltipPosition.pointer);
+
 
 
   @override
@@ -188,6 +190,7 @@ class GenderGroupState extends State<GenderGroup> {
         Center(
                 child: Container(
                     child: SfCircularChart(
+                        tooltipBehavior: _tooltipBehavior,
                          legend: Legend(isVisible: true,position: LegendPosition.bottom, textStyle: Theme.of(context).textTheme.bodyText2),
                         series: <CircularSeries>[
                           // Render pie chart

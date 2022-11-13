@@ -235,7 +235,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                           children: [
                             Text(bonoStats[index].money.toString()  + ' €',
                               style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
-                            Text('Benefici'),
+                            Text( AppLocalizations.of(context)!.benefit),
                           ]
                       ),
                     ),
@@ -251,7 +251,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                           children: [
                             Text(bonoStats[index].purchases.toString(),
                               style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
-                            Text('Compres'),
+                            Text( AppLocalizations.of(context)!.boughts),
                           ]
                       ),
                     ),
@@ -307,15 +307,8 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                         shape: DataMarkerType.circle,
                                         color: Styles.mainColor),
 
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Styles.mainColor,
-                                        AppColors.mainColor.withOpacity(0.2),
-                                      ],
-                                    ),
-                                      dataSource: bonoStats[index].totalBenefits,
+                                  color: Colors.transparent,
+                                  dataSource: bonoStats[index].totalBenefits,
                                       xValueMapper: (TotalBenefit events, _) => events.day,
                                       yValueMapper: (TotalBenefit events, _) => events.money,
                                   )
