@@ -47,6 +47,7 @@ class _BonosProState extends State<BonosPro> {
   final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = true;
+  bool canEdit = false;
   // Number Request
   int requests = 0;
   // Bonos list
@@ -80,6 +81,7 @@ class _BonosProState extends State<BonosPro> {
         appBarExpanded = false;
       }),
     );
+    canEdit = currentUser.brandRole < 3 ? true : false;
   }
 
   // Init Device Sizes
@@ -140,7 +142,7 @@ class _BonosProState extends State<BonosPro> {
         bono: _bono,
         brand: currentBrand,
         canExpand: true,
-        onlyView: false,
+        onlyView: !canEdit,
       ),
     );
   }
@@ -475,7 +477,7 @@ class _BonosProState extends State<BonosPro> {
               ),
             ],
           ),
-          SliverToBoxAdapter(
+          canEdit ? SliverToBoxAdapter(
               child: Column(
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height*0.03),
@@ -558,6 +560,8 @@ class _BonosProState extends State<BonosPro> {
                   Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 ],
               ),
+          ) : SliverToBoxAdapter(
+            child: SizedBox(height: MediaQuery.of(context).size.height*0.0),
           ),
           StreamBuilder<QuerySnapshot>(
               stream: _brandDataService.getAllBonosFromBrand(widget.brandId),
@@ -621,7 +625,7 @@ class _BonosProState extends State<BonosPro> {
               })
         ],
       ),
-      floatingActionButton: Padding(
+      floatingActionButton: canEdit ? Padding(
         padding: const EdgeInsets.all(20),
         child: SizedBox(
           height: MediaQuery.of(context).size.width*0.15,
@@ -638,7 +642,7 @@ class _BonosProState extends State<BonosPro> {
             child: const Icon(Icons.add, color: AppColors.white,),
           ),
         )
-      ),
+      ) : Container(),
     );
   }
 
