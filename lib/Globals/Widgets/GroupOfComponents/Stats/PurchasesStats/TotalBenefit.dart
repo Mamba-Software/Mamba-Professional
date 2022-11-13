@@ -224,11 +224,12 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                             borderColor: Styles.mainColor,
                           borderWidth: 2,
                             markerSettings: MarkerSettings(
+                              borderColor: AppColors.mainColor,
                                 isVisible: totalBenefits.length == 1? true : false,
                                 height:  10,
                                 width:  10,
                                 shape: DataMarkerType.circle,
-                                color: Styles.mainColor),
+                                color: AppColors.mainColor),
 
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,

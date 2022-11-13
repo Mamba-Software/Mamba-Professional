@@ -182,6 +182,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
                     physics: const BouncingScrollPhysics(),
                     controller: _pageController,
                     onPageChanged: (int page) {
+                      mixpanel!.track('brand_stats_view_fact_tab_bono_changed', properties: {
+                        'bono id': bonos[index].id,
+                        'bono title': bonos[index].title,
+                        'bono price': bonos[index].price.toString(),
+                        'bono sessions': bonos[index].sessions,
+                        'bono total invoice': bonoStats[index].money.toString(),
+                        'bono total boughts': bonoStats[index].purchases.toString(),
+                      });
                       setState(()  {
                         //bonoSelected = bonos[page];
                        // bonoSelected.setBasicData = bonos[page];
@@ -301,11 +309,12 @@ class BonosPurchasedState extends State<BonosPurchased> {
                                     borderColor: Styles.mainColor,
                                   borderWidth: 2,
                                     markerSettings: MarkerSettings(
+                                      borderColor: AppColors.mainColor,
                                         isVisible:  bonoStats[index].totalBenefits.length == 1? true : false,
                                         height:  10,
                                         width:  10,
                                         shape: DataMarkerType.circle,
-                                        color: Styles.mainColor),
+                                        color: AppColors.mainColor),
 
                                   color: Colors.transparent,
                                   dataSource: bonoStats[index].totalBenefits,

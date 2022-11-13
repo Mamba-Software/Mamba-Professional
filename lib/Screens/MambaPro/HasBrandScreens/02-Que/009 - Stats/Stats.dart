@@ -25,6 +25,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/ClientNumber.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
@@ -147,15 +148,15 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   }
 
   Future<void> getCollections() async {
-    events = await _brandDataService.getAllEventsFromBrandList(widget.brandId);
+    events = await _brandDataService.getAllEventsFromBrandStats(widget.brandId);
     users = await _brandDataService
-        .getBrandUsersWithDateJoined('2bd419fe-1a38-4764-b3c5-49728da3ef3d');
+        .getBrandUsersStats(widget.brandId);
     //purchases = await _brandDataService.getBrandPurchases(widget.brandId);
     //bonos = await _brandDataService.getAllBonosFromBrandList(widget.brandId);
     purchases = await _brandDataService
-        .getBrandPurchases("807b18da-3164-4527-8d32-3ece9cb3c13c");
+        .getBrandPurchases(widget.brandId);
     bonos = await _brandDataService
-        .getAllBonosFromBrandListProd("807b18da-3164-4527-8d32-3ece9cb3c13c");
+        .getAllBonosFromBrandStats(widget.brandId);
     setState(() {
       setActiveUsers();
       applyAllFilters();
@@ -363,27 +364,40 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     unselectedLabelColor: Theme.of(context).primaryColor,
                     tabs: [
                       Tab(
-                        text: AppLocalizations.of(context)!.info,
+                        text: AppLocalizations.of(context)!.events,
                       ),
                       Tab(
-                        text: AppLocalizations.of(context)!.calendar,
+                        text: AppLocalizations.of(context)!.clients,
                       ),
                       Tab(
-                        text: AppLocalizations.of(context)!.bonos,
+                        text: AppLocalizations.of(context)!.facturation,
                       ),
                     ],
+                    onTap: (index) {
+                      switch (index) {
+                        case 0:
+                          mixpanel!.track('brand_stats_view_events_tab');
+                          break;
+                        case 1:
+                          mixpanel!.track('brand_stats_view_clients_tab');
+                          break;
+                        case 2:
+                          mixpanel!.track('brand_stats_view_fact_tab');
+                          break;
+                      }
+                    },
                   ),
                 ),
-                pinned: true,
+                pinned: false,
               ),
             ];
           },
           body: TabBarView(
             physics: const ClampingScrollPhysics(),
             children: [
-              buildDetailsTabPage(),
-              buildDetailsTabPage(),
-              buildDetailsTabPage(),
+              buildEventsStatsPage(),
+              buildClientsStatsPage(),
+              buildFactStatsPage(),
             ],
           ),
         ),
@@ -412,7 +426,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                       horizontal: MediaQuery.of(context).size.height * 0.02),
                   child: Text(
                     '${DateFormat('d MMM, yy\'').format(startDate)}  - '
-                        ' ${DateFormat('d MMM, yy\'').format(endDate)}',
+                    ' ${DateFormat('d MMM, yy\'').format(endDate)}',
                     style: Theme.of(context)
                         .textTheme
                         .headline3!
@@ -436,243 +450,82 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         ),
       ),
     );
-    /*
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.2,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            elevation: 4,
-            floating: true,
-            pinned: true,
-            //snap: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: AppColors.darkGrey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
-                      child: Text(
-                        AppLocalizations.of(context)!.stats,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.08,),
-                  ],
-                ),
-              ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
-            ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.stats, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
-            centerTitle: true,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: MediaQuery.of(context).size.height*0.04,
-                    ),
-                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
-                ),
-              ),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
-              ),
-            ],
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(0),
-              child: Column(
-                children: [
-                  TabBar(
-                    isScrollable: true,
-                    controller: _tabController,
-                    indicatorColor: Colors.transparent,
-                    onTap: (index) async {
-                      _selectedIndex = index;
-                      if(_selectedIndex == 0)
-                      {
-                        addStatsValue = 0.25;
-                        tabs[0] = true;
-                      }
-                      else if(_selectedIndex == 1)
-                      {
-                        addStatsValue = 0.50;
-                        tabs[1] = true;
-                      }
-                      else if(_selectedIndex == 2)
-                      {
-                        addStatsValue = 0.75;
-                        tabs[2] = true;
-                      }
-                      else if(_selectedIndex == 3)
-                      {
-                        addStatsValue = 1;
-                        tabs[4] = true;
-                      }
-
-                      setState(()  {
-
-                      });
-                    },
-                    tabs: [
-                      selectedTab(AppLocalizations.of(context)!.events, 0, 0.20),
-                      selectedTab(AppLocalizations.of(context)!.clients, 1, 0.20),
-                      selectedTab(AppLocalizations.of(context)!.facturation, 2, 0.25),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          /*
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.00,),
-              child: Column(
-                children: [
-                  _selectedIndex == 0? eventsStatsPage() :
-                  _selectedIndex == 1? clientsStatsPage() :
-                  _selectedIndex == 2? factStatsPage() : Container(),
-                ],
-              ),
-            ),
-          ),
-
-           */
-          SliverPersistentHeader(
-            delegate: _SliverAppBarDelegate(
-              TabBar(
-                indicatorWeight: 4,
-                indicatorColor: Theme.of(context).colorScheme.secondary,
-                labelColor: Theme.of(context).primaryColor,
-                unselectedLabelColor: Theme.of(context).primaryColor,
-                onTap: (index) {
-                  switch (index) {
-                    case 0:
-                      eventsStatsPage();
-                      break;
-                    case 1:
-                      clientsStatsPage();
-                      break;
-                    case 2:
-                      factStatsPage();
-                      break;
-                  }
-                },
-                tabs: [
-                  Tab(
-                    text: AppLocalizations.of(context)!.info,
-                  ),
-                  Tab(
-                    text: AppLocalizations.of(context)!.calendar,
-                  ),
-                  Tab(
-                    text: AppLocalizations.of(context)!.bonos,
-                  ),
-                ],
-              ),
-            ),
-            pinned: true,
-          ),
-
-        ],
-      ),
-      bottomSheet: GestureDetector(
-        onTap: _show, //TODO CALENDAR
-        child: Container(
-          height: MediaQuery.of(context).size.height*0.1,
-          width: double.infinity,
-         // color: Theme.of(context).backgroundColor,
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            border: Border(
-              top: BorderSide(width: 1, color: Theme.of(context).primaryColor),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start, //change here don't //worked
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02, horizontal: MediaQuery.of(context).size.height*0.02),
-                  child: Text(
-                    '${DateFormat('d MMM, yy\'').format(startDate)}  - '' ${DateFormat('d MMM, yy\'').format(endDate)}',
-                    style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).primaryColor),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              Container(
-            height: MediaQuery.of(context).size.height*0.12,
-            width: MediaQuery.of(context).size.height*0.12,
-            color: Styles.mainColorTrans,
-            child:  Icon(
-                Icons.event,
-                color: Styles.mainColor,
-                size: MediaQuery.of(context).size.width*0.07,
-              ),
-        ),
-            ],
-          ),
-        ),
-      ) ,
-    );*/
   }
 
-  Widget buildDetailsTabPage() => SafeArea(
-    top: false,
-    bottom: false,
-    child: Builder(
-      builder: (context) => CustomScrollView(
-        physics: const ClampingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: isLoading ? Shimmer.fromColors(
-              baseColor: AppColors.grey,
-              highlightColor: AppColors.grey.withOpacity(0.5),
-              child: Container(
-                height: safeAreaHeight*0.25,
-                width: safeAreaWidth,
-                decoration: const BoxDecoration(
-                  color: AppColors.grey,
-                ),
+  Widget buildEventsStatsPage() => SafeArea(
+        top: false,
+        bottom: false,
+        child: Builder(
+          builder: (context) => CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: isLoading
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.height * 0.25,
+                        ),
+                        child: LoadingView(),
+                      )
+                    : Container(),
               ),
-            ) : Container(),
+              SliverToBoxAdapter(
+                child: eventsStatsPage(),
+              ),
+            ],
           ),
-          SliverToBoxAdapter(
-              child: Text('dsfa'),
+        ),
+      );
+
+  Widget buildClientsStatsPage() => SafeArea(
+        top: false,
+        bottom: false,
+        child: Builder(
+          builder: (context) => CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: isLoading
+                    ? Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.25,
+                  ),
+                  child: LoadingView(),
+                )
+                    : Container(),
+              ),
+              SliverToBoxAdapter(
+                child: clientsStatsPage(),
+              ),
+            ],
           ),
-          SliverToBoxAdapter(
-              child: Text('dsa'),
+        ),
+      );
+
+  Widget buildFactStatsPage() => SafeArea(
+        top: false,
+        bottom: false,
+        child: Builder(
+          builder: (context) => CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: isLoading
+                    ? Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.25,
+                  ),
+                  child: LoadingView(),
+                )
+                    : Container(),
+              ),
+              SliverToBoxAdapter(
+                child: factStatsPage(),
+              ),
+            ],
           ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   Widget selectedTab(String text, int index, double width) {
     return Tab(
@@ -929,6 +782,10 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
       },
     );
     if (result != null) {
+      mixpanel!.track('brand_stats_view_dates', properties: {
+        'startDate': result.first,
+        'endDate': result.last,
+      });
       setState(() {
         startDate = result.first;
         endDate = result.last;
@@ -968,8 +825,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
-    // TODO: implement shouldRebuild
-    throw UnimplementedError();
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }

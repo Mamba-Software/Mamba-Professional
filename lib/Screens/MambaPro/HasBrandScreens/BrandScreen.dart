@@ -754,9 +754,7 @@ class _BrandScreenState extends State<BrandScreen> {
             },
         );
       case 9:
-        mixpanel!.track('brand_stats_view',properties: {
-          'persona': currentUser.name!,
-        });
+        mixpanel!.track('brand_stats_view');
         return Stats(
           brandId: currentBrand.id!,
           pinned: iconStar,
