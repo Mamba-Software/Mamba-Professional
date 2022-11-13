@@ -143,7 +143,7 @@ class DayOfferState extends State<DayOffer> {
                               {
                                 args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.mainColor));
                               }
-                            else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).secondaryHeaderColor));
+                            else  args.textStyle = (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorLight));
 
 
                           },

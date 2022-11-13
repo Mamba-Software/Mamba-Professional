@@ -2535,5 +2535,53 @@
   "timeToTimeOffer": "Demanda de franjas",
   "@timeToTimeOffer": {
     "description": "timeToTimeOffer day"
+  },
+  "numberClients": "Número de clientes",
+  "@numberClients": {
+    "description": "numberClients day"
+  },
+  "ageRange": "Media de edad",
+  "@ageRange": {
+    "description": "ageRange day"
+  },
+  "gender": "Género",
+  "@gender": {
+    "description": "gender day"
+  },
+  "newClient": "Altas",
+  "@newClient": {
+    "description": "newClient day"
+  },
+  "actives": "Activos",
+  "@actives": {
+    "description": "actives day"
+  },
+  "atThisMoment": "actualmente",
+  "@atThisMoment": {
+    "description": "atThisMoment day"
+  },
+  "totals": "totales",
+  "@totals": {
+    "description": "totals day"
+  },
+  "male": "Masculino",
+  "@male": {
+    "description": "male day"
+  },
+  "female": "Femenino",
+  "@female": {
+    "description": "female day"
+  },
+  "others": "Otros",
+  "@others": {
+    "description": "others day"
+  },
+  "labelInvoiceMade": "Día y beneficio",
+  "@labelInvoiceMade": {
+    "description": "labelInvoiceMade message"
+  },
+  "totalInvoice": "Facturación total",
+  "@totalInvoice": {
+    "description": "totalInvoice message"
   }
 }

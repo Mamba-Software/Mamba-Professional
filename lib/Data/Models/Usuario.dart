@@ -166,6 +166,15 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('lastEventAt')) {
       lastEventAt = documentSnapshot.get("lastEventAt");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('gender')) {
+      gender = documentSnapshot.get("gender");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateJoined')) {
+      dateJoined = documentSnapshot.get("dateJoined").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateOfBirth')) {
+      dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
