@@ -296,7 +296,7 @@ class _StatsState extends State<Stats>  with SingleTickerProviderStateMixin {
                     tabs: [
                       selectedTab(AppLocalizations.of(context)!.events, 0, 0.20),
                       selectedTab(AppLocalizations.of(context)!.clients, 1, 0.20),
-                      selectedTab(AppLocalizations.of(context)!.facturation, 2, 0.25),
+                      currentUser.brandRole < 3 ? selectedTab(AppLocalizations.of(context)!.facturation, 2, 0.25) : Container(),
                     ],
                   ),
                 ],

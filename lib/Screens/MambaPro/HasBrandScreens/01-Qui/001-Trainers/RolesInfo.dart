@@ -1025,7 +1025,7 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  "Facturación",
+                                  AppLocalizations.of(context)!.facturation,
                                   style: Theme.of(context).textTheme.bodyText2,
                                   textAlign: TextAlign.left,
                                 ),
