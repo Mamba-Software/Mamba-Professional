@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
+import '../../../../Constants.dart';
 import '../../../../GlobalVars.dart';
 import '../../../../Styles/AppColors/AppColors.dart';
 
@@ -38,7 +39,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
   ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Dia i benefici');
+  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
 
   final DateFormat formatterCat = DateFormat.MMMd('ca_CAT');
   final DateFormat formatterEsp = DateFormat.MMMd('es_ES');
@@ -157,7 +158,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
 
   @override
   Widget build(BuildContext context) {
-    _tooltipBehavior =  TooltipBehavior(enable: true, header: AppLocalizations.of(context)!.labelInvoiceMade);
+    _tooltipBehavior =  TooltipBehavior(enable: true, header: '');
     return isLoading? LoadingView() :   Column(
       children: [
         Padding(
@@ -174,8 +175,8 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                   Padding(
                     padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
                     child: Text(
-                      difference < 0? difference.toString() + '%' :
-                      '+' + difference.toString() + '%',
+                      difference < 0? difference.toStringAsFixed(2) + '%' :
+                      '+' + difference.toStringAsFixed(2) + '%',
                       style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
 
                     ),
@@ -184,67 +185,86 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
               ),),
         ),
         Center(
-                child: Container(
-                    child: SfCartesianChart(
-                        zoomPanBehavior: _zoomPanBehavior,
-                      backgroundColor: Colors.transparent,
-                        borderColor: Colors.transparent,
-                        plotAreaBorderColor: Colors.transparent,
-                        plotAreaBorderWidth: 1,
-                        primaryXAxis: CategoryAxis(
-                          //Hide the gridlines of x-axis
-                          majorGridLines: MajorGridLines(width: 0),
-                          isVisible: false,
-                          //Hide the axis line of x-axis
-                          axisLine: AxisLine(width: 0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    filteredPurchases.isEmpty? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height*0.07),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width*0.30,
+                            child: Image.asset(Constants.emptyCalendar)
                         ),
-                        primaryYAxis: NumericAxis(
-                          labelFormat: '{value}€',
-                          majorTickLines: MajorTickLines(
-                            width: 0,
-                          ),
-                          enableAutoIntervalOnZooming: false,
-                          opposedPosition: true,
-                          interval: 100,
-                          //maximum: double.parse(maxNumber.toString()),
-                          //isVisible: false,
-                          //Hide the gridlines of x-axis
-                          majorGridLines: MajorGridLines(width: 0),
-                          //Hide the axis line of x-axis
-                          axisLine: AxisLine(width: 0),
-                        ),
-                        axes: [],
-                        indicators: [],
-                        legend: null,
-                        tooltipBehavior: _tooltipBehavior,
-                      enableSideBySideSeriesPlacement: false,
-                      series: <ChartSeries>[
-                          // Renders line chart
-                        SplineAreaSeries<TotalBenefit, String>(
-                            borderColor: Styles.mainColor,
-                          borderWidth: 2,
-                            markerSettings: MarkerSettings(
-                              borderColor: AppColors.mainColor,
-                                isVisible: totalBenefits.length == 1? true : false,
-                                height:  10,
-                                width:  10,
-                                shape: DataMarkerType.circle,
-                                color: AppColors.mainColor),
-
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Styles.mainColor,
-                                AppColors.mainColor.withOpacity(0.2),
-                              ],
+                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                      ],
+                    ) : Container(),
+                    Container(
+                        child: SfCartesianChart(
+                          backgroundColor: Colors.transparent,
+                            borderColor: Colors.transparent,
+                            plotAreaBorderColor: Colors.transparent,
+                            plotAreaBorderWidth: 1,
+                            primaryXAxis: CategoryAxis(
+                              //Hide the gridlines of x-axis
+                              majorGridLines: MajorGridLines(width: 0),
+                              isVisible: false,
+                              //Hide the axis line of x-axis
+                              axisLine: AxisLine(width: 0),
                             ),
-                              dataSource: totalBenefits,
-                              xValueMapper: (TotalBenefit events, _) => events.day,
-                              yValueMapper: (TotalBenefit events, _) => events.money,
-                          )
-                        ]
-                    )
+                            primaryYAxis: NumericAxis(
+                              decimalPlaces: 2,
+                              labelFormat: '{value}€',
+                              majorTickLines: MajorTickLines(
+                                width: 0,
+                              ),
+                              enableAutoIntervalOnZooming: false,
+                              opposedPosition: true,
+                              interval: 100,
+                              //maximum: double.parse(maxNumber.toString()),
+                              //isVisible: false,
+                              //Hide the gridlines of x-axis
+                              majorGridLines: MajorGridLines(width: 0),
+                              //Hide the axis line of x-axis
+                              axisLine: AxisLine(width: 0),
+                            ),
+                            axes: [],
+                            indicators: [],
+                            legend: null,
+                            tooltipBehavior: _tooltipBehavior,
+                          enableSideBySideSeriesPlacement: false,
+                          series: <ChartSeries>[
+                              // Renders line chart
+                            SplineAreaSeries<TotalBenefit, String>(
+                                borderColor: Styles.mainColor,
+                              borderWidth: 2,
+                                markerSettings: MarkerSettings(
+                                  borderColor: AppColors.mainColor,
+                                    isVisible: totalBenefits.length == 1? true : false,
+                                    height:  10,
+                                    width:  10,
+                                    shape: DataMarkerType.circle,
+                                    color: AppColors.mainColor),
+
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Styles.mainColor,
+                                    AppColors.mainColor.withOpacity(0.2),
+                                  ],
+                                ),
+                                  dataSource: totalBenefits,
+                                  xValueMapper: (TotalBenefit events, _) => events.day,
+                                  yValueMapper: (TotalBenefit events, _) => events.money,
+                              )
+                            ]
+                        )
+                    ),
+                  ],
                 )
             ),
       ],

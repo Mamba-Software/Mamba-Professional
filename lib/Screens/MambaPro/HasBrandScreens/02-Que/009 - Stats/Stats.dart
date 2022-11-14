@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/ClientsStats/GenderGroup.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/BonosPurchased.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/PaymentMethodStat.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/TotalBenefit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
@@ -65,7 +66,9 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   bool isLoading = true;
   bool isFirstBuild = true;
 
-  DateTime endDate = DateTime.now().subtract(const Duration(days: 1));
+  //DateTime endDate = DateTime.now().subtract(const Duration(days: 1));
+  DateTime endDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day, 23, 59).subtract(const Duration(days: 1));
+
   DateTime startDate = DateTime.now().subtract(const Duration(days: 8));
 
   DateTime backEndDate = DateTime.now().subtract(const Duration(days: 9));
@@ -145,7 +148,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   Future<void> getCollections() async {
     events = await _brandDataService.getAllEventsFromBrandStats(widget.brandId);
     users = await _brandDataService
-        .getBrandUsersStats(widget.brandId);
+        .getBrandClients(widget.brandId);
     //purchases = await _brandDataService.getBrandPurchases(widget.brandId);
     //bonos = await _brandDataService.getAllBonosFromBrandList(widget.brandId);
     purchases = await _brandDataService
@@ -184,11 +187,15 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   }
 
   void applyFilteredEvents() {
+    print(startDate.toString());
+    print(endDate.toString());
     filteredEvents = events
         .where((element) =>
             element.doneAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 &&
             element.doneAt!.compareTo(Timestamp.fromDate(endDate)) <= 0)
         .toList();
+
+    print(filteredEvents.length);
     int days = daysBetween(startDate, endDate);
     DateTime backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
@@ -536,7 +543,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         ),
       ),
       bottomSheet: GestureDetector(
-        onTap: _show, //TODO CALENDAR
+        onTap: _show,
         child: Container(
           height: MediaQuery.of(context).size.height * 0.1,
           width: double.infinity,
@@ -841,6 +848,12 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
               ],
             ),
           ),
+        ),
+        statsTitle(AppLocalizations.of(context)!.paymentMethod),
+        Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.02),
+          child: PaymentMethodStat(purchases: filteredPurchases, context: context,),
         ),
         Padding(
           padding:

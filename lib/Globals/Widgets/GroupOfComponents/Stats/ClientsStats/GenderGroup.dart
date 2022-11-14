@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../Constants.dart';
 import '../../../../Styles/AppColors/AppColors.dart';
 
 class GenderGroup extends StatefulWidget {
@@ -188,22 +189,40 @@ class GenderGroupState extends State<GenderGroup> {
     Column(
       children: [
         Center(
-                child: Container(
-                    child: SfCircularChart(
-                        tooltipBehavior: _tooltipBehavior,
-                         legend: Legend(isVisible: true,position: LegendPosition.bottom, textStyle: Theme.of(context).textTheme.bodyText2),
-                        series: <CircularSeries>[
-                          // Render pie chart
-                          PieSeries<GenderGroupClass, String>(
-                              radius: widget.resize? '100%' : '100%',
-                              dataSource: genderGrouped,
-                              pointColorMapper:(GenderGroupClass data,  _) => data.color,
-                              xValueMapper: (GenderGroupClass data, _) => data.gender,
-                              yValueMapper: (GenderGroupClass data, _) => data.total
-                          ),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    filteredUsers.isEmpty? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width*0.30,
+                            child: Image.asset(Constants.emptyCalendar)
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                        Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                      ],
+                    ) : Container(),
+                    Container(
+                        child: SfCircularChart(
+                            tooltipBehavior: _tooltipBehavior,
+                             legend: Legend(isVisible: true,position: LegendPosition.bottom, textStyle: Theme.of(context).textTheme.bodyText2),
+                            series: <CircularSeries>[
+                              // Render pie chart
+                              PieSeries<GenderGroupClass, String>(
+                                  radius: widget.resize? '100%' : '100%',
+                                  dataSource: genderGrouped,
+                                  pointColorMapper:(GenderGroupClass data,  _) => data.color,
+                                  xValueMapper: (GenderGroupClass data, _) => data.gender,
+                                  yValueMapper: (GenderGroupClass data, _) => data.total
+                              ),
 
-                        ]
+                            ]
+                        ),
                     ),
+                  ],
                 )
             ),
       ],

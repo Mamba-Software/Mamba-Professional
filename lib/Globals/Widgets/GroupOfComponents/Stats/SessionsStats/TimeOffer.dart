@@ -11,9 +11,9 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../Constants.dart';
 import '../../../../Styles/AppColors/AppColors.dart';
 
 class TimeOffer extends StatefulWidget {
@@ -107,15 +107,35 @@ class TimeOfferState extends State<TimeOffer> {
   @override
   Widget build(BuildContext context) {
     return isLoading? LoadingView() :
-      Padding(
-        padding:
-        EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
-        child: Align(
-        alignment: Alignment.topLeft,
-        child:  Text(
-          timeOffered,
-          style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
-        ),),
+      Stack(
+        alignment: Alignment.center,
+        children: [
+      filteredEvents.isEmpty || timeOffered == ''? Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+          SizedBox(
+              width: MediaQuery.of(context).size.width*0.15,
+              child: Image.asset(Constants.emptyCalendar)
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.005),
+          Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+    ],
+
+      ) : Container(),
+          Padding(
+            padding:
+            EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
+            child: Align(
+            alignment: Alignment.topLeft,
+            child:  Text(
+              timeOffered,
+              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
+            ),),
+          ),
+        ],
       );
 
   }

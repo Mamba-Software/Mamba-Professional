@@ -13,7 +13,9 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../Constants.dart';
 import '../../../../Styles/AppColors/AppColors.dart';
 
 class TimeToTimeOffer extends StatefulWidget {
@@ -43,6 +45,8 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
   final DateFormat formatter = DateFormat.Hm();
 
+  int clientsInEvents = 0;
+
 
 
 
@@ -59,6 +63,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
   void didUpdateWidget(TimeToTimeOffer oldWidget) {
     super.didUpdateWidget(oldWidget);
     filteredEvents = widget.events;
+    clientsInEvents = 0;
     timeOffered = '';
     timeDemand = [];
     mapHours.clear();
@@ -110,6 +115,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
 
     for (int i = 0; i < filteredEvents.length; ++i) {
       event = filteredEvents[i];
+      clientsInEvents = clientsInEvents + filteredEvents[i].numClients!;
       setHour(8,10,"08 \n - \n 10",event);
       setHour(10,12,"10 \n - \n 12",event);
       setHour(12,14,"12 \n - \n 14",event);
@@ -223,62 +229,81 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
   @override
   Widget build(BuildContext context) {
     return isLoading? LoadingView() :
-    Padding(
-      padding:
-      EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.01),
-      child: Center(
-          child: Container(
-              child: SfCartesianChart(
-                  plotAreaBorderWidth: 0,
+    Stack(
+      alignment: Alignment.center,
+      children: [
 
-                  primaryYAxis: NumericAxis(
-                    majorTickLines: MajorTickLines(
-                      width: 0,
-                    ),
-                    labelStyle: TextStyle(color: Colors.transparent),
-                    labelPosition: ChartDataLabelPosition.inside,
+        Padding(
+          padding:
+          EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.01),
+          child: Center(
+              child: Container(
+                  child: SfCartesianChart(
+                      plotAreaBorderWidth: 0,
 
-                    //Hide the gridlines of x-axis
-                    //majorGridLines: MajorGridLines(width: 0),
-                    majorGridLines: MajorGridLines(
-                        dashArray: <double>[5,5]
-                    ),
-                    minorGridLines: MinorGridLines(
-                        dashArray: <double>[5,5]
-                    ),
-                    isVisible: true,
-                    //Hide the axis line of x-axis
-                    axisLine: AxisLine(width: 0),
-                    borderWidth: 0,
+                      primaryYAxis: NumericAxis(
+                        majorTickLines: MajorTickLines(
+                          width: 0,
+                        ),
+                        labelStyle: TextStyle(color: Colors.transparent),
+                        labelPosition: ChartDataLabelPosition.inside,
 
-                  ),
-                  primaryXAxis: CategoryAxis(
-                    interval: 1,
-                    majorTickLines: MajorTickLines(
-                      width: 0,
-                    ),
-                    labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 12)),
-                    placeLabelsNearAxisLine: true,
-                    //maximum: double.parse(maxNumber.toString()),
-                    //isVisible: false,
-                    //Hide the gridlines of x-axis
-                    majorGridLines: MajorGridLines(width: 0),
-                    //Hide the axis line of x-axis
-                    axisLine: AxisLine(width: 0),
-                  ),
-                  series: <ChartSeries<TimeDemand, String>>[
-                    ColumnSeries<TimeDemand, String>(
-                        dataSource: timeDemand,
-                        xValueMapper: (TimeDemand data, _) => data.time,
-                        yValueMapper: (TimeDemand data, _) => data.demand,
-                        pointColorMapper: (TimeDemand data, _) => data.color,
-                        // Sets the corner radius
-                        borderRadius: BorderRadius.all(Radius.circular(5))
-                    )
-                  ]
+                        //Hide the gridlines of x-axis
+                        //majorGridLines: MajorGridLines(width: 0),
+                        majorGridLines: MajorGridLines(
+                            dashArray: <double>[5,5]
+                        ),
+                        minorGridLines: MinorGridLines(
+                            dashArray: <double>[5,5]
+                        ),
+                        isVisible: true,
+                        //Hide the axis line of x-axis
+                        axisLine: AxisLine(width: 0),
+                        borderWidth: 0,
+
+                      ),
+                      primaryXAxis: CategoryAxis(
+                        interval: 1,
+                        majorTickLines: MajorTickLines(
+                          width: 0,
+                        ),
+                        labelStyle: (Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColor, fontSize: 12)),
+                        placeLabelsNearAxisLine: true,
+                        //maximum: double.parse(maxNumber.toString()),
+                        //isVisible: false,
+                        //Hide the gridlines of x-axis
+                        majorGridLines: MajorGridLines(width: 0),
+                        //Hide the axis line of x-axis
+                        axisLine: AxisLine(width: 0),
+                      ),
+                      series: <ChartSeries<TimeDemand, String>>[
+                        ColumnSeries<TimeDemand, String>(
+                            dataSource: timeDemand,
+                            xValueMapper: (TimeDemand data, _) => data.time,
+                            yValueMapper: (TimeDemand data, _) => data.demand,
+                            pointColorMapper: (TimeDemand data, _) => data.color,
+                            // Sets the corner radius
+                            borderRadius: BorderRadius.all(Radius.circular(5))
+                        )
+                      ]
+                  )
               )
-          )
-      ),
+          ),
+        ),
+        filteredEvents.isEmpty || clientsInEvents == 0? Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            SizedBox(
+                width: MediaQuery.of(context).size.width*0.30,
+                child: Image.asset(Constants.emptyCalendar)
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
+          ],
+        ) : Container(),
+      ],
     );
 
   }
