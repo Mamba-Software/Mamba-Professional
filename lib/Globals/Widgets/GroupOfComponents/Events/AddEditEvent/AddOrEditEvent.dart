@@ -1877,10 +1877,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     List<Usuario> eventMembers = List.from(brandTrainersSelected);
     eventMembers.addAll(brandClientsSelected);
     // Delete Event Bonos
-    List<String> deleteBonos = [];
-    for (Bono bono in eventBonos) {
-      deleteBonos.add(bono.id!);
-    }
     _deleteEventBonosCall(widget.eventId!);
     // Delete Event Local Notifications
     for (var i=0; i<eventMembers.length; i++) {

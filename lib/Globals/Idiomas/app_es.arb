@@ -933,6 +933,10 @@
   "@reject":{
     "description": "Cancelar text"
   },
+  "invite": "Invitar",
+  "@invite":{
+    "description": "Cancelar text"
+  },
   "addMembers": "Añadir Miembros",
   "@addMembers":{
     "description": "Añadir Miembros text"
@@ -2028,6 +2032,10 @@
   },
   "bonosDescriptionPrivate": "Selecciona los bonos que debe tener un cliente para poder ser invitado a este evento",
   "@bonosDescriptionPrivate":{
+    "bonosClient": "Bonos client text"
+  },
+  "inviteClientDescription": "Podrás invitar a un cliente una vez el evento haya sido creado",
+  "@inviteClientDescription":{
     "bonosClient": "Bonos client text"
   },
   "information": "Información",

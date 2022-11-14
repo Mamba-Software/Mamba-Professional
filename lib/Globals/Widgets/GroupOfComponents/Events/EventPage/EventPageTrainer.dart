@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
+import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
@@ -26,6 +27,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -45,6 +47,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   final _brandDataService = BrandDataService();
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
+  final _dynamicLinkUtils = DynamicLinkUtils();
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
@@ -1217,6 +1220,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                         ),
                       ),
                       canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.14) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                      event!.isPrivate! ? SizedBox(height: MediaQuery.of(context).size.height*0.07) : Container(),
                     ],
                   ),
                 ],
@@ -1239,68 +1243,90 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       if (canEdit) {
         return Padding(
           padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width*0.25,
-            child: FloatingActionButton.extended(
-              heroTag: "9",
-              onPressed: () async {
-                mixpanel!.track('event_view_edit_button', properties: {'isPrivate': event!.isPrivate!});
-                bool? result;
-                if (event!.isPrivate!) {
-                  result = await Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            }
-                          },
-                          child:  AddOrEditPrivateEvent(
-                            locale: Localizations.localeOf(context),
-                            eventId: event!.id!,
-                          ),
-                        ),
-                      )
-                  );
-                } else {
-                  result = await Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            }
-                          },
-                          child:  AddOrEditEvent(
-                            locale: Localizations.localeOf(context),
-                            eventId: event!.id!,
-                          ),
-                        ),
-                      )
-                  );
-                }
-                if (result != null && result) {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  getEventInfo();
-                  print("Updating Event ...");
-                } else if (result != null && !result) {
-                  print("Deleting Event ...");
-                  Navigator.pop(context);
-                }
-              },
-              backgroundColor: Colors.green,
-              icon: Icon(Icons.edit, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
-              label: Text(AppLocalizations.of(context)!.edit,
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width*0.37,
+                child: FloatingActionButton.extended(
+                  heroTag: "9",
+                  onPressed: () async {
+                    // Create Dynamic Link
+                    Uri eventLink = await _dynamicLinkUtils.createDynamicLinkEventId(event!.id!, event!.imageUrl!, currentBrand.name!, currentUser.firstName!);
+                    await Share.share(eventLink.toString(), subject: event!.imageUrl!);
+                  },
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Icon(Icons.person_add, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05,),
+                  label: Text(AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.clients.toLowerCase(),
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColorDark),),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width*0.03),
+              SizedBox(
+                width: MediaQuery.of(context).size.width*0.25,
+                child: FloatingActionButton.extended(
+                  heroTag: "9",
+                  onPressed: () async {
+                    mixpanel!.track('event_view_edit_button', properties: {'isPrivate': event!.isPrivate!});
+                    bool? result;
+                    if (event!.isPrivate!) {
+                      result = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                }
+                              },
+                              child:  AddOrEditPrivateEvent(
+                                locale: Localizations.localeOf(context),
+                                eventId: event!.id!,
+                              ),
+                            ),
+                          )
+                      );
+                    } else {
+                      result = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                }
+                              },
+                              child:  AddOrEditEvent(
+                                locale: Localizations.localeOf(context),
+                                eventId: event!.id!,
+                              ),
+                            ),
+                          )
+                      );
+                    }
+                    if (result != null && result) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      getEventInfo();
+                      print("Updating Event ...");
+                    } else if (result != null && !result) {
+                      print("Deleting Event ...");
+                      Navigator.pop(context);
+                    }
+                  },
+                  backgroundColor: Colors.green,
+                  icon: Icon(Icons.edit, color: Colors.white, size: MediaQuery.of(context).size.width*0.05,),
+                  label: Text(AppLocalizations.of(context)!.edit,
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white),),
+                ),
+              ),
+            ],
           ),
         );
       } else {
