@@ -1219,8 +1219,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                           ],
                         ),
                       ),
-                      canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.14) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                      event!.isPrivate! ? SizedBox(height: MediaQuery.of(context).size.height*0.07) : Container(),
+                      canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.2) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                     ],
                   ),
                 ],
@@ -1253,8 +1252,9 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   heroTag: "9",
                   onPressed: () async {
                     // Create Dynamic Link
-                    Uri eventLink = await _dynamicLinkUtils.createDynamicLinkEventId(event!.id!, event!.imageUrl!, currentBrand.name!, currentUser.firstName!);
+                    Uri eventLink = await _dynamicLinkUtils.createDynamicLinkEventId(event!.id!, event!.isPrivate!, event!.imageUrl!, event!.title!, currentBrand.name!, currentUser.firstName!);
                     await Share.share(eventLink.toString(), subject: event!.imageUrl!);
+                    mixpanel!.track('event_view_invite_clients_button', properties: {'isPrivate': event!.isPrivate!});
                   },
                   backgroundColor: Theme.of(context).primaryColor,
                   icon: Icon(Icons.person_add, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05,),

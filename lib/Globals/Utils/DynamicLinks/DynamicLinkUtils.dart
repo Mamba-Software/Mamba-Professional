@@ -64,10 +64,15 @@ class DynamicLinkUtils {
     return (await dynamicLinks.buildShortLink(parameters)).shortUrl;
   }
 
-  Future<Uri> createDynamicLinkEventId(String eventId, String eventImageUrl, String brandName, String userName) async {
+  Future<Uri> createDynamicLinkEventId(String eventId, bool isPrivate, String eventImageUrl, String eventName, String brandName, String userName) async {
 
     FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
-
+    String title = "";
+    if (isPrivate) {
+      title = '${userName} de ${brandName} te está invitando a un evento privado titulado ${eventName}';
+    } else {
+      title = '${userName} de ${brandName} te está invitando a un evento grupal titulado ${eventName}';
+    }
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       // The Dynamic Link URI domain. You can view created URIs on your Firebase console
       uriPrefix: 'https://mambastyleapp.page.link',
@@ -86,7 +91,7 @@ class DynamicLinkUtils {
         minimumVersion: '1',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-          title: '${userName} de ${brandName} te está invitando a un evento privado',
+          title: title,
           description: '¡Haz clic para confirmar tu asistencia!',
           imageUrl: Uri.parse(eventImageUrl)),
     );

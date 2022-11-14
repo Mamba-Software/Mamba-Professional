@@ -145,6 +145,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   Future<void> getBonos() async {
     if (!editBono && !isBonoRequest) {
       bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+      bonos.removeWhere((element) => element.isActive == false);
       userBonos = await _userDataService.getUserBonos(user.id!);
       Bono bonoDelete;
       for (int i = 0; i < userBonos.length; ++i) {
@@ -359,6 +360,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         ],
                       ),
                     ),
+
                     bonos.length > 1 ? Column(
                       children: [
                         Row(
@@ -369,7 +371,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                             height: MediaQuery.of(context).size.height*0.01
                         ),
                       ],
-                    ) : Container(),
+                    ) : SizedBox(
+                        height: MediaQuery.of(context).size.height*0.01
+                    ),
                     Container(
                       width: MediaQuery.of(context).size.width,
                       constraints: BoxConstraints(

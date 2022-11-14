@@ -166,6 +166,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   // Gets the events passed by the trainer.
   Future<void> checkIfHasAllBrandBonos() async {
     listBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    listBonos.removeWhere((element) => element.isActive == false);
     userBonos = await _userDataService.getUserBonos(user?.id!);
     for (int i = 0; i < userBonos.length; ++i) {
       bonoFound = listBonos.firstWhere((element) => element.id == userBonos[i].id);
