@@ -40,9 +40,9 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
   double difference = 0;
   TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Dia i benefici');
 
-  final DateFormat formatterCat = DateFormat.yMMMMd('ca_CAT');
-  final DateFormat formatterEsp = DateFormat.yMMMMd('es_ES');
-  DateFormat formatter = DateFormat.yMMMMd('es_ES');
+  final DateFormat formatterCat = DateFormat.MMMd('ca_CAT');
+  final DateFormat formatterEsp = DateFormat.MMMd('es_ES');
+  DateFormat formatter = DateFormat.MMMd('es_ES');
 
   List<TotalBenefit> totalBenefits = [];
 
@@ -167,7 +167,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
               child: Row(
                 children: [
                   Text(
-                    money.toString() + '€',
+                    money.toStringAsFixed(2) + '€',
             style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
 
           ),
