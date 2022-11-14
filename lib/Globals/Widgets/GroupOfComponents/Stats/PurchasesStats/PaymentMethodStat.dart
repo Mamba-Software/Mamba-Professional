@@ -90,11 +90,14 @@ class PaymentMethodStatState extends State<PaymentMethodStat> {
 
     mapHours.forEach((k, v)
     {
-      if(v == maxPM) {
-        paymentMethodList.add(PaymentMethodObject(k, v, AppColors.mainColor));
+      if(k == AppLocalizations.of(widget.context)!.cashPaymentMethod) {
+        paymentMethodList.add(PaymentMethodObject(k, v, Colors.green.shade400));
       }
-      else {
-        paymentMethodList.add(PaymentMethodObject(k, v, AppColors.grey));
+      else if(k == AppLocalizations.of(widget.context)!.transferPaymentMethod) {
+        paymentMethodList.add(PaymentMethodObject(k, v, Colors.blue.shade400));
+      }
+      else if(k == AppLocalizations.of(widget.context)!.giftPaymentMethod) {
+        paymentMethodList.add(PaymentMethodObject(k, v, Colors.red.shade400));
       }
 
     });
