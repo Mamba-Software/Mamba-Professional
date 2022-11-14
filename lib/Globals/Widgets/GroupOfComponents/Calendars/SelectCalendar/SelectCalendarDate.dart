@@ -46,7 +46,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
     setState(() {
       if (args.value is PickerDateRange) {
         _range = '${DateFormat('MMMd').format(args.value.startDate)} -'' ${DateFormat('MMMd').format(args.value.endDate ?? args.value.startDate)}';
-        dateRangeTemp = [args.value.startDate, DateTime(args.value.endDate.year,args.value.endDate.month,args.value.endDate.day, 23, 59)  ?? DateTime(args.value.startDate.year,args.value.startDate.month,args.value.startDate.day, 23, 59)];
+        dateRangeTemp = [args.value.startDate, DateTime(args.value.endDate.year,args.value.endDate.month,args.value.endDate.day, 23, 59)];
       }
     });
     print('Selected range: $_range');

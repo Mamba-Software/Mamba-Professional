@@ -1849,6 +1849,69 @@ exports.userJoinsEvent = functions
               }
             }
           }
+        } else {
+          // Event is full
+          functions.logger.log(
+            "NOTIFICATION PRIVATE EVENT",
+            );
+          for (var i in eventUsersSnapshot.docs) {
+            const id = eventUsersSnapshot.docs[i].id;
+            const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+            if (eventUsersDoc.isTrainer) {
+              const trainerSnapshot = await db.collection("Users").doc(id).get();
+              const trainerDoc = trainerSnapshot.data();
+              functions.logger.log(
+                "trainerDoc",
+                trainerDoc,
+                );
+              var payload = 0;
+              let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+              if (trainerDoc.idioma == "es") {
+                // Date To String
+                let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+                // Hour and Minutes to String
+                let eventTimeTime = eventDoc.hour+":";
+                let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                eventTimeTime += minutes;
+                // Send Payload
+                payload = {
+                  notification: {
+                    title: userDoc.firstName+" ha confirmado su asistencia 🤝",
+                    body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                  },
+                  data: {
+                    route: eventId,
+                  },
+                };
+              } else {
+                // Date To String
+                let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+                // Hour and Minutes to String
+                let eventTimeTime = eventDoc.hour+":";
+                let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                eventTimeTime += minutes;
+                // Send Payload
+                payload = {
+                  notification: {
+                    title: userDoc.firstName+" ha confirmat la seva assistència 🤝",                  
+                    body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                  },
+                  data: {
+                    route: eventId,
+                  },
+                };
+              }
+              functions.logger.log(
+                "Payload",
+                payload
+                );
+              response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+              functions.logger.log(
+                "Response",
+                response
+                );
+            }
+          }
         }
       // Send Notification to User if added directly
       if (eventUserDoc.invitedDirectly == true) {
@@ -3799,7 +3862,7 @@ exports.zzzzUserJoinsEvent = functions
                     );
                 }
               }
-            } else {
+          } else {
             // First one to go over 50%
             if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
               // Send Over 50% Notification to All Event Trainers
@@ -3867,7 +3930,71 @@ exports.zzzzUserJoinsEvent = functions
               }
             }
           }
+        } else {
+          // Event is full
+          functions.logger.log(
+            "NOTIFICATION PRIVATE EVENT",
+            );
+          for (var i in eventUsersSnapshot.docs) {
+            const id = eventUsersSnapshot.docs[i].id;
+            const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+            if (eventUsersDoc.isTrainer) {
+              const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
+              const trainerDoc = trainerSnapshot.data();
+              functions.logger.log(
+                "trainerDoc",
+                trainerDoc,
+                );
+              var payload = 0;
+              let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+              if (trainerDoc.idioma == "es") {
+                // Date To String
+                let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+                // Hour and Minutes to String
+                let eventTimeTime = eventDoc.hour+":";
+                let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                eventTimeTime += minutes;
+                // Send Payload
+                payload = {
+                  notification: {
+                    title: userDoc.firstName+" ha confirmado su asistencia 🤝",
+                    body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                  },
+                  data: {
+                    route: eventId,
+                  },
+                };
+              } else {
+                // Date To String
+                let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+                // Hour and Minutes to String
+                let eventTimeTime = eventDoc.hour+":";
+                let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+                eventTimeTime += minutes;
+                // Send Payload
+                payload = {
+                  notification: {
+                    title: userDoc.firstName+" ha confirmat la seva assistència 🤝",                  
+                    body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                  },
+                  data: {
+                    route: eventId,
+                  },
+                };
+              }
+              functions.logger.log(
+                "Payload",
+                payload
+                );
+              response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+              functions.logger.log(
+                "Response",
+                response
+                );
+            }
+          }
         }
+      
       // Send Notification to User if added directly
       if (eventUserDoc.invitedDirectly == true) {
             // Invited to Event
@@ -3915,6 +4042,7 @@ exports.zzzzUserJoinsEvent = functions
                },
              };
            }
+
            functions.logger.log(
             "Payload",
             payload
@@ -3924,9 +4052,9 @@ exports.zzzzUserJoinsEvent = functions
             "Response",
             response
             );
-         }
-         return null;
-       });
+       }
+       return null;
+     });
 
 // User Leaves Event
 exports.zzzzUserLeavesEvent = functions
