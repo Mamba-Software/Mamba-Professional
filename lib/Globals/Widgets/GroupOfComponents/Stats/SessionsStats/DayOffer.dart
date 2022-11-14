@@ -82,6 +82,7 @@ class DayOfferState extends State<DayOffer> {
 
   void mountStat()
   {
+
     for(int i = 0; i < filteredEvents.length; ++i) {
       sumToWeekDay(i, 0, filteredEvents[i].numClients!);
       sumToWeekDay(i, 1,filteredEvents[i].numClients!);
@@ -91,6 +92,18 @@ class DayOfferState extends State<DayOffer> {
       sumToWeekDay(i, 5, filteredEvents[i].numClients!);
       sumToWeekDay(i, 6, filteredEvents[i].numClients!);
     }
+
+    if(totalSumClients == 0)
+      {
+        addBaseDayInTotalEvent(AppLocalizations.of(widget.context)!.mon, 0);
+        addBaseDayInTotalEvent(AppLocalizations.of(widget.context)!.tue, 1);
+        addBaseDayInTotalEvent(AppLocalizations.of(widget.context)!.wed, 2);
+        addBaseDayInTotalEvent(AppLocalizations.of(widget.context)!.thur, 3);
+        addBaseDayInTotalEvent(AppLocalizations.of(widget.context)!.fri, 4);
+        addBaseDayInTotalEvent(AppLocalizations.of(widget.context)!.sat, 5);
+        addBaseDayInTotalEvent(AppLocalizations.of(widget.context)!.sun, 6);
+      }
+
 
     addDayInTotalEvent(AppLocalizations.of(widget.context)!.mon, 0);
     addDayInTotalEvent(AppLocalizations.of(widget.context)!.tue, 1);
@@ -121,11 +134,21 @@ class DayOfferState extends State<DayOffer> {
 
   }
 
+  void addBaseDayInTotalEvent(String day, int number) {
+    TotalEvents totalEvent;
+      totalEvent =
+      new TotalEvents(day, 0);
+      totalEvents.add(totalEvent);
+
+
+  }
+
   void sumToWeekDay(int i, int number, int clients) {
     int day = number + 1;
     if (filteredEvents[i].doneAt!.toDate().weekday == day) {
       totalSumClients = totalSumClients + clients;
       weekDays[number] = weekDays[number] + clients;
+      print(weekDays[number]);
     }
   }
 

@@ -14,6 +14,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../Constants.dart';
 import '../../../../Styles/AppColors/AppColors.dart';
 
 class SessionsMade extends StatefulWidget {
@@ -40,9 +41,9 @@ class SessionsMadeState extends State<SessionsMade> {
   double difference = 0;
   TooltipBehavior _tooltipBehavior =  TooltipBehavior(enable: false);
 
-  final DateFormat formatterCat = DateFormat.yMMMMd('ca_CAT');
-  final DateFormat formatterEsp = DateFormat.yMMMMd('es_ES');
-  DateFormat formatter = DateFormat.yMMMMd('es_ES');
+  final DateFormat formatterCat = DateFormat.MMMd('ca_CAT');
+  final DateFormat formatterEsp = DateFormat.MMMd('es_ES');
+  DateFormat formatter = DateFormat.MMMd('es_ES');
 
   List<TotalEvents> totalEvents = [];
   final _brandDataService = BrandDataService();
@@ -57,6 +58,7 @@ class SessionsMadeState extends State<SessionsMade> {
       {
         formatter = formatterCat;
       }
+    print(filteredEvents);
     filteredEvents = widget.events;
     filteredBackEvents = widget.backEvents;
     orderEvents();
@@ -138,7 +140,7 @@ class SessionsMadeState extends State<SessionsMade> {
 
   @override
   Widget build(BuildContext context) {
-    _tooltipBehavior =  TooltipBehavior(enable: true, header: AppLocalizations.of(context)!.labelSessionMade);
+    _tooltipBehavior =  TooltipBehavior(enable: true, header: '');
     return isLoading? LoadingView() :   Column(
       children: [
         Padding(
@@ -155,8 +157,8 @@ class SessionsMadeState extends State<SessionsMade> {
                   Padding(
                     padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05),
                     child: Text(
-                      difference < 0? difference.toString() + '%' :
-                      '+' + difference.toString() + '%',
+                      difference < 0? difference.toStringAsFixed(2) + '%' :
+                      '+' + difference.toStringAsFixed(2) + '%',
                       style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
 
                     ),
@@ -167,65 +169,88 @@ class SessionsMadeState extends State<SessionsMade> {
         Padding(
           padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.03),
           child: Center(
-                  child: Container(
-                      child: SfCartesianChart(
-                        backgroundColor: Colors.transparent,
-                          borderColor: Colors.transparent,
-                          plotAreaBorderColor: Colors.transparent,
-                          plotAreaBorderWidth: 1,
-                          primaryXAxis: CategoryAxis(
-                            //Hide the gridlines of x-axis
-                            majorGridLines: MajorGridLines(width: 0),
-                            isVisible: false,
-                            //Hide the axis line of x-axis
-                            axisLine: AxisLine(width: 0),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      filteredEvents.isEmpty? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.07),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width*0.30,
+                              child: Image.asset(Constants.emptyCalendar)
                           ),
-                          primaryYAxis: NumericAxis(
-                            majorTickLines: MajorTickLines(
-                              width: 0,
-                            ),
-                            enableAutoIntervalOnZooming: false,
-                            opposedPosition: true,
-                            interval: 1,
-                            //maximum: double.parse(maxNumber.toString()),
-                            //isVisible: false,
-                            //Hide the gridlines of x-axis
-                            majorGridLines: MajorGridLines(width: 0),
-                            //Hide the axis line of x-axis
-                            axisLine: AxisLine(width: 0),
-                          ),
-                          axes: [],
-                          indicators: [],
-                          legend: null,
-                          tooltipBehavior: _tooltipBehavior,
-                        enableSideBySideSeriesPlacement: false,
-                        series: <ChartSeries>[
-                            // Renders line chart
-                          SplineAreaSeries<TotalEvents, String>(
-                              borderColor: Styles.mainColor,
-                            borderWidth: 2,
+                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                          Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                        ],
+                      ) : Container(),
+                      Container(
+                          child: Column(
+                            children: [
+                              SfCartesianChart(
+                                backgroundColor: Colors.transparent,
+                                  borderColor: Colors.transparent,
+                                  plotAreaBorderColor: Colors.transparent,
+                                  plotAreaBorderWidth: 1,
+                                  primaryXAxis: CategoryAxis(
+                                    //Hide the gridlines of x-axis
+                                    majorGridLines: MajorGridLines(width: 0),
+                                    isVisible: false,
+                                    //Hide the axis line of x-axis
+                                    axisLine: AxisLine(width: 0),
+                                  ),
+                                  primaryYAxis: NumericAxis(
+                                    majorTickLines: MajorTickLines(
+                                      width: 0,
+                                    ),
+                                    enableAutoIntervalOnZooming: false,
+                                    opposedPosition: true,
+                                    interval: 1,
+                                    //maximum: double.parse(maxNumber.toString()),
+                                    //isVisible: false,
+                                    //Hide the gridlines of x-axis
+                                    majorGridLines: MajorGridLines(width: 0),
+                                    //Hide the axis line of x-axis
+                                    axisLine: AxisLine(width: 0),
+                                  ),
+                                  axes: [],
+                                  indicators: [],
+                                  legend: null,
+                                  tooltipBehavior: _tooltipBehavior,
+                                enableSideBySideSeriesPlacement: false,
+                                series: <ChartSeries>[
+                                    // Renders line chart
+                                  SplineAreaSeries<TotalEvents, String>(
+                                      borderColor: Styles.mainColor,
+                                    borderWidth: 2,
 
-                            markerSettings: MarkerSettings(
-                              borderColor: AppColors.mainColor,
-                                isVisible: totalEvents.length == 1? true : false,
-                                height:  10,
-                                width:  10,
-                                shape: DataMarkerType.circle,
-                                color: AppColors.mainColor),
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Styles.mainColor,
-                                  AppColors.mainColor.withOpacity(0.2),
-                                ],
+                                    markerSettings: MarkerSettings(
+                                      borderColor: AppColors.mainColor,
+                                        isVisible: totalEvents.length == 1? true : false,
+                                        height:  10,
+                                        width:  10,
+                                        shape: DataMarkerType.circle,
+                                        color: AppColors.mainColor),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Styles.mainColor,
+                                          AppColors.mainColor.withOpacity(0.2),
+                                        ],
+                                      ),
+                                        dataSource: totalEvents,
+                                        xValueMapper: (TotalEvents events, _) => events.day,
+                                        yValueMapper: (TotalEvents events, _) => events.events,
+                                    )
+                                  ]
                               ),
-                                dataSource: totalEvents,
-                                xValueMapper: (TotalEvents events, _) => events.day,
-                                yValueMapper: (TotalEvents events, _) => events.events,
-                            )
-                          ]
-                      )
+                            ],
+                          )
+                      ),
+                    ],
                   )
               ),
         ),

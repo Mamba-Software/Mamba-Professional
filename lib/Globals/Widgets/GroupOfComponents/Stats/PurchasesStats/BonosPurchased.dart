@@ -17,6 +17,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../../../Constants.dart';
 import '../../../../GlobalVars.dart';
 import '../../../../Styles/AppColors/AppColors.dart';
 
@@ -45,11 +46,11 @@ class BonosPurchasedState extends State<BonosPurchased> {
   ZoomPanBehavior _zoomPanBehavior = ZoomPanBehavior(enablePinching: true, zoomMode: ZoomMode.x,
     enablePanning: true);
   double difference = 0;
-  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true, header: 'Día y benefici');
+  TooltipBehavior _tooltipBehavior = TooltipBehavior(enable: true);
 
-  final DateFormat formatterCat = DateFormat.yMMMMd('ca_CAT');
-  final DateFormat formatterEsp = DateFormat.yMMMMd('es_ES');
-  DateFormat formatter = DateFormat.yMMMMd('es_ES');
+  final DateFormat formatterCat = DateFormat.MMMd('ca_CAT');
+  final DateFormat formatterEsp = DateFormat.MMMd('es_ES');
+  DateFormat formatter = DateFormat.MMMd('es_ES');
 
   List<Bono> bonos = [];
   List<BonoStat> bonoStats = [];
@@ -77,6 +78,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
     filteredPurchase = widget.purchases;
     bonos = widget.bonos;
     _numPages = bonos.length;
+    orderBonos();
     mountStat();
     isLoading = false;
     super.initState();
@@ -88,6 +90,14 @@ class BonosPurchasedState extends State<BonosPurchased> {
     filteredPurchase = widget.purchases;
     bonoStats = [];
     mountStat();
+  }
+
+  void orderBonos()
+  {
+    bonos.sort((a, b){ //sorting in ascending order
+      if(a.isActive!) return -1;
+          else return 1;
+    });
   }
 
 
@@ -154,7 +164,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
 
   @override
   Widget build(BuildContext context) {
-    _tooltipBehavior =  TooltipBehavior(enable: true, header: AppLocalizations.of(context)!.labelInvoiceMade);
+    _tooltipBehavior =  TooltipBehavior(enable: true, header: '');
     return isLoading? LoadingView() :   Column(
       children: [
         bonos.length > 1 ? Column(
@@ -187,8 +197,8 @@ class BonosPurchasedState extends State<BonosPurchased> {
                         'bono title': bonos[index].title,
                         'bono price': bonos[index].price.toString(),
                         'bono sessions': bonos[index].sessions,
-                        'bono total invoice': bonoStats[index].money.toString(),
-                        'bono total boughts': bonoStats[index].purchases.toString(),
+                        'bono total invoice': bonoStats[index].money.toStringAsFixed(2),
+                        'bono total boughts': bonoStats[index].purchases.toStringAsFixed(2),
                       });
                       setState(()  {
                         //bonoSelected = bonos[page];
@@ -241,7 +251,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(bonoStats[index].money.toString()  + ' €',
+                            Text(bonoStats[index].money.toStringAsFixed(2)  + ' €',
                               style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
                             Text( AppLocalizations.of(context)!.benefit),
                           ]
@@ -269,60 +279,79 @@ class BonosPurchasedState extends State<BonosPurchased> {
               Padding(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.05),
                 child: Center(
-                        child: Container(
-                            child: SfCartesianChart(
-                                zoomPanBehavior: _zoomPanBehavior,
-                              backgroundColor: Colors.transparent,
-                                borderColor: Colors.transparent,
-                                plotAreaBorderColor: Colors.transparent,
-                                plotAreaBorderWidth: 1,
-                                primaryXAxis: CategoryAxis(
-                                  //Hide the gridlines of x-axis
-                                  majorGridLines: MajorGridLines(width: 0),
-                                  isVisible: false,
-                                  //Hide the axis line of x-axis
-                                  axisLine: AxisLine(width: 0),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            bonoStats[index].totalBenefits.isEmpty? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                SizedBox(height: MediaQuery.of(context).size.height*0.07),
+                                SizedBox(
+                                    width: MediaQuery.of(context).size.width*0.30,
+                                    child: Image.asset(Constants.emptyCalendar)
                                 ),
-                                primaryYAxis: NumericAxis(
+                                SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                              ],
+                            ) : Container(),
+                            Container(
+                                child: SfCartesianChart(
+                                  backgroundColor: Colors.transparent,
+                                    borderColor: Colors.transparent,
+                                    plotAreaBorderColor: Colors.transparent,
+                                    plotAreaBorderWidth: 1,
+                                    primaryXAxis: CategoryAxis(
+                                      //Hide the gridlines of x-axis
+                                      majorGridLines: MajorGridLines(width: 0),
+                                      isVisible: false,
+                                      //Hide the axis line of x-axis
+                                      axisLine: AxisLine(width: 0),
+                                    ),
+                                    primaryYAxis: NumericAxis(
+                                      decimalPlaces: 2,
     labelFormat: '{value}€',
-                                  majorTickLines: MajorTickLines(
-                                    width: 0,
-                                  ),
-                                  enableAutoIntervalOnZooming: false,
-                                  opposedPosition: true,
-                                  interval: 50,
-                                  //maximum: double.parse(maxNumber.toString()),
-                                  //isVisible: false,
-                                  //Hide the gridlines of x-axis
-                                  majorGridLines: MajorGridLines(width: 0),
-                                  //Hide the axis line of x-axis
-                                  axisLine: AxisLine(width: 0),
-                                ),
-                                axes: [],
-                                indicators: [],
-                                legend: null,
-                                tooltipBehavior: _tooltipBehavior,
-                              enableSideBySideSeriesPlacement: false,
-                              series: <ChartSeries>[
-                                  // Renders line chart
-                                SplineAreaSeries<TotalBenefit, String>(
-                                    borderColor: Styles.mainColor,
-                                  borderWidth: 2,
-                                    markerSettings: MarkerSettings(
-                                      borderColor: AppColors.mainColor,
-                                        isVisible:  bonoStats[index].totalBenefits.length == 1? true : false,
-                                        height:  10,
-                                        width:  10,
-                                        shape: DataMarkerType.circle,
-                                        color: AppColors.mainColor),
+                                      majorTickLines: MajorTickLines(
+                                        width: 0,
+                                      ),
+                                      enableAutoIntervalOnZooming: false,
+                                      opposedPosition: true,
+                                      interval: 50,
+                                      //maximum: double.parse(maxNumber.toString()),
+                                      //isVisible: false,
+                                      //Hide the gridlines of x-axis
+                                      majorGridLines: MajorGridLines(width: 0),
+                                      //Hide the axis line of x-axis
+                                      axisLine: AxisLine(width: 0),
+                                    ),
+                                    axes: [],
+                                    indicators: [],
+                                    legend: null,
+                                    tooltipBehavior: _tooltipBehavior,
+                                  enableSideBySideSeriesPlacement: false,
+                                  series: <ChartSeries>[
+                                      // Renders line chart
+                                    SplineAreaSeries<TotalBenefit, String>(
+                                        borderColor: Styles.mainColor,
+                                      borderWidth: 2,
+                                        markerSettings: MarkerSettings(
+                                          borderColor: AppColors.mainColor,
+                                            isVisible:  bonoStats[index].totalBenefits.length == 1? true : false,
+                                            height:  10,
+                                            width:  10,
+                                            shape: DataMarkerType.circle,
+                                            color: AppColors.mainColor),
 
-                                  color: Colors.transparent,
-                                  dataSource: bonoStats[index].totalBenefits,
-                                      xValueMapper: (TotalBenefit events, _) => events.day,
-                                      yValueMapper: (TotalBenefit events, _) => events.money,
-                                  )
-                                ]
-                            )
+                                      color: Colors.transparent,
+                                      dataSource: bonoStats[index].totalBenefits,
+                                          xValueMapper: (TotalBenefit events, _) => events.day,
+                                          yValueMapper: (TotalBenefit events, _) => events.money,
+                                      )
+                                    ]
+                                )
+                            ),
+                          ],
                         )
                     ),
               ),

@@ -383,12 +383,12 @@ class BrandFirebaseCalls {
         .collection("Events")
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      if(querySnapshot.docs[i].id != 'Private Events') {
+      if(querySnapshot.docs[i].id != 'Private Events' && querySnapshot.docs[i].id != 'Recurrent Events') {
         events.add(Event.fromObjectOnlyCoverData(
             querySnapshot.docs[i].id, querySnapshot.docs[i]));
       }
     }
-
+/*
     querySnapshot = await _firestore
         .collection(brands)
         .doc(brandId)
@@ -398,7 +398,7 @@ class BrandFirebaseCalls {
       events.add(Event.fromObjectOnlyCoverData(
           querySnapshot.docs[i].id, querySnapshot.docs[i]));
 
-    }
+    }*/
 
     return events;
   }
@@ -415,10 +415,13 @@ class BrandFirebaseCalls {
           .then((snapshot) async {
         for (DocumentSnapshot doc in snapshot.docs) {
           user = Usuario.fromObjectOnlyCoverData(doc.id, doc);
+          if(!user.isTrainer!)
+            {
+              users.add(user);
+            }
           //user = await getUserDetails(doc.id);
           //brandList = await getAllBrandsFromUser(doc.id);
           //brand = brandList.firstWhere((element) => element.id == brandId);
-          users.add(user);
         }
       });
       return users;
