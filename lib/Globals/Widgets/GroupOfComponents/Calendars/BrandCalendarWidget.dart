@@ -86,7 +86,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     isLoading = true;
     initAppBarDateTitle();
     getUserBrandDetails();
-
   }
 
   // Init Device Sizes
@@ -120,7 +119,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     } else {
       canEdit = false;
     }
-
     initCalendar();
   }
 
@@ -940,10 +938,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               ),
             ],
           ),
-          isLoading ? SliverFillRemaining(
+          if (isLoading) SliverFillRemaining(
             child: LoadingView(),
-          ) :
-          StreamBuilder<QuerySnapshot>(
+          ) else StreamBuilder<QuerySnapshot>(
             stream: _eventDataService.getBrandEventsStream(widget.brandId),
             builder: (context, snapshot) {
               if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
@@ -1040,6 +1037,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         });
                       },
                       onTap: onTapCalendar,
+                      onLongPress: onLongPressCalendar,
                       appointmentTextStyle: Theme.of(context).textTheme.bodyText2!,
                       appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                         return _buildEventContainer(details);
@@ -1266,7 +1264,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     );
   }
 
-  Future<void> onTapCalendar(CalendarTapDetails details) async {
+  void onTapCalendar(CalendarTapDetails details) async {
     if (details.date!.isAfter(DateTime.now()) && canEdit && _controller.view != CalendarView.month) {
       setState(() {
         _controller.selectedDate = details.date;
@@ -1361,7 +1359,103 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         });
       }
     }
+  }
 
+  void onLongPressCalendar(CalendarLongPressDetails details) async {
+    if (details.date!.isAfter(DateTime.now()) && canEdit && _controller.view != CalendarView.month) {
+      setState(() {
+        _controller.selectedDate = details.date;
+      });
+      await showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(20),
+            ),
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          builder: (BuildContext context) {
+            return FractionallySizedBox(
+              heightFactor: 0.3,
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.5,
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                  child: Column(
+                    mainAxisAlignment:
+                    MainAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Text(
+                            AppLocalizations.of(context)!.add,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left
+                        ),
+                        dense: true,
+                      ),
+                      ListTile(
+                        onTap: () {
+                          mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': false});
+                          Navigator.pop(context);
+                          _addEvent(details.date);
+                        },
+                        title: Text(
+                            AppLocalizations.of(context)!.groupEvent,
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textAlign: TextAlign.left
+                        ),
+                        subtitle: Text(
+                            AppLocalizations.of(context)!.groupEventDesc,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left
+                        ),
+                        leading: const Icon(
+                          Icons.groups,
+                        ),
+                      ),
+                      ListTile(
+                        onTap: () {
+                          mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': true});
+                          Navigator.pop(context);
+                          _addPrivateEvent(details.date);
+                        },
+                        title: Text(
+                            AppLocalizations.of(context)!.privateEvent,
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textAlign: TextAlign.left
+                        ),
+                        subtitle: Text(
+                            AppLocalizations.of(context)!.privateEventDesc,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left
+                        ),
+                        leading: const Icon(
+                          Icons.lock_outlined,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+      );
+      setState(() {
+        _controller.selectedDate = null;
+      });
+    } else {
+      if (_controller.view != CalendarView.month) {
+        setState(() {
+          _controller.selectedDate = null;
+        });
+      } else {
+        setState(() {
+          _controller.selectedDate = details.date;
+        });
+      }
+    }
   }
 
 }

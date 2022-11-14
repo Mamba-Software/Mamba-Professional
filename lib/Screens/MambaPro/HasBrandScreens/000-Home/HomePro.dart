@@ -267,7 +267,7 @@ class _HomePro extends State<HomePro> {
                                 isPrivate: false,
                                 onClicked: (bool? value) {
                                   mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': false});
-                                  widget.navigateToPage(10,DateTime.now(),CalendarView.day);
+                                  widget.navigateToPage(10, null, CalendarView.day);
                                 },
                               ),
                               PlanEventWidget(
@@ -276,7 +276,7 @@ class _HomePro extends State<HomePro> {
                                 isPrivate: true,
                                 onClicked: (bool? value) {
                                   mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': true});
-                                  widget.navigateToPage(10,DateTime.now(),CalendarView.day);
+                                  widget.navigateToPage(10, null, CalendarView.day);
                                 },
                               ),
                             ],

@@ -2317,25 +2317,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Add Event Members
     for (var i=0; i<eventMembers.length; i++) {
       var user = eventMembers[i];
-      if (user.isTrainer!) {
-        print("Notifications Trainer "+user.name!);
-        // Firebase Call
-        if (user.id != currentUser.id!) {
-          await _eventDataService.addUserToEvent(eventId, user.id!, true);
-        } else {
-          await _eventDataService.addUserToEvent(eventId, user.id!);
-        }
-        // Local Notifications
-        await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
-      } else {
-        print("Notifications Client "+user.name!);
-        // Firebase Call
+      // Firebase Call
+      if (user.id != currentUser.id!) {
         await _eventDataService.addUserToEvent(eventId, user.id!, true);
-        // Notifications Service, this also send Notifications to Trainers
-        _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
-        // Local Notifications Service
-        await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
+      } else {
+        await _eventDataService.addUserToEvent(eventId, user.id!);
       }
+      // Local Notifications
+      await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
     }
   }
 
