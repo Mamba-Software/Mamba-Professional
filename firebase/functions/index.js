@@ -1713,6 +1713,7 @@ exports.userJoinsEvent = functions
             });
           }
         }
+      
       // Send Notifications
       if (userDoc.isTrainer == false) {
         // Don´t Send Full Notification When it is a Private Event
@@ -1781,13 +1782,13 @@ exports.userJoinsEvent = functions
                     );
                 }
               }
-            } else {
+          } else {
             // First one to go over 50%
             if (numClients / eventDoc.maxMembers > 0.49 && (numClients - 1) / eventDoc.maxMembers < 0.50) {
               // Send Over 50% Notification to All Event Trainers
               functions.logger.log(
                 "NOTIFICATION OVER 50%",
-                );
+              );
               for (var i in eventUsersSnapshot.docs) {
                 const id = eventUsersSnapshot.docs[i].id;
                 const eventUsersDoc = eventUsersSnapshot.docs[i].data();
@@ -1846,14 +1847,13 @@ exports.userJoinsEvent = functions
                       );
                   }
                 }
-              }
             }
           }
         } else {
           // Event is full
           functions.logger.log(
             "NOTIFICATION PRIVATE EVENT",
-            );
+          );
           for (var i in eventUsersSnapshot.docs) {
             const id = eventUsersSnapshot.docs[i].id;
             const eventUsersDoc = eventUsersSnapshot.docs[i].data();
@@ -1913,6 +1913,8 @@ exports.userJoinsEvent = functions
             }
           }
         }
+      }
+      
       // Send Notification to User if added directly
       if (eventUserDoc.invitedDirectly == true) {
           // Invited to Event
@@ -3766,6 +3768,10 @@ exports.zzzzUserJoinsEvent = functions
           });
         }
       }
+      functions.logger.log(
+        "userDoc",
+        userDoc,
+        );
       // Location´s Event Third
       for (var i in eventLocationsSnapshot.docs) {
         const id = eventLocationsSnapshot.docs[i].id;
@@ -3794,6 +3800,7 @@ exports.zzzzUserJoinsEvent = functions
             });
           }
         }
+      
       // Send Notifications
       if (userDoc.isTrainer == false) {
         // Don´t Send Full Notification When it is a Private Event
@@ -3868,7 +3875,7 @@ exports.zzzzUserJoinsEvent = functions
               // Send Over 50% Notification to All Event Trainers
               functions.logger.log(
                 "NOTIFICATION OVER 50%",
-                );
+              );
               for (var i in eventUsersSnapshot.docs) {
                 const id = eventUsersSnapshot.docs[i].id;
                 const eventUsersDoc = eventUsersSnapshot.docs[i].data();
@@ -3927,14 +3934,13 @@ exports.zzzzUserJoinsEvent = functions
                       );
                   }
                 }
-              }
             }
           }
         } else {
           // Event is full
           functions.logger.log(
             "NOTIFICATION PRIVATE EVENT",
-            );
+          );
           for (var i in eventUsersSnapshot.docs) {
             const id = eventUsersSnapshot.docs[i].id;
             const eventUsersDoc = eventUsersSnapshot.docs[i].data();
@@ -3994,6 +4000,7 @@ exports.zzzzUserJoinsEvent = functions
             }
           }
         }
+      }
       
       // Send Notification to User if added directly
       if (eventUserDoc.invitedDirectly == true) {
