@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SelectCalendarDate extends StatefulWidget {
@@ -124,8 +125,8 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 8));
                       },
                       style: ButtonStyle(
-                          elevation: MaterialStateProperty.all( 12),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          elevation: MaterialStateProperty.all(12),
+                          backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -134,7 +135,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       ),
                       child: Text(
                         AppLocalizations.of(context)!.lastNDays(7.toString()),
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                       ),
                     ),
                   ),
@@ -147,7 +148,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -156,7 +157,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       ),
                       child: Text(
                         AppLocalizations.of(context)!.lastNDays(14.toString()),
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                       ),
                     ),
                   ),
@@ -169,7 +170,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -178,7 +179,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       ),
                       child: Text(
                         AppLocalizations.of(context)!.lastNDays(30.toString()),
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                       ),
                     ),
                   ),
@@ -194,7 +195,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -203,7 +204,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       ),
                       child: Text(
                         AppLocalizations.of(context)!.previousMonth,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                       ),
                     ),
                   ),
@@ -216,7 +217,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -225,7 +226,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       ),
                       child: Text(
                         AppLocalizations.of(context)!.lastNDays(90.toString()),
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                       ),
                     ),
                   ),
@@ -238,7 +239,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColorDark.withOpacity(0.5)),
+                          backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
@@ -247,7 +248,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                       ),
                       child: Text(
                         AppLocalizations.of(context)!.historic,
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                       ),
                     ),
                   ),
@@ -259,7 +260,6 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
         ),
         centerTitle: true,
         automaticallyImplyLeading: false,
-
         elevation: 0,
       ),
       body: Column(
