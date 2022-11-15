@@ -169,7 +169,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                 children: [
                   Text(
                     money.toStringAsFixed(2) + '€',
-            style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 60),
+            style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 45),
 
           ),
                   Padding(

@@ -362,8 +362,8 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                   TabBar(
                     indicatorWeight: 3,
                     indicatorColor: AppColors.grey,
-                    labelColor: Theme.of(context).primaryColor,
-                    unselectedLabelColor: Theme.of(context).primaryColor,
+                    labelColor: AppColors.white,
+                    unselectedLabelColor: AppColors.white,
                     labelStyle: Theme.of(context).textTheme.bodyText2,
                     tabs: [
                       Tab(
@@ -506,8 +506,8 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                   TabBar(
                     indicatorWeight: 3,
                     indicatorColor: AppColors.grey,
-                    labelColor: Theme.of(context).primaryColor,
-                    unselectedLabelColor: Theme.of(context).primaryColor,
+                    labelColor: AppColors.white,
+                    unselectedLabelColor: AppColors.white,
                     labelStyle: Theme.of(context).textTheme.bodyText2,
                     tabs: [
                       Tab(
