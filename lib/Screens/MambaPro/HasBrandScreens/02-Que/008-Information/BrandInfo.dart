@@ -8,6 +8,8 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -67,6 +69,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   int breakLimit = 2;
   bool errorBreakTime = false;
   List<int> startBreaks = [];
+  // Booking Window
+  int bookingWindow = 3;
+  TextEditingController bookingWindowController = TextEditingController();
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -125,7 +130,10 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     }
     breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0,));
     breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
-
+    // Booking Window
+    //bookingWindow = currentBrand.bookingWindow!;
+    bookingWindow = 3;
+    bookingWindowController.text = bookingWindow.toString();
   }
 
   // Gets the user info from firebase.
@@ -535,7 +543,54 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           textAlign: TextAlign.center,
                         ),
                       ) : Container(),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.bookingWindowDescription,
+                              style: Theme.of(context).textTheme.caption,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      Text(
+                        AppLocalizations.of(context)!.bookingWindow,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
 
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: GestureDetector(
+                          onTap: () {
+                            selectNumberOfMembers();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(Radius.circular(5)),
+                              border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
+                              color: Colors.transparent,
+                            ),
+                            height: MediaQuery.of(context).size.width*0.1,
+                            width: MediaQuery.of(context).size.width*0.2,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  bookingWindow.toString()+" "+AppLocalizations.of(context)!.days.toLowerCase(),
+                                  style: Theme.of(context).textTheme.headline3,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       /*
                       SizedBox(height: MediaQuery.of(context).size.height*0.04),
                       Row(
@@ -822,6 +877,22 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         ),
       ) : Container(),
     );
+  }
+
+  Future selectNumberOfMembers() async {
+    int? pickedMembers =  await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectDaysDialog(
+          title: AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.days.toLowerCase()
+          ,
+          intialDays: bookingWindow-1,
+        )
+    );
+    if (pickedMembers != null) {
+      setState(() {
+        bookingWindow = pickedMembers;
+      });
+    }
   }
 
   bool validateInfo() {
