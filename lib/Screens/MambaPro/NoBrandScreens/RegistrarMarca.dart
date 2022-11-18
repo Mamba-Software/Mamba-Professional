@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataServic
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -90,6 +91,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   List<int> removedIndex = [];
   int breakLimit = 2;
   bool errorBreakTime = false;
+  // Booking Window
+  int bookingWindow = 3;
 
   Map<String, dynamic> toMap(String? id) {
     return {
@@ -123,6 +126,22 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
     super.initState();
     Provider.of<FirebaseAnalyticsProvider>(context, listen: false).sendAnalyticsEventCreateBrandIntro();
+  }
+
+  Future selectNumberOfDays() async {
+    int? pickedMembers =  await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectDaysDialog(
+          title: AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.days.toLowerCase()
+          ,
+          intialDays: bookingWindow-1,
+        )
+    );
+    if (pickedMembers != null) {
+      setState(() {
+        bookingWindow = pickedMembers;
+      });
+    }
   }
 
   @override
@@ -869,6 +888,52 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                   ],
                                 ) : Container(),
                                  */
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        AppLocalizations.of(context)!.bookingWindowDescription,
+                                        style: Theme.of(context).textTheme.caption,
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                Text(
+                                  AppLocalizations.of(context)!.bookingWindow,
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      selectNumberOfDays();
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                        border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
+                                        color: Colors.transparent,
+                                      ),
+                                      height: MediaQuery.of(context).size.width*0.1,
+                                      width: MediaQuery.of(context).size.width*0.2,
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            bookingWindow.toString()+" "+AppLocalizations.of(context)!.days.toLowerCase(),
+                                            style: Theme.of(context).textTheme.headline3,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             )
                         ),
@@ -1083,7 +1148,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
       }
     }
     // Create Brand
-    var result = await _brandDataService.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax);
+    var result = await _brandDataService.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax, bookingWindow);
     // Add User To Brand
     // New Database
     await _brandDataService.addUserToBrand(currentUser.id!,result, 1);
@@ -1103,7 +1168,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
     Navigator.pushAndRemoveUntil(
       context,
-      CupertinoPageRoute<Null>(
+      CupertinoPageRoute<void>(
         builder: (context) => const SplashScreen(),
         settings: const RouteSettings(name: 'SplashScreen'),
       ),

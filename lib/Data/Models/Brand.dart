@@ -81,7 +81,7 @@ class Brand {
       maxMembers = documentSnapshot.get("maxMembers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bookingWindow')) {
-      maxMembers = documentSnapshot.get("bookingWindow");
+      bookingWindow = documentSnapshot.get("bookingWindow");
     }
   }
 

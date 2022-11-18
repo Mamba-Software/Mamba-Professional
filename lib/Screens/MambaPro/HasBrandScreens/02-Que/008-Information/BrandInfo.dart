@@ -71,7 +71,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   List<int> startBreaks = [];
   // Booking Window
   int bookingWindow = 3;
-  TextEditingController bookingWindowController = TextEditingController();
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -131,9 +130,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0,));
     breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
     // Booking Window
-    //bookingWindow = currentBrand.bookingWindow!;
-    bookingWindow = 3;
-    bookingWindowController.text = bookingWindow.toString();
+    bookingWindow = currentBrand.bookingWindow!;
   }
 
   // Gets the user info from firebase.
@@ -179,6 +176,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       } else if (startTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,)) || endTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,))) {
         isUpdated = true;
         mixpanel!.track('brand_info_workshit_change');
+      } else if (currentBrand.bookingWindow! != bookingWindow) {
+        isUpdated = true;
+        mixpanel!.track('brand_info_booking_window_change');
       } else {
         isUpdated = false;
       }
@@ -562,13 +562,12 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
-
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: GestureDetector(
-                          onTap: () {
-                            selectNumberOfMembers();
-                          },
+                          onTap: canEdit ? () {
+                            selectNumberOfDays();
+                          } : null,
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 4),
                             decoration: BoxDecoration(
@@ -865,7 +864,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                   _workShift.add(toDouble2(_breakList[i+1]));
                 }
               }
-              await _brandDataService.updateBrandInfo(widget.brandId, nameBrandController.text, descriptionController.text, members, _workShift);
+              await _brandDataService.updateBrandInfo(widget.brandId, nameBrandController.text, descriptionController.text, members, _workShift, bookingWindow);
               await getBrand();
               mixpanel!.track('brand_info_changes_done');
             }
@@ -879,7 +878,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     );
   }
 
-  Future selectNumberOfMembers() async {
+  Future selectNumberOfDays() async {
     int? pickedMembers =  await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDaysDialog(
