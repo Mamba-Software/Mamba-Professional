@@ -69,10 +69,10 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   //DateTime endDate = DateTime.now().subtract(const Duration(days: 1));
   DateTime endDate = DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day, 23, 59).subtract(const Duration(days: 1));
 
-  DateTime startDate = DateTime.now().subtract(const Duration(days: 8));
+  DateTime startDate = DateTime.now().subtract(const Duration(days: 31));
 
-  DateTime backEndDate = DateTime.now().subtract(const Duration(days: 9));
-  DateTime backStartDate = DateTime.now().subtract(const Duration(days: 16));
+  DateTime backEndDate = DateTime.now().subtract(const Duration(days: 32));
+  DateTime backStartDate = DateTime.now().subtract(const Duration(days: 62));
 
   TabController? _tabController;
   int _selectedIndex = 0;

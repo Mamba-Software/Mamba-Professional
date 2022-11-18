@@ -165,7 +165,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
   @override
   Widget build(BuildContext context) {
     _tooltipBehavior =  TooltipBehavior(enable: true, header: '');
-    return isLoading? LoadingView() :   Column(
+    return isLoading? LoadingView() :  Column(
       children: [
         bonos.length > 1 ? Column(
           children: [
@@ -202,10 +202,10 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       });
                       setState(()  {
                         //bonoSelected = bonos[page];
-                       // bonoSelected.setBasicData = bonos[page];
-                       // bonoSelected.setConditionsData = bonos[page].condition!;
-                       // isBonoSelected = true;
-                       // setConditionsBono(bonoSelected);
+                        // bonoSelected.setBasicData = bonos[page];
+                        // bonoSelected.setConditionsData = bonos[page].condition!;
+                        // isBonoSelected = true;
+                        // setConditionsBono(bonoSelected);
                         _currentPage = page;
                         index = page;
 
@@ -231,23 +231,22 @@ class BonosPurchasedState extends State<BonosPurchased> {
             ],
           ),
         ),
-
         Padding(
           padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02,bottom: MediaQuery.of(context).size.height*0.10, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
           child: Column(
             children: [
-              Padding(
+              bonos.isNotEmpty ? Padding(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.04),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width*0.4,
-                        height: MediaQuery.of(context).size.width*0.25,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).backgroundColor,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
+                      height: MediaQuery.of(context).size.width*0.25,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -275,87 +274,124 @@ class BonosPurchasedState extends State<BonosPurchased> {
                     ),
                   ],
                 ),
+              ) : Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.04),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.4,
+                      height: MediaQuery.of(context).size.width*0.25,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(0.toStringAsFixed(2)  + ' €',
+                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text( AppLocalizations.of(context)!.benefit),
+                          ]
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.4,
+                      height: MediaQuery.of(context).size.width*0.25,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(0.toString(),
+                              style: Theme.of(context).textTheme.headline4?.copyWith(color: AppColors.mainColor, fontSize: 20, fontWeight: FontWeight.bold),),
+                            Text( AppLocalizations.of(context)!.boughts),
+                          ]
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.05),
                 child: Center(
-                        child: Stack(
-                          alignment: Alignment.center,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        bonos.isEmpty || bonoStats[index].totalBenefits.isEmpty ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
                           children: [
-                            bonoStats[index].totalBenefits.isEmpty? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                SizedBox(height: MediaQuery.of(context).size.height*0.07),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width*0.30,
-                                    child: Image.asset(Constants.emptyCalendar)
-                                ),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                                Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                              ],
-                            ) : Container(),
-                            Container(
-                                child: SfCartesianChart(
-                                  backgroundColor: Colors.transparent,
-                                    borderColor: Colors.transparent,
-                                    plotAreaBorderColor: Colors.transparent,
-                                    plotAreaBorderWidth: 1,
-                                    primaryXAxis: CategoryAxis(
-                                      //Hide the gridlines of x-axis
-                                      majorGridLines: MajorGridLines(width: 0),
-                                      isVisible: false,
-                                      //Hide the axis line of x-axis
-                                      axisLine: AxisLine(width: 0),
-                                    ),
-                                    primaryYAxis: NumericAxis(
-                                      decimalPlaces: 2,
-    labelFormat: '{value}€',
-                                      majorTickLines: MajorTickLines(
-                                        width: 0,
-                                      ),
-                                      enableAutoIntervalOnZooming: false,
-                                      opposedPosition: true,
-                                      interval: 50,
-                                      //maximum: double.parse(maxNumber.toString()),
-                                      //isVisible: false,
-                                      //Hide the gridlines of x-axis
-                                      majorGridLines: MajorGridLines(width: 0),
-                                      //Hide the axis line of x-axis
-                                      axisLine: AxisLine(width: 0),
-                                    ),
-                                    axes: [],
-                                    indicators: [],
-                                    legend: null,
-                                    tooltipBehavior: _tooltipBehavior,
-                                  enableSideBySideSeriesPlacement: false,
-                                  series: <ChartSeries>[
-                                      // Renders line chart
-                                    SplineAreaSeries<TotalBenefit, String>(
-                                        borderColor: Styles.mainColor,
-                                      borderWidth: 2,
-                                        markerSettings: MarkerSettings(
-                                          borderColor: AppColors.mainColor,
-                                            isVisible:  bonoStats[index].totalBenefits.length == 1? true : false,
-                                            height:  10,
-                                            width:  10,
-                                            shape: DataMarkerType.circle,
-                                            color: AppColors.mainColor),
-
-                                      color: Colors.transparent,
-                                      dataSource: bonoStats[index].totalBenefits,
-                                          xValueMapper: (TotalBenefit events, _) => events.day,
-                                          yValueMapper: (TotalBenefit events, _) => events.money,
-                                      )
-                                    ]
-                                )
+                            SizedBox(height: MediaQuery.of(context).size.height*0.07),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width*0.30,
+                                child: Image.asset(Constants.emptyCalendar)
                             ),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                            Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
-                        )
-                    ),
-              ),
-            ],
+                        ) : Container(),
+                        SfCartesianChart(
+                            backgroundColor: Colors.transparent,
+                            borderColor: Colors.transparent,
+                            plotAreaBorderColor: Colors.transparent,
+                            plotAreaBorderWidth: 1,
+                            primaryXAxis: CategoryAxis(
+                              //Hide the gridlines of x-axis
+                              majorGridLines: MajorGridLines(width: 0),
+                              isVisible: false,
+                              //Hide the axis line of x-axis
+                              axisLine: AxisLine(width: 0),
+                            ),
+                            primaryYAxis: NumericAxis(
+                              decimalPlaces: 2,
+                              labelFormat: '{value}€',
+                              majorTickLines: MajorTickLines(
+                                width: 0,
+                              ),
+                              enableAutoIntervalOnZooming: false,
+                              opposedPosition: true,
+                              interval: 50,
+                              //maximum: double.parse(maxNumber.toString()),
+                              //isVisible: false,
+                              //Hide the gridlines of x-axis
+                              majorGridLines: MajorGridLines(width: 0),
+                              //Hide the axis line of x-axis
+                              axisLine: AxisLine(width: 0),
+                            ),
+                            axes: [],
+                            indicators: [],
+                            legend: null,
+                            tooltipBehavior: _tooltipBehavior,
+                            enableSideBySideSeriesPlacement: false,
+                            series: <ChartSeries>[
+                              // Renders line chart
+                              SplineAreaSeries<TotalBenefit, String>(
+                                borderColor: Styles.mainColor,
+                                borderWidth: 2,
+                                markerSettings: MarkerSettings(
+                                    borderColor: AppColors.mainColor,
+                                    //isVisible: bonos.isEmpty || bonoStats[index].totalBenefits.length == 1 ? true : false,
+                                    isVisible: false,
+                                    height:  10,
+                                    width:  10,
+                                    shape: DataMarkerType.circle,
+                                    color: AppColors.mainColor),
+
+                                color: Colors.transparent,
+                                dataSource: bonoStats[index].totalBenefits,
+                                xValueMapper: (TotalBenefit events, _) => events.day,
+                                yValueMapper: (TotalBenefit events, _) => events.money,
+                              )
+                            ]
+                        ),
+                      ],
+                    )
+                ),
+              ),            ],
           ),
         ),
 
