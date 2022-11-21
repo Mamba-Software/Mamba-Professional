@@ -1113,7 +1113,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
         startTimeController.text);
     DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(
         endTimeController.text);
-    double toDouble(DateTime myTime) => myTime.hour + myTime.minute / 60.0;
+    double toDouble(DateTime myTime) => myTime.hour + myTime.minute / 100.0;
     if (TimeOfDay(hour: start.hour, minute: start.minute) ==
         const TimeOfDay(hour: 0, minute: 00) &&
         TimeOfDay(hour: end.hour, minute: end.minute) ==
@@ -1137,8 +1137,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     // Get Data About The Times Of The Brand
     DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
     DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
-    double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
-    double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+    double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100.0;
+    double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/100.0;
     _workShift.add(toDouble(start));
     _workShift.add(toDouble(end));
     for (var i=0; i < _breakList.length; i+=2) {
