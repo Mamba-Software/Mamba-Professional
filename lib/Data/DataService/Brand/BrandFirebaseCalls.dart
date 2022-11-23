@@ -474,7 +474,7 @@ class BrandFirebaseCalls {
 
   //Add
 
-  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) async {
+  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers, int bookingWindow) async {
     bool firestoreError = false;
     var uid = Uuid().v4();
     final DateTime now = DateTime.now();
@@ -491,6 +491,7 @@ class BrandFirebaseCalls {
       "numTrainers": 1,
       "workShift": workShift,
       "maxMembers": maxMembers,
+      "bookingWindow": bookingWindow,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -613,11 +614,12 @@ class BrandFirebaseCalls {
   //Update
 
   Future<void> updateBrandInfo(String brandID, String name, String description,
-      int maxMembers, List<double> workShift) async {
+      int maxMembers, List<double> workShift, int bookingWindow) async {
     await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
       "maxMembers": maxMembers,
+      "bookingWindow": bookingWindow,
       "workShift": workShift,
     });
   }

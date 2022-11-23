@@ -396,8 +396,8 @@ class _SettingsState extends State<Settings> {
                     onPressed: () async {
                       mixpanel!.track('user_profile_settings_app_store');
                       await StoreRedirect.redirect(
-                        androidAppId: "com.mamba.mambastyleapp",
-                        iOSAppId: "1601684650",
+                        androidAppId: "com.mamba.mambaprofessionalapp",
+                        iOSAppId: "1642701679",
                       );
                     },
                     child: Row(

@@ -20,6 +20,7 @@ class Brand {
   int? numTrainers;
   var workShift;
   int? maxMembers;
+  int? bookingWindow;
 
   List<ImageObject> imagesList = [];
   List<RequestToBrand> requestsList = [];
@@ -39,6 +40,7 @@ class Brand {
     this.numTrainers,
     this.workShift,
     this.maxMembers,
+    this.bookingWindow,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +80,9 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
       maxMembers = documentSnapshot.get("maxMembers");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bookingWindow')) {
+      bookingWindow = documentSnapshot.get("bookingWindow");
+    }
   }
 
   Brand.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -108,6 +113,7 @@ class Brand {
     numTrainers = brand.numTrainers;
     workShift = brand.workShift;
     maxMembers = brand.maxMembers;
+    bookingWindow = brand.bookingWindow;
   }
 
   // Requests

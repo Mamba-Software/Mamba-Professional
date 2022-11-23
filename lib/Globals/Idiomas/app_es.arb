@@ -2599,5 +2599,13 @@
   "boughts": "Compras",
   "@boughts": {
     "description": "boughts message"
+  },
+  "bookingWindow": "Ventana de reserva",
+  "@bookingWindow": {
+    "description": "boughts message"
+  },
+  "bookingWindowDescription": "Indica el tiempo de antelación con el que los clientes de tu marca pueden reservar una plaza en tus sesiones",
+  "@bookingWindowDescription": {
+    "description": "boughts message"
   }
 }

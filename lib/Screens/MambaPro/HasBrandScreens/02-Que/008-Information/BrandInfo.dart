@@ -8,6 +8,8 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -67,6 +69,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   int breakLimit = 2;
   bool errorBreakTime = false;
   List<int> startBreaks = [];
+  // Booking Window
+  int bookingWindow = 3;
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -87,6 +91,11 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       }),
     );
     canEdit = currentUser.brandRole < 2 ? true : false;
+    initBrand();
+  }
+
+  // Gets the user info from firebase.
+  void initBrand() {
     // Name Description
     nameBrandController.text = currentBrand.name!;
     descriptionController.text = currentBrand.description!;
@@ -98,12 +107,18 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
     startTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS);
     startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,));
+    //print(startHourWS);
+    //print(startMinWS);
+    //print(startTime.toString());
     // End Time
     var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
     var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
     endTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS);
     endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,));
-    // Break Time
+    //print(endHourWS);
+    //print(endMinWS);
+    //print(endTime.toString());
+    /* Break Time
     for (var i=2; i < currentBrand.workShift.length ; i+=2) {
       var start = currentBrand.workShift[i];
       int s = start.toInt();
@@ -125,7 +140,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     }
     breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0,));
     breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
-
+    */
+    // Booking Window
+    bookingWindow = currentBrand.bookingWindow!;
   }
 
   // Gets the user info from firebase.
@@ -137,6 +154,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       currentBrand.setUserList = userList;
       isLoading = false;
     });
+    initBrand();
+    print("saved");
   }
 
   Future<void> navigateToEditLogoScreen() async {
@@ -163,14 +182,21 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
       var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
       if (nameBrandControllerTemp.trim() != currentBrand.name! && nameBrandControllerTemp != "") {
+        print(1);
         isUpdated = true;
         mixpanel!.track('brand_info_name_change');
       } else if (descriptionControllerTemp.trim() != currentBrand.description! && descriptionControllerTemp != "") {
+        print(2);
         isUpdated = true;
         mixpanel!.track('brand_info_description_change');
       } else if (startTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,)) || endTimeController.text != DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,))) {
+        print(3);
         isUpdated = true;
         mixpanel!.track('brand_info_workshit_change');
+      } else if (currentBrand.bookingWindow! != bookingWindow) {
+        print(4);
+        isUpdated = true;
+        mixpanel!.track('brand_info_booking_window_change');
       } else {
         isUpdated = false;
       }
@@ -535,7 +561,53 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           textAlign: TextAlign.center,
                         ),
                       ) : Container(),
-
+                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.bookingWindowDescription,
+                              style: Theme.of(context).textTheme.caption,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      Text(
+                        AppLocalizations.of(context)!.bookingWindow,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: GestureDetector(
+                          onTap: canEdit ? () {
+                            selectNumberOfDays();
+                          } : null,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(Radius.circular(5)),
+                              border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
+                              color: Colors.transparent,
+                            ),
+                            height: MediaQuery.of(context).size.width*0.1,
+                            width: MediaQuery.of(context).size.width*0.2,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  bookingWindow.toString()+" "+AppLocalizations.of(context)!.days.toLowerCase(),
+                                  style: Theme.of(context).textTheme.headline3,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       /*
                       SizedBox(height: MediaQuery.of(context).size.height*0.04),
                       Row(
@@ -633,7 +705,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                             padding: const EdgeInsets.only(left: 0.0),
                             child: OutlinedButton(
                               onPressed: () {
-                                double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
+                                double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100.0;
                                 if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
                                   setState(() {
                                     errorBreakTime = true;
@@ -798,19 +870,20 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               });
               DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
               DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
-              double toDouble(DateTime myTime) => myTime.hour + myTime.minute/60.0;
-              double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+              double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100;
               // Reset Workshift
               _workShift.clear();
               _workShift.add(toDouble(start));
               _workShift.add(toDouble(end));
+              /*
               for (var i=0; i < _breakList.length; i+=2) {
                 if(!removedIndex.contains(i)) {
                   _workShift.add(toDouble2(_breakList[i]));
                   _workShift.add(toDouble2(_breakList[i+1]));
                 }
               }
-              await _brandDataService.updateBrandInfo(widget.brandId, nameBrandController.text, descriptionController.text, members, _workShift);
+               */
+              await _brandDataService.updateBrandInfo(widget.brandId, nameBrandController.text, descriptionController.text, members, _workShift, bookingWindow);
               await getBrand();
               mixpanel!.track('brand_info_changes_done');
             }
@@ -824,10 +897,26 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     );
   }
 
+  Future selectNumberOfDays() async {
+    int? pickedMembers =  await showCupertinoModalPopup(
+        context: context,
+        builder: (_) => SelectDaysDialog(
+          title: AppLocalizations.of(context)!.select+" "+AppLocalizations.of(context)!.days.toLowerCase()
+          ,
+          intialDays: bookingWindow-1,
+        )
+    );
+    if (pickedMembers != null) {
+      setState(() {
+        bookingWindow = pickedMembers;
+      });
+    }
+  }
+
   bool validateInfo() {
     DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
     DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
-    double toDouble(DateTime myTime) => myTime.hour + myTime.minute / 60.0;
+    double toDouble(DateTime myTime) => myTime.hour + myTime.minute / 100.0;
     if (!formKeyInfo.currentState!.validate()) {
       return false;
     }

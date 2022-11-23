@@ -40,7 +40,7 @@ class BrandDataService {
   Future<List<Bono>> getAllBonosFromBrandStats(String brandId) => _firebase.getAllBonosFromBrandStats(brandId);
 
   // Add Data
-  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers) => _firebase.addBrand(name, image, description, workShift, maxMembers);
+  Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers, int bookingWindow) => _firebase.addBrand(name, image, description, workShift, maxMembers, bookingWindow);
   Future<void> addUserToBrand(String userId, String brandId, int role) => _firebase.addUserToBrand(userId, brandId, role);
   Future<void> addBrandContentPictures(String brandID, List<File> images) => _firebase.addBrandContentPictures(brandID, images);
   Future<void> acceptRequestFromUser(RequestToBrand request) => _firebase.acceptRequestFromUser(request);
@@ -48,7 +48,7 @@ class BrandDataService {
   Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, var price, var classes, Timestamp timeRequested) => _firebase.addBonoRequestToBrand(brandId, userId, bonoId, title, price, classes, timeRequested);
 
   // Update Data
-  Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift);
+  Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift, int bookingWindow) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift, bookingWindow);
   Future<String> updateBrandPhoto(String brandID, File image) => _firebase.updateBrandPhoto(brandID, image);
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
   Future<void> updateBrandRoom(String brandID, String roomId) => _firebase.updateBrandRoom(brandID, roomId);

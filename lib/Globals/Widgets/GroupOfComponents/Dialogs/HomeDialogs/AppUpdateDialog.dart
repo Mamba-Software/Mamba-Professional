@@ -94,8 +94,8 @@ class AppUpdateDialog extends StatelessWidget {
                     onPressed: () async {
                       mixpanel!.track('minimum_app_version_update', properties: {'isMandatory': isMandatory});
                       await StoreRedirect.redirect(
-                        androidAppId: "com.mamba.mambastyleapp",
-                        iOSAppId: "1601684650",
+                        androidAppId: "com.mamba.mambaprofessionalapp",
+                        iOSAppId: "1642701679",
                       );
                       await Future.delayed(const Duration(seconds: 3));
                       Navigator.pop(context, true);
