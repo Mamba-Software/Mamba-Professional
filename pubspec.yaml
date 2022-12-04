@@ -89,6 +89,7 @@ dependencies:
   syncfusion_flutter_datepicker: ^19.4.56
   flutter_colorpicker: ^1.0.3
   syncfusion_flutter_charts: ^19.4.56
+  flutter_bloc: ^7.1.0
 
 flutter_icons:
   # Platforms

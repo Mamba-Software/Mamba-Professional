@@ -2607,5 +2607,9 @@
   "bookingWindowDescription": "Indica el tiempo de antelación con el que los clientes de tu marca pueden reservar una plaza en tus sesiones",
   "@bookingWindowDescription": {
     "description": "boughts message"
+  },
+  "requestText": "Comprueba las solicitudes de la marca",
+  "@requestText": {
+    "description": "requestText message"
   }
 }

@@ -584,5 +584,6 @@
   "benefit": "Benefici",
   "boughts": "Compres",
   "bookingWindow": "Finestra de reserva",
-  "bookingWindowDescription": "Indica el temps d'antelació amb el qual els clients de la teva marca poden reservar una plaça en les teves sessions"
+  "bookingWindowDescription": "Indica el temps d'antelació amb el qual els clients de la teva marca poden reservar una plaça en les teves sessions",
+  "requestText": "Comprova les sol·licituds de la marca"
 }

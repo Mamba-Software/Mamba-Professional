@@ -53,7 +53,7 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
   @override
   void initState() {
     filteredEvents = widget.events;
-    orderEvents();
+    //orderEvents();
     mountStat();
     isLoading = false;
     super.initState();
@@ -67,14 +67,15 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
     timeOffered = '';
     timeDemand = [];
     mapHours.clear();
-    orderEvents();
+    //orderEvents();
     mountStat();
-    orderTimeOffer();
   }
 
   void orderEvents()
   {
-    return filteredEvents.sort((a, b){ //sorting in ascending order
+    return filteredEvents.sort((a, b){
+      print(a.doneAt);
+      print(int.parse(a.hour!));//sorting in ascending order
       if(int.parse(a.hour!) == int.parse(b.hour!))
         {
           if(int.parse(a.minute!) >= int.parse(b.minute!))
@@ -93,11 +94,6 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
         }
       return 0;
     });
-  }
-
-  void orderTimeOffer()
-  {
-
   }
 
   void mountStat() {
