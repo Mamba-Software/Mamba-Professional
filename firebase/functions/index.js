@@ -465,6 +465,7 @@ exports.eventUpdatesCoverData = functions
         .doc(eventId).set({
           "title": after.title,
           "imageUrl": imageUrl,
+          "doneAt": after.doneAt,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -487,6 +488,7 @@ exports.eventUpdatesCoverData = functions
          .set({
           "title": after.title,
           "imageUrl": imageUrl,
+          "doneAt": after.doneAt,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -508,6 +510,8 @@ exports.eventUpdatesCoverData = functions
       if (before.title != after.title) {
         coverDataChange = true;
       } else if (before.imageUrl != after.imageUrl) {
+        coverDataChange = true;
+      } else if (before.doneAt != after.doneAt) {
         coverDataChange = true;
       } else if (before.year != after.year) {
         coverDataChange = true;
@@ -548,6 +552,7 @@ exports.eventUpdatesCoverData = functions
           .update({
             "title": after.title,
             "imageUrl": imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -568,6 +573,7 @@ exports.eventUpdatesCoverData = functions
            .update({
             "title": after.title,
             "imageUrl": imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -594,6 +600,7 @@ exports.eventUpdatesCoverData = functions
           .update({
             "title": after.title,
             "imageUrl": imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -614,6 +621,7 @@ exports.eventUpdatesCoverData = functions
            .update({
             "title": after.title,
             "imageUrl": imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -640,6 +648,7 @@ exports.eventUpdatesCoverData = functions
           .update({
             "title": after.title,
             "imageUrl": imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -660,6 +669,7 @@ exports.eventUpdatesCoverData = functions
            .update({
             "title": after.title,
             "imageUrl": imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
