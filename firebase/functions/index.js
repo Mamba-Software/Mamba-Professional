@@ -2536,6 +2536,7 @@ exports.zzzzEventUpdatesCoverData = functions
         .doc(eventId).set({
           "title": after.title,
           "imageUrl": after.imageUrl,
+          "doneAt": after.doneAt,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -2558,6 +2559,7 @@ exports.zzzzEventUpdatesCoverData = functions
          .set({
           "title": after.title,
           "imageUrl": after.imageUrl,
+          "doneAt": after.doneAt,
           "year": after.year,
           "month": after.month,
           "day": after.day,
@@ -2579,6 +2581,8 @@ exports.zzzzEventUpdatesCoverData = functions
       if (before.title != after.title) {
         coverDataChange = true;
       } else if (before.imageUrl != after.imageUrl) {
+        coverDataChange = true;
+      } else if (before.doneAt != after.doneAt) {
         coverDataChange = true;
       } else if (before.year != after.year) {
         coverDataChange = true;
@@ -2604,6 +2608,10 @@ exports.zzzzEventUpdatesCoverData = functions
           "Event Users Num =",
           eventUsersSnapshot.size,
           );
+        functions.logger.log(
+          "DoneAt =",
+          after.doneAt,   
+          );
         // Update the Event Subcollection in Users
         for (var i in eventUsersSnapshot.docs) {
           const id = eventUsersSnapshot.docs[i].id;
@@ -2615,6 +2623,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .update({
             "title": after.title,
             "imageUrl": after.imageUrl,
+            "doneAt": after.doneAt,          
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2635,6 +2644,7 @@ exports.zzzzEventUpdatesCoverData = functions
            .update({
             "title": after.title,
             "imageUrl": after.imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2661,6 +2671,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .update({
             "title": after.title,
             "imageUrl": after.imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2681,6 +2692,7 @@ exports.zzzzEventUpdatesCoverData = functions
            .update({
             "title": after.title,
             "imageUrl": after.imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2707,6 +2719,7 @@ exports.zzzzEventUpdatesCoverData = functions
           .update({
             "title": after.title,
             "imageUrl": after.imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
@@ -2727,6 +2740,7 @@ exports.zzzzEventUpdatesCoverData = functions
            .update({
             "title": after.title,
             "imageUrl": after.imageUrl,
+            "doneAt": after.doneAt,
             "year": after.year,
             "month": after.month,
             "day": after.day,
