@@ -2134,13 +2134,13 @@ class FirebaseDatabaseService {
   Future<void> addEventToPurchase(String purchaseId, Event eventDoc) async {
     try {
       await _firestore
-        ..collection("7777 Payments")
-            .doc("Purchases")
-            .collection("Purchases")
-            .doc(purchaseId)
-            .collection("Events")
-            .doc(eventDoc.id)
-            .set({
+        .collection("7777 Payments")
+        .doc("Purchases")
+        .collection("Purchases")
+        .doc(purchaseId)
+        .collection("Events")
+        .doc(eventDoc.id)
+        .set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "imageUrl": eventDoc.imageUrl,
