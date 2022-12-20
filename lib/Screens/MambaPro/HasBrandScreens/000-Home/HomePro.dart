@@ -243,7 +243,7 @@ class _HomePro extends State<HomePro> {
                     onClicked: (bool? value) {
                       mixpanel!.track('brand_homepage_bono_confirmation_requests');
                       navigateToBonosRequestScreen();
-                    },
+                    }, //
                   ) : Container(),
                   BrandBestBonoWidget(
                     brandId: currentBrand.id!,
