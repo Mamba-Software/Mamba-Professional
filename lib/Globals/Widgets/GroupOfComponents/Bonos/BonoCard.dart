@@ -131,6 +131,20 @@ class BonoCardState extends State<BonoCard> {
             maxWidth: widget.width,
           ),
           height: isExpanded ? widget.height * isExpandedHeight : widget.height,
+          decoration: BoxDecoration(
+              color: AppColors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.all(Radius.circular(widget.width*0.05))),
+          // Animation
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.fastOutSlowIn,
+        ),
+        AnimatedContainer(
+          constraints: BoxConstraints(
+            minHeight: widget.height,
+            minWidth: widget.width,
+            maxWidth: widget.width,
+          ),
+          height: isExpanded ? widget.height * isExpandedHeight : widget.height,
           decoration: bono.isDegradate!
               ? BoxDecoration(
                   gradient: LinearGradient(
@@ -152,7 +166,7 @@ class BonoCardState extends State<BonoCard> {
                           fit: BoxFit.cover,
                         )
                       : null,
-                  borderRadius: BorderRadius.all(Radius.circular(widget.width*0.03)))
+                  borderRadius: BorderRadius.all(Radius.circular(widget.width*0.05)))
               : BoxDecoration(
                   image: bono.imageUrl != null && bono.imageUrl != ''
                       ? DecorationImage(
