@@ -1315,7 +1315,7 @@
   "@planSessions": {
     "description": "Wellcome message"
   },
-  "myProgress": "Control y seguimiento",
+  "myProgress": "Mi progreso",
   "@myProgress": {
     "description": "Wellcome message"
   },

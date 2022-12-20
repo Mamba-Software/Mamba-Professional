@@ -26,8 +26,8 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
   // Boolean Loading
   bool isLoading = true;
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
-  var _eventDataService = new EventDataService();
+  final _userDataService = UserDataService();
+  final _eventDataService = EventDataService();
   // User
   Usuario user = Usuario();
   // AlL Events From User
@@ -60,181 +60,178 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
   @override
   Widget build(BuildContext context) {
     return isLoading ?
-    Container(
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: 2,
-        itemBuilder: (context,int index) {
-          return Column(
-            children: [
-              Shimmer.fromColors(
-                baseColor: AppColors.grey,
-                highlightColor: AppColors.grey.withOpacity(0.5),
-                child: Container(
-                  height: widget.height*0.18,
-                  width: widget.width,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: widget.width*0.20,
-                        width: widget.width*0.20,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: widget.width*0.20,
-                              width: widget.width*0.20,
-                              decoration: new BoxDecoration(
-                                color: AppColors.grey,
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
+    ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 2,
+      itemBuilder: (context,int index) {
+        return Column(
+          children: [
+            Shimmer.fromColors(
+              baseColor: AppColors.grey,
+              highlightColor: AppColors.grey.withOpacity(0.5),
+              child: SizedBox(
+                height: widget.height*0.18,
+                width: widget.width,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      height: widget.width*0.20,
+                      width: widget.width*0.20,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            height: widget.height*18,
-                            width: widget.width*0.56,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  height: widget.height*0.03,
-                                  width: widget.width*0.20,
-                                  decoration: new BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-                                SizedBox(height: widget.height*0.02,),
-                                Container(
-                                  height: widget.height*0.02,
-                                  width: widget.width*0.35,
-                                  decoration: new BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-                                SizedBox(height: widget.height*0.015,),
-                                Container(
-                                  height: widget.height*0.02,
-                                  width: widget.width*0.5,
-                                  decoration: new BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-                                SizedBox(height: widget.height*0.015,),
-                                Container(
-                                  height: widget.height*0.02,
-                                  width: widget.width*0.5,
-                                  decoration: new BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-                                SizedBox(height: widget.height*0.015,),
-                                Container(
-                                  height: widget.height*0.02,
-                                  width: widget.width*0.5,
-                                  decoration: new BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-
-                              ],
+                            height: widget.width*0.20,
+                            width: widget.width*0.20,
+                            decoration: BoxDecoration(
+                              color: AppColors.grey,
+                              borderRadius: BorderRadius.circular(5.0),
                             ),
                           ),
-                          Container(
-                            height: widget.height*15,
-                            width: widget.width*0.12,
-                            child: Center(
-                              child: Container(
-                                height: widget.height*0.05,
-                                width: widget.height*0.05,
-                                decoration: new BoxDecoration(
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          height: widget.height*18,
+                          width: widget.width*0.56,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                height: widget.height*0.03,
+                                width: widget.width*0.20,
+                                decoration: BoxDecoration(
                                   color: AppColors.grey,
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
                               ),
+                              SizedBox(height: widget.height*0.02,),
+                              Container(
+                                height: widget.height*0.02,
+                                width: widget.width*0.35,
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                              ),
+                              SizedBox(height: widget.height*0.015,),
+                              Container(
+                                height: widget.height*0.02,
+                                width: widget.width*0.5,
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                              ),
+                              SizedBox(height: widget.height*0.015,),
+                              Container(
+                                height: widget.height*0.02,
+                                width: widget.width*0.5,
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                              ),
+                              SizedBox(height: widget.height*0.015,),
+                              Container(
+                                height: widget.height*0.02,
+                                width: widget.width*0.5,
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: widget.height*15,
+                          width: widget.width*0.12,
+                          child: Center(
+                            child: Container(
+                              height: widget.height*0.05,
+                              width: widget.height*0.05,
+                              decoration: BoxDecoration(
+                                color: AppColors.grey,
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
                             ),
                           ),
-                        ],
-                      )
-                    ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: widget.height*0.04, horizontal: widget.width*0.1),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    height: 1,
+                    width: widget.width*0.68,
+                    color: AppColors.grey,
                   ),
-                ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: widget.height*0.04),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: 1,
-                      width: widget.width*0.68,
-                      color: AppColors.grey,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      },
     )        
-    : listEvents.length > 0 ? Container(
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: listEvents.length,
-        itemBuilder: (context,int index) {
-          Event event = listEvents[index];
-          return Column(
-            children: [
-              EventListTile(
-                userId: currentUser.id!,
-                eventId: event.id!,
-                showFeedback: currentUser.id! == user.id! && currentUser.isTrainer == false,
-                height: widget.height,
-                width: widget.width,
+    : listEvents.isNotEmpty ? ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: listEvents.length,
+      itemBuilder: (context,int index) {
+        Event event = listEvents[index];
+        return Column(
+          children: [
+            EventListTile(
+              userId: user.id!,
+              eventId: event.id!,
+              showFeedback: currentUser.id! == user.id! || currentUser.isTrainer!,
+              height: widget.height,
+              width: widget.width,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: widget.height*0.04, horizontal: widget.width*0.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Container(
+                    height: 1,
+                    width: widget.width*0.75,
+                    color: AppColors.grey,
+                  ),
+                ],
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: widget.height*0.04),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      height: 1,
-                      width: widget.width*0.68,
-                      color: AppColors.grey,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-      ), //
+            ),
+          ],
+        );
+      },
     ) : Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
         SizedBox(height: MediaQuery.of(context).size.height*0.01),
-        Container(
-            width: MediaQuery.of(context).size.width*0.25,
+        SizedBox(
+            width: MediaQuery.of(context).size.width*0.2,
             child: Image.asset(Constants.emptyCalendar)
         ),
         SizedBox(height: MediaQuery.of(context).size.height*0.005),
         Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+        SizedBox(height: MediaQuery.of(context).size.height*0.06),
       ],
     );
   }

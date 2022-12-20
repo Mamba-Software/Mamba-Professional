@@ -64,14 +64,14 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
       children: [
         SizedBox(
           height: widget.height*0.05,
-          width: widget.width*0.84,
+          width: widget.width*0.9,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                   AppLocalizations.of(context)!.activeBono,
-                  style: Theme.of(context).textTheme.headline3!.copyWith(color: AppColors.grey, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headline3,
                   textAlign: TextAlign.center
               ),
               TextButton(
@@ -93,7 +93,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: SizedBox(
                   height: widget.height*0.22,
-                  width: widget.width*0.84,
+                  width: widget.width*0.9,
                   child: LoadingView(
                     hasLogo: false,
                     isSmall: true,
@@ -104,7 +104,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
               userBonos = _bonosUtils.documentsToBonosUser(snapshot.data!.docs, true, true);
               if (userBonos.isNotEmpty) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.width*0.08),
+                  padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
@@ -123,7 +123,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                                 child: SizedBox(
                                   height: widget.height*0.22,
-                                  width: widget.width*0.84,
+                                  width: widget.width*0.9,
                                   child: LoadingView(
                                     hasLogo: false,
                                     isSmall: true,
@@ -143,7 +143,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                                         child: SizedBox(
                                           height: widget.height*0.22,
-                                          width: widget.width*0.84,
+                                          width: widget.width*0.9,
                                           child: LoadingView(
                                             hasLogo: false,
                                             isSmall: true,
@@ -156,7 +156,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                                         child: ClientBonoCard(
                                           height: widget.height*0.22,
-                                          width: widget.width*0.84,
+                                          width: widget.width*0.9,
                                           bono: bono,
                                           brand: currentBrand,
                                           purchase: bonoPurchase,
@@ -192,6 +192,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
             }
           }
         ),
+        SizedBox(height: widget.height*0.03,),
       ],
     );
   }
