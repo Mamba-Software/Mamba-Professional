@@ -50,15 +50,12 @@ class BrandFirebaseCalls {
   }
 
   Future<void> deleteBrandContentPicture(String brandID) async {
-    await _firebaseStorage.ref()
-        .child("brandPics/" + brandID + ".png")
-        .delete();
+    await _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + brandID + ".jpeg").delete();
+
   }
 
   Future<void> deleteBrandPhoto(String brandID) async {
-    await _firebaseStorage.ref()
-        .child("brandPics/" + brandID + ".png")
-        .delete();
+    await _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + brandID + ".jpeg").delete();
   }
 
   Future<bool> deleteLocation(String locationId, String? baseLocation) async {

@@ -16,4 +16,9 @@ class DateTimeUtils {
     return StringUtils().toCapitalized(DateFormat("MMMM", languageCode).format(date));
   }
 
+  String formatDateTimeToStringMMYYYY(DateTime date, String languageCode) {
+    String result = DateFormat("yyyy", languageCode).format(date);
+    return StringUtils().toCapitalized(result);
+  }
+
 }

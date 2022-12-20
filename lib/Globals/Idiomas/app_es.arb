@@ -115,6 +115,10 @@
   "@recover":{
     "description": "Contraseña Text "
   },
+  "loggedInWith": "Sesión iniciada cómo",
+  "@loggedInWith":{
+    "description": "LogIn Text "
+  },
   "login": "Inicia Sesión",
   "@login":{
     "description": "LogIn Text "
@@ -1311,7 +1315,7 @@
   "@planSessions": {
     "description": "Wellcome message"
   },
-  "myProgress": "Control y seguimiento",
+  "myProgress": "Mi progreso",
   "@myProgress": {
     "description": "Wellcome message"
   },
@@ -1321,6 +1325,10 @@
   },
   "events": "Eventos",
   "@events": {
+    "description": "Wellcome message"
+  },
+  "myData": "Mis datos",
+  "@myData": {
     "description": "Wellcome message"
   },
   "yourInfo": "Tus datos",
@@ -1387,7 +1395,7 @@
   "@profilePhotoOptional": {
     "description": "Wellcome message"
   },
-  "editYourPhoto": "Edita tu imagen de perfil",
+  "editYourPhoto": "Edita tu imagen",
   "@editYourPhoto": {
     "description": "Wellcome message"
   },
@@ -1924,6 +1932,10 @@
   },
   "updateAppText": "Actualiza la app para no perderte ninguna novedad y evitar posibles errores.",
   "@updateAppText": {
+    "description": "membersOfBrand message"
+  },
+  "lastAppUpdate": "¿Usas nuestra última versión?",
+  "@lastAppUpdate": {
     "description": "membersOfBrand message"
   },
   "mandatoryUpdate": "Actualización obligatoria",
@@ -2607,5 +2619,120 @@
   "bookingWindowDescription": "Indica el tiempo de antelación con el que los clientes de tu marca pueden reservar una plaza en tus sesiones",
   "@bookingWindowDescription": {
     "description": "boughts message"
+  },
+  "requestText": "Comprueba las solicitudes de la marca",
+  "@requestText": {
+    "description": "requestText message"
+  },
+  "joinedIn": "Miembro desde {dateJoined}",
+  "@joinedIn": {
+    "description": "Member Since message",
+    "placeholders": {
+      "dateJoined": {
+        "type": "String"
+      }
+    }
+  },
+  "averageTimeWorked": "Tiempo medio trabajado",
+  "@averageTimeWorked": {
+    "description": "seeMap message"
+  },
+  "totalTimeWorked": "Tiempo total trabajado",
+  "@totalTimeWorked": {
+    "description": "seeMap message"
+  },
+  "averageTimeTrained": "Tiempo medio entrenado",
+  "@averageTimeTrained": {
+    "description": "seeMap message"
+  },
+  "totalTimeTrained": "Tiempo total entrenado",
+  "@totalTrainedHours": {
+    "description": "seeMap message"
+  },
+  "sesionsCompleted": "Sesiones completadas",
+  "@sesionsCompleted": {
+    "description": "seeMap message"
+  },
+  "minutesString":  "Minutos",
+  "@minutesString":{
+    "description": "hours Text"
+  },
+  "hoursString":  "Horas",
+  "@hoursString":{
+    "description": "hours Text"
+  },
+  "week":  "Semana",
+  "@week":{
+    "description": "hours Text"
+  },
+  "inrow":  "Seguidas",
+  "@inrow":{
+    "description": "hours Text"
+  },
+  "trainingStreak":  "Training streak",
+  "@trainingStreak":{
+    "description": "hours Text"
+  },
+  "trainingStreakDescription":  "Solo necesitas unas pocas horas a la semana para empezar la mejor racha de tu vida",
+  "@trainingStreakDescription":{
+    "description": "hours Text"
+  },
+  "trainingStreakCongrats":  "¡Que no pare la fiesta del fitness!",
+  "@trainingStreakCongrats":{
+    "description": "hours Text"
+  },
+  "lastYear": "Último Año",
+  "@lastYear": {
+    "description": "Wellcome message"
+  },
+  "lastNMonths": "Últimos {months} Meses",
+  "@lastNMonths": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "months": {
+        "type": "String"
+      }
+    }
+  },
+  "statsMinimumSession": "Necesitas un mínimo de {sesions} sesiones para ver tu progreso",
+  "@statsMinimumSession": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "sesions": {
+        "type": "String"
+      }
+    }
+  },
+  "rateThisApp": "Valora esta app",
+  "@rateThisApp": {
+    "description": "Wellcome message"
+  },
+  "favoriteBrand": "Marca favorita",
+  "@favoriteBrand": {
+    "description": "Wellcome message"
+  },
+  "favorites": "Favoritos",
+  "@favorites": {
+    "description": "Wellcome message"
+  },
+  "upcomingEvents": "Próximos Eventos",
+  "@upcomingEvents": {
+    "description": "Wellcome message"
+  },
+  "closeToYou": "Cerca de ti",
+  "@closeToYou": {
+    "description": "Wellcome message"
+  },
+  "seeAll": "Ver todas",
+  "@seeAll": {
+    "description": "Wellcome message"
+  },
+  "seeAllMasc": "Ver todos",
+  "@seeAllMasc": {
+    "description": "Wellcome message"
+  },
+  "anotherBrand": "de otra marca",
+  "@anotherBrand": {
+    "description": "Wellcome message"
   }
 }

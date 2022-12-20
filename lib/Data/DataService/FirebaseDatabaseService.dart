@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
@@ -1597,6 +1598,74 @@ class FirebaseDatabaseService {
     return events;
   }
 
+
+    Future<List> getUserEventsStats(String userId) async {
+      // Variables
+      double averageTime = 0;
+      double totalTime = 0;
+      List<Event> eventsList = [];
+      DateTime today = DateTime.now();
+      // Queries
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Events")
+          .get();
+      // Calculations
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        var hour = event.duration.toString().split(".")[0];
+        var min = event.duration!.toStringAsFixed(2).split(".")[1];
+        var endDate = event.doneAt!.toDate().add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+        if (today.isAfter(endDate)) {
+          // Only Finished Events Completed
+          eventsList.add(event);
+          // Add Total Training Time
+          totalTime += event.duration!;
+        }
+      }
+      // Sort Events Array
+      eventsList.sort((a,b) {
+        var aDate =  a.doneAt!.toDate();
+        var bDate =  b.doneAt!.toDate();
+        return aDate.compareTo(bDate);
+      });
+      // Average Training Time per Week
+      DateTime firstEventTime = eventsList[0].doneAt!.toDate();
+      double differenceInWeeks = ((today.difference(firstEventTime).inDays)/7).toDouble();
+      if (differenceInWeeks < 1) {
+        differenceInWeeks = 1;
+      }
+      averageTime = eventsList.length.toDouble() / differenceInWeeks;
+      // Week Streak
+      int currentWeek = Jiffy(today).week;
+      eventsList = eventsList.reversed.toList();
+      List<int> weeksInRow = [];
+      for (int i = 0; i < eventsList.length; i++) {
+        // Numero de la Setmana del Evento
+        int eventWeek = Jiffy(eventsList[i].doneAt!.toDate()).week;
+        // Add Week to the Array
+        if (weeksInRow.indexWhere((element) => element == eventWeek) == -1) {
+          if (weeksInRow.isEmpty) {
+            if (eventWeek == currentWeek || eventWeek == currentWeek -1) {
+              weeksInRow.add(eventWeek);
+            } else {
+              break;
+            }
+          } else {
+            if (eventWeek == weeksInRow.last-1) {
+              weeksInRow.add(eventWeek);
+            } else {
+              break;
+            }
+          }
+        }
+      }
+      // Return Result
+      List result = [eventsList, totalTime, averageTime, weeksInRow.length.toDouble()];
+      return result;
+    }
+
     // Get All Events for Today of Brand
     Future<List<Event>> getAllEventsTodayBrand(String brandId) async {
       DateTime today = DateTime.now();
@@ -2134,13 +2203,13 @@ class FirebaseDatabaseService {
   Future<void> addEventToPurchase(String purchaseId, Event eventDoc) async {
     try {
       await _firestore
-        ..collection("7777 Payments")
-            .doc("Purchases")
-            .collection("Purchases")
-            .doc(purchaseId)
-            .collection("Events")
-            .doc(eventDoc.id)
-            .set({
+        .collection("7777 Payments")
+        .doc("Purchases")
+        .collection("Purchases")
+        .doc(purchaseId)
+        .collection("Events")
+        .doc(eventDoc.id)
+        .set({
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
           "imageUrl": eventDoc.imageUrl,

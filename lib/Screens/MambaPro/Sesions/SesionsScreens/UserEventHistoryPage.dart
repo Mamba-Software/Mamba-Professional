@@ -264,7 +264,7 @@ class _UserEventHistoryPageState extends State<UserEventHistoryPage> {
                     child: EventListTile(
                       userId: currentUser.id!,
                       eventId: event.id!,
-                      showFeedback: currentUser.id! == user.id! && currentUser.isTrainer == false,
+                      showFeedback: currentUser.id! == user.id! || currentUser.isTrainer!,
                       height: safeAreaHeight,
                       width: safeAreaWidth*0.9,
                     ),

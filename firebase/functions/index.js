@@ -4645,9 +4645,11 @@ exports.UserPurchasesEvent = functions
    const bonoDocUser = bonoSnapshotUser.data();
 
    //Add events to purchases
+          
 
    await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
      "isPrivate": eventDoc.isPrivate,
+     "imageUrl": eventDoc.imageUrl,
      "title": eventDoc.title,
      "doneAt": eventDoc.doneAt,
      "year": eventDoc.year,
@@ -4662,6 +4664,7 @@ exports.UserPurchasesEvent = functions
    });
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
     "isPrivate": eventDoc.isPrivate,
+    "imageUrl": eventDoc.imageUrl,
     "title": eventDoc.title,
     "doneAt": eventDoc.doneAt,
     "year": eventDoc.year,
@@ -4677,6 +4680,7 @@ exports.UserPurchasesEvent = functions
 
    await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
     "isPrivate": eventDoc.isPrivate,
+    "imageUrl": eventDoc.imageUrl,
     "title": eventDoc.title,
     "doneAt": eventDoc.doneAt,
     "year": eventDoc.year,
@@ -5023,47 +5027,50 @@ exports.zzzzUserPurchasesEvent = functions
        //Add events to purchases
 
        await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
-         "isPrivate": eventDoc.isPrivate,
-         "title": eventDoc.title,
-         "doneAt": eventDoc.doneAt,
-         "year": eventDoc.year,
-         "month": eventDoc.month,
-         "day": eventDoc.day,
-         "hour": eventDoc.hour,
-         "minute": eventDoc.minute,
-         "duration": eventDoc.duration,
-         "numTrainers": eventDoc.numTrainers,
-         "numClients": eventDoc.numClients,
-         "maxMembers": eventDoc.maxMembers,
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": eventDoc.numTrainers,
+          "numClients": eventDoc.numClients,
+          "maxMembers": eventDoc.maxMembers,
        });
-       await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
-        "isPrivate": eventDoc.isPrivate,
-        "title": eventDoc.title,
-        "doneAt": eventDoc.doneAt,
-        "year": eventDoc.year,
-        "month": eventDoc.month,
-        "day": eventDoc.day,
-        "hour": eventDoc.hour,
-        "minute": eventDoc.minute,
-        "duration": eventDoc.duration,
-        "numTrainers": eventDoc.numTrainers,
-        "numClients": eventDoc.numClients,
-        "maxMembers": eventDoc.maxMembers,
+       await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({        
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": eventDoc.numTrainers,
+          "numClients": eventDoc.numClients,
+          "maxMembers": eventDoc.maxMembers,
       });
 
        await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
-        "isPrivate": eventDoc.isPrivate,
-        "title": eventDoc.title,
-        "doneAt": eventDoc.doneAt,
-        "year": eventDoc.year,
-        "month": eventDoc.month,
-        "day": eventDoc.day,
-        "hour": eventDoc.hour,
-        "minute": eventDoc.minute,
-        "duration": eventDoc.duration,
-        "numTrainers": eventDoc.numTrainers,
-        "numClients": eventDoc.numClients,
-        "maxMembers": eventDoc.maxMembers,
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": eventDoc.numTrainers,
+          "numClients": eventDoc.numClients,
+          "maxMembers": eventDoc.maxMembers,
       });
 
        functions.logger.log(

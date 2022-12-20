@@ -689,42 +689,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                       textAlign: TextAlign.left,
                                     ),
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: Theme.of(context).backgroundColor,
-                                    ),
-                                    child: event!.isPrivate! ? Row(
-                                      children: [
-                                        Text(
-                                            AppLocalizations.of(context)!.private,
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                            textAlign: TextAlign.right
-                                        ),
-                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                        Icon(
-                                          Icons.lock_outlined,
-                                          color: Theme.of(context).primaryColor,
-                                          size: MediaQuery.of(context).size.width*0.05,
-                                        ),
-                                      ],
-                                    ) : Row(
-                                      children: [
-                                        Text(
-                                            AppLocalizations.of(context)!.group,
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                            textAlign: TextAlign.right
-                                        ),
-                                        SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                        Icon(
-                                          Icons.groups,
-                                          color: Theme.of(context).primaryColor,
-                                          size: MediaQuery.of(context).size.width*0.05,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 ],
                               ),
                               Padding(
@@ -781,8 +745,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                height: MediaQuery.of(context).size.height * 0.07,
-                                width: MediaQuery.of(context).size.height * 0.07,
+                                height: MediaQuery.of(context).size.height * 0.06,
+                                width: MediaQuery.of(context).size.height * 0.06,
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
                                     borderRadius: const BorderRadius.all(Radius.circular(5.0))
@@ -828,7 +792,6 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             ],
                           ),
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         Container(
                           height: MediaQuery.of(context).size.height * 0.08,
                           width: MediaQuery.of(context).size.width * 0.84,
@@ -841,8 +804,8 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
                               Container(
-                                height: MediaQuery.of(context).size.height * 0.07,
-                                width: MediaQuery.of(context).size.height * 0.07,
+                                height: MediaQuery.of(context).size.height * 0.06,
+                                width: MediaQuery.of(context).size.height * 0.06,
                                 decoration: BoxDecoration(
                                     color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
                                     borderRadius: const BorderRadius.all(Radius.circular(5.0))
@@ -863,6 +826,65 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                         Flexible(
                                           child: TextFormField(
                                             controller: durationController,
+                                            readOnly: true,
+                                            enabled: false,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              contentPadding: EdgeInsets.zero,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.08,
+                          width: MediaQuery.of(context).size.width * 0.90,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                height: MediaQuery.of(context).size.height * 0.06,
+                                width: MediaQuery.of(context).size.height * 0.06,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                ),
+                                child: Center(
+                                    child: Icon(
+                                      event!.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                      color: Theme.of(context).colorScheme.secondary,
+                                      size: MediaQuery.of(context).size.width*0.06,
+                                    )
+                                ),
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height * 0.08,
+                                  width: MediaQuery.of(context).size.width*0.64,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                          child: TextFormField(
+                                            initialValue: event!.isPrivate! ? AppLocalizations.of(context)!.privateEvent : AppLocalizations.of(context)!.groupEvent,
                                             readOnly: true,
                                             enabled: false,
                                             style: Theme.of(context).textTheme.bodyText2,

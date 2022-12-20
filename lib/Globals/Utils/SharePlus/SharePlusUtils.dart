@@ -18,24 +18,24 @@ class SharePlusUtils {
       //link: Uri.parse('https://mambastyleapp.page.link/Share'),
       // Android application details needed for opening correct app on device/Play Store
       androidParameters: const AndroidParameters(
-        packageName: "com.mamba.mambastyleapp",
+        packageName: "com.mamba.mambaprofessionalapp",
         minimumVersion: 1,
       ),
       // iOS application details needed for opening correct app on device/App Store
       iosParameters: const IOSParameters(
-        bundleId: "com.mamba.mambastyleapp",
-        appStoreId: "1601684650",
+        bundleId: "com.mamba.mambaprofessionalapp",
+        appStoreId: "1642701679",
         minimumVersion: '1',
       ),
       socialMetaTagParameters: SocialMetaTagParameters(
-          title: userFirstName! + ' te está invitando a Mamba',
+          title: userFirstName! + ' te está invitando a Mamba Professional',
           description: '¡Haz clic para descargar!',
-          imageUrl: Uri.parse('https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mamba_logo.png?alt=media&token=a4307bd0-0c20-497f-abe7-0ada93129b85')),
+          imageUrl: Uri.parse('https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6')),
     );
 
     final Uri uri = (await dynamicLinks.buildShortLink(parameters)).shortUrl;
 
-    await Share.share(uri.toString(), subject: 'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mamba_logo.png?alt=media&token=a4307bd0-0c20-497f-abe7-0ada93129b85');
+    await Share.share(uri.toString(), subject: 'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6');
 
   }
 

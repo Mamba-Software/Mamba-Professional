@@ -43,6 +43,7 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
     String temp = await _userDataService.updateUserPhoto(currentUser.id!, _image!);
     setState(() {
       _imageUrl = temp;
+      currentUser.imageUrl = _imageUrl;
       isLoading = false;
       _image = null;
     });

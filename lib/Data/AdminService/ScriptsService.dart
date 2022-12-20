@@ -9,6 +9,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'dart:io';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -2114,7 +2115,6 @@ class ScriptsDatabaseService {
     }
   }
 
-
   Future<bool> migrateUserDataNovember11th() async {
     try {
       print('\n');
@@ -2160,6 +2160,111 @@ class ScriptsDatabaseService {
             });
           }
         }
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> migratePurchaseDataDecember16th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 16th DECEMBER 2022');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Purchases/Events collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// 7777 Brands/Bonos/Purchases/Events
+      /// 7777 Brands/Users/Purchases/Events
+      /// 7777 Users/Purchases/Events
+
+      String users = "Users";
+      String brands = "Brands";
+      String payments = "Payments";
+
+      // Get All Purchases
+      QuerySnapshot querySnapshot = await _firestore.collection(payments).doc("Purchases").collection("Purchases").get();
+      // For each Purchase
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String purchaseId = querySnapshot.docs[i].id;
+        Purchase purchase = Purchase.fromObjectAllData(purchaseId, querySnapshot.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('Purchase WITH ID: '+purchaseId);
+        print('\n');
+        // Check if it has Events
+        // Get Purchase Events
+        QuerySnapshot querySnapshot2 = await _firestore
+            .collection(payments)
+            .doc("Purchases")
+            .collection("Purchases")
+            .doc(purchaseId)
+            .collection("Events")
+            .get();
+        // For each Event
+        for (int i = 0; i < querySnapshot2.docs.length; i++) {
+          Event event = Event.fromObjectOnlyCoverData(querySnapshot2.docs[i].id, querySnapshot2.docs[i]);
+          // Get the Image Url
+          String imageUrl = event.imageUrl!;
+          // Update Brands/Bonos/Purchases/Events
+          try {
+            await _firestore
+            .collection(brands)
+            .doc(purchase.brandId)
+            .collection("Bonos")
+            .doc(purchase.bonoId)
+            .collection("Purchases")
+            .doc(purchase.id)
+            .collection("Events")
+            .doc(event.id!)
+            .update({
+              "imageUrl": imageUrl,
+            });
+          } catch (e) {
+            print(e.toString());
+          }
+          // Update Brands/Users/Purchases/Events
+          try {
+            await _firestore
+            .collection(brands)
+            .doc(purchase.brandId)
+            .collection("Users")
+            .doc(purchase.userId)
+            .collection("Purchases")
+            .doc(purchase.id)
+            .collection("Events")
+            .doc(event.id!)
+            .update({
+              "imageUrl": imageUrl,
+            });
+          } catch (e) {
+            print(e.toString());
+          }
+          // Update Users/Purchases/Events
+          try {
+            await _firestore
+            .collection(users)
+            .doc(purchase.userId)
+            .collection("Purchases")
+            .doc(purchase.id)
+            .collection("Events")
+            .doc(event.id!)
+            .update({
+              "imageUrl": imageUrl,
+            });
+          } catch (e) {
+            print(e.toString());
+          }
+        }
+        print('All Events Purchased Updated');
         print('=================================================================================');
         print('=================================================================================');
         print('\n');

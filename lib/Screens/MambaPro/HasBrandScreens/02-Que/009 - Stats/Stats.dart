@@ -163,13 +163,13 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   }
 
   void setActiveUsers() {
-    activeUsers = users;
+    List<Usuario> userActive = [];
     for (int i = 0; i < users.length; ++i) {
-      if (users[i].lastEventAt == null) {
-        activeUsers.remove(users[i]);
+      if (users[i].lastEventAt != null) {
+        userActive.add(users[i]);
       }
     }
-    activeUsers = activeUsers
+    activeUsers = userActive
         .where((element) =>
             element.lastEventAt!.compareTo(Timestamp.fromDate(
                     DateTime.now().subtract(const Duration(days: 30)))) >=
@@ -226,7 +226,14 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   }
 
   void applyFilteredUsers() {
-    filteredUsers = users
+    for(int j = 0; j < users.length; ++j)
+      {
+        if(users[j].dateJoined != null)
+          {
+            filteredUsers.add(users[j]);
+          }
+      }
+    filteredUsers = filteredUsers
         .where((element) =>
             DateFormat('dd-MM-yy')
                     .parse(element.dateJoined!)
@@ -240,7 +247,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     int days = daysBetween(startDate, endDate);
     DateTime backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
-    filteredBackUsers = users
+    filteredBackUsers = filteredUsers
         .where((element) =>
             DateFormat('dd-MM-yy')
                     .parse(element.dateJoined!)

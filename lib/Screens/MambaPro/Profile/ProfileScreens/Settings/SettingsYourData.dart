@@ -4,8 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsEditPhotoPage.dart';
 
 // Tus Datos Widget.
 class SettingsYourData extends StatefulWidget {
@@ -18,7 +21,7 @@ class SettingsYourData extends StatefulWidget {
 class _SettingsYourDataState extends State<SettingsYourData> {
 
   // Acceso a Base de Datos
-  var _userDataService = new UserDataService();
+  final _userDataService = UserDataService();
   // Boolean Loading
   bool isLoading = false;
   bool firstBuild = true;
@@ -42,6 +45,20 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     super.initState();
   }
 
+  // Navigate to EditPhotoPage Screen
+  Future<void> navigateToEditPhotoPageScreen() async {
+    await Navigator.push(
+        context,
+        CupertinoPageRoute<String>(
+          builder: (context) => SettingsEditPhotoPage(),
+        )
+    ).whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   Future<void> selectSlot(ctx, type) {
     // Initial Vars
     var startDate = DateTime.now();
@@ -57,7 +74,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
       child: CupertinoDatePicker(
           mode: CupertinoDatePickerMode.date,
           initialDateTime: DateTime(startDate.year, startDate.month, startDate.day, 0, 0),
-          minimumDate: startDate.subtract(Duration(days: 365*80)),
+          minimumDate: startDate.subtract(const Duration(days: 365*80)),
           maximumDate: DateTime(startDate.year, startDate.month, 31, 0, 0),
           minimumYear: 1941,
           maximumYear: startDate.year,
@@ -76,7 +93,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     showCupertinoModalPopup(
         context: ctx,
         builder: (_) => Material(
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))
           ),
           child: Container(
@@ -160,8 +177,9 @@ class _SettingsYourDataState extends State<SettingsYourData> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.yourInfo, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        title: Text(AppLocalizations.of(context)!.myData, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
+        elevation: 1,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () async {
@@ -174,7 +192,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
         LoadingView()
           :
         SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
             child: Column(
@@ -188,6 +206,208 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.45,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(context)!.firstName,
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.45,
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextFormField(
+                                                controller: firstNameController,
+                                                keyboardType: TextInputType.name,
+                                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    firstNameControllerTemp = value;
+                                                  });
+                                                },
+                                                textCapitalization: TextCapitalization.words,
+                                                decoration: InputDecoration(
+                                                  hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                                  hintStyle: Theme.of(context).textTheme.caption,
+                                                  errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                  border: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Theme.of(context).primaryColor,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  enabledBorder: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Theme.of(context).primaryColor,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  focusedBorder: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Theme.of(context).primaryColor,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  errorBorder: const UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Colors.red,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  disabledBorder: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width * 0.6,
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            AppLocalizations.of(context)!.lastName,
+                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width * 0.85,
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextFormField(
+                                                controller: lastNameController,
+                                                keyboardType: TextInputType.name,
+                                                onChanged: (value) {
+                                                  setState(() {
+                                                    lastNameControllerTemp = value;
+                                                  });
+                                                },
+                                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                textCapitalization: TextCapitalization.words,
+                                                decoration: InputDecoration(
+                                                  hintStyle: Theme.of(context).textTheme.caption,
+                                                  hintText: AppLocalizations.of(context)!.lastNameError,
+                                                  errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                  border: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Theme.of(context).primaryColor,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  enabledBorder: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Theme.of(context).primaryColor,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  focusedBorder: UnderlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color: Theme.of(context).primaryColor,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  errorBorder: const UnderlineInputBorder(
+                                                      borderSide: const BorderSide(
+                                                          color: Colors.red,
+                                                          width: 1.0
+                                                      )
+                                                  ),
+                                                  disabledBorder: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            child: Center(
+                                child: GestureDetector(
+                                  onTap: navigateToEditPhotoPageScreen,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      CircularImage(
+                                        size: MediaQuery.of(context).size.width * 0.3,
+                                        image: currentUser.imageUrl,
+                                        borderWidth: 1,
+                                        color: AppColors.grey,
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.width*0.02),
+                                      FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              AppLocalizations.of(context)!.editYourPhoto,
+                                              style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).primaryColor),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(width: MediaQuery.of(context).size.width*0.005),
+                                            Icon(Icons.edit, size: MediaQuery.of(context).size.width*0.04, color: Theme.of(context).primaryColor,),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                            ),
+                          ),
+                        ],
+                      ),
+                      /*
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.18,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: navigateToEditPhotoPageScreen,
+                            child: CircularImage(
+                              size: MediaQuery.of(context).size.height * 0.18,
+                              image: currentUser.imageUrl!,
+                              borderWidth: 1,
+                              color: AppColors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +419,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
-                            child: new TextFormField(
+                            child: TextFormField(
                               controller: firstNameController,
                               textCapitalization: TextCapitalization.words,
                               onChanged: (value) {
@@ -212,7 +432,10 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.nameCompletoError,
                                 hintStyle: Theme.of(context).textTheme.caption,
-                                focusedBorder: UnderlineInputBorder(
+                                enabledBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey)
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey)
                                 ),
                               ),
@@ -232,7 +455,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
-                            child: new TextFormField(
+                            child: TextFormField(
                               controller: lastNameController,
                               textCapitalization: TextCapitalization.words,
                               onChanged: (value) {
@@ -245,7 +468,10 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                               decoration: InputDecoration(
                                 hintStyle: Theme.of(context).textTheme.caption,
                                 hintText: AppLocalizations.of(context)!.lastNameError,
-                                focusedBorder: UnderlineInputBorder(
+                                enabledBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey)
+                                ),
+                                focusedBorder: const UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.grey)
                                 ),
                               ),
@@ -254,6 +480,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           SizedBox(height: MediaQuery.of(context).size.height*0.04),
                         ],
                       ),
+
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -275,7 +502,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
-                            child: new TextFormField(
+                            child: TextFormField(
                               style: Theme.of(context).textTheme.bodyText2,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.nickname,
@@ -307,14 +534,86 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
                           Flexible(
-                            child: new TextFormField(
+                            child: TextFormField(
                               style: Theme.of(context).textTheme.bodyText2,
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!.email,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
                               ),
                               initialValue: currentUser.email!,
                               enabled: false,
                             ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                        ],
+                      ),
+                       */
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            AppLocalizations.of(context)!.dateOfBirth,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          GestureDetector(
+                              onTap: () {
+                                selectSlot(context, 0);
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Flexible(
+                                    child: TextFormField(
+                                      controller: startDateController,
+                                      readOnly: true,
+                                      enabled: false,
+                                      decoration: InputDecoration(
+                                        border: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context).primaryColor,
+                                                width: 1.0
+                                            )
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context).primaryColor,
+                                                width: 1.0
+                                            )
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context).primaryColor,
+                                                width: 1.0
+                                            )
+                                        ),
+                                        errorBorder: const UnderlineInputBorder(
+                                            borderSide: const BorderSide(
+                                                color: Colors.red,
+                                                width: 1.0
+                                            )
+                                        ),
+                                        disabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Theme.of(context).primaryColor,
+                                                width: 1.0
+                                            )
+                                        ),
+                                      ),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                ],
+                              )
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.04),
                         ],
@@ -341,49 +640,6 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                           SizedBox(height: MediaQuery.of(context).size.height*0.04),
                         ],
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)!.dateOfBirth,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          GestureDetector(
-                              onTap: () {
-                                selectSlot(context, 0);
-                                FocusScopeNode currentFocus = FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus) {
-                                  currentFocus.unfocus();
-                                }
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  new Flexible(
-                                    child: TextFormField(
-                                      controller: startDateController,
-                                      readOnly: true,
-                                      enabled: false,
-                                      //style: startDateController.text == nullDate ? Theme.of(context).textTheme.headline1!.copyWith(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w300) : Theme.of(context).textTheme.headline1!.copyWith(fontSize: 18, fontWeight: FontWeight.w300),
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                        enabledBorder: InputBorder.none,
-                                        errorBorder: InputBorder.none,
-                                        disabledBorder: InputBorder.none,
-                                      ),
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
-                                ],
-                              )
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                        ],
-                      ),
                     ],
                   ),
                 ),
@@ -400,24 +656,20 @@ class _SettingsYourDataState extends State<SettingsYourData> {
               if (isUpdated) {
                 if (firstNameController.text.isNotEmpty) {
                   currentUser.firstName = firstNameController.text;
-                };
+                }
                 if (lastNameController.text.isNotEmpty) {
                   currentUser.lastName = lastNameController.text;
-                };
+                }
                 if (!(genderTemp == null)) {
                   currentUser.gender = genderTemp;
-                };
+                }
                 if (startDateController.text != currentUser.dateOfBirth) {
                   currentUser.dateOfBirth = startDateController.text;
-                };
-                setState(() {
-                  isLoading = true;
-                });
+                }
                 currentUser.name = currentUser.firstName!+" "+currentUser.lastName!;
-                await _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
+                _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
                 mixpanel!.track('user_profile_settings_edit_info_completed');
               }
-              await Future.delayed(const Duration(seconds: 1));
               Navigator.pop(context);
             }
           },
@@ -444,8 +696,9 @@ class _GenderWidgetState extends State<GenderWidget> {
   bool firstBuild = true;
   var gender;
 
-  @override
   resetGender() => gender = widget.user!.gender!;
+
+  @override
   Widget build(BuildContext context) {
     if (firstBuild) {
       gender = widget.user!.gender!;
@@ -463,7 +716,7 @@ class _GenderWidgetState extends State<GenderWidget> {
   }
   Widget _icon(int index, {required String text, required IconData icon}) {
     return SizedBox.fromSize(
-        size: Size(MediaQuery.of(context).size.width*0.2, MediaQuery.of(context).size.width*0.2), // button width and height
+        size: Size(MediaQuery.of(context).size.width*0.25, MediaQuery.of(context).size.width*0.25), // button width and height
         child: ClipOval(
           child: Material(
             color: gender == index ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
@@ -474,11 +727,14 @@ class _GenderWidgetState extends State<GenderWidget> {
                     Icon(
                       icon,
                       size: 30,
-                      color: Theme.of(context).primaryColor,
+                      color: gender == index ? AppColors.white : Theme.of(context).primaryColor,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(text, style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)),
+                      child: Text(
+                          text,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: gender == index ? AppColors.white : Theme.of(context).primaryColor)
+                      ),
                     ),
                   ],
                 ),
