@@ -265,7 +265,7 @@ class _ProfileState extends State<Profile> {
         onTap: navigateToFullScreenImage,
         child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.13,
-          child: CircularImage(size: MediaQuery.of(context).size.height * 0.25, image: currentUser.imageUrl, color: AppColors.lightGrey, borderWidth: 1,),
+          child: CircularImage(size: MediaQuery.of(context).size.height * 0.13, image: currentUser.imageUrl, color: AppColors.lightGrey, borderWidth: 1,),
         ),
       ),
     ) : Center(
@@ -1058,6 +1058,7 @@ class _ProfileState extends State<Profile> {
             buildUserProgressWidget(),
             SizedBox(height: MediaQuery.of(context).size.height*0.05),
             buildContainersWidget(),
+            SizedBox(height: MediaQuery.of(context).size.height*0.008),
             CarouselSlider(
               items: buildProfileCarousel,
               carouselController: _controller,

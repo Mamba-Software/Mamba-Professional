@@ -115,6 +115,10 @@
   "@recover":{
     "description": "Contraseña Text "
   },
+  "loggedInWith": "Sesión iniciada cómo",
+  "@loggedInWith":{
+    "description": "LogIn Text "
+  },
   "login": "Inicia Sesión",
   "@login":{
     "description": "LogIn Text "
@@ -1391,7 +1395,7 @@
   "@profilePhotoOptional": {
     "description": "Wellcome message"
   },
-  "editYourPhoto": "Edita tu imagen de perfil",
+  "editYourPhoto": "Edita tu imagen",
   "@editYourPhoto": {
     "description": "Wellcome message"
   },
@@ -1928,6 +1932,10 @@
   },
   "updateAppText": "Actualiza la app para no perderte ninguna novedad y evitar posibles errores.",
   "@updateAppText": {
+    "description": "membersOfBrand message"
+  },
+  "lastAppUpdate": "¿Usas nuestra última versión?",
+  "@lastAppUpdate": {
     "description": "membersOfBrand message"
   },
   "mandatoryUpdate": "Actualización obligatoria",

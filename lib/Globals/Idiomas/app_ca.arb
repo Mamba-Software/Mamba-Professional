@@ -28,6 +28,7 @@
   "forgotPassword": "Has oblidat la teva contrasenya?",
   "resetPassword": "Recuperar contrasenya",
   "recover": "Recuperar",
+  "loggedInWith": "Sessió iniciada com",
   "login": "Inicia Sessió",
   "loginError": "No trobem aquest usuari.\n Torneu a provar si us plau",
   "validate": "T'hem enviat un correu de validació",
@@ -321,7 +322,7 @@
   "photosDimensions": "Recomanem orientació Horitzontal (16:9)",
   "photos": "Imatges",
   "profilePhotoOptional": "En cas que no vulguis escollir la teva foto de perfil en aquest moment, pots saltart-te aquest pas.",
-  "editYourPhoto": "Edita la teva imatge de perfil",
+  "editYourPhoto": "Edita la teva imatge",
   "uploadPhoto": "Puja imatge",
   "uploadPhotos": "Pujar imatges",
   "editBrandInfo": "Edita la informació de la marca",
@@ -419,6 +420,7 @@
   "findBrandTrainerText": "Crea la teva marca o uneix-te a una per desbloquejar totes les nostres eines",
   "updateAppTitle": "Nova versió disponible!",
   "updateAppText": "Actualitza l'app per a no perdre't cap novetat i evitar possibles errors.",
+  "lastAppUpdate": "Uses la nostra última versió?",
   "mandatoryUpdate": "Actualització obligatòria",
   "@mandatoryUpdate": {
     "description": "membersOfBrand message"

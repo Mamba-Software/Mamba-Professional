@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -14,6 +15,8 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
@@ -36,7 +39,6 @@ class _SettingsState extends State<Settings> {
 
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
-  final _brandDataService = BrandDataService();
   //Share Plus Utils
   final SharePlusUtils _sharePlusUtils = SharePlusUtils();
   // Boolean Loading
@@ -44,15 +46,20 @@ class _SettingsState extends State<Settings> {
   bool firstBuild = true;
   // Type of Profile Widget value
   bool? _isPrivate;
-  // Idioma Original
-  bool idiomaChanged = false;
-  final _idiomaChanged = GlobalKey<_LanguagePickerWidgetState>();
   // Boolean isUpdated
   bool isUpdated = false;
   // Boolean isSaved
   bool isSaved = false;
   // Theme Provider
   var themeProvider;
+  // Package
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+  );
 
   // Navigate to Your Data Screen
   void navigateToYourDataScreen() {
@@ -64,22 +71,24 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  // Navigate to EditPhotoPage Screen
-  void navigateToEditPhotoPageScreen() {
+  // Navigate to Privacy Screen
+  void navigateToPrivacyScreen() {
+    mixpanel!.track('user_profile_settings_privacy');
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => SettingsEditPhotoPage(),
+          builder: (context) => const SettingsPrivacy(),
         )
     );
   }
 
   // Navigate to Privacy Screen
-  void navigateToPrivacyScreen() {
+  void navigateToLanguageScreen() {
+    mixpanel!.track('user_profile_settings_language');
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
-          builder: (context) => const SettingsPrivacy(),
+          builder: (context) => const SettingsLanguage(),
         )
     );
   }
@@ -94,6 +103,7 @@ class _SettingsState extends State<Settings> {
         )
     );
   }
+
   // Navigate to Theme Screen
   void navigateToFeedbackScreen() {
     mixpanel!.track('user_profile_settings_feedback');
@@ -105,10 +115,26 @@ class _SettingsState extends State<Settings> {
     );
   }
 
+  Future<void> launchEmail() async {
+    mixpanel!.track('user_profile_settings_email_mamba');
+    const url = 'mailto:mambastylecastelldefels@gmail.com';
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
+    }
+  }
+
   @override
   void initState() {
-    mixpanel!.track('user_profile_settings_view');
     super.initState();
+    mixpanel!.track('user_profile_settings_view');
+    _initPackageInfo();
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
   }
 
   @override
@@ -118,51 +144,308 @@ class _SettingsState extends State<Settings> {
       themeProvider = Provider.of<ThemeProvider>(context);
       if (_isPrivate != currentUser.isPrivate! && _isPrivate != null) {
         isUpdated = true;
-      } else if (idiomaChanged) {
-        isUpdated = true;
       } else {
         isUpdated = false;
       }
     }
-    return isLoading ?
-      Scaffold(
-        body: LoadingView(),
-      )
+    return isLoading ? Scaffold(
+      body: LoadingView()
+    )
         :
-      Scaffold(
-        appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-            onPressed: () async {
-              if (isUpdated) {
-                setState(() {
-                  isSaved = true;
-                  if (!(_isPrivate == null)) {
-                    currentUser.isPrivate = _isPrivate;
-                  };
-                  if (idiomaChanged) {
-                    currentUser.idioma = Provider.of<LanguageProvider>(context, listen: false).idioma!.languageCode;
-                  };
-                  _idiomaChanged.currentState!.resetIdiomaChanged();
-                  idiomaChanged = false;
-                });
-                await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!);
-              }
-              Navigator.pop(context);
-              },
-          ),
+    Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        elevation: 1,
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () async {
+            if (isUpdated) {
+              setState(() {
+                isSaved = true;
+                if (!(_isPrivate == null)) {
+                  currentUser.isPrivate = _isPrivate;
+                }
+              });
+              await _userDataService.updateCurrentUserSettingsPerifl(currentUser.isPrivate!, currentUser.idioma!);
+            }
+            Navigator.pop(context);
+          },
         ),
-        body: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              onTap: navigateToYourDataScreen,
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  FontAwesomeIcons.person,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.myData,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            ListTile(
+              onTap: navigateToThemeScreen,
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  Icons.dark_mode_outlined,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.editYourTheme,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            ListTile(
+              onTap: navigateToLanguageScreen,
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  Icons.language,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.language,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            ListTile(
+              onTap: navigateToFeedbackScreen,
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  Icons.help_outline_outlined,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.giveFeedbackTitle,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            ListTile(
+              onTap: () {
+                mixpanel!.track('user_profile_settings_share_app');
+                _sharePlusUtils.shareMambaLink(currentUser.firstName!);
+              },
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  Icons.send_to_mobile_outlined,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.shareAppTitle,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            ListTile(
+              onTap: launchEmail,
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  Icons.email_outlined,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.getInTouch,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            ListTile(
+              onTap: () async {
+                mixpanel!.track('user_profile_settings_app_store');
+                await StoreRedirect.redirect(
+                  androidAppId: "com.mamba.mambaprofessionalapp",
+                  iOSAppId: "1642701679",
+                );
+              },
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  Icons.rate_review_outlined,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.rateThisApp,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            ListTile(
+              onTap: () async {
+                mixpanel!.track('user_profile_settings_app_store');
+                await StoreRedirect.redirect(
+                  androidAppId: "com.mamba.mambaprofessionalapp",
+                  iOSAppId: "1642701679",
+                );
+              },
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  Icons.update_outlined,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.lastAppUpdate,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            ListTile(
+              onTap: () async {
+                mixpanel!.track('user_profile_settings_terms_conditions');
+                if (Localizations.localeOf(context).languageCode == 'es') {
+                  if (!await launchUrl(Uri.parse(termsAndConditionsES))) throw 'Could not launch $termsAndConditionsES';
+                } else if (Localizations.localeOf(context).languageCode == 'ca') {
+                  if (!await launchUrl(Uri.parse(termsAndConditionsCA))) throw 'Could not launch $termsAndConditionsCA';
+                } else {
+                  if (!await launchUrl(Uri.parse(termsAndConditionsES))) throw 'Could not launch $termsAndConditionsES';
+                }
+              },
+              contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.02),
+              leading: Icon(
+                  Icons.policy_outlined,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                  color: Theme.of(context).primaryColor
+              ),
+              title: Text(
+                AppLocalizations.of(context)!.termsAndConditions,
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+              ),
+            ),
+            const Divider(color: AppColors.grey, height: 1),
+            const Divider(color: AppColors.grey, height: 1),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
+            Text(
+              AppLocalizations.of(context)!.loggedInWith,
+              style: Theme.of(context).textTheme.caption,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            Text(
+              currentUser.email!,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            Text(
+              "v "+_packageInfo.version.toString()+" ("+_packageInfo.buildNumber.toString()+")",
+              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
+            GestureDetector(
+              onTap: () async {
+                mixpanel!.track('user_profile_settings_close_session_open');
+                var result = await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return ConfirmationDialog(text: AppLocalizations.of(context)!.closeSessionConfirmation);
+                    }
+                );
+                if (result) {
+                  mixpanel!.track('user_profile_settings_close_session_closed');
+                  setState(() {
+                    isLoading = true;
+                  });
+                  Future.delayed(const Duration(seconds: 1), () async {
+                    _userDataService.signOut().then((value) =>
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          CupertinoPageRoute<void>(
+                            builder: (context) => const Login(),
+                            settings: const RouteSettings(name: 'Login'),
+                          ),
+                              (_) => false,
+                        )
+                    );
+                  });
+                }
+              },
+              child: Material(
+                elevation: 4,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(30.0),
+                  ),
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height*0.07,
+                  width: MediaQuery.of(context).size.width*0.8,
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(30)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      Text(
+                        AppLocalizations.of(context)!.closeSession,
+                        style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            GestureDetector(
+              onTap: () {
+                mixpanel!.track('user_profile_settings_delete_account_open');
+                showDialog(
+                    context: context,
+                    builder: (_) {
+                      return const DeleteDialog();
+                    }
+                );
+              },
+              child: Material(
+                elevation: 4,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(30.0),
+                  ),
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height*0.07,
+                  width: MediaQuery.of(context).size.width*0.8,
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  decoration: BoxDecoration(
+                      color: AppColors.red,
+                      borderRadius: BorderRadius.circular(30)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      Text(
+                        AppLocalizations.of(context)!.deleteAccount,
+                        style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
+            /*
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,32 +503,6 @@ class _SettingsState extends State<Settings> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.typeTheme,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      TextButton(
-                        onPressed: navigateToThemeScreen,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(Icons.dark_mode_outlined, color: Theme.of(context).primaryColor),
-                            const SizedBox(width: 10),
-                            Text(
-                              AppLocalizations.of(context)!.editYourTheme,
-                              style: Theme.of(context).textTheme.bodyText1,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
                         AppLocalizations.of(context)!.language,
@@ -254,179 +511,19 @@ class _SettingsState extends State<Settings> {
                       SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       LanguagePickerWidget(
                         key: _idiomaChanged,
-                        idiomaChanged: (bool) {
-                          idiomaChanged = bool!;
+                        idiomaChanged: (boolean) {
+                          idiomaChanged = boolean!;
                         },
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                     ],
                   ),
-                  TextButton(
-                    onPressed: navigateToFeedbackScreen,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.help_outline_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        const SizedBox(width: 10),
-                        Text(
-                          AppLocalizations.of(context)!.giveFeedbackTitle,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      mixpanel!.track('user_profile_settings_share_app');
-                      _sharePlusUtils.shareMambaLink(currentUser.firstName!);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.send_to_mobile_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        const SizedBox(width: 10),
-                        Text(
-                          AppLocalizations.of(context)!.shareAppTitle,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: launchEmail,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.email_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        const SizedBox(width: 10),
-                        Text(
-                          AppLocalizations.of(context)!.getInTouch,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      mixpanel!.track('user_profile_settings_terms_conditions');
-                      if (Localizations.localeOf(context).languageCode == 'es') {
-                        if (!await launchUrlString(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
-                      } else if (Localizations.localeOf(context).languageCode == 'ca') {
-                        if (!await launchUrlString(termsAndConditionsCA)) throw 'Could not launch $termsAndConditionsCA';
-                      } else {
-                        if (!await launchUrlString(termsAndConditionsES)) throw 'Could not launch $termsAndConditionsES';
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.policy_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        const SizedBox(width: 10),
-                        Text(
-                          AppLocalizations.of(context)!.termsAndConditions,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      mixpanel!.track('user_profile_settings_close_session_open');
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return ConfirmationDialog(text: AppLocalizations.of(context)!.closeSessionConfirmation);
-                          }
-                      );
-                      if (result) {
-                        mixpanel!.track('user_profile_settings_close_session_closed');
-                        setState(() {
-                          isLoading = true;
-                        });
-                        Future.delayed(const Duration(seconds: 1), () async {
-                          _userDataService.signOut().then((value) =>
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                CupertinoPageRoute<void>(
-                                  builder: (context) => const Login(),
-                                  settings: const RouteSettings(name: 'Login'),
-                                ),
-                                    (_) => false,
-                              )
-                          );
-                        });
-                      }
-
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.logout_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        const SizedBox(width: 10),
-                        Text(
-                          AppLocalizations.of(context)!.closeSession,
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      mixpanel!.track('user_profile_settings_delete_account_open');
-                      showDialog(
-                          context: context,
-                          builder: (_) {
-                            return const DeleteDialog();
-                          }
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.05,),
-                        const SizedBox(width: 10),
-                        Text(
-                          AppLocalizations.of(context)!.deleteAccount,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      mixpanel!.track('user_profile_settings_app_store');
-                      await StoreRedirect.redirect(
-                        androidAppId: "com.mamba.mambaprofessionalapp",
-                        iOSAppId: "1642701679",
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.system_security_update_good_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
-                        const SizedBox(width: 10),
-                        Text(
-                          appVersion,
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-      );
+                   */
+          ],
+        ),
+      ),
+    );
   }
-
-  Future<void> launchEmail() async {
-    mixpanel!.track('user_profile_settings_email_mamba');
-    const url = 'mailto:mambastylecastelldefels@gmail.com';
-    if (await canLaunchUrlString(url)) {
-      await launchUrlString(url);
-    }
-  }
-
 }
 
 // Delete Account Dialog
