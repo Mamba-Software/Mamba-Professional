@@ -28,6 +28,7 @@ class UserFirebaseCalls {
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
+  String payments = isProduction ? 'Payments' : '7777 Payments';
 
 
 
@@ -781,9 +782,33 @@ class UserFirebaseCalls {
     }
   }
 
-  Future<void> updateUserBono(String userId, Bono bono) async {
-
+  Future<void> updateUserBono(String userId, String brandId, Bono bono) async {
+    // Update User Bono
     await _firestore.collection(users).doc(userId).collection("Bonos").doc(bono.id).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+    });
+    // Update the Purchase Collection
+    await _firestore.collection(payments).doc("Purchases").collection("Purchases").doc(bono.purchaseId).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+    });
+    // Update the User/Purchase Collection
+    await _firestore.collection(users).doc(userId).collection("Purchases").doc(bono.purchaseId).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+    });
+    // Update the Brand/Bonos/Purchase Collection
+    await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bono.id).collection("Purchases").doc(bono.purchaseId).update({
       "sessions": bono.sessions,
       "price": bono.price,
       "expirationTime": bono.condition?.expirationTime,

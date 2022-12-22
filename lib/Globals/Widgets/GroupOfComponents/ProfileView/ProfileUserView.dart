@@ -85,7 +85,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     user = await _userDataService.getUserDetails(widget.userID);
     dateJoined = DateFormat('dd-MM-yyyy').parse(user.dateJoined!);
     checkIfHasAllBrandBonos();
-    userBonos.isNotEmpty ? checkIfUserBonosHaveExpired() : null;
     getUserEventsFinished();
   }
 
@@ -120,43 +119,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
       setState(() {
         hasAllBrandBonos = true;
       });
-    }
-  }
-
-  // Check If User Bonos Have Expired
-  Future<void> checkIfUserBonosHaveExpired() async {
-    List<Bono> userBonos = await _userDataService.getUserBonos(widget.userID);
-    for (Bono bono in userBonos) {
-      Purchase purchase = await _purchaseDataService.getPurchaseInfo(bono.purchaseId!);
-      // Sessions Done
-      int sessionsDone = purchase.events.length;
-      if (bono.sessions == sessionsDone) {
-        mixpanel!.track('profile_view_bono_deleted', properties: {
-          'Bono': bono.id!,
-          'Purchase': purchase.id!,
-          'Brand': purchase.brandId!,
-        });
-        await _userDataService.deleteUserBono(widget.userID, purchase.brandId!, bono.id!);
-      }
-      // After Expiration Date
-      if (bono.condition!.expirationTime! != 0) {
-        DateTime purchasedDate = purchase.purchasedAt!.toDate();
-        purchasedDate = DateTime(
-          purchasedDate.year,
-          purchasedDate.month,
-          purchasedDate.day+1,
-        );
-        DateTime expirationDate = purchasedDate.add(Duration(days:bono.condition!.expirationTime!));
-        DateTime now = DateTime.now();
-        if (now.isAfter(expirationDate)) {
-          mixpanel!.track('profile_view_bono_deleted', properties: {
-            'Bono': bono.id!,
-            'Purchase': purchase.id!,
-            'Brand': purchase.brandId!,
-          });
-          await _userDataService.deleteUserBono(widget.userID, purchase.brandId!, bono.id!);
-        }
-      }
     }
   }
 

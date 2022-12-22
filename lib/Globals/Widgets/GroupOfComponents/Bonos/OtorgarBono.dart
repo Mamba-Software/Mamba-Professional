@@ -845,9 +845,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                       if (editBono) {
                                         mixpanel!.track('edit_bono_confirmed');
                                         _userDataService.updateUserBono(
-                                            user.id!, bonoSelected);
+                                            user.id!, currentBrand.id!, bonoSelected);
                                         await Future.delayed(
-                                            const Duration(seconds: 3));
+                                            const Duration(seconds: 1));
                                       }
                                       else if (isBonoRequest) {
                                         // Build Purchase Object

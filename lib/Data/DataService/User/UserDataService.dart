@@ -65,8 +65,7 @@ class UserDataService {
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma);
   Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
-  Future<void> updateUserBono(String userId, Bono bono) => _firebase.updateUserBono(userId, bono);
-
+  Future<void> updateUserBono(String userId, String brandId, Bono bono) => _firebase.updateUserBono(userId, brandId, bono);
 
   // Delete Data
   Future<void> deleteRequestToBrand(RequestToBrand request) => _firebase.deleteRequestToBrand(request);
