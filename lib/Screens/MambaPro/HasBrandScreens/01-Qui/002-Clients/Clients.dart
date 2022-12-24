@@ -21,6 +21,8 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:shimmer/shimmer.dart';
 
+import '../015-AddMembers/MembershipRequestsPro.dart';
+
 class Clients extends StatefulWidget {
   String brandId;
   int numClients;
@@ -568,7 +570,51 @@ class _Clients extends State<Clients> {
               ),
             ],
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 10,)),
+          //const SliverToBoxAdapter(child: SizedBox(height: 10,)),
+          currentUser.brandRole < 3? SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                GestureDetector(
+                  onTap: navigateToRequestsScreen,
+                  child: Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                    height: MediaQuery.of(context).size.height*0.1,
+                    width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.group_add_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: MediaQuery.of(context).size.width*0.10,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                        Flexible(
+                          child: Text(
+                            AppLocalizations.of(context)!.myRequestsDesc,
+                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              ],
+            ),
+          ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
           isLoading ? SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               return Padding(
@@ -746,6 +792,21 @@ class _Clients extends State<Clients> {
         ],
       ),
     );
+  }
+  Future<void> navigateToRequestsScreen() async {
+    mixpanel!.track('brand_membership_requests_view');
+    await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) => MembershipRequestsPro(
+            brandId: widget.brandId,
+          ),
+        )
+    );
+    setState(() {
+      isLoading = true;
+    });
+    getAllUsers();
   }
   
   @override

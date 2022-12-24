@@ -2734,5 +2734,9 @@
   "anotherBrand": "de otra marca",
   "@anotherBrand": {
     "description": "Wellcome message"
+  },
+  "schedule": "Agenda",
+  "@schedule":{
+    "description": "disponibilidad text"
   }
 }

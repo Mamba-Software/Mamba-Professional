@@ -64,5 +64,6 @@ class Constants {
   static String sweatingEmojiImage = "assets/images/sweatingEmojiImage.png";
   static String exhalingEmojiImage = "assets/images/exhalingEmojiImage.png";
   static String fireEmojiImage = "assets/images/fireEmojiImage.png";
+  static String clockEmojiImage = "assets/images/clockEmojiImage.png";
 
 }

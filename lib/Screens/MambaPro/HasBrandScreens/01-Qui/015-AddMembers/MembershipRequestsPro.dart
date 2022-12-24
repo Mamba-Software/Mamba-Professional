@@ -20,9 +20,7 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class MembershipRequestsPro extends StatefulWidget {
   String brandId;
-  bool pinned;
-  ValueChanged<bool?> pinnedChanged;
-  MembershipRequestsPro({Key? key, required this.brandId, required this.pinned, required this.pinnedChanged}) : super(key: key);
+  MembershipRequestsPro({Key? key, required this.brandId}) : super(key: key);
 
   @override
   _MembershipRequestsProState createState() => _MembershipRequestsProState();
@@ -84,157 +82,29 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.15,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
+            systemOverlayStyle: Theme.of(context).appBarTheme.systemOverlayStyle,
             elevation: 4,
-            floating: true,
+            forceElevated: true, //* here//* question having 0 here
             pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                height: MediaQuery.of(context).size.height*0.15,
-                color: AppColors.darkGrey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.myRequests,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
-                          ),
-                          FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height*0.08,
-                              width: MediaQuery.of(context).size.width*0.11,
-                              child: TextButton(
-                                onPressed: null,
-                                child: Icon(
-                                  Icons.filter_list,
-                                  color: AppColors.darkGrey,
-                                  size: MediaQuery.of(context).size.width*0.07,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
-                    Container(
-                      color: AppColors.grey,
-                      height: 1.0,
-                    ),
-                  ],
-                ),
-              ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
-            ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
+            floating: false,
+            title:  Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),),
             centerTitle: true,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: MediaQuery.of(context).size.height*0.04,
-                    ),
-                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
-                ),
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                size: MediaQuery.of(context).size.width * 0.06,
               ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
-                  ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_membership_requests_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_membership_requests_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
-              ),
-            ],
           ),
           SliverToBoxAdapter(
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                GestureDetector(
-                  onTap: () async {
-                    mixpanel!.track('brand_membership_requests_share_link');
-                    showModalBottomSheet<void>(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
-                        ),
-                      ),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      builder: (BuildContext context) {
-                        return const FractionallySizedBox(
-                          heightFactor: 0.75,
-                          child: ShareBrandLink(),
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                    height: MediaQuery.of(context).size.height*0.1,
-                    width: MediaQuery.of(context).size.width*0.9,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(
-                          Icons.qr_code,
-                          color: Theme.of(context).colorScheme.secondary,
-                          size: MediaQuery.of(context).size.width*0.10,
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                        Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.copyCodeMessage,
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                        Icon(Icons.mobile_screen_share, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.1,)
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),                
+               // SizedBox(height: MediaQuery.of(context).size.height*0.02),
+               // Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
               ],
             )
           ),

@@ -226,7 +226,7 @@ class _BrandScreenState extends State<BrandScreen> {
                       case 1:
                         mixpanel!.track('drawer_trainers_pinned_off');
                         break;
-                      case 15:
+                     // case 15:
                         mixpanel!.track('drawer_membership_requests_pinned_off');
                         break;
                       case 8:
@@ -442,7 +442,7 @@ class _BrandScreenState extends State<BrandScreen> {
         SizedBox(height: safeAreaHeight * 0.01),
         listTilePro(2),
         listTilePro(1),
-        currentUser.brandRole < 3 ? listTilePro(15) : Container(),
+        //currentUser.brandRole < 3 ? listTilePro(15) : Container(),
 
         SizedBox(height: safeAreaHeight * 0.01),
         Padding(
@@ -783,14 +783,10 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
-      case 15:
+    //  case 15:
         mixpanel!.track('brand_membership_requests_view');
         return MembershipRequestsPro(
           brandId: currentBrand.id!,
-          pinned: iconStar,
-          pinnedChanged: (boolean) {
-            handleChangedFavourites();
-          },
         );
       case 8:
         mixpanel!.track('brand_info_view');

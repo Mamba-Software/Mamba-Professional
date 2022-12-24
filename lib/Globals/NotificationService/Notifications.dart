@@ -959,11 +959,7 @@ class _NotificationsState extends State<Notifications> {
       }
       case "UserSendRequestToBrand_Trainer": {
         if (brand.id != null) {
-          if (mambaProScaffoldKey.currentState!.isDrawerOpen) {
-            mambaProScaffoldKey.currentState?.closeDrawer();
-          }
-          pageIndex = 15;
-          Navigator.pop(context);
+          navigateToRequestsScreen(brand.id!);
         }
         break;
       }
@@ -1067,6 +1063,18 @@ class _NotificationsState extends State<Notifications> {
         break;
       }
     }
+  }
+
+  Future<void> navigateToRequestsScreen(String brandId) async {
+    mixpanel!.track('brand_membership_requests_view');
+    await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) => MembershipRequestsPro(
+            brandId: brandId,
+          ),
+        )
+    );
   }
 
 }

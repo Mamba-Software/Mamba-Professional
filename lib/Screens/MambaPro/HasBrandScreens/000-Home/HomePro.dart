@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/Ho
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandRequestsWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/PlanEventWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BonosRequests.dart';
 import 'package:provider/provider.dart';
@@ -233,7 +234,7 @@ class _HomePro extends State<HomePro> {
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
                       mixpanel!.track('brand_homepage_membership_requests');
-                      widget.navigateToPage(15);
+                      navigateToRequestsScreen();
                     },
                   ) : Container(),
                   currentUser.brandRole < 3 ? BrandBonoRequestsWidget(
@@ -308,6 +309,18 @@ class _HomePro extends State<HomePro> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> navigateToRequestsScreen() async {
+    mixpanel!.track('brand_membership_requests_view');
+    await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) => MembershipRequestsPro(
+            brandId: widget.brandId,
+          ),
+        )
     );
   }
 

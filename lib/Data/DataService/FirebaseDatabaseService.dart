@@ -1630,9 +1630,15 @@ class FirebaseDatabaseService {
         var bDate =  b.doneAt!.toDate();
         return aDate.compareTo(bDate);
       });
+
+      double differenceInWeeks = 0;
       // Average Training Time per Week
-      DateTime firstEventTime = eventsList[0].doneAt!.toDate();
-      double differenceInWeeks = ((today.difference(firstEventTime).inDays)/7).toDouble();
+      if(eventsList.isNotEmpty) {
+        DateTime firstEventTime = eventsList[0].doneAt!.toDate();
+        double differenceInWeeks = ((today
+            .difference(firstEventTime)
+            .inDays) / 7).toDouble();
+      }
       if (differenceInWeeks < 1) {
         differenceInWeeks = 1;
       }

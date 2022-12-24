@@ -28,7 +28,7 @@ class MambaProUtils {
     if(pageIndex == 7)return Text(AppLocalizations.of(context)!.photos);
     if(pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions);
     if(pageIndex == 9)return Text(AppLocalizations.of(context)!.stats);
-    if(pageIndex == 10)return Text(AppLocalizations.of(context)!.calendar);
+    if(pageIndex == 10)return Text(AppLocalizations.of(context)!.sesionsBottomNav);
     if(pageIndex == 11)return Text(AppLocalizations.of(context)!.locations);
     if(pageIndex == 12)return Text(AppLocalizations.of(context)!.logo);
     if(pageIndex == 13)return Text(AppLocalizations.of(context)!.feedback);
