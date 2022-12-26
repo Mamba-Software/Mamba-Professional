@@ -457,7 +457,7 @@ class _BrandScreenState extends State<BrandScreen> {
         listTilePro(8),
         listTilePro(7),
         listTilePro(11),
-        listTilePro(14),
+        //listTilePro(14),
 
 
 
@@ -818,7 +818,7 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
-      case 14:
+      //case 14:
         mixpanel!.track('brand_event_history_view');
         return BrandEventHistoryPage(
           brandId: currentBrand.id!,

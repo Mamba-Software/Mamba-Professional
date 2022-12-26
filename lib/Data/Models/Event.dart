@@ -31,6 +31,8 @@ class Event {
   int? maxMembers;
   var joinedMembers;
   var selectedTrainers;
+  double? intensityScore;
+  double? averageIntensityScore;
 
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
@@ -60,6 +62,7 @@ class Event {
     this.maxMembers,
     this.joinedMembers,
     this.selectedTrainers,
+    this.intensityScore,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -131,6 +134,12 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('selectedTrainers')) {
       selectedTrainers = documentSnapshot.get("selectedTrainers");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('intensityScore')) {
+    intensityScore = double.parse(documentSnapshot.get("intensityScore").toString());
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('averageIntensityScore')) {
+    averageIntensityScore = double.parse(documentSnapshot.get("averageIntensityScore").toString());
+    }
   }
 
   Event.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -179,6 +188,9 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
       maxMembers = documentSnapshot.get("maxMembers");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('averageIntensityScore')) {
+      averageIntensityScore = double.parse(documentSnapshot.get("averageIntensityScore").toString());
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -202,6 +214,8 @@ class Event {
     maxMembers = event.maxMembers;
     joinedMembers = event.joinedMembers;
     selectedTrainers = event.selectedTrainers;
+    intensityScore = event.intensityScore;
+    averageIntensityScore = event.averageIntensityScore;
   }
 
   // Users

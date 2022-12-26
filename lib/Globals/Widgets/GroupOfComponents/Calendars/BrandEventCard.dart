@@ -30,7 +30,6 @@ class _BrandEventCardState extends State<BrandEventCard> {
   DateTime endDate = DateTime.now();
   bool isDoing = false;
   bool isCompleted = false;
-  bool canAnswerFeedback = false;
 
   @override
   void initState() {
@@ -58,44 +57,12 @@ class _BrandEventCardState extends State<BrandEventCard> {
       endDate = startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       isDoing = startDate.isAfter(now) && endDate.isBefore(now) ? true : false;
       isCompleted = startDate.isBefore(now) ? true : false;
-      canAnswerFeedback = isCompleted && endDate.add(const Duration(days: 7)).isAfter(now) ? true : false;
     });
   }
 
   // Build EventFeedback Value
   Widget buildEventFeedbackText() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(
-            '10'+" ",
-            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-            textAlign: TextAlign.center
-        ),
-        SizedBox(
-          width: widget.width*0.05,
-          child: Image.asset(Constants.fireEmojiImage),
-        ),
-      ],
-    );
-    /*
     if (widget.event.intensityScore == null) {
-      if (widget.isMyEvent && canAnswerFeedback) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-                "?? ",
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.deepOrange),
-                textAlign: TextAlign.center
-            ),
-            SizedBox(
-              width: widget.width*0.05,
-              child: Image.asset(Constants.fireEmojiImage),
-            ),
-          ],
-        );
-      } else {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -110,23 +77,27 @@ class _BrandEventCardState extends State<BrandEventCard> {
             ),
           ],
         );
-      }
+
     } else {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-              widget.event.intensityScore!.toStringAsFixed(1)+" ",
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+              widget.event.intensityScore!.toStringAsFixed(1) + " ",
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(color: AppColors.black),
               textAlign: TextAlign.center
           ),
           SizedBox(
-            width: widget.width*0.05,
+            width: widget.width * 0.05,
             child: Image.asset(Constants.fireEmojiImage),
           ),
         ],
       );
-    }*/
+    }
   }
 
   // Build EventFeedback Value
@@ -305,9 +276,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
                           ],
                         ),
                         GestureDetector(
-                          onTap: widget.isMyEvent && canAnswerFeedback ? () {
-                            navigateToFeedbackEventScreen();
-                          } : null,
+                          onTap: null,
                           child: SizedBox(
                             height: widget.height*0.16,
                             child: FittedBox(

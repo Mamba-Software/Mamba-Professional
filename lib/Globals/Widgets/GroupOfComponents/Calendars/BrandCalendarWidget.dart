@@ -214,30 +214,33 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   }
 
   Widget _buildTitleFromDateCalendarView(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: () {
-              _controller.backward!();
-            },
-            icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.04,),
-            alignment: Alignment.centerLeft,
-          ),
-          Text(
-            StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-          IconButton(
-            onPressed: () {
-              _controller.forward!();
-            },
-            icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.04,),
-            alignment: Alignment.centerRight,
-          ),
-        ],
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            IconButton(
+              onPressed: () {
+                _controller.backward!();
+              },
+              icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.04,),
+              alignment: Alignment.centerLeft,
+            ),
+            Text(
+              StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            IconButton(
+              onPressed: () {
+                _controller.forward!();
+              },
+              icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.04,),
+              alignment: Alignment.centerRight,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -245,7 +248,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Container(
       color: Theme.of(context).backgroundColor,
-      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06),
+      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.00),
       child: DropdownButton2(
         dropdownWidth: MediaQuery.of(context).size.width*0.5,
         dropdownDecoration: BoxDecoration(
@@ -275,7 +278,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Row(
                 children: [
                   Text(
-                    item == '0' ? AppLocalizations.of(context)!.calendar+" " : AppLocalizations.of(context)!.schedule+" ",
+                    item == '0' ? AppLocalizations.of(context)!.calendar+" " : AppLocalizations.of(context)!.historic+" ",
                     style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 25),
                   ),
                   FaIcon(
@@ -331,7 +334,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     color: Theme.of(context).primaryColor
                 ),
                 title: Text(
-                  "Agenda",
+                  AppLocalizations.of(context)!.historic,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
                 trailing: FaIcon(
@@ -394,37 +397,25 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           Icon(
             Icons.calendar_view_month,
             color: AppColors.white,
-            size: safeAreaWidth*0.05,
+            size: safeAreaWidth * 0.05,
           ),
           FittedBox(
             fit: BoxFit.contain,
             child: Text(
                 AppLocalizations.of(context)!.monthString,
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyText2
+                    ?.copyWith(color: AppColors.white),
                 textAlign: TextAlign.center
             ),
           ),
         ],
       );
     }
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.calendar_view_week,
-          color: AppColors.white,
-          size: safeAreaWidth*0.05,
-        ),
-        FittedBox(
-          fit: BoxFit.contain,
-          child: Text(
-              AppLocalizations.of(context)!.weekString,
-              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-              textAlign: TextAlign.center
-          ),
-        ),
-      ],
-    );
+    return Container();
+
   }
 
   Widget _buildEventContainer(CalendarAppointmentDetails details) {
@@ -984,7 +975,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
-                      child: Row(
+                      child: selectedValue == "0" ? Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -997,7 +988,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  TextButton(
+                                  _controller.view == CalendarView.month || selectedValue == "1" ?  TextButton(
                                     onPressed: () {
                                       mixpanel!.track('brand_calendar_today');
                                       setState(() {
@@ -1014,24 +1005,95 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                         style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.center
                                     ),
-                                  ),
+                                  ) : Container(),
                                   TextButton(
                                     onPressed: () {
-                                      if (_controller.view == CalendarView.month) {
-                                        mixpanel!.track('brand_calendar_week');
+                                        if (_controller.view ==
+                                            CalendarView.month) {
+                                          mixpanel!.track(
+                                              'brand_calendar_week');
+                                          setState(() {
+                                            _controller.view =
+                                                CalendarView.week;
+                                          });
+                                        } else if (_controller.view ==
+                                            CalendarView.week) {
+                                          mixpanel!.track(
+                                              'brand_calendar_month');
+                                          setState(() {
+                                            _controller.view =
+                                                CalendarView.month;
+                                            _controller.selectedDate = DateTime(
+                                                _controller.displayDate!.year,
+                                                _controller.displayDate!.month,
+                                                1, 0, 0);
+                                          });
+                                        }
+                                    },
+                                    child: _buildIconController(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ) : Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildTitleFromDate(displayDateTimeStart, displayDateTimeEnd, middleMonthDate),
+                          FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height*0.08,
+                              width: MediaQuery.of(context).size.width*0.36,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      if (_controller.view ==
+                                          CalendarView.month) {
+                                        mixpanel!.track(
+                                            'brand_calendar_week');
                                         setState(() {
-                                          _controller.view = CalendarView.week;
+                                          _controller.view =
+                                              CalendarView.week;
                                         });
-                                      } else if (_controller.view == CalendarView.week) {
-                                        mixpanel!.track('brand_calendar_month');
+                                      } else if (_controller.view ==
+                                          CalendarView.week) {
+                                        mixpanel!.track(
+                                            'brand_calendar_month');
                                         setState(() {
-                                          _controller.view = CalendarView.month;
-                                          _controller.selectedDate = DateTime(_controller.displayDate!.year, _controller.displayDate!.month, 1, 0, 0);
+                                          _controller.view =
+                                              CalendarView.month;
+                                          _controller.selectedDate = DateTime(
+                                              _controller.displayDate!.year,
+                                              _controller.displayDate!.month,
+                                              1, 0, 0);
                                         });
                                       }
                                     },
                                     child: _buildIconController(),
                                   ),
+                                  _controller.view == CalendarView.month || selectedValue == "1" ?  TextButton(
+                                    onPressed: () {
+                                      mixpanel!.track('brand_calendar_today');
+                                      setState(() {
+                                        _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
+                                      });
+                                      if (_controller.view == CalendarView.month) {
+                                        setState(() {
+                                          _controller.selectedDate = DateTime.now();
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                        AppLocalizations.of(context)!.todayString,
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                        textAlign: TextAlign.center
+                                    ),
+                                  ) : Container(),
                                 ],
                               ),
                             ),
@@ -1239,8 +1301,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   isMyBrand: true,
                   height: safeAreaHeight*0.87,
                   width: safeAreaWidth*0.95,
-                ),
-                );
+                ));
               }
             }
           ),
