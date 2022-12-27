@@ -11,7 +11,7 @@ import '../Data/LibraryModels/lColor.dart';
 bool isProduction = true;
 
 // App Version
-var appVersion = "MAMBA v0.0.6";
+var appVersion = "MAMBA v0.0.7";
 
 List<lColor> currentColors = [];
 List<lDegradate> currentDegradates = [];//0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
@@ -21,10 +21,10 @@ var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.ma
 var iosAppStoreUrl = "https://apps.apple.com/es/app/mamba-professional/id1642701679";
 
 // Website
-var websiteES = "https://mambastyle.net/";
-var websiteCA = "https://mambastyle.net/ca/inici/";
-var termsAndConditionsES = "https://mambastyle.net/terminos-y-condiciones/";
-var termsAndConditionsCA = "https://mambastyle.net/ca/termes-i-condicions/";
+var websiteES = "https://www.mambaapp.app/";
+var websiteCA = "https://www.mambaapp.app/ca/inici/";
+var termsAndConditionsES = "https://www.mambaapp.app/terminos-y-condiciones/";
+var termsAndConditionsCA = "https://www.mambaapp.app/ca/termes-i-condicions/";
 
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
