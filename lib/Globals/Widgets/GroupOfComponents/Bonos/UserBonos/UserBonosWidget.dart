@@ -75,7 +75,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
               ),
               TextButton(
                   child: Text(
-                      AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.historial,
+                      AppLocalizations.of(context)!.purchaseHistory,
                       style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
                   ),
                   onPressed: navigateToBonoHistoryScreen
@@ -83,7 +83,6 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
             ],
           ),
         ),
-        SizedBox(height: widget.height*0.01,),
         StreamBuilder<QuerySnapshot>(
           stream: _userDataService.getAllBonosFromUser(widget.userId),
           builder: (context, snapshot) {
@@ -173,19 +172,25 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                   ),
                 );
               } else {
-                return Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                    SizedBox(
-                        width: MediaQuery.of(context).size.width*0.25,
-                        child: Image.asset(Constants.emptyCalendar)
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                    Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                  ],
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.noData.split(" ")[0]+" "+AppLocalizations.of(context)!.activeBono.toLowerCase(),
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    ],
+                  ),
                 );
               }
             }
