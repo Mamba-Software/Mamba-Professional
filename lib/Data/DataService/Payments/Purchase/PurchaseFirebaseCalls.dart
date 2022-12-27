@@ -1,12 +1,8 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
-import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -78,11 +74,10 @@ class PurchaseFirebaseCalls {
     List<Purchase> purchases = [];
     // Get All User Purchases
     QuerySnapshot querySnapshot = await _firestore
-    .collection(users)
-    .doc(userId)
-    .collection("Purchases")
-    .get();
-
+        .collection(users)
+        .doc(userId)
+        .collection("Purchases")
+        .get();
     // Build Each Purchase
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       String purchaseId = querySnapshot.docs[i].id;
@@ -94,6 +89,28 @@ class PurchaseFirebaseCalls {
           .doc(purchaseId)
           .get();
       Purchase purchase = Purchase.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      purchase.setBasicData = Purchase(
+        id: purchase.id,
+        userId: userId,
+        brandId: purchase.brandId,
+        bonoId: purchase.bonoId,
+        price: purchase.price,
+        paymentMethod: purchase.paymentMethod,
+        purchasedAt: purchase.purchasedAt,
+      );
+      // Get Bono From Purchase
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 = await _firestore.collection(brands).doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
+      Bono bono =  Bono.fromObjectAllData(_documentSnapshot2.id, _documentSnapshot2);
+      // Add Conditions of This purchase
+      bono.setBonoPrice = _documentSnapshot.get("price").toDouble();
+      bono.setBonoSessions = _documentSnapshot.get("sessions");
+      bono.setConditionsData = Condition(
+        expirationTime: _documentSnapshot.get("expirationTime"),
+        cancelTime: _documentSnapshot.get("cancelTime"),
+        weeklySessions: _documentSnapshot.get("weeklySessions"),
+      );
+      // Set Purchased Bono
+      purchase.setPurchasedBono = bono;
       // Get Purchase Events
       List<Event> events = [];
       QuerySnapshot querySnapshot2 = await _firestore

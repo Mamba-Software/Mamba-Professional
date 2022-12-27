@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -16,6 +17,7 @@ class Purchase {
   int? paymentMethod;
   Timestamp? purchasedAt;
   // List of Events Done with this purchase
+  Bono? bono;
   List<Event> events = [];
 
   Purchase({
@@ -68,6 +70,11 @@ class Purchase {
   // Set Basic Data
   set setPurchasedEventsData(List<Event> events) {
     this.events = events;
+  }
+
+  // Set Basic Data
+  set setPurchasedBono(Bono bono) {
+    this.bono = bono;
   }
 
 }

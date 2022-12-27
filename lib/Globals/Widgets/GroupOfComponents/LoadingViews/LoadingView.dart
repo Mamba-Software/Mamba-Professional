@@ -4,8 +4,9 @@ import '../../../Constants.dart';
 class LoadingView extends StatefulWidget {
   bool? hasLogo;
   bool? isSmall;
+  Color? color;
   String? text;
-  LoadingView({Key? key, this.hasLogo, this.isSmall, this.text}) : super(key: key);
+  LoadingView({Key? key, this.hasLogo, this.isSmall, this.color, this.text}) : super(key: key);
 
   @override
   _LoadingViewState createState() => _LoadingViewState();
@@ -24,7 +25,7 @@ class _LoadingViewState extends State<LoadingView> {
             height: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
             child: CircularProgressIndicator(
               strokeWidth: widget.isSmall != null && widget.isSmall == true ? 2 : 4,
-              color: Theme.of(context).colorScheme.secondary,
+              color:  widget.color != null ? widget.color : Theme.of(context).colorScheme.secondary,
             ),
           ),
         ),
