@@ -65,12 +65,15 @@ class ClientBonoCardState extends State<ClientBonoCard> {
   final _lColor = lColor();
   // Booleans
   bool isExpanded = false;
-  double isExpandedHeight = 2.7;
+  double isExpandedHeight = 2.5;
   // Client Current Bono Stats
+  bool isNotActive = false;
   bool isFinished = false;
+  bool isExpired = false;
   int sessionsDone = 0;
   List<Event> eventsThisWeek = [];
   DateTime purchasedDate = DateTime.now();
+  DateTime expirationDate = DateTime.now();
   int daysToExpire = 0;
   int weeklySessions = 0;
 
@@ -87,6 +90,8 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     );
     if (widget.isExpanded != null && widget.isExpanded!) {
       isExpanded = true;
+    } else {
+      isExpanded = false;
     }
     calculateExpandedHeight();
     calculateCurrentBonoStats();
@@ -98,23 +103,16 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     user = await _userDataService.getUserDetails(purchase.userId!);
   }
 
-  // Navigate to Event History Screen
-  void navigateToBonoEventHistoryScreen() {
-    mixpanel!.track('profile_view_bono_events_history');
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-            builder: (context) => UserBonoEventHistoryPage(
-              userId: widget.purchase.userId!,
-              bonoEvents: widget.purchase.events,
-            )
-        )
-    );
-  }
-
-
   Future<void> calculateExpandedHeight() async {
     // Height of Expanded Container
+    // Llargada de la Descripció del Bono
+    if (bono.description!.length <= 33) {
+      isExpandedHeight = 2.4;
+    } else if (bono.description!.length > 33 && bono.description!.length <= 66) {
+      isExpandedHeight = 2.45;
+    } else {
+      isExpandedHeight = 2.55;
+    }
     // Primer Condicions
     int cnt = 0;
     if (condition.cancelTime != 0) {
@@ -127,9 +125,9 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       cnt += 1;
     }
     // Apliquem el Expanded Height
-    if (cnt == 1) isExpandedHeight = isExpandedHeight + 0.4;
+    if (cnt == 1) isExpandedHeight = isExpandedHeight + 0.8;
     if (cnt == 2) isExpandedHeight = isExpandedHeight + 1;
-    if (cnt == 3) isExpandedHeight = isExpandedHeight + 1.2;
+    if (cnt == 3) isExpandedHeight = isExpandedHeight + 1.3;
   }
 
   Future<void> calculateCurrentBonoStats() async {
@@ -148,12 +146,23 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       purchasedDate.day+1,
     );
     // Expiration Date
-    DateTime expirationDate = purchasedDate.add(Duration(days:condition.expirationTime!));
+    expirationDate = purchasedDate.add(Duration(days:condition.expirationTime!));
     Duration diff = expirationDate.difference(DateTime.now());
     // Days to Expire
     daysToExpire = diff.inDays;
-    if (daysToExpire == 0 && condition.expirationTime != 0) {
-      isFinished = true;
+    // Check if Expired
+    if (condition.expirationTime != 0 && daysToExpire < 1) {
+      isExpired = true;
+      isNotActive = true;
+    }
+    // Check if Finished
+    if (bono.sessions == purchase.events.length) {
+      // Check if there is still some sessions to do
+      int index = purchase.events.indexWhere((element) => element.doneAt!.toDate().isAfter(DateTime.now()));
+      if (index == -1) {
+        isFinished = true;
+        isNotActive = true;
+      }
     }
   }
 
@@ -168,7 +177,12 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       cancelTime: widget.bono.condition!.cancelTime,
       weeklySessions: widget.bono.condition!.weeklySessions,
     );
-    isExpandedHeight = 2.7;
+    isExpandedHeight = 2.5;
+    if (widget.isExpanded != null && widget.isExpanded!) {
+      isExpanded = true;
+    } else {
+      isExpanded = false;
+    }
     calculateExpandedHeight();
     calculateCurrentBonoStats();
   }
@@ -360,7 +374,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                 alignment: Alignment.centerLeft,
                                 child: FittedBox(
                                   fit: BoxFit.contain,
-                                  child: Row(
+                                  child: isNotActive == false ? Row(
                                     children: [
                                       bono.sessions! > 5000 ? Text(
                                         AppLocalizations.of(
@@ -409,6 +423,36 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                         textAlign: TextAlign.left,
                                       ) : const Text(""),
                                     ],
+                                  ) : Row(
+                                    children: [
+                                      bono.sessions! > 5000 ? Text(
+                                        sessionsDone.toString()+ ' ' + AppLocalizations.of(context)!.sessions.toUpperCase(),
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
+                                        textAlign: TextAlign.left,
+                                      ) : Text(
+                                        sessionsDone.toString()+"/"+bono.sessions!.toString().toUpperCase() + ' ' + AppLocalizations.of(context)!.sessions.toUpperCase(),
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(
+                                        width: widget.width * 0.05,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          color: AppColors.red,
+                                        ),
+                                        child: Text(
+                                          isFinished ? AppLocalizations.of(context)!.esgotat.toUpperCase() : isExpired ? AppLocalizations.of(context)!.expired.toUpperCase() : AppLocalizations.of(context)!.expired.toUpperCase(),
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                                          textAlign: TextAlign.left,
+                                          maxLines: 4,
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                      ),
+
+                                    ],
                                   ),
                                 ),
                               ),
@@ -435,24 +479,6 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                         color: AppColors.white
                                     )),
                               ),
-                            ),
-                          ],
-                        )  : purchase.events.isNotEmpty ? Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            TextButton(
-                                child: Text(
-                                  AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.sessions.toLowerCase(),
-                                  style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
-                                  textAlign: TextAlign.left,
-                                ),
-                                style: TextButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    minimumSize: const Size(50, 30),
-                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                    alignment: Alignment.centerLeft
-                                ),
-                                onPressed: navigateToBonoEventHistoryScreen
                             ),
                           ],
                         ) : Container(),
@@ -551,7 +577,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                             children: [
                                               Text(
                                                 AppLocalizations.of(
-                                                    context)!.disponibilidad.toUpperCase(),
+                                                    context)!.state.toUpperCase(),
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText2
@@ -565,8 +591,8 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                 height: widget.width * 0.02,
                                               ),
                                               Text(
-                                                isFinished == false ? AppLocalizations.of(context)!.active : AppLocalizations.of(
-                                                    context)!.desactive,
+                                                isFinished == false && isExpired == false  ? AppLocalizations.of(context)!.active : isFinished ? AppLocalizations.of(
+                                                    context)!.esgotat : isExpired ? AppLocalizations.of(context)!.expired : AppLocalizations.of(context)!.expired,
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .bodyText1
@@ -698,8 +724,11 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                   size: widget.width * 0.07,
                                                   color: Colors.white70
                                                 ),
-                                                title: Text(
+                                                title: isNotActive == false ? Text(
                                                   AppLocalizations.of(context)!.expiresAt + " " + daysToExpire.toString() + " " + AppLocalizations.of(context)!.days.toLowerCase(),
+                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
+                                                ) : Text(
+                                                  AppLocalizations.of(context)!.expiresAt + " " + condition.expirationTime.toString() + " " + AppLocalizations.of(context)!.days.toLowerCase(),
                                                   style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white70),
                                                 ),
                                                 subtitle: Column(
@@ -776,18 +805,18 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                                         color: Colors
                                                             .white70),
                                                   ),
-                                                  subtitle: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      const SizedBox(
-                                                        height: 8,
-                                                      ),
-                                                      Text(
-                                                        AppLocalizations.of(context)!.thisWeek+": " + eventsThisWeek.length.toString()+"/${condition.weeklySessions}"+" "+AppLocalizations.of(context)!.sessions.toLowerCase(),
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                subtitle: isNotActive == false ? Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    const SizedBox(
+                                                      height: 8,
+                                                    ),
+                                                    Text(
+                                                      AppLocalizations.of(context)!.thisWeek+": " + eventsThisWeek.length.toString()+"/${condition.weeklySessions}"+" "+AppLocalizations.of(context)!.sessions.toLowerCase(),
+                                                      style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white),
+                                                    ),
+                                                  ],
+                                                ) : null,
 
                                               )
                                                   : Container(),

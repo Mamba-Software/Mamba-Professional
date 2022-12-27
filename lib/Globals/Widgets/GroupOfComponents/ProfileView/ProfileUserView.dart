@@ -24,12 +24,10 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteFromBrandConfirmationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventListTile.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsMade.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Sesions/SesionsScreens/UserEventHistoryPage.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Sesions/SesionsScreens/UserEventHistoryWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Sesions/SesionsScreens/UserRecentEventsWidget.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -870,8 +868,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
             UserRecentEventsWidget(
               userId: user.id!,
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width*0.9,
+              events: totalEvents,
             ),
           ],
         ),
@@ -997,8 +994,10 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-            builder: (context) => UserEventHistoryPage(
+            builder: (context) => UserEventHistoryWidget(
               userId: user.id!,
+              isTrainer: user.isTrainer!,
+              events: totalEvents,
             )
         )
     );

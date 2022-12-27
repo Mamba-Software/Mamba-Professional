@@ -761,6 +761,10 @@
   "@lunchBreakAdded":{
     "description": "lunchBreakAdded text"
   },
+  "state": "Estado",
+  "@state":{
+    "description": "disponibilidad text"
+  },
   "disponibilidad": "Disponibilidad",
   "@disponibilidad":{
     "description": "disponibilidad text"
@@ -2322,6 +2326,14 @@
   "@conditions":{
     "description": "conditions Text"
   },
+  "expired": "Expirado",
+  "@expired":{
+    "description": "expiresAt Text"
+  },
+  "esgotat": "Agotado",
+  "@esgotat":{
+    "description": "expiresAt Text"
+  },
   "expiresAt": "Expira en",
   "@expiresAt":{
     "description": "expiresAt Text"
@@ -2742,6 +2754,14 @@
   "last30Days": "Últimos 30 días",
   "@last30Days":{
     "description": "last30Days text"
+  },
+  "olderFirst": "Antiguos primero",
+  "@olderFirst": {
+    "description": "Donde message"
+  },
+  "newerFirst": "Recientes primero",
+  "@newerFirst": {
+    "description": "Donde message"
   },
   "asistants": "Asistentes",
   "@asistants":{
