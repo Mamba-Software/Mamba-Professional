@@ -120,8 +120,8 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
         event: event,
         height: details.bounds.height,
         width: details.bounds.width,
-        isMyEvent: true,
-        showEmoji: true,
+        isMyBrand: true,
+        color: appointment.color,
       ),
     );
   }
@@ -300,7 +300,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                       child: SfCalendarTheme(
                         data: SfCalendarThemeData(
                           brightness: Brightness.dark,
-                          backgroundColor: Theme.of(context).backgroundColor,
+                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                           todayHighlightColor: Theme.of(context).primaryColor,
                           todayBackgroundColor: Theme.of(context).backgroundColor,
                         ),
@@ -335,7 +335,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                           ),
                           viewHeaderHeight: 30,
                           viewHeaderStyle: ViewHeaderStyle(
-                            backgroundColor: Theme.of(context).backgroundColor,
+                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                             dateTextStyle: Theme.of(context).textTheme.bodyText2,
                             dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                           ),

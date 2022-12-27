@@ -247,18 +247,6 @@ class _HomePro extends State<HomePro> {
                       navigateToBonosRequestScreen();
                     }, //
                   ) : Container(),
-                  BrandSessionStatsWidget(
-                    brandId: currentBrand.id!,
-                    navigateToPage: (int page) {
-                      widget.navigateToPage(9);
-                    },
-                  ),
-                  BrandBestBonoWidget(
-                    brandId: currentBrand.id!,
-                    navigateToPage: (int page) {
-                      widget.navigateToPage(5);
-                    },
-                  ),
                   Column(
                     children: [
                       SizedBox(
@@ -275,7 +263,7 @@ class _HomePro extends State<HomePro> {
                                 isPrivate: false,
                                 onClicked: (bool? value) {
                                   mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': false});
-                                  widget.navigateToPage(10, null, CalendarView.day);
+                                  widget.navigateToPage(10, null, CalendarView.month);
                                 },
                               ),
                               PlanEventWidget(
@@ -284,7 +272,7 @@ class _HomePro extends State<HomePro> {
                                 isPrivate: true,
                                 onClicked: (bool? value) {
                                   mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': true});
-                                  widget.navigateToPage(10, null, CalendarView.day);
+                                  widget.navigateToPage(10, null, CalendarView.month);
                                 },
                               ),
                             ],
@@ -307,6 +295,22 @@ class _HomePro extends State<HomePro> {
                       ),
                     ],
                   ),
+                  BrandSessionStatsWidget(
+                    brandId: currentBrand.id!,
+                    navigateToPage: (int page) {
+                      widget.navigateToPage(9);
+                    },
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  BrandBestBonoWidget(
+                    brandId: currentBrand.id!,
+                    navigateToPage: (int page) {
+                      widget.navigateToPage(5);
+                    },
+                  ),
+
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),

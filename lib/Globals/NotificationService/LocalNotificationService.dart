@@ -192,6 +192,9 @@ class LocalNotificationService {
       case 'BonosRequests':
         await Navigator.of(context).pushNamed("BonosRequests", arguments: currentBrand.id!);
         break;
+      case 'MembershipRequests':
+        await Navigator.of(context).pushNamed("MembershipRequests", arguments: currentBrand.id!);
+        break;
       default:
         String payloadFeedback = payload.substring(0,2);
         String payloadSubString = payload.substring(2);

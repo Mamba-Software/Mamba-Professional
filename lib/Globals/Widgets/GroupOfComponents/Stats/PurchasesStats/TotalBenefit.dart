@@ -194,7 +194,7 @@ class TotalBenefitPurchasesState extends State<TotalBenefitPurchases> {
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height*0.07),
                         SizedBox(
-                            width: MediaQuery.of(context).size.width*0.30,
+                            width: MediaQuery.of(context).size.width*0.15,
                             child: Image.asset(Constants.emptyCalendar)
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),

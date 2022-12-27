@@ -6,18 +6,20 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
+import 'package:provider/provider.dart';
 
 class BrandEventCard extends StatefulWidget {
   Event event;
+  Color? color;
   double height = 0;
   double width = 0;
-  bool isMyEvent = false;
-  bool showEmoji = false;
-  BrandEventCard({Key? key, required this.event, required this.height, required this.width, required this.isMyEvent, required this.showEmoji}) : super(key: key);
+  bool isMyBrand = false;
+  BrandEventCard({Key? key, required this.event, this.color, required this.isMyBrand, required this.height, required this.width}) : super(key: key);
 
   @override
   _BrandEventCardState createState() => _BrandEventCardState();
@@ -25,15 +27,18 @@ class BrandEventCard extends StatefulWidget {
 
 class _BrandEventCardState extends State<BrandEventCard> {
 
+
+  bool isDark = false;
   DateTime now = DateTime.now();
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
-  bool isDoing = false;
   bool isCompleted = false;
+  int places = 0;
 
   @override
   void initState() {
     initEventCard();
+    isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
     super.initState();
   }
 
@@ -46,6 +51,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
   void initEventCard() {
     var hour = widget.event.duration.toString().split(".")[0];
     var min = widget.event.duration!.toStringAsFixed(2).split(".")[1];
+    places = widget.event.maxMembers!-widget.event.numClients!;
     setState(() {
       startDate =  DateTime(
         int.parse(widget.event.year!),
@@ -54,61 +60,26 @@ class _BrandEventCardState extends State<BrandEventCard> {
         int.parse(widget.event.hour!),
         int.parse(widget.event.minute!),
       );
-      endDate = startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-      isDoing = startDate.isAfter(now) && endDate.isBefore(now) ? true : false;
+      endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
       isCompleted = startDate.isBefore(now) ? true : false;
     });
   }
 
   // Build EventFeedback Value
   Widget buildEventFeedbackText() {
-    if (widget.event.intensityScore == null) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-                "-- ",
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                textAlign: TextAlign.center
-            ),
-            SizedBox(
-              width: widget.width*0.05,
-              child: Image.asset(Constants.fireEmojiImage),
-            ),
-          ],
-        );
-
+    if (widget.event.averageIntensityScore == null) {
+      return Text(
+          "-- ",
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+          textAlign: TextAlign.center
+      );
     } else {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(
-              widget.event.intensityScore!.toStringAsFixed(1) + " ",
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText2
-                  ?.copyWith(color: AppColors.black),
-              textAlign: TextAlign.center
-          ),
-          SizedBox(
-            width: widget.width * 0.05,
-            child: Image.asset(Constants.fireEmojiImage),
-          ),
-        ],
+      return Text(
+          widget.event.averageIntensityScore!.toStringAsFixed(1)+" ",
+          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+          textAlign: TextAlign.center
       );
     }
-  }
-
-  // Build EventFeedback Value
-  Widget buildTimeLefText() {
-    int minutesLeft = startDate.difference(now).inMinutes;
-    double hoursLeft = minutesLeft/60;
-    return Text(
-        hoursLeft < 1 ? "En "+minutesLeft.toString()+"m " : "En "+hoursLeft.toStringAsFixed(0)+"h ",
-        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-        textAlign: TextAlign.center
-    );
   }
 
   // Navigate to Event Feedback Screen
@@ -151,7 +122,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
           alignment: Alignment.topCenter,
           children: [
             Container(
-              height: widget.height,
+              height: MediaQuery.of(context).size.height*0.15,
               width: widget.width,
               decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
@@ -163,7 +134,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
               child: Column(
                 children: [
                   Container(
-                    height: widget.height*0.66,
+                    height: MediaQuery.of(context).size.height*0.10,
                     width: widget.width,
                     decoration: BoxDecoration(
                       color: Theme.of(context).backgroundColor,
@@ -175,7 +146,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
                     ),
                   ),
                   Container(
-                    height: widget.height*0.34-1,
+                    height: MediaQuery.of(context).size.height*0.05-1,
                     width: widget.width,
                     decoration: const BoxDecoration(
                       color: AppColors.white,
@@ -190,9 +161,9 @@ class _BrandEventCardState extends State<BrandEventCard> {
               ),
             ),
             Container(
-              height: widget.height*0.66,
+              height: MediaQuery.of(context).size.height*0.10,
               width: widget.width,
-              padding: EdgeInsets.symmetric(horizontal: widget.width*0.05, vertical: widget.width*0.05),
+              padding: EdgeInsets.symmetric(horizontal: widget.width*0.05, vertical: MediaQuery.of(context).size.height*0.01),
               decoration: BoxDecoration(
                   color: Colors.transparent,
                   borderRadius: const BorderRadius.only(
@@ -207,7 +178,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
               child: Container(),
             ),
             Container(
-              height: widget.height*0.66,
+              height: MediaQuery.of(context).size.height*0.10,
               width: widget.width,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -230,102 +201,141 @@ class _BrandEventCardState extends State<BrandEventCard> {
               ),
               child: const Center(),
             ),
-            SizedBox(
-              height: widget.height,
-              width: widget.width,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: widget.height*0.1, vertical: widget.height*0.1),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          widget.event.title!,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.start,
-                          maxLines: 1,
-                          overflow: TextOverflow.visible,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: widget.height*0.15,),
-                    widget.showEmoji == true ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                              textAlign: TextAlign.start,
-                            ),
-                            SizedBox(
-                              width: widget.width * 0.05,
-                              height: widget.height * 0.1,
-                              child: const VerticalDivider(color: AppColors.black,),
-                            ),
-                            Text(
-                              widget.event.isPrivate! ? AppLocalizations.of(context)!.private : AppLocalizations.of(context)!.group,
-                              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: null,
-                          child: SizedBox(
-                            height: widget.height*0.16,
-                            child: FittedBox(
-                              fit: BoxFit.fitHeight,
-                              child: isCompleted ? buildEventFeedbackText() : Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  buildTimeLefText(),
-                                  SizedBox(
-                                    width: widget.width*0.04,
-                                    child: Image.asset(Constants.clockEmojiImage),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ) : SizedBox(
-                      height: widget.height*0.16,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: widget.height*0.1),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.event.title!,
+                        style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        overflow: TextOverflow.visible,
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: widget.height*0.1,),
+                isCompleted ? Padding(
+                  padding: EdgeInsets.only(left: widget.height*0.1, right: widget.height*0.1, bottom: widget.height*0.08, top: widget.height*0.05),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                StringUtils().toCapitalized(DateFormat('EEEE dd, ', Localizations.localeOf(context).languageCode).format(startDate)),
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                                textAlign: TextAlign.start,
-                              ),
-                              Text(
-                                StringUtils().toCapitalized(DateFormat('MMMM yyyy ', Localizations.localeOf(context).languageCode).format(startDate)),
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                                textAlign: TextAlign.start,
-                              ),
-                              Text(
-                                "de "+DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
+                          Text(
+                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                            textAlign: TextAlign.start,
+                          ),
+                          SizedBox(
+                            width: widget.width * 0.05,
+                            height: widget.height * 0.1,
+                            child: const VerticalDivider(color: AppColors.black,),
+                          ),
+                          Text(
+                            widget.event.numClients! != 1 ? widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase().substring(0,AppLocalizations.of(context)!.asistants.length-1),
+                            style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
+                            textAlign: TextAlign.start,
                           ),
                         ],
+                      ),
+                      SizedBox(
+                        height: widget.height*0.2,
+                        child: FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                buildEventFeedbackText(),
+                                SizedBox(
+                                  width: widget.width*0.04,
+                                  child: Image.asset(Constants.fireEmojiImage),
+                                ),
+                              ],
+                            )
+                        ),
+                      ),
+                    ],
+                  ),
+                ) : Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: widget.height*0.1),
+                      child: Text(
+                        DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    Container(
+                      width: widget.width*0.4,
+                      height: isDark ? widget.height*0.325 : widget.height*0.335,
+                      margin: EdgeInsets.only(bottom: isDark ? 1 : 0),
+                      decoration: BoxDecoration(
+                        color: widget.color,
+                        borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(15),
+                        ),
+                      ),
+                      child: widget.isMyBrand ? Center(
+                          child: places == 0 ?
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.full,
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                widget.event.numClients!.toString()+"/"+widget.event.maxMembers!.toString(),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )
+                              : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.book,
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                places == 1 ? places.toString()+" "+AppLocalizations.of(context)!.slot : places.toString()+" "+AppLocalizations.of(context)!.slots,
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )
+                      ) : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                widget.event.numClients!.toString()+"/"+widget.event.maxMembers!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          )
                       ),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
           ],
         ),

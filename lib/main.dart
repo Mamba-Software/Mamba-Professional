@@ -29,6 +29,7 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
+import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
@@ -199,6 +200,14 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                           brandId: brandId,
                         ),
                         settings: const RouteSettings(name: 'BonosRequests'),
+                      );
+                    case 'MembershipRequests':
+                      String brandId = args as String;
+                      return CupertinoPageRoute(
+                        builder: (_) => MembershipRequestsPro(
+                          brandId: brandId,
+                        ),
+                        settings: const RouteSettings(name: 'MembershipRequests'),
                       );
                   }
                 },

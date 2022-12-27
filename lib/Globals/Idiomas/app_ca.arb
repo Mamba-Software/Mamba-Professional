@@ -614,5 +614,8 @@
   "seeAll": "Veure totes",
   "seeAllMasc": "Veure tots",
   "anotherBrand": "d'una altre marca",
-  "last30Days": "Últims 30 dies"
+  "last30Days": "Últims 30 dies",
+  "asistants": "Assistents",
+  "onlyAllowed": "Només pots borrar el teu usuari si no pertanys a una marca.",
+  "statsMinimumSessionBrand": "Necessites un mínim de sessiones per veure aquesta estadística"
 }

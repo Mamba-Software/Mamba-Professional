@@ -1263,7 +1263,7 @@ exports.userSendsRequest = functions
               body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
             },
             data: {
-              route: "Notifications",
+              route: "MembershipRequests",
             },
           };
         } else {
@@ -1273,7 +1273,7 @@ exports.userSendsRequest = functions
               body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
             },
             data: {
-              route: "Notifications",
+              route: "MembershipRequests",
             },
           }
         }
@@ -3343,7 +3343,7 @@ exports.zzzzUserSendsRequest = functions
               body: requestDoc.name+" quiere formar parte de tu marca "+ brandDoc.name,
             },
             data: {
-              route: "Notifications",
+              route: "MembershipRequests",
             },
           };
         } else {
@@ -3353,7 +3353,7 @@ exports.zzzzUserSendsRequest = functions
               body: requestDoc.name+" vol formar part de la teva marca "+ brandDoc.name,
             },
             data: {
-              route: "Notifications",
+              route: "MembershipRequests",
             },
           }
         }

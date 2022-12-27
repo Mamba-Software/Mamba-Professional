@@ -215,7 +215,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   Widget _buildTitleFromDateCalendarView(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
         child: Row(
@@ -431,8 +431,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         event: event,
         height: details.bounds.height,
         width: details.bounds.width,
-        isMyEvent: true,
-        showEmoji: true,
+        color: appointment.color,
+        isMyBrand: true,
       ),
     );
   }
@@ -1177,9 +1177,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                           child: SfCalendarTheme(
                             data: SfCalendarThemeData(
                               brightness: Brightness.dark,
-                              backgroundColor: Theme.of(context).backgroundColor,
+                              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                               todayHighlightColor: Theme.of(context).primaryColor,
-                              todayBackgroundColor: Theme.of(context).backgroundColor,
+                              todayBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
                             ),
                             child: SfCalendar(
                               // Controller
@@ -1212,7 +1212,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               ),
                               viewHeaderHeight: 30,
                               viewHeaderStyle: ViewHeaderStyle(
-                                backgroundColor: Theme.of(context).backgroundColor,
+                                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                 dateTextStyle: Theme.of(context).textTheme.bodyText2,
                                 dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                               ),
@@ -1249,20 +1249,20 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                     startDateFormat: 'dd/MM',
                                     endDateFormat: 'dd/MM/yyyy',
                                     textAlign: TextAlign.start,
-                                    backgroundColor: Theme.of(context).backgroundColor,
+                                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                     weekTextStyle: Theme.of(context).textTheme.caption,
                                   ),
                                   monthHeaderSettings: MonthHeaderSettings(
                                     monthFormat: 'MMMM yyyy',
                                     height: 70,
                                     textAlign: TextAlign.start,
-                                    backgroundColor: Theme.of(context).backgroundColor,
+                                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                     monthTextStyle: Theme.of(context).textTheme.headline1,
                                   )
                               ),
                               scheduleViewMonthHeaderBuilder: (BuildContext buildContext, ScheduleViewMonthHeaderDetails details) {
                                 return Container(
-                                  color: Theme.of(context).backgroundColor,
+                                  color: Theme.of(context).scaffoldBackgroundColor,
                                   padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1329,7 +1329,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 Icons.groups,
               ),
               elevation: 10,
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               labelWidget: Container(
                 color: Colors.transparent,
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
@@ -1361,7 +1361,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 Icons.lock_outlined,
               ),
               elevation: 10,
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               labelWidget: Container(
                 color: Colors.transparent,
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),

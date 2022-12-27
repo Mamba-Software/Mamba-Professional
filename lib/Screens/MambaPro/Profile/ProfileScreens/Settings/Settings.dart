@@ -578,6 +578,9 @@ class _DeleteDialogState extends State<DeleteDialog> {
                   child: Text(AppLocalizations.of(context)!.wantDeleteUser, style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.red, fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
                 ),
                 Flexible(
+                  child: Text("${AppLocalizations.of(context)!.onlyAllowed} ", style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5), textAlign: TextAlign.center,),
+                ),
+                Flexible(
                   child: Text("${AppLocalizations.of(context)!.writeDeleteUser} ", style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5), textAlign: TextAlign.center,),
                 ),
                 Padding(
@@ -593,7 +596,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             setState(() => {
                               deleteTemp = val
                             });
-                            if (val.length < 6) {
+                            if (val.length < 6 || hasBrand) {
                               setState(() => {
                                 canDelete = false
                               });

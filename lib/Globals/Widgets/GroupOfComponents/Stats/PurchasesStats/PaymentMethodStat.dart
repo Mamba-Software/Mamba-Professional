@@ -192,7 +192,7 @@ class PaymentMethodStatState extends State<PaymentMethodStat> {
           mainAxisSize: MainAxisSize.max,
           children: [
             SizedBox(
-                width: MediaQuery.of(context).size.width*0.30,
+                width: MediaQuery.of(context).size.width*0.15,
                 child: Image.asset(Constants.emptyCalendar)
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.005),

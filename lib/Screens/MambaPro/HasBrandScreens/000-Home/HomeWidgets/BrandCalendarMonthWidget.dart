@@ -149,7 +149,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                               Icon(Icons.calendar_month_outlined, size: widget.width*0.06, color: AppColors.grey,),
                               SizedBox(width: widget.width*0.02),
                               Text(
-                                  AppLocalizations.of(context)!.calendar,
+                                  AppLocalizations.of(context)!.sessions,
                                   style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
                                   textAlign: TextAlign.center
                               ),

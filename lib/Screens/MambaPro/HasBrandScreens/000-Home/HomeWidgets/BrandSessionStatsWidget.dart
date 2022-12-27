@@ -122,6 +122,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
 
       time = time2;
     }
+
   }
 
   @override
@@ -136,7 +137,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
         ),
         child: Container(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height,
+            maxHeight: MediaQuery.of(context).size.height * 0.40,
             maxWidth: MediaQuery.of(context).size.width*0.84,
             minWidth: MediaQuery.of(context).size.width*0.84,
           ),
@@ -179,7 +180,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                               Icon(Icons.leaderboard_outlined, size: MediaQuery.of(context).size.width*0.05, color: AppColors.grey,),
                               SizedBox(width: MediaQuery.of(context).size.width*0.02),
                               Text(
-                                  AppLocalizations.of(context)!.eventsDone,
+                                  AppLocalizations.of(context)!.stats,
                                   style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
                                   textAlign: TextAlign.center
                               ),
@@ -192,7 +193,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                             widget.navigateToPage(9);
                           },
                           child: Text(
-                              AppLocalizations.of(context)!.last30Days,
+                              AppLocalizations.of(context)!.eventsDone,
                               style: Theme.of(context).textTheme.caption,
                               textAlign: TextAlign.center
                           ),
@@ -201,92 +202,88 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.00),
-                  child: Center(
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          filteredEvents.isEmpty? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              SizedBox(height: MediaQuery.of(context).size.height*0.07),
-                              SizedBox(
-                                  width: MediaQuery.of(context).size.width*0.30,
-                                  child: Image.asset(Constants.emptyCalendar)
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                              Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                            ],
-                          ) : Container(),
-                          Container(
-                              child: Column(
-                                children: [
-                                  SfCartesianChart(
-                                      backgroundColor: Colors.transparent,
-                                      borderColor: Colors.transparent,
-                                      plotAreaBorderColor: Colors.transparent,
-                                      plotAreaBorderWidth: 1,
-                                      primaryXAxis: CategoryAxis(
-                                        //Hide the gridlines of x-axis
-                                        majorGridLines: MajorGridLines(width: 0),
-                                        isVisible: false,
-                                        //Hide the axis line of x-axis
-                                        axisLine: AxisLine(width: 0),
-                                      ),
-                                      primaryYAxis: NumericAxis(
-                                        majorTickLines: MajorTickLines(
-                                          width: 0,
-                                        ),
-                                        enableAutoIntervalOnZooming: false,
-                                        opposedPosition: true,
-                                        interval: 1,
-                                        //maximum: double.parse(maxNumber.toString()),
-                                        //isVisible: false,
-                                        //Hide the gridlines of x-axis
-                                        majorGridLines: MajorGridLines(width: 0),
-                                        //Hide the axis line of x-axis
-                                        axisLine: AxisLine(width: 0),
-                                      ),
-                                      axes: [],
-                                      indicators: [],
-                                      legend: null,
-                                      tooltipBehavior: _tooltipBehavior,
-                                      enableSideBySideSeriesPlacement: false,
-                                      series: <ChartSeries>[
-                                        // Renders line chart
-                                        SplineAreaSeries<TotalEvents, String>(
-                                          borderColor: Styles.mainColor,
-                                          borderWidth: 2,
-
-                                          markerSettings: MarkerSettings(
-                                              borderColor: AppColors.mainColor,
-                                              isVisible: totalEvents.length == 1? true : false,
-                                              height:  10,
-                                              width:  10,
-                                              shape: DataMarkerType.circle,
-                                              color: AppColors.mainColor),
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                              Styles.mainColor,
-                                              AppColors.mainColor.withOpacity(0.2),
-                                            ],
-                                          ),
-                                          dataSource: totalEvents,
-                                          xValueMapper: (TotalEvents events, _) => events.day,
-                                          yValueMapper: (TotalEvents events, _) => events.events,
-                                        )
-                                      ]
-                                  ),
-                                ],
-                              )
+                SizedBox(
+                  height: MediaQuery.of(context).size.height*0.25,
+                  width: MediaQuery.of(context).size.width*0.9,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SfCartesianChart(
+                          backgroundColor: Colors.transparent,
+                          borderColor: Colors.transparent,
+                          plotAreaBorderColor: Colors.transparent,
+                          plotAreaBorderWidth: 1,
+                          primaryXAxis: CategoryAxis(
+                            //Hide the gridlines of x-axis
+                            majorGridLines: MajorGridLines(width: 0),
+                            isVisible: false,
+                            //Hide the axis line of x-axis
+                            axisLine: AxisLine(width: 0),
                           ),
-                        ],
-                      )
+                          primaryYAxis: NumericAxis(
+                            majorTickLines: MajorTickLines(
+                              width: 0,
+                            ),
+                            enableAutoIntervalOnZooming: false,
+                            opposedPosition: true,
+                            interval: 1,
+                            //maximum: double.parse(maxNumber.toString()),
+                            //isVisible: false,
+                            //Hide the gridlines of x-axis
+                            majorGridLines: MajorGridLines(width: 0),
+                            //Hide the axis line of x-axis
+                            axisLine: AxisLine(width: 0),
+                          ),
+                          axes: [],
+                          indicators: [],
+                          legend: null,
+                          tooltipBehavior: _tooltipBehavior,
+                          enableSideBySideSeriesPlacement: false,
+                          series: <ChartSeries>[
+                            // Renders line chart
+                            SplineAreaSeries<TotalEvents, String>(
+                              borderColor: Styles.mainColor,
+                              borderWidth: 2,
+
+                              markerSettings: MarkerSettings(
+                                  borderColor: AppColors.mainColor,
+                                  isVisible: totalEvents.length == 1? true : false,
+                                  height:  10,
+                                  width:  10,
+                                  shape: DataMarkerType.circle,
+                                  color: AppColors.mainColor),
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Styles.mainColor,
+                                  AppColors.mainColor.withOpacity(0.2),
+                                ],
+                              ),
+                              dataSource: totalEvents,
+                              xValueMapper: (TotalEvents events, _) => events.day,
+                              yValueMapper: (TotalEvents events, _) => events.events,
+                            )
+                          ]
+                      ),
+                      filteredEvents.isEmpty ? Container(
+                        height: MediaQuery.of(context).size.height*0.1,
+                        width: MediaQuery.of(context).size.width*0.50,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).backgroundColor.withOpacity(0.9),
+                            border: Border.all(width: 2, color: Theme.of(context).primaryColor),
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.statsMinimumSessionBrand,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ) : Container(),
+                    ],
                   ),
                 ),
               ],

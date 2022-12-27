@@ -2742,7 +2742,17 @@
   "last30Days": "Últimos 30 días",
   "@last30Days":{
     "description": "last30Days text"
-  }
-
-
+  },
+  "asistants": "Asistentes",
+  "@asistants":{
+    "description": "Añadir Miembros text"
+  },
+  "onlyAllowed": "Solo puedes borrar tu usuario si no perteneces a una marca.",
+  "@onlyAllowed":{
+    "description": "onlyAllowed text"
+  },
+  "statsMinimumSessionBrand": "Necesitas un mínimo de sesiones para ver esta estadística",
+  "@statsMinimumSessionBrand": {
+    "description": "statsMinimumSessionBrand message"
+    }
 }

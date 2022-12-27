@@ -140,8 +140,8 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
         event: event,
         height: details.bounds.height,
         width: details.bounds.width,
-        isMyEvent: true,
-        showEmoji: true,
+        isMyBrand: true,
+        color: appointment.color,
       ),
     );
   }
@@ -199,16 +199,16 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
               padding: const EdgeInsets.only(left: 4, right: 12.0),
               child: SfCalendarTheme(
                 data: SfCalendarThemeData(
-                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   todayHighlightColor: Theme.of(context).primaryColor,
-                  todayBackgroundColor: Theme.of(context).backgroundColor,
+                  todayBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 ),
                 child: SfCalendar(
                   // Controller
                   view: CalendarView.month,
                   // Data
-                  minDate: startWeek,
-                  maxDate: endWeek,
+                  //minDate: startWeek,
+                  //maxDate: endWeek,
                   initialDisplayDate: DateTime.now(),
                   initialSelectedDate: DateTime.now(),
                   dataSource: _getCalendarDataSource(),
@@ -232,7 +232,7 @@ class _BrandCalendarWeekWidgetState extends State<BrandCalendarWeekWidget> {
                   ),
                   viewHeaderHeight: 30,
                   viewHeaderStyle: ViewHeaderStyle(
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     dateTextStyle: Theme.of(context).textTheme.bodyText2,
                     dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                   ),
