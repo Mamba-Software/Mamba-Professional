@@ -92,7 +92,11 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   Future<void> getUserEventsFinished() async {
     List res = await _eventDataService.getUserEventsStats(widget.userID);
     totalEvents = res[0];
-    lastEvents = List.from(totalEvents.sublist(0, 4));
+    if (totalEvents.length > 4) {
+      lastEvents = List.from(totalEvents.sublist(0, 4));
+    } else {
+      lastEvents = List.from(totalEvents);
+    }
     totalTime = res[1];
     averageTime = res[2] * 60;
     streakWeeks = res[3].toInt();
