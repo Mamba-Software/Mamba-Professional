@@ -247,6 +247,12 @@ class _HomePro extends State<HomePro> {
                       navigateToBonosRequestScreen();
                     }, //
                   ) : Container(),
+                  BrandSessionStatsWidget(
+                    brandId: currentBrand.id!,
+                    navigateToPage: (int page) {
+                      widget.navigateToPage(9);
+                    },
+                  ),
                   Column(
                     children: [
                       SizedBox(
@@ -295,22 +301,12 @@ class _HomePro extends State<HomePro> {
                       ),
                     ],
                   ),
-                  BrandSessionStatsWidget(
-                    brandId: currentBrand.id!,
-                    navigateToPage: (int page) {
-                      widget.navigateToPage(9);
-                    },
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.02,
-                  ),
                   BrandBestBonoWidget(
                     brandId: currentBrand.id!,
                     navigateToPage: (int page) {
                       widget.navigateToPage(5);
                     },
                   ),
-
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
