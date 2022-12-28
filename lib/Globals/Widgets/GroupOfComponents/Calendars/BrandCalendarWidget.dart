@@ -249,7 +249,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: AppColors.darkGrey,
       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.00),
       child: DropdownButton2(
         dropdownWidth: MediaQuery.of(context).size.width*0.5,
@@ -261,7 +261,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         ),
         // Initial Value
         value: selectedValue,
-        style: Theme.of(context).textTheme.headline1,
+        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
         underline: Container(color: Colors.transparent),
         isExpanded: false,
         dropdownElevation: 4,
@@ -281,12 +281,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 children: [
                   Text(
                     item == '0' ? AppLocalizations.of(context)!.calendar+" " : AppLocalizations.of(context)!.historic+" ",
-                    style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 25),
+                    style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                   ),
                   FaIcon(
                       FontAwesomeIcons.chevronDown,
                       size: MediaQuery.of(context).size.width*0.03,
-                      color: Theme.of(context).primaryColor
+                      color: AppColors.white
                   ),
                 ],
               ),
@@ -1092,7 +1092,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   ),
                 );
               } else {
-                eventsList = documentsToEvents(snapshot.data!.docs);
+                eventsList = List.from(documentsToEvents(snapshot.data!.docs));
                 return SliverFillRemaining(
                   child: Padding(
                     padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.01),
