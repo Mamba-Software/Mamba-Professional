@@ -220,121 +220,124 @@ class _BrandEventCardState extends State<BrandEventCard> {
               ),
               child: const Center(),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: widget.height*0.1),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.event.title!,
-                        style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        overflow: TextOverflow.visible,
-                      ),
-                      Text(
-                        widget.event.isPrivate! ? AppLocalizations.of(context)!.privateEvent : AppLocalizations.of(context)!.groupEvent,
-                        style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        overflow: TextOverflow.visible,
-                      ),
-                    ],
+            SizedBox(
+              height: MediaQuery.of(context).size.height*0.15,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: widget.height*0.1),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.event.title!,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.start,
+                          maxLines: 1,
+                          overflow: TextOverflow.visible,
+                        ),
+                        Text(
+                          widget.event.isPrivate! ? AppLocalizations.of(context)!.privateEvent : AppLocalizations.of(context)!.groupEvent,
+                          style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
+                          textAlign: TextAlign.start,
+                          maxLines: 1,
+                          overflow: TextOverflow.visible,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: widget.height*0.1,),
-                isCompleted ? Padding(
-                  padding: EdgeInsets.only(left: widget.height*0.1, right: widget.height*0.1, bottom: widget.height*0.08, top: widget.height*0.05),
-                  child: Row(
+                  SizedBox(height: widget.height*0.1,),
+                  isCompleted ? Padding(
+                    padding: EdgeInsets.only(left: widget.height*0.1, right: widget.height*0.1, bottom: widget.height*0.08, top: widget.height*0.05),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                              textAlign: TextAlign.start,
+                            ),
+                            SizedBox(
+                              width: widget.width * 0.05,
+                              height: widget.height * 0.1,
+                              child: const VerticalDivider(color: AppColors.black,),
+                            ),
+                            Text(
+                              widget.event.numClients! != 1 ? widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase().substring(0,AppLocalizations.of(context)!.asistants.length-1),
+                              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: widget.height*0.2,
+                          child: FittedBox(
+                              fit: BoxFit.fitHeight,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  buildEventFeedbackText(),
+                                  SizedBox(
+                                    width: widget.width*0.04,
+                                    child: Image.asset(Constants.fireEmojiImage),
+                                  ),
+                                  buildEventFeedbackEntries(),
+                                ],
+                              )
+                          ),
+                        ),
+                      ],
+                    ),
+                  ) : Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                            textAlign: TextAlign.start,
-                          ),
-                          SizedBox(
-                            width: widget.width * 0.05,
-                            height: widget.height * 0.1,
-                            child: const VerticalDivider(color: AppColors.black,),
-                          ),
-                          Text(
-                            widget.event.numClients! != 1 ? widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase().substring(0,AppLocalizations.of(context)!.asistants.length-1),
-                            style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.only(left: widget.height*0.1),
+                        child: Text(
+                          DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                          textAlign: TextAlign.start,
+                        ),
                       ),
-                      SizedBox(
-                        height: widget.height*0.2,
-                        child: FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      Container(
+                        width: widget.width*0.4,
+                        height: isDark ? widget.height*0.325 : widget.height*0.335,
+                        margin: EdgeInsets.only(bottom: isDark ? 1 : 0),
+                        decoration: BoxDecoration(
+                          color: widget.color,
+                          borderRadius: const BorderRadius.only(
+                            bottomRight: Radius.circular(15),
+                          ),
+                        ),
+                        child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                buildEventFeedbackText(),
-                                SizedBox(
-                                  width: widget.width*0.04,
-                                  child: Image.asset(Constants.fireEmojiImage),
+                                widget.event.isPrivate! ? Text(
+                                  widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                  textAlign: TextAlign.center,
+                                ) : Text(
+                                  widget.event.numClients!.toString()+"/"+widget.event.maxMembers!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                  textAlign: TextAlign.center,
                                 ),
-                                buildEventFeedbackEntries(),
                               ],
                             )
                         ),
                       ),
                     ],
                   ),
-                ) : Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: widget.height*0.1),
-                      child: Text(
-                        DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                        textAlign: TextAlign.start,
-                      ),
-                    ),
-                    Container(
-                      width: widget.width*0.4,
-                      height: isDark ? widget.height*0.325 : widget.height*0.335,
-                      margin: EdgeInsets.only(bottom: isDark ? 1 : 0),
-                      decoration: BoxDecoration(
-                        color: widget.color,
-                        borderRadius: const BorderRadius.only(
-                          bottomRight: Radius.circular(15),
-                        ),
-                      ),
-                      child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              widget.event.isPrivate! ? Text(
-                                widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                                textAlign: TextAlign.center,
-                              ) : Text(
-                                widget.event.numClients!.toString()+"/"+widget.event.maxMembers!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          )
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

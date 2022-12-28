@@ -122,8 +122,8 @@ class _HomePro extends State<HomePro> {
                   Container(
                     height: MediaQuery.of(context).size.width*0.07,
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width*0.84,
-                      minWidth: MediaQuery.of(context).size.width*0.84,
+                      maxWidth: MediaQuery.of(context).size.width*0.9,
+                      minWidth: MediaQuery.of(context).size.width*0.9,
                     ),
                     decoration: BoxDecoration(
                       color: Theme.of(context).backgroundColor,
@@ -137,8 +137,8 @@ class _HomePro extends State<HomePro> {
                       margin: const EdgeInsetsDirectional.only(start: 1, end: 1, top: 1),
                       height: MediaQuery.of(context).size.width*0.05,
                       constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width*0.84,
-                        minWidth: MediaQuery.of(context).size.width*0.84,
+                        maxWidth: MediaQuery.of(context).size.width*0.9,
+                        minWidth: MediaQuery.of(context).size.width*0.9,
                       ),
                       decoration: BoxDecoration(
                         color: Theme.of(context).scaffoldBackgroundColor,
@@ -216,7 +216,7 @@ class _HomePro extends State<HomePro> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.08,),
+              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.0, horizontal:  MediaQuery.of(context).size.width*0.05,),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -291,7 +291,7 @@ class _HomePro extends State<HomePro> {
                       BrandCalendarMonthWidget(
                         brandId: currentBrand.id!,
                         height: MediaQuery.of(context).size.height * 0.41,
-                        width: MediaQuery.of(context).size.width * 0.84,
+                        width: MediaQuery.of(context).size.width * 0.9,
                         navigateToPage: (int page, DateTime? dateTime, CalendarView? calendarView) {
                           widget.navigateToPage(10, dateTime, calendarView);
                         },

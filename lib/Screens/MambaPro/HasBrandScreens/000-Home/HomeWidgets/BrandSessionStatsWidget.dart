@@ -138,8 +138,8 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
         child: Container(
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.35,
-            maxWidth: MediaQuery.of(context).size.width*0.84,
-            minWidth: MediaQuery.of(context).size.width*0.84,
+            maxWidth: MediaQuery.of(context).size.width*0.9,
+            minWidth: MediaQuery.of(context).size.width*0.9,
           ),
           decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
@@ -149,8 +149,8 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
             margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height,
-              maxWidth: MediaQuery.of(context).size.width*0.84,
-              minWidth: MediaQuery.of(context).size.width*0.84,
+              maxWidth: MediaQuery.of(context).size.width*0.9,
+              minWidth: MediaQuery.of(context).size.width*0.9,
             ),
             padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
             decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                   fit: BoxFit.fitHeight,
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height*0.04,
-                    width: MediaQuery.of(context).size.width*0.84,
+                    width: MediaQuery.of(context).size.width*0.9,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

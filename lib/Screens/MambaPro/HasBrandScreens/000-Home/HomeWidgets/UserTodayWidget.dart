@@ -14,6 +14,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandEventCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -67,8 +68,6 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
       );
       return aDate.compareTo(bDate);
     });
-
-
     return events;
   }
 
@@ -168,9 +167,15 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
     if (!indexFound) {
       _current = userEventsToday.length-1;
     }
-    eventSliders = userEventsToday.map((item) => Container(
-        child: buildEventContainer(item, MediaQuery.of(context).size.height*0.18, MediaQuery.of(context).size.width, buildBadge(userEventsToday.indexOf(item)))
-    )).toList();
+    eventSliders = userEventsToday.map((item) =>
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            buildEventContainer(item, MediaQuery.of(context).size.height*0.15, MediaQuery.of(context).size.width*0.8, buildBadge(userEventsToday.indexOf(item))),
+            SizedBox(height: MediaQuery.of(context).size.height*0.01)
+          ],
+        )
+    ).toList();
   }
 
   // Return bade on events Today
@@ -296,167 +301,37 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
 
   // Build Event Container
   Widget buildEventContainer(Event event, var height, var width, var badge) {
+    Color? color;
+    if (event.isPrivate!) {
+      color = Colors.black;
+    } else {
+      // Colors
+      double numClients = double.parse(event.numClients.toString());
+      double maxMembers = double.parse(event.maxMembers.toString());
+      double bookedCapacity = numClients/maxMembers;
+      if(bookedCapacity <= 0.20) {
+        color = Colors.green;
+      } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
+        color = const Color(0xFFA8C76C);
+      } else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
+        color = const Color(0xFFECE014);
+      } else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
+        color = Colors.orangeAccent;
+      } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
+        color = Colors.deepOrangeAccent;
+      } else if(bookedCapacity == 1) {
+        color = Colors.red;
+      }
+    }
     return GestureDetector(
-      onTap: () => navigateToEventScreen(event.id!),
-      child: Material(
-        elevation: 4,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10.0),
-          ),
-        ),
-        child: Stack(
-          alignment: Alignment.bottomLeft,
-          children: [
-            Container(
-              height: height,
-              width: width,
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(10.0),
-                  ),
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: CachedNetworkImageProvider(event.imageUrl!),
-                  )
-              ),
-              child: const Center(),
-            ),
-            Container(
-              height: height,
-              width: width,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                gradient: LinearGradient(
-                    begin: FractionalOffset.topCenter,
-                    end: FractionalOffset.bottomCenter,
-                    colors: [
-                      Colors.grey.withOpacity(0.0),
-                      Colors.black,
-                    ],
-                    stops: const [
-                      0.0,
-                      0.75
-                    ]
-                ),
-                border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10.0),
-                ),
-              ),
-              child: const Center(),
-            ),
-            Padding(
-              padding: EdgeInsets.all(width * 0.05),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: width*0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: width*0.4,
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: Text(event.title!,
-                                    style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white, fontWeight: FontWeight.w600), textAlign: TextAlign.left),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            badge,
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: height*0.05),
-                  SizedBox(
-                    width: width*0.8,
-                    child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                            Icons.schedule,
-                            color: Colors.white,
-                            size: width*0.04,
-                          ),
-                          SizedBox(width: width*0.02),
-                          Text(
-                            event.hour.toString(),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                          Text(
-                            ":",
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                          Text(
-                            event.minute=="0" ? "00" : event.minute.toString(),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                          const SizedBox(
-                              height: 16,
-                              width: 32,
-                              child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                          ),
-                          Icon(
-                            Icons.timer,
-                            color: Colors.white,
-                            size: width*0.04,
-                          ),
-                          SizedBox(width: width*0.02),
-                          Text(
-                            StringUtils().durationToString(event.duration!),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                          const SizedBox(
-                              height: 16,
-                              width: 32,
-                              child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                          ),
-                          const Icon(
-                            Icons.record_voice_over,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          SizedBox(width: width*0.02),
-                          Text(
-                            event.numTrainers.toString(),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                          const SizedBox(
-                              height: 16,
-                              width: 32,
-                              child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
-                          ),
-                          const Icon(
-                            Icons.directions_run,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          SizedBox(width: width*0.02),
-                          Text(
-                            event.numClients.toString(),
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      onTap: () {
+        navigateToEventScreen(event.id.toString());
+      },
+      child: BrandEventCard(
+        event: event,
+        height: height,
+        width: width,
+        color: color,
       ),
     );
   }
@@ -474,8 +349,8 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
       child: Container(
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height,
-          maxWidth: MediaQuery.of(context).size.width*0.84,
-          minWidth: MediaQuery.of(context).size.width*0.84,
+          maxWidth: MediaQuery.of(context).size.width*0.9,
+          minWidth: MediaQuery.of(context).size.width*0.9,
         ),
         decoration: BoxDecoration(
           color: Theme.of(context).backgroundColor,
@@ -488,8 +363,8 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1),
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height,
-            maxWidth: MediaQuery.of(context).size.width*0.84,
-            minWidth: MediaQuery.of(context).size.width*0.84,
+            maxWidth: MediaQuery.of(context).size.width*0.9,
+            minWidth: MediaQuery.of(context).size.width*0.9,
           ),
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05),
           //padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
@@ -569,7 +444,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                   ],
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.04,),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02,),
               StreamBuilder<QuerySnapshot>(
                   stream: _eventDataService.getUserEventsTodayStream(currentUser.id!),
                   builder: (context, snapshot) {
@@ -593,28 +468,28 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             SizedBox(
-                              height: MediaQuery.of(context).size.height*0.05,
+                              height: MediaQuery.of(context).size.height*0.04,
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
-                                child: Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start),
+                                child: Text(AppLocalizations.of(context)!.todaysBrandEvents, style: Theme.of(context).textTheme.bodyText1),
                               ),
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height*0.18,
+                              height: MediaQuery.of(context).size.height*0.16,
                               width: MediaQuery.of(context).size.width,
                               child: CarouselSlider(
                                 options: CarouselOptions(
-                                  autoPlay: false,
-                                  aspectRatio: 2.0,
-                                  viewportFraction: 0.84,
-                                  enlargeCenterPage: true,
-                                  enableInfiniteScroll: false,
-                                  initialPage: _current,
-                                  onPageChanged: (index, reason) {
-                                    setState(() {
-                                      _current = index;
-                                    });
-                                  }
+                                    autoPlay: false,
+                                    aspectRatio: 1.0,
+                                    viewportFraction: 0.85,
+                                    enlargeCenterPage: true,
+                                    enableInfiniteScroll: false,
+                                    initialPage: _current,
+                                    onPageChanged: (index, reason) {
+                                      setState(() {
+                                        _current = index;
+                                      });
+                                    }
                                 ),
                                 items: eventSliders,
                               ),
@@ -649,7 +524,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                   }
               ),
               userEventsToday.length > 1 ? SizedBox(
-                height: MediaQuery.of(context).size.height*0.05,
+                height: MediaQuery.of(context).size.height*0.03,
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -667,7 +542,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                     );
                   }).toList(),
                 ),
-              ) : SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+              ) : SizedBox(height: MediaQuery.of(context).size.height*0.0,),
             ],
           ),
         ),
