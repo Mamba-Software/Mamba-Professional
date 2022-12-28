@@ -105,7 +105,7 @@ class _HomePro extends State<HomePro> {
         slivers: [
           SliverAppBar(
             expandedHeight: MediaQuery.of(context).size.height*0.18,
-            elevation: 4,
+            elevation: 2,
             systemOverlayStyle: returnSystemBarColor(),
             floating: true,
             pinned: true,
