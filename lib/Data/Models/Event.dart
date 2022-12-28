@@ -33,6 +33,7 @@ class Event {
   var selectedTrainers;
   double? intensityScore;
   double? averageIntensityScore;
+  int? feedbackEntries;
 
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
@@ -63,6 +64,7 @@ class Event {
     this.joinedMembers,
     this.selectedTrainers,
     this.intensityScore,
+    this.feedbackEntries,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -140,6 +142,9 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('averageIntensityScore')) {
     averageIntensityScore = double.parse(documentSnapshot.get("averageIntensityScore").toString());
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('feedbackEntries')) {
+      feedbackEntries = documentSnapshot.get("feedbackEntries");
+    }
   }
 
   Event.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -191,6 +196,9 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('averageIntensityScore')) {
       averageIntensityScore = double.parse(documentSnapshot.get("averageIntensityScore").toString());
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('feedbackEntries')) {
+      feedbackEntries = documentSnapshot.get("feedbackEntries");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -216,6 +224,7 @@ class Event {
     selectedTrainers = event.selectedTrainers;
     intensityScore = event.intensityScore;
     averageIntensityScore = event.averageIntensityScore;
+    feedbackEntries = event.feedbackEntries;
   }
 
   // Users

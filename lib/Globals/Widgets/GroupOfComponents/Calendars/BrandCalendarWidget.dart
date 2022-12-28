@@ -23,8 +23,6 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
-import '../../../../Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWeekWidget.dart';
-
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;
   DateTime? dateTime;
@@ -434,7 +432,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         height: details.bounds.height,
         width: details.bounds.width,
         color: appointment.color,
-        isMyBrand: true,
       ),
     );
   }

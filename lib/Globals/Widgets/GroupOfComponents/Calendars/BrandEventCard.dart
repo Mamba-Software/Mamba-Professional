@@ -8,8 +8,6 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +16,7 @@ class BrandEventCard extends StatefulWidget {
   Color? color;
   double height = 0;
   double width = 0;
-  bool isMyBrand = false;
-  BrandEventCard({Key? key, required this.event, this.color, required this.isMyBrand, required this.height, required this.width}) : super(key: key);
+  BrandEventCard({Key? key, required this.event, this.color, required this.height, required this.width}) : super(key: key);
 
   @override
   _BrandEventCardState createState() => _BrandEventCardState();
@@ -75,9 +72,31 @@ class _BrandEventCardState extends State<BrandEventCard> {
       );
     } else {
       return Text(
-          widget.event.averageIntensityScore!.toStringAsFixed(1)+" ",
+          widget.event.averageIntensityScore!.toStringAsFixed(1),
           style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
           textAlign: TextAlign.center
+      );
+    }
+  }
+
+  // Build EventFeedback Value
+  Widget buildEventFeedbackEntries() {
+    if (widget.event.averageIntensityScore == null) {
+      return Container();
+    } else {
+      return Row(
+        children: [
+          Text(
+              "/ "+widget.event.feedbackEntries.toString(),
+              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+              textAlign: TextAlign.center
+          ),
+          Icon(
+            Icons.person,
+            size: widget.width*0.05,
+            color: AppColors.black
+          )
+        ],
       );
     }
   }
@@ -217,6 +236,13 @@ class _BrandEventCardState extends State<BrandEventCard> {
                         maxLines: 1,
                         overflow: TextOverflow.visible,
                       ),
+                      Text(
+                        widget.event.isPrivate! ? AppLocalizations.of(context)!.privateEvent : AppLocalizations.of(context)!.groupEvent,
+                        style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        overflow: TextOverflow.visible,
+                      ),
                     ],
                   ),
                 ),
@@ -259,6 +285,7 @@ class _BrandEventCardState extends State<BrandEventCard> {
                                   width: widget.width*0.04,
                                   child: Image.asset(Constants.fireEmojiImage),
                                 ),
+                                buildEventFeedbackEntries(),
                               ],
                             )
                         ),
@@ -288,43 +315,15 @@ class _BrandEventCardState extends State<BrandEventCard> {
                           bottomRight: Radius.circular(15),
                         ),
                       ),
-                      child: widget.isMyBrand ? Center(
-                          child: places == 0 ?
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.full,
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                widget.event.numClients!.toString()+"/"+widget.event.maxMembers!.toString(),
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          )
-                              : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.book,
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                places == 1 ? places.toString()+" "+AppLocalizations.of(context)!.slot : places.toString()+" "+AppLocalizations.of(context)!.slots,
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          )
-                      ) : Center(
+                      child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
+                              widget.event.isPrivate! ? Text(
+                                widget.event.numClients!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                                textAlign: TextAlign.center,
+                              ) : Text(
                                 widget.event.numClients!.toString()+"/"+widget.event.maxMembers!.toString()+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
                                 style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
                                 textAlign: TextAlign.center,

@@ -120,7 +120,6 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
         event: event,
         height: details.bounds.height,
         width: details.bounds.width,
-        isMyBrand: true,
         color: appointment.color,
       ),
     );

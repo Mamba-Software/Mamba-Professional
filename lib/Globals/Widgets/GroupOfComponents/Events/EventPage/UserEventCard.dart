@@ -263,6 +263,13 @@ class _UserEventCardState extends State<UserEventCard> {
                           maxLines: 1,
                           overflow: TextOverflow.visible,
                         ),
+                        Text(
+                          widget.event.isPrivate! ? AppLocalizations.of(context)!.privateEvent : AppLocalizations.of(context)!.groupEvent,
+                          style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
+                          textAlign: TextAlign.start,
+                          maxLines: 1,
+                          overflow: TextOverflow.visible,
+                        ),
                       ],
                     ),
                     SizedBox(height: widget.height*0.15,),
@@ -275,16 +282,6 @@ class _UserEventCardState extends State<UserEventCard> {
                             Text(
                               DateFormat('Hm', Localizations.localeOf(context).languageCode).format(startDate) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(endDate),
                               style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                              textAlign: TextAlign.start,
-                            ),
-                            SizedBox(
-                              width: widget.width * 0.05,
-                              height: widget.height * 0.1,
-                              child: const VerticalDivider(color: AppColors.black,),
-                            ),
-                            Text(
-                              widget.event.isPrivate! ? AppLocalizations.of(context)!.private : AppLocalizations.of(context)!.group,
-                              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.black),
                               textAlign: TextAlign.start,
                             ),
                           ],
