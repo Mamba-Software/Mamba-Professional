@@ -73,7 +73,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   DateTime dateJoined = DateTime.now();
   // Events From Brand
   List<Event> eventsList = [];
-  List<Appointment> allAppointments = <Appointment>[];
   // Selecte Date Time
   DateTime displayDateTimeStart = DateTime.now();
   DateTime displayDateTimeEnd = DateTime.now();
@@ -1079,7 +1078,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           ) else StreamBuilder<QuerySnapshot>(
             stream: _eventDataService.getBrandEventsStream(widget.brandId),
             builder: (context, snapshot) {
-              if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+              if (!snapshot.hasData) {
                 return SliverToBoxAdapter(
                   child: SizedBox(
                       height: MediaQuery.of(context).size.height*0.65,
@@ -1089,7 +1088,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   ),
                 );
               } else {
-                eventsList = List.from(documentsToEvents(snapshot.data!.docs));
+                List<Event> tempEvents = documentsToEvents(snapshot.data!.docs);
+                eventsList = List.from(tempEvents);
                 return SliverFillRemaining(
                   child: Padding(
                     padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.01),
@@ -1114,7 +1114,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               minDate: dateJoined.subtract(const Duration(days: 1)),
                               initialDisplayDate: DateTime.now(),
                               initialSelectedDate: DateTime.now(),
-                              dataSource: _getCalendarDataSource(),
+                              dataSource: _getCalendarDataSource(eventsList),
                               // Config
                               cellEndPadding: 0,
                               firstDayOfWeek: 1,
@@ -1361,12 +1361,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     );
   }
 
-  AppointmentDataSource _getCalendarDataSource() {
+  AppointmentDataSource _getCalendarDataSource(List<Event> eventsList) {
     List<Appointment> tempAllAppointments = [];
     for (var i=0; i < eventsList.length; i++) {
       var event = eventsList[i];
       // Date Time
-      var startDate =  DateTime(
+      DateTime startDate = DateTime(
         int.parse(event.year!),
         int.parse(event.month!),
         int.parse(event.day!),
@@ -1413,8 +1413,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         endTimeZone: '',
       ));
     }
-    allAppointments = tempAllAppointments;
-    return AppointmentDataSource(allAppointments);
+    return AppointmentDataSource(tempAllAppointments);
   }
 /*
   AppointmentDataSource _getCalendarDataSource() {
