@@ -137,7 +137,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
         ),
         child: Container(
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.40,
+            maxHeight: MediaQuery.of(context).size.height * 0.35,
             maxWidth: MediaQuery.of(context).size.width*0.84,
             minWidth: MediaQuery.of(context).size.width*0.84,
           ),
@@ -167,6 +167,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                     height: MediaQuery.of(context).size.height*0.04,
                     width: MediaQuery.of(context).size.width*0.84,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
@@ -192,18 +193,23 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                             mixpanel!.track('brand_stats_view');
                             widget.navigateToPage(9);
                           },
-                          child: Text(
-                              AppLocalizations.of(context)!.eventsDone,
-                              style: Theme.of(context).textTheme.caption,
-                              textAlign: TextAlign.center
+                          child: Column(
+                            children: [
+                              Text(
+                                  AppLocalizations.of(context)!.sessions+" - 30 "+AppLocalizations.of(context)!.days.toLowerCase(),
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.center
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height*0.25,
+                  height: MediaQuery.of(context).size.height*0.19,
                   width: MediaQuery.of(context).size.width*0.9,
                   child: Stack(
                     alignment: Alignment.center,

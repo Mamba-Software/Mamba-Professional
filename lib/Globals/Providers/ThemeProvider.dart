@@ -48,7 +48,7 @@ class ThemeProvider extends ChangeNotifier {
         statusBarIconBrightness: Brightness.dark,
         systemNavigationBarColor: AppColors.black,
         systemNavigationBarDividerColor: AppColors.black,
-        systemNavigationBarIconBrightness: Brightness.dark,
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
   }
