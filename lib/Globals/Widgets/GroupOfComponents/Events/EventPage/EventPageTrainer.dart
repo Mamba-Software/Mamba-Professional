@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
@@ -351,6 +350,73 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   }
 
   // Build Places Left Event
+  Widget buildAverageFeedbackWidget() {
+    if (event!.averageIntensityScore != null) {
+      return FittedBox(
+        fit: BoxFit.fitHeight,
+        child: Container(
+            height: MediaQuery.of(context).size.width*0.1,
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      event!.averageIntensityScore!.toStringAsFixed(1),
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.03,
+                      child: Image.asset(Constants.fireEmojiImage),
+                    ),
+                  ],
+                ),
+                Text(
+                  AppLocalizations.of(context)!.average,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            )
+        ),
+      );
+    } else {
+      return FittedBox(
+        fit: BoxFit.fitHeight,
+        child: Container(
+            height: MediaQuery.of(context).size.width*0.1,
+            padding: const EdgeInsets.all(5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "-- ",
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width*0.03,
+                      child: Image.asset(Constants.fireEmojiImage),
+                    ),
+                  ],
+                ),
+                Text(
+                  AppLocalizations.of(context)!.average,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            )
+        ),
+      );
+    }
+  }
+
+  // Build Places Left Event
   SystemUiOverlayStyle returnSystemBarColor() {
     if (Platform.isAndroid) {
       return SystemUiOverlayStyle.light;
@@ -649,7 +715,18 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   ),
                   child: buildPlacesLeftWidget(placesLeft),
                 ),
-              ) : Container(),
+              ) : Padding(
+                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                child: Container(
+                  height: MediaQuery.of(context).size.width*0.06,
+                  width: MediaQuery.of(context).size.width*0.12,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      shape: BoxShape.circle
+                  ),
+                  child: buildAverageFeedbackWidget(),
+                ),
+              ),
             ],
           ),
           !isLoadingBody ? SliverToBoxAdapter(child: Container(

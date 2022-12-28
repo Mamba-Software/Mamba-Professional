@@ -856,16 +856,16 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     style: Theme.of(context).textTheme.headline3,
                     textAlign: TextAlign.center
                 ),
-                TextButton(
+                totalEvents.isNotEmpty ? TextButton(
                     child: Text(
-                        AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.historial,
+                        AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.eventHistory,
                         style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
                     ),
                     onPressed: navigateToEventHistoryScreen
-                ),
+                ) : Container(),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            SizedBox(height: MediaQuery.of(context).size.height*0.0),
             UserRecentEventsWidget(
               userId: user.id!,
               events: totalEvents,

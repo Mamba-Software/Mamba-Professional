@@ -65,6 +65,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   // Sesions Controller
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final CalendarController _controller = CalendarController();
+  bool isWeekly = false;
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
   // Horari
@@ -138,20 +139,21 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       int currentDay = now.weekday;
       displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 7));
-      //_controller.selectedDate = DateTime.now();
+      _controller.selectedDate = DateTime.now();
     } else {
       DateTime dateTime = widget.dateTime!;
       int currentDay = dateTime.weekday;
       displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
       displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
-      //_controller.selectedDate = dateTime;
+      _controller.selectedDate = dateTime;
     }
     // Initial Calendar View
     if (widget.calendarView == null) {
-      _controller.view = CalendarView.week;
+      _controller.view = CalendarView.month;
+      isWeekly = true;
       _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
     } else {
-      _controller.view = widget.calendarView;
+      _controller.view = CalendarView.month;
     }
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
@@ -371,7 +373,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   }
 
   Widget _buildIconController() {
-    if (_controller.view == CalendarView.month) {
+    if (isWeekly == false) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -390,7 +392,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           ),
         ],
       );
-    } else if (_controller.view == CalendarView.week) {
+    } else if (isWeekly == true) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -975,7 +977,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   children: [
                     Padding(
                       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
-                      child: selectedValue == "0" ? Row(
+                      child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -986,113 +988,37 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               height: MediaQuery.of(context).size.height*0.08,
                               width: MediaQuery.of(context).size.width*0.36,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  _controller.view == CalendarView.month || selectedValue == "1" ?  TextButton(
+                                  TextButton(
                                     onPressed: () {
                                       mixpanel!.track('brand_calendar_today');
                                       setState(() {
+                                        _controller.selectedDate = DateTime.now();
                                         _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
                                       });
-                                      if (_controller.view == CalendarView.month) {
-                                        setState(() {
-                                          _controller.selectedDate = DateTime.now();
-                                        });
-                                      }
                                     },
                                     child: Text(
                                         AppLocalizations.of(context)!.todayString,
                                         style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                         textAlign: TextAlign.center
                                     ),
-                                  ) : Container(),
-                                  TextButton(
-                                    onPressed: () {
-                                        if (_controller.view ==
-                                            CalendarView.month) {
-                                          mixpanel!.track(
-                                              'brand_calendar_week');
-                                          setState(() {
-                                            _controller.view =
-                                                CalendarView.week;
-                                          });
-                                        } else if (_controller.view ==
-                                            CalendarView.week) {
-                                          mixpanel!.track(
-                                              'brand_calendar_month');
-                                          setState(() {
-                                            _controller.view =
-                                                CalendarView.month;
-                                            _controller.selectedDate = DateTime(
-                                                _controller.displayDate!.year,
-                                                _controller.displayDate!.month,
-                                                1, 0, 0);
-                                          });
-                                        }
-                                    },
-                                    child: _buildIconController(),
                                   ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ) : Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildTitleFromDate(displayDateTimeStart, displayDateTimeEnd, middleMonthDate),
-                          FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height*0.08,
-                              width: MediaQuery.of(context).size.width*0.36,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  TextButton(
+                                  selectedValue == '0' ? TextButton(
                                     onPressed: () {
-                                      if (_controller.view ==
-                                          CalendarView.month) {
-                                        mixpanel!.track(
-                                            'brand_calendar_week');
+                                      if (isWeekly == false) {
+                                        mixpanel!.track('brand_calendar_week');
                                         setState(() {
-                                          _controller.view =
-                                              CalendarView.week;
+                                          isWeekly = true;
                                         });
-                                      } else if (_controller.view ==
-                                          CalendarView.week) {
-                                        mixpanel!.track(
-                                            'brand_calendar_month');
+                                      } else {
+                                        mixpanel!.track('brand_calendar_month');
                                         setState(() {
-                                          _controller.view =
-                                              CalendarView.month;
-                                          _controller.selectedDate = DateTime(
-                                              _controller.displayDate!.year,
-                                              _controller.displayDate!.month,
-                                              1, 0, 0);
+                                          isWeekly = false;
                                         });
                                       }
                                     },
                                     child: _buildIconController(),
-                                  ),
-                                  _controller.view == CalendarView.month || selectedValue == "1" ?  TextButton(
-                                    onPressed: () {
-                                      mixpanel!.track('brand_calendar_today');
-                                      setState(() {
-                                        _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
-                                      });
-                                      if (_controller.view == CalendarView.month) {
-                                        setState(() {
-                                          _controller.selectedDate = DateTime.now();
-                                        });
-                                      }
-                                    },
-                                    child: Text(
-                                        AppLocalizations.of(context)!.todayString,
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                        textAlign: TextAlign.center
-                                    ),
                                   ) : Container(),
                                 ],
                               ),
@@ -1168,11 +1094,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               } else {
                 eventsList = documentsToEvents(snapshot.data!.docs);
                 return SliverFillRemaining(
-                  child: _controller.view == CalendarView.month || selectedValue == "1"? Padding(
-                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.03, left: MediaQuery.of(context).size.width*0.02),
+                  child: Padding(
+                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.01),
                     child: Column(
                       children: [
-                        _controller.view == CalendarView.month ? _buildTitleFromDateCalendarView(displayDateTimeStart, displayDateTimeEnd, middleMonthDate) : Container(),
+                        _controller.view == CalendarView.month && isWeekly == false ? _buildTitleFromDateCalendarView(displayDateTimeStart, displayDateTimeEnd, middleMonthDate) : Container(),
                         Expanded(
                           child: SfCalendarTheme(
                             data: SfCalendarThemeData(
@@ -1219,11 +1145,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               // Monthly View
                               monthViewSettings: MonthViewSettings(
                                 appointmentDisplayCount: 3,
-                                numberOfWeeksInView: 6,
+                                numberOfWeeksInView: isWeekly == false ? 6 : 1,
                                 showTrailingAndLeadingDates: false,
                                 appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
                                 showAgenda: true,
-                                agendaViewHeight: MediaQuery.of(context).size.height*0.35,
+                                agendaViewHeight: isWeekly == false ? MediaQuery.of(context).size.height*0.37 : MediaQuery.of(context).size.height*0.71,
                                 agendaItemHeight: MediaQuery.of(context).size.height*0.15,
                                 agendaStyle: AgendaStyle(
                                   dateTextStyle: Theme.of(context).textTheme.bodyText2,
@@ -1296,12 +1222,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         ),
                       ],
                     ),
-                  ) : BrandCalendarWeekWidget(
-                  brand: _brand,
-                  isMyBrand: true,
-                  height: safeAreaHeight*0.87,
-                  width: safeAreaWidth*0.95,
-                ));
+                  ));
               }
             }
           ),

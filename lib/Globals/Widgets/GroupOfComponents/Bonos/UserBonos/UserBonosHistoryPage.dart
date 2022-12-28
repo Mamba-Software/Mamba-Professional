@@ -482,6 +482,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
             visible: isList,
             child: Container(
               color: Theme.of(context).backgroundColor,
+              height: MediaQuery.of(context).size.height,
               child: ListView.builder(
                 controller: _scrollController,
                 shrinkWrap: true,

@@ -69,11 +69,11 @@ class _UserRecentEventsWidgetState extends State<UserRecentEventsWidget> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            SizedBox(height: MediaQuery.of(context).size.height*0.015),
             Text(AppLocalizations.of(context)!.noEvents, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
             SizedBox(height: MediaQuery.of(context).size.height*0.1),
           ],
