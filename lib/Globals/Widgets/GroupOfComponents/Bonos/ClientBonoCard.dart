@@ -316,8 +316,11 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: isExpanded == false || widget.canExpand == false ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
+                            Container(
                               height: widget.height * 0.15,
+                              constraints: BoxConstraints(
+                                maxWidth: widget.width * 0.65,
+                              ),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: FittedBox(
