@@ -54,9 +54,6 @@ class _BrandBonoRequestsWidgetState extends State<BrandBonoRequestsWidget> {
           if (requests != 0) {
             return Column(
               children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.02,
-                ),
                 Material(
                   elevation: 4,
                   shape: const RoundedRectangleBorder(

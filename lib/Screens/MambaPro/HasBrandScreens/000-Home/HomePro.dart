@@ -231,7 +231,7 @@ class _HomePro extends State<HomePro> {
                   ),
                   currentUser.brandRole < 3 ? BrandRequestsWidget(
                     height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.84,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
                       mixpanel!.track('brand_homepage_membership_requests');
@@ -240,7 +240,7 @@ class _HomePro extends State<HomePro> {
                   ) : Container(),
                   currentUser.brandRole < 3 ? BrandBonoRequestsWidget(
                     height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.84,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
                       mixpanel!.track('brand_homepage_bono_confirmation_requests');
@@ -265,7 +265,7 @@ class _HomePro extends State<HomePro> {
                             children: [
                               PlanEventWidget(
                                 height: MediaQuery.of(context).size.height * 0.07,
-                                width: MediaQuery.of(context).size.width * 0.4,
+                                width: MediaQuery.of(context).size.width * 0.43,
                                 isPrivate: false,
                                 onClicked: (bool? value) {
                                   mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': false});
@@ -274,7 +274,7 @@ class _HomePro extends State<HomePro> {
                               ),
                               PlanEventWidget(
                                 height: MediaQuery.of(context).size.height * 0.07,
-                                width: MediaQuery.of(context).size.width * 0.4,
+                                width: MediaQuery.of(context).size.width * 0.43,
                                 isPrivate: true,
                                 onClicked: (bool? value) {
                                   mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': true});
