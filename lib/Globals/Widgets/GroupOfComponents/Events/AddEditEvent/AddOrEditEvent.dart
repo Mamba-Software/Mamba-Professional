@@ -156,8 +156,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     twoWeek = startDate.add(const Duration(days: 14));
     oneMonth= startDate.add(const Duration(days: 28));
     doneAt = Timestamp.fromDate(startDate);
+    /*
     titleController.text = currentBrand.name!.replaceAll(RegExp(r"\s+"), "");
     titleString = titleController.text;
+     */
     var hour = duration.split(".")[0];
     var min = duration.split(".")[1];
     durationController.text = "${hour}h ${min}min";

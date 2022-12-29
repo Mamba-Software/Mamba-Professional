@@ -715,7 +715,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   ),
                   child: buildPlacesLeftWidget(placesLeft),
                 ),
-              ) : Padding(
+              ) : !canEdit ? Padding(
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                 child: Container(
                   height: MediaQuery.of(context).size.width*0.06,
@@ -726,7 +726,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   ),
                   child: buildAverageFeedbackWidget(),
                 ),
-              ),
+              ) : Container(),
             ],
           ),
           !isLoadingBody ? SliverToBoxAdapter(child: Container(
