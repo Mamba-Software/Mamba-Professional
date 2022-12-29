@@ -18,7 +18,9 @@ class Purchase {
   Timestamp? purchasedAt;
   // List of Events Done with this purchase
   Bono? bono;
+  Brand? brand;
   List<Event> events = [];
+  int numberOfEvents = 0;
 
   Purchase({
     this.id,
@@ -60,7 +62,7 @@ class Purchase {
   set setBasicData(Purchase purchase) {
     id = purchase.id;
     userId = purchase.userId;
-    brandId = purchase.brandId;    
+    brandId = purchase.brandId;
     bonoId = purchase.bonoId;
     price = purchase.price;
     paymentMethod = purchase.paymentMethod;
@@ -70,11 +72,17 @@ class Purchase {
   // Set Basic Data
   set setPurchasedEventsData(List<Event> events) {
     this.events = events;
+    numberOfEvents = events.length;
   }
 
   // Set Basic Data
   set setPurchasedBono(Bono bono) {
     this.bono = bono;
+  }
+
+  // Set Basic Data
+  set setPurchasedBrandBono(Brand brand) {
+    this.brand = brand;
   }
 
 }
