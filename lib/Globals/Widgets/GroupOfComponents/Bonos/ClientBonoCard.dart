@@ -132,7 +132,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
 
   Future<void> calculateCurrentBonoStats() async {
     // Sessions Done
-    sessionsDone = purchase.events.length;
+    sessionsDone = purchase.numberOfEvents;
     // Sessions Done This Week
     DateTime now = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     DateTime monday = now.subtract(Duration(days: 7-now.weekday));
@@ -156,7 +156,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
       isNotActive = true;
     }
     // Check if Finished
-    if (bono.sessions == purchase.events.length) {
+    if (bono.sessions == purchase.numberOfEvents) {
       // Check if there is still some sessions to do
       int index = purchase.events.indexWhere((element) => element.doneAt!.toDate().isAfter(DateTime.now()));
       if (index == -1) {
@@ -314,11 +314,13 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                       children: [
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: isExpanded == false || widget.canExpand == false ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
                           children: [
-                            SizedBox(
+                            Container(
                               height: widget.height * 0.15,
-                              width: widget.width * 0.7,
+                              constraints: BoxConstraints(
+                                maxWidth: widget.width * 0.65,
+                              ),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: FittedBox(
@@ -336,10 +338,32 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                 ),
                               ),
                             ),
-                            isExpanded == false
-                                ? SizedBox(
-                                    height: widget.height * 0.15,
-                                    width: widget.width * 0.1)
+                            SizedBox(width: widget.width * 0.02),
+                            isExpanded == false || widget.canExpand == false
+                                ?
+                            isNotActive == false ? SizedBox(
+                              height: widget.height * 0.15,
+                              width: widget.width * 0.2,
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Container(
+                                  padding: const EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.green,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.of(context)!.active.toUpperCase(),
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ) : Container()
                                 : SizedBox(
                                     height: widget.height * 0.15,
                                     width: widget.width * 0.1,
@@ -362,6 +386,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                   ),
                           ],
                         ),
+                        SizedBox(height: widget.height * 0.01),
                         isExpanded == false ? Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment:

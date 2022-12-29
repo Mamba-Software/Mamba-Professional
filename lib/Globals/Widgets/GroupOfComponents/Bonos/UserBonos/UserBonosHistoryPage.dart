@@ -44,11 +44,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
   PageController? _pageController;
   ScrollController? _scrollController;
   int _currentPage = 0;
-  // AlL Objects
-  List<Purchase> listPurchases = [];
-  List<Bono> listBonos = [];
-  List<Brand> listBrands = [];
-  // Map <Purchase, Bono, Brand>
+  // Map <Purchase, Bono, Brand, Events>
   var pageViewList = [];
 
   @override
@@ -59,10 +55,10 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
 
   Future<void> initEventHistory() async {
     await getUserPurchases();
-    _numPages = listPurchases.length;
+    _numPages = pageViewList.length;
     // Define Selection
     if (widget.purchaseId != null) {
-      _currentPage = listPurchases.indexWhere((element) => element.id == widget.purchaseId);
+      _currentPage = pageViewList.indexWhere((element) => element[0].id == widget.purchaseId);
       isExpanded = true;
       isList = false;
     }
@@ -88,35 +84,20 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
 
   // Gets the Events Done by the User
   Future<void> getUserPurchases() async {
-    listPurchases = await _purchaseDataService.getAllUserPurchases(widget.userId);
+    final List<Purchase> listPurchases = await _purchaseDataService.getAllUserPurchases(widget.userId);
     listPurchases.sort((a,b) {
       var aDate =  a.purchasedAt!.toDate();
       var bDate =  b.purchasedAt!.toDate();
-      return aDate.compareTo(bDate);
+      return bDate.compareTo(aDate);
     });
-    listPurchases = List.from(listPurchases.reversed);
     // Create PageView List
     for (Purchase purchase in listPurchases) {
       var result = [];
       // L'afegim al resultat Purchase
       result.add(purchase);
       result.add(purchase.bono);
-      // Hem carregat aquesta brand abans?
-      int index = listBrands.indexWhere((element) => element.id == purchase.brandId!);
-      if (index == -1) {
-        // No, no el trobem. El cargem
-        Brand brand = await _brandDataService.getBrandCoverDetails(purchase.brandId!);
-        listBrands.add(brand);
-        // L'afegim al resultat
-        result.add(brand);
-      } else {
-        // El trobem.
-        Brand brand = listBrands[index];
-        // L'afegim al resultat
-        result.add(brand);
-      }
+      result.add(purchase.brand);
       // Add Event List
-      // L'afegim al resultat
       List<Event> events = List.from(purchase.events);
       result.add(events);
       // Add to Final pageview

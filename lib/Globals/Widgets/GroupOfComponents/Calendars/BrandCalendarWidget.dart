@@ -1114,7 +1114,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               minDate: dateJoined.subtract(const Duration(days: 1)),
                               initialDisplayDate: DateTime.now(),
                               initialSelectedDate: DateTime.now(),
-                              dataSource: _getCalendarDataSource(eventsList),
+                              dataSource: _getCalendarDataSource(),
                               // Config
                               cellEndPadding: 0,
                               firstDayOfWeek: 1,
@@ -1361,7 +1361,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     );
   }
 
-  AppointmentDataSource _getCalendarDataSource(List<Event> eventsList) {
+  AppointmentDataSource _getCalendarDataSource() {
     List<Appointment> tempAllAppointments = [];
     for (var i=0; i < eventsList.length; i++) {
       var event = eventsList[i];

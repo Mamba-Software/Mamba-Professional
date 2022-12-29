@@ -87,7 +87,7 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
             forceElevated: true, //* here//* question having 0 here
             pinned: true,
             floating: false,
-            title:  Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),),
+            title:  Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).appBarTheme.titleTextStyle),
             centerTitle: true,
             leading: IconButton(
               icon: Icon(
@@ -98,15 +98,6 @@ class _MembershipRequestsProState extends State<MembershipRequestsPro> {
                 Navigator.pop(context);
               },
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.03),
-               // SizedBox(height: MediaQuery.of(context).size.height*0.02),
-               // Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-              ],
-            )
           ),
           StreamBuilder<QuerySnapshot>(
             stream: _brandDataService.getBrandRequestsStream(widget.brandId),
