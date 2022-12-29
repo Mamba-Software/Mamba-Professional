@@ -7,7 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
-// IS PRODUCTION ?
+// IS PRODUCTION?
 bool isProduction = true;
 
 // App Version
