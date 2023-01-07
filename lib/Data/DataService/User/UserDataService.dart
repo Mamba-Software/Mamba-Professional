@@ -24,6 +24,7 @@ class UserDataService {
   Future<bool> deleteUser(String password) => _firebase.deleteUser(password);
 
   // Check Data
+  Future<bool> checkIfUserExists(String uid) => _firebase.checkIfUserExists(uid);
   Future<bool> checkIfNicknameExists(String nickname) => _firebase.checkIfNicknameExists(nickname);
   Future<bool?> checkIfUserIsTrainer(String userId) => _firebase.checkIfUserIsTrainer(userId);
 

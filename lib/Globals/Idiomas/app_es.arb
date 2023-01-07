@@ -103,6 +103,10 @@
   "@passwordNotSameError":{
     "description": "Contraseña Error Text "
   },
+  "noAccount": "¿No has creado tu cuenta?",
+  "@noAccount":{
+    "description": "Contraseña Text "
+  },
   "forgotPassword": "¿Has olvidado tu contraseña?",
   "@forgotPassword":{
     "description": "Contraseña Text "
@@ -121,6 +125,14 @@
   },
   "login": "Inicia Sesión",
   "@login":{
+    "description": "LogIn Text "
+  },
+  "continueWithGoogle": "Continuar con Google",
+  "@continueWithGoogle":{
+    "description": "LogIn Text "
+  },
+  "loginWithEmail": "Inicia sesión con tu email",
+  "@loginWithEmail":{
     "description": "LogIn Text "
   },
   "loginError": "No encontramos este usuario.\n Por favor, prueba otra vez",
@@ -1920,6 +1932,10 @@
   },
   "termsAndConditions": "Términos y Condiciones",
   "@termsAndConditions": {
+    "description": "membersOfBrand message"
+  },
+  "useMambaTermsAndConditions": "Utilizando Mamba aceptas nuestros ",
+  "@useMambaTermsAndConditions": {
     "description": "membersOfBrand message"
   },
   "findBrandClientText": "Encuentra una marca o añade tu código de invitación para desbloquear todas nuestras herramientas",

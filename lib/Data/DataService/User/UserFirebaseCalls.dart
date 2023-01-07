@@ -124,6 +124,18 @@ class UserFirebaseCalls {
 
   //Checkers
 
+
+  // Check If User Exists
+  Future<bool> checkIfUserExists(String uid) async {
+    var userDocRef = _firestore.collection(users).doc(uid);
+    var doc = await userDocRef.get();
+    if (!doc.exists) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   Future<bool> checkIfNicknameExists(String nickname) async {
     DocumentSnapshot documentSnapshot = await _firestore.collection(nicknames)
         .doc(nickname)

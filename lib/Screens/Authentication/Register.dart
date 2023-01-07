@@ -33,6 +33,8 @@ class _RegisterState extends State<Register> {
   bool _passwordVisible = false;
   String password1 = '';
   String password2 = '';
+  FocusNode focusNodePassword1 = FocusNode();
+  FocusNode focusNodePassword2 = FocusNode();
 
   @override
   void initState() {
@@ -44,209 +46,238 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
-          key: scaffoldMessengerKey,
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.createAccount, style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(color: Colors.white),),
-              centerTitle: false,
-              elevation: 0,
-              iconTheme: IconThemeData(
-                color: Colors.white, //change your color here
-              ),
-              backgroundColor: Colors.black,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-                onPressed: () {
-                  if (email.isNotEmpty) {
-                    Navigator.pop(context, email.trim());
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-            ),
-            resizeToAvoidBottomInset: true,
-            backgroundColor: Colors.black,
-            body: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.03),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.emailError,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
+      key: scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.createAccount, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white),),
+          centerTitle: false,
+          elevation: 0,
+          iconTheme: const IconThemeData(
+            color: Colors.white, //change your color here
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+            onPressed: () {
+              if (email.isNotEmpty) {
+                Navigator.pop(context, email.trim());
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          backgroundColor: AppColors.black,
+        ),
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColors.black,
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.03),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.emailError,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  TextFormField(
+                      autofocus: true,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                      onChanged: (val) {
+                        setState(() => email = val);
+                      },
+                      onFieldSubmitted: (val) {
+                        focusNodePassword1.requestFocus();
+                      },
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      decoration: Styles.textFromInputDecoration.copyWith(
+                          labelText: AppLocalizations.of(context)!.email,
+                          labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                          prefixIcon:  const Padding(
+                            padding: EdgeInsets.all(0.0),
+                            child: Icon(
+                              Icons.email_outlined,
+                              color: AppColors.white,
+                            ), // icon is 48px widget.
+                          )
+                      )
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          AppLocalizations.of(context)!.passwordError,
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          textAlign: TextAlign.left,
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
-                            onChanged: (val) {
-                              setState(() => email = val);
-                            },
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                            decoration: Styles.textFromInputDecoration.copyWith(
-                                labelText: AppLocalizations.of(context)!.email,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Icon(
-                                    Icons.email_outlined,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  TextFormField(
+                      focusNode: focusNodePassword1,
+                      validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
+                      onChanged: (val) {
+                        setState(() => password1 = val);
+                      },
+                      onFieldSubmitted: (val) {
+                        focusNodePassword2.requestFocus();
+                      },
+                      obscureText: !_passwordVisible,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      decoration: Styles.textFromInputDecoration.copyWith(
+                          labelText: AppLocalizations.of(context)!.password,
+                          labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                          suffixIcon: Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: IconButton(
+                                  icon: Icon(
+                                    // Based on passwordVisible state choose the icon
+                                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
                                     color: AppColors.white,
-                                  ), // icon is 48px widget.
-                                )
-                            )
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                AppLocalizations.of(context)!.passwordError,
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        TextFormField(
-                            validator: (val) => val!.length < 6 ? AppLocalizations.of(context)!.passwordError : null,
-                            onChanged: (val) {
-                              setState(() => password1 = val);
-                            },
-                            obscureText: !_passwordVisible,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                            decoration: Styles.textFromInputDecoration.copyWith(
-                                labelText: AppLocalizations.of(context)!.password,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                suffixIcon: Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: IconButton(
-                                        icon: Icon(
-                                          // Based on passwordVisible state choose the icon
-                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                            color: AppColors.white,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _passwordVisible = !_passwordVisible;
-                                          });
-                                        }
-                                    )
-                                ),
-                                prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Icon(
-                                    Icons.vpn_key_outlined,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _passwordVisible = !_passwordVisible;
+                                    });
+                                  }
+                              )
+                          ),
+                          prefixIcon:  const Padding(
+                            padding: EdgeInsets.all(0.0),
+                            child: Icon(
+                              Icons.vpn_key_outlined,
+                              color: AppColors.white,
+                            ), // icon is 48px widget.
+                          )
+                      )
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  TextFormField(
+                      focusNode: focusNodePassword2,
+                      validator: (val) => val == password1 ? null : AppLocalizations.of(context)!.passwordNotSameError,
+                      onChanged: (val) {
+                        setState(() => password2 = val);
+                      },
+                      obscureText: !_passwordVisible,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      decoration: Styles.textFromInputDecoration.copyWith(
+                          labelText: AppLocalizations.of(context)!.passworRepeat,
+                          labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                          suffixIcon: Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: IconButton(
+                                  icon: Icon(
+                                    // Based on passwordVisible state choose the icon
+                                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
                                     color: AppColors.white,
-                                  ), // icon is 48px widget.
-                                )
-                            )
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _passwordVisible = !_passwordVisible;
+                                    });
+                                  }
+                              )
+                          ),
+                          prefixIcon:  const Padding(
+                            padding: EdgeInsets.all(0.0),
+                            child: Icon(
+                              Icons.vpn_key_outlined,
+                              color: AppColors.white,
+                            ), // icon is 48px widget.
+                          )
+                      )
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  GestureDetector(
+                    onTap: () async {
+                      if(_formKey.currentState!.validate()){
+                        emailTemp = email;
+                        onSignUpButtonPressed();
+                      }
+                    },
+                    child: Material(
+                      elevation: 4,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30.0),
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        TextFormField(
-                            validator: (val) => val == password1 ? null : AppLocalizations.of(context)!.passwordNotSameError,
-                            onChanged: (val) {
-                              setState(() => password2 = val);
-                            },
-                            obscureText: !_passwordVisible,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                            decoration: Styles.textFromInputDecoration.copyWith(
-                                labelText: AppLocalizations.of(context)!.passworRepeat,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                suffixIcon: Padding(
-                                    padding: EdgeInsets.all(0.0),
-                                    child: IconButton(
-                                        icon: Icon(
-                                          // Based on passwordVisible state choose the icon
-                                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                                          color: AppColors.white,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _passwordVisible = !_passwordVisible;
-                                          });
-                                        }
-                                    )
-                                ),
-                                prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Icon(
-                                    Icons.vpn_key_outlined,
-                                    color: AppColors.white,
-                                  ), // icon is 48px widget.
-                                )
-                            )
+                      ),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height*0.07,
+                        width: MediaQuery.of(context).size.width*0.9,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: AppColors.white, borderRadius: BorderRadius.circular(30)
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                        Material(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.all(
-                              const Radius.circular(10.0),
+                        child: !isLoading ? Center(
+                          child: Text(
+                              AppLocalizations.of(context)!.register,
+                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
+                          ),
+                        ) : Center(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.06,
+                            height: MediaQuery.of(context).size.width * 0.06,
+                            child: const CircularProgressIndicator(
+                              color: AppColors.black,
+                              strokeWidth: 2.5,
                             ),
                           ),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height*0.06,
-                            width: MediaQuery.of(context).size.width*0.50,
-                            decoration: BoxDecoration(
-                                color: AppColors.white, borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: !isLoading ? TextButton(
-                              onPressed: () async {
-                                if(_formKey.currentState!.validate()){
-                                  emailTemp = email;
-                                  onSignUpButtonPressed();
-                                }
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!.register,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
-                              ),
-                            ) : Center(
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.06,
-                                height: MediaQuery.of(context).size.height * 0.03,
-                                child: CircularProgressIndicator(
-                                  color: AppColors.black,
-                                  strokeWidth: 2.5,
-                                ),
-                              ),
-                            ),
-                          ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
+            ),
           ),
-        );
+        ),
+      ),
+    );
+  }
 
+  // Validate email and pwd format
+  bool emailValidator(String value) {
+    Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
+    RegExp regex = RegExp(pattern.toString());
+    if (!regex.hasMatch(value)) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   void onSignUpButtonPressed() {
     setState(() {
       isLoading = true;
     });
-    FocusScopeNode currentFocus = FocusScope.of(context);
-    if (!currentFocus.hasPrimaryFocus) {
-      currentFocus.unfocus();
+    if(emailValidator(email)){
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
+      }
+      signUp();
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      showInSnackBar(AppLocalizations.of(context)!.validateEmail);
     }
-    signUp();
   }
 
   void signUp() async{
@@ -275,78 +306,16 @@ class _RegisterState extends State<Register> {
   }
 
   void showInSnackBar(String value) {
-    final snackbar = new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: "Helvetica",
-          color: Colors.black,
-          fontSize: 16.0,
-          //fontWeight: FontWeight.w800,
-        ),
+    final snackbar = SnackBar(
+      content: Text(
+          value,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black)
       ),
       backgroundColor: Colors.white,
-      duration: Duration(seconds: 5),
+      duration: const Duration(seconds: 3),
     );
     scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
-  }
-}
-
-
-class GenderWidget extends StatefulWidget {
-  final ValueChanged<int> selectedGenderChanged;
-  final int? genderTemp;
-  GenderWidget({required this.selectedGenderChanged, required this.genderTemp});
-
-  @override
-  _GenderWidgetState createState() => _GenderWidgetState();
-}
-
-class _GenderWidgetState extends State<GenderWidget> {
-  bool firstBuild = true;
-  int? gender;
-
-  @override
-  Widget build(BuildContext context) {
-    if (firstBuild) {
-      if(widget.genderTemp != null) gender = widget.genderTemp;
-      firstBuild = false;
-    }
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _icon(0, text: AppLocalizations.of(context)!.male, icon: Icons.male_outlined),
-        _icon(1, text: AppLocalizations.of(context)!.female, icon: Icons.female_outlined),
-        _icon(2, text: AppLocalizations.of(context)!.transgender, icon: Icons.transgender_outlined),
-      ],
-    );
-  }
-
-  Widget _icon(int index, {required String text, required IconData icon}) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: InkResponse(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: gender == index ? Colors.white : Styles.accent,
-              size: 45,
-            ),
-            Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize:22, color: gender == index ? Colors.white : Styles.accent)),
-          ],
-        ),
-        onTap: () => {
-          setState(() {
-            gender = index;
-            widget.selectedGenderChanged(gender!);
-          }),
-        }
-      ),
-    );
   }
 }
 

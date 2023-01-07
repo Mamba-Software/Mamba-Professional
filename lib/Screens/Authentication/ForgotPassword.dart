@@ -40,145 +40,149 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
-          key: scaffoldMessengerKey,
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(AppLocalizations.of(context)!.resetPassword, style: Theme.of(context).appBarTheme.titleTextStyle!.copyWith(color: Colors.white)),
-              elevation: 0,
-              iconTheme: IconThemeData(
-                color: Colors.white, //change your color here
-              ),
-              backgroundColor: AppColors.black,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
-                onPressed: () {
-                  if (email.isNotEmpty) {
-                    Navigator.pop(context, email.trim());
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-              ),
-            ),
-            resizeToAvoidBottomInset: true,
-            backgroundColor: AppColors.black,
-            body: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.03),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              AppLocalizations.of(context)!.emailError,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                              textAlign: TextAlign.left,
-                            ),
-                          ],
+      key: scaffoldMessengerKey,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.resetPassword, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white)),
+          elevation: 0,
+          centerTitle: false,
+          iconTheme: const IconThemeData(
+            color: Colors.white, //change your color here
+          ),
+          backgroundColor: AppColors.black,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
+            onPressed: () {
+              if (email.isNotEmpty) {
+                Navigator.pop(context, email.trim());
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
+        ),
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColors.black,
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.03),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.emailError,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                        textAlign: TextAlign.left,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  TextFormField(
+                      autofocus: true,
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                      onChanged: (val) {
+                        setState(() => email = val);
+                      },
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      decoration: Styles.textFromInputDecoration.copyWith(
+                          labelText: AppLocalizations.of(context)!.email,
+                          labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                          errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                          prefixIcon:  const Padding(
+                            padding: EdgeInsets.all(0.0),
+                            child: Icon(
+                              Icons.email_outlined,
+                              color: AppColors.white,
+                            ), // icon is 48px widget.
+                          )
+                      )
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                  GestureDetector(
+                    onTap: () async {
+                      int result = 0;
+                      if(email.isEmpty) {
+                        showInSnackBar(AppLocalizations.of(context)!.emailError);
+                      } else {
+                        if(emailValidator(email)){
+                          setState(() {
+                            isLoading = true;
+                          });
+                          FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                            currentFocus.unfocus();
+                          }
+                          result = await _userDataService.resetPassword(email);
+                          if (result == 1) {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            showInSnackBar(AppLocalizations.of(context)!.validatePassword);
+                            Future.delayed(const Duration(seconds: 5), () async {
+                              Navigator.pop(context, email.trim());
+                            });
+                          } else {
+                            setState(() {
+                              isLoading = false;
+                            });
+                            showInSnackBar(AppLocalizations.of(context)!.loginError);
+                          }
+                        } else {
+                          showInSnackBar(AppLocalizations.of(context)!.validateEmail);
+                        }
+                      }
+                    },
+                    child: Material(
+                      elevation: 4,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30.0),
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        TextFormField(
-                            keyboardType: TextInputType.emailAddress,
-                            validator: (val) => val!.length < 1 ? AppLocalizations.of(context)!.emailError : null,
-                            onChanged: (val) {
-                              setState(() => email = val);
-                            },
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                            decoration: Styles.textFromInputDecoration.copyWith(
-                                labelText: AppLocalizations.of(context)!.email,
-                                labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                prefixIcon:  Padding(
-                                  padding: EdgeInsets.all(0.0),
-                                  child: Icon(
-                                    Icons.email_outlined,
-                                    color: AppColors.white,
-                                  ), // icon is 48px widget.
-                                )
-                            )
+                      ),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height*0.07,
+                        width: MediaQuery.of(context).size.width*0.9,
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: AppColors.white, borderRadius: BorderRadius.circular(30)
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                        Material(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.all(
-                              const Radius.circular(10.0),
+                        child: !isLoading ? Center(
+                          child: Text(
+                              AppLocalizations.of(context)!.recover,
+                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
+                          ),
+                        ) : Center(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.06,
+                            height: MediaQuery.of(context).size.width * 0.06,
+                            child: const CircularProgressIndicator(
+                              color: AppColors.black,
+                              strokeWidth: 2.5,
                             ),
                           ),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height*0.07,
-                            width: MediaQuery.of(context).size.width*0.50,
-                            decoration: BoxDecoration(
-                                color: AppColors.white, borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: !isLoading ? TextButton(
-                              onPressed: () async {
-                                int result = 0;
-                                if(email.isEmpty) {
-                                  showInSnackBar(AppLocalizations.of(context)!.emailError);
-                                } else {
-                                  if(emailValidator(email)){
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    FocusScopeNode currentFocus = FocusScope.of(context);
-                                    if (!currentFocus.hasPrimaryFocus) {
-                                      currentFocus.unfocus();
-                                    }
-                                    result = await _userDataService.resetPassword(email);
-                                    if (result == 1) {
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      showInSnackBar(AppLocalizations.of(context)!.validatePassword);
-                                      Future.delayed(Duration(seconds: 5), () async {
-                                        Navigator.pop(context, email.trim());
-                                      });
-                                    } else {
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                      showInSnackBar(AppLocalizations.of(context)!.loginError);
-                                    }
-                                  } else {
-                                    showInSnackBar(AppLocalizations.of(context)!.validateEmail);
-                                  }
-                                }
-                              },
-                              child: Text(
-                                AppLocalizations.of(context)!.recover,
-                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
-                              ),
-                            ) : Center(
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.06,
-                                height: MediaQuery.of(context).size.height * 0.03,
-                                child: CircularProgressIndicator(
-                                  color: Theme.of(context).primaryColor,
-                                  strokeWidth: 2.5,
-                                ),
-                              ),
-                            ),
-                          ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
+            ),
           ),
-        );
-
+        ),
+      ),
+    );
   }
 
   // Validate email and pwd format
   bool emailValidator(String value) {
     Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
-    RegExp regex = new RegExp(pattern.toString());
+    RegExp regex = RegExp(pattern.toString());
     if (!regex.hasMatch(value)) {
       return false;
     } else {
@@ -187,19 +191,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   void showInSnackBar(String value) {
-    final snackbar = new SnackBar(
-      content: new Text(
-        value,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          fontFamily: "Helvetica",
-          color: Colors.black,
-          fontSize: 16.0,
-          //fontWeight: FontWeight.w800,
-        ),
+    final snackbar = SnackBar(
+      content: Text(
+          value,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black)
       ),
       backgroundColor: Colors.white,
-      duration: Duration(seconds: 5),
+      duration: const Duration(seconds: 3),
     );
     scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
   }
