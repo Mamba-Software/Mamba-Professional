@@ -2158,6 +2158,59 @@
   "@trainersOnboardingDesc": {
     "description": "beforeEventBodyNotification message"
   },
+
+  "changeLater": "Podrás cambiar esto más tarde",
+  "@changeLater": {
+    "description": "seeMap message"
+  },
+  "whatsYourName": "¿Cómo te llamas?",
+  "@whatsYourName": {
+    "description": "seeMap message"
+  },
+  "visibleFirstName": "Sólo tu nombre será visto por todos",
+  "@visibleByMarca": {
+    "description": "seeMap message"
+  },
+  "whensYourBday": "Cuando es tu cumpleaños?",
+  "@whensYourBday": {
+    "description": "seeMap message"
+  },
+  "age": "Edad",
+  "@age": {
+    "description": "seeMap message"
+  },
+  "visibleFact": "Dato solo usado para estadísticas, no será mostrado a ningún usuario",
+  "@visibleAge": {
+    "description": "seeMap message"
+  },
+  "day": "Día",
+  "@day": {
+    "description": "seeMap message"
+  },
+  "month": "Mes",
+  "@month": {
+    "description": "seeMap message"
+  },
+  "year": "Año",
+  "@year": {
+    "description": "seeMap message"
+  },
+  "whatsYourGender": "Indica tu género",
+  "@whatsYourGender": {
+    "description": "seeMap message"
+  },
+  "creatingProfile": "Creando perfil ...",
+  "@creatingProfile": {
+    "description": "seeMap message"
+  },
+  "googleInfo": "Verifica la información recogida de Google",
+  "@googleInfo": {
+    "description": "seeMap message"
+  },
+
+
+
+
   "clientsOnboarding": "Encuentra tu profesional",
   "@clientsOnboarding": {
     "description": "beforeEventBodyNotification message"

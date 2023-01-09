@@ -725,19 +725,18 @@ class UserFirebaseCalls {
 
   //Update
 
-  Future<void> updateUser(String uid, String name, String firstName,
-      String lastName, String nick, String dateOfBirth,
-      int gender, File? image, bool isTrainer) async {
-    String imageUrl =
-        "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
+// Add User
+  Future<void> updateUser(String uid, String name, String firstName, String lastName, String dateOfBirth, int gender, File? image, String? googleImageUrl, bool isTrainer) async {
+    String imageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
     if (image != null) {
       imageUrl = await updateUserPhoto(uid, image);
+    } else if (googleImageUrl != null) {
+      imageUrl = googleImageUrl;
     }
     await _firestore.collection(users).doc(uid).update({
       "name": name,
       "firstName": firstName,
       "lastName": lastName,
-      "nick": nick,
       "imageUrl": imageUrl,
       "isFirst": false,
       "isTrainer": isTrainer,
@@ -747,6 +746,8 @@ class UserFirebaseCalls {
       print(err);
     });
   }
+
+
 
   Future<void> updateUserThemePreferences(String uid, bool? isDark) async {
     if (isDark == null) {
