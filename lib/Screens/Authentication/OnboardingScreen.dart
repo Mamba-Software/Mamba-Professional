@@ -182,7 +182,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                         child: Center(
                           child: FaIcon(
-                              FontAwesomeIcons.locationDot,
+                              FontAwesomeIcons.calendarDays,
                               color: AppColors.black,
                               size: MediaQuery.of(context).size.width*0.1
                           ),
@@ -197,7 +197,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.clientsOnboarding,
+                          AppLocalizations.of(context)!.trainersOnboarding,
                           style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
@@ -205,14 +205,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         RichText(
                           textAlign: TextAlign.left,
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
-                                text: AppLocalizations.of(context)!.wellcomeMessage+" ",
+                                text: AppLocalizations.of(context)!.trainersOnboardingDesc.split(" ")[0],
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!.closeToYou.toLowerCase(),
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
+                                text: AppLocalizations.of(context)!.trainersOnboardingDesc.substring(AppLocalizations.of(context)!.trainersOnboardingDesc.split(" ")[0].length),
+                                
                               ),
                             ],
                           ),
@@ -222,8 +223,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      // Check Location Permissions
-                      await _permisionsService.askUserLocationPermision();
                       _pageController.nextPage(
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.ease,
@@ -245,7 +244,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                         child: Center(
                           child: Text(
-                              AppLocalizations.of(context)!.locationPermision,
+                              AppLocalizations.of(context)!.next,
                               style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
                           ),
                         ),
@@ -257,15 +256,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () async {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.ease,
-                          );
-                        },
+                        onPressed: null,
                         child: Text(
                           AppLocalizations.of(context)!.skip,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
+                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -292,7 +286,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                         child: Center(
                           child: FaIcon(
-                              FontAwesomeIcons.calendarDays,
+                              FontAwesomeIcons.creditCard,
                               color: AppColors.black,
                               size: MediaQuery.of(context).size.width*0.1
                           ),
@@ -307,7 +301,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.trainersOnboarding,
+                          AppLocalizations.of(context)!.trainersOnboardingSecond,
                           style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
@@ -315,17 +309,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         RichText(
                           textAlign: TextAlign.left,
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
-                                text: AppLocalizations.of(context)!.trainersOnboardingDesc+" ",
+                                text: AppLocalizations.of(context)!.trainersOnboardingSecondDesc1,
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!.trainersOnboardingDesc.toLowerCase(),
+                                text: AppLocalizations.of(context)!.trainersOnboardingSecondDesc2.toLowerCase(),
                                 style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!.trainersOnboardingDesc+" ",
+                                text: AppLocalizations.of(context)!.trainersOnboardingSecondDesc3,
                               ),
                             ],
                           ),
@@ -334,8 +328,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () async {
-                      await _permisionsService.askUserNotificationsPermision();
+                    onTap: () {
                       _pageController.nextPage(
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.ease,
@@ -357,7 +350,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                         child: Center(
                           child: Text(
-                              AppLocalizations.of(context)!.trainersOnboarding,
+                              AppLocalizations.of(context)!.next,
                               style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
                           ),
                         ),
@@ -369,15 +362,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () async {
-                          _pageController.nextPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.ease,
-                          );
-                        },
+                        onPressed: null,
                         child: Text(
                           AppLocalizations.of(context)!.skip,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
+                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -419,7 +407,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          AppLocalizations.of(context)!.trainersOnboarding,
+                          AppLocalizations.of(context)!.trainersOnboardingThird,
                           style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
@@ -427,14 +415,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         RichText(
                           textAlign: TextAlign.left,
                           text: TextSpan(
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, height: 1.5),
                             children: [
                               TextSpan(
-                                text: AppLocalizations.of(context)!.trainersOnboardingDesc,
+                                text: AppLocalizations.of(context)!.trainersOnboardingThirdDesc1,
                               ),
                               TextSpan(
-                                text: AppLocalizations.of(context)!.trainersOnboardingDesc,
+                                text: AppLocalizations.of(context)!.trainersOnboardingThirdDesc2,
                                 style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, decoration: TextDecoration.underline),
+                              ),
+                              TextSpan(
+                                text: AppLocalizations.of(context)!.trainersOnboardingThirdDesc3,
                               ),
                             ],
                           ),
@@ -444,6 +435,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   GestureDetector(
                     onTap: () async {
+                      _permisionsService.askUserNotificationsPermision();
                       _pageController.nextPage(
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.ease,
@@ -465,7 +457,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                         child: Center(
                           child: Text(
-                              AppLocalizations.of(context)!.letsGo,
+                              AppLocalizations.of(context)!.notificationsPermision,
                               style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black)
                           ),
                         ),
@@ -479,8 +471,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       TextButton(
                         onPressed: null,
                         child: Text(
-                          AppLocalizations.of(context)!.skip,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
+                          AppLocalizations.of(context)!.next,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
                           textAlign: TextAlign.center,
                         ),
                       ),

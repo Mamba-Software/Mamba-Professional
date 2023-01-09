@@ -263,7 +263,7 @@
   "@thankyouDownload": {
     "description": "Wellcome message"
   },
-  "wellcomeMessage": "La primera interfaz que conecta a los apasionados del deporte con las marcas de entrenamiento fitness.",
+  "wellcomeMessage": "La primera interfaz que conecta a los apasionados del deporte con las marcas de entrenamiento fitness",
   "@wellcomeMessage": {
     "description": "Wellcome message"
   },
@@ -1926,8 +1926,12 @@
   "@membersOfBrand": {
     "description": "membersOfBrand message"
   },
-  "locationPermision": "Usamos tu ubicación para encontrar las marcas más cercanas a ti.\n\nPara ello es necesario que nos des permisos de localización.",
+  "locationPermision": "Compartir ubicación",
   "@locationPermision": {
+    "description": "membersOfBrand message"
+  },
+  "notificationsPermision": "Activar notificaciones",
+  "@notificationsPermision": {
     "description": "membersOfBrand message"
   },
   "termsAndConditions": "Términos y Condiciones",
@@ -2150,15 +2154,50 @@
   "@thisEventAndRest": {
     "description": "beforeEventBodyNotification message"
   },
-  "trainersOnboarding": "¡TODO en UNO!",
+  "trainersOnboarding": "Facilita tu trabajo",
   "@trainersOnboarding": {
     "description": "beforeEventBodyNotification message"
   },
-  "trainersOnboardingDesc": "Centraliza tu negocio en una sola plataforma. Profesionaliza tu servicio para fidelizar a tus clientes, mejorando la gestión, organización y comunicación de tu marca fitness.",
+  "trainersOnboardingDesc": "Automatiza la calendarización y aforo de tus sesiones. Olvídate de tener que gestionar personalmente las reservas de tus clientes",
   "@trainersOnboardingDesc": {
     "description": "beforeEventBodyNotification message"
   },
-
+  "trainersOnboardingSecond": "Personaliza tus precios",
+  "@trainersOnboardingSecond": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingSecondDesc1": "Crea tu propia política de precios mediante ",
+  "@trainersOnboardingSecondDesc1": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingSecondDesc2": "bonos personalizados.",
+  "@trainersOnboardingSecondDesc2": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingSecondDesc3": " Escoge atentamente las condiciones y el estilo de tus bonos para maximizar el interés de los clientes",
+  "@trainersOnboardingSecondDesc3": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingThird": "Manten tu negocio bajo control",
+  "@trainersOnboardingThird": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingThirdDesc1": "Analiza la evolución de tus clientes y tu negocio. ",
+  "@trainersOnboardingThirdDesc1": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingThirdDesc2": "Activa las notificaciones",
+  "@trainersOnboardingThirdDesc2": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingThirdDesc3": " para no omitir ningún detalle importante. Solo te alertaremos cuando sea realmente necesario",
+  "@trainersOnboardingThirdDesc3": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "closeToYou": "Cerca de ellos",
+  "@closeToYou": {
+    "description": "Wellcome message"
+  },
   "changeLater": "Podrás cambiar esto más tarde",
   "@changeLater": {
     "description": "seeMap message"
@@ -2207,10 +2246,6 @@
   "@googleInfo": {
     "description": "seeMap message"
   },
-
-
-
-
   "clientsOnboarding": "Encuentra tu profesional",
   "@clientsOnboarding": {
     "description": "beforeEventBodyNotification message"
@@ -2798,10 +2833,6 @@
   },
   "upcomingEvents": "Próximos Eventos",
   "@upcomingEvents": {
-    "description": "Wellcome message"
-  },
-  "closeToYou": "Cerca de ti",
-  "@closeToYou": {
     "description": "Wellcome message"
   },
   "seeAll": "Ver todas",
