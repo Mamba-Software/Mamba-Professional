@@ -585,7 +585,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
       bool? isTrainer;
       try {
         isTrainer = await _userDataService.checkIfUserIsTrainer(user!.uid);
-        if (isTrainer != null && isTrainer == true) {
+        if (isTrainer != null && isTrainer == false) {
           await _userDataService.signOut();
           setState(() {
             isLoading = false;
@@ -644,7 +644,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         bool? isTrainer;
         try {
           isTrainer = await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
-          if (isTrainer != null && isTrainer == true) {
+          if (isTrainer != null && isTrainer == false) {
             await _userDataService.signOut();
             await googleSignIn.signOut();
             setState(() {
