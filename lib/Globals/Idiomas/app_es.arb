@@ -191,6 +191,14 @@
   "@transgender":{
     "description": "Otros Text "
   },
+  "optional": "Opcional",
+  "@optional":{
+    "description": "Nombre"
+  },
+  "chars": "Caracteres",
+  "@chars":{
+    "description": "Nombre"
+  },
   "firstName": "Nombre",
   "@firstName":{
     "description": "Nombre"
@@ -593,7 +601,7 @@
   "@createBrandTitle":{
     "description": "createBrand Text"
   },
-  "createBrandPortada": "Empieza creando la portada de tu marca. Escoge tu logo y tu nombre, tu escaparate a todos los otros usuarios.",
+  "createBrandPortada": "Empieza creando la portada de tu marca. Tu escaparate a todos los otros usuarios",
   "@createBrandPortada":{
     "description": "createBrand Text"
   },
@@ -1425,6 +1433,10 @@
   },
   "editBrandInfo": "Edita la información de la marca",
   "@editBrandInfo": {
+    "description": "Wellcome message"
+  },
+  "addBrandLogo": "Añade tu logo",
+  "@addBrandLogo": {
     "description": "Wellcome message"
   },
   "editBrandLogo": "Edita el logo de la marca",

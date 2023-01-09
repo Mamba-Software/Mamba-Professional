@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../Data/DataService/User/UserDataService.dart';
 import '../../Globals/GlobalVars.dart';
@@ -89,14 +90,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _notificationService = NotificationService();
     _notificationService!.wellcomeUser(currentUser.id!);
     sendMixPanelDataUsers();
-    // SplashScreen
-    Navigator.pushReplacement(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => const SplashScreen(),
-          settings: const RouteSettings(name: 'SplashScreen'),
-        )
-    );
+    // Create Brand
+    // Get User Main Data
+    currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
+    bool? brandCreated;
+    if (dynamicLinkBrandId == null) {
+      brandCreated = await Navigator.push(
+          context,
+          CupertinoPageRoute<bool>(
+            builder: (context) => RegistrarMarca(
+              locale: Localizations.localeOf(context),
+            ),
+            settings: const RouteSettings(name: 'RegistrarMarca'),
+          )
+      );
+    }
+    if (brandCreated == null || brandCreated == false) {
+      // SplashScreen
+      Navigator.pushReplacement(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => const SplashScreen(),
+            settings: const RouteSettings(name: 'SplashScreen'),
+          )
+      );
+    }
+
   }
 
   void sendMixPanelDataUsers() {
@@ -536,167 +555,164 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height*0.45,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.whatsYourName,
-                                          style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                        Text(
-                                          AppLocalizations.of(context)!.changeLater,
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                        isGoogle ? FittedBox(
-                                          fit: BoxFit.contain,
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.width*0.1,
-                                            padding: const EdgeInsets.all(8),
-                                            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
-                                            decoration: BoxDecoration(
-                                                color: AppColors.darkGrey, borderRadius: BorderRadius.circular(30)
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Image(
-                                                    image: AssetImage(Constants.google)
-                                                ),
-                                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                                Flexible(
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.googleInfo,
-                                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                                    textAlign: TextAlign.left,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.whatsYourName,
+                                        style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white, fontSize: 30),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Text(
+                                        AppLocalizations.of(context)!.changeLater,
+                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                      isGoogle ? FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.width*0.1,
+                                          padding: const EdgeInsets.all(8),
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          decoration: BoxDecoration(
+                                              color: AppColors.darkGrey, borderRadius: BorderRadius.circular(30)
                                           ),
-                                        ) : Container(),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                                        Material(
-                                          elevation: 8,
-                                          borderRadius: BorderRadius.circular(15.0),
                                           child: Row(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Expanded(
-                                                child: TextFormField(
-                                                  autofocus: true,
-                                                  controller: firstNameController,
-                                                  keyboardType: TextInputType.name,
-                                                  onChanged: (value) {
-                                                    if (firstNameController.text.isNotEmpty && lastNameController.text.isNotEmpty) {
-                                                      setState(() {
-                                                        canGoNextName = true;
-                                                      });
-                                                    } else {
-                                                      setState(() {
-                                                        canGoNextName = false;
-                                                      });
-                                                    }
-                                                  },
-                                                  onFieldSubmitted: (val) {
-                                                    focusNodeName.requestFocus();
-                                                  },
-                                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
-                                                  textCapitalization: TextCapitalization.words,
-                                                  decoration: InputDecoration(
-                                                      filled: true,
-                                                      fillColor: AppColors.white,
-                                                      hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                                      hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                      errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                      border: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      enabledBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      focusedBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      errorBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
-                                                  ),
+                                              Image(
+                                                  image: AssetImage(Constants.google)
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.googleInfo,
+                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                  textAlign: TextAlign.left,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                        Material(
-                                          elevation: 8,
-                                          borderRadius: BorderRadius.circular(15.0),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: TextFormField(
-                                                  focusNode: focusNodeName,
-                                                  controller: lastNameController,
-                                                  keyboardType: TextInputType.name,
-                                                  onChanged: (value) {
-                                                    if (firstNameController.text.isNotEmpty && lastNameController.text.isNotEmpty) {
-                                                      setState(() {
-                                                        canGoNextName = true;
-                                                      });
-                                                    } else {
-                                                      setState(() {
-                                                        canGoNextName = false;
-                                                      });
-                                                    }
-                                                  },
-                                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
-                                                  textCapitalization: TextCapitalization.words,
-                                                  decoration: InputDecoration(
-                                                      filled: true,
-                                                      fillColor: AppColors.white,
-                                                      hintText: AppLocalizations.of(context)!.lastNameError,
-                                                      hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                      errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                      border: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      enabledBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      focusedBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      errorBorder: OutlineInputBorder(
-                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                      ),
-                                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
-                                                  ),
+                                      ) : Container(),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                                      Material(
+                                        elevation: 8,
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextFormField(
+                                                autofocus: true,
+                                                controller: firstNameController,
+                                                keyboardType: TextInputType.name,
+                                                onChanged: (value) {
+                                                  if (firstNameController.text.isNotEmpty && lastNameController.text.isNotEmpty) {
+                                                    setState(() {
+                                                      canGoNextName = true;
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      canGoNextName = false;
+                                                    });
+                                                  }
+                                                },
+                                                onFieldSubmitted: (val) {
+                                                  focusNodeName.requestFocus();
+                                                },
+                                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                textCapitalization: TextCapitalization.words,
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor: AppColors.white,
+                                                    hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                                    hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                                    errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                    border: OutlineInputBorder(
+                                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    enabledBorder: OutlineInputBorder(
+                                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    focusedBorder: OutlineInputBorder(
+                                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    errorBorder: OutlineInputBorder(
+                                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
                                                 ),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                      Material(
+                                        elevation: 8,
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: TextFormField(
+                                                focusNode: focusNodeName,
+                                                controller: lastNameController,
+                                                keyboardType: TextInputType.name,
+                                                onChanged: (value) {
+                                                  if (firstNameController.text.isNotEmpty && lastNameController.text.isNotEmpty) {
+                                                    setState(() {
+                                                      canGoNextName = true;
+                                                    });
+                                                  } else {
+                                                    setState(() {
+                                                      canGoNextName = false;
+                                                    });
+                                                  }
+                                                },
+                                                style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                                textCapitalization: TextCapitalization.words,
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor: AppColors.white,
+                                                    hintText: AppLocalizations.of(context)!.lastNameError,
+                                                    hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                                    errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                    border: OutlineInputBorder(
+                                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    enabledBorder: OutlineInputBorder(
+                                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    focusedBorder: OutlineInputBorder(
+                                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    errorBorder: OutlineInputBorder(
+                                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(15.0),
+                                                    ),
+                                                    contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                             SizedBox(
                                 height: MediaQuery.of(context).size.height*0.10,
@@ -812,7 +828,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               ),
                                               style: OutlinedButton.styleFrom(
                                                 backgroundColor: AppColors.white,
-                                                elevation: 10,
+                                                elevation: 4,
                                                 shape: const CircleBorder(),
                                                 padding: const EdgeInsets.all(40),
                                               ),
@@ -826,7 +842,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 const Center(child: CircularProgressIndicator(
                                                     color: AppColors.black
                                                 )),
-                                                Center(child: CircularImage(size: MediaQuery.of(context).size.height * 0.15, file: _image,)),
+                                                Center(
+                                                  child: CircularImage(
+                                                    size: MediaQuery.of(context).size.height * 0.15,
+                                                    file: _image,
+                                                    borderWidth: 1,
+                                                    color: AppColors.grey,
+                                                  )
+                                                ),
                                               ],
                                             ),
                                           ) :
@@ -840,6 +863,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 Center(child: CircularImage(
                                                   size: MediaQuery.of(context).size.height * 0.15,
                                                   image: imageUrl,
+                                                  borderWidth: 1,
+                                                  color: AppColors.grey,
                                                 )
                                                 ),
                                               ],
