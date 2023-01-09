@@ -669,8 +669,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         }
       } else {
         // Create an account and a user for this new person from google
-        //bool result = await _userDataService.addUserGoogle(authResult, Localizations.localeOf(context).languageCode);
-        bool result = false;
+        bool result = await _userDataService.addUserGoogle(authResult, Localizations.localeOf(context).languageCode);
         if (result) {
           mixpanel!.track('mamba_google_register_completed');
           Navigator.pushReplacement(

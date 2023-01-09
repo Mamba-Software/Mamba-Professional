@@ -118,6 +118,29 @@ class UserFirebaseCalls {
     }
   }
 
+  Future<bool> deleteUserGoogle() async {
+    try {
+      User user = _auth.currentUser!;
+      if (currentUser.imageUrl != "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
+        await deleteUserPhoto(user.uid);
+      }
+      // Delete Notifications
+      await _firestore.collection(users).doc(user.uid).collection("Notifications").get().then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          batch.delete(ds.reference);
+        }
+      });
+      // Delete Users Collection
+      await _firestore.collection(users).doc(user.uid).delete();
+      // Delete Firebase Auth
+      await user.delete();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
   Future<void> deleteUserPhoto(String userId) async {
     await _firebaseStorage.ref().child("userPics/" + userId + ".png").delete();
   }
@@ -539,6 +562,45 @@ class UserFirebaseCalls {
         return 0;
     } else {
       return -1;
+    }
+  }
+
+  // Register User
+  Future<bool> addUserGoogle(UserCredential authResult, String idioma) async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    // Get First and Last Name
+    String? firstName;
+    String? lastName;
+    if (authResult.user!.displayName != null ) {
+      firstName = authResult.user!.displayName!.split(" ")[0];
+      int length = authResult.user!.displayName!.split(" ")[0].length;
+      lastName = authResult.user!.displayName!.substring(length+1);
+    }
+    try {
+      await _firestore.collection(users).doc(authResult.user!.uid).set({
+        "name": authResult.user!.displayName,
+        "firstName": firstName,
+        "lastName": lastName,
+        "nick": null,
+        "notificationToken": null,
+        "email": authResult.user!.email,
+        "imageUrl": authResult.user!.photoURL,
+        "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+        "isFirst": true,
+        "isTrainer": true,
+        "isPrivate": true,
+        "gender": null,
+        "dateJoined": formatted,
+        "dateOfBirth": null,
+        "idioma": idioma,
+        "isAdmin": false,
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
     }
   }
 

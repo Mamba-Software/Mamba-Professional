@@ -22,6 +22,7 @@ class UserDataService {
   Future<int> resetPassword(String email) => _firebase.resetPassword(email);
   Future<int> resendEmail(String email) => _firebase.resendEmail(email);
   Future<bool> deleteUser(String password) => _firebase.deleteUser(password);
+  Future<bool> deleteUserGoogle() => _firebase.deleteUserGoogle();
 
   // Check Data
   Future<bool> checkIfUserExists(String uid) => _firebase.checkIfUserExists(uid);
@@ -48,6 +49,7 @@ class UserDataService {
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
+  Future<bool> addUserGoogle(UserCredential authResult, String idioma) => _firebase.addUserGoogle(authResult, idioma);
   Future<void> addUserNickname(String userId, String nickname) => _firebase.addUserNickname(userId, nickname);
   Future<void> addLocalNotification(String userId, ReceivedNotification notification) => _firebase.addLocalNotification(userId, notification);
   Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
