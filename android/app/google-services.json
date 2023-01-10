@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "331547241606-4ks8qa8u6trrd95hjk81n57eeckeb0vp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mamba.mambaprofessionalapp",
+            "certificate_hash": "3dc288cc70d7b86e5f28b56beebae121b0e981c9"
+          }
+        },
+        {
           "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
           "client_type": 3
         }

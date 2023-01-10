@@ -119,7 +119,7 @@ class EachList extends StatelessWidget{
         );
         break;
       case 3:
-        var result = await _script.migratePurchaseDataDecember16th();
+        var result = await _script.getStatisticsSpecific();
         print("RESULT: "+result.toString());
         break;
 

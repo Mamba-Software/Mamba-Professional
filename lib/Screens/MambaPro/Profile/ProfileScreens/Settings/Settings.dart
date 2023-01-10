@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -343,7 +344,7 @@ class _SettingsState extends State<Settings> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.02),
             Text(
-              "v "+_packageInfo.version.toString()+" ("+_packageInfo.buildNumber.toString()+")",
+              "v."+_packageInfo.version.toString()+" ("+_packageInfo.buildNumber.toString()+")",
               style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.05),
@@ -373,6 +374,12 @@ class _SettingsState extends State<Settings> {
                         )
                     );
                   });
+                  try {
+                    final googleSignIn = GoogleSignIn();
+                    await googleSignIn.signOut();
+                  } catch (e) {
+                    print(e.toString());
+                  }
                 }
               },
               child: Material(
@@ -542,6 +549,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
   final _eventDataService = EventDataService();
   // Delete Alert
   bool isLoading = false;
+  bool isGoogle = true;
   bool firstBuild = true;
   bool canDelete = false;
   bool wrongPassword = false;
@@ -549,6 +557,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
   var deleteController;
   // Password Visible
   bool _passwordVisible = false;
+  // Google SignIn
+  final GoogleSignIn googleSignIn = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -673,8 +683,14 @@ class _DeleteDialogState extends State<DeleteDialog> {
                             isLoading = true;
                           });
                           // Delete Function
-                          var result = await _userDataService.deleteUser(deleteTemp);
-                          await _userDataService.deleteUserNickname(currentUser.nick!);
+                          bool result;
+                          if (isGoogle) {
+                            result = await _userDataService.deleteUserGoogle();
+                            googleSignIn.signOut();
+                          } else {
+                            result = await _userDataService.deleteUser(deleteTemp);
+                            await _userDataService.deleteUserNickname(currentUser.nick!);
+                          }
                           if (!result) {
                             setState(() {
                               isLoading = false;

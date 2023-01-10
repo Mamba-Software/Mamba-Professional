@@ -24,6 +24,17 @@
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
 	<array>
+        <!-- Google Sign-in Section -->
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+                <string>com.googleusercontent.apps.331547241606-ebeqpaephnudpu4b2f37jt7d04ub387c</string>
+            </array>
+        </dict>
+        <!-- End of the Google Sign-in Section -->
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>

@@ -118,11 +118,46 @@ class UserFirebaseCalls {
     }
   }
 
+  Future<bool> deleteUserGoogle() async {
+    try {
+      User user = _auth.currentUser!;
+      if (currentUser.imageUrl != "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
+        await deleteUserPhoto(user.uid);
+      }
+      // Delete Notifications
+      await _firestore.collection(users).doc(user.uid).collection("Notifications").get().then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.docs) {
+          batch.delete(ds.reference);
+        }
+      });
+      // Delete Users Collection
+      await _firestore.collection(users).doc(user.uid).delete();
+      // Delete Firebase Auth
+      await user.delete();
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
   Future<void> deleteUserPhoto(String userId) async {
     await _firebaseStorage.ref().child("userPics/" + userId + ".png").delete();
   }
 
   //Checkers
+
+
+  // Check If User Exists
+  Future<bool> checkIfUserExists(String uid) async {
+    var userDocRef = _firestore.collection(users).doc(uid);
+    var doc = await userDocRef.get();
+    if (!doc.exists) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
   Future<bool> checkIfNicknameExists(String nickname) async {
     DocumentSnapshot documentSnapshot = await _firestore.collection(nicknames)
@@ -530,6 +565,45 @@ class UserFirebaseCalls {
     }
   }
 
+  // Register User
+  Future<bool> addUserGoogle(UserCredential authResult, String idioma) async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    // Get First and Last Name
+    String? firstName;
+    String? lastName;
+    if (authResult.user!.displayName != null ) {
+      firstName = authResult.user!.displayName!.split(" ")[0];
+      int length = authResult.user!.displayName!.split(" ")[0].length;
+      lastName = authResult.user!.displayName!.substring(length+1);
+    }
+    try {
+      await _firestore.collection(users).doc(authResult.user!.uid).set({
+        "name": authResult.user!.displayName,
+        "firstName": firstName,
+        "lastName": lastName,
+        "nick": null,
+        "notificationToken": null,
+        "email": authResult.user!.email,
+        "imageUrl": authResult.user!.photoURL,
+        "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+        "isFirst": true,
+        "isTrainer": true,
+        "isPrivate": true,
+        "gender": null,
+        "dateJoined": formatted,
+        "dateOfBirth": null,
+        "idioma": idioma,
+        "isAdmin": false,
+      });
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
+  }
+
   Future<void> addUserNickname(String userId, String nickname) async {
     await _firestore.collection(nicknames).doc(nickname).set({
       "userId": userId,
@@ -651,19 +725,18 @@ class UserFirebaseCalls {
 
   //Update
 
-  Future<void> updateUser(String uid, String name, String firstName,
-      String lastName, String nick, String dateOfBirth,
-      int gender, File? image, bool isTrainer) async {
-    String imageUrl =
-        "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
+// Add User
+  Future<void> updateUser(String uid, String name, String firstName, String lastName, String dateOfBirth, int gender, File? image, String? googleImageUrl, bool isTrainer) async {
+    String imageUrl = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53";
     if (image != null) {
       imageUrl = await updateUserPhoto(uid, image);
+    } else if (googleImageUrl != null) {
+      imageUrl = googleImageUrl;
     }
     await _firestore.collection(users).doc(uid).update({
       "name": name,
       "firstName": firstName,
       "lastName": lastName,
-      "nick": nick,
       "imageUrl": imageUrl,
       "isFirst": false,
       "isTrainer": isTrainer,
@@ -673,6 +746,8 @@ class UserFirebaseCalls {
       print(err);
     });
   }
+
+
 
   Future<void> updateUserThemePreferences(String uid, bool? isDark) async {
     if (isDark == null) {
