@@ -103,6 +103,10 @@
   "@passwordNotSameError":{
     "description": "Contraseña Error Text "
   },
+  "noAccount": "¿No has creado tu cuenta?",
+  "@noAccount":{
+    "description": "Contraseña Text "
+  },
   "forgotPassword": "¿Has olvidado tu contraseña?",
   "@forgotPassword":{
     "description": "Contraseña Text "
@@ -121,6 +125,14 @@
   },
   "login": "Inicia Sesión",
   "@login":{
+    "description": "LogIn Text "
+  },
+  "continueWithGoogle": "Continuar con Google",
+  "@continueWithGoogle":{
+    "description": "LogIn Text "
+  },
+  "loginWithEmail": "Inicia sesión con tu email",
+  "@loginWithEmail":{
     "description": "LogIn Text "
   },
   "loginError": "No encontramos este usuario.\n Por favor, prueba otra vez",
@@ -178,6 +190,14 @@
   "transgender": "Otros",
   "@transgender":{
     "description": "Otros Text "
+  },
+  "optional": "Opcional",
+  "@optional":{
+    "description": "Nombre"
+  },
+  "chars": "Caracteres",
+  "@chars":{
+    "description": "Nombre"
   },
   "firstName": "Nombre",
   "@firstName":{
@@ -251,7 +271,7 @@
   "@thankyouDownload": {
     "description": "Wellcome message"
   },
-  "wellcomeMessage": "La primera interfaz que conecta a los apasionados del deporte con las marcas de entrenamiento fitness.",
+  "wellcomeMessage": "La primera interfaz que conecta a los apasionados del deporte con las marcas de entrenamiento fitness",
   "@wellcomeMessage": {
     "description": "Wellcome message"
   },
@@ -581,7 +601,7 @@
   "@createBrandTitle":{
     "description": "createBrand Text"
   },
-  "createBrandPortada": "Empieza creando la portada de tu marca. Escoge tu logo y tu nombre, tu escaparate a todos los otros usuarios.",
+  "createBrandPortada": "Empieza creando la portada de tu marca. Tu escaparate a todos los otros usuarios",
   "@createBrandPortada":{
     "description": "createBrand Text"
   },
@@ -1415,6 +1435,10 @@
   "@editBrandInfo": {
     "description": "Wellcome message"
   },
+  "addBrandLogo": "Añade tu logo",
+  "@addBrandLogo": {
+    "description": "Wellcome message"
+  },
   "editBrandLogo": "Edita el logo de la marca",
   "@editBrandLogo": {
     "description": "Wellcome message"
@@ -1914,12 +1938,20 @@
   "@membersOfBrand": {
     "description": "membersOfBrand message"
   },
-  "locationPermision": "Usamos tu ubicación para encontrar las marcas más cercanas a ti.\n\nPara ello es necesario que nos des permisos de localización.",
+  "locationPermision": "Compartir ubicación",
   "@locationPermision": {
+    "description": "membersOfBrand message"
+  },
+  "notificationsPermision": "Activar notificaciones",
+  "@notificationsPermision": {
     "description": "membersOfBrand message"
   },
   "termsAndConditions": "Términos y Condiciones",
   "@termsAndConditions": {
+    "description": "membersOfBrand message"
+  },
+  "useMambaTermsAndConditions": "Utilizando Mamba aceptas nuestros ",
+  "@useMambaTermsAndConditions": {
     "description": "membersOfBrand message"
   },
   "findBrandClientText": "Encuentra una marca o añade tu código de invitación para desbloquear todas nuestras herramientas",
@@ -2134,13 +2166,97 @@
   "@thisEventAndRest": {
     "description": "beforeEventBodyNotification message"
   },
-  "trainersOnboarding": "¡TODO en UNO!",
+  "trainersOnboarding": "Facilita tu trabajo",
   "@trainersOnboarding": {
     "description": "beforeEventBodyNotification message"
   },
-  "trainersOnboardingDesc": "Centraliza tu negocio en una sola plataforma. Profesionaliza tu servicio para fidelizar a tus clientes, mejorando la gestión, organización y comunicación de tu marca fitness.",
+  "trainersOnboardingDesc": "Automatiza la calendarización y aforo de tus sesiones. Olvídate de tener que gestionar personalmente las reservas de tus clientes",
   "@trainersOnboardingDesc": {
     "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingSecond": "Personaliza tus precios",
+  "@trainersOnboardingSecond": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingSecondDesc1": "Crea tu propia política de precios mediante ",
+  "@trainersOnboardingSecondDesc1": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingSecondDesc2": "bonos personalizados.",
+  "@trainersOnboardingSecondDesc2": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingSecondDesc3": " Escoge atentamente las condiciones y el estilo de tus bonos para maximizar el interés de los clientes",
+  "@trainersOnboardingSecondDesc3": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingThird": "Manten tu negocio bajo control",
+  "@trainersOnboardingThird": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingThirdDesc1": "Analiza la evolución de tus clientes y tu negocio. ",
+  "@trainersOnboardingThirdDesc1": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingThirdDesc2": "Activa las notificaciones",
+  "@trainersOnboardingThirdDesc2": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "trainersOnboardingThirdDesc3": " para no omitir ningún detalle importante. Solo te alertaremos cuando sea realmente necesario",
+  "@trainersOnboardingThirdDesc3": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "closeToYou": "Cerca de ellos",
+  "@closeToYou": {
+    "description": "Wellcome message"
+  },
+  "changeLater": "Podrás cambiar esto más tarde",
+  "@changeLater": {
+    "description": "seeMap message"
+  },
+  "whatsYourName": "¿Cómo te llamas?",
+  "@whatsYourName": {
+    "description": "seeMap message"
+  },
+  "visibleFirstName": "Sólo tu nombre será visto por todos",
+  "@visibleByMarca": {
+    "description": "seeMap message"
+  },
+  "whensYourBday": "Cuando es tu cumpleaños?",
+  "@whensYourBday": {
+    "description": "seeMap message"
+  },
+  "age": "Edad",
+  "@age": {
+    "description": "seeMap message"
+  },
+  "visibleFact": "Dato solo usado para estadísticas, no será mostrado a ningún usuario",
+  "@visibleAge": {
+    "description": "seeMap message"
+  },
+  "day": "Día",
+  "@day": {
+    "description": "seeMap message"
+  },
+  "month": "Mes",
+  "@month": {
+    "description": "seeMap message"
+  },
+  "year": "Año",
+  "@year": {
+    "description": "seeMap message"
+  },
+  "whatsYourGender": "Indica tu género",
+  "@whatsYourGender": {
+    "description": "seeMap message"
+  },
+  "creatingProfile": "Creando perfil ...",
+  "@creatingProfile": {
+    "description": "seeMap message"
+  },
+  "googleInfo": "Verifica la información recogida de Google",
+  "@googleInfo": {
+    "description": "seeMap message"
   },
   "clientsOnboarding": "Encuentra tu profesional",
   "@clientsOnboarding": {
@@ -2729,10 +2845,6 @@
   },
   "upcomingEvents": "Próximos Eventos",
   "@upcomingEvents": {
-    "description": "Wellcome message"
-  },
-  "closeToYou": "Cerca de ti",
-  "@closeToYou": {
     "description": "Wellcome message"
   },
   "seeAll": "Ver todas",

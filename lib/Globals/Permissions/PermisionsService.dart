@@ -5,6 +5,32 @@ class PermisionsService {
 
   // Notifications
 
+  Future<PermissionStatus> askUserNotificationsPermision() async {
+    // Check Notification Permissions
+    print("Checking Notification Permissions...");
+    PermissionStatus permission = await NotificationPermissions.requestNotificationPermissions(
+        iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true)
+    );
+    switch (permission) {
+      case PermissionStatus.denied:
+        mixpanel!.track('notifications_permission_denied');
+        break;
+      case PermissionStatus.granted:
+        mixpanel!.track('notifications_permission_granted');
+        break;
+      case PermissionStatus.unknown:
+        mixpanel!.track('notifications_permission_unknown');
+        break;
+      case PermissionStatus.provisional:
+        mixpanel!.track('notifications_permission_provisional');
+        break;
+      default:
+        break;
+    }
+    print(permission.toString());
+    return permission;
+  }
+
   Future<String?> checkUserNotificationsPermision() async {
     return NotificationPermissions.getNotificationPermissionStatus()
         .then((status) {
@@ -23,11 +49,12 @@ class PermisionsService {
     });
   }
 
-  Future<PermissionStatus> askUserNotificationsPermision() async {
-    // show the dialog/open settings screen
-    return NotificationPermissions.requestNotificationPermissions(
-        iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true)
-    );
+  Future<LocationPermission> askUserLocationPermision() async {
+    // Check Permissions
+    print("Checking Location Permissions...");
+    LocationPermission permission = await Geolocator.requestPermission();
+    print(permission.toString());
+    return permission;
   }
 
   // Location
@@ -41,18 +68,6 @@ class PermisionsService {
       return true;
     } else {
       return false;
-    }
-  }
-
-  Future<LocationPermission> askUserLocationPermision() async {
-    // Check Permissions
-    LocationPermission permission;
-    permission = await Geolocator.checkPermission();
-    // Ask in case Needed
-    if (!(permission == LocationPermission.always || permission == LocationPermission.whileInUse)) {
-      return await Geolocator.requestPermission();
-    } else {
-      return permission;
     }
   }
 

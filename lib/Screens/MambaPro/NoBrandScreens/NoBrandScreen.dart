@@ -301,25 +301,16 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
         :
       GestureDetector(
         onTap: () async {
-          mixpanel!.track('register_brand_onboarding_cover');
-          bool? result = await Navigator.push(
-              context,
-              CupertinoPageRoute<bool>(
-                builder: (context) => BrandIntroScreen(),
-              )
+          var result2 = await Navigator.push(
+            context,
+            CupertinoPageRoute<bool>(
+              builder: (context) => RegistrarMarca(
+                locale: Localizations.localeOf(context),
+              ),
+              settings: const RouteSettings(name: 'RegistrarMarca'),
+            )
           );
-          if (result != null && result) {
-            var result2 = await Navigator.push(
-                context,
-                CupertinoPageRoute<bool>(
-                  builder: (context) => RegistrarMarca(
-                    locale: Localizations.localeOf(context),
-                  ),
-                  settings: const RouteSettings(name: 'RegistrarMarca'),
-                )
-            );
-            if (result2 == null) mixpanel!.track('register_brand_closed');
-          }
+          if (result2 == null) mixpanel!.track('register_brand_closed');
         },
         child: Material(
           elevation: 4,

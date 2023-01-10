@@ -429,7 +429,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                   ),
                 ],
               ),
-              Column(
+              pageViewList.isNotEmpty ? Column(
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   Row(
@@ -456,11 +456,11 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ],
-              ),
+              ) : Container(),
             ],
           ),
           Visibility(
-            visible: isList,
+            visible: isList && pageViewList.isNotEmpty,
             child: Container(
               color: Theme.of(context).backgroundColor,
               height: MediaQuery.of(context).size.height,
