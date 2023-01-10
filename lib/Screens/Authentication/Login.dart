@@ -2,6 +2,7 @@ import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -504,6 +505,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           backgroundColor: AppColors.black,
           elevation: 0,
           centerTitle: false,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
           title: FocusScope.of(context).hasPrimaryFocus == false ? SizedBox(
               height: MediaQuery.of(context).size.height*0.2,
               width: MediaQuery.of(context).size.width*0.3,
@@ -526,6 +528,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         ) : AppBar(
           toolbarHeight: MediaQuery.of(context).size.height*0.08,
           backgroundColor: AppColors.black,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
           elevation: 0,
         ),
         body: Form(

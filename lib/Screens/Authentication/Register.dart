@@ -52,6 +52,7 @@ class _RegisterState extends State<Register> {
           title: Text(AppLocalizations.of(context)!.createAccount, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white),),
           centerTitle: false,
           elevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
           iconTheme: const IconThemeData(
             color: Colors.white, //change your color here
           ),

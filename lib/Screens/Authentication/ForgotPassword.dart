@@ -49,6 +49,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           iconTheme: const IconThemeData(
             color: Colors.white, //change your color here
           ),
+          systemOverlayStyle: SystemUiOverlayStyle.light,
           backgroundColor: AppColors.black,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
