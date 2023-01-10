@@ -207,7 +207,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     ),
                     TextSpan(
                         text: AppLocalizations.of(context)!.register,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline)
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
                     ),
                   ],
                 ),
@@ -238,7 +238,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     ),
                     TextSpan(
                         text: AppLocalizations.of(context)!.termsAndConditions.toLowerCase(),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline)
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
                     ),
                   ],
                 ),
@@ -449,7 +449,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   ),
                   TextSpan(
                       text: AppLocalizations.of(context)!.register,
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline)
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
                   ),
                 ],
               ),
@@ -480,7 +480,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   ),
                   TextSpan(
                       text: AppLocalizations.of(context)!.termsAndConditions.toLowerCase(),
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline)
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, decoration: TextDecoration.underline)
                   ),
                 ],
               ),

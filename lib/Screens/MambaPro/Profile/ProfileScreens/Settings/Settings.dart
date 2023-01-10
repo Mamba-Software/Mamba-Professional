@@ -344,7 +344,7 @@ class _SettingsState extends State<Settings> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.02),
             Text(
-              "v "+_packageInfo.version.toString()+" ("+_packageInfo.buildNumber.toString()+")",
+              "v."+_packageInfo.version.toString()+" ("+_packageInfo.buildNumber.toString()+")",
               style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.05),
