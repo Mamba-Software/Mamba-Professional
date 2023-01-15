@@ -21,7 +21,10 @@ class Brand {
   var workShift;
   int? maxMembers;
   int? bookingWindow;
+  String? initDatePay;
+  String? endDatePay;
 
+  List<String> promotions = [];
   List<ImageObject> imagesList = [];
   List<RequestToBrand> requestsList = [];
   List<Usuario> usersList = [];

@@ -7,6 +7,7 @@ import 'package:jiffy/jiffy.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/Models/Promotion.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -19,6 +20,7 @@ import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -48,6 +50,7 @@ class FirebaseDatabaseService {
   String requests = isProduction ? 'Requests' : '7777 Requests';
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
+  String promotions = isProduction ? 'Promotions' : '7777 Promotions';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -3215,6 +3218,32 @@ class FirebaseDatabaseService {
       return Conversation.fromObject(
           querySnapshot.docs[0], querySnapshot.docs[0].id);
     }
+
+    //Promotions
+
+  // Get Valid Promotion
+  Future<Promotion> getValidPromotion(String id) async {
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    Promotion promotion = Promotion();
+    DateTime now = DateTime.now();
+    Timestamp tmstp = Timestamp.fromDate(now);
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore.collection(promotions).doc(id).get();
+      promotion = Promotion.fromObjectAllData(
+          _documentSnapshot.id, _documentSnapshot);
+      if(promotion.isActive! && promotion.startDate!.compareTo(tmstp.toString()) < 0 && tmstp.toString().compareTo(promotion.endDate!) < 0)
+        {
+          return promotion;
+        }
+      else {
+        return Promotion();
+      }
+    } catch (e) {
+      print(e);
+      return Promotion();
+    }
+  }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // STREAMS

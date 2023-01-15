@@ -704,6 +704,18 @@ class BrandFirebaseCalls {
     });
   }
 
+  Future<void> updateBrandPay(String brandID, int time, List<String> promotions) async {
+    DateTime now = DateTime.now();
+    Timestamp initTime = Timestamp.fromDate(DateTime.now());
+    var temp = now.add(Duration(days: time));
+    Timestamp endTime = Timestamp.fromDate(temp);
+    await _firestore.collection(brands).doc(brandID).update({
+      "promotions": promotions,
+      "initDatePay": initTime,
+      "endDatePay": endTime,
+    });
+  }
+
   //Delete
 
   Future<void> deleteBrand(String brandId) async {
