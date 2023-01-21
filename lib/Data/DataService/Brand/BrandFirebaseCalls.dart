@@ -489,6 +489,7 @@ class BrandFirebaseCalls {
       "workShift": workShift,
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
+      "isActive": false,
     }).catchError((err) {
       print(err);
       firestoreError = true;

@@ -172,8 +172,10 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            mixpanel!.track('brand_stats_view');
-                            widget.navigateToPage(9);
+                            if(currentBrand.isActive != null && currentBrand.isActive!) {
+                              mixpanel!.track('brand_stats_view');
+                              widget.navigateToPage(9);
+                            }
                           },
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,8 +192,10 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                         ),
                         TextButton(
                           onPressed: () {
-                            mixpanel!.track('brand_stats_view');
-                            widget.navigateToPage(9);
+                              if(currentBrand.isActive != null && currentBrand.isActive!) {
+                                mixpanel!.track('brand_stats_view');
+                                widget.navigateToPage(9);
+                              }
                           },
                           child: Column(
                             children: [

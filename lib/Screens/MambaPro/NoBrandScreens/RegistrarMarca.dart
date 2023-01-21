@@ -5,15 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Promotion.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
@@ -28,76 +25,54 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 
 import '../../../../../../Globals/Providers/FirebaseAnalyticsProvider.dart';
-import '../../../Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 
 class RegistrarMarca extends StatefulWidget {
   Locale? locale;
-
   RegistrarMarca({Key? key, this.locale}) : super(key: key);
 
   @override
   _RegistrarMarcaState createState() => _RegistrarMarcaState();
 }
 
-class _RegistrarMarcaState extends State<RegistrarMarca>
-    with SingleTickerProviderStateMixin {
+class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProviderStateMixin {
   // DataBase Access
   final _brandDataService = BrandDataService();
   final _locationDataService = LocationDataService();
-  final _promotionDataService = PromotionsDataService();
-  final _topSnackBar = TopSnackBar();
-
   // Boolean isLoading
   bool isLoading = false;
-
   // Tab Controller
   final PageController _pageControllerData = PageController(initialPage: 0);
-  double addEventTabValue = 0.20;
-
+  double addEventTabValue = 0.25;
   // Logo Image
   var _image;
-
   // Name Brand Controller
   var nameBrandController = TextEditingController();
   bool nameCanGoNext = false;
-
   // Description Controller
   var descriptionController = TextEditingController();
   FocusNode focusNodeDescription = FocusNode();
   bool maxChars = false;
-
   // Max Members Brand
   TextEditingController membersController = TextEditingController();
   int members = 1;
   int membersMax = 100;
-
   // Google APIS
   googlePlace.GooglePlace? gPlace;
   googlePlace.DetailsResult? detailsResult;
-
   // Ubicación
   Location location = Location();
-  var ubicacionController = TextEditingController();
+  var ubicacionController =  TextEditingController();
   bool hasLocation = false;
   bool errorLocation = false;
 
-  //PayWall
-  bool seePromotions = true;
-  bool loadingPromotions = false;
-  var promotionController = TextEditingController();
-  Promotion promotion = Promotion();
-
   // 4th TAB: Time
   // Time Picker Horari de Trabajo
-  DateTime startTime = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0);
-  DateTime endTime = DateTime(
-      DateTime.now().year, DateTime.now().month, DateTime.now().day, 22, 0);
+  DateTime startTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0);
+  DateTime endTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 22, 0);
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
   List<double> _workShift = [];
   int? errorTime;
-
   // Descansos
   TextEditingController breakStartTimeController = TextEditingController();
   TextEditingController breakEndTimeController = TextEditingController();
@@ -105,7 +80,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
   List<int> removedIndex = [];
   int breakLimit = 2;
   bool errorBreakTime = false;
-
   // Booking Window
   int bookingWindow = 3;
 
@@ -117,84 +91,41 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
     });
   }
 
-  Future<void> getPromotion([bool fromSeeSubsc = false]) async
-  {
-    promotion =
-        await _promotionDataService
-        .getValidPromotion(
-        promotionController.text);
-    if(fromSeeSubsc)
-      {
-        setState(() {
-          loadingPromotions = false;
-          seePromotions = false;
-        });
-      }
-    else {
-      setState(() {
-        loadingPromotions = false;
-      });
-    }
-  }
-
   Future<void> registerBrand() async {
     mixpanel!.track('register_brand_completed');
     // Get Data About The Times Of The Brand
-    DateTime start = DateFormat('HH:mm', widget.locale!.languageCode)
-        .parse(startTimeController.text);
-    DateTime end = DateFormat('HH:mm', widget.locale!.languageCode)
-        .parse(endTimeController.text);
-    double toDouble(DateTime myTime) => myTime.hour + myTime.minute / 100.0;
-    double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute / 100.0;
+    DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);
+    DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(endTimeController.text);
+    double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100.0;
+    double toDouble2(TimeOfDay myTime) => myTime.hour + myTime.minute/100.0;
     _workShift.add(toDouble(start));
     _workShift.add(toDouble(end));
-    for (var i = 0; i < _breakList.length; i += 2) {
-      if (!removedIndex.contains(i)) {
+    for (var i=0; i < _breakList.length; i+=2) {
+      if(!removedIndex.contains(i)) {
         _workShift.add(toDouble2(_breakList[i]));
-        _workShift.add(toDouble2(_breakList[i + 1]));
+        _workShift.add(toDouble2(_breakList[i+1]));
       }
     }
     if (descriptionController.text.isEmpty) {
       descriptionController.text = "";
     }
     // Create Brand
-    var result = await _brandDataService.addBrand(
-        nameBrandController.text.trim(),
-        _image,
-        descriptionController.text.trim(),
-        _workShift,
-        membersMax,
-        bookingWindow);
+    var result = await _brandDataService.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax, bookingWindow);
     // Add User To Brand
     // New Database
-    await _brandDataService.addUserToBrand(currentUser.id!, result, 1);
+    await _brandDataService.addUserToBrand(currentUser.id!,result, 1);
     // Add Location
-    String baseLocation = await _locationDataService.addLocation(
-        result,
-        true,
-        location.placeId!,
-        location.description!,
-        location.street!,
-        location.streetNumber!,
-        location.city!,
-        location.zipCode!,
-        location.latitude!,
-        location.longitude!);
+    String baseLocation = await _locationDataService.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
     await _brandDataService.updateBrandBaseLocation(result, baseLocation);
     // Update Current User Brand
     NotificationService().userCreatesBrand(currentUser.id!, result);
     // Create Group Chat
     String logoUrl = await _brandDataService.getBrandLogoUrl(result);
-    final room = await FirebaseChatCore.instance.createGroupRoom(
-        imageUrl: logoUrl,
-        metadata: {
-          "trainer" + currentUser.id!: currentUser.isTrainer,
-          "active" + currentUser.id!: false,
-        },
-        name: nameBrandController.text.trim(),
-        users: []);
+    final room = await FirebaseChatCore.instance.createGroupRoom(imageUrl: logoUrl, metadata: {
+      "trainer" + currentUser.id!: currentUser.isTrainer,
+      "active" + currentUser.id!: false,
+    }, name: nameBrandController.text.trim(), users: []);
     await _brandDataService.updateBrandRoom(result, room.id);
-    await _brandDataService.updateBrandPay(result, promotion.time!, [promotion.id!]);
     // Pushing to Splash Screen
     await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
     Navigator.pushAndRemoveUntil(
@@ -203,47 +134,18 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
         builder: (context) => const SplashScreen(),
         settings: const RouteSettings(name: 'SplashScreen'),
       ),
-      (_) => false,
+          (_) => false,
     );
   }
 
   @override
   void initState() {
     mixpanel!.track('register_brand_cover');
-    gPlace = googlePlace.GooglePlace(
-        Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
-    startTimeController.text =
-        DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      8,
-      0,
-    ));
-    endTimeController.text =
-        DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      22,
-      0,
-    ));
-    breakStartTimeController.text =
-        DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      13,
-      0,
-    ));
-    breakEndTimeController.text =
-        DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
-      DateTime.now().year,
-      DateTime.now().month,
-      DateTime.now().day,
-      14,
-      0,
-    ));
+    gPlace = googlePlace.GooglePlace(Platform.isAndroid ? placesAPIAndroid : placesAPIIOS);
+    startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0,));
+    endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 22, 0,));
+    breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0,));
+    breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
     super.initState();
   }
 
@@ -252,10 +154,8 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
     return Scaffold(
       appBar: AppBar(
         title: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.01),
-          child: Text(AppLocalizations.of(context)!.createBrand,
-              style: Theme.of(context).textTheme.headline3),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+          child: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).textTheme.headline3),
         ),
         centerTitle: false,
         elevation: 0,
@@ -263,13 +163,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
         backgroundColor: Theme.of(context).backgroundColor,
         actions: [
           Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.width * 0.01),
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
             child: IconButton(
-              icon: Icon(
-                Icons.close,
-                size: MediaQuery.of(context).size.width * 0.06,
-              ),
+              icon: Icon(Icons.close, size: MediaQuery.of(context).size.width*0.06,),
               onPressed: () {
                 Navigator.pop(context, false);
               },
@@ -293,26 +189,25 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 LinearPercentIndicator(
-                  width: MediaQuery.of(context).size.width * 0.94,
+                  width: MediaQuery.of(context).size.width*0.94,
                   lineHeight: 5,
                   percent: addEventTabValue,
                   animation: false,
                   animationDuration: 250,
                   barRadius: const Radius.circular(10),
                   progressColor: Theme.of(context).primaryColor,
-                  backgroundColor:
-                      Theme.of(context).primaryColor.withOpacity(0.2),
+                  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
             Expanded(
               child: PageView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _pageControllerData,
                 onPageChanged: (int page) {
                   setState(() {
-                    addEventTabValue += 0.20;
+                    addEventTabValue += 0.25;
                   });
                 },
                 children: [
@@ -323,149 +218,109 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                       Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.1),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   AppLocalizations.of(context)!.addBrandLogo,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1
-                                      ?.copyWith(fontSize: 30),
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
                                   textAlign: TextAlign.left,
                                 ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .createBrandPortada,
+                                  AppLocalizations.of(context)!.createBrandPortada,
                                   style: Theme.of(context).textTheme.bodyText1,
                                   textAlign: TextAlign.left,
                                 ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.05),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                 Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.15,
+                                    height: MediaQuery.of(context).size.height * 0.15,
                                     color: Colors.transparent,
-                                    child: _image == null
-                                        ? Center(
-                                            child: OutlinedButton(
-                                              onPressed: getImage,
-                                              child: Icon(
-                                                Icons.add,
-                                                color: AppColors.grey,
-                                                size: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.08,
-                                              ),
-                                              style: OutlinedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColors.lightGrey,
-                                                elevation: 4,
-                                                shape: const CircleBorder(),
-                                                padding:
-                                                    const EdgeInsets.all(40),
-                                              ),
-                                            ),
-                                          )
-                                        : GestureDetector(
-                                            onTap: getImage,
-                                            child: Stack(
-                                              children: <Widget>[
-                                                const Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                            color: AppColors
-                                                                .black)),
-                                                Center(
-                                                    child: CircularImage(
-                                                  size: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.15,
-                                                  file: _image,
-                                                  borderWidth: 1,
-                                                  color: AppColors.grey,
-                                                )),
-                                              ],
-                                            ),
+                                    child: _image == null ? Center(
+                                      child: OutlinedButton(
+                                        onPressed: getImage,
+                                        child: Icon(
+                                          Icons.add,
+                                          color: AppColors.grey,
+                                          size: MediaQuery.of(context).size.width * 0.08,
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          backgroundColor: AppColors.lightGrey,
+                                          elevation: 4,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(40),
+                                        ),
+                                      ),
+                                    )
+                                        :
+                                    GestureDetector(
+                                      onTap: getImage,
+                                      child: Stack(
+                                        children: <Widget>[
+                                          const Center(child: CircularProgressIndicator(
+                                              color: AppColors.black
                                           )),
+                                          Center(
+                                              child: CircularImage(
+                                                size: MediaQuery.of(context).size.height * 0.15,
+                                                file: _image,
+                                                borderWidth: 1,
+                                                color: AppColors.grey,
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.10,
+                          height: MediaQuery.of(context).size.height*0.10,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.04,
-                                vertical:
-                                    MediaQuery.of(context).size.width * 0.03),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
                             child: Row(
                               children: [
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.01),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                 Icon(
                                   Icons.visibility,
                                   color: Theme.of(context).primaryColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
+                                  size: MediaQuery.of(context).size.width*0.06,
                                 ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.04),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.04),
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.changeLater,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
                                 ElevatedButton(
-                                  onPressed: _image == null
-                                      ? null
-                                      : () {
-                                          _pageControllerData.nextPage(
-                                            duration: const Duration(
-                                                milliseconds: 500),
-                                            curve: Curves.ease,
-                                          );
-                                        },
+                                  onPressed: _image == null ? null : () {
+                                    _pageControllerData.nextPage(
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                  },
                                   child: Icon(
                                     Icons.arrow_forward_ios,
-                                    color: _image != null
-                                        ? Theme.of(context).primaryColorDark
-                                        : Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.2),
-                                    size: MediaQuery.of(context).size.width *
-                                        0.06,
+                                    color: _image != null ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
+                                    size: MediaQuery.of(context).size.width*0.06,
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     elevation: 0,
                                     shape: const CircleBorder(),
                                     padding: const EdgeInsets.all(15),
-                                    primary: _image != null
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.1),
+                                    primary: _image != null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
                                   ),
                                 ),
                               ],
                             ),
-                          )),
+                          )
+                      ),
                     ],
                   ),
                   Column(
@@ -475,32 +330,22 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                       Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.1),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   AppLocalizations.of(context)!.nameBrand,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1
-                                      ?.copyWith(fontSize: 30),
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
                                   textAlign: TextAlign.left,
                                 ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .createBrandPortada,
+                                  AppLocalizations.of(context)!.createBrandPortada,
                                   style: Theme.of(context).textTheme.bodyText1,
                                   textAlign: TextAlign.left,
                                 ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.05),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                 Material(
                                   elevation: 8,
                                   borderRadius: BorderRadius.circular(15.0),
@@ -512,8 +357,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                           controller: nameBrandController,
                                           keyboardType: TextInputType.name,
                                           onChanged: (val) {
-                                            if (nameBrandController
-                                                .text.isNotEmpty) {
+                                            if (nameBrandController.text.isNotEmpty) {
                                               setState(() {
                                                 nameCanGoNext = true;
                                               });
@@ -526,71 +370,38 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                           onFieldSubmitted: (val) {
                                             focusNodeDescription.requestFocus();
                                           },
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3
-                                              ?.copyWith(
-                                                  fontWeight: FontWeight.normal,
-                                                  color: AppColors.black),
-                                          textCapitalization:
-                                              TextCapitalization.words,
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal, color: AppColors.black),
+                                          textCapitalization: TextCapitalization.words,
                                           decoration: InputDecoration(
                                               filled: true,
                                               fillColor: AppColors.white,
-                                              hintText:
-                                                  AppLocalizations.of(context)!
-                                                      .nameBrandError,
-                                              hintStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .headline3
-                                                  ?.copyWith(
-                                                      color: AppColors.grey,
-                                                      fontWeight:
-                                                          FontWeight.normal),
-                                              errorStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2
-                                                  ?.copyWith(
-                                                      color: AppColors.red),
+                                              hintText: AppLocalizations.of(context)!.nameBrandError,
+                                              hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                              errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                               border: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1.5),
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
                                               ),
                                               enabledBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1.5),
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
                                               ),
                                               focusedBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1.5),
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
                                               ),
                                               errorBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1.5),
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
                                               ),
-                                              contentPadding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      12, 8, 12, 8)),
+                                              contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                          ),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Material(
                                   elevation: 8,
                                   borderRadius: BorderRadius.circular(15.0),
@@ -600,14 +411,11 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         child: TextFormField(
                                           focusNode: focusNodeDescription,
                                           controller: descriptionController,
-                                          textCapitalization:
-                                              TextCapitalization.sentences,
+                                          textCapitalization: TextCapitalization.sentences,
                                           minLines: 3,
                                           maxLines: 5,
                                           onChanged: (val) {
-                                            if (descriptionController
-                                                    .text.length ==
-                                                250) {
+                                            if (descriptionController.text.length == 250) {
                                               setState(() {
                                                 maxChars = true;
                                               });
@@ -617,187 +425,114 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                               });
                                             }
                                           },
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3
-                                              ?.copyWith(
-                                                  fontWeight: FontWeight.normal,
-                                                  color: AppColors.black),
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal, color: AppColors.black),
                                           inputFormatters: [
-                                            LengthLimitingTextInputFormatter(
-                                                250), // for mobile
+                                            LengthLimitingTextInputFormatter(250),// for mobile
                                           ],
                                           decoration: InputDecoration(
                                             filled: true,
                                             fillColor: AppColors.white,
-                                            hintText: AppLocalizations.of(
-                                                        context)!
-                                                    .descriptionError +
-                                                ". Max. 250 " +
-                                                AppLocalizations.of(context)!
-                                                    .chars
-                                                    .toLowerCase() +
-                                                " (" +
-                                                AppLocalizations.of(context)!
-                                                    .optional
-                                                    .toLowerCase() +
-                                                ")",
-                                            hintStyle: Theme.of(context)
-                                                .textTheme
-                                                .headline3
-                                                ?.copyWith(
-                                                    color: AppColors.grey,
-                                                    fontWeight:
-                                                        FontWeight.normal),
-                                            errorStyle: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2
-                                                ?.copyWith(
-                                                    color: AppColors.red),
+                                            hintText: AppLocalizations.of(context)!.descriptionError+". Max. 250 "+AppLocalizations.of(context)!.chars.toLowerCase()+" ("+AppLocalizations.of(context)!.optional.toLowerCase()+")",
+                                            hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                            errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                             border: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                  color: Colors.transparent,
-                                                  width: 1.5),
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
+                                              borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                              borderRadius: BorderRadius.circular(15.0),
                                             ),
                                             enabledBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                  color: Colors.transparent,
-                                                  width: 1.5),
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
+                                              borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                              borderRadius: BorderRadius.circular(15.0),
                                             ),
                                             focusedBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                  color: Colors.transparent,
-                                                  width: 1.5),
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
+                                              borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                              borderRadius: BorderRadius.circular(15.0),
                                             ),
                                             errorBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                  color: Colors.transparent,
-                                                  width: 1.5),
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
+                                              borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                              borderRadius: BorderRadius.circular(15.0),
                                             ),
-                                            contentPadding:
-                                                const EdgeInsets.fromLTRB(
-                                                    12, 12, 12, 12),
+                                            contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                                           ),
+
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                maxChars
-                                    ? Container(
-                                        padding: const EdgeInsets.all(8),
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 12),
-                                        decoration: const BoxDecoration(
-                                          color: AppColors.red,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0),
-                                          ),
+                                maxChars ? Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(vertical: 12),
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.red,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          "Max. 250 "+AppLocalizations.of(context)!.chars.toLowerCase(),
+                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                          textAlign: TextAlign.left,
                                         ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: Text(
-                                                "Max. 250 " +
-                                                    AppLocalizations.of(
-                                                            context)!
-                                                        .chars
-                                                        .toLowerCase(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2
-                                                    ?.copyWith(
-                                                        color: AppColors.white),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : Container(),
+                                      ),
+                                    ],
+                                  ),
+                                ) : Container(),
                               ],
                             ),
                           ),
                         ],
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.10,
+                          height: MediaQuery.of(context).size.height*0.10,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.04,
-                                vertical:
-                                    MediaQuery.of(context).size.width * 0.03),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
                             child: Row(
                               children: [
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.01),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                 Icon(
                                   Icons.visibility,
                                   color: Theme.of(context).primaryColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
+                                  size: MediaQuery.of(context).size.width*0.06,
                                 ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.04),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.04),
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.changeLater,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
                                 ElevatedButton(
-                                  onPressed: nameCanGoNext == false
-                                      ? null
-                                      : () {
-                                          FocusScopeNode currentFocus =
-                                              FocusScope.of(context);
-                                          if (!currentFocus.hasPrimaryFocus) {
-                                            currentFocus.unfocus();
-                                          }
-                                          _pageControllerData.nextPage(
-                                            duration: const Duration(
-                                                milliseconds: 500),
-                                            curve: Curves.ease,
-                                          );
-                                        },
+                                  onPressed: nameCanGoNext == false ? null : () {
+                                    FocusScopeNode currentFocus = FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
+                                    _pageControllerData.nextPage(
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                  },
                                   child: Icon(
                                     Icons.arrow_forward_ios,
-                                    color: nameCanGoNext
-                                        ? Theme.of(context).primaryColorDark
-                                        : Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.2),
-                                    size: MediaQuery.of(context).size.width *
-                                        0.06,
+                                    color: nameCanGoNext ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
+                                    size: MediaQuery.of(context).size.width*0.06,
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     elevation: 0,
                                     shape: const CircleBorder(),
                                     padding: const EdgeInsets.all(15),
-                                    primary: nameCanGoNext
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.1),
+                                    primary: nameCanGoNext ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
                                   ),
                                 ),
                               ],
                             ),
-                          )),
+                          )
+                      ),
                     ],
                   ),
                   Column(
@@ -807,36 +542,22 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                       Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.1),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  AppLocalizations.of(context)!.add +
-                                      " " +
-                                      AppLocalizations.of(context)!
-                                          .baseLocation
-                                          .toLowerCase(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1
-                                      ?.copyWith(fontSize: 30),
+                                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.baseLocation.toLowerCase(),
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
                                   textAlign: TextAlign.left,
                                 ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Text(
-                                  AppLocalizations.of(context)!
-                                      .createBrandLocation,
+                                  AppLocalizations.of(context)!.createBrandLocation,
                                   style: Theme.of(context).textTheme.bodyText1,
                                   textAlign: TextAlign.left,
                                 ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.05),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                 Material(
                                   elevation: 8,
                                   borderRadius: BorderRadius.circular(15.0),
@@ -845,59 +566,44 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                       // Generate a new token here
                                       final sessionToken = const Uuid().v4();
                                       final language = currentUser.idioma;
-                                      final Suggestion? result =
-                                          await showSearch(
+                                      final Suggestion? result = await showSearch(
                                         context: context,
-                                        delegate: AddressSearch(
-                                            sessionToken, language!),
+                                        delegate: AddressSearch(sessionToken, language!),
                                       );
                                       // We have a result for our locations search
                                       if (result != null) {
                                         location.placeId = result.placeId;
-                                        final placeDetails =
-                                            await LocationPlacesSearch(
-                                                    sessionToken, language)
-                                                .getPlaceDetailFromId(
-                                                    location.placeId!);
+                                        final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
                                         // Get the information on Strings
-                                        if (placeDetails.street != null) {
-                                          location.street =
-                                              placeDetails.street!;
+                                        if(placeDetails.street!=null) {
+                                          location.street = placeDetails.street!;
                                         } else {
-                                          location.street = "N/A";
+                                          location.street="N/A";
                                         }
-                                        if (placeDetails.streetNumber != null) {
-                                          location.streetNumber =
-                                              placeDetails.streetNumber!;
+                                        if(placeDetails.streetNumber!=null) {
+                                          location.streetNumber = placeDetails.streetNumber!;
                                         } else {
-                                          location.streetNumber = "N/A";
+                                          location.streetNumber="N/A";
                                         }
-                                        if (placeDetails.city != null) {
+                                        if(placeDetails.city!=null) {
                                           location.city = placeDetails.city!;
                                         } else {
-                                          location.city = "N/A";
+                                          location.city="N/A";
                                         }
-                                        if (placeDetails.zipCode != null) {
-                                          location.zipCode =
-                                              placeDetails.zipCode!;
+                                        if(placeDetails.zipCode!=null) {
+                                          location.zipCode = placeDetails.zipCode!;
                                         } else {
-                                          location.zipCode = "N/A";
+                                          location.zipCode="N/A";
                                         }
                                         //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
                                         // Build Correct Description
-                                        location.description =
-                                            "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
+                                        location.description = "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
                                         // Get Latitude/Longitude
-                                        var temp = await gPlace!.details
-                                            .get(location.placeId!);
-                                        if (temp != null &&
-                                            temp.result != null &&
-                                            mounted) {
+                                        var temp = await gPlace!.details.get(location.placeId!);
+                                        if (temp != null && temp.result != null && mounted) {
                                           detailsResult = temp.result;
-                                          location.latitude = detailsResult!
-                                              .geometry!.location!.lat!;
-                                          location.longitude = detailsResult!
-                                              .geometry!.location!.lng!;
+                                          location.latitude = detailsResult!.geometry!.location!.lat!;
+                                          location.longitude = detailsResult!.geometry!.location!.lng!;
                                         }
                                         setState(() {
                                           hasLocation = true;
@@ -909,31 +615,16 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                         });
                                       }
                                     },
-                                    title: hasLocation
-                                        ? Text(
-                                            location.description!,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2
-                                                ?.copyWith(
-                                                    color: AppColors.black),
-                                          )
-                                        : Text(
-                                            AppLocalizations.of(context)!
-                                                .enterAddressError,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2
-                                                ?.copyWith(
-                                                    color: AppColors.black),
-                                          ),
-                                    minLeadingWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.04,
+                                    title: hasLocation ? Text(
+                                      location.description!,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                                    ) : Text(
+                                      AppLocalizations.of(context)!.enterAddressError,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                                    ),
+                                    minLeadingWidth: MediaQuery.of(context).size.width*0.04,
                                     leading: Icon(
-                                      hasLocation
-                                          ? Icons.edit_location
-                                          : Icons.add_location,
+                                      hasLocation ? Icons.edit_location : Icons.add_location,
                                       color: AppColors.black,
                                     ),
                                     tileColor: AppColors.white,
@@ -942,547 +633,126 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                     ),
                                   ),
                                 ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.03),
-                                hasLocation
-                                    ? Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)!
-                                                    .streetName,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              ),
-                                              Text(
-                                                location.street!,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.01),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)!
-                                                    .streetNumber,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              ),
-                                              Text(
-                                                location.streetNumber!,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.01),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)!
-                                                    .city,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              ),
-                                              Text(
-                                                location.city!,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.01),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                AppLocalizations.of(context)!
-                                                    .zipCode,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              ),
-                                              Text(
-                                                location.zipCode!,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.01),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "${AppLocalizations.of(context)!.latitude}: ",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              ),
-                                              Text(
-                                                location.latitude!.toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2,
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.01),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "${AppLocalizations.of(context)!.longitud}: ",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .caption,
-                                              ),
-                                              Text(
-                                                location.longitude!.toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2,
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      )
-                                    : Container(),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                hasLocation ? Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.streetName,
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.street!, style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.streetNumber,
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.streetNumber!, style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.city,
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.city!, style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.zipCode,
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.zipCode!, style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${AppLocalizations.of(context)!.latitude}: ",
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.latitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${AppLocalizations.of(context)!.longitud}: ",
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.longitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                  ],
+                                ) : Container(),
                               ],
                             ),
                           ),
                         ],
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.10,
+                          height: MediaQuery.of(context).size.height*0.10,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.04,
-                                vertical:
-                                    MediaQuery.of(context).size.width * 0.03),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
                             child: Row(
                               children: [
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.01),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                 Icon(
                                   Icons.visibility,
                                   color: Theme.of(context).primaryColor,
-                                  size:
-                                      MediaQuery.of(context).size.width * 0.06,
+                                  size: MediaQuery.of(context).size.width*0.06,
                                 ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.04),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.04),
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.changeLater,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2,
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
                                 ElevatedButton(
-                                  onPressed: hasLocation == false
-                                      ? null
-                                      : () async {
-                                          _pageControllerData.nextPage(
-                                            duration: const Duration(
-                                                milliseconds: 500),
-                                            curve: Curves.ease,
-                                          );
-                                        },
+                                  onPressed: hasLocation == false ? null : () async {
+                                    _pageControllerData.nextPage(
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                    registerBrand();
+                                  },
                                   child: Icon(
                                     Icons.arrow_forward_ios,
-                                    color: _image != null
-                                        ? Theme.of(context).primaryColorDark
-                                        : Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.2),
-                                    size: MediaQuery.of(context).size.width *
-                                        0.06,
+                                    color: _image != null ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
+                                    size: MediaQuery.of(context).size.width*0.06,
                                   ),
                                   style: ElevatedButton.styleFrom(
                                     elevation: 0,
                                     shape: const CircleBorder(),
                                     padding: const EdgeInsets.all(15),
-                                    primary: _image != null
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.1),
+                                    primary: _image != null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
                                   ),
                                 ),
                               ],
                             ),
-                          )),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    MediaQuery.of(context).size.width * 0.1),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Subscripción',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1
-                                      ?.copyWith(fontSize: 30),
-                                  textAlign: TextAlign.left,
-                                ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
-                                Text(
-                                  'Selecciona tu subscripción. Canjea una promoción para poder disfturar de descuentos y ofertas en tus subscripciones',
-                                  style: Theme.of(context).textTheme.bodyText1,
-                                  textAlign: TextAlign.left,
-                                ),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.05),
-                                Material(
-                                  elevation: 8,
-                                  borderRadius: BorderRadius.circular(15.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          maxLength: 7,
-                                          autofocus: false,
-                                          controller: promotionController,
-                                          keyboardType: TextInputType.name,
-                                          onChanged: (val) async {
-                                            if (promotionController
-                                                .text.isNotEmpty && promotionController.text.length == 7) {
-                                              setState(() {
-                                                loadingPromotions = true;
-                                              });
-                                              await getPromotion();
-                                            }
-                                            else {
-                                              promotion = Promotion();
-                                              setState(() {
-                                                seePromotions = true;
-                                              });
-                                            }
-                                          },
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline3
-                                              ?.copyWith(
-                                              fontWeight: FontWeight.normal,
-                                              color: AppColors.black),
-                                          textCapitalization:
-                                          TextCapitalization.words,
-                                          decoration: InputDecoration(
-                                              counterText: '',
-                                              filled: true,
-                                              fillColor: AppColors.white,
-                                              hintText:
-                                              'Introduce codigo promocional',
-                                              hintStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .headline3
-                                                  ?.copyWith(
-                                                  color: AppColors.grey,
-                                                  fontWeight:
-                                                  FontWeight.normal),
-                                              errorStyle: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2
-                                                  ?.copyWith(
-                                                  color: AppColors.red),
-                                              border: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1.5),
-                                                borderRadius:
-                                                BorderRadius.circular(15.0),
-                                              ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1.5),
-                                                borderRadius:
-                                                BorderRadius.circular(15.0),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1.5),
-                                                borderRadius:
-                                                BorderRadius.circular(15.0),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: const BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1.5),
-                                                borderRadius:
-                                                BorderRadius.circular(15.0),
-                                              ),
-                                              contentPadding:
-                                              const EdgeInsets.fromLTRB(
-                                                  12, 8, 12, 8)),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                promotionController
-                                    .text.isNotEmpty && promotionController.text.length == 7? 
-                                loadingPromotions? Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                      MediaQuery.of(context).size.width *
-                                          0.02,
-                                      vertical:
-                                      MediaQuery.of(context).size.width *
-                                          0.06),
-                                  child: LoadingView(
-                                    color: Theme.of(context).primaryColor,
-                                    hasLogo: false,
-                                    isSmall: true,
-                                  ),
-                                ) : Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                      MediaQuery.of(context).size.width *
-                                          0.02,
-                                      vertical:
-                                      MediaQuery.of(context).size.width *
-                                          0.06),
-                                  child: promotion.id == null? Row(
-                                    children: [
-                                      Text('No hay promociones'),
-                                      Icon(
-                                        Icons.close,
-                                        color: Colors.red,
-                                      ),
-                                    ],
-                                  ) : Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text('Promoción detectada'),
-                                          Icon(
-                                            Icons.done,
-                                            color: Colors.green,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                ) : Container(),
-                              ],
-                            ),
-                          ),
-                        ],
+                          )
                       ),
-                      seePromotions
-                          ? GestureDetector(
-                        onTap: () async {
-                          if(!loadingPromotions) {
-                            if(promotion.id == null) {
-                              _topSnackBar.topsnackbar(context,
-                                  'Te regalamos la promoción 3MONTHS, disfruta de 3 meses gratuitos',
-                                  AppColors.mainColor);
-                              setState(() {
-                                loadingPromotions = true;
-                                promotionController.text = '3MONTHS';
-                              });
-                              await getPromotion(true);
-                            }
-                            else {
-                              setState(() {
-                                seePromotions = false;
-                              });
-                            }
-                          }
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            left:
-                            MediaQuery.of(context).size.width *
-                                0.02, right:  MediaQuery.of(context).size.width *
-                              0.02,
-                            bottom:
-                            MediaQuery.of(context).size.width *
-                                0.04,),
-                          child: Center(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: AppColors.mainColor,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              width: MediaQuery.of(context).size.width * 0.90,
-                              height: MediaQuery.of(context).size.height * 0.07,
-                              child:  Center(
-                                child: !loadingPromotions? Text(
-                                  'Ver subscripciones',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline1
-                                      ?.copyWith(
-                                    color: Theme.of(context)
-                                        .primaryColor,
-                                  ),
-                                ) : LoadingView(
-                                  color: Theme.of(context).primaryColor,
-                                  hasLogo: false,
-                                  isSmall: true,
-                                ),
-
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                          : Column(
-                              children: [
-                                promotion.id != null? GestureDetector(
-                                  onTap: () async {
-                                    _pageControllerData.nextPage(
-                                      duration: const Duration(
-                                          milliseconds: 500),
-                                      curve: Curves.ease,
-                                    );
-                                    registerBrand();
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      left:
-                                      MediaQuery.of(context).size.width *
-                                          0.02, right:  MediaQuery.of(context).size.width *
-                                        0.02,
-                                      bottom:
-                                      MediaQuery.of(context).size.width *
-                                          0.04,),
-                                    child: Center(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: AppColors.mainColor,
-                                            width: 2,
-                                          ),
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        width: MediaQuery.of(context).size.width * 0.90,
-                                        height: MediaQuery.of(context).size.height * 0.07,
-                                        child:  Center(
-                                          child: Text(
-                                            currentUser.idioma == 'ca'? promotion.descriptionCat! : promotion.descriptionEsp!,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1
-                                                ?.copyWith(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                            ),
-                                          ),
-
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ) : Container(),
-                                GestureDetector(
-                                  onTap: () async {
-                                    _topSnackBar.topsnackbar(context, 'Te regalamos la promoción 3MONTHS, disfruta de 3 meses gratuitos', AppColors.mainColor);
-                                    setState(() {
-                                      promotionController.text = '3MONTHS';
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left:
-                                        MediaQuery.of(context).size.width *
-                                            0.02, right:  MediaQuery.of(context).size.width *
-                                        0.02,
-                                        bottom:
-                                        MediaQuery.of(context).size.width *
-                                            0.04,),
-                                    child: Center(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: AppColors.mainColor,
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        width: MediaQuery.of(context).size.width * 0.90,
-                                        height: MediaQuery.of(context).size.height * 0.07,
-                                        child:  Center(
-                                          child: Text(
-                                            '29,99 € / mes',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1
-                                                ?.copyWith(
-                                              color: Theme.of(context)
-                                                  .primaryColorDark,
-                                            ),
-                                          ),
-
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                     ],
                   ),
                   Center(
@@ -1494,19 +764,10 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                           hasLogo: false,
                           isSmall: true,
                         ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.02),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         Text(
-                          AppLocalizations.of(context)!.creating +
-                              " " +
-                              AppLocalizations.of(context)!
-                                  .yourBrand
-                                  .toLowerCase() +
-                              " ...",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline1
-                              ?.copyWith(fontSize: 30),
+                          AppLocalizations.of(context)!.creating+" "+AppLocalizations.of(context)!.yourBrand.toLowerCase()+" ...",
+                          style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
                           textAlign: TextAlign.left,
                         ),
                       ],
@@ -1854,7 +1115,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                     AppLocalizations.of(context)!.enterAddressError,
                                     style: Theme.of(context).textTheme.bodyText2,
                                   ),
-
                                   leading: Icon(
                                     Icons.add_location,
                                     color: Theme.of(context).primaryColor,
@@ -2177,7 +1437,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                               children: [
                                                 TextButton(
                                                   onPressed: false ? () {
-
                                                   } : null,
                                                   child: Container(
                                                     padding: EdgeInsets.all(8),
@@ -2195,7 +1454,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
                                                 Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
                                                 TextButton(
                                                   onPressed: false ? () {
-
                                                   } : null,
                                                   child: Container(
                                                     padding: EdgeInsets.all(8),
@@ -2423,5 +1681,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca>
         ),
       )
      */
+
   }
 }

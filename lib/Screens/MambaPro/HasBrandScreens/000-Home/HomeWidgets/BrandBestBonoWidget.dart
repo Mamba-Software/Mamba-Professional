@@ -107,8 +107,10 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            mixpanel!.track('brand_homepage_bonos_title');
-                            widget.navigateToPage(5);
+                            if(currentBrand.isActive != null && currentBrand.isActive!) {
+                              mixpanel!.track('brand_homepage_bonos_title');
+                              widget.navigateToPage(5);
+                            }
                           },
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,13 +197,20 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                                     Flexible(child: Text(AppLocalizations.of(context)!.noBonosCreated, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
                                     TextButton(
                                       onPressed: () async {
-                                        navigateToAddBonosScreen(
-                                          Bono(color: "0", isActive: true, sessions: 0, opacity: 1, imageUrl: '', isDegradate: false,),
-                                          currentBrand,
-                                          false
-                                        );
-                                        await Future.delayed(const Duration(seconds: 1));
-                                        widget.navigateToPage(5);
+                                          if(currentBrand.isActive != null && currentBrand.isActive!) {
+                                            navigateToAddBonosScreen(
+                                                Bono(color: "0",
+                                                  isActive: true,
+                                                  sessions: 0,
+                                                  opacity: 1,
+                                                  imageUrl: '',
+                                                  isDegradate: false,),
+                                                currentBrand,
+                                                false
+                                            );
+                                            await Future.delayed(const Duration(seconds: 1));
+                                            widget.navigateToPage(5);
+                                          }
                                       },
                                       child: Text(
                                         AppLocalizations.of(context)!.createFistBono,

@@ -141,8 +141,10 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            mixpanel!.track('brand_homepage_calendar_title');
-                            widget.navigateToPage(10, DateTime.now(), CalendarView.day);
+                            if(currentBrand.isActive != null && currentBrand.isActive!) {
+                              mixpanel!.track('brand_homepage_calendar_title');
+                              widget.navigateToPage(10, DateTime.now(), CalendarView.day);
+                            }
                           },
                           child: Row(
                             children: [
@@ -229,8 +231,10 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                                 });
                               },
                               onTap: (CalendarTapDetails details) {
-                                mixpanel!.track('brand_homepage_calendar_date');
-                                widget.navigateToPage(10, details.date, CalendarView.month);
+                                if(currentBrand.isActive != null && currentBrand.isActive!) {
+                                  mixpanel!.track('brand_homepage_calendar_date');
+                                  widget.navigateToPage(10, details.date, CalendarView.month);
+                                }
                               },
                             );
                           }

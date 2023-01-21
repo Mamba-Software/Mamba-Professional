@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 
 // Tus Datos Widget.
@@ -305,6 +306,50 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               ),
             ],
           ),
+          currentUser.brandRole < 2? SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                GestureDetector(
+                  onTap: navigateToSubscriptionsScreen,
+                  child: Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                    height: MediaQuery.of(context).size.height*0.1,
+                    width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.group_add_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: MediaQuery.of(context).size.width*0.10,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                        Flexible(
+                          child: Text(
+                            AppLocalizations.of(context)!.myRequestsDesc,
+                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              ],
+            ),
+          ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
           SliverToBoxAdapter(
             child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
@@ -911,6 +956,21 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         bookingWindow = pickedMembers;
       });
     }
+  }
+
+  Future<void> navigateToSubscriptionsScreen() async {
+    //mixpanel!.track('brand_membership_requests_view');
+    await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) => PayWall(
+            brandId: widget.brandId,
+          ),
+        )
+    );
+    setState(() {
+      isLoading = false;
+    });
   }
 
   bool validateInfo() {

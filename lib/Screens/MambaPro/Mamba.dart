@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -15,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ho
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
 import 'package:notification_permissions/notification_permissions.dart';
@@ -45,6 +47,7 @@ class _MambaState extends State<Mamba> {
   // Boolean Loading
   bool isLoading = false;
   bool hasBrand = false;
+  bool isActive = false;
   // Boolean hasSeenStartUpDialog
   bool hasSeenStartUpDialog = false;
   // Notifications
@@ -249,11 +252,12 @@ class _MambaState extends State<Mamba> {
 
   @override
   Widget build(BuildContext context) {
-
     return isLoading ? Scaffold(
       body: LoadingView(),
     ) :
-      hasBrand ? const BrandScreen() : const NoBrandScreen();
+      hasBrand ? currentBrand.isActive == null || !currentBrand.isActive!? currentUser.brandRole < 2? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
   }
+
+
 }
 

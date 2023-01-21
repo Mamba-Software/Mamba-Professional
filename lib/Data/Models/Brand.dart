@@ -23,6 +23,7 @@ class Brand {
   int? bookingWindow;
   String? initDatePay;
   String? endDatePay;
+  bool? isActive;
 
   List<String> promotions = [];
   List<ImageObject> imagesList = [];
@@ -44,6 +45,7 @@ class Brand {
     this.workShift,
     this.maxMembers,
     this.bookingWindow,
+    this.isActive,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +88,9 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bookingWindow')) {
       bookingWindow = documentSnapshot.get("bookingWindow");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
+      isActive = documentSnapshot.get("isActive");
+    }
   }
 
   Brand.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -117,6 +122,7 @@ class Brand {
     workShift = brand.workShift;
     maxMembers = brand.maxMembers;
     bookingWindow = brand.bookingWindow;
+    isActive = brand.isActive;
   }
 
   // Requests

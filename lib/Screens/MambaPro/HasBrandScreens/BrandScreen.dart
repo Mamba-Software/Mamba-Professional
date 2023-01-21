@@ -20,6 +20,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
@@ -123,34 +124,40 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Navigate to Notifications Screen
   void navigateToNotificationsScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => const Notifications(),
-          settings: const RouteSettings(name: 'Notifications'),
-        )
-    ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
-      setState(() {
-        unreadNotifications = temp;
+    if(currentBrand.isActive != null && currentBrand.isActive!) {
+      Navigator.push(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => const Notifications(),
+            settings: const RouteSettings(name: 'Notifications'),
+          )
+      ).whenComplete(() async {
+        var temp = await _userDataService.getUnreadNotifications(
+            currentUser.id!);
+        setState(() {
+          unreadNotifications = temp;
+        });
       });
-    });
+    }
   }
 
   // Navigate to Notifications Screen
   void navigateToChatScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => const ChatCore(),
-          settings: const RouteSettings(name: 'ChatCore'),
-        )
-    ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
-      setState(() {
-        unreadChats = temp;
+    if(currentBrand.isActive != null && currentBrand.isActive!) {
+      Navigator.push(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => const ChatCore(),
+            settings: const RouteSettings(name: 'ChatCore'),
+          )
+      ).whenComplete(() async {
+        var temp = await _userDataService.getUnreadConversations(
+            currentUser.id!);
+        setState(() {
+          unreadChats = temp;
+        });
       });
-    });
+    }
   }
 
   // Navigate to Notifications Screen
@@ -264,10 +271,13 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
           onTap: () =>  {
             Navigator.pop(context),
-            setState(() {
-              pageIndex = _pageIndex;
-              setFavourites();
-            }),
+            if((currentBrand.isActive != null && currentBrand.isActive!) || _pageIndex == 8)
+              {
+                setState(() {
+                  pageIndex = _pageIndex;
+                  setFavourites();
+                }),
+              }
           }
       );
     }
@@ -915,6 +925,24 @@ class _BrandScreenState extends State<BrandScreen> {
       body: isLoading ? LoadingView() : buildBodyNavigation() ,
 
     );
+  }
+
+  Future<void> navigateToSubscriptionsScreen() async {
+
+    //mixpanel!.track('brand_membership_requests_view');
+    var result = await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) => PayWall(
+            brandId: currentBrand.id!,
+          ),
+        )
+    );
+    if (result == null || result == true) {
+      setState(() {
+        isLoading = true;
+      });
+    }
   }
 }
 

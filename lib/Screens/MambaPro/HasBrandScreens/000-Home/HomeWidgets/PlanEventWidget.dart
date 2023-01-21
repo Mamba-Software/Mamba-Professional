@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
@@ -28,43 +29,51 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
   }
 
   void _addEvent() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<String>(
-          builder: (context) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
-            child: AddOrEditEvent(
-              locale: Localizations.localeOf(context),
-            ),
-          ),
-        )
-    );
+    if(currentBrand.isActive != null && currentBrand.isActive!) {
+      Navigator.push(
+          context,
+          CupertinoPageRoute<String>(
+            builder: (context) =>
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus &&
+                        currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                  },
+                  child: AddOrEditEvent(
+                    locale: Localizations.localeOf(context),
+                  ),
+                ),
+          )
+      );
+    }
   }
 
   void _addPrivateEvent() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<String>(
-          builder: (context) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
-            child: AddOrEditPrivateEvent(
-              locale: Localizations.localeOf(context),
-            ),
-          ),
-        )
-    );
+    if(currentBrand.isActive != null && currentBrand.isActive!) {
+      Navigator.push(
+          context,
+          CupertinoPageRoute<String>(
+            builder: (context) =>
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus &&
+                        currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                  },
+                  child: AddOrEditPrivateEvent(
+                    locale: Localizations.localeOf(context),
+                  ),
+                ),
+          )
+      );
+    }
   }
 
 

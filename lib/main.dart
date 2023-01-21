@@ -158,57 +158,72 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                 home: const SplashScreen(),
                 onGenerateRoute: (RouteSettings settings) {
                   final args = settings.arguments;
-                  switch (settings.name) {
-                    case 'SplashScreen':
+                  //TODO PROVAR
+                  if(currentBrand.isActive == null || !currentBrand.isActive!)
+                    {
                       return CupertinoPageRoute(
+                        builder: (_) => const SplashScreen(),
+                        settings: const RouteSettings(name: 'SplashScreen'),
+                      );
+                    }
+                  else {
+                    switch (settings.name) {
+                      case 'SplashScreen':
+                        return CupertinoPageRoute(
                           builder: (_) => const SplashScreen(),
                           settings: const RouteSettings(name: 'SplashScreen'),
-                      );
-                    case 'Notifications':
-                      return CupertinoPageRoute(
+                        );
+                      case 'Notifications':
+                        return CupertinoPageRoute(
                           builder: (_) => const Notifications(),
                           settings: const RouteSettings(name: 'Notifications'),
-                      );
-                    case 'Chat':
-                      return CupertinoPageRoute(
+                        );
+                      case 'Chat':
+                        return CupertinoPageRoute(
                           builder: (_) => const ChatCore(),
                           settings: const RouteSettings(name: 'ChatCore'),
-                      );
-                    case 'EventPage':
-                      String eventId = args as String;
-                      return CupertinoPageRoute(
-                          builder: (_) => EventPage(
-                            eventId: eventId,
-                          ),
+                        );
+                      case 'EventPage':
+                        String eventId = args as String;
+                        return CupertinoPageRoute(
+                          builder: (_) =>
+                              EventPage(
+                                eventId: eventId,
+                              ),
                           settings: const RouteSettings(name: 'EventPage'),
-                      );
-                    case 'EventFeedbackPage':
-                      String eventId = args as String;
-                      return CupertinoPageRoute(
-                          builder: (_) => EventFeedback(
-                            eventId: eventId,
-                          ),
+                        );
+                      case 'EventFeedbackPage':
+                        String eventId = args as String;
+                        return CupertinoPageRoute(
+                          builder: (_) =>
+                              EventFeedback(
+                                eventId: eventId,
+                              ),
                           settings: const RouteSettings(name: 'EventFeedback'),
-                      );
-                    case 'BonosRequests':
-                      String brandId = args as String;
-                      setState(() {
-                        pageIndex = 5;
-                      });
-                      return CupertinoPageRoute(
-                        builder: (_) => BonosRequests(
-                          brandId: brandId,
-                        ),
-                        settings: const RouteSettings(name: 'BonosRequests'),
-                      );
-                    case 'MembershipRequests':
-                      String brandId = args as String;
-                      return CupertinoPageRoute(
-                        builder: (_) => MembershipRequestsPro(
-                          brandId: brandId,
-                        ),
-                        settings: const RouteSettings(name: 'MembershipRequests'),
-                      );
+                        );
+                      case 'BonosRequests':
+                        String brandId = args as String;
+                        setState(() {
+                          pageIndex = 5;
+                        });
+                        return CupertinoPageRoute(
+                          builder: (_) =>
+                              BonosRequests(
+                                brandId: brandId,
+                              ),
+                          settings: const RouteSettings(name: 'BonosRequests'),
+                        );
+                      case 'MembershipRequests':
+                        String brandId = args as String;
+                        return CupertinoPageRoute(
+                          builder: (_) =>
+                              MembershipRequestsPro(
+                                brandId: brandId,
+                              ),
+                          settings: const RouteSettings(
+                              name: 'MembershipRequests'),
+                        );
+                    }
                   }
                 },
               );
