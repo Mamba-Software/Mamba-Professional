@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
@@ -32,8 +34,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   // DataBase Access
   final _brandDataService = BrandDataService();
+  final _promotionDataService = PromotionsDataService();
   // Boolean isLoading
-  bool isLoading = false;
+  bool isLoading = true;
   bool isUpdated = false;
   // Form To Validate
   final formKeyInfo = GlobalKey<FormState>();
@@ -72,6 +75,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   List<int> startBreaks = [];
   // Booking Window
   int bookingWindow = 3;
+  Subscription subscription = Subscription();
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -93,6 +97,16 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     );
     canEdit = currentUser.brandRole < 2 ? true : false;
     initBrand();
+    getBrandSubscription();
+  }
+
+  Future<void> getBrandSubscription() async
+  {
+    subscription = await _brandDataService.getBrandSubscription(currentBrand.id!);
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   // Gets the user info from firebase.
@@ -327,14 +341,14 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Icon(
-                          Icons.group_add_outlined,
+                          Icons.card_membership,
                           color: Theme.of(context).colorScheme.secondary,
                           size: MediaQuery.of(context).size.width*0.10,
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
                         Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.myRequestsDesc,
+                          child:  Text(
+                    subscription.id == null?'No tienes ninguna subscripción a un plan, pincha aquí para escoger uno' : 'Tienes la subscripcion ' + subscription.title!,
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
                             textAlign: TextAlign.center,
                           ),

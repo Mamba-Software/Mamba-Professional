@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
@@ -53,9 +54,11 @@ class _PayWallState extends State<PayWall> {
   bool seePromotions = true;
   bool loadingPromotions = false;
   var promotionController = TextEditingController();
-  Promotion promotion = Promotion();
+  Subscription subscritionPromo = Subscription();
   List<Subscription> subscriptionList = [];
   double finalSizeBox = 0.01;
+  final _topSnackBar = TopSnackBarDef();
+
 
   // Boolean Loading
   bool isLoading = false;
@@ -65,26 +68,18 @@ class _PayWallState extends State<PayWall> {
   @override
   initState() {
     super.initState();
-    _scrollController = ScrollController()
-      ..addListener(() => _isAppBarExpanded ?
-      setState(() {
-        appBarExpanded = true;
-      }) :
-      setState(() {
-        appBarExpanded = false;
-      }),
-      );
+    _scrollController = ScrollController();
   }
 
   Future<void> getSubscriptions()
   async {
-    if(promotion.id == null)
+    if(subscritionPromo.id == null)
       {
         subscriptionList = await _promotionDataService.getSubscriptions("");
       }
     else
       {
-        subscriptionList = await _promotionDataService.getSubscriptions(promotion.id);
+        subscriptionList = await _promotionDataService.getSubscriptions(subscritionPromo.id);
       }
     finalSizeBox = subscriptionList.length * 0.07;
     setState(() {
@@ -96,10 +91,10 @@ class _PayWallState extends State<PayWall> {
 
   Future<void> getPromotion([bool fromSeeSubsc = false]) async
   {
-    promotion =
+    subscritionPromo =
     await _promotionDataService
-        .getValidPromotion(
-        promotionController.text);
+        .getValidSubscription(
+        promotionController.text, widget.brandId);
     if(fromSeeSubsc)
     {
       setState(() {
@@ -178,7 +173,7 @@ class _PayWallState extends State<PayWall> {
                 SizedBox(
                     height: MediaQuery.of(context).size.height *
                         0.02),
-                Divider(color: Theme.of(context).dialogBackgroundColor, thickness: 1.5),
+                Divider(color: Theme.of(context).dividerColor, thickness: 1.5),
                 buildContactUsContainer(),
 
               ],
@@ -205,9 +200,12 @@ class _PayWallState extends State<PayWall> {
                       FocusManager.instance.primaryFocus?.unfocus();
                       setState(() {
                         loadingPromotions = true;
-                        promotionController.text = '3MONTHS';
                       });
-                      await getPromotion();
+                      if( !await _promotionDataService.checkIfBrandUsedSubscription('3MONTHS', widget.brandId))
+                        {
+                          promotionController.text = '3MONTHS';
+                          await getPromotion();
+                        }
                       await getSubscriptions();
                     },
                     child: Center(
@@ -425,7 +423,7 @@ class _PayWallState extends State<PayWall> {
             SizedBox(
                 height: MediaQuery.of(context).size.height *
                     0.01),
-            Divider(color: Theme.of(context).dialogBackgroundColor, thickness: 1.5),
+            Divider(color: Theme.of(context).dividerColor, thickness: 1.5),
           ],
         ),
       ),
@@ -439,134 +437,204 @@ class _PayWallState extends State<PayWall> {
         return GestureDetector(
             onTap: () async {
               FocusManager.instance.primaryFocus?.unfocus();
-              //_topSnackBar.topsnackbar(context, 'Te regalamos la promoción 3MONTHS, disfruta de 3 meses gratuitos', AppColors.mainColor);
-              setState(() {
-                promotionController.text = '3MONTHS';
-              });
-              await showModalBottomSheet<int?>(
-                context: context,
-                isScrollControlled: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20),
+              //
+              if( !await _promotionDataService.checkIfBrandUsedSubscription('3MONTHS', widget.brandId)) {
+                setState(() {
+                  promotionController.text = '3MONTHS';
+                });
+
+
+                await showModalBottomSheet<int?>(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
                   ),
-                ),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                builder: (BuildContext context) {
-                  // Page View Controller
-                  final PageController _pageController = PageController(initialPage: 0);
-                  int _currentPage = 0;
-                  bool isRoles = true;
-                  // Widget
-                  return StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setStateBottom) {
-                      return FractionallySizedBox(
-                        heightFactor: 0.40,
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                            child: Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                  title: Text(
-                                      'Mamba pro',
-                                      style: Theme.of(context).textTheme.caption,
-                                      textAlign: TextAlign.left
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  builder: (BuildContext context) {
+                    // Page View Controller
+                    final PageController _pageController = PageController(
+                        initialPage: 0);
+                    int _currentPage = 0;
+                    bool isRoles = true;
+                    // Widget
+                    return StatefulBuilder(
+                      builder: (BuildContext context,
+                          StateSetter setStateBottom) {
+                        return FractionallySizedBox(
+                          heightFactor: 0.40,
+                          child: SizedBox(
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.5,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            child: Padding(
+                              padding: EdgeInsets.all(MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.02),
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                        'Mamba pro',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .caption,
+                                        textAlign: TextAlign.left
+                                    ),
+                                    trailing: Text(
+                                        'Subscripciones',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .caption
+                                    ),
+                                    dense: true,
                                   ),
-                                  trailing: Text(
-                                      'Subscripciones',
-                                      style: Theme.of(context).textTheme.caption
+                                  Divider(color: Theme
+                                      .of(context)
+                                      .dividerColor,
+                                      thickness: 1.5,
+                                      indent: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.05,
+                                      endIndent: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.05),
+                                  ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image(
+                                        image: NetworkImage(
+                                            'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
+                                      ),
+                                    ),
+                                    title: Text(
+                                        'Professional 3 Months Subscriptions',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                        textAlign: TextAlign.left
+                                    ),
+                                    subtitle: Text(
+                                        'Fitness is Business',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .caption
+                                    ),
+                                    dense: true,
                                   ),
-                                  dense: true,
-                                ),
-                                Divider(color: Theme.of(context).dialogBackgroundColor, thickness: 1.5, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-                                ListTile(
-                                  leading: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image(
-                                      image: NetworkImage(
-                                          'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
+                                  ListTile(
+                                    title: Row(
+                                      children: [
+                                        Text('Te regalamos promoción unica   '),
+                                        Icon(
+                                          Icons.done,
+                                          color: Colors.green,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  title: Text(
-                                      'Professional 3 Months Subscriptions',
-                                      style: Theme.of(context).textTheme.bodyText1,
-                                      textAlign: TextAlign.left
+                                  ListTile(
+                                    title: Text(
+                                        'Empieza: hoy',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                        textAlign: TextAlign.left
+                                    ),
+                                    trailing: Text(
+                                        '3 meses gratis',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyText1
+                                    ),
+                                    dense: true,
                                   ),
-                                  subtitle: Text(
-                                      'Fitness is Business',
-                                      style: Theme.of(context).textTheme.caption
-                                  ),
-                                  dense: true,
-                                ),
-                                ListTile(
-                                  title:  Row(
-                                    children: [
-                                      Text('Te regalamos promoción unica   '),
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                ListTile(
-                                  title: Text(
-                                      'Empieza: hoy',
-                                      style: Theme.of(context).textTheme.bodyText1,
-                                      textAlign: TextAlign.left
-                                  ),
-                                  trailing: Text(
-                                      '3 meses gratis',
-                                      style: Theme.of(context).textTheme.bodyText1
-                                  ),
-                                  dense: true,
-                                ),
-                                ListTile(
-                                    title: Center(
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          await _brandDataService.updateBrandPay(widget.brandId, promotion.time!, [promotion.id!]);
-                                          Navigator.pop(context);
-                                        },
-                                        child: Center(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColors.mainColor,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            width: MediaQuery.of(context).size.width * 0.90,
-                                            height: MediaQuery.of(context).size.height * 0.05,
-                                            child:  Center(
-                                                child: Text(
-                                                  'Suscribirme',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.copyWith(
-                                                      fontWeight: FontWeight.bold, color: AppColors.black
-                                                  ),
-                                                )
+                                  ListTile(
+                                      title: Center(
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            await _brandDataService
+                                                .updateBrandPay(widget.brandId,
+                                                subscritionPromo.duration!,
+                                                subscritionPromo.id!, subscritionPromo.title!);
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              CupertinoPageRoute<void>(
+                                                builder: (
+                                                    context) => const BrandScreen(),
+                                                settings: const RouteSettings(
+                                                    name: 'BrandScreen'),
+                                              ),
+                                                  (_) => false,
+                                            );
+                                          },
+                                          child: Center(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: AppColors.mainColor,
+                                                borderRadius: BorderRadius
+                                                    .circular(10),
+                                              ),
+                                              width: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width * 0.90,
+                                              height: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height * 0.05,
+                                              child: Center(
+                                                  child: Text(
+                                                    'Suscribirme',
+                                                    style: Theme
+                                                        .of(context)
+                                                        .textTheme
+                                                        .bodyText1
+                                                        ?.copyWith(
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        color: AppColors.black
+                                                    ),
+                                                  )
 
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                ),
-                              ],
+                                      )
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    } ,
-                  );
-                },
-              );
+                        );
+                      },
+                    );
+                  },
+                );
+              }
+              else
+                {
+                  _topSnackBar.topsnackbar(context, 'Podrás subscribirte a este plan cuando tu subscripción esté cerca de su caducidad', AppColors.mainColor);
+                }
             },
             child: Center(
               child: Container(
@@ -603,133 +671,201 @@ class _PayWallState extends State<PayWall> {
             onTap: () async {
               FocusManager.instance.primaryFocus?.unfocus();
               //_topSnackBar.topsnackbar(context, 'Te regalamos la promoción 3MONTHS, disfruta de 3 meses gratuitos', AppColors.mainColor);
-              setState(() {
-                promotionController.text = '3MONTHS';
-              });
-              await showModalBottomSheet<int?>(
-                context: context,
-                isScrollControlled: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20),
+              if( !await _promotionDataService.checkIfBrandUsedSubscription('3MONTHS', widget.brandId)) {
+                setState(() {
+                  promotionController.text = '3MONTHS';
+                });
+                await showModalBottomSheet<int?>(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
                   ),
-                ),
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                builder: (BuildContext context) {
-                  // Page View Controller
-                  final PageController _pageController = PageController(initialPage: 0);
-                  int _currentPage = 0;
-                  bool isRoles = true;
-                  // Widget
-                  return StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setStateBottom) {
-                      return FractionallySizedBox(
-                        heightFactor: 0.40,
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                            child: Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                  title: Text(
-                                      'Mamba pro',
-                                      style: Theme.of(context).textTheme.caption,
-                                      textAlign: TextAlign.left
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  builder: (BuildContext context) {
+                    // Page View Controller
+                    final PageController _pageController = PageController(
+                        initialPage: 0);
+                    int _currentPage = 0;
+                    bool isRoles = true;
+                    // Widget
+                    return StatefulBuilder(
+                      builder: (BuildContext context,
+                          StateSetter setStateBottom) {
+                        return FractionallySizedBox(
+                          heightFactor: 0.40,
+                          child: SizedBox(
+                            height: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.5,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width,
+                            child: Padding(
+                              padding: EdgeInsets.all(MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.02),
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                        'Mamba pro',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .caption,
+                                        textAlign: TextAlign.left
+                                    ),
+                                    trailing: Text(
+                                        'Subscripciones',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .caption
+                                    ),
+                                    dense: true,
                                   ),
-                                  trailing: Text(
-                                      'Subscripciones',
-                                      style: Theme.of(context).textTheme.caption
+                                  Divider(color: Theme
+                                      .of(context)
+                                      .dividerColor,
+                                      thickness: 1.5,
+                                      indent: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.05,
+                                      endIndent: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.05),
+                                  ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image(
+                                        image: NetworkImage(
+                                            'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
+                                      ),
+                                    ),
+                                    title: Text(
+                                        'Professional 3 Months Subscriptions',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                        textAlign: TextAlign.left
+                                    ),
+                                    subtitle: Text(
+                                        'Fitness is Business',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .caption
+                                    ),
+                                    dense: true,
                                   ),
-                                  dense: true,
-                                ),
-                                Divider(color: Theme.of(context).dialogBackgroundColor, thickness: 1.5, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-                                ListTile(
-                                  leading: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image(
-                                      image: NetworkImage(
-                                          'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
+                                  ListTile(
+                                    title: Row(
+                                      children: [
+                                        Text('Te regalamos promoción unica   '),
+                                        Icon(
+                                          Icons.done,
+                                          color: Colors.green,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  title: Text(
-                                      'Professional 3 Months Subscriptions',
-                                      style: Theme.of(context).textTheme.bodyText1,
-                                      textAlign: TextAlign.left
+                                  ListTile(
+                                    title: Text(
+                                        'Empieza: hoy',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyText1,
+                                        textAlign: TextAlign.left
+                                    ),
+                                    trailing: Text(
+                                        '3 meses gratis',
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .bodyText1
+                                    ),
+                                    dense: true,
                                   ),
-                                  subtitle: Text(
-                                      'Fitness is Business',
-                                      style: Theme.of(context).textTheme.caption
-                                  ),
-                                  dense: true,
-                                ),
-                                ListTile(
-                                  title:  Row(
-                                    children: [
-                                      Text('Te regalamos promoción unica   '),
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.green,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                ListTile(
-                                  title: Text(
-                                      'Empieza: hoy',
-                                      style: Theme.of(context).textTheme.bodyText1,
-                                      textAlign: TextAlign.left
-                                  ),
-                                  trailing: Text(
-                                      '3 meses gratis',
-                                      style: Theme.of(context).textTheme.bodyText1
-                                  ),
-                                  dense: true,
-                                ),
-                                ListTile(
-                                    title: Center(
-                                      child: GestureDetector(
-                                        onTap: () async {
-                                          await _brandDataService.updateBrandPay(widget.brandId, promotion.time!, [promotion.id!]);
-                                          Navigator.pop(context);
-                                        },
-                                        child: Center(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: AppColors.mainColor,
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            width: MediaQuery.of(context).size.width * 0.90,
-                                            height: MediaQuery.of(context).size.height * 0.05,
-                                            child:  Center(
-                                                child: Text(
-                                                  'Suscribirme',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.copyWith(
-                                                      fontWeight: FontWeight.bold, color: AppColors.black
-                                                  ),
-                                                )
+                                  ListTile(
+                                      title: Center(
+                                        child: GestureDetector(
+                                          onTap: () async {
+                                            await _brandDataService
+                                                .updateBrandPay(widget.brandId,
+                                                subscritionPromo.duration!,
+                                                subscritionPromo.id!, subscritionPromo.title!);
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              CupertinoPageRoute<void>(
+                                                builder: (
+                                                    context) => const BrandScreen(),
+                                                settings: const RouteSettings(
+                                                    name: 'BrandScreen'),
+                                              ),
+                                                  (_) => false,
+                                            );
+                                          },
+                                          child: Center(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: AppColors.mainColor,
+                                                borderRadius: BorderRadius
+                                                    .circular(10),
+                                              ),
+                                              width: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width * 0.90,
+                                              height: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height * 0.05,
+                                              child: Center(
+                                                  child: Text(
+                                                    'Suscribirme',
+                                                    style: Theme
+                                                        .of(context)
+                                                        .textTheme
+                                                        .bodyText1
+                                                        ?.copyWith(
+                                                        fontWeight: FontWeight
+                                                            .bold,
+                                                        color: AppColors.black
+                                                    ),
+                                                  )
 
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                ),
-                              ],
+                                      )
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    } ,
-                  );
-                },
-              );
+                        );
+                      },
+                    );
+                  },
+                );
+              }
+              else
+              {
+                _topSnackBar.topsnackbar(context, 'Podrás subscribirte a este plan cuando tu subscripción esté cerca de su caducidad', AppColors.mainColor);
+              }
             },
             child: Center(
               child: Container(
@@ -832,7 +968,7 @@ class _PayWallState extends State<PayWall> {
                     vertical:
                     MediaQuery.of(context).size.width *
                         0.03),
-                child: promotion.id == null? Row(
+                child: subscritionPromo.id == null? Row(
                   children: [
                     Text('No hay promociones'),
                     Icon(
@@ -878,7 +1014,7 @@ class _PayWallState extends State<PayWall> {
                           await getPromotion(true);
                         }
                         else {
-                          promotion = Promotion();
+                          subscritionPromo = Subscription();
                           finalSizeBox = 0.05;
                           setState(() {
                             seePromotions = true;

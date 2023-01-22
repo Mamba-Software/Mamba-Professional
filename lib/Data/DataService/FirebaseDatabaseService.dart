@@ -3221,7 +3221,64 @@ class FirebaseDatabaseService {
           querySnapshot.docs[0], querySnapshot.docs[0].id);
     }
 
-    //Promotions
+    //Subscriptions
+
+  // Get Valid Subscription
+  Future<Subscription> getValidSubscription(String subscriptionId, String brandId) async {
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    Subscription subscription = Subscription();
+    DateTime now = DateTime.now();
+    Timestamp tmstp = Timestamp.fromDate(now);
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore.collection(subscriptions).doc(subscriptionId).get();
+      subscription = Subscription.fromObjectAllData(
+          _documentSnapshot.id, _documentSnapshot);
+      if (subscription.isActive! &&
+          subscription.startDate!.compareTo(tmstp.toString()) < 0 &&
+          tmstp.toString().compareTo(subscription.endDate!) < 0 && subscription.promotion == subscriptionId) {
+        try {
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+          await _firestore.collection(subscriptions).doc(subscriptionId)
+              .collection('Brands').doc(brandId).get();
+          if (!_documentSnapshot2.exists) {
+            return subscription;
+          }
+          else {
+            return Subscription();
+          }
+        }
+        catch (e){
+          print(e);
+          return Subscription();
+        }
+      }
+      else {
+        return Subscription();
+      }
+    } catch (e) {
+      print(e);
+      return Subscription();
+    }
+  }
+
+  // Check if brand used subscription
+  Future<bool> checkIfBrandUsedSubscription(String subscriptionId, String brandId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+      await _firestore.collection(subscriptions).doc(subscriptionId)
+          .collection('Brands').doc(brandId).get();
+      if (!_documentSnapshot2.exists) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+    catch (e){
+      return true;
+    }
+  }
 
   // Get Valid Promotion
   Future<Promotion> getValidPromotion(String id) async {

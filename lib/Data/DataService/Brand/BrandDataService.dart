@@ -4,6 +4,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'dart:io';
 import '../../Models/Bono.dart';
@@ -38,6 +39,7 @@ class BrandDataService {
   Future<List<Usuario>> getBrandUsersStats(String brandId) => _firebase.getBrandUsersStats(brandId);
   Future<List<Purchase>> getBrandPurchases(String brandId) => _firebase.getBrandPurchases(brandId);
   Future<List<Bono>> getAllBonosFromBrandStats(String brandId) => _firebase.getAllBonosFromBrandStats(brandId);
+  Future<Subscription> getBrandSubscription(String brandId) => _firebase.getBrandSubscription(brandId);
 
   // Add Data
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers, int bookingWindow) => _firebase.addBrand(name, image, description, workShift, maxMembers, bookingWindow);
@@ -56,7 +58,7 @@ class BrandDataService {
   Future<void> updateBonoCompras(String brandID, String bonoId) => _firebase.updateBonoCompras(brandID, bonoId);
   Future<void> updateBonoActive(String brandID, String bonoId, bool isActive) => _firebase.updateBonoActive(brandID, bonoId, isActive);
   Future<void> updateUserBrandRole(String userId, String brandId, int role) => _firebase.updateUserBrandRole(userId, brandId, role);
-  Future<void> updateBrandPay(String brandID, int time, List<String> promotions) => _firebase.updateBrandPay(brandID, time, promotions);
+  Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title) => _firebase.updateBrandPay(brandID, time, subscriptionId, title);
 
   // Delete Data
   Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
