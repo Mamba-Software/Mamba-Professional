@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Data/Models/Promotion.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -51,6 +52,7 @@ class FirebaseDatabaseService {
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
   String promotions = isProduction ? 'Promotions' : '7777 Promotions';
+  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -3233,9 +3235,9 @@ class FirebaseDatabaseService {
       promotion = Promotion.fromObjectAllData(
           _documentSnapshot.id, _documentSnapshot);
       if(promotion.isActive! && promotion.startDate!.compareTo(tmstp.toString()) < 0 && tmstp.toString().compareTo(promotion.endDate!) < 0)
-        {
-          return promotion;
-        }
+      {
+        return promotion;
+      }
       else {
         return Promotion();
       }
@@ -3243,6 +3245,40 @@ class FirebaseDatabaseService {
       print(e);
       return Promotion();
     }
+  }
+  // Get Valid Promotion
+  Future<List<Subscription>> getSubscriptions(String? promotion) async {
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    DateTime now = DateTime.now();
+    Timestamp tmstp = Timestamp.fromDate(now);
+    List<Subscription> subscriptionsList = [];
+    Subscription subscriptionTemp = Subscription();
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection(subscriptions).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        subscriptionTemp = Subscription.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        if(subscriptionTemp.isActive! && subscriptionTemp.startDate!.compareTo(tmstp.toString()) < 0 && tmstp.toString().compareTo(subscriptionTemp.endDate!) < 0)
+          {
+            if(subscriptionTemp.promotion == "")
+              {
+                subscriptionsList.add(subscriptionTemp
+                );
+              }
+            else
+              {
+                if(subscriptionTemp.promotion == promotion)
+                  {
+                    subscriptionsList.add(subscriptionTemp
+                    );
+                  }
+              }
+          }
+      }
+    } catch (e) {
+      print(e);
+    }
+    return subscriptionsList;
   }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

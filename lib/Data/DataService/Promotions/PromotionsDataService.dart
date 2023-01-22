@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Data/Models/Deprecated/Message.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import '../../Models/Promotion.dart';
 import '../FirebaseDatabaseService.dart';
@@ -20,5 +21,6 @@ class PromotionsDataService {
 
   final _firebase = FirebaseDatabaseService();
 
+  Future<List<Subscription>> getSubscriptions(String? promotion) => _firebase.getSubscriptions(promotion);
   Future<Promotion> getValidPromotion(String promotionId) => _firebase.getValidPromotion(promotionId);
 }
