@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/Ho
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandCalendarMonthWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandRequestsWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandSessionStatsWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/CountDownSubscription.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/PlanEventWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
@@ -228,6 +229,10 @@ class _HomePro extends State<HomePro> {
                         }
                     },
                   ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  CountDownSubscription(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
