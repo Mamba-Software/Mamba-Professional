@@ -40,9 +40,6 @@ class _PayWallState extends State<PayWall> {
   // App Bar and Scroll View
   ScrollController _scrollController = ScrollController();
   bool appBarExpanded = false;
-  bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
-  }
 
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
@@ -864,7 +861,7 @@ class _PayWallState extends State<PayWall> {
               }
               else
               {
-                _topSnackBar.topsnackbar(context, 'Podrás subscribirte a este plan cuando tu subscripción esté cerca de su caducidad', AppColors.mainColor);
+                _topSnackBar.topsnackbar(context, 'Podrás subscribirte a estebo plan cuando tu subscripción esté cerca de su caducidad', AppColors.mainColor);
               }
             },
             child: Center(

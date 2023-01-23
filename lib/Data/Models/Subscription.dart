@@ -7,8 +7,8 @@ class Subscription {
   String? title;
   String? descriptionEsp;
   String? descriptionCat;
-  String? startDate;
-  String? endDate;
+  Timestamp? startDate;
+  Timestamp? endDate;
   bool? isActive;
   int? duration;
   String? promotion;
@@ -42,10 +42,10 @@ class Subscription {
       duration = documentSnapshot.get("duration");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('startDate')) {
-      startDate = documentSnapshot.get("startDate").toString();
+      startDate = documentSnapshot.get("startDate");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('endDate')) {
-      endDate = documentSnapshot.get("endDate").toString();
+      endDate = documentSnapshot.get("endDate");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
       isActive = documentSnapshot.get("isActive");

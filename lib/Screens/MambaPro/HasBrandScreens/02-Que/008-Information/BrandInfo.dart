@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 
@@ -974,17 +975,36 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   Future<void> navigateToSubscriptionsScreen() async {
     //mixpanel!.track('brand_membership_requests_view');
-    await Navigator.push(
-        context,
-        CupertinoPageRoute<bool?>(
-          builder: (context) => PayWall(
-            brandId: widget.brandId,
-          ),
-        )
-    );
-    setState(() {
-      isLoading = false;
-    });
+    if(currentBrand.isActive != null && currentBrand.isActive!) {
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<bool?>(
+            builder: (context) =>
+                ActiveSubscription(
+                  brandId: widget.brandId,
+                  subscription: subscription,
+                ),
+          )
+      );
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else {
+
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<bool?>(
+            builder: (context) =>
+                PayWall(
+                  brandId: widget.brandId,
+                ),
+          )
+      );
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   bool validateInfo() {

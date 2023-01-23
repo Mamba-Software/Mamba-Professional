@@ -3235,8 +3235,8 @@ class FirebaseDatabaseService {
       subscription = Subscription.fromObjectAllData(
           _documentSnapshot.id, _documentSnapshot);
       if (subscription.isActive! &&
-          subscription.startDate!.compareTo(tmstp.toString()) < 0 &&
-          tmstp.toString().compareTo(subscription.endDate!) < 0 && subscription.promotion == subscriptionId) {
+          subscription.startDate!.compareTo(tmstp) < 0 &&
+          tmstp.compareTo(subscription.endDate!) < 0 && subscription.promotion == subscriptionId) {
         try {
           DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
           await _firestore.collection(subscriptions).doc(subscriptionId)
@@ -3315,7 +3315,7 @@ class FirebaseDatabaseService {
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         subscriptionTemp = Subscription.fromObjectAllData(
             querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        if(subscriptionTemp.isActive! && subscriptionTemp.startDate!.compareTo(tmstp.toString()) < 0 && tmstp.toString().compareTo(subscriptionTemp.endDate!) < 0)
+        if(subscriptionTemp.isActive! && subscriptionTemp.startDate!.compareTo(tmstp) < 0 && tmstp.compareTo(subscriptionTemp.endDate!) < 0)
           {
             if(subscriptionTemp.promotion == "")
               {

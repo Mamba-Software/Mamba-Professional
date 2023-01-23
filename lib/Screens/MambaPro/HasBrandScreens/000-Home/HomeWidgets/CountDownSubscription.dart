@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -21,6 +22,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandEventCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 
 class CountDownSubscription extends StatefulWidget {
@@ -37,6 +39,15 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
   Subscription subscription = Subscription();
   bool isLoading = true;
   String month1 = "", month2 = "", day1 = "", day2 = "";
+  DateTime endDate = DateTime.now();
+  DateTime today = DateTime.now();
+  DateFormat formatter = DateFormat.yMd();
+  int monthFinal = 0;
+  int dayFinal = 0;
+  String monthFinalS0 = '0';
+  String monthFinalS1 = '0';
+  String dayFinalS0 = '0';
+  String dayFinalS1 = '0';
 
   @override
   void initState() {
@@ -46,13 +57,64 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
 
   Future<void> getBrandSubscription() async
   {
+    int aux = 0;
     subscription = await _brandDataService.getBrandSubscription(currentBrand.id!);
-    print(subscription.startDate);
+    print(subscription.endDate);
+    //LocalDate a = LocalDate.today();
+    endDate = subscription.endDate!.toDate();
+    int difference = endDate.difference(today).inDays;
+    aux = difference - getDaysInMonth(today.year, today.month);
+    calculateMonthDay(difference, today.year, today.month, 0);
+    print(monthFinal);
+    print(dayFinal);
+    if(monthFinal.toString().length == 2)
+      {
+         monthFinalS0 = monthFinal.toString()[0];
+         monthFinalS1 = monthFinal.toString()[1];
+      }
+    else
+      {
+        monthFinalS1 = monthFinal.toString();
+      }
+
+    if(dayFinal.toString().length == 2)
+    {
+      dayFinalS0 = dayFinal.toString()[0];
+      dayFinalS1 = dayFinal.toString()[1];
+    }
+    else
+    {
+      dayFinalS1 = dayFinal.toString();
+    }
+
    // var date = DateTime.fromMillisecondsSinceEpoch((subscription.startDate!) * 1000);
    // var date = new DateTime.fromMicrosecondsSinceEpoch(subscription.startDate!);
     setState(() {
       isLoading = false;
     });
+  }
+  static int getDaysInMonth(int year, int month) {
+    if (month == DateTime.february) {
+      final bool isLeapYear = (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
+      return isLeapYear ? 29 : 28;
+    }
+    const List<int> daysInMonth = <int>[31, -1, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    return daysInMonth[month - 1];
+  }
+
+  void calculateMonthDay(int difference, int year, int month, monthTo)
+  {
+    int aux = 0;
+    aux = difference - getDaysInMonth(year, month);
+    if(aux <= 0)
+    {
+      monthFinal = monthTo;
+      dayFinal = difference;
+    }
+    else
+      {
+        calculateMonthDay(aux, year , month + 1, monthTo + 1);
+      }
   }
 
   @override
@@ -94,7 +156,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                     'Tu subscripción caduca en:'
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05),
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -115,10 +177,10 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 height: MediaQuery
                                     .of(context)
                                     .size
-                                    .height * 0.10,
+                                    .height * 0.05,
                                 child: Center(
                                     child: Text(
-                                      '2',
+                                      monthFinalS0,
                                       style: Theme
                                           .of(context)
                                           .textTheme
@@ -148,10 +210,10 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 height: MediaQuery
                                     .of(context)
                                     .size
-                                    .height * 0.10,
+                                    .height * 0.05,
                                 child: Center(
                                     child: Text(
-                                      '2',
+                                      monthFinalS1,
                                       style: Theme
                                           .of(context)
                                           .textTheme
@@ -165,25 +227,27 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
 
                                 ),
                               ),
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
+                                  child: Text(
+                                    ':',
+                                    style: Theme
+                                        .of(context)
+                                        .textTheme
+                                        .headline1
+                                        ?.copyWith(
+                                        fontWeight: FontWeight
+                                            .bold, fontSize: 30,
+                                        color: AppColors.black
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           Text('Meses'),
                         ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-                        child: Text(
-                          ':',
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .headline1
-                              ?.copyWith(
-                              fontWeight: FontWeight
-                                  .bold, fontSize: 30,
-                              color: AppColors.black
-                          ),
-                        ),
                       ),
                       Column(
                         children: [
@@ -202,10 +266,10 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 height: MediaQuery
                                     .of(context)
                                     .size
-                                    .height * 0.10,
+                                    .height * 0.05,
                                 child: Center(
                                     child: Text(
-                                      '2',
+                                      dayFinalS0,
                                       style: Theme
                                           .of(context)
                                           .textTheme
@@ -235,10 +299,10 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                                 height: MediaQuery
                                     .of(context)
                                     .size
-                                    .height * 0.10,
+                                    .height * 0.05,
                                 child: Center(
                                     child: Text(
-                                      '2',
+                                      dayFinalS1,
                                       style: Theme
                                           .of(context)
                                           .textTheme
@@ -261,10 +325,23 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: null,
+                  onTap: () async {
+                    await Navigator.push(
+                        context,
+                        CupertinoPageRoute<bool?>(
+                          builder: (context) =>
+                              PayWall(
+                                brandId: currentBrand.id!,
+                              ),
+                        )
+                    );
+                  },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: AppColors.mainColor,
+                      border: Border.all(
+                        color: AppColors.mainColor,
+                        width: 1,
+                      ),
                       borderRadius: BorderRadius
                           .circular(10),
                     ),
@@ -292,7 +369,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
 
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),
