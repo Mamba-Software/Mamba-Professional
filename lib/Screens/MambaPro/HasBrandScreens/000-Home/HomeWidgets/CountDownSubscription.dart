@@ -25,6 +25,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 
+import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
+
 class CountDownSubscription extends StatefulWidget {
 
   CountDownSubscription({Key? key}) : super(key: key);
@@ -63,7 +65,8 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
     //LocalDate a = LocalDate.today();
     endDate = subscription.endDate!.toDate();
     int difference = endDate.difference(today).inDays;
-    aux = difference - getDaysInMonth(today.year, today.month);
+    print('Printing difference');
+    print(difference);
     calculateMonthDay(difference, today.year, today.month, 0);
     print(monthFinal);
     print(dayFinal);
@@ -86,6 +89,11 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
     {
       dayFinalS1 = dayFinal.toString();
     }
+    print('day');
+
+    print(dayFinalS0);
+    print(dayFinalS1);
+    print('day');
 
    // var date = DateTime.fromMillisecondsSinceEpoch((subscription.startDate!) * 1000);
    // var date = new DateTime.fromMicrosecondsSinceEpoch(subscription.startDate!);
@@ -121,260 +129,281 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
   Widget build(BuildContext context) {
     return isLoading? Container() : FittedBox(
       fit: BoxFit.fitHeight,
-      child: Material(
-        elevation: 4,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-        ),
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.35,
-            maxWidth: MediaQuery.of(context).size.width*0.9,
-            minWidth: MediaQuery.of(context).size.width*0.9,
+      child: GestureDetector(
+        onTap: navigateToSubscriptionOrPayWall,
+        child: Material(
+          elevation: 4,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0)),
           ),
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
-          ),// BoxDecoration
           child: Container(
-            margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height,
+              maxHeight: MediaQuery.of(context).size.height * 0.35,
               maxWidth: MediaQuery.of(context).size.width*0.9,
               minWidth: MediaQuery.of(context).size.width*0.9,
             ),
-            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
             decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
+              color: Theme.of(context).backgroundColor,
               borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
             ),// BoxDecoration
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                    'Tu subscripción caduca en:'
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
-                  child: Row(
+            child: Container(
+              margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height,
+                maxWidth: MediaQuery.of(context).size.width*0.9,
+                minWidth: MediaQuery.of(context).size.width*0.9,
+              ),
+              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
+              decoration: BoxDecoration(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
+              ),// BoxDecoration
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height*0.04,
+                      width: MediaQuery.of(context).size.width*0.9,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton(
+                            onPressed: navigateToSubscriptionOrPayWall,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.leaderboard_outlined, size: MediaQuery.of(context).size.width*0.05, color: AppColors.grey,),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                Text(
+                                    'Subscripción',
+                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                                    textAlign: TextAlign.center
+                                ),
+                              ],
+                            ),
+                          ),
+                          TextButton(
+                            onPressed:  navigateToSubscriptionOrPayWall,
+                            child: Column(
+                              children: [
+                                Text(
+                                    'Caducidad (Meses/días)',
+                                    style: Theme.of(context).textTheme.caption,
+                                    textAlign: TextAlign.center
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.mainColor,
-                                  borderRadius: BorderRadius
-                                      .circular(10),
-                                ),
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.10,
-                                height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.05,
-                                child: Center(
-                                    child: Text(
-                                      monthFinalS0,
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .headline1
-                                          ?.copyWith(
-                                          fontWeight: FontWeight
-                                              .bold, fontSize: 30,
-                                          color: AppColors.black
-                                      ),
-                                    )
-
-                                ),
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.02,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.mainColor,
-                                  borderRadius: BorderRadius
-                                      .circular(10),
-                                ),
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.10,
-                                height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.05,
-                                child: Center(
-                                    child: Text(
-                                      monthFinalS1,
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .headline1
-                                          ?.copyWith(
-                                          fontWeight: FontWeight
-                                              .bold, fontSize: 30,
-                                          color: AppColors.black
-                                      ),
-                                    )
-
-                                ),
-                              ),
-                              Center(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-                                  child: Text(
-                                    ':',
-                                    style: Theme
-                                        .of(context)
-                                        .textTheme
-                                        .headline1
-                                        ?.copyWith(
-                                        fontWeight: FontWeight
-                                            .bold, fontSize: 30,
-                                        color: AppColors.black
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                      Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme
+                                .of(context).primaryColor,
+                            borderRadius: BorderRadius
+                                .circular(4),
                           ),
-                          Text('Meses'),
-                        ],
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.07,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.07,
+                          child: Center(
+                              child: Text(
+                                monthFinalS0,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .headline1
+                                    ?.copyWith(
+                                    fontWeight: FontWeight
+                                        .bold, fontSize: 15,
+                                    color: Theme
+                                        .of(context).primaryColorDark
+                                ),
+                              )
+
+                          ),
+                        ),
                       ),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.mainColor,
-                                  borderRadius: BorderRadius
-                                      .circular(10),
-                                ),
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.10,
-                                height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.05,
-                                child: Center(
-                                    child: Text(
-                                      dayFinalS0,
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .headline1
-                                          ?.copyWith(
-                                          fontWeight: FontWeight
-                                              .bold, fontSize: 30,
-                                          color: AppColors.black
-                                      ),
-                                    )
-
-                                ),
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.02,
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.mainColor,
-                                  borderRadius: BorderRadius
-                                      .circular(10),
-                                ),
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.10,
-                                height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.05,
-                                child: Center(
-                                    child: Text(
-                                      dayFinalS1,
-                                      style: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .headline1
-                                          ?.copyWith(
-                                          fontWeight: FontWeight
-                                              .bold, fontSize: 30,
-                                          color: AppColors.black
-                                      ),
-                                    )
-
-                                ),
-                              ),
-                            ],
+                      Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme
+                                .of(context).primaryColor,
+                            borderRadius: BorderRadius
+                                .circular(4),
                           ),
-                          Text('Días'),
-                        ],
-                      )
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.07,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.07,
+                          child: Center(
+                              child: Text(
+                                monthFinalS1,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .headline1
+                                    ?.copyWith(
+                                    fontWeight: FontWeight
+                                        .bold, fontSize: 15,
+                                    color: Theme
+                                        .of(context).primaryColorDark
+                                ),
+                              )
+
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                          child: Text(
+                            ':',
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .headline1
+                                ?.copyWith(
+                                fontWeight: FontWeight
+                                    .bold, fontSize: 30,
+                                color: Theme
+                                    .of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme
+                                .of(context).primaryColor,
+                            borderRadius: BorderRadius
+                                .circular(4),
+                          ),
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.07,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.07,
+                          child: Center(
+                              child: Text(
+                                dayFinalS0,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .headline1
+                                    ?.copyWith(
+                                    fontWeight: FontWeight
+                                        .bold, fontSize: 15,
+                                    color: Theme
+                                        .of(context).primaryColorDark
+                                ),
+                              )
+
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme
+                                .of(context).primaryColor,
+                            borderRadius: BorderRadius
+                                .circular(4),
+                          ),
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.07,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.07,
+                          child: Center(
+                              child: Text(
+                                dayFinalS1,
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .headline1
+                                    ?.copyWith(
+                                    fontWeight: FontWeight
+                                        .bold, fontSize: 15,
+                                    color: Theme
+                                        .of(context).primaryColorDark
+                                ),
+                              )
+
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    await Navigator.push(
-                        context,
-                        CupertinoPageRoute<bool?>(
-                          builder: (context) =>
-                              PayWall(
-                                brandId: currentBrand.id!,
-                              ),
-                        )
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: AppColors.mainColor,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius
-                          .circular(10),
-                    ),
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.90,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.05,
-                    child: Center(
-                        child: Text(
-                          'Consulta tu subscripción',
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .bodyText1
-                              ?.copyWith(
-                              fontWeight: FontWeight
-                                  .bold,
-                              color: AppColors.black
-                          ),
-                        )
 
-                    ),
-                  ),
-                )
-              ],
+
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void navigateToSubscriptionOrPayWall()
+  async {
+    if(currentBrand.isActive != null && currentBrand.isActive!) {
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<bool?>(
+            builder: (context) =>
+                ActiveSubscription(
+                  brandId: currentBrand.id!,
+                  subscription: subscription,
+                ),
+          )
+      );
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else {
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<bool?>(
+            builder: (context) =>
+                PayWall(
+                  brandId: currentBrand.id!,
+                ),
+          )
+      );
+    }
   }
 }
