@@ -159,7 +159,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                 onGenerateRoute: (RouteSettings settings) {
                   final args = settings.arguments;
                   //TODO PROVAR
-                  if(currentBrand.isActive == null || !currentBrand.isActive!)
+                  if(brandIsActive)
                     {
                       return CupertinoPageRoute(
                         builder: (_) => const SplashScreen(),

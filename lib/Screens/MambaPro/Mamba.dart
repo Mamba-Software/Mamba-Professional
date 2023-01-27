@@ -226,10 +226,22 @@ class _MambaState extends State<Mamba> {
       int role = await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
       currentUser.setBrandRole = role;
       mixpanel!.getPeople().set("Brands Roles", [role]);
+      setBrandActive();
     }
     setState(() {
       isLoading = false;
     });
+  }
+
+  void setBrandActive()
+  {
+    if(currentBrand.endDatePay != null)
+    {
+      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+      {
+          brandIsActive = true;
+      }
+    }
   }
 
   // listenNotifications if User Taps on Notifications
@@ -255,8 +267,10 @@ class _MambaState extends State<Mamba> {
     return isLoading ? Scaffold(
       body: LoadingView(),
     ) :
-      hasBrand ? currentBrand.isActive == null || !currentBrand.isActive!? currentUser.brandRole < 2? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
+      hasBrand ? !brandIsActive? currentUser.brandRole < 2? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
   }
+
+
 
 
 }

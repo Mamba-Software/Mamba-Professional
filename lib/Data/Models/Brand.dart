@@ -21,9 +21,8 @@ class Brand {
   var workShift;
   int? maxMembers;
   int? bookingWindow;
-  String? initDatePay;
-  String? endDatePay;
-  bool? isActive;
+  Timestamp? endDatePay;
+  String? subscriptionId;
 
   List<String> promotions = [];
   List<ImageObject> imagesList = [];
@@ -45,7 +44,8 @@ class Brand {
     this.workShift,
     this.maxMembers,
     this.bookingWindow,
-    this.isActive,
+    this.endDatePay,
+    this.subscriptionId,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -88,8 +88,11 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bookingWindow')) {
       bookingWindow = documentSnapshot.get("bookingWindow");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
-      isActive = documentSnapshot.get("isActive");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('endDatePay')) {
+      endDatePay = documentSnapshot.get("endDatePay");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('subscriptionId')) {
+      subscriptionId = documentSnapshot.get("subscriptionId").toString();
     }
   }
 
@@ -122,7 +125,8 @@ class Brand {
     workShift = brand.workShift;
     maxMembers = brand.maxMembers;
     bookingWindow = brand.bookingWindow;
-    isActive = brand.isActive;
+    endDatePay = brand.endDatePay;
+    subscriptionId = brand.subscriptionId;
   }
 
   // Requests

@@ -103,8 +103,13 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   Future<void> getBrandSubscription() async
   {
-    subscription = await _brandDataService.getBrandSubscription(currentBrand.id!);
-
+    if(currentBrand.subscriptionId != null) {
+      subscription = await _brandDataService.getBrandSubscription(
+          currentBrand.id!, currentBrand.subscriptionId!);
+    }
+    else {
+      subscription = Subscription();
+    }
     setState(() {
       isLoading = false;
     });
@@ -975,7 +980,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   Future<void> navigateToSubscriptionsScreen() async {
     //mixpanel!.track('brand_membership_requests_view');
-    if(currentBrand.isActive != null && currentBrand.isActive!) {
+    if(brandIsActive) {
       await Navigator.push(
           context,
           CupertinoPageRoute<bool?>(

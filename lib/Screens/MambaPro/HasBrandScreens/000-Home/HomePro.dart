@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/Ho
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandRequestsWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandSessionStatsWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/CountDownSubscription.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/EndDateSubscription.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/PlanEventWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
@@ -223,7 +224,7 @@ class _HomePro extends State<HomePro> {
                 children: [
                   UserTodayWidget(
                     onClicked: (boolean) {
-                        if(currentBrand.isActive != null && currentBrand.isActive!) {
+                        if(brandIsActive) {
                           mixpanel!.track('brand_homepage_user_this_week');
                           widget.navigateToPage(10, DateTime.now(), CalendarView.week);
                         }
@@ -232,7 +233,7 @@ class _HomePro extends State<HomePro> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
-                  CountDownSubscription(),
+                  currentUser.brandRole < 2 ? EndDateSubscription() : Container(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
@@ -241,7 +242,7 @@ class _HomePro extends State<HomePro> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
-                          if(currentBrand.isActive != null && currentBrand.isActive!) {
+                          if(brandIsActive) {
                             mixpanel!.track('brand_homepage_membership_requests');
                             navigateToRequestsScreen();
                           }
@@ -252,7 +253,7 @@ class _HomePro extends State<HomePro> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
-                        if(currentBrand.isActive != null && currentBrand.isActive!) {
+                        if(brandIsActive) {
                           mixpanel!.track('brand_homepage_bono_confirmation_requests');
                           navigateToBonosRequestScreen();
                         }
@@ -270,7 +271,7 @@ class _HomePro extends State<HomePro> {
                                 width: MediaQuery.of(context).size.width * 0.43,
                                 isPrivate: false,
                                 onClicked: (bool? value) {
-                                  if(currentBrand.isActive != null && currentBrand.isActive!) {
+                                  if(brandIsActive) {
                                     mixpanel!.track(
                                         'brand_homepage_plan_event', properties: {'isPrivate': false});
                                     widget.navigateToPage(10, null, CalendarView.month);
@@ -282,7 +283,7 @@ class _HomePro extends State<HomePro> {
                                 width: MediaQuery.of(context).size.width * 0.43,
                                 isPrivate: true,
                                 onClicked: (bool? value) {
-                                  if(currentBrand.isActive != null && currentBrand.isActive!) {
+                                  if(brandIsActive) {
                                     mixpanel!.track(
                                         'brand_homepage_plan_event', properties: {'isPrivate': true});
                                     widget.navigateToPage(10, null, CalendarView.month);

@@ -124,7 +124,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Navigate to Notifications Screen
   void navigateToNotificationsScreen() {
-    if(currentBrand.isActive != null && currentBrand.isActive!) {
+    if(brandIsActive) {
       Navigator.push(
           context,
           CupertinoPageRoute<void>(
@@ -143,7 +143,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Navigate to Notifications Screen
   void navigateToChatScreen() {
-    if(currentBrand.isActive != null && currentBrand.isActive!) {
+    if(brandIsActive) {
       Navigator.push(
           context,
           CupertinoPageRoute<void>(
@@ -202,6 +202,7 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
           onTap: () =>  {
             Navigator.pop(context),
+            setBrandActive(),
             setState(() {
               pageIndex = _pageIndex;
               setFavourites();
@@ -271,16 +272,44 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
           onTap: () =>  {
             Navigator.pop(context),
-            if((currentBrand.isActive != null && currentBrand.isActive!) || _pageIndex == 8)
+            setBrandActive(),
+            if((brandIsActive) || _pageIndex == 8)
               {
                 setState(() {
                   pageIndex = _pageIndex;
                   setFavourites();
                 }),
               }
+            else
+              {
+                setState(() {
+                  pageIndex = 0;
+                  setFavourites();
+                }),
+              }
           }
       );
     }
+  }
+
+  void setBrandActive()
+  {
+    if(currentBrand.endDatePay != null)
+    {
+      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+      {
+
+        brandIsActive = true;
+      }
+      else
+        {
+          brandIsActive = false;
+        }
+    }
+    else
+      {
+        brandIsActive = false;
+      }
   }
 
   Widget buildHeader() {
@@ -316,7 +345,7 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadNotifications,
                           child: IconButton(
-                            icon: Icon(Icons.notifications, color: AppColors.white, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.notifications, color: brandIsActive? AppColors.white : Theme.of(context).disabledColor, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToNotificationsScreen,
                           ),
@@ -325,7 +354,7 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadChats,
                           child: IconButton(
-                            icon: Icon(Icons.chat, color: AppColors.white, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.chat, color: brandIsActive? AppColors.white : Theme.of(context).disabledColor, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToChatScreen,
                           ),

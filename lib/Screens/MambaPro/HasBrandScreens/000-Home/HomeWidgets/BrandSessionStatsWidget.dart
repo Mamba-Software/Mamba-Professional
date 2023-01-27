@@ -172,7 +172,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            if(currentBrand.isActive != null && currentBrand.isActive!) {
+                            if(brandIsActive) {
                               mixpanel!.track('brand_stats_view');
                               widget.navigateToPage(9);
                             }
@@ -192,7 +192,7 @@ class _BrandSessionStatsWidgetState extends State<BrandSessionStatsWidget> {
                         ),
                         TextButton(
                           onPressed: () {
-                              if(currentBrand.isActive != null && currentBrand.isActive!) {
+                              if(brandIsActive) {
                                 mixpanel!.track('brand_stats_view');
                                 widget.navigateToPage(9);
                               }

@@ -29,7 +29,7 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
   }
 
   void _addEvent() {
-    if(currentBrand.isActive != null && currentBrand.isActive!) {
+    if(brandIsActive) {
       Navigator.push(
           context,
           CupertinoPageRoute<String>(
@@ -53,7 +53,7 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
   }
 
   void _addPrivateEvent() {
-    if(currentBrand.isActive != null && currentBrand.isActive!) {
+    if(brandIsActive) {
       Navigator.push(
           context,
           CupertinoPageRoute<String>(

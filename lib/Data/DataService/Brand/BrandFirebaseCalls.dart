@@ -473,23 +473,12 @@ class BrandFirebaseCalls {
 
 
   // Get Brand Subscription
-  Future<Subscription> getBrandSubscription(String brandId) async {
-    int timestamp = DateTime.now().millisecondsSinceEpoch;
-    Subscription subscription = Subscription();
-    DateTime now = DateTime.now();
-    Timestamp tmstp = Timestamp.fromDate(now);
+  Future<Subscription> getBrandSubscription(String brandId, String subscriptionId) async {
     try {
-      QuerySnapshot querySnapshot =
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
       await _firestore.collection(brands).doc(brandId)
-          .collection('Subscriptions').where("isActive", isEqualTo: true).get();
-
-      if(querySnapshot.docs.length == 0)
-        {
-          return Subscription();
-        }
-      else {
-        return Subscription.fromObjectAllData(querySnapshot.docs[0].id, querySnapshot.docs[0]);
-      }
+          .collection('Subscriptions').doc(subscriptionId).get();
+        return Subscription.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     }
     catch (e){
       print(e);

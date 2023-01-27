@@ -141,7 +141,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            if(currentBrand.isActive != null && currentBrand.isActive!) {
+                            if(brandIsActive) {
                               mixpanel!.track('brand_homepage_calendar_title');
                               widget.navigateToPage(10, DateTime.now(), CalendarView.day);
                             }
@@ -231,7 +231,7 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
                                 });
                               },
                               onTap: (CalendarTapDetails details) {
-                                if(currentBrand.isActive != null && currentBrand.isActive!) {
+                                if(brandIsActive) {
                                   mixpanel!.track('brand_homepage_calendar_date');
                                   widget.navigateToPage(10, details.date, CalendarView.month);
                                 }

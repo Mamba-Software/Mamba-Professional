@@ -36,6 +36,7 @@ var googleMapsAPIIOS = "AIzaSyCHiJWFQzsfD-lO34bbctas1No0Kgxn9i4";
 var currentUser = Usuario();
 var currentBrand = Brand();
 bool hasBrand = false;
+bool brandIsActive = false;
 
 // Unread Notifications And Chats
 var unreadNotifications = 0;

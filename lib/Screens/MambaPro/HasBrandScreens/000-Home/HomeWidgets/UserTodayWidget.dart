@@ -84,7 +84,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
   
   // Navigate to Notifications Screen
   void navigateToNotificationsScreen() {
-    if(currentBrand.isActive != null && currentBrand.isActive!)
+    if(brandIsActive)
     {
     Navigator.push(
         context,
@@ -102,7 +102,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
 
   // Navigate to Notifications Screen
   void navigateToChatScreen() {
-    if(currentBrand.isActive != null && currentBrand.isActive!) {
+    if(brandIsActive) {
       Navigator.push(
           context,
           CupertinoPageRoute<void>(
@@ -120,7 +120,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
 
   // Navigate to Event Screen on Tap
   void navigateToEventScreen(String eventId) {
-    if(currentBrand.isActive != null && currentBrand.isActive!) {
+    if(brandIsActive) {
       mixpanel!.track('brand_homepage_user_event_view');
       // Navigate to Event Screen
       Navigator.push(

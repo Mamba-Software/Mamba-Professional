@@ -46,6 +46,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
   DateFormat formatter = DateFormat.yMd();
   int monthFinal = 0;
   int dayFinal = 0;
+  int globaldifference = 0;
   String monthFinalS0 = '0';
   String monthFinalS1 = '0';
   String dayFinalS0 = '0';
@@ -59,41 +60,41 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
 
   Future<void> getBrandSubscription() async
   {
-    int aux = 0;
-    subscription = await _brandDataService.getBrandSubscription(currentBrand.id!);
-    print(subscription.endDate);
-    //LocalDate a = LocalDate.today();
-    endDate = subscription.endDate!.toDate();
-    int difference = endDate.difference(today).inDays;
-    print('Printing difference');
-    print(difference);
-    calculateMonthDay(difference, today.year, today.month, 0);
-    print(monthFinal);
-    print(dayFinal);
-    if(monthFinal.toString().length == 2)
-      {
-         monthFinalS0 = monthFinal.toString()[0];
-         monthFinalS1 = monthFinal.toString()[1];
+    if(brandIsActive && currentBrand.subscriptionId != null) {
+      int aux = 0;
+      subscription =
+      await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
+      print(subscription.endDate);
+      //LocalDate a = LocalDate.today();
+      endDate = subscription.endDate!.toDate();
+      int difference = endDate
+          .difference(today)
+          .inDays;
+      globaldifference = difference;
+      print('Printing difference');
+      print(difference);
+      calculateMonthDay(difference, today.year, today.month, 0);
+      print(monthFinal);
+      print(dayFinal);
+      if (monthFinal
+          .toString()
+          .length == 2) {
+        monthFinalS0 = monthFinal.toString()[0];
+        monthFinalS1 = monthFinal.toString()[1];
       }
-    else
-      {
+      else {
         monthFinalS1 = monthFinal.toString();
       }
-
-    if(dayFinal.toString().length == 2)
-    {
-      dayFinalS0 = dayFinal.toString()[0];
-      dayFinalS1 = dayFinal.toString()[1];
+      if (dayFinal
+          .toString()
+          .length == 2) {
+        dayFinalS0 = dayFinal.toString()[0];
+        dayFinalS1 = dayFinal.toString()[1];
+      }
+      else {
+        dayFinalS1 = dayFinal.toString();
+      }
     }
-    else
-    {
-      dayFinalS1 = dayFinal.toString();
-    }
-    print('day');
-
-    print(dayFinalS0);
-    print(dayFinalS1);
-    print('day');
 
    // var date = DateTime.fromMillisecondsSinceEpoch((subscription.startDate!) * 1000);
    // var date = new DateTime.fromMicrosecondsSinceEpoch(subscription.startDate!);
@@ -155,7 +156,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
               ),
               padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
               decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
+                color: brandIsActive? globaldifference < 5? AppColors.red.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor : AppColors.red.withOpacity(0.5) ,
                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
               ),// BoxDecoration
               child: Column(
@@ -379,7 +380,7 @@ class _CountDownSubscriptionState extends State<CountDownSubscription> {
 
   void navigateToSubscriptionOrPayWall()
   async {
-    if(currentBrand.isActive != null && currentBrand.isActive!) {
+    if(brandIsActive) {
       await Navigator.push(
           context,
           CupertinoPageRoute<bool?>(

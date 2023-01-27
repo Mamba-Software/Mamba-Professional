@@ -107,7 +107,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                       children: [
                         TextButton(
                           onPressed: () {
-                            if(currentBrand.isActive != null && currentBrand.isActive!) {
+                            if(brandIsActive) {
                               mixpanel!.track('brand_homepage_bonos_title');
                               widget.navigateToPage(5);
                             }
@@ -197,7 +197,7 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                                     Flexible(child: Text(AppLocalizations.of(context)!.noBonosCreated, style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.start)),
                                     TextButton(
                                       onPressed: () async {
-                                          if(currentBrand.isActive != null && currentBrand.isActive!) {
+                                          if(brandIsActive) {
                                             navigateToAddBonosScreen(
                                                 Bono(color: "0",
                                                   isActive: true,
