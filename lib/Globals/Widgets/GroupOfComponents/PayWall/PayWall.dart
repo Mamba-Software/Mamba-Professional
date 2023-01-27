@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSn
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:share_plus/share_plus.dart';
@@ -572,13 +573,23 @@ class _PayWallState extends State<PayWall> {
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
                                                 subscritionPromo.id!, subscritionPromo.title!);
+                                            Future.delayed(const Duration(seconds: 2), () async {
+                                                  Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    CupertinoPageRoute<void>(
+                                                      builder: (context) => const SplashScreen(),
+                                                      settings: const RouteSettings(name: 'SplashScreen'),
+                                                    ),
+                                                        (_) => false,
+                                                  );
+
+                                            });
+                                            await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
                                             Navigator.pushAndRemoveUntil(
                                               context,
                                               CupertinoPageRoute<void>(
-                                                builder: (
-                                                    context) => const BrandScreen(),
-                                                settings: const RouteSettings(
-                                                    name: 'BrandScreen'),
+                                                builder: (context) =>  SplashScreen(),
+                                                settings: RouteSettings(name: 'SplashScreen'),
                                               ),
                                                   (_) => false,
                                             );

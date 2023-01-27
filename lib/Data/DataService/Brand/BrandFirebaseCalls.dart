@@ -735,13 +735,14 @@ class BrandFirebaseCalls {
         .doc(uid)
         .set({
       "subscriptionId": subscriptionId,
-      "expirationDate": endTime,
-      "initialDate": initTime,
+      "endDate": endTime,
+      "startDate": initTime,
       "isActive": true,
       "title": title,
     });
     await _firestore.collection(brands).doc(brandID).update({
-      "isActive": true,
+      "endDatePay": endTime,
+      "subscriptionId": uid,
     });
     await _firestore.collection(subscriptions).doc(subscriptionId).collection('Brands').doc(brandID).set({
       "useDate": initTime,

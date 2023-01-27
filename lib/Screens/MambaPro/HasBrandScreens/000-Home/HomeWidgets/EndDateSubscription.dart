@@ -83,7 +83,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
   Widget build(BuildContext context) {
     return isLoading? Container() : FittedBox(
       fit: BoxFit.fitHeight,
-      child: brandIsActive? GestureDetector(
+      child: !brandIsActive? GestureDetector(
         onTap: navigateToSubscriptionOrPayWall,
         child: Container(
           padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
@@ -106,11 +106,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.05),
               Flexible(
-                child:  Text(
-                  brandIsActive? 'Tu subscripción caduca el dia ' + currentBrand.endDatePay!.toString() : ShowTextExpired? 'Tu subscripción ha caducado, pulsa para renovar' : 'No tienes subscricpión, pulsa para adquirir una',
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                  textAlign: TextAlign.center,
-                ),
+                child:  textToShow(),
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.05),
             ],
@@ -149,6 +145,32 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  ListTile(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image(
+                        image: NetworkImage(
+                            'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
+                      ),
+                    ),
+                    title: Text(
+                        subscription.title!,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1,
+                        textAlign: TextAlign.left
+                    ),
+                    subtitle: Text(
+                        AppLocalizations.of(context)!.expiresAt + ' ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption
+                    ),
+                    dense: true,
+                  ),
+                  /*
                   FittedBox(
                     fit: BoxFit.fitHeight,
                     child: SizedBox(
@@ -165,6 +187,8 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                     ),
                   ),
 
+                   */
+
 
                 ],
               ),
@@ -177,7 +201,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
 
   Widget textToShow()
   {
-    return   Text(brandIsActive? 'Tu subscripción caduca el dia ' + currentBrand.endDatePay!.toString() : ShowTextExpired? 'Tu subscripción ha caducado, pulsa para renovar' : 'No tienes subscricpión, pulsa para adquirir una', style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w400), textAlign: TextAlign.center,);
+    return   Text(brandIsActive? 'Tu subscripción caduca el dia ' + currentBrand.endDatePay!.toString() : ShowTextExpired? AppLocalizations.of(context)!.subscriptionExpired : AppLocalizations.of(context)!.noSubscription,  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary), textAlign: TextAlign.center,);
   }
 
   void navigateToSubscriptionOrPayWall()

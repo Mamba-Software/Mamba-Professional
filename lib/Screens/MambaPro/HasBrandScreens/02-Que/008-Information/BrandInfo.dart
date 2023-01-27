@@ -33,6 +33,7 @@ class BrandInfo extends StatefulWidget {
 
 class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMixin {
 
+  DateFormat formatter = DateFormat('dd/MM/yy');
   // DataBase Access
   final _brandDataService = BrandDataService();
   final _promotionDataService = PromotionsDataService();
@@ -332,35 +333,85 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
                 GestureDetector(
                   onTap: navigateToSubscriptionsScreen,
-                  child: Container(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                    height: MediaQuery.of(context).size.height*0.1,
-                    width: MediaQuery.of(context).size.width*0.9,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                  child: Material(
+                    elevation: 4,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(
-                          Icons.card_membership,
-                          color: Theme.of(context).colorScheme.secondary,
-                          size: MediaQuery.of(context).size.width*0.10,
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.65,
+                        maxWidth: MediaQuery.of(context).size.width*0.9,
+                        minWidth: MediaQuery.of(context).size.width*0.9,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),// BorderRadius
+                      ),// BoxDecoration
+                      child: Container(
+                        margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height* 0.65,
+                          maxWidth: MediaQuery.of(context).size.width*0.9,
+                          minWidth: MediaQuery.of(context).size.width*0.9,
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                        Flexible(
-                          child:  Text(
-                    subscription.id == null?'No tienes ninguna subscripción a un plan, pincha aquí para escoger uno' : 'Tienes la subscripcion ' + subscription.title!,
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                            textAlign: TextAlign.center,
-                          ),
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColorDark.withOpacity(0.4),
+                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),// BorderRadius
+                        ),// BoxDecoration
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image(
+                                  image: NetworkImage(
+                                      'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
+                                ),
+                              ),
+                              title: Text(
+                                  subscription.title!,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .headline3,
+                                  textAlign: TextAlign.left
+                              ),
+                              subtitle: Text(
+                                  'Pulsa para ver tu suscripción',
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .caption
+                              ),
+                              dense: true,
+                            ),
+                            /*
+                  FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height*0.04,
+                      width: MediaQuery.of(context).size.width*0.9,
+                      child:  TextButton(
+                        onPressed: navigateToSubscriptionOrPayWall,
+                        child: Text(
+                            'Tu subscripción caduca el ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
+                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                            textAlign: TextAlign.center
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                      ],
+                      ),
+                    ),
+                  ),
+
+                   */
+
+
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),

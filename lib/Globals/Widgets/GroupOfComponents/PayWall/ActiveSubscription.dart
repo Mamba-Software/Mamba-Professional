@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -27,16 +28,20 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
   final _brandDataService = BrandDataService();
   // Boolean
   bool hasChanged = false;
+
+  DateFormat formatter = DateFormat('dd/MM/yy');
   // All Trainers
   List<Usuario> allMembers = [];
   // Trainers Roles
   List<Usuario> allOwners = [];
   List<Usuario> allAdmins = [];
   List<Usuario> allTrainers = [];
+  Subscription subscription = Subscription();
 
   @override
   initState() {
     super.initState();
+    subscription = widget.subscription;
   }
 
   Future<void> navigateToSubscriptionsScreen() async {
@@ -277,91 +282,287 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
               // Owners
               Column(
                 children: [
+                  Material(
+                    elevation: 4,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.65,
+                        maxWidth: MediaQuery.of(context).size.width*0.9,
+                        minWidth: MediaQuery.of(context).size.width*0.9,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),// BorderRadius
+                      ),// BoxDecoration
+                      child: Container(
+                        margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height* 0.65,
+                          maxWidth: MediaQuery.of(context).size.width*0.9,
+                          minWidth: MediaQuery.of(context).size.width*0.9,
+                        ),
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColorDark.withOpacity(0.4),
+                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),// BorderRadius
+                        ),// BoxDecoration
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image(
+                                  image: NetworkImage(
+                                      'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
+                                ),
+                              ),
+                              title: Text(
+                                  subscription.title!,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .headline3,
+                                  textAlign: TextAlign.left
+                              ),
+                              subtitle: Text(
+                                  'Fitness is Business',
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .caption
+                              ),
+                              dense: true,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height*0.04,),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  'La suscripción fue comprada el ' + formatter.format(subscription.startDate!.toDate()).toString() + ' y caduca el ' + formatter.format(subscription.endDate!.toDate()).toString(),
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .caption
+                              ),
+                            ),
+                            /*
+                  FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height*0.04,
+                      width: MediaQuery.of(context).size.width*0.9,
+                      child:  TextButton(
+                        onPressed: navigateToSubscriptionOrPayWall,
+                        child: Text(
+                            'Tu subscripción caduca el ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
+                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                            textAlign: TextAlign.center
+                        ),
+                      ),
+                    ),
+                  ),
+
+                   */
+
+
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
                   GestureDetector(
                     onTap: navigateToSubscriptionsScreen,
-                    child: Container(
-                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                      height: MediaQuery.of(context).size.height*0.1,
-                      width: MediaQuery.of(context).size.width*0.9,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10),
+                    child: Material(
+                      elevation: 4,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height * 0.65,
+                          maxWidth: MediaQuery.of(context).size.width*0.9,
+                          minWidth: MediaQuery.of(context).size.width*0.9,
                         ),
-                        border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(
-                            Icons.card_membership,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: MediaQuery.of(context).size.width*0.10,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(5.0)),// BorderRadius
+                        ),// BoxDecoration
+                        child: Container(
+                          margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+                          constraints: BoxConstraints(
+                            maxHeight: MediaQuery.of(context).size.height* 0.65,
+                            maxWidth: MediaQuery.of(context).size.width*0.9,
+                            minWidth: MediaQuery.of(context).size.width*0.9,
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                          Flexible(
-                            child:  Text(
-                              'Tienes la subscripcion ' + widget.subscription.title!,
-                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                  getAll(),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  GestureDetector(
-                    onTap: () async {
-                      await Navigator.push(
-                          context,
-                          CupertinoPageRoute<bool?>(
-                            builder: (context) =>
-                                PayWall(
-                                  brandId: widget.brandId,
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColorDark.withOpacity(0.4),
+                            borderRadius: const BorderRadius.all(Radius.circular(10.0)),// BorderRadius
+                          ),// BoxDecoration
+                          child: Padding(
+                            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'El plan incluye',
+                                    style: Theme
+                                        .of(context)
+                                        .textTheme
+                                        .headline1,
+                                    textAlign: TextAlign.left,
+                                  ),
                                 ),
-                          )
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppColors.mainColor,
-                          width: 1,
+                                Padding(
+                                  padding:  EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        leading: Icon(
+                                          Icons.done,
+                                          color: Colors.green,
+                                        ),
+                                        title: Text(
+                                            'Tienes todo de todo de todo de todo',
+                                            style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                            textAlign: TextAlign.left
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      ListTile(
+                                        leading: Icon(
+                                          Icons.done,
+                                          color: Colors.green,
+                                        ),
+                                        title: Text(
+                                            'Tienes todo de todo de todo de todo',
+                                            style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                            textAlign: TextAlign.left
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      ListTile(
+                                        leading: Icon(
+                                          Icons.done,
+                                          color: Colors.green,
+                                        ),
+                                        title: Text(
+                                            'Tienes todo de todo de todo de todo',
+                                            style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                            textAlign: TextAlign.left
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      ListTile(
+                                        leading: Icon(
+                                          Icons.done,
+                                          color: Colors.green,
+                                        ),
+                                        title: Text(
+                                            'Tienes todo de todo de todo de todo',
+                                            style: Theme
+                                                .of(context)
+                                                .textTheme
+                                                .bodyText1,
+                                            textAlign: TextAlign.left
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    ],
+                                  ),
+                                ),
+                                /*
+                  FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height*0.04,
+                      width: MediaQuery.of(context).size.width*0.9,
+                      child:  TextButton(
+                        onPressed: navigateToSubscriptionOrPayWall,
+                        child: Text(
+                              'Tu subscripción caduca el ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
+                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                              textAlign: TextAlign.center
                         ),
-                        borderRadius: BorderRadius
-                            .circular(10),
-                      ),
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.90,
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.05,
-                      child: Center(
-                          child: Text(
-                            'Ver más planes',
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .bodyText1
-                                ?.copyWith(
-                                fontWeight: FontWeight
-                                    .bold,
-                                color: AppColors.black
-                            ),
-                          )
-
                       ),
                     ),
                   ),
+
+                   */
+                                GestureDetector(
+                                  onTap: () async {
+                                    await Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<bool?>(
+                                          builder: (context) =>
+                                              PayWall(
+                                                brandId: widget.brandId,
+                                              ),
+                                        )
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Theme.of(context).dividerColor,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius
+                                          .circular(20),
+                                    ),
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.90,
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * 0.05,
+                                    child: Center(
+                                        child: Text(
+                                          'Ver todos los planes',
+                                          style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              ?.copyWith(
+                                              fontWeight: FontWeight
+                                                  .normal,
+                                              color: Theme.of(context).primaryColor
+                                          ),
+                                        )
+
+                                    ),
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
                 ],
               ),
               SizedBox(height: MediaQuery.of(context).size.width * 0.05),

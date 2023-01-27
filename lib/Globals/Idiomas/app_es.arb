@@ -2886,5 +2886,19 @@
   "statsMinimumSessionBrand": "Necesitas un mínimo de sesiones para ver esta estadística",
   "@statsMinimumSessionBrand": {
     "description": "statsMinimumSessionBrand message"
-    }
+    },
+  "subscriptionExpired": "Tu suscripción ha caducado, pulsa para renovar",
+  "@subscriptionExpired": {
+    "description": "subscriptionExpired message"
+  },
+  "noSubscription": "No tienes suscripción, pulsa para adquirir una",
+  "@noSubscription": {
+    "description": "noSubscription message"
+  },
+  "expiresAt": "Expira el",
+  "@expiresAt": {
+    "description": "expiresAt message"
+  }
+
+
 }

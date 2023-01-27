@@ -648,5 +648,8 @@
   "newerFirst": "Recents primer",
   "asistants": "Assistents",
   "onlyAllowed": "Només pots borrar el teu usuari si no pertanys a una marca.",
-  "statsMinimumSessionBrand": "Necessites un mínim de sessiones per veure aquesta estadística"
+  "statsMinimumSessionBrand": "Necessites un mínim de sessiones per veure aquesta estadística",
+  "subscriptionExpired": "La teva subscripció ha caducat, clica per a renovar",
+  "noSubscription": "No tens subscripció, clica per a adquirir una",
+  "expiresAt": "Expira el"
 }
