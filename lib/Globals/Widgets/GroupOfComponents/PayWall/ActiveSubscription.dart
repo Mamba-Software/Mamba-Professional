@@ -24,19 +24,10 @@ class ActiveSubscription extends StatefulWidget {
 }
 
 class _ActiveSubscriptionState extends State<ActiveSubscription> {
-  // Acceso a Base de Datos
-  final _brandDataService = BrandDataService();
-  // Boolean
-  bool hasChanged = false;
 
   DateFormat formatter = DateFormat('dd/MM/yy');
-  // All Trainers
-  List<Usuario> allMembers = [];
-  // Trainers Roles
-  List<Usuario> allOwners = [];
-  List<Usuario> allAdmins = [];
-  List<Usuario> allTrainers = [];
   Subscription subscription = Subscription();
+  bool hasChanged = false;
 
   @override
   initState() {
@@ -58,211 +49,15 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
     });
   }
 
-  void orderTrainersByRole(List<Usuario> trainers) {
-    List<Usuario> allOwners = [];
-    List<Usuario> allAdmins = [];
-    List<Usuario> allTrainers = [];
-    for (var i=0; i< trainers.length; i++) {
-      Usuario user = trainers[i];
-      if (user.brandRole == 1) {
-        allOwners.add(user);
-      } else if (user.brandRole == 2) {
-        allAdmins.add(user);
-      } else {
-        allTrainers.add(user);
-      }
-    }
-    allOwners.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
-    allAdmins.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
-    allTrainers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
-    setState(() {
-      this.allOwners = allOwners;
-      this.allAdmins = allAdmins;
-      this.allTrainers = allTrainers;
-    });
-  }
-
-  Future<void> onEditTrainerRole(Usuario trainer) async {
-    await showModalBottomSheet<int?>(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setStateBottom) {
-            return FractionallySizedBox(
-              heightFactor: 0.33,
-              child: SizedBox(height: MediaQuery.of(context).size.height * 0.5,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                  child: Column(
-                    mainAxisAlignment:
-                    MainAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        title: Text(
-                            'Suscripciones',
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left
-                        ),
-                        dense: true,
-                      ),
-                      ListTile(
-                        onTap: () async {
-                          // Update the Check
-                          setStateBottom(() {
-                            trainer.brandRole = 1;
-                          });
-                          // Change the User Role
-                          await _brandDataService.updateUserBrandRole(trainer.id!, widget.brandId, 1);
-                          // Remove the old Trainer Object from AllMembers Array
-                          allMembers.removeWhere((element) => element.id! == trainer.id!);
-                          // Add New Trainer Obeject
-                          allMembers.add(trainer);
-                          // Call Init Function
-                          orderTrainersByRole(allMembers);
-                          // Has Changed
-                          hasChanged = true;
-                          Navigator.pop(context);
-                        },
-                        title: Text(
-                            AppLocalizations.of(context)!.owner,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left
-                        ),
-                        trailing: trainer.brandRole == 1 ? SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                      ),
-                      ListTile(
-                        onTap: () async {
-                          // Update the Check
-                          setStateBottom(() {
-                            trainer.brandRole = 2;
-                          });
-                          // Change the User Role
-                          await _brandDataService.updateUserBrandRole(trainer.id!, widget.brandId, 2);
-                          // Remove the old Trainer Object from AllMembers Array
-                          allMembers.removeWhere((element) => element.id! == trainer.id!);
-                          // Add New Trainer Obeject
-                          allMembers.add(trainer);
-                          // Call Init Function
-                          orderTrainersByRole(allMembers);
-                          // Has Changed
-                          hasChanged = true;
-                          Navigator.pop(context);
-                        },
-                        title: Text(
-                            AppLocalizations.of(context)!.administrador,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left
-                        ),
-                        trailing: trainer.brandRole == 2 ? SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                      ),
-                      ListTile(
-                        onTap: () async {
-                          // Update the Check
-                          setStateBottom(() {
-                            trainer.brandRole = 3;
-                          });
-                          // Change the User Role
-                          await _brandDataService.updateUserBrandRole(trainer.id!, widget.brandId, 3);
-                          // Remove the old Trainer Object from AllMembers Array
-                          allMembers.removeWhere((element) => element.id! == trainer.id!);
-                          // Add New Trainer Obeject
-                          allMembers.add(trainer);
-                          // Call Init Function
-                          orderTrainersByRole(allMembers);
-                          // Has Changed
-                          hasChanged = true;
-                          Navigator.pop(context);
-                        },
-                        title: Text(
-                            AppLocalizations.of(context)!.trainer,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left
-                        ),
-                        trailing: trainer.brandRole == 3 ? SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
-                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          } ,
-        );
-      },
-    );
-  }
-
-  String getUsersFullName(Usuario user) {
-    return "${user.firstName} ${user.lastName}";
-  }
-
-  // Navigate to Bonos Request Screen
-  void navigateToRolesInformationModal() async {
-    mixpanel!.track('brand_trainers_roles_info');
-    showModalBottomSheet<bool?>(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        return const FractionallySizedBox(
-          heightFactor: 0.935,
-          child: RolesInfo()
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Suscripciones',
+            AppLocalizations.of(context)!.subscriptionsAppBar,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
-        /*
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.02),
-            child: IconButton(
-              icon: Icon(
-                Icons.info_outline,
-                color: Theme.of(context).primaryColor,
-                size: MediaQuery.of(context).size.width*0.06,
-              ),
-              onPressed: navigateToRolesInformationModal,
-            ),
-          ),
-        ],
-        */
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -343,33 +138,13 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                  'La suscripción fue comprada el ' + formatter.format(subscription.startDate!.toDate()).toString() + ' y caduca el ' + formatter.format(subscription.endDate!.toDate()).toString(),
+                                  AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.startDate!.toDate()), formatter.format(subscription.endDate!.toDate()).toString()),
                                   style: Theme
                                       .of(context)
                                       .textTheme
                                       .caption
                               ),
                             ),
-                            /*
-                  FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height*0.04,
-                      width: MediaQuery.of(context).size.width*0.9,
-                      child:  TextButton(
-                        onPressed: navigateToSubscriptionOrPayWall,
-                        child: Text(
-                            'Tu subscripción caduca el ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
-                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
-                            textAlign: TextAlign.center
-                        ),
-                      ),
-                    ),
-                  ),
-
-                   */
-
-
                           ],
                         ),
                       ),
@@ -413,9 +188,9 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(MediaQuery.of(context).size.height*0.01),
                                   child: Text(
-                                    'El plan incluye',
+                                    AppLocalizations.of(context)!.subscriptionIncludes,
                                     style: Theme
                                         .of(context)
                                         .textTheme
@@ -424,92 +199,25 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                   ),
                                 ),
                                 Padding(
-                                  padding:  EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.03),
+                                  padding:  EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.00),
                                   child: Column(
                                     children: [
-                                      ListTile(
-                                        leading: Icon(
-                                          Icons.done,
-                                          color: Colors.green,
-                                        ),
-                                        title: Text(
-                                            'Tienes todo de todo de todo de todo',
-                                            style: Theme
-                                                .of(context)
-                                                .textTheme
-                                                .bodyText1,
-                                            textAlign: TextAlign.left
-                                        ),
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      ListTile(
-                                        leading: Icon(
-                                          Icons.done,
-                                          color: Colors.green,
-                                        ),
-                                        title: Text(
-                                            'Tienes todo de todo de todo de todo',
-                                            style: Theme
-                                                .of(context)
-                                                .textTheme
-                                                .bodyText1,
-                                            textAlign: TextAlign.left
-                                        ),
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      ListTile(
-                                        leading: Icon(
-                                          Icons.done,
-                                          color: Colors.green,
-                                        ),
-                                        title: Text(
-                                            'Tienes todo de todo de todo de todo',
-                                            style: Theme
-                                                .of(context)
-                                                .textTheme
-                                                .bodyText1,
-                                            textAlign: TextAlign.left
-                                        ),
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      ListTile(
-                                        leading: Icon(
-                                          Icons.done,
-                                          color: Colors.green,
-                                        ),
-                                        title: Text(
-                                            'Tienes todo de todo de todo de todo',
-                                            style: Theme
-                                                .of(context)
-                                                .textTheme
-                                                .bodyText1,
-                                            textAlign: TextAlign.left
-                                        ),
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                      listTileGetAll(AppLocalizations.of(context)!.personalizeBrandActiveText),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                      listTileGetAll( AppLocalizations.of(context)!.searcherActiveText),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                      listTileGetAll(AppLocalizations.of(context)!.sessionControActiveText),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                      listTileGetAll( AppLocalizations.of(context)!.pricePolicyActiveText),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                      listTileGetAll( AppLocalizations.of(context)!.statsActiveText),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
                                     ],
                                   ),
                                 ),
-                                /*
-                  FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height*0.04,
-                      width: MediaQuery.of(context).size.width*0.9,
-                      child:  TextButton(
-                        onPressed: navigateToSubscriptionOrPayWall,
-                        child: Text(
-                              'Tu subscripción caduca el ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
-                              textAlign: TextAlign.center
-                        ),
-                      ),
-                    ),
-                  ),
-
-                   */
                                 GestureDetector(
                                   onTap: () async {
+                                    mixpanel!.track('brand_see_paywall');
                                     await Navigator.push(
                                         context,
                                         CupertinoPageRoute<bool?>(
@@ -524,7 +232,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                         color: Theme.of(context).dividerColor,
-                                        width: 1,
+                                        width: 3,
                                       ),
                                       borderRadius: BorderRadius
                                           .circular(20),
@@ -539,7 +247,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                         .height * 0.05,
                                     child: Center(
                                         child: Text(
-                                          'Ver todos los planes',
+                                          AppLocalizations.of(context)!.seeAllSubs,
                                           style: Theme
                                               .of(context)
                                               .textTheme
@@ -573,69 +281,21 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
     );
   }
 
-  Widget getAll()
-  {
-    return  Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.height *
-            0.005),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Tienes todo',
-              style: Theme.of(context)
-                  .textTheme
-                  .headline1
-                  ?.copyWith(fontSize: 30, fontWeight: FontWeight.normal),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              'Desbloquea todo el potencial de mamba pro con una subscripción única',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1,
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-                height: MediaQuery.of(context).size.height *
-                    0.03),
-            listTileGetAll(Icons.all_inclusive, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quye hagas'),
-            listTileGetAll(Icons.model_training, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quye hagas'),
-            listTileGetAll(Icons.sports_mma, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quy hagas'),
-            listTileGetAll(Icons.local_fire_department, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quy hagas'),
-            listTileGetAll(Icons.quiz, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quy hagas'),
-            SizedBox(
-                height: MediaQuery.of(context).size.height *
-                    0.01),
-            Divider(color: Theme.of(context).dividerColor, thickness: 1.5),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget listTileGetAll(var icon, String title, String subtitle)
+  Widget listTileGetAll(String subtitle)
   {
-    return Padding(
-      padding: EdgeInsets.only(bottom:  MediaQuery.of(context).size.height *
-          0.01,),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          size: 50,
-        ),
-        title: Text(
-            title,
-            style: Theme.of(context).textTheme.bodyText1,
-            textAlign: TextAlign.left
-        ),
-        subtitle: Text(
-            subtitle,
-            style: Theme.of(context).textTheme.caption
-        ),
-        dense: true,
+    return  ListTile(
+      leading: Icon(
+        Icons.done,
+        color: Colors.green,
+      ),
+      title: Text(
+          subtitle,
+          style: Theme
+              .of(context)
+              .textTheme
+              .bodyText1,
+          textAlign: TextAlign.left
       ),
     );
   }

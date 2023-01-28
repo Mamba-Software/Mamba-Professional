@@ -1,29 +1,12 @@
 import 'dart:async';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
-import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandEventCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 
 import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 
@@ -170,26 +153,6 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                     ),
                     dense: true,
                   ),
-                  /*
-                  FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height*0.04,
-                      width: MediaQuery.of(context).size.width*0.9,
-                      child:  TextButton(
-                        onPressed: navigateToSubscriptionOrPayWall,
-                        child: Text(
-                            'Tu subscripción caduca el ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
-                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
-                            textAlign: TextAlign.center
-                        ),
-                      ),
-                    ),
-                  ),
-
-                   */
-
-
                 ],
               ),
             ),
@@ -201,12 +164,13 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
 
   Widget textToShow()
   {
-    return   Text(brandIsActive? 'Tu subscripción caduca el dia ' + currentBrand.endDatePay!.toString() : ShowTextExpired? AppLocalizations.of(context)!.subscriptionExpired : AppLocalizations.of(context)!.noSubscription,  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary), textAlign: TextAlign.center,);
+    return   Text(ShowTextExpired? AppLocalizations.of(context)!.subscriptionExpired : AppLocalizations.of(context)!.noSubscription,  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary), textAlign: TextAlign.center,);
   }
 
   void navigateToSubscriptionOrPayWall()
   async {
     if(brandIsActive) {
+      mixpanel!.track('brand_see_active_subscription');
       await Navigator.push(
           context,
           CupertinoPageRoute<bool?>(
@@ -222,6 +186,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
       });
     }
     else {
+      mixpanel!.track('brand_see_paywall');
       await Navigator.push(
           context,
           CupertinoPageRoute<bool?>(

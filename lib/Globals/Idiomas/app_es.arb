@@ -2898,7 +2898,106 @@
   "expiresAt": "Expira el",
   "@expiresAt": {
     "description": "expiresAt message"
+  },
+  "seeyourSub": "Pulsa para ver tu suscripción",
+  "@seeyourSub": {
+    "description": "seeyourSub message"
+  },
+  "subscriptionsAppBar": "Suscripciones",
+  "@subscriptionsAppBar": {
+    "description": "subscriptionsAppBar message"
+  },
+  "moreSubInfo": "La suscripción fue adquirida el {initDate} y expira el {endDate}",
+  "@moreSubInfo": {
+    "description": "moreSubInfo message",
+    "placeholders": {
+      "initDate": {
+        "type": "String"
+      },
+      "endDate": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionIncludes": "Incluye todo",
+  "@subscriptionIncludes": {
+    "description": "subscriptionIncludes message"
+  },
+  "sessionControlPayWallHeader": "Gestión de sesiones",
+  "@sessionControlPayWallHeader": {
+    "description": "sessionControlPayWallHeader message"
+  },
+  "sessionControlPayWallText": "Automatiza la calendarización y aforo de tus sesiones",
+  "@sessionControlPayWallText": {
+    "description": "sessionControlPayWallText message"
+  },
+  "pricePolicyPayWallHeader": "Define tu política de precios",
+  "@pricePolicyPayWallHeader": {
+    "description": "pricePolicyPayWallHeader message"
+  },
+  "pricePolicyPayWallText": "Gestiona tus pagos con bonos totalmente personalizables",
+  "@pricePolicyPayWallText": {
+    "description": "pricePolicyPayWallText message"
+  },
+  "statsPayWallHeader": "Tu negocio en números",
+  "@statsPayWallHeader": {
+    "description": "statsPayWallHeader message"
+  },
+  "statsPayWallText": "Toma las mejores decisiones para tu negocio con el módulo de estadísticas",
+  "@statsPayWallText": {
+    "description": "statsPayWallText message"
+  },
+  "personalizeBrandPayWallHeader": "Personaliza a tu gusto",
+  "@personalizeBrandPayWallHeader": {
+    "description": "personalizeBrandPayWallHeader message"
+  },
+  "personalizeBrandPayWallText": "Con tu logotipo, tus colores, tus fotos y tus ubicaciones",
+  "@personalizeBrandPayWallText": {
+    "description": "personalizeBrandPayWallText message"
+  },
+  "feedBackPayWallHeader": "Escucha a tus clientes",
+  "@feedBackPayWallHeader": {
+    "description": "feedBackPayWallHeader message"
+  },
+  "feedBackPayWallText": "Obtén feedback de cada cliente después de tus sesiones",
+  "@feedBackPayWallText": {
+    "description": "feedBackPayWallText message"
+  },
+  "searcherPayWallHeader": "Clientes cerca de ti",
+  "@searcherPayWallHeader": {
+    "description": "searcherPayWallHeader message"
+  },
+  "searcherPayWallText": "Nuevos clientes te podrán contactar y solicitar tus servicios",
+  "@searcherPayWallText": {
+    "description": "searcherPayWallText message"
+  },
+  "sessionControActiveText": "Gestión de tus sesiones y control de aforo",
+  "@sessionControActiveText": {
+    "description": "sessionControActiveText message"
+  },
+  "pricePolicyActiveText": "Política de precios mediante bonos personalizados",
+  "@pricePolicyPayWallText": {
+    "description": "pricePolicyPayWallText message"
+  },
+  "statsActiveText": "Análisis de tu negocio con el módulo de estadísticas",
+  "@statsActiveText": {
+    "description": "statsActiveText message"
+  },
+  "personalizeBrandActiveText": "Personalización de tu marca",
+  "@personalizeBrandActiveText": {
+    "description": "personalizeBrandActiveText message"
+  },
+  "feedBackActiveText": "Obtén feedback de cada cliente después de tus sesiones",
+  "@feedBackPayWallText": {
+    "description": "feedBackPayWallText message"
+  },
+  "searcherActiveText": "Aparición en el buscador de marcas",
+  "@searcherActiveText": {
+    "description": "searcherActiveText message"
+  },
+  "seeAllSubs": "Ver todas las suscripciones",
+  "@seeAllSubs": {
+    "description": "seeAllSubs message"
   }
-
 
 }

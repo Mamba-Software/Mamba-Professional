@@ -26,6 +26,9 @@ var websiteCA = "https://www.mambaapp.app/ca/inici/";
 var termsAndConditionsES = "https://www.mambaapp.app/terminos-y-condiciones/";
 var termsAndConditionsCA = "https://www.mambaapp.app/ca/termes-i-condicions/";
 
+var functionalitiesES = "https://www.mambaapp.app/#funcionalidades";
+var functionalitiesCA = "https://www.mambaapp.app/#funcionalidades";
+
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
 var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";

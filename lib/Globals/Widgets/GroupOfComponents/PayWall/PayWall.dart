@@ -25,6 +25,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen
 import 'package:share_plus/share_plus.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PayWall extends StatefulWidget {
@@ -413,11 +414,62 @@ class _PayWallState extends State<PayWall> {
             SizedBox(
                 height: MediaQuery.of(context).size.height *
                     0.03),
-            listTileGetAll(Icons.all_inclusive, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quye hagas'),
-            listTileGetAll(Icons.model_training, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quye hagas'),
-            listTileGetAll(Icons.sports_mma, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quy hagas'),
-            listTileGetAll(Icons.local_fire_department, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quy hagas'),
-            listTileGetAll(Icons.quiz, 'Todo ilimitado', 'Haz cosas muchas cosas para ser mejor en todo lo quy hagas'),
+            listTileGetAll(Icons.feed_outlined, AppLocalizations.of(context)!.personalizeBrandPayWallHeader, AppLocalizations.of(context)!.personalizeBrandPayWallText),
+            listTileGetAll(Icons.search, AppLocalizations.of(context)!.searcherPayWallHeader, AppLocalizations.of(context)!.searcherPayWallText),
+            listTileGetAll(Icons.calendar_month_outlined, AppLocalizations.of(context)!.sessionControlPayWallHeader, AppLocalizations.of(context)!.sessionControlPayWallText),
+            listTileGetAll(Icons.confirmation_number_outlined, AppLocalizations.of(context)!.pricePolicyPayWallHeader, AppLocalizations.of(context)!.pricePolicyPayWallText),
+            listTileGetAll(Icons.leaderboard_outlined, AppLocalizations.of(context)!.statsPayWallHeader, AppLocalizations.of(context)!.statsPayWallText),
+            SizedBox(
+                height: MediaQuery.of(context).size.height *
+                    0.03),
+            TextButton(
+              onPressed: () async {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+                if (Localizations.localeOf(context).languageCode == 'es') {
+                  if (!await launchUrl(Uri.parse(functionalitiesES))) throw 'Could not launch $functionalitiesES';
+                } else if (Localizations.localeOf(context).languageCode == 'ca') {
+                  if (!await launchUrl(Uri.parse(functionalitiesCA))) throw 'Could not launch $functionalitiesCA';
+                } else {
+                  if (!await launchUrl(Uri.parse(functionalitiesES))) throw 'Could not launch $functionalitiesES';
+                }
+              },
+              child:  Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius
+                      .circular(20),
+                ),
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.90,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.05,
+                child: Center(
+                    child: Text(
+                      'Más información en nuestra web',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(
+                          fontWeight: FontWeight
+                              .normal,
+                          color: Theme.of(context).primaryColor
+                      ),
+                    )
+
+                ),
+              ),
+            ),
             SizedBox(
                 height: MediaQuery.of(context).size.height *
                     0.01),

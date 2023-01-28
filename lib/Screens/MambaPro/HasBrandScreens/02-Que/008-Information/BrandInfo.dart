@@ -77,7 +77,10 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   List<int> startBreaks = [];
   // Booking Window
   int bookingWindow = 3;
+
+  //Paywall
   Subscription subscription = Subscription();
+  bool ShowTextExpired = false;
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -99,7 +102,28 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     );
     canEdit = currentUser.brandRole < 2 ? true : false;
     initBrand();
+    checkBrandActive();
     getBrandSubscription();
+  }
+
+  void checkBrandActive()
+  {
+    if(currentBrand.endDatePay != null)
+    {
+      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+      {
+        brandIsActive = true;
+      }
+      else
+      {
+        ShowTextExpired = true;
+        brandIsActive = false;
+      }
+    }
+    else
+      {
+        brandIsActive = false;
+      }
   }
 
   Future<void> getBrandSubscription() async
@@ -331,7 +355,36 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
             child: Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                GestureDetector(
+                !brandIsActive? GestureDetector(
+                  onTap: navigateToSubscriptionsScreen,
+                  child: Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                    height: MediaQuery.of(context).size.height*0.1,
+                    width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.new_releases,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: MediaQuery.of(context).size.width*0.10,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                        Flexible(
+                          child:  textToShow(),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      ],
+                    ),
+                  ),
+                ) : GestureDetector(
                   onTap: navigateToSubscriptionsScreen,
                   child: Material(
                     elevation: 4,
@@ -381,7 +434,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                   textAlign: TextAlign.left
                               ),
                               subtitle: Text(
-                                  'Pulsa para ver tu suscripción',
+                                  AppLocalizations.of(context)!.seeyourSub,
                                   style: Theme
                                       .of(context)
                                       .textTheme
@@ -389,26 +442,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                               ),
                               dense: true,
                             ),
-                            /*
-                  FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height*0.04,
-                      width: MediaQuery.of(context).size.width*0.9,
-                      child:  TextButton(
-                        onPressed: navigateToSubscriptionOrPayWall,
-                        child: Text(
-                            'Tu subscripción caduca el ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
-                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
-                            textAlign: TextAlign.center
-                        ),
-                      ),
-                    ),
-                  ),
-
-                   */
-
-
                           ],
                         ),
                       ),
@@ -1032,6 +1065,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   Future<void> navigateToSubscriptionsScreen() async {
     //mixpanel!.track('brand_membership_requests_view');
     if(brandIsActive) {
+      mixpanel!.track('brand_see_active_subscription');
       await Navigator.push(
           context,
           CupertinoPageRoute<bool?>(
@@ -1047,7 +1081,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       });
     }
     else {
-
+      mixpanel!.track('brand_see_paywall');
       await Navigator.push(
           context,
           CupertinoPageRoute<bool?>(
@@ -1061,6 +1095,11 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         isLoading = false;
       });
     }
+  }
+
+  Widget textToShow()
+  {
+    return   Text(ShowTextExpired? AppLocalizations.of(context)!.subscriptionExpired : AppLocalizations.of(context)!.noSubscription,  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary), textAlign: TextAlign.center,);
   }
 
   bool validateInfo() {
