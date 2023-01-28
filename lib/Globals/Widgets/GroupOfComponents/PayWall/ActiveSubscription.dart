@@ -2,15 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
-import '../../../../../../Data/Models/Usuario.dart';
-import '../../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 
 
 class ActiveSubscription extends StatefulWidget {
@@ -36,7 +31,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
   }
 
   Future<void> navigateToSubscriptionsScreen() async {
-    //mixpanel!.track('brand_membership_requests_view');
+    mixpanel!.track('brand_see_paywall');
     await Navigator.push(
         context,
         CupertinoPageRoute<bool?>(

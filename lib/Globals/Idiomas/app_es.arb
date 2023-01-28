@@ -2998,6 +2998,76 @@
   "seeAllSubs": "Ver todas las suscripciones",
   "@seeAllSubs": {
     "description": "seeAllSubs message"
+  },
+  "tanksforUsing": "Gracias por probar Mamba Professional",
+  "@tanksforUsing": {
+    "description": "tanksforUsing message"
+  },
+  "updateToday": "Suscríbete hoy",
+  "@updateToday": {
+    "description": "updateToday message"
+  },
+  "joinToBrands": "Únete a la revolución del negocio ",
+  "@joinToBrands": {
+    "description": "joinToBrands message"
+  },
+  "getAll": "Obtenlo todo",
+  "@getAll": {
+    "description": "getAll message"
+  },
+  "getAllDesc": "Desbloquea todo el potencial de Mamba Pro con una suscripción única",
+  "@getAllDesc": {
+    "description": "getAllDesc message"
+  },
+  "moreInfoInWeb": "Más información en nuestra web",
+  "@moreInfoInWeb": {
+    "description": "moreInfoInWeb message"
+  },
+  "promotionUse": "Canjea una promoción",
+  "@promotionUse": {
+    "description": "promotionUse message"
+  },
+  "insertCode": "Introduce un código promocional",
+  "@insertCode": {
+    "description": "insertCode message"
+  },
+  "anyDoubt": "¿Alguna duda?",
+  "@anyDoubt": {
+    "description": "anyDoubt message"
+  },
+  "seeSubscriptionPayWall": "Ver suscripciones",
+  "@seeSubscriptionPayWall": {
+    "description": "seeSubscriptionPayWall message"
+  },
+  "noPromotions": "No hay promociones",
+  "@noPromotions": {
+    "description": "noPromotions message"
+  },
+  "promotionDetected": "Promoción detectada",
+  "@promotionDetected": {
+    "description": "promotionDetected message"
+  },
+  "uniquePromotion": "Te regalamos una promoción única",
+  "@uniquePromotion": {
+    "description": "uniquePromotion message"
+  },
+  "startToday": "Empieza: hoy",
+  "@startToday": {
+    "description": "startToday message"
+  },
+  "threeFreeMoths": "3 meses gratis",
+  "@threeFreeMoths": {
+    "description": "threeFreeMoths message"
+  },
+  "youCanPurcahseNow": "Podrás subscribirte cuando tu subscripción actual esté cerca de su caducidad",
+  "@youCanPurcahseNow": {
+    "description": "youCanPurcahseNow message"
+  },
+  "subscribeNow": "Suscribirme",
+  "@subscribeNow": {
+    "description": "subscribeNow message"
   }
+
+
 
 }

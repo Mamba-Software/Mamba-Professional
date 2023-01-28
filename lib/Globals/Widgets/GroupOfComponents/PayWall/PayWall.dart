@@ -6,25 +6,16 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Promotion.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Text/TitleHeadline1.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/RequestConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -57,6 +48,8 @@ class _PayWallState extends State<PayWall> {
   List<Subscription> subscriptionList = [];
   double finalSizeBox = 0.01;
   final _topSnackBar = TopSnackBarDef();
+  String textToShow = "";
+  String title = "";
 
 
   // Boolean Loading
@@ -94,6 +87,22 @@ class _PayWallState extends State<PayWall> {
     await _promotionDataService
         .getValidSubscription(
         promotionController.text, widget.brandId);
+    if(subscritionPromo.id != null)
+      {
+        title = subscritionPromo.title!;
+        if(currentUser.idioma == 'es')
+          {
+            textToShow = subscritionPromo.descriptionEsp!;
+          }
+        else if(currentUser.idioma == 'ca')
+          {
+            textToShow = subscritionPromo.descriptionCat!;
+          }
+        else
+          {
+            textToShow = subscritionPromo.descriptionEsp!;
+          }
+      }
     if(fromSeeSubsc)
     {
       setState(() {
@@ -150,7 +159,7 @@ class _PayWallState extends State<PayWall> {
               children: [
                 animationMobile(),
                 Text(
-                  'Gracias por probar Mamba Professional',
+                  AppLocalizations.of(context)!.tanksforUsing,
                   style: Theme.of(context)
                       .textTheme
                       .headline1
@@ -217,7 +226,7 @@ class _PayWallState extends State<PayWall> {
                         height: MediaQuery.of(context).size.height * 0.07,
                         child:  Center(
                           child: Text(
-                            'Ver subscripciones',
+                            AppLocalizations.of(context)!.seeSubscriptionPayWall,
                             style: Theme.of(context)
                                 .textTheme
                                 .headline1
@@ -335,7 +344,7 @@ class _PayWallState extends State<PayWall> {
                   height: MediaQuery.of(context).size.height *
                       0.02),
               Text(
-                'Actualiza hoy',
+                AppLocalizations.of(context)!.updateToday,
                 style: Theme.of(context)
                     .textTheme
                     .headline1
@@ -350,7 +359,7 @@ class _PayWallState extends State<PayWall> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Únete a las ',
+                    AppLocalizations.of(context)!.joinToBrands,
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1
@@ -359,21 +368,12 @@ class _PayWallState extends State<PayWall> {
                     ),
                   ),
                   Text(
-                    '500',
+                    'fitness',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1
                         ?.copyWith(
-                        fontWeight: FontWeight.bold, color: AppColors.mainColor
-                    ),
-                  ),
-                  Text(
-                    ' marcas de entrenamiento',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        ?.copyWith(
-                        fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor
+                        fontWeight: FontWeight.normal, color: AppColors.mainColor,
                     ),
                   )
                 ],
@@ -397,7 +397,7 @@ class _PayWallState extends State<PayWall> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Obtenlo todo',
+              AppLocalizations.of(context)!.getAll,
               style: Theme.of(context)
                   .textTheme
                   .headline1
@@ -405,7 +405,7 @@ class _PayWallState extends State<PayWall> {
               textAlign: TextAlign.center,
             ),
             Text(
-              'Desbloquea todo el potencial de mamba pro con una subscripción única',
+              AppLocalizations.of(context)!.getAllDesc,
               style: Theme.of(context)
                   .textTheme
                   .bodyText1,
@@ -455,7 +455,7 @@ class _PayWallState extends State<PayWall> {
                     .height * 0.05,
                 child: Center(
                     child: Text(
-                      'Más información en nuestra web',
+                      AppLocalizations.of(context)!.moreInfoInWeb,
                       style: Theme
                           .of(context)
                           .textTheme
@@ -492,7 +492,6 @@ class _PayWallState extends State<PayWall> {
                 setState(() {
                   promotionController.text = '3MONTHS';
                 });
-
 
                 await showModalBottomSheet<int?>(
                   context: context,
@@ -535,7 +534,7 @@ class _PayWallState extends State<PayWall> {
                                 children: [
                                   ListTile(
                                     title: Text(
-                                        'Mamba pro',
+                                        'Mamba Pro',
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -543,7 +542,7 @@ class _PayWallState extends State<PayWall> {
                                         textAlign: TextAlign.left
                                     ),
                                     trailing: Text(
-                                        'Subscripciones',
+                                        AppLocalizations.of(context)!.subscriptionsAppBar,
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -572,7 +571,7 @@ class _PayWallState extends State<PayWall> {
                                       ),
                                     ),
                                     title: Text(
-                                        'Professional 3 Months Subscriptions',
+                                        title,
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -591,7 +590,7 @@ class _PayWallState extends State<PayWall> {
                                   ListTile(
                                     title: Row(
                                       children: [
-                                        Text('Te regalamos promoción unica   '),
+                                        Text(AppLocalizations.of(context)!.uniquePromotion),
                                         Icon(
                                           Icons.done,
                                           color: Colors.green,
@@ -601,7 +600,7 @@ class _PayWallState extends State<PayWall> {
                                   ),
                                   ListTile(
                                     title: Text(
-                                        'Empieza: hoy',
+                                        AppLocalizations.of(context)!.startToday,
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -609,7 +608,7 @@ class _PayWallState extends State<PayWall> {
                                         textAlign: TextAlign.left
                                     ),
                                     trailing: Text(
-                                        '3 meses gratis',
+                                        textToShow,
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -663,7 +662,7 @@ class _PayWallState extends State<PayWall> {
                                                   .height * 0.05,
                                               child: Center(
                                                   child: Text(
-                                                    'Suscribirme',
+                                                    AppLocalizations.of(context)!.subscribeNow,
                                                     style: Theme
                                                         .of(context)
                                                         .textTheme
@@ -693,7 +692,7 @@ class _PayWallState extends State<PayWall> {
               }
               else
                 {
-                  _topSnackBar.topsnackbar(context, 'Podrás subscribirte a este plan cuando tu subscripción esté cerca de su caducidad', AppColors.mainColor);
+                  _topSnackBar.topsnackbar(context, AppLocalizations.of(context)!.youCanPurcahseNow, AppColors.mainColor);
                 }
             },
             child: Center(
@@ -710,7 +709,7 @@ class _PayWallState extends State<PayWall> {
                 height: MediaQuery.of(context).size.height * 0.07,
                 child:  Center(
                   child: Text(
-                    subscriptionList[index].title!,
+                    currentUser.idioma == 'ca'? subscriptionList[index].descriptionCat! : subscriptionList[index].descriptionEsp!,
                     style: Theme.of(context)
                         .textTheme
                         .headline1
@@ -776,7 +775,7 @@ class _PayWallState extends State<PayWall> {
                                 children: [
                                   ListTile(
                                     title: Text(
-                                        'Mamba pro',
+                                        'Mamba Pro',
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -784,7 +783,7 @@ class _PayWallState extends State<PayWall> {
                                         textAlign: TextAlign.left
                                     ),
                                     trailing: Text(
-                                        'Subscripciones',
+                                        AppLocalizations.of(context)!.subscriptionsAppBar,
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -813,7 +812,7 @@ class _PayWallState extends State<PayWall> {
                                       ),
                                     ),
                                     title: Text(
-                                        'Professional 3 Months Subscriptions',
+                                        title,
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -832,7 +831,7 @@ class _PayWallState extends State<PayWall> {
                                   ListTile(
                                     title: Row(
                                       children: [
-                                        Text('Te regalamos promoción unica   '),
+                                        Text(AppLocalizations.of(context)!.uniquePromotion),
                                         Icon(
                                           Icons.done,
                                           color: Colors.green,
@@ -842,7 +841,7 @@ class _PayWallState extends State<PayWall> {
                                   ),
                                   ListTile(
                                     title: Text(
-                                        'Empieza: hoy',
+                                        AppLocalizations.of(context)!.startToday,
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -850,7 +849,7 @@ class _PayWallState extends State<PayWall> {
                                         textAlign: TextAlign.left
                                     ),
                                     trailing: Text(
-                                        '3 meses gratis',
+                                        textToShow,
                                         style: Theme
                                             .of(context)
                                             .textTheme
@@ -894,7 +893,7 @@ class _PayWallState extends State<PayWall> {
                                                   .height * 0.05,
                                               child: Center(
                                                   child: Text(
-                                                    'Suscribirme',
+                                                    AppLocalizations.of(context)!.subscribeNow,
                                                     style: Theme
                                                         .of(context)
                                                         .textTheme
@@ -924,7 +923,7 @@ class _PayWallState extends State<PayWall> {
               }
               else
               {
-                _topSnackBar.topsnackbar(context, 'Podrás subscribirte a estebo plan cuando tu subscripción esté cerca de su caducidad', AppColors.mainColor);
+                _topSnackBar.topsnackbar(context, AppLocalizations.of(context)!.youCanPurcahseNow, AppColors.mainColor);
               }
             },
             child: Center(
@@ -940,7 +939,7 @@ class _PayWallState extends State<PayWall> {
                 height: MediaQuery.of(context).size.height * 0.07,
                 child:  Center(
                   child: Text(
-                    subscriptionList[index].title!,
+                    currentUser.idioma == 'ca'? subscriptionList[index].descriptionCat! : subscriptionList[index].descriptionEsp!,
                     style: Theme.of(context)
                         .textTheme
                         .headline1
@@ -998,7 +997,7 @@ class _PayWallState extends State<PayWall> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Canjea una promoción',
+              AppLocalizations.of(context)!.promotionUse,
               style: Theme.of(context)
                   .textTheme
                   .headline1
@@ -1030,7 +1029,7 @@ class _PayWallState extends State<PayWall> {
                         0.03),
                 child: subscritionPromo.id == null? Row(
                   children: [
-                    Text('No hay promociones'),
+                    Text(AppLocalizations.of(context)!.noPromotions),
                     Icon(
                       Icons.close,
                       color: Colors.red,
@@ -1040,7 +1039,7 @@ class _PayWallState extends State<PayWall> {
                   children: [
                     Row(
                       children: [
-                        Text('Promoción detectada'),
+                        Text(AppLocalizations.of(context)!.promotionDetected),
                         Icon(
                           Icons.done,
                           color: Colors.green,
@@ -1094,7 +1093,7 @@ class _PayWallState extends State<PayWall> {
                           filled: true,
                           fillColor: AppColors.white,
                           hintText:
-                          'Introduce codigo promocional',
+                          AppLocalizations.of(context)!.insertCode,
                           hintStyle: Theme.of(context)
                               .textTheme
                               .headline3
@@ -1158,7 +1157,7 @@ class _PayWallState extends State<PayWall> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TitleHeadline1(
-            text: 'Alguna duda?',
+            text: AppLocalizations.of(context)!.anyDoubt,
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.015),
           Padding(
