@@ -51,6 +51,7 @@ class _HomePro extends State<HomePro> {
 
   @override
   initState() {
+    setBrandActive();
     super.initState();
     _scrollController = ScrollController()
     ..addListener(() => _isAppBarExpanded ?
@@ -62,6 +63,26 @@ class _HomePro extends State<HomePro> {
     }),
     );
     getBrandImage();
+  }
+
+  void setBrandActive()
+  {
+    if(currentBrand.endDatePay != null)
+    {
+      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+      {
+
+        brandIsActive = true;
+      }
+      else
+      {
+        brandIsActive = false;
+      }
+    }
+    else
+    {
+      brandIsActive = false;
+    }
   }
 
   Future<void> getBrandImage() async {

@@ -3059,7 +3059,7 @@
   "@threeFreeMoths": {
     "description": "threeFreeMoths message"
   },
-  "youCanPurcahseNow": "Podrás subscribirte cuando tu subscripción actual esté cerca de su caducidad",
+  "youCanPurcahseNow": "Podrás suscribirte próximamente",
   "@youCanPurcahseNow": {
     "description": "youCanPurcahseNow message"
   },

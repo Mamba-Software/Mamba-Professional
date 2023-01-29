@@ -624,25 +624,12 @@ class _PayWallState extends State<PayWall> {
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
                                                 subscritionPromo.id!, subscritionPromo.title!);
-                                            Future.delayed(const Duration(seconds: 2), () async {
-                                                  Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    CupertinoPageRoute<void>(
-                                                      builder: (context) => const SplashScreen(),
-                                                      settings: const RouteSettings(name: 'SplashScreen'),
-                                                    ),
-                                                        (_) => false,
-                                                  );
-
-                                            });
-                                            await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
-                                            Navigator.pushAndRemoveUntil(
-                                              context,
-                                              CupertinoPageRoute<void>(
-                                                builder: (context) =>  SplashScreen(),
-                                                settings: RouteSettings(name: 'SplashScreen'),
-                                              ),
-                                                  (_) => false,
+                                            Navigator.pushReplacement(
+                                                context,
+                                                CupertinoPageRoute<Null>(
+                                                  builder: (context) => const SplashScreen(),
+                                                  settings: const RouteSettings(name: 'SplashScreen'),
+                                                )
                                             );
                                           },
                                           child: Center(
@@ -865,15 +852,12 @@ class _PayWallState extends State<PayWall> {
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
                                                 subscritionPromo.id!, subscritionPromo.title!);
-                                            Navigator.pushAndRemoveUntil(
-                                              context,
-                                              CupertinoPageRoute<void>(
-                                                builder: (
-                                                    context) => const BrandScreen(),
-                                                settings: const RouteSettings(
-                                                    name: 'BrandScreen'),
-                                              ),
-                                                  (_) => false,
+                                            Navigator.pushReplacement(
+                                                context,
+                                                CupertinoPageRoute<Null>(
+                                                  builder: (context) => const SplashScreen(),
+                                                  settings: const RouteSettings(name: 'SplashScreen'),
+                                                )
                                             );
                                           },
                                           child: Center(

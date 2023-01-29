@@ -127,8 +127,10 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                         ),
                         bonoMostBuys == null ? Text("") : TextButton(
                           onPressed: () {
-                            mixpanel!.track('brand_homepage_bonos_most_buys');
-                            widget.navigateToPage(5);
+                            if(brandIsActive) {
+                              mixpanel!.track('brand_homepage_bonos_most_buys');
+                              widget.navigateToPage(5);
+                            }
                           },
                           child: Text(
                               AppLocalizations.of(context)!.mostBuys,

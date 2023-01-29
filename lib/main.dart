@@ -158,15 +158,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                 home: const SplashScreen(),
                 onGenerateRoute: (RouteSettings settings) {
                   final args = settings.arguments;
-                  //TODO PROVAR
-                  if(brandIsActive)
-                    {
-                      return CupertinoPageRoute(
-                        builder: (_) => const SplashScreen(),
-                        settings: const RouteSettings(name: 'SplashScreen'),
-                      );
-                    }
-                  else {
+                  print('ARGUMENTS');
+                  print(settings.name);
                     switch (settings.name) {
                       case 'SplashScreen':
                         return CupertinoPageRoute(
@@ -224,7 +217,6 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                               name: 'MembershipRequests'),
                         );
                     }
-                  }
                 },
               );
             },
