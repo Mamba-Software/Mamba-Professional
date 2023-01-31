@@ -106,10 +106,8 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                             ListTile(
                               leading: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image(
-                                  image: NetworkImage(
-                                      'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
-                                ),
+                                child: Image.asset(
+                                  Constants.subscriptionImage,),
                               ),
                               title: Text(
                                   subscription.title!,
@@ -129,9 +127,13 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                               dense: true,
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height*0.04,),
+                              height: MediaQuery.of(context).size.height*0.02,),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                              child: Divider(color: Theme.of(context).dividerColor, thickness: 1.5),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
                               child: Text(
                                   AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.startDate!.toDate()), formatter.format(subscription.endDate!.toDate()).toString()),
                                   style: Theme
@@ -192,6 +194,10 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                         .headline1,
                                     textAlign: TextAlign.left,
                                   ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.width*0.03, left: MediaQuery.of(context).size.width*0.03, right: MediaQuery.of(context).size.width*0.03),
+                                  child: Divider(color: Theme.of(context).dividerColor, thickness: 1.5),
                                 ),
                                 Padding(
                                   padding:  EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.00),

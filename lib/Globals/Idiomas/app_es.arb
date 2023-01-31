@@ -1541,7 +1541,7 @@
   "@joinEvent": {
     "description": "Wellcome message"
   },
-  "joinEventConfirmation": "¿Estás seguro de que quieres reservar una plaza para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "joinEventConfirmation": "¿Estás seguro de que quieres reservar una plaza para esta sesión?\n\nLos organizadores recibirán una notificación.",
   "@joinEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -1549,7 +1549,7 @@
   "@leaveEvent": {
     "description": "Wellcome message"
   },
-  "leaveEventConfirmation": "¿Estás seguro de que quieres cancelar tu reserva para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "leaveEventConfirmation": "¿Estás seguro de que quieres cancelar tu reserva para esta sesión?\n\nLos organizadores recibirán una notificación.",
   "@leaveEventConfirmation": {
     "description": "Wellcome message"
   },

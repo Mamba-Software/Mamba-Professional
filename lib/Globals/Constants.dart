@@ -54,11 +54,13 @@ class Constants {
   static String themeDarkImage = "assets/images/themeDarkImage.png";
   static String themeSystemImage = "assets/images/themeSystemImage.png";
   static String appUpdateImage = "assets/images/appUpdateImage.png";
+  static String subscriptionImage = "assets/images/MambaProLogo.png";
 
   // Animations
   static String runningFemale = "assets/animations/runningFemale.gif";
   static String mambaProfesionalGif = "assets/animations/graph.gif";
-  static String mobilePro = "assets/animations/mobilePro.gif";
+  static String mobileProDark = "assets/animations/mambaMobileBlack.gif";
+  static String mobileProLight = "assets/animations/mambaMobileWhite.gif";
 
   // Emojis
   static String relaxedEmojiImage = "assets/images/relaxedEmojiImage.png";

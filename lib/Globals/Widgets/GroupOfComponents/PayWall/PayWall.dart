@@ -16,8 +16,11 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import '../../../Providers/ThemeProvider.dart';
 
 class PayWall extends StatefulWidget {
   String brandId;
@@ -158,6 +161,9 @@ class _PayWallState extends State<PayWall> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 animationMobile(),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height *
+                        0.02),
                 Text(
                   AppLocalizations.of(context)!.tanksforUsing,
                   style: Theme.of(context)
@@ -209,9 +215,9 @@ class _PayWallState extends State<PayWall> {
                       setState(() {
                         loadingPromotions = true;
                       });
-                      if( !await _promotionDataService.checkIfBrandUsedSubscription('3MONTHS', widget.brandId))
+                      if( !await _promotionDataService.checkIfBrandUsedSubscription('FITNESSISBUSINESS', widget.brandId))
                         {
-                          promotionController.text = '3MONTHS';
+                          promotionController.text = 'FITNESSISBUSINESS';
                           await getPromotion();
                         }
                       await getSubscriptions();
@@ -279,10 +285,13 @@ class _PayWallState extends State<PayWall> {
                 child: AnimatedAlign(
                   alignment: Alignment.center,
                   duration: Duration(seconds: 10),
-                  child: Image.asset(
-                    Constants.mobilePro,
+                  child: Provider.of<ThemeProvider>(context, listen: false).isDarkMode? Image.asset(
+                    Constants.mobileProDark,
                     fit: BoxFit.contain,
-                  ),
+                  ) : Image.asset(
+                    Constants.mobileProLight,
+                    fit: BoxFit.contain,
+                  )
                 ),
               ),
             ),
@@ -315,73 +324,80 @@ class _PayWallState extends State<PayWall> {
 
   Widget containerJoin()
   {
-    return  Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).dialogBackgroundColor.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(10),
+    return  Material(
+      elevation: 4,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
       ),
-      width: MediaQuery.of(context).size.width * 0.90,
-      height: MediaQuery.of(context).size.height * 0.32,
-      child:  Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6',
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      height: MediaQuery.of(context).size.width * 0.3,
-                      fit: BoxFit.fill,
-                    ),
-                  )
-              ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height *
-                      0.02),
-              Text(
-                AppLocalizations.of(context)!.updateToday,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1
-                    ?.copyWith(
-                    fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor, fontSize: 30
-                ),
-              ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height *
-                      0.01),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.joinToBrands,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        ?.copyWith(
-                        fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor
-                    ),
-                  ),
-                  Text(
-                    'fitness',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        ?.copyWith(
-                        fontWeight: FontWeight.normal, color: AppColors.mainColor,
-                    ),
-                  )
-                ],
-              ),
-            ],
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).dialogBackgroundColor.withOpacity(0.3),
+          //color: AppColors.darkGrey.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(10),
         ),
+        width: MediaQuery.of(context).size.width * 0.90,
+        height: MediaQuery.of(context).size.height * 0.32,
+        child:  Center(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.05),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        Constants.subscriptionImage,
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        height: MediaQuery.of(context).size.width * 0.3,
+                        fit: BoxFit.fill,
+                      ),
+                    )
+                ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height *
+                        0.02),
+                Text(
+                  AppLocalizations.of(context)!.updateToday,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline1
+                      ?.copyWith(
+                      fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor, fontSize: 30
+                  ),
+                ),
+                SizedBox(
+                    height: MediaQuery.of(context).size.height *
+                        0.01),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.joinToBrands,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(
+                          fontWeight: FontWeight.normal, color: Theme.of(context).primaryColor
+                      ),
+                    ),
+                    Text(
+                      'fitness',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(
+                          fontWeight: FontWeight.normal, color: AppColors.mainColor,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
 
+        ),
       ),
     );
   }
@@ -488,9 +504,9 @@ class _PayWallState extends State<PayWall> {
             onTap: () async {
               FocusManager.instance.primaryFocus?.unfocus();
               //
-              if( !await _promotionDataService.checkIfBrandUsedSubscription('3MONTHS', widget.brandId)) {
+              if( !await _promotionDataService.checkIfBrandUsedSubscription('FITNESSISBUSINESS', widget.brandId)) {
                 setState(() {
-                  promotionController.text = '3MONTHS';
+                  promotionController.text = 'FITNESSISBUSINESS';
                 });
 
                 await showModalBottomSheet<int?>(
@@ -565,10 +581,8 @@ class _PayWallState extends State<PayWall> {
                                   ListTile(
                                     leading: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
-                                      child: Image(
-                                        image: NetworkImage(
-                                            'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
-                                      ),
+                                      child: Image.asset(
+                                        Constants.subscriptionImage,),
                                     ),
                                     title: Text(
                                         title,
@@ -624,6 +638,7 @@ class _PayWallState extends State<PayWall> {
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
                                                 subscritionPromo.id!, subscritionPromo.title!);
+                                            currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
                                             Navigator.pushReplacement(
                                                 context,
                                                 CupertinoPageRoute<Null>(
@@ -717,9 +732,9 @@ class _PayWallState extends State<PayWall> {
             onTap: () async {
               FocusManager.instance.primaryFocus?.unfocus();
               //_topSnackBar.topsnackbar(context, 'Te regalamos la promoción 3MONTHS, disfruta de 3 meses gratuitos', AppColors.mainColor);
-              if( !await _promotionDataService.checkIfBrandUsedSubscription('3MONTHS', widget.brandId)) {
+              if( !await _promotionDataService.checkIfBrandUsedSubscription('FITNESSISBUSINESS', widget.brandId)) {
                 setState(() {
-                  promotionController.text = '3MONTHS';
+                  promotionController.text = 'FITNESSISBUSINESS';
                 });
                 await showModalBottomSheet<int?>(
                   context: context,
@@ -793,10 +808,8 @@ class _PayWallState extends State<PayWall> {
                                   ListTile(
                                     leading: ClipRRect(
                                       borderRadius: BorderRadius.circular(10),
-                                      child: Image(
-                                        image: NetworkImage(
-                                            'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
-                                      ),
+                                      child: Image.asset(
+                                        Constants.subscriptionImage,),
                                     ),
                                     title: Text(
                                         title,
@@ -852,6 +865,7 @@ class _PayWallState extends State<PayWall> {
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
                                                 subscritionPromo.id!, subscritionPromo.title!);
+                                            currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
                                             Navigator.pushReplacement(
                                                 context,
                                                 CupertinoPageRoute<Null>(
@@ -989,7 +1003,7 @@ class _PayWallState extends State<PayWall> {
               textAlign: TextAlign.center,
             ),
             promotionController
-                .text.isNotEmpty && promotionController.text.length == 7?
+                .text.isNotEmpty && promotionController.text.length == 17?
             loadingPromotions? Padding(
               padding: EdgeInsets.symmetric(
                   horizontal:
@@ -1034,7 +1048,7 @@ class _PayWallState extends State<PayWall> {
                 )
             ) : Container(),
             promotionController
-                .text.isNotEmpty && promotionController.text.length == 7?  Container() : SizedBox(
+                .text.isNotEmpty && promotionController.text.length == 17?  Container() : SizedBox(
                 height: MediaQuery.of(context).size.height *
                     0.02),
             Material(
@@ -1044,13 +1058,13 @@ class _PayWallState extends State<PayWall> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      maxLength: 7,
+                      maxLength: 17,
                       autofocus: false,
                       controller: promotionController,
                       keyboardType: TextInputType.name,
                       onChanged: (val) async {
                         if (promotionController
-                            .text.isNotEmpty && promotionController.text.length == 7) {
+                            .text.isNotEmpty && promotionController.text.length == 17) {
                           setState(() {
                             loadingPromotions = true;
                           });

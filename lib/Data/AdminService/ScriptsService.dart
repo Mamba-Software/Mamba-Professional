@@ -2314,4 +2314,99 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> JMFmigrateUserDataJenuary31() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 31th JANUARY 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Users/Notifications collection:\n');
+      print('--------------');
+      print('\n');
+
+      String users = "7777 Users";
+      Usuario user = new Usuario();
+      QuerySnapshot querySnapshot3;
+      QuerySnapshot querySnapshot4;
+
+      // Get all the Trainers
+      QuerySnapshot querySnapshot = await _firestore.collection(users).where("isTrainer", isEqualTo: true).get();
+      // Per Trainer Get their Brand
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String userId = querySnapshot.docs[i].id;
+        print(userId);
+        user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: '+userId);
+        print('\n');
+        // Get their Brand Id
+        QuerySnapshot querySnapshot2 = await _firestore.collection(users).doc(userId).collection("Brands").get();
+        if (querySnapshot2.docs.isNotEmpty) {
+          String brandId = querySnapshot2.docs[0].id;
+          // Filter type of notification UserBuysBono_Trainer
+          if(user.isTrainer!) {
+             querySnapshot3 = await _firestore.collection(users)
+                .doc(userId).collection("Notifications").where(
+                "type", isEqualTo: "UserSendBonoRequest_Trainer")
+                .get();
+             querySnapshot4 = await _firestore.collection(users)
+                 .doc(userId).collection("Notifications").where(
+                 "type", isEqualTo: "UserCancelBonoRequest_Trainer")
+                 .get();
+          }
+          else
+            {
+               querySnapshot3 = await _firestore.collection(users)
+                  .doc(userId).collection("Notifications").where(
+                  "type", isEqualTo: "UserSendBonoRequest_User")
+                  .get();
+               querySnapshot4 = await _firestore.collection(users)
+                   .doc(userId).collection("Notifications").where(
+                   "type", isEqualTo: "UserCancelBonoRequest_User")
+                   .get();
+            }
+          for (int i = 0; i < querySnapshot3.docs.length; i++) {
+            NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot3.docs[i].id, querySnapshot3.docs[i]);
+            print('NOTIF WITH ID: '+ notif.id!);
+            // Add Brand Id
+            var parameters = [notif.parameters[0], brandId, notif.parameters[2], notif.parameters[3], notif.parameters[4]];
+            // Update Parameters on Notification
+            await _firestore
+                .collection(users)
+                .doc(userId)
+                .collection("Notifications")
+                .doc(notif.id!)
+                .update({
+              "parameters": parameters,
+            });
+          }
+          for (int i = 0; i < querySnapshot4.docs.length; i++) {
+            NotificationEvent notif = NotificationEvent.fromObjectAllData(querySnapshot4.docs[i].id, querySnapshot4.docs[i]);
+            print('NOTIF WITH ID: '+ notif.id!);
+            // Add Brand Id
+            var parameters = [notif.parameters[0], brandId, notif.parameters[2], notif.parameters[3], notif.parameters[4]];
+            // Update Parameters on Notification
+            await _firestore
+                .collection(users)
+                .doc(userId)
+                .collection("Notifications")
+                .doc(notif.id!)
+                .update({
+              "parameters": parameters,
+            });
+          }
+        }
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
 }
