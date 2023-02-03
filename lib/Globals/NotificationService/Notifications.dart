@@ -102,7 +102,6 @@ class _NotificationsState extends State<Notifications> {
     // Get User, Brand and Events when needed
     for(int i = 0; i < notificationsList.length; i++) {
       NotificationEvent notification = notificationsList[i];
-      print(notification.id);
       if (notification.parameters.length > 0) {
         if (notification.parameters[0] != "null") {
           Usuario user = users.firstWhere((element) => element.id == notification.parameters[0], orElse: () => Usuario());
