@@ -217,6 +217,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   Widget build(BuildContext context) {
     if (isFirstBuild) {
       originalPaymentString = AppLocalizations.of(context)!.giftPaymentMethod;
+      if(paymentMethod == 0)
+        {
+          originalPaymentString = AppLocalizations.of(context)!.cashPaymentMethod;
+        }
+      else if(paymentMethod == 1)
+        {
+          originalPaymentString = AppLocalizations.of(context)!.transferPaymentMethod;
+        }
       isFirstBuild = false;
     }
     return Scaffold(
