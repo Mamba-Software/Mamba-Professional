@@ -135,7 +135,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                       child: Image.asset(
                         Constants.subscriptionImage,),
 
-                    ),
+                    ),//
                     title: Text(
                         subscription.title!,
                         style: Theme
