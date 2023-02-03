@@ -211,6 +211,7 @@ class _PayWallState extends State<PayWall> {
               children: [
                 GestureDetector(
                     onTap: () async {
+                      mixpanel!.track('brand_see_subscription');
                       FocusManager.instance.primaryFocus?.unfocus();
                       setState(() {
                         loadingPromotions = true;
@@ -297,6 +298,7 @@ class _PayWallState extends State<PayWall> {
             ),
             IconButton(
               onPressed: () {
+                mixpanel!.track('brand_leaves_paywallscreen');
                 if(widget.comesFromInitPage != null && widget.comesFromInitPage == true)
                 {
                   Navigator.pushAndRemoveUntil(
@@ -502,6 +504,7 @@ class _PayWallState extends State<PayWall> {
       {
         return GestureDetector(
             onTap: () async {
+              mixpanel!.track('brand_clicked_subscription');
               FocusManager.instance.primaryFocus?.unfocus();
               //
               if( !await _promotionDataService.checkIfBrandUsedSubscription('FITNESSISBUSINESS', widget.brandId)) {
@@ -634,6 +637,7 @@ class _PayWallState extends State<PayWall> {
                                       title: Center(
                                         child: GestureDetector(
                                           onTap: () async {
+                                            mixpanel!.track('brand_subscribed');
                                             await _brandDataService
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
@@ -730,6 +734,7 @@ class _PayWallState extends State<PayWall> {
       children: [
         GestureDetector(
             onTap: () async {
+              mixpanel!.track('brand_clicked_subscription');
               FocusManager.instance.primaryFocus?.unfocus();
               //_topSnackBar.topsnackbar(context, 'Te regalamos la promoción 3MONTHS, disfruta de 3 meses gratuitos', AppColors.mainColor);
               if( !await _promotionDataService.checkIfBrandUsedSubscription('FITNESSISBUSINESS', widget.brandId)) {
@@ -861,6 +866,7 @@ class _PayWallState extends State<PayWall> {
                                       title: Center(
                                         child: GestureDetector(
                                           onTap: () async {
+                                            mixpanel!.track('brand_subscribed');
                                             await _brandDataService
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
