@@ -1541,7 +1541,7 @@
   "@joinEvent": {
     "description": "Wellcome message"
   },
-  "joinEventConfirmation": "¿Estás seguro de que quieres reservar una plaza para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "joinEventConfirmation": "¿Estás seguro de que quieres reservar una plaza para esta sesión?\n\nLos organizadores recibirán una notificación.",
   "@joinEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -1549,7 +1549,7 @@
   "@leaveEvent": {
     "description": "Wellcome message"
   },
-  "leaveEventConfirmation": "¿Estás seguro de que quieres cancelar tu reserva para esta sessión?\n\nLos organizadores recibirán una notificación.",
+  "leaveEventConfirmation": "¿Estás seguro de que quieres cancelar tu reserva para esta sesión?\n\nLos organizadores recibirán una notificación.",
   "@leaveEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -2886,5 +2886,188 @@
   "statsMinimumSessionBrand": "Necesitas un mínimo de sesiones para ver esta estadística",
   "@statsMinimumSessionBrand": {
     "description": "statsMinimumSessionBrand message"
+    },
+  "subscriptionExpired": "Tu suscripción ha caducado, pulsa para renovar",
+  "@subscriptionExpired": {
+    "description": "subscriptionExpired message"
+  },
+  "noSubscription": "No tienes suscripción, pulsa para adquirir una",
+  "@noSubscription": {
+    "description": "noSubscription message"
+  },
+  "expiresAt": "Expira el",
+  "@expiresAt": {
+    "description": "expiresAt message"
+  },
+  "seeyourSub": "Pulsa para ver tu suscripción",
+  "@seeyourSub": {
+    "description": "seeyourSub message"
+  },
+  "subscriptionsAppBar": "Suscripciones",
+  "@subscriptionsAppBar": {
+    "description": "subscriptionsAppBar message"
+  },
+  "moreSubInfo": "La suscripción fue adquirida el {initDate} y expira el {endDate}",
+  "@moreSubInfo": {
+    "description": "moreSubInfo message",
+    "placeholders": {
+      "initDate": {
+        "type": "String"
+      },
+      "endDate": {
+        "type": "String"
+      }
     }
+  },
+  "subscriptionIncludes": "Incluye todo",
+  "@subscriptionIncludes": {
+    "description": "subscriptionIncludes message"
+  },
+  "sessionControlPayWallHeader": "Gestión de sesiones",
+  "@sessionControlPayWallHeader": {
+    "description": "sessionControlPayWallHeader message"
+  },
+  "sessionControlPayWallText": "Automatiza la calendarización y aforo de tus sesiones",
+  "@sessionControlPayWallText": {
+    "description": "sessionControlPayWallText message"
+  },
+  "pricePolicyPayWallHeader": "Define tu política de precios",
+  "@pricePolicyPayWallHeader": {
+    "description": "pricePolicyPayWallHeader message"
+  },
+  "pricePolicyPayWallText": "Gestiona tus pagos con bonos totalmente personalizables",
+  "@pricePolicyPayWallText": {
+    "description": "pricePolicyPayWallText message"
+  },
+  "statsPayWallHeader": "Tu negocio en números",
+  "@statsPayWallHeader": {
+    "description": "statsPayWallHeader message"
+  },
+  "statsPayWallText": "Toma las mejores decisiones para tu negocio con el módulo de estadísticas",
+  "@statsPayWallText": {
+    "description": "statsPayWallText message"
+  },
+  "personalizeBrandPayWallHeader": "Personaliza a tu gusto",
+  "@personalizeBrandPayWallHeader": {
+    "description": "personalizeBrandPayWallHeader message"
+  },
+  "personalizeBrandPayWallText": "Con tu logotipo, tus colores, tus fotos y tus ubicaciones",
+  "@personalizeBrandPayWallText": {
+    "description": "personalizeBrandPayWallText message"
+  },
+  "feedBackPayWallHeader": "Escucha a tus clientes",
+  "@feedBackPayWallHeader": {
+    "description": "feedBackPayWallHeader message"
+  },
+  "feedBackPayWallText": "Obtén feedback de cada cliente después de tus sesiones",
+  "@feedBackPayWallText": {
+    "description": "feedBackPayWallText message"
+  },
+  "searcherPayWallHeader": "Clientes cerca de ti",
+  "@searcherPayWallHeader": {
+    "description": "searcherPayWallHeader message"
+  },
+  "searcherPayWallText": "Nuevos clientes te podrán contactar y solicitar tus servicios",
+  "@searcherPayWallText": {
+    "description": "searcherPayWallText message"
+  },
+  "sessionControActiveText": "Gestión de tus sesiones y control de aforo",
+  "@sessionControActiveText": {
+    "description": "sessionControActiveText message"
+  },
+  "pricePolicyActiveText": "Política de precios mediante bonos personalizados",
+  "@pricePolicyPayWallText": {
+    "description": "pricePolicyPayWallText message"
+  },
+  "statsActiveText": "Análisis de tu negocio con el módulo de estadísticas",
+  "@statsActiveText": {
+    "description": "statsActiveText message"
+  },
+  "personalizeBrandActiveText": "Personalización de tu marca",
+  "@personalizeBrandActiveText": {
+    "description": "personalizeBrandActiveText message"
+  },
+  "feedBackActiveText": "Obtén feedback de cada cliente después de tus sesiones",
+  "@feedBackPayWallText": {
+    "description": "feedBackPayWallText message"
+  },
+  "searcherActiveText": "Aparición en el buscador de marcas",
+  "@searcherActiveText": {
+    "description": "searcherActiveText message"
+  },
+  "seeAllSubs": "Ver todas las suscripciones",
+  "@seeAllSubs": {
+    "description": "seeAllSubs message"
+  },
+  "tanksforUsing": "Gracias por probar Mamba Professional",
+  "@tanksforUsing": {
+    "description": "tanksforUsing message"
+  },
+  "updateToday": "Suscríbete hoy",
+  "@updateToday": {
+    "description": "updateToday message"
+  },
+  "joinToBrands": "Únete a la revolución del negocio ",
+  "@joinToBrands": {
+    "description": "joinToBrands message"
+  },
+  "getAll": "Obtenlo todo",
+  "@getAll": {
+    "description": "getAll message"
+  },
+  "getAllDesc": "Desbloquea todo el potencial de Mamba Pro con una suscripción única",
+  "@getAllDesc": {
+    "description": "getAllDesc message"
+  },
+  "moreInfoInWeb": "Más información en nuestra web",
+  "@moreInfoInWeb": {
+    "description": "moreInfoInWeb message"
+  },
+  "promotionUse": "Canjea una promoción",
+  "@promotionUse": {
+    "description": "promotionUse message"
+  },
+  "insertCode": "Introduce un código promocional",
+  "@insertCode": {
+    "description": "insertCode message"
+  },
+  "anyDoubt": "¿Alguna duda?",
+  "@anyDoubt": {
+    "description": "anyDoubt message"
+  },
+  "seeSubscriptionPayWall": "Ver suscripciones",
+  "@seeSubscriptionPayWall": {
+    "description": "seeSubscriptionPayWall message"
+  },
+  "noPromotions": "No hay promociones",
+  "@noPromotions": {
+    "description": "noPromotions message"
+  },
+  "promotionDetected": "Promoción detectada",
+  "@promotionDetected": {
+    "description": "promotionDetected message"
+  },
+  "uniquePromotion": "Te regalamos una promoción única",
+  "@uniquePromotion": {
+    "description": "uniquePromotion message"
+  },
+  "startToday": "Empieza: hoy",
+  "@startToday": {
+    "description": "startToday message"
+  },
+  "threeFreeMoths": "3 meses gratis",
+  "@threeFreeMoths": {
+    "description": "threeFreeMoths message"
+  },
+  "youCanPurcahseNow": "Podrás suscribirte próximamente",
+  "@youCanPurcahseNow": {
+    "description": "youCanPurcahseNow message"
+  },
+  "subscribeNow": "Suscribirme",
+  "@subscribeNow": {
+    "description": "subscribeNow message"
+  }
+
+
+
 }

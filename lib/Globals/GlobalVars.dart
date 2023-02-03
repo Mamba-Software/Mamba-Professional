@@ -11,7 +11,7 @@ import '../Data/LibraryModels/lColor.dart';
 bool isProduction = true;
 
 // App Version
-var appVersion = "MAMBA v0.0.9";
+var appVersion = "MAMBA v0.0.10";
 
 List<lColor> currentColors = [];
 List<lDegradate> currentDegradates = [];//0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
@@ -26,6 +26,9 @@ var websiteCA = "https://www.mambaapp.app/ca/inici/";
 var termsAndConditionsES = "https://www.mambaapp.app/terminos-y-condiciones/";
 var termsAndConditionsCA = "https://www.mambaapp.app/ca/termes-i-condicions/";
 
+var functionalitiesES = "https://www.mambaapp.app/#funcionalidades";
+var functionalitiesCA = "https://www.mambaapp.app/#funcionalidades";
+
 // API Keys
 var placesAPIAndroid = "AIzaSyBjUcoI0sYFY9H8mb2n0IoBv26GxnPTRgs";
 var placesAPIIOS = "AIzaSyAYFglgzIMLYXB9XQPaZ977MKUMseCJCvY";
@@ -36,6 +39,7 @@ var googleMapsAPIIOS = "AIzaSyCHiJWFQzsfD-lO34bbctas1No0Kgxn9i4";
 var currentUser = Usuario();
 var currentBrand = Brand();
 bool hasBrand = false;
+bool brandIsActive = false;
 
 // Unread Notifications And Chats
 var unreadNotifications = 0;

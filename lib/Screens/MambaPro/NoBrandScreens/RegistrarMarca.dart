@@ -126,6 +126,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
       "active" + currentUser.id!: false,
     }, name: nameBrandController.text.trim(), users: []);
     await _brandDataService.updateBrandRoom(result, room.id);
+    brandIsActive = false;
     // Pushing to Splash Screen
     await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires
     Navigator.pushAndRemoveUntil(
@@ -152,89 +153,89 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
-            child: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).textTheme.headline3),
-          ),
-          centerTitle: false,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          backgroundColor: Theme.of(context).backgroundColor,
-          actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
-              child: IconButton(
-                icon: Icon(Icons.close, size: MediaQuery.of(context).size.width*0.06,),
-                onPressed: () {
-                  Navigator.pop(context, false);
-                },
-              ),
-            ),
-          ],
+      appBar: AppBar(
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+          child: Text(AppLocalizations.of(context)!.createBrand, style: Theme.of(context).textTheme.headline3),
         ),
+        centerTitle: false,
+        elevation: 0,
+        automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).backgroundColor,
-        body: GestureDetector(
-          onTap: () {
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        actions: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+            child: IconButton(
+              icon: Icon(Icons.close, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                LinearPercentIndicator(
+                  width: MediaQuery.of(context).size.width*0.94,
+                  lineHeight: 5,
+                  percent: addEventTabValue,
+                  animation: false,
+                  animationDuration: 250,
+                  barRadius: const Radius.circular(10),
+                  progressColor: Theme.of(context).primaryColor,
+                  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.05),
+            Expanded(
+              child: PageView(
+                physics: const NeverScrollableScrollPhysics(),
+                controller: _pageControllerData,
+                onPageChanged: (int page) {
+                  setState(() {
+                    addEventTabValue += 0.25;
+                  });
+                },
                 children: [
-                  LinearPercentIndicator(
-                    width: MediaQuery.of(context).size.width*0.94,
-                    lineHeight: 5,
-                    percent: addEventTabValue,
-                    animation: false,
-                    animationDuration: 250,
-                    barRadius: const Radius.circular(10),
-                    progressColor: Theme.of(context).primaryColor,
-                    backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
-                  ),
-                ],
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.05),
-              Expanded(
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: _pageControllerData,
-                  onPageChanged: (int page) {
-                    setState(() {
-                      addEventTabValue += 0.25;
-                    });
-                  },
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.addBrandLogo,
-                                    style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                  Text(
-                                    AppLocalizations.of(context)!.createBrandPortada,
-                                    style: Theme.of(context).textTheme.bodyText1,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                                  Container(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.addBrandLogo,
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                Text(
+                                  AppLocalizations.of(context)!.createBrandPortada,
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                                Container(
                                     height: MediaQuery.of(context).size.height * 0.15,
                                     color: Colors.transparent,
                                     child: _image == null ? Center(
@@ -272,514 +273,514 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                         ],
                                       ),
                                     )
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height*0.10,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                  Icon(
-                                    Icons.visibility,
-                                    color: Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.width*0.06,
-                                  ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                                  Expanded(
-                                    child: Text(
-                                      AppLocalizations.of(context)!.changeLater,
-                                      style: Theme.of(context).textTheme.bodyText2,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: _image == null ? null : () {
-                                      _pageControllerData.nextPage(
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.ease,
-                                      );
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: _image != null ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
-                                      size: MediaQuery.of(context).size.width*0.06,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(15),
-                                      primary: _image != null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.nameBrand,
-                                    style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                  Text(
-                                    AppLocalizations.of(context)!.createBrandPortada,
-                                    style: Theme.of(context).textTheme.bodyText1,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                                  Material(
-                                    elevation: 8,
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextFormField(
-                                            autofocus: true,
-                                            controller: nameBrandController,
-                                            keyboardType: TextInputType.name,
-                                            onChanged: (val) {
-                                              if (nameBrandController.text.isNotEmpty) {
-                                                setState(() {
-                                                  nameCanGoNext = true;
-                                                });
-                                              } else {
-                                                setState(() {
-                                                  nameCanGoNext = false;
-                                                });
-                                              }
-                                            },
-                                            onFieldSubmitted: (val) {
-                                              focusNodeDescription.requestFocus();
-                                            },
-                                            style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal, color: AppColors.black),
-                                            textCapitalization: TextCapitalization.words,
-                                            decoration: InputDecoration(
-                                                filled: true,
-                                                fillColor: AppColors.white,
-                                                hintText: AppLocalizations.of(context)!.nameBrandError,
-                                                hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                border: OutlineInputBorder(
-                                                  borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                ),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                ),
-                                                contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                  Material(
-                                    elevation: 8,
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextFormField(
-                                            focusNode: focusNodeDescription,
-                                            controller: descriptionController,
-                                            textCapitalization: TextCapitalization.sentences,
-                                            minLines: 3,
-                                            maxLines: 5,
-                                            onChanged: (val) {
-                                              if (descriptionController.text.length == 250) {
-                                                setState(() {
-                                                  maxChars = true;
-                                                });
-                                              } else {
-                                                setState(() {
-                                                  maxChars = false;
-                                                });
-                                              }
-                                            },
-                                            style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal, color: AppColors.black),
-                                            inputFormatters: [
-                                              LengthLimitingTextInputFormatter(250),// for mobile
-                                            ],
-                                            decoration: InputDecoration(
-                                                filled: true,
-                                                fillColor: AppColors.white,
-                                                hintText: AppLocalizations.of(context)!.descriptionError+". Max. 250 "+AppLocalizations.of(context)!.chars.toLowerCase()+" ("+AppLocalizations.of(context)!.optional.toLowerCase()+")",
-                                                hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                                errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                border: OutlineInputBorder(
-                                                  borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                ),
-                                                enabledBorder: OutlineInputBorder(
-                                                  borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                ),
-                                                focusedBorder: OutlineInputBorder(
-                                                  borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                ),
-                                                errorBorder: OutlineInputBorder(
-                                                  borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                                  borderRadius: BorderRadius.circular(15.0),
-                                                ),
-                                                contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
-                                            ),
-
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  maxChars ? Container(
-                                    padding: const EdgeInsets.all(8),
-                                    margin: const EdgeInsets.symmetric(vertical: 12),
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.red,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10.0),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Flexible(
-                                          child: Text(
-                                            "Max. 250 "+AppLocalizations.of(context)!.chars.toLowerCase(),
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ) : Container(),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height*0.10,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                  Icon(
-                                    Icons.visibility,
-                                    color: Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.width*0.06,
-                                  ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                                  Expanded(
-                                    child: Text(
-                                      AppLocalizations.of(context)!.changeLater,
-                                      style: Theme.of(context).textTheme.bodyText2,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: nameCanGoNext == false ? null : () {
-                                      FocusScopeNode currentFocus = FocusScope.of(context);
-                                      if (!currentFocus.hasPrimaryFocus) {
-                                        currentFocus.unfocus();
-                                      }
-                                      _pageControllerData.nextPage(
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.ease,
-                                      );
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: nameCanGoNext ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
-                                      size: MediaQuery.of(context).size.width*0.06,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(15),
-                                      primary: nameCanGoNext ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                        ),
-                      ],
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.baseLocation.toLowerCase(),
-                                    style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                                  Text(
-                                    AppLocalizations.of(context)!.createBrandLocation,
-                                    style: Theme.of(context).textTheme.bodyText1,
-                                    textAlign: TextAlign.left,
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                                  Material(
-                                    elevation: 8,
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    child: ListTile(
-                                      onTap: () async {
-                                        // Generate a new token here
-                                        final sessionToken = const Uuid().v4();
-                                        final language = currentUser.idioma;
-                                        final Suggestion? result = await showSearch(
-                                          context: context,
-                                          delegate: AddressSearch(sessionToken, language!),
-                                        );
-                                        // We have a result for our locations search
-                                        if (result != null) {
-                                          location.placeId = result.placeId;
-                                          final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
-                                          // Get the information on Strings
-                                          if(placeDetails.street!=null) {
-                                            location.street = placeDetails.street!;
-                                          } else {
-                                            location.street="N/A";
-                                          }
-                                          if(placeDetails.streetNumber!=null) {
-                                            location.streetNumber = placeDetails.streetNumber!;
-                                          } else {
-                                            location.streetNumber="N/A";
-                                          }
-                                          if(placeDetails.city!=null) {
-                                            location.city = placeDetails.city!;
-                                          } else {
-                                            location.city="N/A";
-                                          }
-                                          if(placeDetails.zipCode!=null) {
-                                            location.zipCode = placeDetails.zipCode!;
-                                          } else {
-                                            location.zipCode="N/A";
-                                          }
-                                          //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
-                                          // Build Correct Description
-                                          location.description = "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
-                                          // Get Latitude/Longitude
-                                          var temp = await gPlace!.details.get(location.placeId!);
-                                          if (temp != null && temp.result != null && mounted) {
-                                            detailsResult = temp.result;
-                                            location.latitude = detailsResult!.geometry!.location!.lat!;
-                                            location.longitude = detailsResult!.geometry!.location!.lng!;
-                                          }
-                                          setState(() {
-                                            hasLocation = true;
-                                            errorLocation = false;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            hasLocation = false;
-                                          });
-                                        }
-                                      },
-                                      title: hasLocation ? Text(
-                                        location.description!,
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                                      ) : Text(
-                                        AppLocalizations.of(context)!.enterAddressError,
-                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
-                                      ),
-                                      minLeadingWidth: MediaQuery.of(context).size.width*0.04,
-                                      leading: Icon(
-                                        hasLocation ? Icons.edit_location : Icons.add_location,
-                                        color: AppColors.black,
-                                      ),
-                                      tileColor: AppColors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                                  hasLocation ? Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!.streetName,
-                                            style: Theme.of(context).textTheme.caption,
-                                          ),
-                                          Text(location.street!, style: Theme.of(context).textTheme.bodyText2,)
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!.streetNumber,
-                                            style: Theme.of(context).textTheme.caption,
-                                          ),
-                                          Text(location.streetNumber!, style: Theme.of(context).textTheme.bodyText2,)
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!.city,
-                                            style: Theme.of(context).textTheme.caption,
-                                          ),
-                                          Text(location.city!, style: Theme.of(context).textTheme.bodyText2,)
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!.zipCode,
-                                            style: Theme.of(context).textTheme.caption,
-                                          ),
-                                          Text(location.zipCode!, style: Theme.of(context).textTheme.bodyText2,)
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${AppLocalizations.of(context)!.latitude}: ",
-                                            style: Theme.of(context).textTheme.caption,
-                                          ),
-                                          Text(location.latitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
-                                        ],
-                                      ),
-                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${AppLocalizations.of(context)!.longitud}: ",
-                                            style: Theme.of(context).textTheme.caption,
-                                          ),
-                                          Text(location.longitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
-                                        ],
-                                      ),
-                                    ],
-                                  ) : Container(),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height*0.10,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.01),
-                                  Icon(
-                                    Icons.visibility,
-                                    color: Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.width*0.06,
-                                  ),
-                                  SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                                  Expanded(
-                                    child: Text(
-                                      AppLocalizations.of(context)!.changeLater,
-                                      style: Theme.of(context).textTheme.bodyText2,
-                                      textAlign: TextAlign.left,
-                                    ),
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: hasLocation == false ? null : () async {
-                                      _pageControllerData.nextPage(
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.ease,
-                                      );
-                                      registerBrand();
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_forward_ios,
-                                      color: _image != null ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
-                                      size: MediaQuery.of(context).size.width*0.06,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(15),
-                                      primary: _image != null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                        ),
-                      ],
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          LoadingView(
-                            color: Theme.of(context).primaryColor,
-                            hasLogo: false,
-                            isSmall: true,
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Text(
-                            AppLocalizations.of(context)!.creating+" "+AppLocalizations.of(context)!.yourBrand.toLowerCase()+" ...",
-                            style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
-                            textAlign: TextAlign.left,
                           ),
                         ],
                       ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height*0.10,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                            child: Row(
+                              children: [
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                Icon(
+                                  Icons.visibility,
+                                  color: Theme.of(context).primaryColor,
+                                  size: MediaQuery.of(context).size.width*0.06,
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.changeLater,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: _image == null ? null : () {
+                                    _pageControllerData.nextPage(
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: _image != null ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    shape: const CircleBorder(),
+                                    padding: const EdgeInsets.all(15),
+                                    primary: _image != null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.nameBrand,
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                Text(
+                                  AppLocalizations.of(context)!.createBrandPortada,
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                                Material(
+                                  elevation: 8,
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          autofocus: true,
+                                          controller: nameBrandController,
+                                          keyboardType: TextInputType.name,
+                                          onChanged: (val) {
+                                            if (nameBrandController.text.isNotEmpty) {
+                                              setState(() {
+                                                nameCanGoNext = true;
+                                              });
+                                            } else {
+                                              setState(() {
+                                                nameCanGoNext = false;
+                                              });
+                                            }
+                                          },
+                                          onFieldSubmitted: (val) {
+                                            focusNodeDescription.requestFocus();
+                                          },
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal, color: AppColors.black),
+                                          textCapitalization: TextCapitalization.words,
+                                          decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: AppColors.white,
+                                              hintText: AppLocalizations.of(context)!.nameBrandError,
+                                              hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                              errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                              border: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                Material(
+                                  elevation: 8,
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          focusNode: focusNodeDescription,
+                                          controller: descriptionController,
+                                          textCapitalization: TextCapitalization.sentences,
+                                          minLines: 3,
+                                          maxLines: 5,
+                                          onChanged: (val) {
+                                            if (descriptionController.text.length == 250) {
+                                              setState(() {
+                                                maxChars = true;
+                                              });
+                                            } else {
+                                              setState(() {
+                                                maxChars = false;
+                                              });
+                                            }
+                                          },
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal, color: AppColors.black),
+                                          inputFormatters: [
+                                            LengthLimitingTextInputFormatter(250),// for mobile
+                                          ],
+                                          decoration: InputDecoration(
+                                            filled: true,
+                                            fillColor: AppColors.white,
+                                            hintText: AppLocalizations.of(context)!.descriptionError+". Max. 250 "+AppLocalizations.of(context)!.chars.toLowerCase()+" ("+AppLocalizations.of(context)!.optional.toLowerCase()+")",
+                                            hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                            errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                            border: OutlineInputBorder(
+                                              borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                              borderRadius: BorderRadius.circular(15.0),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                              borderRadius: BorderRadius.circular(15.0),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                              borderRadius: BorderRadius.circular(15.0),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                              borderRadius: BorderRadius.circular(15.0),
+                                            ),
+                                            contentPadding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                                          ),
+
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                maxChars ? Container(
+                                  padding: const EdgeInsets.all(8),
+                                  margin: const EdgeInsets.symmetric(vertical: 12),
+                                  decoration: const BoxDecoration(
+                                    color: AppColors.red,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          "Max. 250 "+AppLocalizations.of(context)!.chars.toLowerCase(),
+                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ) : Container(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height*0.10,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                            child: Row(
+                              children: [
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                Icon(
+                                  Icons.visibility,
+                                  color: Theme.of(context).primaryColor,
+                                  size: MediaQuery.of(context).size.width*0.06,
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.changeLater,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: nameCanGoNext == false ? null : () {
+                                    FocusScopeNode currentFocus = FocusScope.of(context);
+                                    if (!currentFocus.hasPrimaryFocus) {
+                                      currentFocus.unfocus();
+                                    }
+                                    _pageControllerData.nextPage(
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: nameCanGoNext ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    shape: const CircleBorder(),
+                                    padding: const EdgeInsets.all(15),
+                                    primary: nameCanGoNext ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.baseLocation.toLowerCase(),
+                                  style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                Text(
+                                  AppLocalizations.of(context)!.createBrandLocation,
+                                  style: Theme.of(context).textTheme.bodyText1,
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                                Material(
+                                  elevation: 8,
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: ListTile(
+                                    onTap: () async {
+                                      // Generate a new token here
+                                      final sessionToken = const Uuid().v4();
+                                      final language = currentUser.idioma;
+                                      final Suggestion? result = await showSearch(
+                                        context: context,
+                                        delegate: AddressSearch(sessionToken, language!),
+                                      );
+                                      // We have a result for our locations search
+                                      if (result != null) {
+                                        location.placeId = result.placeId;
+                                        final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
+                                        // Get the information on Strings
+                                        if(placeDetails.street!=null) {
+                                          location.street = placeDetails.street!;
+                                        } else {
+                                          location.street="N/A";
+                                        }
+                                        if(placeDetails.streetNumber!=null) {
+                                          location.streetNumber = placeDetails.streetNumber!;
+                                        } else {
+                                          location.streetNumber="N/A";
+                                        }
+                                        if(placeDetails.city!=null) {
+                                          location.city = placeDetails.city!;
+                                        } else {
+                                          location.city="N/A";
+                                        }
+                                        if(placeDetails.zipCode!=null) {
+                                          location.zipCode = placeDetails.zipCode!;
+                                        } else {
+                                          location.zipCode="N/A";
+                                        }
+                                        //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                                        // Build Correct Description
+                                        location.description = "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
+                                        // Get Latitude/Longitude
+                                        var temp = await gPlace!.details.get(location.placeId!);
+                                        if (temp != null && temp.result != null && mounted) {
+                                          detailsResult = temp.result;
+                                          location.latitude = detailsResult!.geometry!.location!.lat!;
+                                          location.longitude = detailsResult!.geometry!.location!.lng!;
+                                        }
+                                        setState(() {
+                                          hasLocation = true;
+                                          errorLocation = false;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          hasLocation = false;
+                                        });
+                                      }
+                                    },
+                                    title: hasLocation ? Text(
+                                      location.description!,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                                    ) : Text(
+                                      AppLocalizations.of(context)!.enterAddressError,
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.black),
+                                    ),
+                                    minLeadingWidth: MediaQuery.of(context).size.width*0.04,
+                                    leading: Icon(
+                                      hasLocation ? Icons.edit_location : Icons.add_location,
+                                      color: AppColors.black,
+                                    ),
+                                    tileColor: AppColors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                hasLocation ? Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.streetName,
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.street!, style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.streetNumber,
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.streetNumber!, style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.city,
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.city!, style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          AppLocalizations.of(context)!.zipCode,
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.zipCode!, style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${AppLocalizations.of(context)!.latitude}: ",
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.latitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${AppLocalizations.of(context)!.longitud}: ",
+                                          style: Theme.of(context).textTheme.caption,
+                                        ),
+                                        Text(location.longitude!.toString(), style: Theme.of(context).textTheme.bodyText2,)
+                                      ],
+                                    ),
+                                  ],
+                                ) : Container(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height*0.10,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                            child: Row(
+                              children: [
+                                SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                                Icon(
+                                  Icons.visibility,
+                                  color: Theme.of(context).primaryColor,
+                                  size: MediaQuery.of(context).size.width*0.06,
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                Expanded(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.changeLater,
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: hasLocation == false ? null : () async {
+                                    _pageControllerData.nextPage(
+                                      duration: const Duration(milliseconds: 500),
+                                      curve: Curves.ease,
+                                    );
+                                    registerBrand();
+                                  },
+                                  child: Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: _image != null ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor.withOpacity(0.2),
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    elevation: 0,
+                                    shape: const CircleBorder(),
+                                    padding: const EdgeInsets.all(15),
+                                    primary: _image != null ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.1),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LoadingView(
+                          color: Theme.of(context).primaryColor,
+                          hasLogo: false,
+                          isSmall: true,
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        Text(
+                          AppLocalizations.of(context)!.creating+" "+AppLocalizations.of(context)!.yourBrand.toLowerCase()+" ...",
+                          style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 30),
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
 
     /*
     Scaffold(
@@ -1115,7 +1116,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                     AppLocalizations.of(context)!.enterAddressError,
                                     style: Theme.of(context).textTheme.bodyText2,
                                   ),
-
                                   leading: Icon(
                                     Icons.add_location,
                                     color: Theme.of(context).primaryColor,
@@ -1438,7 +1438,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                               children: [
                                                 TextButton(
                                                   onPressed: false ? () {
-
                                                   } : null,
                                                   child: Container(
                                                     padding: EdgeInsets.all(8),
@@ -1456,7 +1455,6 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                                 Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
                                                 TextButton(
                                                   onPressed: false ? () {
-
                                                   } : null,
                                                   child: Container(
                                                     padding: EdgeInsets.all(8),

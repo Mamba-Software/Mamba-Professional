@@ -423,25 +423,14 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
               ),
               onTap: () {
                 widget.room.type.toString() != "RoomType.group" ?
-                  Navigator.push(
+                Navigator.push(
                     context,
-                    CupertinoPageRoute<Null>(
-                        builder: (context) => ProfileViewUser(
-                            userID: userId.id!, viewOnly: true))
-                  ) : null;
-                /*
-                Cambiant aixo degut als canvis a la app bar :D
-                currentUser.isTrainer == true ?
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute<Null>(
-                          builder: (context) => Trainers(brandId: currentBrand.id!, numTrainers: currentBrand.numTrainers! ))
-                    )
-                    : Navigator.push(
-                    context,
-                    CupertinoPageRoute<Null>(
-                        builder: (context) => Clients(brandId: currentBrand.id!, numClients: currentBrand.numClients!)));
-                 */
+                    CupertinoPageRoute<bool?>(
+                        builder: (context) =>
+                            ProfileViewUser(
+                              userID: userId.id!,
+                              viewOnly: true,
+                            ))) : null;
               },
             ),
             SizedBox(
