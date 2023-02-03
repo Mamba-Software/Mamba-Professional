@@ -642,13 +642,14 @@ class _PayWallState extends State<PayWall> {
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
                                                 subscritionPromo.id!, subscritionPromo.title!);
-                                            currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
-                                            Navigator.pushReplacement(
-                                                context,
-                                                CupertinoPageRoute<Null>(
-                                                  builder: (context) => const SplashScreen(),
-                                                  settings: const RouteSettings(name: 'SplashScreen'),
-                                                )
+                                           // currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              CupertinoPageRoute<void>(
+                                                builder: (context) => const SplashScreen(),
+                                                settings: const RouteSettings(name: 'SplashScreen'),
+                                              ),
+                                                  (_) => false,
                                             );
                                           },
                                           child: Center(
@@ -871,13 +872,14 @@ class _PayWallState extends State<PayWall> {
                                                 .updateBrandPay(widget.brandId,
                                                 subscritionPromo.duration!,
                                                 subscritionPromo.id!, subscritionPromo.title!);
-                                            currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
-                                            Navigator.pushReplacement(
-                                                context,
-                                                CupertinoPageRoute<Null>(
-                                                  builder: (context) => const SplashScreen(),
-                                                  settings: const RouteSettings(name: 'SplashScreen'),
-                                                )
+                                            //currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              CupertinoPageRoute<void>(
+                                                builder: (context) => const SplashScreen(),
+                                                settings: const RouteSettings(name: 'SplashScreen'),
+                                              ),
+                                                  (_) => false,
                                             );
                                           },
                                           child: Center(

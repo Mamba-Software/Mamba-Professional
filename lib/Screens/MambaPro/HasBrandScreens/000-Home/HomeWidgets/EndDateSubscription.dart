@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 
@@ -131,10 +132,9 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                   ListTile(
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Image(
-                        image: NetworkImage(
-                            'https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/mambapro_logo.jpg?alt=media&token=3ba956c1-6cc7-4219-9e41-d3c1f10e0dc6'),
-                      ),
+                      child: Image.asset(
+                        Constants.subscriptionImage,),
+
                     ),
                     title: Text(
                         subscription.title!,
