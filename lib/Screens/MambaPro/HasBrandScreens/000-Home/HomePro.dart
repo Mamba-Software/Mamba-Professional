@@ -9,6 +9,8 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/Ho
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandCalendarMonthWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandRequestsWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandSessionStatsWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/CountDownSubscription.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/EndDateSubscription.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/PlanEventWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
@@ -49,6 +51,7 @@ class _HomePro extends State<HomePro> {
 
   @override
   initState() {
+    setBrandActive();
     super.initState();
     _scrollController = ScrollController()
     ..addListener(() => _isAppBarExpanded ?
@@ -60,6 +63,26 @@ class _HomePro extends State<HomePro> {
     }),
     );
     getBrandImage();
+  }
+
+  void setBrandActive()
+  {
+    if(currentBrand.endDatePay != null)
+    {
+      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+      {
+
+        brandIsActive = true;
+      }
+      else
+      {
+        brandIsActive = false;
+      }
+    }
+    else
+    {
+      brandIsActive = false;
+    }
   }
 
   Future<void> getBrandImage() async {
@@ -222,10 +245,16 @@ class _HomePro extends State<HomePro> {
                 children: [
                   UserTodayWidget(
                     onClicked: (boolean) {
-                      mixpanel!.track('brand_homepage_user_this_week');
-                      widget.navigateToPage(10, DateTime.now(), CalendarView.week);
+                        if(brandIsActive) {
+                          mixpanel!.track('brand_homepage_user_this_week');
+                          widget.navigateToPage(10, DateTime.now(), CalendarView.week);
+                        }
                     },
                   ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  currentUser.brandRole < 2 ? EndDateSubscription() : Container(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
@@ -234,8 +263,10 @@ class _HomePro extends State<HomePro> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
-                      mixpanel!.track('brand_homepage_membership_requests');
-                      navigateToRequestsScreen();
+                          if(brandIsActive) {
+                            mixpanel!.track('brand_homepage_membership_requests');
+                            navigateToRequestsScreen();
+                          }
                     },
                   ) : Container(),
                   currentUser.brandRole < 3 ? BrandBonoRequestsWidget(
@@ -243,8 +274,10 @@ class _HomePro extends State<HomePro> {
                     width: MediaQuery.of(context).size.width * 0.9,
                     brandId: currentBrand.id!,
                     onClicked: (bool? value) {
-                      mixpanel!.track('brand_homepage_bono_confirmation_requests');
-                      navigateToBonosRequestScreen();
+                        if(brandIsActive) {
+                          mixpanel!.track('brand_homepage_bono_confirmation_requests');
+                          navigateToBonosRequestScreen();
+                        }
                     }, //
                   ) : Container(),
                   Column(
@@ -259,8 +292,11 @@ class _HomePro extends State<HomePro> {
                                 width: MediaQuery.of(context).size.width * 0.43,
                                 isPrivate: false,
                                 onClicked: (bool? value) {
-                                  mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': false});
-                                  widget.navigateToPage(10, null, CalendarView.month);
+                                  if(brandIsActive) {
+                                    mixpanel!.track(
+                                        'brand_homepage_plan_event', properties: {'isPrivate': false});
+                                    widget.navigateToPage(10, null, CalendarView.month);
+                                  }
                                 },
                               ),
                               PlanEventWidget(
@@ -268,8 +304,11 @@ class _HomePro extends State<HomePro> {
                                 width: MediaQuery.of(context).size.width * 0.43,
                                 isPrivate: true,
                                 onClicked: (bool? value) {
-                                  mixpanel!.track('brand_homepage_plan_event', properties: {'isPrivate': true});
-                                  widget.navigateToPage(10, null, CalendarView.month);
+                                  if(brandIsActive) {
+                                    mixpanel!.track(
+                                        'brand_homepage_plan_event', properties: {'isPrivate': true});
+                                    widget.navigateToPage(10, null, CalendarView.month);
+                                  }
                                 },
                               ),
                             ],

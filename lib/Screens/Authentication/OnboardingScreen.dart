@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -31,6 +33,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   // Services
   final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
   final PermisionsService _permisionsService = PermisionsService();
   NotificationService? _notificationService;
   // Wellcome Pages
@@ -93,8 +96,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // Create Brand
     // Get User Main Data
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
+    //Check if user has brand
+    List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
+    currentUser.setBrandList = brands;
+    if (currentUser.brandsList.isNotEmpty) {
+      // Setting the Brand to the User
+      hasBrand = true;
+    }
     bool? brandCreated;
-    if (dynamicLinkBrandId == null) {
+    if (dynamicLinkBrandId == null && hasBrand == false) {
       brandCreated = await Navigator.push(
           context,
           CupertinoPageRoute<bool>(
@@ -105,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           )
       );
     }
-    if (brandCreated == null || brandCreated == false) {
+    if ((brandCreated == null || brandCreated == false) || (hasBrand)) {
       // SplashScreen
       Navigator.pushReplacement(
           context,

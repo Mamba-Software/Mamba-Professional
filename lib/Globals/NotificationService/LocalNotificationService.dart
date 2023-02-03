@@ -178,6 +178,11 @@ class LocalNotificationService {
     //      Remote Firebase Notifications we send the whole Notification with Arguments
     print("onClickedNotification. Payload....");
     print(payload);
+    setBrandActive();
+    if(!brandIsActive)
+      {
+        payload = "SplashScreen";
+      }
     switch (payload) {
       case "SplashScreen":
         break;
@@ -210,6 +215,25 @@ class LocalNotificationService {
         }
         break;
     }
+  }
+
+  void setBrandActive()
+  {
+    if(currentBrand.endDatePay != null)
+    {
+      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+      {
+        brandIsActive = true;
+      }
+      else
+      {
+        brandIsActive = false;
+      }
+    }
+    else
+      {
+        brandIsActive = false;
+      }
   }
 
   // didNotificationLaunch handle

@@ -7,6 +7,8 @@ import 'package:jiffy/jiffy.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/Models/Promotion.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -19,6 +21,7 @@ import 'package:mamba_castelldefels/Data/Models/Deprecated/Question.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -48,6 +51,8 @@ class FirebaseDatabaseService {
   String requests = isProduction ? 'Requests' : '7777 Requests';
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
+  String promotions = isProduction ? 'Promotions' : '7777 Promotions';
+  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -3215,6 +3220,123 @@ class FirebaseDatabaseService {
       return Conversation.fromObject(
           querySnapshot.docs[0], querySnapshot.docs[0].id);
     }
+
+    //Subscriptions
+
+  // Get Valid Subscription
+  Future<Subscription> getValidSubscription(String subscriptionId, String brandId) async {
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    Subscription subscription = Subscription();
+    DateTime now = DateTime.now();
+    Timestamp tmstp = Timestamp.fromDate(now);
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore.collection(subscriptions).doc(subscriptionId).get();
+      subscription = Subscription.fromObjectAllData(
+          _documentSnapshot.id, _documentSnapshot);
+      if (subscription.isActive! &&
+          subscription.startDate!.compareTo(tmstp) < 0 &&
+          tmstp.compareTo(subscription.endDate!) < 0 && subscription.promotion == subscriptionId) {
+        try {
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+          await _firestore.collection(subscriptions).doc(subscriptionId)
+              .collection('Brands').doc(brandId).get();
+          if (!_documentSnapshot2.exists) {
+            return subscription;
+          }
+          else {
+            return Subscription();
+          }
+        }
+        catch (e){
+          print(e);
+          return Subscription();
+        }
+      }
+      else {
+        return Subscription();
+      }
+    } catch (e) {
+      print(e);
+      return Subscription();
+    }
+  }
+
+  // Check if brand used subscription
+  Future<bool> checkIfBrandUsedSubscription(String subscriptionId, String brandId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+      await _firestore.collection(subscriptions).doc(subscriptionId)
+          .collection('Brands').doc(brandId).get();
+      if (!_documentSnapshot2.exists) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }
+    catch (e){
+      return true;
+    }
+  }
+
+  // Get Valid Promotion
+  Future<Promotion> getValidPromotion(String id) async {
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    Promotion promotion = Promotion();
+    DateTime now = DateTime.now();
+    Timestamp tmstp = Timestamp.fromDate(now);
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore.collection(promotions).doc(id).get();
+      promotion = Promotion.fromObjectAllData(
+          _documentSnapshot.id, _documentSnapshot);
+      if(promotion.isActive! && promotion.startDate!.compareTo(tmstp.toString()) < 0 && tmstp.toString().compareTo(promotion.endDate!) < 0)
+      {
+        return promotion;
+      }
+      else {
+        return Promotion();
+      }
+    } catch (e) {
+      print(e);
+      return Promotion();
+    }
+  }
+  // Get Valid Promotion
+  Future<List<Subscription>> getSubscriptions(String? promotion) async {
+    int timestamp = DateTime.now().millisecondsSinceEpoch;
+    DateTime now = DateTime.now();
+    Timestamp tmstp = Timestamp.fromDate(now);
+    List<Subscription> subscriptionsList = [];
+    Subscription subscriptionTemp = Subscription();
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection(subscriptions).get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        subscriptionTemp = Subscription.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        if(subscriptionTemp.isActive! && subscriptionTemp.startDate!.compareTo(tmstp) < 0 && tmstp.compareTo(subscriptionTemp.endDate!) < 0)
+          {
+            if(subscriptionTemp.promotion == "")
+              {
+                subscriptionsList.add(subscriptionTemp
+                );
+              }
+            else
+              {
+                if(subscriptionTemp.promotion == promotion)
+                  {
+                    subscriptionsList.add(subscriptionTemp
+                    );
+                  }
+              }
+          }
+      }
+    } catch (e) {
+      print(e);
+    }
+    return subscriptionsList;
+  }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // STREAMS
