@@ -73,17 +73,19 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
 
   // Navigate to Notifications Screen
   void navigateToProfileScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => const Profile(),
-          settings: const RouteSettings(name: 'Profile'),
-        )
-    );
+      Navigator.push(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => const Profile(),
+            settings: const RouteSettings(name: 'Profile'),
+          )
+      );
   }
   
   // Navigate to Notifications Screen
   void navigateToNotificationsScreen() {
+    if(brandIsActive)
+    {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
@@ -95,35 +97,42 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
         unreadNotifications = temp;
       });
     });
+    }
   }
 
   // Navigate to Notifications Screen
   void navigateToChatScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => const ChatCore(),
-        )
-    ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
-      setState(() {
-        unreadChats = temp;
+    if(brandIsActive) {
+      Navigator.push(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) => const ChatCore(),
+          )
+      ).whenComplete(() async {
+        var temp = await _userDataService.getUnreadConversations(
+            currentUser.id!);
+        setState(() {
+          unreadChats = temp;
+        });
       });
-    });
+    }
   }
 
   // Navigate to Event Screen on Tap
   void navigateToEventScreen(String eventId) {
-    mixpanel!.track('brand_homepage_user_event_view');
-    // Navigate to Event Screen
-    Navigator.push(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => EventPage(
-          eventId: eventId,
-        ),
-      )
-    );
+    if(brandIsActive) {
+      mixpanel!.track('brand_homepage_user_event_view');
+      // Navigate to Event Screen
+      Navigator.push(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) =>
+                EventPage(
+                  eventId: eventId,
+                ),
+          )
+      );
+    }
   }
 
   // Gets user events today.

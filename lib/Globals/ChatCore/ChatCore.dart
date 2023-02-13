@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:shimmer/shimmer.dart';
 import 'Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -40,6 +41,16 @@ class _ChatCoreState extends State<ChatCore> {
 
   @override
   void initState() {
+    if(!brandIsActive)
+    {
+      Navigator.pushAndRemoveUntil(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) =>  PayWall(brandId: currentBrand.id!, comesFromInitPage: true,),
+        ),
+            (_) => false,
+      );
+    }
     super.initState();
     mixpanel!.track('user_chats_view');
     initializeFlutterFire();

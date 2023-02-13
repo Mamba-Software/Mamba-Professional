@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -34,6 +35,7 @@ class BrandFirebaseCalls {
   String events = isProduction ? 'Events' : '7777 Events';
   String locations = isProduction ? 'Locations' : '7777 Locations';
   String payments = isProduction ? 'Payments' : '7777 Payments';
+  String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
 
   //Utils
 
@@ -469,6 +471,21 @@ class BrandFirebaseCalls {
     }
   }
 
+
+  // Get Brand Subscription
+  Future<Subscription> getBrandSubscription(String brandId, String subscriptionId) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await _firestore.collection(brands).doc(brandId)
+          .collection('Subscriptions').doc(subscriptionId).get();
+        return Subscription.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    }
+    catch (e){
+      print(e);
+      return Subscription();
+    }
+  }
+
   //Add
 
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers, int bookingWindow) async {
@@ -489,6 +506,7 @@ class BrandFirebaseCalls {
       "workShift": workShift,
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
+      "isActive": false,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -701,6 +719,33 @@ class BrandFirebaseCalls {
   Future<void> updateUserBrandRole(String userId, String brandId, int role) async {
     await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).update({
       "role": role,
+    });
+  }
+
+  Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title) async {
+    DateTime now = DateTime.now();
+    Timestamp initTime = Timestamp.fromDate(DateTime.now());
+    var temp = now.add(Duration(days: time));
+    Timestamp endTime = Timestamp.fromDate(temp);
+    var uid = Uuid().v4();
+    await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Subscriptions")
+        .doc(uid)
+        .set({
+      "subscriptionId": subscriptionId,
+      "endDate": endTime,
+      "startDate": initTime,
+      "isActive": true,
+      "title": title,
+    });
+    await _firestore.collection(brands).doc(brandID).update({
+      "endDatePay": endTime,
+      "subscriptionId": uid,
+    });
+    await _firestore.collection(subscriptions).doc(subscriptionId).collection('Brands').doc(brandID).set({
+      "useDate": initTime,
     });
   }
 

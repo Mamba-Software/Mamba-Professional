@@ -6,6 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
@@ -13,6 +16,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 
 // Tus Datos Widget.
@@ -29,10 +34,12 @@ class BrandInfo extends StatefulWidget {
 
 class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMixin {
 
+  DateFormat formatter = DateFormat('dd/MM/yy');
   // DataBase Access
   final _brandDataService = BrandDataService();
+  final _promotionDataService = PromotionsDataService();
   // Boolean isLoading
-  bool isLoading = false;
+  bool isLoading = true;
   bool isUpdated = false;
   // Form To Validate
   final formKeyInfo = GlobalKey<FormState>();
@@ -72,6 +79,10 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   // Booking Window
   int bookingWindow = 3;
 
+  //Paywall
+  Subscription subscription = Subscription();
+  bool ShowTextExpired = false;
+
   // App Bar and Scroll View
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
@@ -92,6 +103,42 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     );
     canEdit = currentUser.brandRole < 2 ? true : false;
     initBrand();
+    checkBrandActive();
+    getBrandSubscription();
+  }
+
+  void checkBrandActive()
+  {
+    if(currentBrand.endDatePay != null)
+    {
+      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+      {
+        brandIsActive = true;
+      }
+      else
+      {
+        ShowTextExpired = true;
+        brandIsActive = false;
+      }
+    }
+    else
+      {
+        brandIsActive = false;
+      }
+  }
+
+  Future<void> getBrandSubscription() async
+  {
+    if(currentBrand.subscriptionId != null) {
+      subscription = await _brandDataService.getBrandSubscription(
+          currentBrand.id!, currentBrand.subscriptionId!);
+    }
+    else {
+      subscription = Subscription();
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   // Gets the user info from firebase.
@@ -305,6 +352,107 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               ),
             ],
           ),
+          currentUser.brandRole < 2? SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                !brandIsActive? GestureDetector(
+                  onTap: navigateToSubscriptionsScreen,
+                  child: Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                    height: MediaQuery.of(context).size.height*0.1,
+                    width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.new_releases,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: MediaQuery.of(context).size.width*0.10,
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                        Flexible(
+                          child:  textToShow(),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      ],
+                    ),
+                  ),
+                ) : GestureDetector(
+                  onTap: navigateToSubscriptionsScreen,
+                  child: Material(
+                    elevation: 4,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    child: Container(
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.65,
+                        maxWidth: MediaQuery.of(context).size.width*0.9,
+                        minWidth: MediaQuery.of(context).size.width*0.9,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),// BorderRadius
+                      ),// BoxDecoration
+                      child: Container(
+                        margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height* 0.65,
+                          maxWidth: MediaQuery.of(context).size.width*0.9,
+                          minWidth: MediaQuery.of(context).size.width*0.9,
+                        ),
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColorDark.withOpacity(0.4),
+                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),// BorderRadius
+                        ),// BoxDecoration
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ListTile(
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.asset(
+                                  Constants.subscriptionImage,),
+                              ),
+                              title: Text(
+                                  subscription.title!,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .headline3,
+                                  textAlign: TextAlign.left
+                              ),
+                              subtitle: Text(
+                                  AppLocalizations.of(context)!.seeyourSub,
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .caption
+                              ),
+                              dense: true,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+              ],
+            ),
+          ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
           SliverToBoxAdapter(
             child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
@@ -911,6 +1059,46 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         bookingWindow = pickedMembers;
       });
     }
+  }
+
+  Future<void> navigateToSubscriptionsScreen() async {
+    //mixpanel!.track('brand_membership_requests_view');
+    if(brandIsActive) {
+      mixpanel!.track('brand_see_active_subscription');
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<bool?>(
+            builder: (context) =>
+                ActiveSubscription(
+                  brandId: widget.brandId,
+                  subscription: subscription,
+                ),
+          )
+      );
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else {
+      mixpanel!.track('brand_see_paywall');
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<bool?>(
+            builder: (context) =>
+                PayWall(
+                  brandId: widget.brandId,
+                ),
+          )
+      );
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Widget textToShow()
+  {
+    return   Text(ShowTextExpired? AppLocalizations.of(context)!.subscriptionExpired : AppLocalizations.of(context)!.noSubscription,  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary), textAlign: TextAlign.center,);
   }
 
   bool validateInfo() {
