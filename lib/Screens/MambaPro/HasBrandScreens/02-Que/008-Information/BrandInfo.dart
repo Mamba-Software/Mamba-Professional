@@ -385,7 +385,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                       ],
                     ),
                   ),
-                ) : GestureDetector(
+                ) : subscription.subscriptionId  == '7DAYSTRIAL'? freeTrialMamba() : GestureDetector(
                   onTap: navigateToSubscriptionsScreen,
                   child: Material(
                     elevation: 4,
@@ -1131,6 +1131,83 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       errorMembers = false;
     });
     return true;
+  }
+
+  Widget freeTrialMamba()
+  {
+    return GestureDetector(
+      onTap: () async {
+        await Navigator.push(
+            context,
+            CupertinoPageRoute<bool?>(
+              builder: (context) =>
+                  PayWall(
+                    brandId: currentBrand.id!,
+                  ),
+            )
+        );
+      },
+      child: Material(
+        elevation: 4,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+        ),
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.35,
+            maxWidth: MediaQuery.of(context).size.width*0.9,
+            minWidth: MediaQuery.of(context).size.width*0.9,
+          ),
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+            borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
+          ),// BoxDecoration
+          child: Container(
+            margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height,
+              maxWidth: MediaQuery.of(context).size.width*0.9,
+              minWidth: MediaQuery.of(context).size.width*0.9,
+            ),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
+            ),// BoxDecoration
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      Constants.subscriptionImage,),
+
+                  ),
+                  title: Text(
+                      'Disfruta de MAMBA SIN LIMITE',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .bodyText1,
+                      textAlign: TextAlign.left
+                  ),
+                  subtitle: Text(
+                      'Tienes hasta el ' + ' ' + formatter.format(currentBrand.endDatePay!.toDate()).toString() + ' para suscribirte a un plan',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .caption
+                  ),
+                  dense: true,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
 
