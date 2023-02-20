@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/OrderFilter/OrderFilter.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -19,6 +20,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../015-AddMembers/MembershipRequestsPro.dart';
@@ -47,11 +50,14 @@ class _Clients extends State<Clients> {
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
   final _roomDataService = RoomDataService();
+  final _dynamicLinkUtils = DynamicLinkUtils();
   // Boolean Loading
   bool isLoading = false;
   // Search Controller
   bool searchClicked = false;
   var searchController = TextEditingController();
+
+  String brandUrlClient = "";
 
   // Members Page
   List<Usuario> allMembers = [];
@@ -82,6 +88,13 @@ class _Clients extends State<Clients> {
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
+    });
+  }
+
+  Future<void> getBrandLink() async {
+    Uri brandUriClient = await _dynamicLinkUtils.createDynamicLinkWithIdClient(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
+    setState(() {
+      brandUrlClient = brandUriClient.toString();
     });
   }
 
@@ -179,6 +192,7 @@ class _Clients extends State<Clients> {
       }),
       );
     isLoading = true;
+    getBrandLink();
     getAllUsers();
   }
 
@@ -612,6 +626,58 @@ class _Clients extends State<Clients> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                GestureDetector(
+                  onTap: () async {
+                    await Share.share(brandUrlClient, subject: currentBrand.logoUrl!);
+                  },
+                  child: ListTile(
+        leading: CircularImage(
+          size: MediaQuery.of(context).size.width*0.15,
+          image: currentBrand.logoUrl,
+          color: Theme.of(context).primaryColor,
+          borderWidth: 1.0,
+        ),
+        title: Text(
+          AppLocalizations.of(context)!.shareInvitation,
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              AppLocalizations.of(context)!.shareInvitationText,
+              style: Theme.of(context).textTheme.caption,
+            ),
+          ],
+        ),
+        trailing: IconButton(
+          icon: Icon(Icons.share, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.all(0),
+          onPressed:   () async {
+            await Share.share(brandUrlClient, subject: currentBrand.logoUrl!);
+            /*
+            showModalBottomSheet<void>(
+              context: context,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+              ),
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              builder: (BuildContext context) {
+                  return const FractionallySizedBox(
+                    heightFactor: 0.75,
+                    child: ShareBrandLink(),
+                  );
+              },
+            );*/
+          },
+        ),
+      ),
+                ),
               ],
             ),
           ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),

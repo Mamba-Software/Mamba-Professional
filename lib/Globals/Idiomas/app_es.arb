@@ -3066,6 +3066,34 @@
   "subscribeNow": "Suscribirme",
   "@subscribeNow": {
     "description": "subscribeNow message"
+  },
+  "block": "Bloquear",
+  "@block": {
+    "description": "block message"
+  },
+  "unblock": "Desbloquear",
+  "@unblock": {
+    "description": "unblock message"
+  },
+  "report": "Reportar",
+  "@report": {
+    "description": "report message"
+  },
+  "unBlockUserToSend":  "Desbloquea al usuario para poder enviar mensajes",
+  "@unBlockUserToSend": {
+    "description": "unBlockUserToSend message"
+  },
+  "reportUserFor":  "Quiero reportar al usuario por: \n",
+  "@reportUserFor": {
+    "description": "reportUserFor message"
+  },
+  "shareInvitation":  "Compartir invitación",
+  "@shareInvitation": {
+    "description": "shareInvitation message"
+  },
+  "shareInvitationText":  "Invita clientes a tu marca",
+  "@shareInvitationText": {
+    "description": "shareInvitationText message"
   }
 
 

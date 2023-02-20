@@ -691,5 +691,12 @@
   "startToday": "Comença: avui",
   "threeFreeMoths": "3 mesos gratis",
   "youCanPurcahseNow": "Podràs subscriure't proximament",
-  "subscribeNow": "Subscriu-m'hi"
+  "subscribeNow": "Subscriu-m'hi",
+  "block": "Bloquejar",
+  "unblock": "Desbloquejar",
+  "report": "Reportar",
+  "unBlockUserToSend":  "Desbloqueja a l'usuari per poder enviar missatges",
+  "reportUserFor":  "Vull reportar a l'usuari per: \n",
+  "shareInvitation":  "Compartir invitació",
+  "shareInvitationText":  "Invita clients a la teva marca"
 }

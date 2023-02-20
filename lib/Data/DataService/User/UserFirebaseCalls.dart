@@ -178,6 +178,24 @@ class UserFirebaseCalls {
     return documentSnapshot.get("isTrainer");
   }
 
+  // Check If User is Blocked
+  Future<bool> checkUserBlocked(String currentUser, String userId) async {
+    try {
+      var userDocRef = _firestore.collection(users).doc(currentUser).collection(
+          "BlockedUsers").doc(userId);
+      var doc = await userDocRef.get();
+      if (!doc.exists) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    catch(e)
+    {
+      return false;
+    }
+  }
+
   //Getters
 
   Future<Usuario> getUserDetails(String uid) async {
@@ -473,6 +491,20 @@ class UserFirebaseCalls {
 
   }
 
+  //Get blocked by users
+  Future<List<String>>  getBlockedByUsers(String userId) async {
+    List<String> listUserIds = [];
+    QuerySnapshot querySnapshot = await _firestore.collection(users)
+        .doc(userId)
+        .collection("BlockedByUsers")
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      listUserIds.add(querySnapshot.docs[i].id);
+    }
+    return listUserIds;
+
+  }
+
   //Add
 
   Future<int> addUser(String email, String password, String idioma) async {
@@ -723,6 +755,26 @@ class UserFirebaseCalls {
     });
   }
 
+  // Add User blocked
+  Future<void> addUserBlocked(String currentUser, String userId) async {
+    await _firestore
+        .collection(users)
+        .doc(currentUser)
+        .collection("BlockedUsers")
+        .doc(userId)
+        .set({
+      "userId": userId,
+    });
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("BlockedByUsers")
+        .doc(currentUser)
+        .set({
+      "userId": currentUser,
+    });
+  }
+
   //Update
 
 // Add User
@@ -946,6 +998,22 @@ class UserFirebaseCalls {
         .doc(userId)
         .collection("Local Notifications")
         .doc(notificationId)
+        .delete();
+  }
+
+  // Delete User blocked
+  Future<void> deleteUserBlocked(String currentUser, String userId) async {
+    await _firestore
+        .collection(users)
+        .doc(currentUser)
+        .collection("BlockedUsers")
+        .doc(userId)
+        .delete();
+    await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("BlockedByUsers")
+        .doc(currentUser)
         .delete();
   }
 

@@ -9,6 +9,7 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -16,6 +17,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mime/mime.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({
@@ -32,6 +35,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
 
   var _roomDataService = new RoomDataService();
+  final _userDataService = UserDataService();
   bool _isAttachmentUploading = false;
   bool isLoading = true;
   var userId;
@@ -39,6 +43,8 @@ class _ChatPageState extends State<ChatPage> {
   String nameRoom = '';
   bool hasSentMessage = false;
   bool noMessages = false;
+  bool blockedUser = false;
+  TopSnackBarDef topSnackBarComp = TopSnackBarDef();
   var roomActual;
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
 
@@ -60,7 +66,15 @@ class _ChatPageState extends State<ChatPage> {
         nameRoom = userId.firstName + ' ' + userId.lastName;
       }
     }
+    checkUserBlocked();
     getOtherUser();
+  }
+
+  Future<void> checkUserBlocked() async {
+    if(widget.room.type.toString() != "RoomType.group") {
+      blockedUser =
+      await _userDataService.checkUserBlocked(currentUser.id!, userId.id);
+    }
   }
 
   void getOtherUser() async {
@@ -375,14 +389,18 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
   }
 
   void _handleSendPressed(types.PartialText message) {
-
-    print("HAS SENT MESSAGEEW");
-    print(hasSentMessage);
-    hasSentMessage = true;
+    if(!blockedUser) {
+      print(hasSentMessage);
+      hasSentMessage = true;
       FirebaseChatCore.instance.sendMessage(
         message,
         widget.room.id,
       );
+    }
+    else
+      {
+        topSnackBarComp.topsnackbar(context, AppLocalizations.of(context)!.unBlockUserToSend , Colors.red);
+      }
 
   }
 
@@ -425,12 +443,15 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
                 widget.room.type.toString() != "RoomType.group" ?
                 Navigator.push(
                     context,
-                    CupertinoPageRoute<bool?>(
-                        builder: (context) =>
-                            ProfileViewUser(
-                              userID: userId.id!,
-                              viewOnly: true,
-                            ))) : null;
+                    CupertinoPageRoute<void>(
+                        builder: (context) => ProfileViewUser(userID: userId.id!, viewOnly: false, comesFromChat: true, blockedChanged: (boolean) {
+                          blockedUser = !blockedUser;
+                          setState(() {
+
+                          });
+                        },)
+                    )
+                ) : null;
               },
             ),
             SizedBox(
