@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 
 import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
@@ -26,6 +27,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
   bool isLoading = true;
   DateFormat formatter = DateFormat('dd/MM/yy');
   bool ShowTextExpired = false;
+  int difference = 0;
 
 
   @override
@@ -54,6 +56,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
     if(brandIsActive && currentBrand.subscriptionId != null) {
       subscription =
       await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
+      difference = currentBrand.endDatePay!.toDate().difference(DateTime.now()).inDays;
     }
 
    // var date = DateTime.fromMillisecondsSinceEpoch((subscription.startDate!) * 1000);
@@ -202,6 +205,83 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
 
   Widget freeTrialMamba()
   {
+    return GestureDetector(
+      onTap: () async {
+        await Navigator.push(
+            context,
+            CupertinoPageRoute<bool?>(
+              builder: (context) =>
+                  PayWall(
+                    brandId: currentBrand.id!,
+                  ),
+            )
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
+        height: MediaQuery.of(context).size.height*0.09,
+        width: MediaQuery.of(context).size.width*0.9,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(10),
+          ),
+          border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.6), width: 2),
+        ),
+        child: ListTile(
+          title: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.01),
+            child: Text(
+                AppLocalizations.of(context)!.chooseYourPlan,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyText1!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.left
+            ),
+          ),
+          subtitle: Text(
+            AppLocalizations.of(context)!.freeTrialDaysLeft(difference.toString()),
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .caption!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.normal, fontSize: 12),
+          ),
+          trailing: GestureDetector(
+            onTap: () async {
+              await Navigator.push(
+                  context,
+                  CupertinoPageRoute<bool?>(
+                    builder: (context) =>
+                        PayWall(
+                          brandId: currentBrand.id!,
+                        ),
+                  )
+              );
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.height*0.05,
+              width: MediaQuery.of(context).size.width*0.2,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              child: Center(child: Text(
+                AppLocalizations.of(context)!.subscriptionsAppBar,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .caption!.copyWith(color:  Theme
+                    .of(context).primaryColorDark, fontWeight: FontWeight.bold, fontSize: 15),
+              )),
+            ),
+          ),
+          dense: true,
+        ),
+      ),
+    );
     return GestureDetector(
       onTap: () async {
         await Navigator.push(

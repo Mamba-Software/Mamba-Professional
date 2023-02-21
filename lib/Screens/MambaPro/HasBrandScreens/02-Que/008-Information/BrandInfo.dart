@@ -78,6 +78,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   List<int> startBreaks = [];
   // Booking Window
   int bookingWindow = 3;
+  int difference = 0;
 
   //Paywall
   Subscription subscription = Subscription();
@@ -136,6 +137,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     else {
       subscription = Subscription();
     }
+
+    difference = currentBrand.endDatePay!.toDate().difference(DateTime.now()).inDays;
+
     setState(() {
       isLoading = false;
     });
@@ -1135,6 +1139,83 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   Widget freeTrialMamba()
   {
+    return GestureDetector(
+      onTap: () async {
+        await Navigator.push(
+            context,
+            CupertinoPageRoute<bool?>(
+              builder: (context) =>
+                  PayWall(
+                    brandId: currentBrand.id!,
+                  ),
+            )
+        );
+      },
+      child: Container(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
+        height: MediaQuery.of(context).size.height*0.09,
+        width: MediaQuery.of(context).size.width*0.9,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(10),
+          ),
+          border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.6), width: 2),
+        ),
+        child: ListTile(
+          title: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.01),
+            child: Text(
+                AppLocalizations.of(context)!.chooseYourPlan,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .bodyText1!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.left
+            ),
+          ),
+          subtitle: Text(
+            AppLocalizations.of(context)!.freeTrialDaysLeft(difference.toString()),
+            style: Theme
+                .of(context)
+                .textTheme
+                .caption!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.normal, fontSize: 12),
+          ),
+          trailing: GestureDetector(
+            onTap: () async {
+              await Navigator.push(
+                  context,
+                  CupertinoPageRoute<bool?>(
+                    builder: (context) =>
+                        PayWall(
+                          brandId: currentBrand.id!,
+                        ),
+                  )
+              );
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.height*0.05,
+              width: MediaQuery.of(context).size.width*0.2,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              child: Center(child: Text(
+                AppLocalizations.of(context)!.subscriptionsAppBar,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .caption!.copyWith(color:  Theme
+                    .of(context).primaryColorDark, fontWeight: FontWeight.bold, fontSize: 15),
+              )),
+            ),
+          ),
+          dense: true,
+        ),
+      ),
+    );
     return GestureDetector(
       onTap: () async {
         await Navigator.push(

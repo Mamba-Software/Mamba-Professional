@@ -307,26 +307,6 @@ class _BrandScreenState extends State<BrandScreen> {
     }
   }
 
-  void setBrandActive()
-  {
-    if(currentBrand.endDatePay != null)
-    {
-      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
-      {
-
-        brandIsActive = true;
-      }
-      else
-        {
-          brandIsActive = false;
-        }
-    }
-    else
-      {
-        brandIsActive = false;
-      }
-  }
-
   Widget buildHeader() {
     return Container(
       height: safeAreaHeight*0.32,

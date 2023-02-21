@@ -62,6 +62,26 @@ final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 // Dynamic Links Path
 var dynamicLinkBrandId;
 
+void setBrandActive()
+{
+  if(currentBrand.endDatePay != null)
+  {
+    if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+    {
+
+      brandIsActive = true;
+    }
+    else
+    {
+      brandIsActive = false;
+    }
+  }
+  else
+  {
+    brandIsActive = false;
+  }
+}
+
 
 
 

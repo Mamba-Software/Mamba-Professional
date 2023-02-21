@@ -674,7 +674,7 @@
   "feedBackActiveText": "Obtén feedback de cada client després de les teves sessions",
   "searcherActiveText": "Aparició al buscador de marques",
   "seeAllSubs": "Veure totes les subscripcions",
-  "subscriptionsAppBar": "Subscripcions",
+  "subscriptionsAppBar": "Plans",
   "tanksforUsing": "Gràcies por provar Mamba Professional",
   "updateToday": "Subscriu-te avui",
   "joinToBrands": "Uneix-te a la revolució del negoci ",
@@ -698,5 +698,7 @@
   "unBlockUserToSend":  "Desbloqueja a l'usuari per poder enviar missatges",
   "reportUserFor":  "Vull reportar a l'usuari per: \n",
   "shareInvitation":  "Compartir invitació",
-  "shareInvitationText":  "Invita clients a la teva marca"
+  "shareInvitationText":  "Invita clients a la teva marca",
+  "freeTrialDaysLeft":  "Et queden {daysLeft} dies per escollir el teu pla",
+  "chooseYourPlan":  "Escolleix el teu pla"
 }

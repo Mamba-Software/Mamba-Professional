@@ -217,25 +217,6 @@ class LocalNotificationService {
     }
   }
 
-  void setBrandActive()
-  {
-    if(currentBrand.endDatePay != null)
-    {
-      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
-      {
-        brandIsActive = true;
-      }
-      else
-      {
-        brandIsActive = false;
-      }
-    }
-    else
-      {
-        brandIsActive = false;
-      }
-  }
-
   // didNotificationLaunch handle
   Future<void> didNotificationLaunch(BuildContext context) async {
     NotificationAppLaunchDetails? notificationAppLaunchDetails = await _notificationsPlugin.getNotificationAppLaunchDetails();

@@ -628,36 +628,32 @@ class _Clients extends State<Clients> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
                 GestureDetector(
                   onTap: () async {
-                    await Share.share(brandUrlClient, subject: currentBrand.logoUrl!);
+                    showModalBottomSheet<void>(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      builder: (BuildContext context) {
+                        return const FractionallySizedBox(
+                          heightFactor: 0.75,
+                          child: ShareBrandLink(),
+                        );
+                      },
+                    );
                   },
                   child: ListTile(
-        leading: CircularImage(
-          size: MediaQuery.of(context).size.width*0.15,
-          image: currentBrand.logoUrl,
-          color: Theme.of(context).primaryColor,
-          borderWidth: 1.0,
-        ),
-        title: Text(
-          AppLocalizations.of(context)!.shareInvitation,
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.shareInvitationText,
-              style: Theme.of(context).textTheme.caption,
-            ),
-          ],
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.share, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.all(0),
-          onPressed:   () async {
-            await Share.share(brandUrlClient, subject: currentBrand.logoUrl!);
-            /*
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: IconButton(
+            icon: Icon(Icons.group_add, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.all(0),
+            onPressed:   () async {
+
             showModalBottomSheet<void>(
               context: context,
               isScrollControlled: true,
@@ -673,8 +669,14 @@ class _Clients extends State<Clients> {
                     child: ShareBrandLink(),
                   );
               },
-            );*/
-          },
+            );
+            },
+          ),
+        ),
+        title: Text(
+          AppLocalizations.of(context)!.shareInvitation,
+          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+          textAlign: TextAlign.left,
         ),
       ),
                 ),

@@ -117,6 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
     if ((brandCreated == null || brandCreated == false) || (hasBrand)) {
       // SplashScreen
+      //TODO AFEGIR SUSCRIPCIO GRATIS, COM COMPROVEM???
       Navigator.pushReplacement(
           context,
           CupertinoPageRoute<void>(

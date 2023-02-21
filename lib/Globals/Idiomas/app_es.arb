@@ -2903,7 +2903,7 @@
   "@seeyourSub": {
     "description": "seeyourSub message"
   },
-  "subscriptionsAppBar": "Suscripciones",
+  "subscriptionsAppBar": "Planes",
   "@subscriptionsAppBar": {
     "description": "subscriptionsAppBar message"
   },
@@ -3094,8 +3094,18 @@
   "shareInvitationText":  "Invita clientes a tu marca",
   "@shareInvitationText": {
     "description": "shareInvitationText message"
-  }
-
-
-
+  },
+  "freeTrialDaysLeft":  "Te quedan {daysLeft} días para escoger tu plan",
+  "@freeTrialDaysLeft": {
+    "description": "freeTrialDaysLeft message",
+    "placeholders": {
+      "daysLeft": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseYourPlan":  "Escoge tu plan",
+  "@chooseYourPlan": {
+    "description": "chooseYourPlan message"
+    }
 }
