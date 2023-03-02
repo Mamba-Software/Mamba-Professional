@@ -684,7 +684,7 @@
   "promotionUse": "Bescanvia una promoció",
   "insertCode": "Introdueix el codi promocional",
   "anyDoubt": "Algun dubte?",
-  "seeSubscriptionPayWall": "Veure subscripcions",
+  "seeSubscriptionPayWall": "Veure plans",
   "noPromotions": "No hi han promocions",
   "promotionDetected": "Promoció detectada",
   "uniquePromotion": "Et regalem una promoció única",
@@ -700,5 +700,6 @@
   "shareInvitation":  "Compartir invitació",
   "shareInvitationText":  "Invita clients a la teva marca",
   "freeTrialDaysLeft":  "Et queden {daysLeft} dies per escollir el teu pla",
-  "chooseYourPlan":  "Escolleix el teu pla"
+  "chooseYourPlan":  "Escolleix el teu pla",
+  "addClient":  "Afegir clients"
 }

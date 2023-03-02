@@ -3035,7 +3035,7 @@
   "@anyDoubt": {
     "description": "anyDoubt message"
   },
-  "seeSubscriptionPayWall": "Ver suscripciones",
+  "seeSubscriptionPayWall": "Ver planes",
   "@seeSubscriptionPayWall": {
     "description": "seeSubscriptionPayWall message"
   },
@@ -3107,5 +3107,9 @@
   "chooseYourPlan":  "Escoge tu plan",
   "@chooseYourPlan": {
     "description": "chooseYourPlan message"
-    }
+    },
+  "addClient":  "Añadir clientes",
+  "@addClient": {
+    "description": "addClient message"
+  }
 }

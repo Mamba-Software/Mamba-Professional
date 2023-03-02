@@ -645,7 +645,23 @@ class _Clients extends State<Clients> {
                       },
                     );
                   },
-                  child: ListTile(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                    child: ListTile(
+                      leading: Container(
+                        child: Icon(Icons.share, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                      ),
+                      title: Text(
+                        AppLocalizations.of(context)!.addClient,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),
+                  ),
+
+                    /*
+                    ListTile(
+                    dense: true,
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: IconButton(
@@ -682,6 +698,7 @@ class _Clients extends State<Clients> {
           ),
         ),
       ),
+                     */
                 ),
               ],
             ),
@@ -789,7 +806,8 @@ class _Clients extends State<Clients> {
                   padding: const EdgeInsets.all(0),
                   onPressed: false ? () {
                   } : null,
-                ) : IconButton(
+                ) :
+                IconButton(
                   icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.all(0),
