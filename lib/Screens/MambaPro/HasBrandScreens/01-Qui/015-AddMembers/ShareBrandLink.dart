@@ -9,7 +9,9 @@ import 'package:share_plus/share_plus.dart';
 
 
 class ShareBrandLink extends StatefulWidget {
-  const ShareBrandLink({Key? key}) : super(key: key);
+  final bool? addStaff;
+
+  const ShareBrandLink({Key? key, this.addStaff}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ShareBrandLinkState();
@@ -172,7 +174,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
-          currentUser.brandRole < 3 ? TextButton(
+          (widget.addStaff != null && widget.addStaff == false)? Container() : currentUser.brandRole < 3 ? TextButton(
               child: Text(
                   AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
                   style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)

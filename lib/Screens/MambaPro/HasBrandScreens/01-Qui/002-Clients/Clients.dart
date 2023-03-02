@@ -640,7 +640,7 @@ class _Clients extends State<Clients> {
                       builder: (BuildContext context) {
                         return const FractionallySizedBox(
                           heightFactor: 0.75,
-                          child: ShareBrandLink(),
+                          child: ShareBrandLink(addStaff: false,),
                         );
                       },
                     );
@@ -649,7 +649,7 @@ class _Clients extends State<Clients> {
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: IconButton(
-            icon: Icon(Icons.group_add, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+            icon: Icon(Icons.share, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.all(0),
             onPressed:   () async {
@@ -666,17 +666,20 @@ class _Clients extends State<Clients> {
               builder: (BuildContext context) {
                   return const FractionallySizedBox(
                     heightFactor: 0.75,
-                    child: ShareBrandLink(),
+                    child: ShareBrandLink(addStaff: false,),
                   );
               },
             );
             },
           ),
         ),
-        title: Text(
-          AppLocalizations.of(context)!.shareInvitation,
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
+        title: Padding(
+          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
+          child: Text(
+            AppLocalizations.of(context)!.shareInvitation,
+            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+            textAlign: TextAlign.left,
+          ),
         ),
       ),
                 ),

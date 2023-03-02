@@ -1207,8 +1207,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                 style: Theme
                     .of(context)
                     .textTheme
-                    .caption!.copyWith(color:  Theme
-                    .of(context).primaryColorDark, fontWeight: FontWeight.bold, fontSize: 15),
+                    .caption!.copyWith(color:  AppColors.white, fontWeight: FontWeight.bold, fontSize: 15),
               )),
             ),
           ),
