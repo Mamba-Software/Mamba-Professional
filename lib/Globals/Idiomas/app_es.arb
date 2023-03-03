@@ -2887,11 +2887,11 @@
   "@statsMinimumSessionBrand": {
     "description": "statsMinimumSessionBrand message"
     },
-  "subscriptionExpired": "Tu suscripción ha caducado, pulsa para renovar",
+  "subscriptionExpired": "Tu plan ha caducado, pulsa para renovar",
   "@subscriptionExpired": {
     "description": "subscriptionExpired message"
   },
-  "noSubscription": "No tienes suscripción, pulsa para adquirir una",
+  "noSubscription": "No tienes plan, pulsa para adquirir uno",
   "@noSubscription": {
     "description": "noSubscription message"
   },
@@ -2899,7 +2899,7 @@
   "@expiresAt": {
     "description": "expiresAt message"
   },
-  "seeyourSub": "Pulsa para ver tu suscripción",
+  "seeyourSub": "Pulsa para ver tu plan",
   "@seeyourSub": {
     "description": "seeyourSub message"
   },
@@ -2907,7 +2907,7 @@
   "@subscriptionsAppBar": {
     "description": "subscriptionsAppBar message"
   },
-  "moreSubInfo": "La suscripción fue adquirida el {initDate} y expira el {endDate}",
+  "moreSubInfo": "El plan fue adquirido el {initDate} y expira el {endDate}",
   "@moreSubInfo": {
     "description": "moreSubInfo message",
     "placeholders": {
@@ -2995,7 +2995,7 @@
   "@searcherActiveText": {
     "description": "searcherActiveText message"
   },
-  "seeAllSubs": "Ver todas las suscripciones",
+  "seeAllSubs": "Ver todos los planes",
   "@seeAllSubs": {
     "description": "seeAllSubs message"
   },
@@ -3015,7 +3015,7 @@
   "@getAll": {
     "description": "getAll message"
   },
-  "getAllDesc": "Desbloquea todo el potencial de Mamba Pro con una suscripción única",
+  "getAllDesc": "Desbloquea todo el potencial de Mamba Pro con un plan único",
   "@getAllDesc": {
     "description": "getAllDesc message"
   },
