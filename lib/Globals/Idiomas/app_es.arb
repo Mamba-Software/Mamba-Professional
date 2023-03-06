@@ -2761,6 +2761,15 @@
       }
     }
   },
+  "lastActiveIn": "Última interacción {dateJoined}",
+  "@lastActiveIn": {
+    "description": "Member Since message",
+    "placeholders": {
+      "dateJoined": {
+        "type": "String"
+      }
+    }
+  },
   "averageTimeWorked": "Tiempo medio trabajado",
   "@averageTimeWorked": {
     "description": "seeMap message"
@@ -2887,11 +2896,11 @@
   "@statsMinimumSessionBrand": {
     "description": "statsMinimumSessionBrand message"
     },
-  "subscriptionExpired": "Tu suscripción ha caducado, pulsa para renovar",
+  "subscriptionExpired": "Tu plan ha caducado, pulsa para renovar",
   "@subscriptionExpired": {
     "description": "subscriptionExpired message"
   },
-  "noSubscription": "No tienes suscripción, pulsa para adquirir una",
+  "noSubscription": "No tienes plan, pulsa para adquirir uno",
   "@noSubscription": {
     "description": "noSubscription message"
   },
@@ -2899,15 +2908,15 @@
   "@expiresAt": {
     "description": "expiresAt message"
   },
-  "seeyourSub": "Pulsa para ver tu suscripción",
+  "seeyourSub": "Pulsa para ver tu plan",
   "@seeyourSub": {
     "description": "seeyourSub message"
   },
-  "subscriptionsAppBar": "Suscripciones",
+  "subscriptionsAppBar": "Planes",
   "@subscriptionsAppBar": {
     "description": "subscriptionsAppBar message"
   },
-  "moreSubInfo": "La suscripción fue adquirida el {initDate} y expira el {endDate}",
+  "moreSubInfo": "El plan fue adquirido el {initDate} y expira el {endDate}",
   "@moreSubInfo": {
     "description": "moreSubInfo message",
     "placeholders": {
@@ -2995,7 +3004,7 @@
   "@searcherActiveText": {
     "description": "searcherActiveText message"
   },
-  "seeAllSubs": "Ver todas las suscripciones",
+  "seeAllSubs": "Ver todos los planes",
   "@seeAllSubs": {
     "description": "seeAllSubs message"
   },
@@ -3015,7 +3024,7 @@
   "@getAll": {
     "description": "getAll message"
   },
-  "getAllDesc": "Desbloquea todo el potencial de Mamba Pro con una suscripción única",
+  "getAllDesc": "Desbloquea todo el potencial de Mamba Pro con un plan único",
   "@getAllDesc": {
     "description": "getAllDesc message"
   },
@@ -3035,7 +3044,7 @@
   "@anyDoubt": {
     "description": "anyDoubt message"
   },
-  "seeSubscriptionPayWall": "Ver suscripciones",
+  "seeSubscriptionPayWall": "Ver planes",
   "@seeSubscriptionPayWall": {
     "description": "seeSubscriptionPayWall message"
   },
@@ -3066,8 +3075,50 @@
   "subscribeNow": "Suscribirme",
   "@subscribeNow": {
     "description": "subscribeNow message"
+  },
+  "block": "Bloquear",
+  "@block": {
+    "description": "block message"
+  },
+  "unblock": "Desbloquear",
+  "@unblock": {
+    "description": "unblock message"
+  },
+  "report": "Reportar",
+  "@report": {
+    "description": "report message"
+  },
+  "unBlockUserToSend":  "Desbloquea al usuario para poder enviar mensajes",
+  "@unBlockUserToSend": {
+    "description": "unBlockUserToSend message"
+  },
+  "reportUserFor":  "Quiero reportar al usuario por: \n",
+  "@reportUserFor": {
+    "description": "reportUserFor message"
+  },
+  "shareInvitation":  "Compartir invitación",
+  "@shareInvitation": {
+    "description": "shareInvitation message"
+  },
+  "shareInvitationText":  "Invita clientes a tu marca",
+  "@shareInvitationText": {
+    "description": "shareInvitationText message"
+  },
+  "freeTrialDaysLeft":  "Te quedan {daysLeft} días para escoger tu plan",
+  "@freeTrialDaysLeft": {
+    "description": "freeTrialDaysLeft message",
+    "placeholders": {
+      "daysLeft": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseYourPlan":  "Escoge tu plan",
+  "@chooseYourPlan": {
+    "description": "chooseYourPlan message"
+    },
+  "addClient":  "Añadir clientes",
+  "@addClient": {
+    "description": "addClient message"
   }
-
-
-
 }

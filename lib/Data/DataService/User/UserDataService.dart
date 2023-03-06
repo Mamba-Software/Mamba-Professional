@@ -28,6 +28,7 @@ class UserDataService {
   Future<bool> checkIfUserExists(String uid) => _firebase.checkIfUserExists(uid);
   Future<bool> checkIfNicknameExists(String nickname) => _firebase.checkIfNicknameExists(nickname);
   Future<bool?> checkIfUserIsTrainer(String userId) => _firebase.checkIfUserIsTrainer(userId);
+  Future<bool> checkUserBlocked(String currentUser, String userId) => _firebase.checkUserBlocked(currentUser, userId);
 
   // Get Data
   Future<Usuario> getUserDetails(String userId) => _firebase.getUserDetails(userId);
@@ -46,6 +47,7 @@ class UserDataService {
   Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) => _firebase.findEventLocalNotification(userId, eventId);
   Future<List<Bono>> getUserBonos(String? userId) => _firebase.getUserBonos(userId);
   Future<Event> getLastUserEvent(String? userId) => _firebase.getLastUserEvent(userId);
+  Future<List<String>> getBlockedByUsers(String userId) => _firebase.getBlockedByUsers(userId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
@@ -57,6 +59,7 @@ class UserDataService {
   Future<void> addBonoRequestToUser(String brandId, String userId, String bonoId) => _firebase.addBonoRequestToUser(brandId, userId, bonoId);
   Future<void> addBonoToUser(String brandId, String userId, String bonoId, int sessions, Timestamp time) => _firebase.addBonoToUser(brandId, userId, bonoId, sessions, time);
   Future<void> addFavouriteToUser(String brandId, String userId, List<int> favourites) => _firebase.addFavouriteToUser(brandId, userId, favourites);
+  Future<void> addUserBlocked(String currentUser, String userId) => _firebase.addUserBlocked(currentUser, userId);
 
   // Update Data
   Future<void> updateUser(String uid, String name, String firstName, String lastName, String dateOfBirth, int gender, File? image, String? googleImageUrl, bool isTrainer) => _firebase.updateUser(uid, name, firstName, lastName, dateOfBirth, gender, image, googleImageUrl, isTrainer);
@@ -76,6 +79,7 @@ class UserDataService {
   Future<void> deleteUserBonoRequest(String userId, String brandId, String bonoId) => _firebase.deleteUserBonoRequest(userId,brandId ,bonoId);
   Future<void> deleteUserBono(String userId, String brandId, String bonoId) => _firebase.deleteUserBono(userId, brandId, bonoId);
   Future<void> deleteLocalNotification(String userId, String notificationId) => _firebase.deleteLocalNotification(userId, notificationId);
+  Future<void> deleteUserBlocked(String currentUser, String userId) => _firebase.deleteUserBlocked(currentUser, userId);
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // STREAMS

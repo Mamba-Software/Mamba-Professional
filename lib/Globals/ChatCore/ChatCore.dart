@@ -8,6 +8,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -32,12 +33,14 @@ class _ChatCoreState extends State<ChatCore> {
   User? _user;
 
   var _roomDataService = new RoomDataService();
+  final _userDataService = UserDataService();
   var searchController = TextEditingController();
   bool searchClicked = false;
   bool isFiltered = false;
 
   List<types.Room> allRooms = [];
   List<types.Room> rooms = [];
+  List<String> userIsBlockedBy = [];
 
   @override
   void initState() {
@@ -64,6 +67,7 @@ class _ChatCoreState extends State<ChatCore> {
           _user = user;
         });
       });
+      userIsBlockedBy = await _userDataService.getBlockedByUsers(currentUser.id!);
       Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
           _initialized = true;
@@ -648,7 +652,12 @@ class _ChatCoreState extends State<ChatCore> {
                      userAux = room.users.firstWhere(
                           (u) => u.id != _user!.uid,
                     );
+                     if(userIsBlockedBy.contains(userAux.id))
+                     {
+                       return Container();
+                     }
                   }
+
                   bool Read = true;
                   if(room.lastMessages != null && room.lastMessages[0].metadata[currentUser.id] == "delivered") {
                     Read = false;
@@ -783,7 +792,12 @@ class _ChatCoreState extends State<ChatCore> {
                     userAux = room.users.firstWhere(
                           (u) => u.id != _user!.uid,
                     );
+                    if(userIsBlockedBy.contains(userAux.id))
+                    {
+                      return Container();
+                    }
                   }
+
 
                   bool Read = true;
                   if(room.lastMessages != null && room.lastMessages[0].metadata[currentUser.id] == "delivered") {

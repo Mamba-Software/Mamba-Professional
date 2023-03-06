@@ -102,6 +102,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     if (currentUser.brandsList.isNotEmpty) {
       // Setting the Brand to the User
       hasBrand = true;
+      //TODO ADD 7DAYS
+      await _brandDataService
+          .updateBrandPay(brands[0].id!,
+          8,
+          '7DAYSTRIAL', '7 Days Trial');
     }
     bool? brandCreated;
     if (dynamicLinkBrandId == null && hasBrand == false) {
@@ -117,6 +122,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
     if ((brandCreated == null || brandCreated == false) || (hasBrand)) {
       // SplashScreen
+      //TODO AFEGIR SUSCRIPCIO GRATIS, COM COMPROVEM???
       Navigator.pushReplacement(
           context,
           CupertinoPageRoute<void>(
