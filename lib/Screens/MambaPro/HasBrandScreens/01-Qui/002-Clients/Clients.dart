@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/OrderFilter/OrderFilter.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -626,8 +627,32 @@ class _Clients extends State<Clients> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                GestureDetector(
-                  onTap: () async {
+                ListTile(
+                  leading: Container(
+                    height: MediaQuery.of(context).size.width*0.2,
+                    width: MediaQuery.of(context).size.width*0.15,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                      color:  Theme.of(context).scaffoldBackgroundColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.add, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.07),
+                  ),
+                  title: Text(
+                    AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.clients,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.left,
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.shareInvitationText,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ],
+                  ),
+                  onTap: () {
                     showModalBottomSheet<void>(
                       context: context,
                       isScrollControlled: true,
@@ -645,61 +670,8 @@ class _Clients extends State<Clients> {
                       },
                     );
                   },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                    child: ListTile(
-                      leading: Container(
-                        child: Icon(Icons.share, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                      ),
-                      title: Text(
-                        AppLocalizations.of(context)!.addClient,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),
-                  ),
-
-                    /*
-                    ListTile(
-                    dense: true,
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: IconButton(
-            icon: Icon(Icons.share, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-            alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(0),
-            onPressed:   () async {
-
-            showModalBottomSheet<void>(
-              context: context,
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
-              ),
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              builder: (BuildContext context) {
-                  return const FractionallySizedBox(
-                    heightFactor: 0.75,
-                    child: ShareBrandLink(addStaff: false,),
-                  );
-              },
-            );
-            },
-          ),
-        ),
-        title: Padding(
-          padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width*0.05),
-          child: Text(
-            AppLocalizations.of(context)!.shareInvitation,
-            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-            textAlign: TextAlign.left,
-          ),
-        ),
-      ),
-                     */
                 ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.004),
               ],
             ),
           ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
@@ -779,6 +751,7 @@ class _Clients extends State<Clients> {
           SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               Usuario user = filteredMembers[index];
+              DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
               return ListTile(
                 leading: CircularImage(
                   size: MediaQuery.of(context).size.width*0.15,
@@ -795,7 +768,8 @@ class _Clients extends State<Clients> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "@${user.nick!}",
+                      user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
+                      AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
                       style: Theme.of(context).textTheme.caption,
                     ),
                   ],

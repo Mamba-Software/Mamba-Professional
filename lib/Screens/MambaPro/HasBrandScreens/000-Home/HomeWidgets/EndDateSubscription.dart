@@ -219,7 +219,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
       },
       child: Container(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
-        height: MediaQuery.of(context).size.height*0.09,
+        height: MediaQuery.of(context).size.height*0.1,
         width: MediaQuery.of(context).size.width*0.9,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
@@ -228,56 +228,58 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
           ),
           border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.6), width: 2),
         ),
-        child: ListTile(
-          title: Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.01),
-            child: Text(
-                AppLocalizations.of(context)!.chooseYourPlan,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyText1!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.left
-            ),
-          ),
-          subtitle: Text(
-            AppLocalizations.of(context)!.freeTrialDaysLeft(difference.toString()),
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .caption!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.normal, fontSize: 12),
-          ),
-          trailing: GestureDetector(
-            onTap: () async {
-              await Navigator.push(
-                  context,
-                  CupertinoPageRoute<bool?>(
-                    builder: (context) =>
-                        PayWall(
-                          brandId: currentBrand.id!,
-                        ),
-                  )
-              );
-            },
-            child: Container(
-              height: MediaQuery.of(context).size.height*0.05,
-              width: MediaQuery.of(context).size.width*0.2,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
+        child: Center(
+          child: ListTile(
+            title: Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.01),
+              child: Text(
+                  AppLocalizations.of(context)!.chooseYourPlan,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.left
               ),
-              child: Center(child: Text(
-                AppLocalizations.of(context)!.subscriptionsAppBar,
+            ),
+            subtitle: Text(
+              AppLocalizations.of(context)!.freeTrialDaysLeft(difference.toString()),
                 style: Theme
                     .of(context)
                     .textTheme
-                    .caption!.copyWith(color:  AppColors.white, fontWeight: FontWeight.bold, fontSize: 15),
-              )),
+                    .caption!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.normal, fontSize: 12),
             ),
+            trailing: GestureDetector(
+              onTap: () async {
+                await Navigator.push(
+                    context,
+                    CupertinoPageRoute<bool?>(
+                      builder: (context) =>
+                          PayWall(
+                            brandId: currentBrand.id!,
+                          ),
+                    )
+                );
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height*0.05,
+                width: MediaQuery.of(context).size.width*0.2,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                child: Center(child: Text(
+                  AppLocalizations.of(context)!.subscriptionsAppBar,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .caption!.copyWith(color:  AppColors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                )),
+              ),
+            ),
+            dense: true,
           ),
-          dense: true,
         ),
       ),
     );

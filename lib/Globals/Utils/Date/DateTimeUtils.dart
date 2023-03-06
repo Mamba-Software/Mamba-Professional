@@ -12,8 +12,16 @@ class DateTimeUtils {
     return DateFormat('dd-MM-yyyy', languageCode).parse(date);
   }
 
+  DateTime formatStringToDateTimeDDMMYY(String date, String languageCode) {
+    return DateFormat('dd-MM-yy', languageCode).parse(date);
+  }
+
   String formatDateTimeToStringMM(DateTime date, String languageCode) {
     return StringUtils().toCapitalized(DateFormat("MMMM", languageCode).format(date));
+  }
+
+  String formatDateTimeToStringMMMYYYY(DateTime date, String languageCode) {
+    return StringUtils().toCapitalized(DateFormat("MMM yyyy", languageCode).format(date));
   }
 
   String formatDateTimeToStringMMYYYY(DateTime date, String languageCode) {

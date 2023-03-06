@@ -2761,6 +2761,15 @@
       }
     }
   },
+  "lastActiveIn": "Última interacción {dateJoined}",
+  "@lastActiveIn": {
+    "description": "Member Since message",
+    "placeholders": {
+      "dateJoined": {
+        "type": "String"
+      }
+    }
+  },
   "averageTimeWorked": "Tiempo medio trabajado",
   "@averageTimeWorked": {
     "description": "seeMap message"

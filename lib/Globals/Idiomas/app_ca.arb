@@ -621,6 +621,7 @@
   "bookingWindowDescription": "Indica el temps d'antelació amb el qual els clients de la teva marca poden reservar una plaça en les teves sessions",
   "requestText": "Comprova les sol·licituds de la marca",
   "joinedIn": "Membre des de {dateJoined}",
+  "lastActiveIn": "Última interacció {dateJoined}",
   "averageTimeWorked": "Temps mitjà treballat",
   "totalTimeWorked": "Temps total treballat",
   "averageTimeTrained": "Temps mitjà entrenat",

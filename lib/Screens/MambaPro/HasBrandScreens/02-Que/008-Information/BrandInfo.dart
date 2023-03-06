@@ -391,65 +391,48 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                   ),
                 ) : subscription.subscriptionId  == '7DAYSTRIAL'? freeTrialMamba() : GestureDetector(
                   onTap: navigateToSubscriptionsScreen,
-                  child: Material(
-                    elevation: 4,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  child: Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
+                    height: MediaQuery.of(context).size.height*0.1,
+                    width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                     ),
-                    child: Container(
-                      constraints: BoxConstraints(
-                        maxHeight: MediaQuery.of(context).size.height * 0.65,
-                        maxWidth: MediaQuery.of(context).size.width*0.9,
-                        minWidth: MediaQuery.of(context).size.width*0.9,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        borderRadius: const BorderRadius.all(Radius.circular(5.0)),// BorderRadius
-                      ),// BoxDecoration
-                      child: Container(
-                        margin: const EdgeInsetsDirectional.only(start: 1, end: 1, bottom: 1, top: 1),
-                        constraints: BoxConstraints(
-                          maxHeight: MediaQuery.of(context).size.height* 0.65,
-                          maxWidth: MediaQuery.of(context).size.width*0.9,
-                          minWidth: MediaQuery.of(context).size.width*0.9,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(0),
+                          child: Image.asset(Constants.subscriptionImage, width: MediaQuery.of(context).size.width*0.12, fit: BoxFit.cover,)
                         ),
-                        padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColorDark.withOpacity(0.4),
-                          borderRadius: const BorderRadius.all(Radius.circular(10.0)),// BorderRadius
-                        ),// BoxDecoration
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            ListTile(
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: Image.asset(
-                                  Constants.subscriptionImage,),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                        Flexible(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                subscription.title!,
+                                style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
                               ),
-                              title: Text(
-                                  subscription.title!,
-                                  style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .headline3,
-                                  textAlign: TextAlign.left
+                              Text(
+                                AppLocalizations.of(context)!.seeyourSub,
+                                style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                textAlign: TextAlign.center,
                               ),
-                              subtitle: Text(
-                                  AppLocalizations.of(context)!.seeyourSub,
-                                  style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .caption
-                              ),
-                              dense: true,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                      ],
                     ),
                   ),
+
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
@@ -1153,7 +1136,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       },
       child: Container(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
-        height: MediaQuery.of(context).size.height*0.09,
+        height: MediaQuery.of(context).size.height*0.1,
         width: MediaQuery.of(context).size.width*0.9,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
@@ -1162,56 +1145,58 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
           ),
           border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.6), width: 2),
         ),
-        child: ListTile(
-          title: Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.01),
-            child: Text(
-                AppLocalizations.of(context)!.chooseYourPlan,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyText1!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.left
-            ),
-          ),
-          subtitle: Text(
-            AppLocalizations.of(context)!.freeTrialDaysLeft(difference.toString()),
-            style: Theme
-                .of(context)
-                .textTheme
-                .caption!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.normal, fontSize: 12),
-          ),
-          trailing: GestureDetector(
-            onTap: () async {
-              await Navigator.push(
-                  context,
-                  CupertinoPageRoute<bool?>(
-                    builder: (context) =>
-                        PayWall(
-                          brandId: currentBrand.id!,
-                        ),
-                  )
-              );
-            },
-            child: Container(
-              height: MediaQuery.of(context).size.height*0.05,
-              width: MediaQuery.of(context).size.width*0.2,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
-                ),
+        child: Center(
+          child: ListTile(
+            title: Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width*0.01),
+              child: Text(
+                  AppLocalizations.of(context)!.chooseYourPlan,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyText1!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.left
               ),
-              child: Center(child: Text(
-                AppLocalizations.of(context)!.subscriptionsAppBar,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .caption!.copyWith(color:  AppColors.white, fontWeight: FontWeight.bold, fontSize: 15),
-              )),
             ),
+            subtitle: Text(
+              AppLocalizations.of(context)!.freeTrialDaysLeft(difference.toString()),
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .caption!.copyWith(color: AppColors.mainColor, fontWeight: FontWeight.normal, fontSize: 12),
+            ),
+            trailing: GestureDetector(
+              onTap: () async {
+                await Navigator.push(
+                    context,
+                    CupertinoPageRoute<bool?>(
+                      builder: (context) =>
+                          PayWall(
+                            brandId: currentBrand.id!,
+                          ),
+                    )
+                );
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height*0.05,
+                width: MediaQuery.of(context).size.width*0.2,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                child: Center(child: Text(
+                  AppLocalizations.of(context)!.subscriptionsAppBar,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .caption!.copyWith(color:  AppColors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                )),
+              ),
+            ),
+            dense: true,
           ),
-          dense: true,
         ),
       ),
     );
