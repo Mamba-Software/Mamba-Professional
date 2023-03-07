@@ -52,7 +52,7 @@ class ImageUtils {
       }
     }
     // Return Images Picked Compressed
-    for (var i=0; i<compressedImages!.length; i++) {
+    for (var i=0; i<compressedImages.length; i++) {
       result.add(File(compressedImages[i].path));
     }
     return result;
