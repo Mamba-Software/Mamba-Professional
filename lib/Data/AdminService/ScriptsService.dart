@@ -2409,4 +2409,51 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> JMFsolveUsersBlockedMarch08() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 08th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Users/BlockedByUsers collection:\n');
+      print('--------------');
+      print('\n');
+
+      String users = "7777 Users";
+      Usuario user = new Usuario();
+      QuerySnapshot querySnapshot3;
+      QuerySnapshot querySnapshot4;
+
+      // Get all the Trainers
+      QuerySnapshot querySnapshot = await _firestore.collection(users).where("isTrainer", isEqualTo: true).get();
+      // Per Trainer Get their Brand
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String userId = querySnapshot.docs[i].id;
+        print(userId);
+        //user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("BlockedByUsers")
+            .doc('test')
+            .set({
+          "userId": 'test',
+        });
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: '+userId);
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
 }

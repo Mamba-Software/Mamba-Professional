@@ -1270,8 +1270,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   itemCount: eventClients.length,
                                   itemBuilder: (context, int index) {
                                     var client = eventClients[index];
-                                    print(userIsBlockedBy[0]);
-                                    print(client.id);
+                                    //print(client.id);
                                     if(userIsBlockedBy.contains(client.id)) {
                                       client.isPrivate = true;
                                     }
