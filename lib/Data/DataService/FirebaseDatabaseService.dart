@@ -2322,6 +2322,14 @@ class FirebaseDatabaseService {
             "latitude": latitude,
             "longitude": longitude
           });
+        if(isBaseLocation)
+          {
+            await _firestore
+                .collection(brands).doc(brandId).update({
+              "city": city,
+              "zipCode": zipCode,
+            });
+          }
         return uid;
       } catch (e) {
         print(e.toString());
@@ -2355,6 +2363,14 @@ class FirebaseDatabaseService {
             "latitude": latitude,
             "longitude": longitude
           });
+        if(isBaseLocation)
+        {
+          await _firestore
+              .collection(brands).doc(brandId).update({
+            "city": city,
+            "zipCode": zipCode,
+          });
+        }
       } catch (e) {
         print(e.toString());
       }

@@ -2469,7 +2469,6 @@ class ScriptsDatabaseService {
       print('--------------');
       print('\n');
 
-      String users = "7777 Users";
       String brands = "7777 Brands";
       String locations = "7777 Locations";
       Usuario user = new Usuario();
@@ -2481,44 +2480,25 @@ class ScriptsDatabaseService {
       for (int i = 0; i < querySnapshotBrands.docs.length; i++) {
 
         String brandId = querySnapshotBrands.docs[i].id;
+        print(brandId);
         QuerySnapshot querySnapshotLocations = await _firestore.collection(brands).doc(brandId).collection("Locations").where("isBaseLocation", isEqualTo: true).get();
-
-        //QuerySnapshot querySnapshotLocation = await _firestore.collection(locations).doc(querySnapshotLocations.docs[0].id).get();
+        print(querySnapshotLocations.docs[0].id!);
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+            .collection(locations)
+            .doc(querySnapshotLocations.docs[0].id!).get();
+        print(querySnapshotLocations.docs[0].id!);
+        var location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
         //user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
 
         await _firestore
             .collection(brands)
             .doc(brandId)
-            .set({
-          "zipCode": 'test',
-          "city":
+            .update({
+          "zipCode": location.zipCode,
+          "city": location.city
         });
         print('=================================================================================');
         print('=================================================================================');
-        print('\n');
-        print('=================================================================================');
-        print('=================================================================================');
-        print('\n');
-      }
-      // Get all the Clients
-      QuerySnapshot querySnapshot = await _firestore.collection(users).where("isTrainer", isEqualTo: false).get();
-      // Per Trainer Get their Brand
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
-        String userId = querySnapshot.docs[i].id;
-        print(userId);
-        //user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
-
-        await _firestore
-            .collection(users)
-            .doc(userId)
-            .collection("Brands")
-            .doc('test')
-            .set({
-          "userId": 'test',
-        });
-        print('=================================================================================');
-        print('=================================================================================');
-        print('USER WITH ID: '+userId);
         print('\n');
         print('=================================================================================');
         print('=================================================================================');

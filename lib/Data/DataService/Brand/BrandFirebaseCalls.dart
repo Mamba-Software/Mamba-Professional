@@ -655,11 +655,17 @@ class BrandFirebaseCalls {
   }
 
   Future<void> updateBrandBaseLocation(String brandID, String locationID) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+        .collection(locations)
+        .doc(locationID).get();
+    Location location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     await _firestore
         .collection(brands)
         .doc(brandID)
         .update({
-      "baseLocation": locationID
+      "baseLocation": locationID,
+      "zipCode": location.zipCode,
+      "city": location.city,
     });
   }
 

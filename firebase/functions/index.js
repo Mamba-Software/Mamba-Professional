@@ -2418,6 +2418,9 @@ exports.zzzzBrandUpdatesCoverData = functions
       } else if (before.logoUrl != after.logoUrl) {
         coverDataChange = true;
       }
+      else if(before.zipCode != after.zipCode || before.city != after.city) {
+        coverDataChange = true;
+      }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -2429,6 +2432,7 @@ exports.zzzzBrandUpdatesCoverData = functions
           "Brands Users Num =",
           brandsUsersSnapshot.size,
           );
+          //TODO INTEGRATION VERSION .12
         for (var i in brandsUsersSnapshot.docs) {
           const id = brandsUsersSnapshot.docs[i].id;
           await db
@@ -2439,6 +2443,8 @@ exports.zzzzBrandUpdatesCoverData = functions
           .update({
             "name": after.name,
             "logoUrl": after.logoUrl,
+            "zipCode": after.zipCode,
+            "city": after.city,
           });
         }
         // Update the Brands Subcollection in Events
@@ -2916,6 +2922,9 @@ exports.zzzzUserJoinsBrand = functions
         "dateJoined": formatted,      
         "myMonthlySessions": 0,
         "myTotalSessions": 0,
+        //TODO INTEGRATION VERSION .12
+        "zipCode": brandDoc.zipCode,
+        "city": brandDoc.city
       });
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
