@@ -52,6 +52,7 @@ class BrandDataService {
   // Update Data
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift, int bookingWindow) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift, bookingWindow);
   Future<String> updateBrandPhoto(String brandID, File image) => _firebase.updateBrandPhoto(brandID, image);
+  Future<void> updateBrandBaseImage(String brandID, ImageObject newBaseImage, String oldBaseImage) => _firebase.updateBrandBaseImage(brandID, newBaseImage, oldBaseImage);
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
   Future<void> updateBrandRoom(String brandID, String roomId) => _firebase.updateBrandRoom(brandID, roomId);
   Future<void> updateBono(String brandId, Bono bono, Condition condition) => _firebase.updateBono(brandId, bono, condition);

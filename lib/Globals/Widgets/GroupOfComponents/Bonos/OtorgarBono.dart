@@ -870,7 +870,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                         widget.bonoRequest?.userId!;
                                         purchase.paymentMethod = paymentMethod;
                                         //Add user to brand
-                                        Brand? userBrand = await _userDataService.getUserBrands( widget.user.id!);
+                                        Brand? userBrand = await _userDataService.getUserBrandsToAdd( widget.user.id!, widget.brand.id!);
                                         if(userBrand == null) {
                                           NotificationService().userJoinsBrand(
                                               widget.user.id!, widget.brand.id!);

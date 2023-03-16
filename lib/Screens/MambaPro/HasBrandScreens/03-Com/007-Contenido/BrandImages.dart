@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -44,7 +45,12 @@ class _BrandImagesState extends State<BrandImages> {
   final int _maxImages = 10;
   // Images uploaded
   List<ImageObject> _imagesUploaded = [];
+  ImageObject baseImage = ImageObject();
+  int baseImageIndex = 0;
   List<Widget> imageSliders = [];
+
+  bool canClickFav = true;
+  TopSnackBarDef topSnackBarComp = TopSnackBarDef();
 
   @override
   void initState() {
@@ -86,6 +92,7 @@ class _BrandImagesState extends State<BrandImages> {
   // Gets the user info from firebase.
   Future<void> getBrandContentImages() async {
     _imagesUploaded = await _brandDataService.getBrandContentPictures(widget.brandId);
+    baseImage = _imagesUploaded.firstWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
     _imagesUploaded.sort((a,b) {
       var aDate = a.timestamp!.toDate();
       var bDate = b.timestamp!.toDate();
@@ -343,20 +350,31 @@ class _BrandImagesState extends State<BrandImages> {
                           child: Center(
                             child: IconButton(
                               onPressed: () async {
-                                var result = await showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myImagesDeleteDescription);
-                                    }
-                                );
-                                if (result) {
-                                  mixpanel!.track('brand_images_delete');
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
-                                  getBrandContentImages();
+                                if((image.isBaseImage == null ||  !image.isBaseImage!) && canClickFav) {
+                                  var result = await showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return DeleteConfirmationDialog(
+                                            text: AppLocalizations.of(context)!
+                                                .myImagesDeleteDescription);
+                                      }
+                                  );
+                                  if (result) {
+                                    mixpanel!.track('brand_images_delete');
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    await _brandDataService
+                                        .deleteBrandContentPictures(
+                                        widget.brandId, image.id!, image.url!);
+                                    getBrandContentImages();
+                                  }
                                 }
+                                else
+                                  {
+                                    //TODO CAMBIAR TEXT
+                                    topSnackBarComp.topsnackbar(context, 'No se puede eliminar una imagen favorita', Colors.red);
+                                  }
                               },
                               icon: Icon(
                                   Icons.remove,
@@ -366,6 +384,43 @@ class _BrandImagesState extends State<BrandImages> {
                               alignment: Alignment.center,
                             ),
                           ),
+                        ),
+                      ),
+                    ) : Container(),
+                    canEdit ? Positioned(
+                      top: 4,
+                      left: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                        child: IconButton(
+                          onPressed: () async {
+                            if(image.isBaseImage != null &&  image.isBaseImage!)
+                              {
+
+                              }
+                            else if(canClickFav){
+
+                              setState(() {
+                                canClickFav = false;
+                                _imagesUploaded[_imagesUploaded.indexWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
+                                image.isBaseImage = true;
+                              });
+                              await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
+                              await getBrandContentImages();
+                              setState(() {
+                                canClickFav = true;
+                              });
+                            }
+                          },
+                          icon: image.isBaseImage != null &&  image.isBaseImage! ? Icon(
+                              Icons.star_outlined,
+                              color: Colors.yellow,
+                              size: MediaQuery.of(context).size.width*0.09
+                          ) : Icon(
+                            Icons.grade_outlined,
+                            color: AppColors.white,
+                            size: MediaQuery.of(context).size.width*0.09,),
+                          alignment: Alignment.center,
                         ),
                       ),
                     ) : Container(),

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
+import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'dart:io';
@@ -2456,8 +2459,8 @@ class ScriptsDatabaseService {
     }
   }
 
-  //TODO DOING RIGHT NOW
-  Future<bool> JMFassignZipCodeAndLocation13() async {
+  //TODO EXECUTE IN PROD
+  Future<bool> JMFassignZipCodeAndLocation13AndBaseImage() async {
     try {
       print('\n');
       print('-----------------------------');
@@ -2472,8 +2475,8 @@ class ScriptsDatabaseService {
       String brands = "7777 Brands";
       String locations = "7777 Locations";
       Usuario user = new Usuario();
-      QuerySnapshot querySnapshot3;
       QuerySnapshot querySnapshot4;
+      String baseImage = "";
 
       QuerySnapshot querySnapshotBrands = await _firestore.collection(brands).get();
 
@@ -2481,6 +2484,22 @@ class ScriptsDatabaseService {
 
         String brandId = querySnapshotBrands.docs[i].id;
         print(brandId);
+        QuerySnapshot querySnapshot2 = await _firestore.collection(brands).doc(brandId).collection("Images").get();
+        // Images
+        if (querySnapshot2.size > 0) {
+            baseImage = ImageObject.fromObjectAllData(querySnapshot2.docs[0].id, querySnapshot2.docs[0]).url!;
+            await _firestore
+                .collection(brands)
+                .doc(brandId).collection("Images").doc(querySnapshot2.docs[0].id)
+                .update({
+              "isBaseImage": true,
+            });
+        } else {
+          QuerySnapshot querySnapshot3 = await _firestore.collection(library).doc('Images').collection("Events").get();
+          Random rnd = Random();
+          int index = rnd.nextInt(querySnapshot3.size);
+          baseImage = ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!;
+        }
         QuerySnapshot querySnapshotLocations = await _firestore.collection(brands).doc(brandId).collection("Locations").where("isBaseLocation", isEqualTo: true).get();
         print(querySnapshotLocations.docs[0].id!);
         DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
@@ -2495,7 +2514,56 @@ class ScriptsDatabaseService {
             .doc(brandId)
             .update({
           "zipCode": location.zipCode,
-          "city": location.city
+          "city": location.city,
+          "baseImage": baseImage,
+        });
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //TODO DOING RIGHT NOW
+  Future<bool> JMFassignBrandDetailsToEvents16() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 13th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Event and UserBrand collection:\n');
+      print('--------------');
+      print('\n');
+
+      String events = "7777 Events";
+
+      QuerySnapshot querySnapshotEvents = await _firestore.collection(events).get();
+
+      for (int i = 0; i < querySnapshotEvents.docs.length; i++) {
+
+        String eventId = querySnapshotEvents.docs[i].id;
+        print(eventId);
+        QuerySnapshot querySnapshotBrand = await _firestore
+            .collection(events)
+            .doc(eventId)
+            .collection("Brands")
+            .get();
+          Brand brand = Brand.fromObjectOnlyCoverData( querySnapshotBrand.docs[0].id, querySnapshotBrand.docs[0]);
+
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .update({
+          "brandName": brand.name!,
+          "brandLogo": brand.logoUrl,
         });
         print('=================================================================================');
         print('=================================================================================');

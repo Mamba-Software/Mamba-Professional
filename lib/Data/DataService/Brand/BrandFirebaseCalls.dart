@@ -489,6 +489,11 @@ class BrandFirebaseCalls {
   //Add
 
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers, int bookingWindow) async {
+    QuerySnapshot querySnapshot3 = await _firestore.collection(library).doc('Images').collection("Events").get();
+    Random rnd = Random();
+    int index = rnd.nextInt(querySnapshot3.size);
+    //int index = 0;
+
     bool firestoreError = false;
     var uid = Uuid().v4();
     final DateTime now = DateTime.now();
@@ -507,6 +512,7 @@ class BrandFirebaseCalls {
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
       "isActive": false,
+      "baseImage": ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -652,6 +658,20 @@ class BrandFirebaseCalls {
       });
     });
     return result;
+  }
+
+  Future<void> updateBrandBaseImage(String brandID, ImageObject newBaseImage, String oldBaseImage) async {
+    await _firestore.collection(brands).doc(brandID).update({
+      "baseImage": newBaseImage.url!,
+    });
+    await _firestore.collection(brands).doc(brandID).collection("Images").doc(newBaseImage.id).update({
+      "isBaseImage": true,
+    });
+    await _firestore.collection(brands).doc(brandID).collection("Images").doc(oldBaseImage).update({
+      "isBaseImage": false,
+    });
+
+    return;
   }
 
   Future<void> updateBrandBaseLocation(String brandID, String locationID) async {

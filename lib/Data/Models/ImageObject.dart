@@ -5,11 +5,13 @@ class ImageObject {
   String? id;
   String? url;
   Timestamp? timestamp;
+  bool? isBaseImage;
 
   ImageObject({
     this.id,
     this.url,
     this.timestamp,
+    this.isBaseImage,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +23,9 @@ class ImageObject {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('timestamp')) {
       this.timestamp = documentSnapshot.get("timestamp");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isBaseImage')) {
+      this.isBaseImage = documentSnapshot.get("isBaseImage");
     }
   }
 
