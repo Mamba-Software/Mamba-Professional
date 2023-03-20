@@ -778,6 +778,17 @@ exports.userJoinsBrand = functions
         userDoc.isTrainer,
         userDoc.notificationToken,
         );
+        if(userDoc.isTrainer == true)
+        {
+            await db
+                    .collection("Users")
+                    .doc(userId)
+                    .collection("BlockedByUsers")
+                    .doc("test")
+                    .set({
+                  "userId": "test",
+                });
+        }
       // Get Data of the Brand
       const brandSnapshot = await db.collection("Brands").doc(brandId).get();
       const brandDoc = brandSnapshot.data();
@@ -2865,6 +2876,17 @@ exports.zzzzUserJoinsBrand = functions
         userDoc.isTrainer,
         userDoc.notificationToken,
         );
+        if(userDoc.isTrainer == true)
+        {
+            await db
+                    .collection("7777 Users")
+                    .doc(userId)
+                    .collection("BlockedByUsers")
+                    .doc("test")
+                    .set({
+                  "userId": "test",
+                });
+        }
       // Get Data of the Brand
       const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
       const brandDoc = brandSnapshot.data();
@@ -3765,7 +3787,7 @@ exports.zzzzUserJoinsEvent = functions
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
-        const id = eventBrandsSnapshot.docs[i].id;      
+        const id = eventBrandsSnapshot.docs[i].id;
         // Update Last Event At
         await db
         .collection("7777 Brands")
