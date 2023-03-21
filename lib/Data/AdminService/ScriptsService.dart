@@ -2516,6 +2516,8 @@ class ScriptsDatabaseService {
           "zipCode": location.zipCode,
           "city": location.city,
           "baseImage": baseImage,
+          "latitude": location.latitude,
+          "longitude": location.longitude,
         });
         print('=================================================================================');
         print('=================================================================================');
@@ -2531,7 +2533,7 @@ class ScriptsDatabaseService {
   }
 
   //TODO DOING RIGHT NOW
-  Future<bool> JMFassignBrandDetailsToEvents16() async {
+  Future<bool> JMFassignBrandIdToUserEvents() async {
     try {
       print('\n');
       print('-----------------------------');
@@ -2544,27 +2546,76 @@ class ScriptsDatabaseService {
       print('\n');
 
       String events = "7777 Events";
+      String users = "7777 Users";
 
-      QuerySnapshot querySnapshotEvents = await _firestore.collection(events).get();
+      QuerySnapshot querySnapshotUsers= await _firestore.collection(users).get();
 
-      for (int i = 0; i < querySnapshotEvents.docs.length; i++) {
+      for (int i = 0; i < querySnapshotUsers.docs.length; i++) {
+        String userId = querySnapshotUsers.docs[i].id;
+        QuerySnapshot querySnapshotEventsUser = await _firestore.collection(users).doc(userId).collection("Events").get();
 
-        String eventId = querySnapshotEvents.docs[i].id;
-        print(eventId);
-        QuerySnapshot querySnapshotBrand = await _firestore
-            .collection(events)
-            .doc(eventId)
-            .collection("Brands")
-            .get();
-          Brand brand = Brand.fromObjectOnlyCoverData( querySnapshotBrand.docs[0].id, querySnapshotBrand.docs[0]);
+        for (int j = 0; j < querySnapshotEventsUser.docs.length; j++)
+          {
+            String eventId = querySnapshotEventsUser.docs[j].id;
+            DocumentSnapshot<Map<String, dynamic>> _documentSnapshotEvent = await _firestore
+                .collection(events)
+                .doc(querySnapshotEventsUser.docs[j].id!).get();
+            Event event = Event.fromObjectAllData(_documentSnapshotEvent.id, _documentSnapshotEvent);
+            await _firestore
+                .collection(users)
+                .doc(userId).collection("Events").doc(eventId)
+                .update({
+              "brandID": event.brandID,
+            });
+          }
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 
-        await _firestore
-            .collection(events)
-            .doc(eventId)
-            .update({
-          "brandName": brand.name!,
-          "brandLogo": brand.logoUrl,
-        });
+  Future<bool> JMFassignBrandIdToLocationEvents() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 13th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Event and UserBrand collection:\n');
+      print('--------------');
+      print('\n');
+
+      String events = "7777 Events";
+      String locations = "7777 Locations";
+
+      QuerySnapshot querySnapshotLocations = await _firestore.collection(locations).get();
+
+      for (int i = 0; i < querySnapshotLocations.docs.length; i++) {
+        String locationId = querySnapshotLocations.docs[i].id;
+        QuerySnapshot querySnapshotEventsLocation = await _firestore.collection(locations).doc(locationId).collection("Events").get();
+
+        for (int j = 0; j < querySnapshotEventsLocation.docs.length; j++)
+        {
+          String eventId = querySnapshotEventsLocation.docs[j].id;
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshotEvent = await _firestore
+              .collection(events)
+              .doc(querySnapshotEventsLocation.docs[j].id!).get();
+          Event event = Event.fromObjectAllData(_documentSnapshotEvent.id, _documentSnapshotEvent);
+          await _firestore
+              .collection(locations)
+              .doc(locationId).collection("Events").doc(eventId)
+              .update({
+            "brandID": event.brandID,
+          });
+        }
         print('=================================================================================');
         print('=================================================================================');
         print('\n');

@@ -2328,6 +2328,8 @@ class FirebaseDatabaseService {
                 .collection(brands).doc(brandId).update({
               "city": city,
               "zipCode": zipCode,
+              "latitude": latitude,
+              "longitude": longitude
             });
           }
         return uid;
@@ -2369,6 +2371,8 @@ class FirebaseDatabaseService {
               .collection(brands).doc(brandId).update({
             "city": city,
             "zipCode": zipCode,
+            "latitude": latitude,
+            "longitude": longitude
           });
         }
       } catch (e) {

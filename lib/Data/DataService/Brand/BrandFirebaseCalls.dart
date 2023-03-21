@@ -686,6 +686,8 @@ class BrandFirebaseCalls {
       "baseLocation": locationID,
       "zipCode": location.zipCode,
       "city": location.city,
+      "latitude": location.latitude,
+      "longitude": location.longitude,
     });
   }
 

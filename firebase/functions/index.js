@@ -2429,9 +2429,14 @@ exports.zzzzBrandUpdatesCoverData = functions
       } else if (before.logoUrl != after.logoUrl) {
         coverDataChange = true;
       }
-      else if(before.zipCode != after.zipCode || before.city != after.city) {
+      //TODO INTEGRATE .12
+      else if(before.zipCode != after.zipCode || before.city != after.city || before.longitude != after.longitude || before.latitude != after.latitude) {
         coverDataChange = true;
       }
+      else if(before.baseImage != after.baseImage) {
+        coverDataChange = true;
+      }
+      //TODO INTEGRATE .12
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -2456,8 +2461,12 @@ exports.zzzzBrandUpdatesCoverData = functions
             "logoUrl": after.logoUrl,
             "zipCode": after.zipCode,
             "city": after.city,
+            "longitude": after.longitude,
+            "latitude": after.latitude,
+            "baseImage": after.baseImage,
           });
         }
+        //TODO INTEGRATE .12
         // Update the Brands Subcollection in Events
         const brandEventsSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Events").get();
         functions.logger.log(
@@ -2946,7 +2955,10 @@ exports.zzzzUserJoinsBrand = functions
         "myTotalSessions": 0,
         //TODO INTEGRATION VERSION .12
         "zipCode": brandDoc.zipCode,
-        "city": brandDoc.city
+        "city": brandDoc.city,
+        "longitude": brandDoc.longitude,
+        "latitude": brandDoc.latitude,
+        "baseImage": brandDoc.baseImage,
       });
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
@@ -3517,6 +3529,8 @@ exports.zzzzUserAddsEvent = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
+          //TODO INTEGRATION .12
+          "brandID": eventDoc.brandID,
         });
         // If Event Private
         // Add to Locations/Events/Private Events/PrivateEvents
@@ -3541,6 +3555,8 @@ exports.zzzzUserAddsEvent = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
+          //TODO INTEGRATION .12
+          "brandID": eventDoc.brandID,
         });
        }
      }
@@ -3703,6 +3719,8 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        //TODO INTEGRATION .12
+        "brandID": eventDoc.brandID,
       });
 
       //TODO AFEGIT JOAN MANEL INTEGRACIÓ BONOS
@@ -3754,6 +3772,8 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        //TODO INTEGRATION .12
+        "brandID": eventDoc.brandID,
       });
      }
       // Update Number of Client and Trainers on Each of Event Subcollection
