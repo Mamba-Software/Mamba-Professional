@@ -416,6 +416,8 @@
   "myLocationsBaseLocationClientDesc": "Aquesta és la ubicació usada per localitzar la marca al mapa perquè els clients puguin trobar-la al seu voltant.",
   "myLocationsDeleteDescription": "Segur que vols esborrar aquesta ubicació?\n\nEn cas que aquesta ubicació estigui sent utilitzada en qualsevol esdeveniment, actualitzarem la ubicació d'aquest a la teva ubicació base.",
   "myImagesDeleteDescription": "Segur que vols esborrar aquesta imatge?",
+  "myImagesFavouriteDescription": "Estàs segur que vols seleccionar aquesta imatge com la teva imatge favorita?\n\nS'usarà com a portada de la teva marca per a tots els altres usuaris.",
+  "myImagesFavouriteDelete": "Sempre has de tenir una imatge favorita com a portada de la teva marca per a tots els altres usuaris.",
   "userLeavesEventUser": "Has abandonat la teva plaça a l'esdeveniment {name}",
   "userLeavesEventUserSubtitle": "Fes clic per veure el seu calendari i trobar un esdeveniment al que puguis assistir",
   "userLeavesEventBrand": "{user} ha abandonat l'esdeveniment {name}",

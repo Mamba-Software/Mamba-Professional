@@ -1844,6 +1844,14 @@
   "@myImagesDeleteDescription": {
     "description": "Wellcome message"
   },
+  "myImagesFavouriteDescription": "¿Estás seguro de que quieres seleccionar esta imagen como tu imagen favorita?\n\nSe usará como portada de tu marca para todos los otros usuarios.",
+  "@myImagesFavouriteDescription": {
+    "description": "Wellcome message"
+  },
+  "myImagesFavouriteDelete": "Siempre debes tener una imagen favorita como portada de tu marca para todos los otros usuarios.",
+  "@myImagesFavouriteDelete": {
+    "description": "Wellcome message"
+  },
   "userJoinEventUser": "Te has unido al evento {name}",
   "@userJoinEventUser": {
     "description": "Wellcome message",

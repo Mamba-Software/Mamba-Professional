@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/Rectangula
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/FavouriteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
 class BrandImages extends StatefulWidget {
@@ -93,12 +95,14 @@ class _BrandImagesState extends State<BrandImages> {
   Future<void> getBrandContentImages() async {
     _imagesUploaded = await _brandDataService.getBrandContentPictures(widget.brandId);
     baseImage = _imagesUploaded.firstWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
+    _imagesUploaded.removeWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
     _imagesUploaded.sort((a,b) {
       var aDate = a.timestamp!.toDate();
       var bDate = b.timestamp!.toDate();
       return aDate.compareTo(bDate);
     });
     _imagesUploaded = List.from(_imagesUploaded.reversed);
+    _imagesUploaded.insert(0, baseImage);
     setState(() {
       isLoading = false;
     });
@@ -336,15 +340,71 @@ class _BrandImagesState extends State<BrandImages> {
                         image: image.url,
                       ),
                     ),
-                    canEdit ? Positioned(
+                    // Favorite Image
+                    canEdit && image.isBaseImage == false ? Positioned(
                       top: 4,
-                      right: 4,
+                      right: MediaQuery.of(context).size.width*0.13,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 7.0),
                         child: Container(
-                          width: MediaQuery.of(context).size.width*0.07,
+                          width: MediaQuery.of(context).size.width*0.1,
                           decoration: const BoxDecoration(
-                              color: AppColors.red,
+                              color: Colors.transparent,
+                              shape: BoxShape.circle
+                          ),
+                          child: Center(
+                            child: IconButton(
+                              onPressed: () async {
+                                if(image.isBaseImage != null && image.isBaseImage!) {
+                                  topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                                } else if(canClickFav){
+                                  var result = await showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return FavouriteConfirmationDialog(
+                                            text: AppLocalizations.of(context)!
+                                                .myImagesFavouriteDescription);
+                                      }
+                                  );
+                                  if (result) {
+                                    setState(() {
+                                      canClickFav = false;
+                                      _imagesUploaded[_imagesUploaded.indexWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
+                                      image.isBaseImage = true;
+                                    });
+                                    await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
+                                    await getBrandContentImages();
+                                    setState(() {
+                                      canClickFav = true;
+                                    });
+                                  }
+                                }
+                              },
+                              icon: image.isBaseImage != null && image.isBaseImage! ? Icon(
+                                  Icons.favorite,
+                                  color: Colors.red,
+                                  size: MediaQuery.of(context).size.width*0.08
+                              ) : Icon(
+                                  Icons.favorite_outline_outlined,
+                                  color: AppColors.white,
+                                  size: MediaQuery.of(context).size.width*0.08
+                              ),
+                              alignment: Alignment.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ) : Container(),
+                    // Delete Image
+                    canEdit && image.isBaseImage == false ? Positioned(
+                      top: 4,
+                      right: MediaQuery.of(context).size.width*0.03,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width*0.1,
+                          decoration: const BoxDecoration(
+                              color: Colors.transparent,
                               shape: BoxShape.circle
                           ),
                           child: Center(
@@ -364,22 +424,19 @@ class _BrandImagesState extends State<BrandImages> {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    await _brandDataService
-                                        .deleteBrandContentPictures(
-                                        widget.brandId, image.id!, image.url!);
+                                    await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
                                     getBrandContentImages();
                                   }
                                 }
                                 else
                                   {
-                                    //TODO CAMBIAR TEXT
-                                    topSnackBarComp.topsnackbar(context, 'No se puede eliminar una imagen favorita', Colors.red);
+                                    topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
                                   }
                               },
                               icon: Icon(
-                                  Icons.remove,
-                                  color: AppColors.white,
-                                  size: MediaQuery.of(context).size.width*0.03
+                                  Icons.delete_outline,
+                                  color: AppColors.red,
+                                  size: MediaQuery.of(context).size.width*0.08
                               ),
                               alignment: Alignment.center,
                             ),
@@ -387,40 +444,35 @@ class _BrandImagesState extends State<BrandImages> {
                         ),
                       ),
                     ) : Container(),
-                    canEdit ? Positioned(
-                      top: 4,
-                      left: 4,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                        child: IconButton(
-                          onPressed: () async {
-                            if(image.isBaseImage != null &&  image.isBaseImage!)
-                              {
-
-                              }
-                            else if(canClickFav){
-
-                              setState(() {
-                                canClickFav = false;
-                                _imagesUploaded[_imagesUploaded.indexWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
-                                image.isBaseImage = true;
-                              });
-                              await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
-                              await getBrandContentImages();
-                              setState(() {
-                                canClickFav = true;
-                              });
-                            }
-                          },
-                          icon: image.isBaseImage != null &&  image.isBaseImage! ? Icon(
-                              Icons.star_outlined,
-                              color: Colors.yellow,
-                              size: MediaQuery.of(context).size.width*0.09
-                          ) : Icon(
-                            Icons.grade_outlined,
-                            color: AppColors.white,
-                            size: MediaQuery.of(context).size.width*0.09,),
-                          alignment: Alignment.center,
+                    // Delete Image
+                    image.isBaseImage == true ? Positioned(
+                      top: MediaQuery.of(context).size.width*0.03,
+                      right: MediaQuery.of(context).size.width*0.03,
+                      child: GestureDetector(
+                        onTap: () {
+                          topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                        },
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.03,
+                          width: MediaQuery.of(context).size.width*0.35,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Icon(Icons.favorite, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.04,),
+                              Flexible(
+                                child: Text(
+                                  AppLocalizations.of(context)!.photo+" "+AppLocalizations.of(context)!.createBrandCover.toLowerCase(),
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color:Theme.of(context).primaryColor),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ) : Container(),
