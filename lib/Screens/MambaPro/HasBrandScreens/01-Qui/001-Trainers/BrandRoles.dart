@@ -3,7 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import '../../../../../../Data/Models/Usuario.dart';
 import '../../../../../../Globals/Widgets/Components/Images/CircularImage.dart';
 
@@ -259,6 +261,67 @@ class _BrandRolesState extends State<BrandRoles> {
           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05, vertical: MediaQuery.of(context).size.width * 0.05),
           child: Column(
             children: [
+              // Add Staff
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        isScrollControlled: true,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        builder: (BuildContext context) {
+                          return const FractionallySizedBox(
+                            heightFactor: 0.75,
+                            child: ShareBrandLink(
+                              onlyStaff: true,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                      height: MediaQuery.of(context).size.height*0.1,
+                      width: MediaQuery.of(context).size.width*0.9,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        //border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.badge_outlined,
+                            color: Theme.of(context).primaryColor,
+                            size: MediaQuery.of(context).size.width*0.10,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                          Flexible(
+                            child: Text(
+                              AppLocalizations.of(context)!.addTrainerDescription,
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
+
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                  Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01)
+                ],
+              ),
               // Owners
               Container(
                 decoration: BoxDecoration(
@@ -297,8 +360,9 @@ class _BrandRolesState extends State<BrandRoles> {
                         itemCount: allOwners.length,
                         itemBuilder: (context, index) {
                           Usuario user = allOwners[index];
+                          DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
                           return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.width * 0.01),
                             child: ListTile(
                               leading: CircularImage(
                                 size: MediaQuery.of(context).size.width*0.15,
@@ -317,26 +381,17 @@ class _BrandRolesState extends State<BrandRoles> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "@"+user.nick!,
+                                    user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
+                                    AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
                                     style: Theme.of(context).textTheme.caption,
+                                    maxLines: 1,
                                   ),
                                 ],
                               ),
-                              trailing: user.id! != currentUser.id ? IconButton(
-                                icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.all(0),
-                                onPressed: () async {
-                                  await onEditTrainerRole(user);
-                                }
-                              ) : IconButton(
-                                icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.height*0.03,),
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.all(0),
-                                onPressed: false ? () {
-                                } : null,
-                              ),
-                              onTap: null,
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.height*0.03,),
+                              onTap: () async {
+                                await onEditTrainerRole(user);
+                              },
                             ),
                           );
                         }
@@ -384,8 +439,9 @@ class _BrandRolesState extends State<BrandRoles> {
                         itemCount: allAdmins.length,
                         itemBuilder: (context, index) {
                           Usuario user = allAdmins[index];
+                          DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
                           return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.width * 0.01),
                             child: ListTile(
                               leading: CircularImage(
                                 size: MediaQuery.of(context).size.width*0.15,
@@ -404,20 +460,17 @@ class _BrandRolesState extends State<BrandRoles> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "@"+user.nick!,
+                                    user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
+                                    AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
                                     style: Theme.of(context).textTheme.caption,
+                                    maxLines: 1,
                                   ),
                                 ],
                               ),
-                              trailing: IconButton(
-                                icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.all(0),
-                                onPressed: () async {
-                                  await onEditTrainerRole(user);
-                                }
-                              ),
-                              onTap: null,
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.height*0.03,),
+                              onTap: () async {
+                                await onEditTrainerRole(user);
+                              },
                             ),
                           );
                         }
@@ -473,8 +526,9 @@ class _BrandRolesState extends State<BrandRoles> {
                         itemCount: allTrainers.length,
                         itemBuilder: (context, index) {
                           Usuario user = allTrainers[index];
+                          DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
                           return Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02, vertical: MediaQuery.of(context).size.width * 0.01),
                             child: ListTile(
                               leading: CircularImage(
                                 size: MediaQuery.of(context).size.width*0.15,
@@ -493,20 +547,17 @@ class _BrandRolesState extends State<BrandRoles> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "@"+user.nick!,
+                                    user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
+                                    AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
                                     style: Theme.of(context).textTheme.caption,
+                                    maxLines: 1,
                                   ),
                                 ],
                               ),
-                              trailing: IconButton(
-                                icon: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.all(0),
-                                onPressed: () async {
-                                  await onEditTrainerRole(user);
-                                }
-                              ),
-                              onTap: null,
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.height*0.03,),
+                              onTap: () async {
+                                await onEditTrainerRole(user);
+                              },
                             ),
                           );
                         }

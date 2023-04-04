@@ -189,7 +189,7 @@ class _HomePro extends State<HomePro> {
                   ),
                   child: IconButton(
                     icon: Icon(
-                      Icons.qr_code,
+                      Icons.person_add,
                       color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.height*0.035,
                     ),

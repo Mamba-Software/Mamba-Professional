@@ -341,7 +341,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Icon(
-                Icons.lock_outlined,
+                Icons.person,
                 size: MediaQuery.of(context).size.width * 0.05,
                 color: AppColors.red,
               ),
@@ -952,7 +952,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 ),
                                 child: Center(
                                     child: Icon(
-                                      event!.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                      event!.isPrivate! ? Icons.person : Icons.groups,
                                       color: Theme.of(context).colorScheme.secondary,
                                       size: MediaQuery.of(context).size.width*0.06,
                                     )

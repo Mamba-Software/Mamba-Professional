@@ -549,7 +549,7 @@
   "@roles":{
     "description": "createBrand Text"
   },
-  "rolesDescription": "Administra los permisos de tu marca",
+  "rolesDescription": "Administra el staff de tu marca",
   "@rolesDescription":{
     "description": "createBrand Text"
   },
@@ -3128,5 +3128,13 @@
   "addClient":  "Añadir clientes",
   "@addClient": {
     "description": "addClient message"
+  },
+  "addClientDescription": "Añadir clientes a tu marca",
+  "@addClientDescription":{
+    "description": "createBrand Text"
+  },
+  "addTrainerDescription": "Añadir staff a tu marca",
+  "@addTrainerDescription":{
+    "description": "createBrand Text"
   }
 }

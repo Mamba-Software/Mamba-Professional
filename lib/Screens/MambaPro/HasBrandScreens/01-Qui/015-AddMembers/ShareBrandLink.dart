@@ -10,8 +10,9 @@ import 'package:share_plus/share_plus.dart';
 
 class ShareBrandLink extends StatefulWidget {
   final bool? addStaff;
+  final bool? onlyStaff;
 
-  const ShareBrandLink({Key? key, this.addStaff}) : super(key: key);
+  const ShareBrandLink({Key? key, this.addStaff, this.onlyStaff}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ShareBrandLinkState();
@@ -28,15 +29,16 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
 
   @override
   void initState() {
+    if (widget.onlyStaff == true) {
+      isTrainer = true;
+    }
     super.initState();
     getBrandLink();
   }
 
   Future<void> getBrandLink() async {
     Uri brandUriClient = await _dynamicLinkUtils.createDynamicLinkWithIdClient(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
-
     Uri brandUriTrainer = await _dynamicLinkUtils.createDynamicLinkWithIdTrainer(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
-
     setState(() {
       brandUrlClient = brandUriClient.toString();
       brandUrlTrainer = brandUriTrainer.toString();
@@ -316,7 +318,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
-          TextButton(
+          (widget.onlyStaff != null && widget.onlyStaff == true) ? Container() : currentUser.brandRole < 3 ? TextButton(
               child: Text(
                   AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.client.toLowerCase(),
                   style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
@@ -326,7 +328,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                   isTrainer = false;
                 });
               }
-          ),
+          ) : Container(),
         ],
       ),
     );

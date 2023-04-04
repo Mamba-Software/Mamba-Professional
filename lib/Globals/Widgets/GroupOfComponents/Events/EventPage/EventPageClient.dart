@@ -685,7 +685,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                         ),
                                         SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                         Icon(
-                                          Icons.lock_outlined,
+                                          Icons.person,
                                           color: Theme.of(context).primaryColor,
                                           size: MediaQuery.of(context).size.width*0.05,
                                         ),
@@ -1263,7 +1263,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                             ),
                                             SizedBox(width: MediaQuery.of(context).size.width*0.01),
                                             Icon(
-                                              Icons.lock_outlined,
+                                              Icons.person,
                                               color: Theme.of(context).primaryColor,
                                               size: MediaQuery.of(context).size.width*0.05,
                                             ),

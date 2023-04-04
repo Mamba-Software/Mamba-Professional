@@ -233,6 +233,7 @@ class _Clients extends State<Clients> {
                           ) : SizedBox(
                             width: MediaQuery.of(context).size.width*0.65,
                             child: TextField(
+                              autofocus: true,
                               controller: searchController,
                               onChanged: (value) {
                                 filterSearchResults(value);
@@ -591,7 +592,24 @@ class _Clients extends State<Clients> {
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
                 GestureDetector(
-                  onTap: navigateToRequestsScreen,
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      builder: (BuildContext context) {
+                        return const FractionallySizedBox(
+                          heightFactor: 0.75,
+                          child: ShareBrandLink(addStaff: false,),
+                        );
+                      },
+                    );
+                  },
                   child: Container(
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
                     height: MediaQuery.of(context).size.height*0.1,
@@ -614,9 +632,8 @@ class _Clients extends State<Clients> {
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
                         Flexible(
                           child: Text(
-                            AppLocalizations.of(context)!.myRequestsDesc,
+                            AppLocalizations.of(context)!.addClientDescription,
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                            textAlign: TextAlign.center,
                           ),
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
@@ -627,51 +644,6 @@ class _Clients extends State<Clients> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                ListTile(
-                  leading: Container(
-                    height: MediaQuery.of(context).size.width*0.2,
-                    width: MediaQuery.of(context).size.width*0.15,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                      color:  Theme.of(context).scaffoldBackgroundColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(Icons.add, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.07),
-                  ),
-                  title: Text(
-                    AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.clients,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.left,
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.shareInvitationText,
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
-                        ),
-                      ),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      builder: (BuildContext context) {
-                        return const FractionallySizedBox(
-                          heightFactor: 0.75,
-                          child: ShareBrandLink(addStaff: false,),
-                        );
-                      },
-                    );
-                  },
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.004),
               ],
             ),
           ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
