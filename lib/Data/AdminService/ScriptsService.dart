@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -19,6 +18,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import '../DataService/Brand/BrandDataService.dart';
 
@@ -2459,7 +2459,7 @@ class ScriptsDatabaseService {
     }
   }
 
-  //TODO EXECUTE IN PROD
+  //TODO EXECUTE IN PROD tirar amb la funció zzzzBrandUpdatesCoverData ya tirada
   Future<bool> JMFassignZipCodeAndLocation13AndBaseImage() async {
     try {
       print('\n');
@@ -2518,6 +2518,7 @@ class ScriptsDatabaseService {
           "baseImage": baseImage,
           "latitude": location.latitude,
           "longitude": location.longitude,
+          ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
         });
         print('=================================================================================');
         print('=================================================================================');
@@ -2616,6 +2617,47 @@ class ScriptsDatabaseService {
             "brandID": event.brandID,
           });
         }
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //TODO PRIMERA EN EXECUTARSE S'ha de tirar amb la cloud function de zzzzLocationUpdatesCoverData YA TIRADA
+  Future<bool> JMFassignGeoPointToLocations() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 13th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Event and UserBrand collection:\n');
+      print('--------------');
+      print('\n');
+
+      String locations = "7777 Locations";
+
+      QuerySnapshot querySnapshotLocations = await _firestore.collection(locations).get();
+
+      for (int i = 0; i < querySnapshotLocations.docs.length; i++) {
+        String locationId = querySnapshotLocations.docs[i].id;
+        Location location = Location.fromObjectAllData(locationId, querySnapshotLocations.docs[i]);
+        QuerySnapshot querySnapshotEventsLocation = await _firestore.collection(locations).doc(locationId).collection("Events").get();
+        await _firestore
+            .collection(locations)
+            .doc(locationId)
+            .update({
+              'title': 'newTitle',
+          ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.latitude!),
+        });
         print('=================================================================================');
         print('=================================================================================');
         print('\n');

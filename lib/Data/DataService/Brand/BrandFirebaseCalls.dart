@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -18,6 +19,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:uuid/uuid.dart';
 
 // Brand Firebase Service Class. All calls to Firebase are in this class.
@@ -123,6 +125,7 @@ class BrandFirebaseCalls {
         "description": location.description,
         "longitude": location.longitude,
         "latitude": location.latitude,
+        ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
       });
     } catch (e) {
       print(e.toString());
@@ -688,6 +691,7 @@ class BrandFirebaseCalls {
       "city": location.city,
       "latitude": location.latitude,
       "longitude": location.longitude,
+      ...GeoFlutterUtils.getGeoPoint(location!.latitude!, location!.longitude!),
     });
   }
 

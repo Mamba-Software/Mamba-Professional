@@ -2450,7 +2450,6 @@ exports.zzzzBrandUpdatesCoverData = functions
           );
           //TODO INTEGRATION VERSION .12
         for (var i in brandsUsersSnapshot.docs) {
-          const id = brandsUsersSnapshot.docs[i].id;
           await db
           .collection("7777 Users")
           .doc(id)
@@ -2464,6 +2463,7 @@ exports.zzzzBrandUpdatesCoverData = functions
             "longitude": after.longitude,
             "latitude": after.latitude,
             "baseImage": after.baseImage,
+            "geoPosition": after.geoPosition,
           });
         }
         //TODO INTEGRATE .12
@@ -2835,6 +2835,8 @@ exports.zzzzLocationUpdatesCoverData = functions
           "description": after.description,
           "latitude": after.latitude,
           "longitude": after.longitude,
+          //TODO INTEGRATION VERSION .12
+          "geoPosition": after.geoPosition,
         });
         // Update All Events in this Location
         const eventLocationsSnapshot = await db.collection("7777 Locations").doc(locationId).collection("Events").get();
@@ -2853,7 +2855,17 @@ exports.zzzzLocationUpdatesCoverData = functions
             "description": after.description,
             "latitude": after.latitude,
             "longitude": after.longitude,
+            //TODO INTEGRATION VERSION .12
+            "geoPosition": after.geoPosition,
           });
+            //TODO INTEGRATION VERSION .12
+             await db
+            .collection("7777 Events")
+            .doc(id)
+            .update({
+              //TODO INTEGRATION VERSION .12
+              "geoPosition": after.geoPosition,
+            });
         }
       }
       return null;
@@ -2945,7 +2957,8 @@ exports.zzzzUserJoinsBrand = functions
       }
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
-      var formatted = day+"-"+month+"-"+result;          
+      var formatted = day+"-"+month+"-"+result;
+
       // Update Date Joined Users/Brand
       await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
         "name": brandDoc.name,
@@ -2959,6 +2972,7 @@ exports.zzzzUserJoinsBrand = functions
         "longitude": brandDoc.longitude,
         "latitude": brandDoc.latitude,
         "baseImage": brandDoc.baseImage,
+        "geoPosition": brandDoc.geoPosition,
       });
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
@@ -3253,6 +3267,8 @@ exports.zzzzUserAddsLocation = functions
        "description": locationDoc.description,
        "latitude": locationDoc.latitude,
        "longitude": locationDoc.longitude,
+       //TODO INTEGRATE .12
+       "geoPosition": locationDoc.geoPosition,
      });
       return null;
     });

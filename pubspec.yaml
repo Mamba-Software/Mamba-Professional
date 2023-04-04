@@ -98,6 +98,7 @@ dependencies:
   syncfusion_flutter_charts: ^19.4.56
   flutter_bloc: ^7.1.0
   dropdown_button2: ^1.0.0
+  geoflutterfire2: ^2.3.12
 
 flutter_icons:
   # Platforms

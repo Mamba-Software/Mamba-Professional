@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
@@ -22,6 +23,7 @@ import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
+import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -1191,6 +1193,7 @@ class FirebaseDatabaseService {
       var eventID = const Uuid().v1();
       User? currentUser = await getCurrentUser();
       try {
+        Location location = await getSingleLocation(event.locationId!);
         // Create Document in "\Events"
         await _firestore.collection(events).doc(eventID).set({
           "isPrivate": event.isPrivate,
@@ -1212,6 +1215,7 @@ class FirebaseDatabaseService {
           "numClients": event.numClients,
           "numTrainers": event.numTrainers,
           "maxMembers": event.maxMembers,
+          ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
         });
         // If Event is Private
         // Add to Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1241,6 +1245,7 @@ class FirebaseDatabaseService {
             "numClients": event.numClients,
             "numTrainers": event.numTrainers,
             "maxMembers": event.maxMembers,
+            ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
           });
         }
         // Set the Brand Document in "\Events\Brands"
@@ -1252,7 +1257,7 @@ class FirebaseDatabaseService {
               "logoUrl": currentBrand.logoUrl,
             });
         // Set the Location Document in "\Events\Location"
-        Location location = await getSingleLocation(event.locationId!);
+
         await _firestore.collection(events).doc(eventID)
             .collection("Locations")
             .doc(event.locationId!)
@@ -1260,6 +1265,7 @@ class FirebaseDatabaseService {
               "description": location.description,
               "longitude": location.longitude,
               "latitude": location.latitude,
+              ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
             });
         // Add Event To Brands/Events Subcollection To Avoid Cloud Function Doing It :D
         // We do it like this to avoid Cold Start and make the User wait.
@@ -1282,6 +1288,7 @@ class FirebaseDatabaseService {
               "numTrainers": event.numTrainers,
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
+              ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
             });
         // If Event is Private
         // Add to Brands/Events/Private Events/PrivateEvents for Reporting Purposes
@@ -1307,6 +1314,7 @@ class FirebaseDatabaseService {
               "numTrainers": event.numTrainers,
               "numClients": event.numClients,
               "maxMembers": event.maxMembers,
+            ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
             });
         }
         return eventID;
@@ -2155,7 +2163,14 @@ class FirebaseDatabaseService {
               "description": location.description,
               "longitude": location.longitude,
               "latitude": location.latitude,
+              ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
             });
+        await _firestore
+            .collection(events)
+            .doc(eventId)
+            .update({
+          ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
+        });
       } catch (e) {
         print(e.toString());
       }
@@ -2320,7 +2335,8 @@ class FirebaseDatabaseService {
             "city": city,
             "zipCode": zipCode,
             "latitude": latitude,
-            "longitude": longitude
+            "longitude": longitude,
+          ...GeoFlutterUtils.getGeoPoint(latitude, longitude),
           });
         if(isBaseLocation)
           {
@@ -2329,7 +2345,8 @@ class FirebaseDatabaseService {
               "city": city,
               "zipCode": zipCode,
               "latitude": latitude,
-              "longitude": longitude
+              "longitude": longitude,
+              ...GeoFlutterUtils.getGeoPoint(latitude, longitude),
             });
           }
         return uid;
@@ -2363,7 +2380,8 @@ class FirebaseDatabaseService {
             "city": city,
             "zipCode": zipCode,
             "latitude": latitude,
-            "longitude": longitude
+            "longitude": longitude,
+          ...GeoFlutterUtils.getGeoPoint(latitude!, longitude!),
           });
         if(isBaseLocation)
         {
@@ -2372,7 +2390,8 @@ class FirebaseDatabaseService {
             "city": city,
             "zipCode": zipCode,
             "latitude": latitude,
-            "longitude": longitude
+            "longitude": longitude,
+            ...GeoFlutterUtils.getGeoPoint(latitude, longitude),
           });
         }
       } catch (e) {
