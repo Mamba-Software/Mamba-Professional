@@ -22,6 +22,7 @@ class TopSnackBarDef {
   }
 
   void showSnackBarBottom(BuildContext context, String value, int duration, [bool isError = false]) {
+
     AnimatedSnackBar(
       mobileSnackBarPosition: MobileSnackBarPosition.bottom,
       duration: Duration(seconds: duration) ,

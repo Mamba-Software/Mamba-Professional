@@ -31,6 +31,7 @@ class BrandImages extends StatefulWidget {
 class _BrandImagesState extends State<BrandImages> {
 
   // App Bar and Scroll View
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
@@ -52,7 +53,6 @@ class _BrandImagesState extends State<BrandImages> {
   List<Widget> imageSliders = [];
 
   bool canClickFav = true;
-  TopSnackBarDef topSnackBarComp = TopSnackBarDef();
 
   @override
   void initState() {
@@ -108,395 +108,430 @@ class _BrandImagesState extends State<BrandImages> {
     });
   }
 
+  void showInSnackBar(String value, int duration, [bool isError = false]) {
+    final snackbar = SnackBar(
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.05, horizontal: MediaQuery.of(context).size.width * 0.05),
+      content: Text(
+          value,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: isError ? AppColors.white : AppColors.black)
+      ),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))
+      ),
+      backgroundColor: isError ? AppColors.red : Colors.white,
+      duration: Duration(seconds: duration),
+    );
+    scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            backgroundColor: AppColors.darkGrey,
-            expandedHeight: MediaQuery.of(context).size.height*0.15,
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            elevation: 4,
-            floating: true,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: AppColors.darkGrey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context)!.photos,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
-                          ),
-                          FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height*0.08,
-                              width: MediaQuery.of(context).size.width*0.11,
-                              child: TextButton(
-                                onPressed: null,
-                                child: Icon(
-                                  Icons.filter_list,
-                                  color: AppColors.darkGrey,
-                                  size: MediaQuery.of(context).size.width*0.07,
-                                ),
-                              ),
+    return ScaffoldMessenger(
+      key: scaffoldMessengerKey,
+      child: Scaffold(
+        body: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverAppBar(
+              backgroundColor: AppColors.darkGrey,
+              expandedHeight: MediaQuery.of(context).size.height*0.15,
+              systemOverlayStyle: SystemUiOverlayStyle.light,
+              elevation: 4,
+              floating: true,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Container(
+                  color: AppColors.darkGrey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.025),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.photos,
+                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01,),
-                    Container(
-                      color: AppColors.grey,
-                      height: 1.0,
-                    ),
-                  ],
-                ),
-              ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
-            ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
-            centerTitle: true,
-            leading: Builder(
-              builder: (BuildContext innerContext) => Padding(
-                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
-                child: IconButton(
-                    icon: Icon(
-                      Icons.menu,
-                      color: AppColors.white,
-                      size: MediaQuery.of(context).size.height*0.04,
-                    ),
-                    onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
-                ),
-              ),
-            ),
-            actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
-                  ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_images_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_images_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
-              ),
-            ],
-          ),
-          isLoading ? SliverFillRemaining(
-            child: Center(
-                  child: LoadingView(
-                    text: AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...",
-                  )
-              )
-          ) : SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.yourImagesDescription,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                    maxImagesAdded ? Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03,left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                      child: Center(
-                        child: Text(
-                          AppLocalizations.of(context)!.addBrandPhotosMaxLeft((_maxImages-_imagesUploaded.length).toString()),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ) : Container(),
-                    _imagesUploaded.length < _maxImages && canEdit ? Column(
-                      children: [
-                        GestureDetector(
-                          onTap: getImage,
-                          child: DottedBorder(
-                              borderType: BorderType.RRect,
-                              radius: const Radius.circular(10),
-                              dashPattern: const [10, 10],
-                              color: AppColors.grey.withOpacity(0.5),
-                              strokeWidth: 2,
-                              child: Container(
-                                  height: MediaQuery.of(context).size.height*0.15,
-                                  width: MediaQuery.of(context).size.height*0.9,
-                                  color: Colors.transparent,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                  Icons.add,
-                                                  color: AppColors.grey.withOpacity(0.5),
-                                                  size: MediaQuery.of(context).size.width*0.1
-                                              ),
-                                              //SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                              Text(
-                                                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
-                                                style: Theme.of(context).textTheme.caption,
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            AppLocalizations.of(context)!.photosDimensions,
-                                            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        "("+_imagesUploaded.length.toString()+"/"+_maxImages.toString()+")",
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ],
-                                  )
-                              )
-                          ),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                      ],
-                    ) : Container(),
-                  ],
-                ),
-              )
-          ),
-          isLoading || _imagesUploaded.isEmpty ? SliverToBoxAdapter(child: Container()) : SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 1,
-              childAspectRatio: 2.5,
-              mainAxisSpacing: MediaQuery.of(context).size.width*0.02,
-              crossAxisSpacing: 10,
-            ),
-            delegate: SliverChildBuilderDelegate((context, index) {
-              ImageObject image = _imagesUploaded[index];
-              return Container(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute<void>(
-                              builder: (context) => FullscreenSliderDemo(
-                                initialImage: _imagesUploaded.indexOf(image),
-                                images: _imagesUploaded,
+                            FittedBox(
+                              fit: BoxFit.fitHeight,
+                              child: SizedBox(
+                                height: MediaQuery.of(context).size.height*0.08,
+                                width: MediaQuery.of(context).size.width*0.11,
+                                child: TextButton(
+                                  onPressed: null,
+                                  child: Icon(
+                                    Icons.filter_list,
+                                    color: AppColors.darkGrey,
+                                    size: MediaQuery.of(context).size.width*0.07,
+                                  ),
+                                ),
                               ),
                             )
-                        );
-                      },
-                      child: RectangularImage(
-                        height: MediaQuery.of(context).size.height*0.18,
-                        width: MediaQuery.of(context).size.height*0.9,
-                        borderRadius: 10,
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                      Container(
                         color: AppColors.grey,
-                        borderWidth: 1,
-                        image: image.url,
+                        height: 1.0,
                       ),
+                    ],
+                  ),
+                ),
+                titlePadding: EdgeInsets.zero,
+                //centerTitle: true,
+              ),
+              title: appBarExpanded ? Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
+              centerTitle: true,
+              leading: Builder(
+                builder: (BuildContext innerContext) => Padding(
+                  padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
+                  child: IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: AppColors.white,
+                        size: MediaQuery.of(context).size.height*0.04,
+                      ),
+                      onPressed: () => mambaProScaffoldKey.currentState?.openDrawer()
+                  ),
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
+                  child: IconButton(
+                    icon: Icon(
+                      widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
+                      color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
+                      size: MediaQuery.of(context).size.width*0.06,
                     ),
-                    // Favorite Image
-                    canEdit && image.isBaseImage == false ? Positioned(
-                      top: 4,
-                      right: MediaQuery.of(context).size.width*0.13,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width*0.1,
-                          decoration: const BoxDecoration(
-                              color: Colors.transparent,
-                              shape: BoxShape.circle
-                          ),
-                          child: Center(
-                            child: IconButton(
-                              onPressed: () async {
-                                if(image.isBaseImage != null && image.isBaseImage!) {
-                                  topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
-                                } else if(canClickFav){
-                                  var result = await showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return FavouriteConfirmationDialog(
-                                            text: AppLocalizations.of(context)!
-                                                .myImagesFavouriteDescription);
-                                      }
-                                  );
-                                  if (result) {
-                                    setState(() {
-                                      canClickFav = false;
-                                      _imagesUploaded[_imagesUploaded.indexWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
-                                      image.isBaseImage = true;
-                                    });
-                                    await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
-                                    await getBrandContentImages();
-                                    setState(() {
-                                      canClickFav = true;
-                                    });
-                                  }
-                                }
-                              },
-                              icon: image.isBaseImage != null && image.isBaseImage! ? Icon(
-                                  Icons.favorite,
-                                  color: Colors.red,
-                                  size: MediaQuery.of(context).size.width*0.08
-                              ) : Icon(
-                                  Icons.favorite_outline_outlined,
-                                  color: AppColors.white,
-                                  size: MediaQuery.of(context).size.width*0.08
-                              ),
-                              alignment: Alignment.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ) : Container(),
-                    // Delete Image
-                    canEdit && image.isBaseImage == false ? Positioned(
-                      top: 4,
-                      right: MediaQuery.of(context).size.width*0.03,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 7.0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width*0.1,
-                          decoration: const BoxDecoration(
-                              color: Colors.transparent,
-                              shape: BoxShape.circle
-                          ),
-                          child: Center(
-                            child: IconButton(
-                              onPressed: () async {
-                                if((image.isBaseImage == null ||  !image.isBaseImage!) && canClickFav) {
-                                  var result = await showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return DeleteConfirmationDialog(
-                                            text: AppLocalizations.of(context)!
-                                                .myImagesDeleteDescription);
-                                      }
-                                  );
-                                  if (result) {
-                                    mixpanel!.track('brand_images_delete');
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
-                                    getBrandContentImages();
-                                  }
-                                }
-                                else
-                                  {
-                                    topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
-                                  }
-                              },
-                              icon: Icon(
-                                  Icons.delete_outline,
-                                  color: AppColors.red,
-                                  size: MediaQuery.of(context).size.width*0.08
-                              ),
-                              alignment: Alignment.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ) : Container(),
-                    // Delete Image
-                    image.isBaseImage == true ? Positioned(
-                      top: MediaQuery.of(context).size.width*0.03,
-                      right: MediaQuery.of(context).size.width*0.03,
-                      child: GestureDetector(
-                        onTap: () {
-                          topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
-                        },
-                        child: Container(
-                          height: MediaQuery.of(context).size.height*0.03,
-                          width: MediaQuery.of(context).size.width*0.35,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Icon(Icons.favorite, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.04,),
-                              Flexible(
-                                child: Text(
-                                  AppLocalizations.of(context)!.photo+" "+AppLocalizations.of(context)!.createBrandCover.toLowerCase(),
-                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color:Theme.of(context).primaryColor),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ) : Container(),
-                  ],
+                    onPressed: () {
+                      if (widget.pinned == true) {
+                        mixpanel!.track('brand_images_pinned_off');
+                      } else {
+                        mixpanel!.track('brand_images_pinned_on');
+                      }
+                      setState(() {
+                        widget.pinned = !widget.pinned;
+                      });
+                      widget.pinnedChanged(widget.pinned);
+                    },
+                  ),
                 ),
-              );
-              },
-              childCount: _imagesUploaded.length,
+              ],
             ),
-          ),
-          isLoading ? SliverToBoxAdapter(child: Container()) : SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                  ],
-                ),
-              )
-          ),
-        ],
+            isLoading ? SliverFillRemaining(
+              child: Center(
+                    child: LoadingView(
+                      text: AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...",
+                    )
+                )
+            ) : SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              AppLocalizations.of(context)!.yourImagesDescription,
+                              style: Theme.of(context).textTheme.caption,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      maxImagesAdded ? Padding(
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height*0.03,left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                        child: Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.addBrandPhotosMaxLeft((_maxImages-_imagesUploaded.length).toString()),
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ) : Container(),
+                      _imagesUploaded.length < _maxImages && canEdit ? Column(
+                        children: [
+                          GestureDetector(
+                            onTap: getImage,
+                            child: DottedBorder(
+                                borderType: BorderType.RRect,
+                                radius: const Radius.circular(10),
+                                dashPattern: const [10, 10],
+                                color: AppColors.grey.withOpacity(0.5),
+                                strokeWidth: 2,
+                                child: Container(
+                                    height: MediaQuery.of(context).size.height*0.15,
+                                    width: MediaQuery.of(context).size.height*0.9,
+                                    color: Colors.transparent,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                    Icons.add,
+                                                    color: AppColors.grey.withOpacity(0.5),
+                                                    size: MediaQuery.of(context).size.width*0.1
+                                                ),
+                                                //SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                                Text(
+                                                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.photos.toLowerCase(),
+                                                  style: Theme.of(context).textTheme.caption,
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              AppLocalizations.of(context)!.photosDimensions,
+                                              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          "("+_imagesUploaded.length.toString()+"/"+_maxImages.toString()+")",
+                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
+                                    )
+                                )
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                        ],
+                      ) : Container(),
+                    ],
+                  ),
+                )
+            ),
+            isLoading || _imagesUploaded.isEmpty ? SliverToBoxAdapter(child: Container()) : SliverGrid(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                childAspectRatio: 2.5,
+                mainAxisSpacing: MediaQuery.of(context).size.width*0.02,
+                crossAxisSpacing: 10,
+              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                ImageObject image = _imagesUploaded[index];
+                return Container(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  child: Stack(
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<void>(
+                                builder: (context) => FullscreenSliderDemo(
+                                  initialImage: _imagesUploaded.indexOf(image),
+                                  images: _imagesUploaded,
+                                ),
+                              )
+                          );
+                        },
+                        child: RectangularImage(
+                          height: MediaQuery.of(context).size.height*0.18,
+                          width: MediaQuery.of(context).size.height*0.9,
+                          borderRadius: 10,
+                          color: AppColors.grey,
+                          borderWidth: 1,
+                          image: image.url,
+                        ),
+                      ),
+                      // Favorite Image
+                      canEdit && image.isBaseImage != true ? Positioned(
+                        top: 4,
+                        right: MediaQuery.of(context).size.width*0.14,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width*0.1,
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Theme.of(context).backgroundColor, //New
+                                      blurRadius: 10.0,
+                                      offset: const Offset(0, 1)
+                                  )
+                                ],
+                            ),
+                            child: Center(
+                              child: IconButton(
+                                onPressed: () async {
+                                  if(image.isBaseImage != null && image.isBaseImage!) {
+                                    //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                                  } else if(canClickFav){
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return FavouriteConfirmationDialog(
+                                              text: AppLocalizations.of(context)!
+                                                  .myImagesFavouriteDescription);
+                                        }
+                                    );
+                                    if (result) {
+                                      setState(() {
+                                        canClickFav = false;
+                                        _imagesUploaded[_imagesUploaded.indexWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
+                                        image.isBaseImage = true;
+                                      });
+                                      await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
+                                      await getBrandContentImages();
+                                      setState(() {
+                                        canClickFav = true;
+                                      });
+                                    }
+                                  }
+                                },
+                                icon: image.isBaseImage != null && image.isBaseImage! ? Icon(
+                                    Icons.favorite,
+                                    color: Colors.red,
+                                    size: MediaQuery.of(context).size.width*0.06
+                                ) : Icon(
+                                    Icons.favorite_outline_outlined,
+                                    color: Theme.of(context).primaryColor,
+                                    size: MediaQuery.of(context).size.width*0.06
+                                ),
+                                alignment: Alignment.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ) : Container(),
+                      // Delete Image
+                      canEdit && image.isBaseImage != true ? Positioned(
+                        top: 4,
+                        right: MediaQuery.of(context).size.width*0.02,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width*0.1,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Theme.of(context).backgroundColor, //New
+                                    blurRadius: 1.0,
+                                    offset: const Offset(0, 0)
+                                )
+                              ],
+                            ),
+                            child: Center(
+                              child: IconButton(
+                                onPressed: () async {
+                                  if((image.isBaseImage == null ||  !image.isBaseImage!) && canClickFav) {
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return DeleteConfirmationDialog(
+                                              text: AppLocalizations.of(context)!
+                                                  .myImagesDeleteDescription);
+                                        }
+                                    );
+                                    if (result) {
+                                      mixpanel!.track('brand_images_delete');
+                                      setState(() {
+                                        isLoading = true;
+                                      });
+                                      await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
+                                      getBrandContentImages();
+                                    }
+                                  }
+                                  else
+                                    {
+                                      //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                                    }
+                                },
+                                icon: Icon(
+                                    Icons.delete_outline,
+                                    color: AppColors.red,
+                                    size: MediaQuery.of(context).size.width*0.06
+                                ),
+                                alignment: Alignment.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ) : Container(),
+                      // Delete Image
+                      image.isBaseImage == true ? Positioned(
+                        top: MediaQuery.of(context).size.width*0.03,
+                        right: MediaQuery.of(context).size.width*0.03,
+                        child: GestureDetector(
+                          onTap: () {
+                            showInSnackBar(AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                          },
+                          child: Container(
+                            height: MediaQuery.of(context).size.height*0.03,
+                            width: MediaQuery.of(context).size.width*0.35,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(Icons.favorite, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.04,),
+                                Flexible(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.photo+" "+AppLocalizations.of(context)!.createBrandCover.toLowerCase(),
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color:Theme.of(context).primaryColor),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ) : Container(),
+                    ],
+                  ),
+                );
+                },
+                childCount: _imagesUploaded.length,
+              ),
+            ),
+            isLoading ? SliverToBoxAdapter(child: Container()) : SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    ],
+                  ),
+                )
+            ),
+          ],
+        ),
       ),
     );
   }
