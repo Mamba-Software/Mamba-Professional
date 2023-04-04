@@ -472,7 +472,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     Row(
                       children: [
                         Icon(
-                          event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                          event.isPrivate! ? Icons.person : Icons.groups,
                           color: AppColors.white,
                           size: details.bounds.width*0.05,
                         ),
@@ -535,7 +535,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     Row(
                       children: [
                         Icon(
-                          event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                          event.isPrivate! ? Icons.person : Icons.groups,
                           color: AppColors.white,
                           size: details.bounds.width*0.05,
                         ),
@@ -608,7 +608,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                          event.isPrivate! ? Icons.person : Icons.groups,
                           color: AppColors.white,
                           size: details.bounds.width*0.2,
                         ),
@@ -658,7 +658,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                          event.isPrivate! ? Icons.person : Icons.groups,
                           color: AppColors.white,
                           size: details.bounds.width*0.2,
                         ),
@@ -713,7 +713,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     Row(
                       children: [
                         Icon(
-                          event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                          event.isPrivate! ? Icons.person : Icons.groups,
                           color: AppColors.white,
                           size: details.bounds.width*0.05,
                         ),
@@ -776,7 +776,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     Row(
                       children: [
                         Icon(
-                          event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                          event.isPrivate! ? Icons.person : Icons.groups,
                           color: AppColors.white,
                           size: details.bounds.width*0.05,
                         ),
@@ -841,7 +841,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   Row(
                     children: [
                       Icon(
-                        event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                        event.isPrivate! ? Icons.person : Icons.groups,
                         color: AppColors.white,
                         size: details.bounds.width*0.05,
                       ),
@@ -904,7 +904,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   Row(
                     children: [
                       Icon(
-                        event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                        event.isPrivate! ? Icons.person : Icons.groups,
                         color: AppColors.white,
                         size: details.bounds.width*0.05,
                       ),
@@ -1276,7 +1276,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             ),
             SpeedDialChild(
               child: const Icon(
-                Icons.lock_outlined,
+                Icons.person,
               ),
               elevation: 10,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -1567,7 +1567,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                             textAlign: TextAlign.left
                         ),
                         leading: const Icon(
-                          Icons.lock_outlined,
+                          Icons.person,
                         ),
                       ),
                     ],
@@ -1664,7 +1664,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                             textAlign: TextAlign.left
                         ),
                         leading: const Icon(
-                          Icons.lock_outlined,
+                          Icons.person,
                         ),
                       ),
                     ],

@@ -543,7 +543,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.lock_outlined,
+                  Icons.person,
                   color: Theme.of(context).primaryColor,
                   size: MediaQuery.of(context).size.width*0.05,
                 ),
