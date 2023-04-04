@@ -94,15 +94,17 @@ class _BrandImagesState extends State<BrandImages> {
   // Gets the user info from firebase.
   Future<void> getBrandContentImages() async {
     _imagesUploaded = await _brandDataService.getBrandContentPictures(widget.brandId);
-    baseImage = _imagesUploaded.firstWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
-    _imagesUploaded.removeWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
-    _imagesUploaded.sort((a,b) {
-      var aDate = a.timestamp!.toDate();
-      var bDate = b.timestamp!.toDate();
-      return aDate.compareTo(bDate);
-    });
-    _imagesUploaded = List.from(_imagesUploaded.reversed);
-    _imagesUploaded.insert(0, baseImage);
+    if(_imagesUploaded.isNotEmpty) {
+      baseImage = _imagesUploaded.firstWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
+      _imagesUploaded.removeWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
+      _imagesUploaded.sort((a,b) {
+        var aDate = a.timestamp!.toDate();
+        var bDate = b.timestamp!.toDate();
+        return aDate.compareTo(bDate);
+      });
+      _imagesUploaded = List.from(_imagesUploaded.reversed);
+      _imagesUploaded.insert(0, baseImage);
+    }
     setState(() {
       isLoading = false;
     });
