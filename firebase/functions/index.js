@@ -2820,6 +2820,9 @@ exports.zzzzLocationUpdatesCoverData = functions
       } else if (before.longitude != after.longitude) {
         coverDataChange = true;
       }
+      else if (before.geoPosition != after.geoPosition) {
+              coverDataChange = true;
+      }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,

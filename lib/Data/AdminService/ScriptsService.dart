@@ -2655,7 +2655,6 @@ class ScriptsDatabaseService {
             .collection(locations)
             .doc(locationId)
             .update({
-              'title': 'newTitle',
           ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.latitude!),
         });
         print('=================================================================================');
