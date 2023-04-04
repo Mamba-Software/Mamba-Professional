@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Trainers extends StatefulWidget {
@@ -303,6 +304,7 @@ class _Trainers extends State<Trainers> {
                           ) : SizedBox(
                             width: MediaQuery.of(context).size.width*0.65,
                             child: TextField(
+                              autofocus: true,
                               controller: searchController,
                               onChanged: (value) {
                                 filterSearchResults(value);
@@ -349,25 +351,30 @@ class _Trainers extends State<Trainers> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      if (searchClicked == false) {
-                                        mixpanel!.track('brand_trainers_search_button');
-                                      } else {
-                                        mixpanel!.track('brand_trainers_search_close');
-                                      }
-                                      setState(() {
-                                        searchController.clear();
-                                        filterSearchResults("");
-                                        searchClicked = !searchClicked;
-                                      });
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    alignment: Alignment.centerRight,
-                                    icon: Icon(
-                                      searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
-                                      color: AppColors.white,
-                                      size: MediaQuery.of(context).size.width*0.07,
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        if (searchClicked == false) {
+                                          mixpanel!.track('brand_trainers_search_button');
+                                        } else {
+                                          mixpanel!.track('brand_trainers_search_close');
+                                        }
+                                        setState(() {
+                                          searchController.clear();
+                                          filterSearchResults("");
+                                          searchClicked = !searchClicked;
+                                        });
+                                      },
+                                      splashRadius: 10,
+                                      splashColor: Theme.of(context).backgroundColor, // Splash color
+                                      padding: EdgeInsets.zero,
+                                      alignment: Alignment.centerRight,
+                                      icon: Icon(
+                                        searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
+                                        color: AppColors.white,
+                                        size: MediaQuery.of(context).size.width*0.07,
+                                      ),
                                     ),
                                   ),
                                   ClipOval(

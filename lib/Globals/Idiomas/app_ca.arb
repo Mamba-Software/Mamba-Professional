@@ -125,7 +125,7 @@
   "change": "Canviar",
   "welcomeMes": "¡Benvingut a Mamba {name}!",
   "roles": "Rols",
-  "rolesDescription": "Administra els permisos de la teva marca",
+  "rolesDescription": "Administra el staff de la teva marca",
   "rolesInfoDescription": "Visualitza els permisos de cada tipus de rol",
   "owner": "Propietari",
   "administrador": "Administrador",
@@ -704,5 +704,7 @@
   "shareInvitationText":  "Invita clients a la teva marca",
   "freeTrialDaysLeft":  "Et queden {daysLeft} dies per escollir el teu pla",
   "chooseYourPlan":  "Escolleix el teu pla",
-  "addClient":  "Afegir clients"
+  "addClient":  "Afegir clients",
+  "addClientDescription": "Afegir clients al a teva marca",
+  "addTrainerDescription": "Afegir staff al a teva marca"
 }
