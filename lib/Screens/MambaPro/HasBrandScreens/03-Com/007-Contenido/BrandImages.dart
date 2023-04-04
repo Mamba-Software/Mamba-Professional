@@ -108,19 +108,30 @@ class _BrandImagesState extends State<BrandImages> {
     });
   }
 
-  void showInSnackBar(String value, int duration, [bool isError = false]) {
+  void showInSnackBar(String value, int duration) {
     final snackbar = SnackBar(
       behavior: SnackBarBehavior.floating,
       margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.05, horizontal: MediaQuery.of(context).size.width * 0.05),
-      content: Text(
-          value,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: isError ? AppColors.white : AppColors.black)
+      elevation: 8,
+      content: Row(
+        children: [
+          Icon(Icons.info_outlined, color: Theme.of(context).primaryColor, size:  MediaQuery.of(context).size.width*0.08,),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+                value,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyText2,
+            ),
+          ),
+        ],
       ),
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0))
+      padding: const EdgeInsets.all(20),
+      shape: RoundedRectangleBorder(
+          side: BorderSide(color: Theme.of(context).primaryColor),
+          borderRadius: const BorderRadius.all(Radius.circular(10.0))
       ),
-      backgroundColor: isError ? AppColors.red : Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       duration: Duration(seconds: duration),
     );
     scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
@@ -374,8 +385,8 @@ class _BrandImagesState extends State<BrandImages> {
                                 boxShadow: [
                                   BoxShadow(
                                       color: Theme.of(context).backgroundColor, //New
-                                      blurRadius: 10.0,
-                                      offset: const Offset(0, 1)
+                                      blurRadius: 1.0,
+                                      offset: const Offset(0, 0)
                                   )
                                 ],
                             ),
@@ -484,28 +495,38 @@ class _BrandImagesState extends State<BrandImages> {
                         right: MediaQuery.of(context).size.width*0.03,
                         child: GestureDetector(
                           onTap: () {
-                            showInSnackBar(AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                            showInSnackBar(AppLocalizations.of(context)!.myImagesFavouriteDelete, 5);
                           },
-                          child: Container(
-                            height: MediaQuery.of(context).size.height*0.03,
-                            width: MediaQuery.of(context).size.width*0.35,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(10.0),
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.045,
+                              width: MediaQuery.of(context).size.width*0.25,
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(30.0),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Theme.of(context).backgroundColor, //New
+                                      blurRadius: 1.0,
+                                      offset: const Offset(0, 1)
+                                  )
+                                ],
                               ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Icon(Icons.favorite, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.04,),
-                                Flexible(
-                                  child: Text(
-                                    AppLocalizations.of(context)!.photo+" "+AppLocalizations.of(context)!.createBrandCover.toLowerCase(),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.favorite, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.05,),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    AppLocalizations.of(context)!.createBrandCover,
                                     style: Theme.of(context).textTheme.bodyText2?.copyWith(color:Theme.of(context).primaryColor),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
