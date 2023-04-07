@@ -95,7 +95,16 @@ class _BrandImagesState extends State<BrandImages> {
   Future<void> getBrandContentImages() async {
     _imagesUploaded = await _brandDataService.getBrandContentPictures(widget.brandId);
     if(_imagesUploaded.isNotEmpty) {
-      baseImage = _imagesUploaded.firstWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
+      // Find the base image
+      baseImage = _imagesUploaded.firstWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true, orElse: () => ImageObject());
+      // If there isn´t baseImage, set it randomly
+      if (baseImage.id == null) {
+        // Random
+        baseImage = _imagesUploaded.first;
+        baseImage.setBaseImage = baseImage;
+        _imagesUploaded.remove(baseImage);
+        await _brandDataService.updateBrandBaseImage(widget.brandId, baseImage, null);
+      }
       _imagesUploaded.removeWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true);
       _imagesUploaded.sort((a,b) {
         var aDate = a.timestamp!.toDate();

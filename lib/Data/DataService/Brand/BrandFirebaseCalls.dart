@@ -564,11 +564,12 @@ class BrandFirebaseCalls {
         await storageRef.getDownloadURL().then((value) async {
           // Add Image to the Brand Images Subcollection
           await _firestore.collection(brands).doc(brandID)
-              .collection("Images")
-              .doc(uid)
-              .set({
+          .collection("Images")
+          .doc(uid)
+          .set({
             "url": value,
             "timestamp": Timestamp.now(),
+            "isBaseImage": false,
           });
         });
       });
@@ -663,18 +664,21 @@ class BrandFirebaseCalls {
     return result;
   }
 
-  Future<void> updateBrandBaseImage(String brandID, ImageObject newBaseImage, String oldBaseImage) async {
+  Future<void> updateBrandBaseImage(String brandID, ImageObject newBaseImage, String? oldBaseImage) async {
+    // Brands Cover Data
     await _firestore.collection(brands).doc(brandID).update({
       "baseImage": newBaseImage.url!,
     });
+    // Brands / Image
     await _firestore.collection(brands).doc(brandID).collection("Images").doc(newBaseImage.id).update({
       "isBaseImage": true,
     });
-    await _firestore.collection(brands).doc(brandID).collection("Images").doc(oldBaseImage).update({
-      "isBaseImage": false,
-    });
-
-    return;
+    // Only if there is an Old Base Image
+    if (oldBaseImage != null) {
+      await _firestore.collection(brands).doc(brandID).collection("Images").doc(oldBaseImage).update({
+        "isBaseImage": false,
+      });
+    }
   }
 
   Future<void> updateBrandBaseLocation(String brandID, String locationID) async {
