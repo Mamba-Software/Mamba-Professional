@@ -695,7 +695,7 @@ class BrandFirebaseCalls {
       "city": location.city,
       "latitude": location.latitude,
       "longitude": location.longitude,
-      ...GeoFlutterUtils.getGeoPoint(location!.latitude!, location!.longitude!),
+      ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
     });
   }
 

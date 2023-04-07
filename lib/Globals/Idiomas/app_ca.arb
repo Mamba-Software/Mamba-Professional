@@ -704,6 +704,7 @@
   "shareInvitationText":  "Invita clients a la teva marca",
   "freeTrialDaysLeft":  "Et queden {daysLeft} dies per escollir el teu pla",
   "chooseYourPlan":  "Escolleix el teu pla",
+  "yourPlan":  "El teu pla",
   "addClient":  "Afegir clients",
   "addClientDescription": "Afegir clients al a teva marca",
   "addTrainerDescription": "Afegir staff al a teva marca"

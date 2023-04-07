@@ -2381,7 +2381,7 @@ class FirebaseDatabaseService {
             "zipCode": zipCode,
             "latitude": latitude,
             "longitude": longitude,
-          ...GeoFlutterUtils.getGeoPoint(latitude!, longitude!),
+          ...GeoFlutterUtils.getGeoPoint(latitude, longitude),
           });
         if(isBaseLocation)
         {

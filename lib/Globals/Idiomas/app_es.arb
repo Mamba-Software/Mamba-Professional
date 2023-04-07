@@ -3124,7 +3124,11 @@
   "chooseYourPlan":  "Escoge tu plan",
   "@chooseYourPlan": {
     "description": "chooseYourPlan message"
-    },
+  },
+  "yourPlan":  "Tu plan",
+  "@yourPlan": {
+    "description": "chooseYourPlan message"
+  },
   "addClient":  "Añadir clientes",
   "@addClient": {
     "description": "addClient message"

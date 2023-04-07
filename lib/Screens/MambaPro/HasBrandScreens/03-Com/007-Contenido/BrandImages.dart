@@ -384,7 +384,7 @@ class _BrandImagesState extends State<BrandImages> {
                       ),
                       // Favorite Image
                       canEdit && image.isBaseImage != true ? Positioned(
-                        top: 4,
+                        top: MediaQuery.of(context).size.width*0.03,
                         right: MediaQuery.of(context).size.width*0.14,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 7.0),
@@ -446,7 +446,7 @@ class _BrandImagesState extends State<BrandImages> {
                       ) : Container(),
                       // Delete Image
                       canEdit && image.isBaseImage != true ? Positioned(
-                        top: 4,
+                        top: MediaQuery.of(context).size.width*0.03,
                         right: MediaQuery.of(context).size.width*0.02,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 7.0),
@@ -523,7 +523,7 @@ class _BrandImagesState extends State<BrandImages> {
                                   BoxShadow(
                                       color: Theme.of(context).backgroundColor, //New
                                       blurRadius: 1.0,
-                                      offset: const Offset(0, 1)
+                                      offset: const Offset(0, 0)
                                   )
                                 ],
                               ),
