@@ -823,6 +823,10 @@
   "@select":{
     "description": "Siguiente text"
   },
+  "selectAll": "Seleccionar todos",
+  "@selectAll":{
+    "description": "Siguiente text"
+  },
   "next": "Siguiente",
   "@next":{
     "description": "Siguiente text"
@@ -2082,12 +2086,20 @@
   "@bonosClient":{
     "bonosClient": "Bonos client text"
   },
-  "bonosDescription": "Si este evento no es gratuito, selecciona los bonos con los que te puedes unir",
+  "bonosDescription": "Selecciona los bonos que permiten a los usuarios unirse a este evento",
   "@bonosDescription":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosDescriptionWarning": "No has seleccionado ningún bono.\nCualquier persona podrá unirse al evento y no se restringirá la entrada al mismo.",
+  "@bonosDescriptionWarning":{
     "bonosClient": "Bonos client text"
   },
   "bonosDescriptionPrivate": "Selecciona los bonos que debe tener un cliente para poder ser invitado a este evento",
   "@bonosDescriptionPrivate":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosDescriptionPrivateWarning": "No has seleccionado ningún bono.\nCualquier persona invitada podrá unirse al evento y no se restringirá la entrada al mismo.",
+  "@bonosDescriptionPrivateWarning":{
     "bonosClient": "Bonos client text"
   },
   "inviteClientDescription": "Podrás invitar a un cliente una vez el evento haya sido creado",

@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -168,8 +167,16 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     return Event();
   }
 
-  void _addEvent([DateTime? dateTime]) {
+  void _addEvent(DateTime dateTime) {
     mixpanel!.track('brand_calendar_plan_event', properties: {'isPrivate': false});
+    // Date Time
+    DateTime eventDate = DateTime.now();
+    eventDate = DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+    );
+    // Navigate to Add or Edit Event
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
@@ -183,15 +190,25 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             },
             child: AddOrEditEvent(
               locale: Localizations.localeOf(context),
-              dateTime: dateTime,
+              dateTime: eventDate,
             ),
           ),
         )
     );
   }
 
-  void _addPrivateEvent([DateTime? dateTime]) {
+  void _addPrivateEvent(DateTime dateTime) {
     mixpanel!.track('brand_calendar_plan_event', properties: {'isPrivate': true});
+    // Date Time
+    DateTime eventDate = DateTime.now();
+    eventDate = DateTime(
+      dateTime.year,
+      dateTime.month,
+      dateTime.day,
+      eventDate.minute,
+      eventDate.second,
+    );
+    // Navigate to Add or Edit Event
     Navigator.push(
         context,
         CupertinoPageRoute<String>(
@@ -1271,7 +1288,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 ),
               ),
               onTap: () {
-                _addEvent();
+                DateTime? eventDate = DateTime.now();
+                if (_controller.selectedDate != null) {
+                  eventDate = _controller.selectedDate;
+                }
+                _addEvent(eventDate!);
               }
             ),
             SpeedDialChild(
@@ -1303,7 +1324,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 ),
               ),
               onTap: () {
-                _addPrivateEvent();
+                DateTime? eventDate = DateTime.now();
+                if (_controller.selectedDate != null) {
+                  eventDate = _controller.selectedDate;
+                }
+                _addPrivateEvent(eventDate!);
               }
             ),
           ],
@@ -1534,7 +1559,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         onTap: () {
                           mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': false});
                           Navigator.pop(context);
-                          _addEvent(details.date);
+                          DateTime? eventDate = DateTime.now();
+                          if (details.date != null) {
+                            eventDate = details.date;
+                          }
+                          _addEvent(eventDate!);
                         },
                         title: Text(
                             AppLocalizations.of(context)!.groupEvent,
@@ -1554,7 +1583,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         onTap: () {
                           mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': true});
                           Navigator.pop(context);
-                          _addPrivateEvent(details.date);
+                          DateTime? eventDate = DateTime.now();
+                          if (_controller.selectedDate != null) {
+                            eventDate = _controller.selectedDate;
+                          }
+                          _addPrivateEvent(eventDate!);
                         },
                         title: Text(
                             AppLocalizations.of(context)!.privateEvent,
@@ -1631,7 +1664,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         onTap: () {
                           mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': false});
                           Navigator.pop(context);
-                          _addEvent(details.date);
+                          DateTime? eventDate = DateTime.now();
+                          if (details.date != null) {
+                            eventDate = details.date;
+                          }
+                          _addEvent(eventDate!);
                         },
                         title: Text(
                             AppLocalizations.of(context)!.groupEvent,
@@ -1651,7 +1688,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         onTap: () {
                           mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': true});
                           Navigator.pop(context);
-                          _addPrivateEvent(details.date);
+                          DateTime? eventDate = DateTime.now();
+                          if (_controller.selectedDate != null) {
+                            eventDate = _controller.selectedDate;
+                          }
+                          _addPrivateEvent(eventDate!);
                         },
                         title: Text(
                             AppLocalizations.of(context)!.privateEvent,
