@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,7 +46,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.25 - kToolbarHeight);
   }
   String selectedValue = '0';
-  var items = ['0', '1', '2'];
+  var items = ['0', '1', '2', '3', '4', '5', '6'];
 
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
@@ -53,6 +54,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   // Screen Dimensions
   var safeAreaHeight;
   var safeAreaWidth;
+  double itemHeight = 0;
   // Boolean Loading
   bool isLoading = true;
   bool isFirstBuild = true;
@@ -63,6 +65,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final CalendarController _controller = CalendarController();
   bool isWeekly = false;
+  bool hasFilter = false;
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
   // Horari
@@ -98,6 +102,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
+    itemHeight = MediaQuery.of(context).size.height*0.1;
     print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
@@ -144,13 +149,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       _controller.selectedDate = dateTime;
     }
     // Initial Calendar View
-    if (widget.calendarView == null) {
-      _controller.view = CalendarView.month;
-      isWeekly = true;
-      _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
-    } else {
-      _controller.view = CalendarView.month;
-    }
+    selectedValue = '1';
+    _controller.view = CalendarView.day;
+    _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
+    // Date Joined Information
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
@@ -229,38 +231,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     );
   }
 
-  Widget _buildTitleFromDateCalendarView(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
-    return Container(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(
-              onPressed: () {
-                _controller.backward!();
-              },
-              icon: Icon(Icons.arrow_back_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.04,),
-              alignment: Alignment.centerLeft,
-            ),
-            Text(
-              StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            IconButton(
-              onPressed: () {
-                _controller.forward!();
-              },
-              icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.04,),
-              alignment: Alignment.centerRight,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Container(
       color: AppColors.darkGrey,
@@ -268,7 +238,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       child: DropdownButton2(
         dropdownWidth: MediaQuery.of(context).size.width*0.5,
         dropdownDecoration: BoxDecoration(
-          color: Theme.of(context).backgroundColor,
+          color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: const BorderRadius.all(
             Radius.circular(15),
           ),
@@ -282,9 +252,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         offset: const Offset(0, 0),
         // Down Arrow Icon
         icon: FaIcon(
-            FontAwesomeIcons.chevronDown,
-            size: MediaQuery.of(context).size.width*0.03,
-            color: Colors.transparent
+          FontAwesomeIcons.chevronDown,
+          size: MediaQuery.of(context).size.width*0.03,
+          color: Colors.transparent
         ),
         // Array list of items
         selectedItemBuilder: (BuildContext context) {
@@ -294,15 +264,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Row(
                 children: [
                   Text(
-                    StringUtils().toCapitalized(DateFormat('MMMM yyyy ', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+                    StringUtils().toCapitalized(DateFormat(middleMonthDate.year == DateTime.now().year ? 'MMMM ' : 'MMMM yyyy ', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
                     style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                   ),
-                  /*
-                  Text(
-                    item == '0' ? AppLocalizations.of(context)!.calendar+" " : AppLocalizations.of(context)!.historic+" ",
-                    style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
-                  ),
-                   */
                   FaIcon(
                       FontAwesomeIcons.chevronDown,
                       size: MediaQuery.of(context).size.width*0.03,
@@ -324,13 +288,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                   minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
-                  leading: FaIcon(
-                      FontAwesomeIcons.calendarDays,
-                      size: MediaQuery.of(context).size.width*0.04,
+                  leading: Icon(
+                      Icons.view_agenda_outlined,
+                      size: MediaQuery.of(context).size.width*0.06,
                       color: Theme.of(context).primaryColor
                   ),
                   title: Text(
-                    AppLocalizations.of(context)!.calendar,
+                    AppLocalizations.of(context)!.schedule,
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   trailing: FaIcon(
@@ -342,7 +306,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               )
           ),
           const DropdownMenuItem<Divider>(enabled: false, child:
-          Divider(color: AppColors.grey, height: 2),
+            Divider(color: AppColors.grey, height: 2),
           ),
           DropdownMenuItem(
               value: '1',
@@ -350,13 +314,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 dense: true,
                 contentPadding: EdgeInsets.zero,
                 minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
-                leading: FaIcon(
-                    FontAwesomeIcons.list,
-                    size: MediaQuery.of(context).size.width*0.04,
+                leading: Icon(
+                    Icons.calendar_view_day_outlined,
+                    size: MediaQuery.of(context).size.width*0.06,
                     color: Theme.of(context).primaryColor
                 ),
                 title: Text(
-                  AppLocalizations.of(context)!.historic,
+                  AppLocalizations.of(context)!.day,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
                 trailing: FaIcon(
@@ -366,8 +330,62 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 ),
               )
           ),
+          const DropdownMenuItem<Divider>(enabled: false, child:
+          Divider(color: AppColors.grey, height: 2),
+          ),
+          DropdownMenuItem(
+              value: '2',
+              child: ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
+                leading: Icon(
+                    Icons.calendar_view_week,
+                    size: MediaQuery.of(context).size.width*0.06,
+                    color: Theme.of(context).primaryColor
+                ),
+                title: Text(
+                  AppLocalizations.of(context)!.week,
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                trailing: FaIcon(
+                  FontAwesomeIcons.check,
+                  size: MediaQuery.of(context).size.width*0.04,
+                  color: selectedValue == '2' ? Theme.of(context).primaryColor : Colors.transparent,
+                ),
+              )
+          ),
+          const DropdownMenuItem<Divider>(enabled: false, child:
+          Divider(color: AppColors.grey, height: 2),
+          ),
+          DropdownMenuItem(
+              value: '3',
+              child: ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+                minLeadingWidth: MediaQuery.of(context).size.width * 0.05,
+                leading: Icon(
+                    Icons.calendar_view_month,
+                    size: MediaQuery.of(context).size.width*0.06,
+                    color: Theme.of(context).primaryColor
+                ),
+                title: Text(
+                  AppLocalizations.of(context)!.month,
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                trailing: FaIcon(
+                  FontAwesomeIcons.check,
+                  size: MediaQuery.of(context).size.width*0.04,
+                  color: selectedValue == '3' ? Theme.of(context).primaryColor : Colors.transparent,
+                ),
+              )
+          ),
         ],
         customItemsHeights: [
+          MediaQuery.of(context).size.height*0.06,
+          8,
+          MediaQuery.of(context).size.height*0.06,
+          8,
           MediaQuery.of(context).size.height*0.06,
           8,
           MediaQuery.of(context).size.height*0.06,
@@ -376,13 +394,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         // change button value to selected value
         onChanged: (newValue) {
           if (newValue == '0') {
-            _controller.view = CalendarView.month;
-            //_userDataService.updateUserCalendarView(currentUser.id!, true);
-            //currentUser.setCalendarView = true;
-          } else if (newValue == '1') {
             _controller.view = CalendarView.schedule;
-            //_userDataService.updateUserCalendarView(currentUser.id!, false);
-            //currentUser.setCalendarView = false;
+          } else if (newValue == '1') {
+            _controller.view = CalendarView.day;
+          } else if (newValue == '2') {
+            _controller.view = CalendarView.week;
+          } else if (newValue == '3') {
+            _controller.view = CalendarView.month;
           }
           setState(() {
             selectedValue = newValue.toString();
@@ -392,54 +410,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     );
   }
 
-  Widget _buildIconController() {
-    if (isWeekly == false) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.calendar_view_week,
-            color: AppColors.white,
-            size: safeAreaWidth*0.05,
-          ),
-          FittedBox(
-            fit: BoxFit.contain,
-            child: Text(
-                AppLocalizations.of(context)!.weekString,
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                textAlign: TextAlign.center
-            ),
-          ),
-        ],
-      );
-    } else if (isWeekly == true) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.calendar_view_month,
-            color: AppColors.white,
-            size: safeAreaWidth * 0.05,
-          ),
-          FittedBox(
-            fit: BoxFit.contain,
-            child: Text(
-                AppLocalizations.of(context)!.monthString,
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .bodyText2
-                    ?.copyWith(color: AppColors.white),
-                textAlign: TextAlign.center
-            ),
-          ),
-        ],
-      );
-    }
-    return Container();
-
-  }
-
+  /*
   Widget _buildEventContainer(CalendarAppointmentDetails details) {
     final Appointment appointment = details.appointments.first;
     final DateTime today = DateTime.now();
@@ -457,384 +428,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       ),
     );
   }
+   */
 
-  /*
+
   Widget _buildEventContainer(CalendarAppointmentDetails details) {
     final Appointment appointment = details.appointments.first;
     final DateTime today = DateTime.now();
     bool isCompleted = appointment.endTime.isBefore(today);
     final Event event = getEvent(appointment.id.toString());
     if (_controller.view == CalendarView.day) {
-      if (isCompleted) {
-        return GestureDetector(
-          onTap: () {
-            navigateToEventScreen(appointment.id.toString(), isCompleted);
-          },
-          child: Center(
-            child: Material(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-              ),
-              elevation: 2,
-              child: Container(
-                height: safeAreaHeight*0.08,
-                width: details.bounds.width,
-                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
-                decoration: BoxDecoration(
-                  color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          event.isPrivate! ? Icons.person : Icons.groups,
-                          color: AppColors.white,
-                          size: details.bounds.width*0.05,
-                        ),
-                        SizedBox(width: details.bounds.width*0.02,),
-                        Text(
-                          event.title!,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
-                          textAlign: TextAlign.start,
-                        ),
-                        Text(
-                          "("+appointment.subject+")",
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      } else {
-        return GestureDetector(
-          onTap: () {
-            navigateToEventScreen(appointment.id.toString(), isCompleted);
-          },
-          child: Center(
-            child: Material(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-              ),
-              elevation: 2,
-              child: Container(
-                height: safeAreaHeight*0.08,
-                width: details.bounds.width,
-                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
-                decoration: BoxDecoration(
-                  color: event.isPrivate! ?  AppColors.black : appointment.color,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          event.isPrivate! ? Icons.person : Icons.groups,
-                          color: AppColors.white,
-                          size: details.bounds.width*0.05,
-                        ),
-                        SizedBox(width: details.bounds.width*0.02,),
-                        Text(
-                          event.title!,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          textAlign: TextAlign.start,
-                        ),
-                        Text(
-                          "("+appointment.subject+")",
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-    } else if (_controller.view == CalendarView.week) {
-      if (isCompleted) {
-        return GestureDetector(
-          onTap: () {
-            navigateToEventScreen(appointment.id.toString(), isCompleted);
-          },
-          child: Center(
-            child: Material(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-              ),
-              elevation: 2,
-              child: Container(
-                width: details.bounds.width,
-                height: details.bounds.height,
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    AutoSizeText(
-                      event.title!,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                      textAlign: TextAlign.center,
-                      wrapWords: false,
-                      minFontSize: 1,
-                      maxFontSize: 16,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          event.isPrivate! ? Icons.person : Icons.groups,
-                          color: AppColors.white,
-                          size: details.bounds.width*0.2,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      } else {
-        return GestureDetector(
-          onTap: () {
-            navigateToEventScreen(appointment.id.toString(), isCompleted);
-          },
-          child: Center(
-            child: Material(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-              ),
-              elevation: 2,
-              child: Container(
-                width: details.bounds.width,
-                height: details.bounds.height,
-                padding: const EdgeInsets.all(5),
-                decoration: BoxDecoration(
-                  color: event.isPrivate! ? AppColors.black : appointment.color,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    AutoSizeText(
-                      event.title!,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                      textAlign: TextAlign.center,
-                      wrapWords: false,
-                      minFontSize: 1,
-                      maxFontSize: 16,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          event.isPrivate! ? Icons.person : Icons.groups,
-                          color: AppColors.white,
-                          size: details.bounds.width*0.2,
-                        ),
-                        SizedBox(
-                          width: details.bounds.width*0.4,
-                          child: AutoSizeText(
-                            appointment.subject,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                            textAlign: TextAlign.center,
-                            wrapWords: false,
-                            minFontSize: 1,
-                            maxFontSize: 8,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-    } else if (_controller.view == CalendarView.month){
-      if (isCompleted) {
-        return GestureDetector(
-          onTap: () {
-            navigateToEventScreen(appointment.id.toString(), isCompleted);
-          },
-          child: Center(
-            child: Material(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-              ),
-              elevation: 2,
-              child: Container(
-                height: safeAreaHeight*0.08,
-                width: details.bounds.width,
-                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
-                decoration: BoxDecoration(
-                  color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          event.isPrivate! ? Icons.person : Icons.groups,
-                          color: AppColors.white,
-                          size: details.bounds.width*0.05,
-                        ),
-                        SizedBox(width: details.bounds.width*0.02,),
-                        Text(
-                          event.title!,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
-                          textAlign: TextAlign.start,
-                        ),
-                        Text(
-                          "("+appointment.subject+")",
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      } else {
-        return GestureDetector(
-          onTap: () {
-            navigateToEventScreen(appointment.id.toString(), isCompleted);
-          },
-          child: Center(
-            child: Material(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5.0),
-                ),
-              ),
-              elevation: 2,
-              child: Container(
-                height: safeAreaHeight*0.08,
-                width: details.bounds.width,
-                padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
-                decoration: BoxDecoration(
-                  color: event.isPrivate! ?  AppColors.black : appointment.color,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(5),
-                  ),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          event.isPrivate! ? Icons.person : Icons.groups,
-                          color: AppColors.white,
-                          size: details.bounds.width*0.05,
-                        ),
-                        SizedBox(width: details.bounds.width*0.02,),
-                        Text(
-                          event.title!,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white.withOpacity(1), fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          textAlign: TextAlign.start,
-                        ),
-                        Text(
-                          "("+appointment.subject+")",
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-    }
-    if (isCompleted) {
       return GestureDetector(
         onTap: () {
           navigateToEventScreen(appointment.id.toString(), isCompleted);
@@ -852,7 +454,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               width: details.bounds.width,
               padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05, vertical: safeAreaHeight*0.01),
               decoration: BoxDecoration(
-                color: event.isPrivate! ? AppColors.black.withOpacity(0.2) : appointment.color.withOpacity(0.2),
+                color: event.isPrivate! ?  AppColors.black : appointment.color,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(5),
                 ),
@@ -881,12 +483,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     children: [
                       Text(
                         DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         textAlign: TextAlign.start,
                       ),
                       Text(
                         "("+appointment.subject+")",
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white.withOpacity(0.5)),
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         textAlign: TextAlign.start,
                       ),
                     ],
@@ -897,7 +499,97 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           ),
         ),
       );
-    } else {
+    } else if (_controller.view == CalendarView.week) {
+      return GestureDetector(
+        onTap: () {
+          navigateToEventScreen(appointment.id.toString(), isCompleted);
+        },
+        child: Center(
+          child: Material(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(5.0),
+              ),
+            ),
+            elevation: 2,
+            child: Container(
+              width: details.bounds.width,
+              height: details.bounds.height,
+              padding: const EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                color: event.isPrivate! ? AppColors.black : appointment.color,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  AutoSizeText(
+                    event.title!,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                    textAlign: TextAlign.center,
+                    wrapWords: false,
+                    minFontSize: 1,
+                    maxFontSize: 16,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        event.isPrivate! ? Icons.person : Icons.groups,
+                        color: AppColors.white,
+                        size: details.bounds.width*0.2,
+                      ),
+                      SizedBox(
+                        width: details.bounds.width*0.4,
+                        child: AutoSizeText(
+                          appointment.subject,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
+                          textAlign: TextAlign.center,
+                          wrapWords: false,
+                          minFontSize: 1,
+                          maxFontSize: 8,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    } else if (_controller.view == CalendarView.month){
+      return Center(
+        child: Container(
+          height: details.bounds.height,
+          width: details.bounds.width,
+          margin: EdgeInsets.all(details.bounds.width*0.02),
+          padding: EdgeInsets.all(details.bounds.width*0.05),
+          decoration: BoxDecoration(
+            color: event.isPrivate! ?  AppColors.black : appointment.color,
+            borderRadius: BorderRadius.all(
+              Radius.circular((details.bounds.height)*0.2),
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: Text(
+                  event.title!,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                  textAlign: TextAlign.start,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else if (_controller.view == CalendarView.schedule){
       return GestureDetector(
         onTap: () {
           navigateToEventScreen(appointment.id.toString(), isCompleted);
@@ -961,9 +653,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         ),
       );
     }
+    return Container();
   }
-
-   */
 
   @override
   Widget build(BuildContext context) {
@@ -1023,22 +714,29 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                         textAlign: TextAlign.center
                                     ),
                                   ),
-                                  selectedValue == '0' ? TextButton(
-                                    onPressed: () {
-                                      if (isWeekly == false) {
-                                        mixpanel!.track('brand_calendar_week');
-                                        setState(() {
-                                          isWeekly = true;
-                                        });
-                                      } else {
-                                        mixpanel!.track('brand_calendar_month');
-                                        setState(() {
-                                          isWeekly = false;
-                                        });
-                                      }
-                                    },
-                                    child: _buildIconController(),
-                                  ) : Container(),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.025),
+                                    child: SizedBox(
+                                      height: MediaQuery.of(context).size.width*0.09,
+                                      width: MediaQuery.of(context).size.width*0.09,
+                                      child: ClipOval(
+                                        child: Material(
+                                          color: hasFilter ? AppColors.white : Colors.transparent, // Button color
+                                          child: InkWell(
+                                            splashColor: Theme.of(context).backgroundColor, // Splash color
+                                            onTap: () async {
+
+                                            },
+                                            child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
+                                              Icons.filter_list,
+                                              color: hasFilter ? AppColors.darkGrey :  AppColors.white,
+                                              size: MediaQuery.of(context).size.width*0.07,
+                                            )),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -1130,7 +828,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                             child: SfCalendar(
                               // Controller
                               controller: _controller,
-                              view: CalendarView.month,
                               blackoutDates: [dateJoined.subtract(const Duration(days: 1))],
                               blackoutDatesTextStyle: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600),
                               // Data
@@ -1138,6 +835,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               initialDisplayDate: DateTime.now(),
                               initialSelectedDate: DateTime.now(),
                               dataSource: _getCalendarDataSource(),
+                              specialRegions: _getTimeRegions(),
                               // Config
                               cellEndPadding: 0,
                               firstDayOfWeek: 1,
@@ -1145,10 +843,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               cellBorderColor: AppColors.grey,
                               todayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                               // Style
-                              selectionDecoration: BoxDecoration(
+                              selectionDecoration: _controller.view == CalendarView.month ? BoxDecoration(
+                                color: Colors.transparent,
+                                border: Border.all(width: 1, color: Colors.transparent),
+                              ) : BoxDecoration(
                                   color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
                                   border: Border.all(width: 1, color: Theme.of(context).colorScheme.secondary),
-                                  shape: BoxShape.circle
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(5.0),
+                                  ),
                               ),
                               headerHeight: 0,
                               headerStyle: CalendarHeaderStyle(
@@ -1156,26 +859,32 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                 backgroundColor: Colors.transparent,
                                 textStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.transparent),
                               ),
-                              viewHeaderHeight: 30,
+                              viewHeaderHeight: 50,
                               viewHeaderStyle: ViewHeaderStyle(
                                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                                 dateTextStyle: Theme.of(context).textTheme.bodyText2,
                                 dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                               ),
+                              // Time Slot View Settings
+                              timeSlotViewSettings: TimeSlotViewSettings(
+                                  timeIntervalHeight: itemHeight,
+                                  timeIntervalWidth: 60,
+                                  startHour: _startHour!-1,
+                                  endHour:  _endHour!+1,
+                                  timeFormat: 'HH:mm',
+                                  dayFormat: 'EE',
+                                  dateFormat: 'd',
+                                  timeRulerSize: 50,
+                                  nonWorkingDays: nonWorkDays,
+                                  minimumAppointmentDuration: const Duration(minutes: 30),
+                                  timeTextStyle: Theme.of(context).textTheme.bodyText2,
+                              ),
                               // Monthly View
                               monthViewSettings: MonthViewSettings(
-                                appointmentDisplayCount: 3,
-                                numberOfWeeksInView: isWeekly == false ? 6 : 1,
+                                appointmentDisplayCount: 4,
+                                numberOfWeeksInView: 6,
                                 showTrailingAndLeadingDates: true,
-                                appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
-                                showAgenda: false,
-                                agendaViewHeight: isWeekly == false ? MediaQuery.of(context).size.height*0.37 : MediaQuery.of(context).size.height*0.71,
-                                agendaItemHeight: MediaQuery.of(context).size.height*0.15,
-                                agendaStyle: AgendaStyle(
-                                  dateTextStyle: Theme.of(context).textTheme.bodyText2,
-                                  dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
-                                  appointmentTextStyle: Theme.of(context).textTheme.bodyText2,
-                                ),
+                                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
                                 monthCellStyle: MonthCellStyle(
                                   textStyle: Theme.of(context).textTheme.bodyText1,
                                   trailingDatesTextStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
@@ -1234,6 +943,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                 });
                               },
                               onTap: onTapCalendar,
+                              onLongPress: onLongPressCalendar,
                               appointmentTextStyle: Theme.of(context).textTheme.bodyText2!,
                               appointmentBuilder: (BuildContext context, CalendarAppointmentDetails details) {
                                 return _buildEventContainer(details);
@@ -1261,10 +971,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         width: MediaQuery.of(context).size.width*0.15,
         child: SpeedDial(
           animatedIcon: AnimatedIcons.add_event,
+          animationDuration: const Duration(milliseconds: 500),
           foregroundColor: AppColors.white,
-          overlayColor: Theme.of(context).scaffoldBackgroundColor,
+          overlayColor: Theme.of(context).primaryColorDark,
+          overlayOpacity: 0.95,
           spacing: MediaQuery.of(context).size.height*0.02,
           spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
+          openCloseDial: isDialOpen,
           children: [
             SpeedDialChild(
               child: const Icon(
@@ -1288,7 +1001,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     ),
                     Text(
                         AppLocalizations.of(context)!.groupEventDesc,
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodyText2,
                         textAlign: TextAlign.right
                     ),
                   ],
@@ -1324,7 +1037,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     ),
                     Text(
                         AppLocalizations.of(context)!.privateEventDesc,
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodyText2,
                         textAlign: TextAlign.right
                     ),
                   ],
@@ -1529,212 +1242,48 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   }
 
   void onTapCalendar(CalendarTapDetails details) async {
-    if (details.date!.isAfter(DateTime.now()) && canEdit && _controller.view != CalendarView.month) {
-      setState(() {
-        _controller.selectedDate = details.date;
-      });
-      await showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
-          ),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          builder: (BuildContext context) {
-            return FractionallySizedBox(
-              heightFactor: 0.3,
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.5,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                  child: Column(
-                    mainAxisAlignment:
-                    MainAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        title: Text(
-                            AppLocalizations.of(context)!.add,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left
-                        ),
-                        dense: true,
-                      ),
-                      ListTile(
-                        onTap: () {
-                          mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': false});
-                          Navigator.pop(context);
-                          DateTime? eventDate = DateTime.now();
-                          if (details.date != null) {
-                            eventDate = details.date;
-                          }
-                          _addEvent(eventDate!);
-                        },
-                        title: Text(
-                            AppLocalizations.of(context)!.groupEvent,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left
-                        ),
-                        subtitle: Text(
-                            AppLocalizations.of(context)!.groupEventDesc,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left
-                        ),
-                        leading: const Icon(
-                          Icons.groups,
-                        ),
-                      ),
-                      ListTile(
-                        onTap: () {
-                          mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': true});
-                          Navigator.pop(context);
-                          DateTime? eventDate = DateTime.now();
-                          if (_controller.selectedDate != null) {
-                            eventDate = _controller.selectedDate;
-                          }
-                          _addPrivateEvent(eventDate!);
-                        },
-                        title: Text(
-                            AppLocalizations.of(context)!.privateEvent,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left
-                        ),
-                        subtitle: Text(
-                            AppLocalizations.of(context)!.privateEventDesc,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left
-                        ),
-                        leading: const Icon(
-                          Icons.person,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-      );
-      setState(() {
-        _controller.selectedDate = null;
-      });
-    } else {
-      if (_controller.view != CalendarView.month) {
-        setState(() {
-          _controller.selectedDate = null;
-        });
-      } else {
+    // Action Depending on View
+    if (_controller.view == CalendarView.day) {
+      // Select the Date If Possible
+      if (details.date!.isAfter(DateTime.now()) && canEdit) {
         setState(() {
           _controller.selectedDate = details.date;
         });
       }
+    } else if (_controller.view == CalendarView.week) {
+      // Select the Date If Possible
+      if (details.date!.isAfter(DateTime.now()) && canEdit) {
+        setState(() {
+          _controller.selectedDate = details.date;
+        });
+      }
+    } else if (_controller.view == CalendarView.month){
+      setState(() {
+        _controller.displayDate = details.date;
+        _controller.view = CalendarView.day;
+        selectedValue = '1';
+      });
+    } else if (_controller.view == CalendarView.schedule){
+
     }
   }
 
   void onLongPressCalendar(CalendarLongPressDetails details) async {
-    if (details.date!.isAfter(DateTime.now()) && canEdit && _controller.view != CalendarView.month) {
-      setState(() {
-        _controller.selectedDate = details.date;
-      });
-      await showModalBottomSheet<void>(
-          context: context,
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
-          ),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          builder: (BuildContext context) {
-            return FractionallySizedBox(
-              heightFactor: 0.3,
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.5,
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                  child: Column(
-                    mainAxisAlignment:
-                    MainAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        title: Text(
-                            AppLocalizations.of(context)!.add,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left
-                        ),
-                        dense: true,
-                      ),
-                      ListTile(
-                        onTap: () {
-                          mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': false});
-                          Navigator.pop(context);
-                          DateTime? eventDate = DateTime.now();
-                          if (details.date != null) {
-                            eventDate = details.date;
-                          }
-                          _addEvent(eventDate!);
-                        },
-                        title: Text(
-                            AppLocalizations.of(context)!.groupEvent,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left
-                        ),
-                        subtitle: Text(
-                            AppLocalizations.of(context)!.groupEventDesc,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left
-                        ),
-                        leading: const Icon(
-                          Icons.groups,
-                        ),
-                      ),
-                      ListTile(
-                        onTap: () {
-                          mixpanel!.track('brand_calendar_plan_event_modal', properties: {'isPrivate': true});
-                          Navigator.pop(context);
-                          DateTime? eventDate = DateTime.now();
-                          if (_controller.selectedDate != null) {
-                            eventDate = _controller.selectedDate;
-                          }
-                          _addPrivateEvent(eventDate!);
-                        },
-                        title: Text(
-                            AppLocalizations.of(context)!.privateEvent,
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.left
-                        ),
-                        subtitle: Text(
-                            AppLocalizations.of(context)!.privateEventDesc,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left
-                        ),
-                        leading: const Icon(
-                          Icons.person,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-      );
-      setState(() {
-        _controller.selectedDate = null;
-      });
-    } else {
-      if (_controller.view != CalendarView.month) {
-        setState(() {
-          _controller.selectedDate = null;
-        });
-      } else {
+    // Action Depending on View
+    if (_controller.view == CalendarView.day) {
+      // Select the Date If Possible
+      if (details.date!.isAfter(DateTime.now()) && canEdit) {
         setState(() {
           _controller.selectedDate = details.date;
+          isDialOpen.value = true;
         });
       }
+    } else if (_controller.view == CalendarView.week) {
+
+    } else if (_controller.view == CalendarView.month){
+
+    } else if (_controller.view == CalendarView.schedule){
+
     }
   }
 
