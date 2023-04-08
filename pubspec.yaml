@@ -38,7 +38,7 @@ dependencies:
   google_place: ^0.4.3
   uuid: ^3.0.4
   geolocator: ^8.0.0
-  syncfusion_flutter_calendar: ^19.2.62
+  syncfusion_flutter_calendar: ^19.4.50
   top_snackbar_flutter: ^1.0.1
   weekday_selector: ^1.0.0
   page_transition: ^2.0.4

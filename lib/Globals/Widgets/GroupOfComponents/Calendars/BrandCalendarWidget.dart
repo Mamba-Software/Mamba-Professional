@@ -294,9 +294,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               child: Row(
                 children: [
                   Text(
+                    StringUtils().toCapitalized(DateFormat('MMMM yyyy ', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+                    style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                  ),
+                  /*
+                  Text(
                     item == '0' ? AppLocalizations.of(context)!.calendar+" " : AppLocalizations.of(context)!.historic+" ",
                     style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
                   ),
+                   */
                   FaIcon(
                       FontAwesomeIcons.chevronDown,
                       size: MediaQuery.of(context).size.width*0.03,
@@ -1109,10 +1115,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 eventsList = List.from(tempEvents);
                 return SliverFillRemaining(
                   child: Padding(
-                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.01),
+                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.0, left: MediaQuery.of(context).size.width*0.00),
                     child: Column(
                       children: [
-                        _controller.view == CalendarView.month && isWeekly == false ? _buildTitleFromDateCalendarView(displayDateTimeStart, displayDateTimeEnd, middleMonthDate) : Container(),
+                        //_controller.view == CalendarView.month && isWeekly == false ? _buildTitleFromDateCalendarView(displayDateTimeStart, displayDateTimeEnd, middleMonthDate) : Container(),
                         Expanded(
                           child: SfCalendarTheme(
                             data: SfCalendarThemeData(
@@ -1136,7 +1142,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               cellEndPadding: 0,
                               firstDayOfWeek: 1,
                               showCurrentTimeIndicator: true,
-                              cellBorderColor: Colors.transparent,
+                              cellBorderColor: AppColors.grey,
                               todayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                               // Style
                               selectionDecoration: BoxDecoration(
@@ -1160,9 +1166,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               monthViewSettings: MonthViewSettings(
                                 appointmentDisplayCount: 3,
                                 numberOfWeeksInView: isWeekly == false ? 6 : 1,
-                                showTrailingAndLeadingDates: false,
+                                showTrailingAndLeadingDates: true,
                                 appointmentDisplayMode: MonthAppointmentDisplayMode.indicator,
-                                showAgenda: true,
+                                showAgenda: false,
                                 agendaViewHeight: isWeekly == false ? MediaQuery.of(context).size.height*0.37 : MediaQuery.of(context).size.height*0.71,
                                 agendaItemHeight: MediaQuery.of(context).size.height*0.15,
                                 agendaStyle: AgendaStyle(
@@ -1172,8 +1178,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                 ),
                                 monthCellStyle: MonthCellStyle(
                                   textStyle: Theme.of(context).textTheme.bodyText1,
-                                  trailingDatesTextStyle: Theme.of(context).textTheme.caption,
-                                  leadingDatesTextStyle: Theme.of(context).textTheme.caption,
+                                  trailingDatesTextStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
+                                  leadingDatesTextStyle: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
                                 ),
                               ),
                               // Schedule View
@@ -1220,7 +1226,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                               onViewChanged: (ViewChangedDetails viewChangedDetails) {
                                 Future.delayed(Duration.zero, () async {
                                   setState(() {
-                                    middleMonthDate = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
+                                    int indexMiddleMonthDate = ((viewChangedDetails.visibleDates.length-1) ~/ 2);
+                                    middleMonthDate = viewChangedDetails.visibleDates[indexMiddleMonthDate];
                                     displayDateTimeStart = viewChangedDetails.visibleDates[0];
                                     displayDateTimeEnd = viewChangedDetails.visibleDates[viewChangedDetails.visibleDates.length -1];
                                   });
