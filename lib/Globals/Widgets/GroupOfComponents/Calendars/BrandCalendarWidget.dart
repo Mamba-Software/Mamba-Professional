@@ -102,7 +102,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
     safeAreaWidth = MediaQuery.of(context).size.width;
-    itemHeight = MediaQuery.of(context).size.height*0.1;
+    itemHeight = MediaQuery.of(context).size.height*0.15;
     print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
@@ -504,64 +504,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         onTap: () {
           navigateToEventScreen(appointment.id.toString(), isCompleted);
         },
-        child: Center(
-          child: Material(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(5.0),
-              ),
-            ),
-            elevation: 2,
-            child: Container(
-              width: details.bounds.width,
-              height: details.bounds.height,
-              padding: const EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                color: event.isPrivate! ? AppColors.black : appointment.color,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
-                ),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  AutoSizeText(
-                    event.title!,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                    textAlign: TextAlign.center,
-                    wrapWords: false,
-                    minFontSize: 1,
-                    maxFontSize: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        event.isPrivate! ? Icons.person : Icons.groups,
-                        color: AppColors.white,
-                        size: details.bounds.width*0.2,
-                      ),
-                      SizedBox(
-                        width: details.bounds.width*0.4,
-                        child: AutoSizeText(
-                          appointment.subject,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
-                          textAlign: TextAlign.center,
-                          wrapWords: false,
-                          minFontSize: 1,
-                          maxFontSize: 8,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    } else if (_controller.view == CalendarView.month){
-      return Center(
         child: Container(
           height: details.bounds.height,
           width: details.bounds.width,
@@ -570,23 +512,68 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           decoration: BoxDecoration(
             color: event.isPrivate! ?  AppColors.black : appointment.color,
             borderRadius: BorderRadius.all(
-              Radius.circular((details.bounds.height)*0.2),
+              Radius.circular((details.bounds.width)*0.2),
             ),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
             children: [
-              Flexible(
-                child: Text(
-                  event.title!,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                  textAlign: TextAlign.start,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: Text(
+                      event.title!,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 10),
+                      textAlign: TextAlign.start,
+                      softWrap: true,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: Text(
+                      "("+appointment.subject+")",
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 10),
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
+        ),
+      );
+    } else if (_controller.view == CalendarView.month){
+      return Container(
+        height: details.bounds.height,
+        width: details.bounds.width,
+        margin: EdgeInsets.all(details.bounds.width*0.02),
+        padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.05),
+        decoration: BoxDecoration(
+          color: event.isPrivate! ?  AppColors.black : appointment.color,
+          borderRadius: BorderRadius.all(
+            Radius.circular((details.bounds.height)*0.2),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Flexible(
+              child: Text(
+                event.title!,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.start,
+                softWrap: true,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       );
     } else if (_controller.view == CalendarView.schedule){
