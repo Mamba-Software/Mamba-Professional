@@ -131,7 +131,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future<void> initializeEventInfo() async {
-    if (widget.dateTime == null) {
+    if (widget.dateTime == null || widget.dateTime!.isBefore(DateTime.now())) {
       startDate = DateTime(
         startDate.year,
         startDate.month,
@@ -144,7 +144,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         widget.dateTime!.year,
         widget.dateTime!.month,
         widget.dateTime!.day,
-        startDate.hour+1,
+        widget.dateTime!.hour,
         0,
       );
     }

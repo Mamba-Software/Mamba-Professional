@@ -138,7 +138,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future<void> initializeEventInfo() async {
-    if (widget.dateTime == null) {
+    if (widget.dateTime == null || widget.dateTime!.isBefore(DateTime.now())) {
       startDate = DateTime(
         startDate.year,
         startDate.month,
@@ -151,7 +151,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         widget.dateTime!.year,
         widget.dateTime!.month,
         widget.dateTime!.day,
-        startDate.hour+1,
+        widget.dateTime!.hour,
         0,
       );
     }
