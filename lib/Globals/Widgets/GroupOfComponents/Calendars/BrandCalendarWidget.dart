@@ -845,8 +845,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                             dayTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 10),
                           ),
                           weekHeaderSettings: WeekHeaderSettings(
-                            startDateFormat: 'dd/MM',
-                            endDateFormat: 'dd/MM/yyyy',
+                            startDateFormat: 'd',
+                            endDateFormat: 'd MMMM',
                             textAlign: TextAlign.start,
                             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                             weekTextStyle: Theme.of(context).textTheme.caption,
