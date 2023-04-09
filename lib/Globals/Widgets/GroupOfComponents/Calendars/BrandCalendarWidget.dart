@@ -63,7 +63,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   // Sesions Controller
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final CalendarController _controller = CalendarController();
-  bool hasFilter = false;
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   // Dies de la semana que el entrenador no treballa
   List<int> nonWorkDays = [];
@@ -78,6 +77,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   DateTime displayDateTimeStart = DateTime.now();
   DateTime displayDateTimeEnd = DateTime.now();
   DateTime middleMonthDate = DateTime.now();
+
+  // Filters
+  bool hasFilter = false;
+  List<bool> filterByCalendar = [true, true, true, true, true];
 
   @override
   void initState() {
@@ -610,6 +613,28 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     return Container();
   }
 
+  // Filter
+
+  String returnFilteredRolesString() {
+    String filteredRoles = "";
+    int cnt = 0;
+    if (filterByCalendar[0]) {
+      filteredRoles += AppLocalizations.of(context)!.owner+", ";
+      cnt += 1;
+    }
+    if (filterByCalendar[1]) {
+      filteredRoles += AppLocalizations.of(context)!.administrador+", ";
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return filteredRoles.split(", ")[0];
+    }
+    if (cnt == 2 && filterByCalendar[2] == false) {
+      return filteredRoles.split(", ")[0]+", "+filteredRoles.split(", ")[1];
+    }
+    return filteredRoles;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isFirstBuild) {
@@ -677,7 +702,231 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                         child: InkWell(
                                           splashColor: Theme.of(context).backgroundColor, // Splash color
                                           onTap: () async {
+                                            await showModalBottomSheet<int?>(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(20),
+                                                ),
+                                              ),
+                                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                                              builder: (BuildContext context) {
+                                                // Page View Controller
+                                                final PageController _pageController = PageController(initialPage: 0);
+                                                int _currentPage = 0;
+                                                bool isRoles = true;
+                                                // Widget
+                                                return StatefulBuilder(
+                                                  builder: (BuildContext context, StateSetter setStateBottom) {
+                                                    return FractionallySizedBox(
+                                                      heightFactor: 0.33,
+                                                      child: SizedBox(
+                                                        height: MediaQuery.of(context).size.height * 0.5,
+                                                        width: MediaQuery.of(context).size.width,
+                                                        child: Padding(
+                                                          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment.start,
+                                                            children: [
+                                                              ListTile(
+                                                                title: Text(
+                                                                    AppLocalizations.of(context)!.filterBy,
+                                                                    style: Theme.of(context).textTheme.caption,
+                                                                    textAlign: TextAlign.left
+                                                                ),
+                                                                trailing: TextButton(
+                                                                    child: Text(
+                                                                        AppLocalizations.of(context)!.clear,
+                                                                        style: Theme.of(context).textTheme.caption
+                                                                    ),
+                                                                    onPressed: () {
+                                                                      setStateBottom(() {
+                                                                        filterByCalendar = [true, true, true, true, true];
+                                                                      });
+                                                                    }
+                                                                ),
+                                                                dense: true,
+                                                                onTap: _currentPage == 0 ? null : () {
+                                                                  _pageController.previousPage(
+                                                                    duration: const Duration(milliseconds: 500),
+                                                                    curve: Curves.ease,
+                                                                  );
+                                                                },
+                                                              ),
+                                                              SizedBox(
+                                                                height: MediaQuery.of(context).size.height * 0.21,
+                                                                width: MediaQuery.of(context).size.width,
+                                                                child: PageView(
+                                                                  physics: const NeverScrollableScrollPhysics(),
+                                                                  controller: _pageController,
+                                                                  onPageChanged: (int page) {
+                                                                    setStateBottom(() {
+                                                                      _currentPage = page;
+                                                                    });
+                                                                  },
+                                                                  children: <Widget>[
+                                                                    Column(
+                                                                      children: [
+                                                                        ListTile(
+                                                                          onTap: () {
+                                                                            setStateBottom(() {
+                                                                              isRoles = true;
+                                                                            });
+                                                                            mixpanel!.track('brand_trainers_filter_roles');
+                                                                            _pageController.nextPage(
+                                                                              duration: const Duration(milliseconds: 500),
+                                                                              curve: Curves.ease,
+                                                                            );
+                                                                          },
+                                                                          title: Text(
+                                                                              AppLocalizations.of(context)!.typeProfile.split(" ")[0]+" "+AppLocalizations.of(context)!.typeProfile.split(" ")[1]+" "+AppLocalizations.of(context)!.events.toLowerCase(),
+                                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          subtitle: Text(
+                                                                              "returnFilteredRolesString()",
+                                                                              style: Theme.of(context).textTheme.caption,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          trailing: SizedBox(
+                                                                            width: MediaQuery.of(context).size.width * 0.15,
+                                                                            child: Center(
+                                                                                child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        ListTile(
+                                                                          onTap: () {
+                                                                            setStateBottom(() {
+                                                                              isRoles = false;
+                                                                            });
+                                                                            mixpanel!.track('brand_trainers_filter_active');
+                                                                            _pageController.nextPage(
+                                                                              duration: const Duration(milliseconds: 500),
+                                                                              curve: Curves.ease,
+                                                                            );
+                                                                          },
+                                                                          title: Text(
+                                                                              AppLocalizations.of(context)!.active+" "+AppLocalizations.of(context)!.lastNDays(30.toString()),
+                                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          subtitle: Text(
+                                                                              "returnFilteredRolesString()",
+                                                                              style: Theme.of(context).textTheme.caption,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          trailing: SizedBox(
+                                                                            width: MediaQuery.of(context).size.width * 0.15,
+                                                                            child: Center(
+                                                                                child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    isRoles ? Column(
+                                                                      children: [
+                                                                        ListTile(
+                                                                          onTap: () {
+                                                                            setStateBottom(() {
 
+                                                                            });
+                                                                          },
+                                                                          title: Text(
+                                                                              AppLocalizations.of(context)!.owner,
+                                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          trailing: true ? SizedBox(
+                                                                            width: MediaQuery.of(context).size.width * 0.15,
+                                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                        ),
+                                                                        ListTile(
+                                                                          onTap: () {
+                                                                            setStateBottom(() {
+
+                                                                            });
+                                                                          },
+                                                                          title: Text(
+                                                                              AppLocalizations.of(context)!.administrador,
+                                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          trailing: true ? SizedBox(
+                                                                            width: MediaQuery.of(context).size.width * 0.15,
+                                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                        ),
+                                                                        ListTile(
+                                                                          onTap: () {
+                                                                            setStateBottom(() {
+
+                                                                            });
+                                                                          },
+                                                                          title: Text(
+                                                                              AppLocalizations.of(context)!.trainer,
+                                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          trailing: true ? SizedBox(
+                                                                            width: MediaQuery.of(context).size.width * 0.15,
+                                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                        ),
+                                                                      ],
+                                                                    ) :
+                                                                    Column(
+                                                                      children: [
+                                                                        ListTile(
+                                                                          onTap: () {
+                                                                            setStateBottom(() {
+
+                                                                            });
+                                                                          },
+                                                                          title: Text(
+                                                                              AppLocalizations.of(context)!.yes,
+                                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          trailing: true ? SizedBox(
+                                                                            width: MediaQuery.of(context).size.width * 0.15,
+                                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                        ),
+                                                                        ListTile(
+                                                                          onTap: () {
+                                                                            setStateBottom(() {
+
+                                                                            });
+                                                                          },
+                                                                          title: Text(
+                                                                              AppLocalizations.of(context)!.no,
+                                                                              style: Theme.of(context).textTheme.bodyText1,
+                                                                              textAlign: TextAlign.left
+                                                                          ),
+                                                                          trailing: true ? SizedBox(
+                                                                            width: MediaQuery.of(context).size.width * 0.15,
+                                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  } ,
+                                                );
+                                              },
+                                            );
                                           },
                                           child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
                                             Icons.filter_list,
