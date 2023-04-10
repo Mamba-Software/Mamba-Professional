@@ -333,6 +333,12 @@ exports.brandUpdatesCoverData = functions
       } else if (before.logoUrl != after.logoUrl) {
         coverDataChange = true;
       }
+      else if(before.zipCode != after.zipCode || before.city != after.city || before.longitude != after.longitude || before.latitude != after.latitude) {
+        coverDataChange =true;
+      }
+      else if(before.baseImage != after.baseImage) {
+        coverDataChange =true;
+      }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -354,6 +360,12 @@ exports.brandUpdatesCoverData = functions
           .update({
             "name": after.name,
             "logoUrl": after.logoUrl,
+            "zipCode": after.zipCode,
+            "city": after.city,
+            "longitude": after.longitude,
+            "latitude": after.latitude,
+            "baseImage": after.baseImage,
+            "geoPosition": after.geoPosition,
           });
         }
         // Update the Brands Subcollection in Events
@@ -713,6 +725,9 @@ exports.locationUpdatesCoverData = functions
       } else if (before.longitude != after.longitude) {
         coverDataChange = true;
       }
+      else if(before.geoPosition != after.geoPosition) {
+              coverDataChange =true;
+      }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -728,6 +743,7 @@ exports.locationUpdatesCoverData = functions
           "description": after.description,
           "latitude": after.latitude,
           "longitude": after.longitude,
+          "geoPosition": after.geoPosition,
         });
         // Update All Events in this Location
         const eventLocationsSnapshot = await db.collection("Locations").doc(locationId).collection("Events").get();
@@ -746,6 +762,13 @@ exports.locationUpdatesCoverData = functions
             "description": after.description,
             "latitude": after.latitude,
             "longitude": after.longitude,
+            "geoPosition": after.geoPosition,
+          });
+          await db
+          .collection("Events")
+          .doc(id)
+          .update({
+          "geoPosition": after.geoPosition,
           });
         }
       }
@@ -847,6 +870,12 @@ exports.userJoinsBrand = functions
         "dateJoined": formatted,
         "myMonthlySessions": 0,
         "myTotalSessions": 0,
+        "zipCode": brandDoc.zipCode,
+        "city": brandDoc.city,
+        "longitude": brandDoc.longitude,
+        "latitude": brandDoc.latitude,
+        "baseImage": brandDoc.baseImage,
+        "geoPosition": brandDoc.geoPosition,
       });
       // Update Date Joined Users/Brand
       await db.doc("/Brands/"+brandId+"/Users/"+userId+"").update({
@@ -1141,6 +1170,7 @@ exports.userAddsLocation = functions
        "description": locationDoc.description,
        "latitude": locationDoc.latitude,
        "longitude": locationDoc.longitude,
+       "geoPosition": locationDoc.geoPosition,
      });
       return null;
     });
@@ -1420,6 +1450,7 @@ exports.userAddsEvent = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
+          "brandID": eventDoc.brandID,
         });
         // If Event Private
         // Add to Locations/Events/Private Events/PrivateEvents
@@ -1444,6 +1475,7 @@ exports.userAddsEvent = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
+          "brandID": eventDoc.brandID,
         });
        }
      }
@@ -1613,6 +1645,7 @@ exports.userJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        "brandID": eventDoc.brandID,
       });
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
@@ -1637,6 +1670,7 @@ exports.userJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        "brandID": eventDoc.brandID,
       });
      }
       // Update Number of Client and Trainers on Each of Event Subcollection

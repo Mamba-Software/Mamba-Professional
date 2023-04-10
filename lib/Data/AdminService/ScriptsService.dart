@@ -2473,7 +2473,6 @@ class ScriptsDatabaseService {
       print('\n');
 
       String brands = "7777 Brands";
-      String locations = "7777 Locations";
       Usuario user = new Usuario();
       QuerySnapshot querySnapshot4;
       String baseImage = "";
@@ -2501,11 +2500,9 @@ class ScriptsDatabaseService {
           baseImage = ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!;
         }
         QuerySnapshot querySnapshotLocations = await _firestore.collection(brands).doc(brandId).collection("Locations").where("isBaseLocation", isEqualTo: true).get();
-        print(querySnapshotLocations.docs[0].id);
         DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
             .collection(locations)
             .doc(querySnapshotLocations.docs[0].id).get();
-        print(querySnapshotLocations.docs[0].id);
         var location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
         //user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
 
