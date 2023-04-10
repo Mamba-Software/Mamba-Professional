@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandEventCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
@@ -22,6 +23,8 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
+
+import '../../../../Data/Models/Usuario.dart';
 
 class BrandCalendarWidget extends StatefulWidget {
   String brandId;
@@ -60,6 +63,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   bool canEdit = false;
   // Boolean Loading
   Brand _brand = Brand();
+  List<Usuario> _brandTrainers = [];
+  List<Usuario> selectedTrainers = [];
   // Sesions Controller
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final CalendarController _controller = CalendarController();
@@ -73,6 +78,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   DateTime dateJoined = DateTime.now();
   // Events From Brand
   List<Event> eventsList = [];
+
   // Selecte Date Time
   DateTime displayDateTimeStart = DateTime.now();
   DateTime displayDateTimeEnd = DateTime.now();
@@ -80,7 +86,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   // Filters
   bool hasFilter = false;
-  List<bool> filterByCalendar = [true, true, true, true, true];
+  int filterEventsNumber = 0;
+  List<bool> filterByCalendar = [true, true];
 
   @override
   void initState() {
@@ -125,12 +132,22 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   void getUserBrandDetails() async {
     _brand = await _brandDataService.getBrandDetails(widget.brandId);
+    getBrandTrainerEvents();
     if (currentUser.brandRole < 3) {
       canEdit = true;
     } else {
       canEdit = false;
     }
     initCalendar();
+  }
+
+  void getBrandTrainerEvents() async {
+    _brandTrainers = await _brandDataService.getBrandTrainers(widget.brandId);
+    selectedTrainers = List.from(_brandTrainers);
+    for (Usuario trainer in _brandTrainers) {
+      trainer.setEventsList = await _eventDataService.getUserEvents(trainer.id!);
+    }
+    setState(() {});
   }
 
   void initCalendar() {
@@ -451,7 +468,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           margin: const EdgeInsets.all(0),
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: event.isPrivate! ?  AppColors.black : appointment.color,
+            color: appointment.color,
             borderRadius: const BorderRadius.all(
               Radius.circular(4),
             ),
@@ -469,7 +486,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               ),
               Flexible(
                 child: Container(
-                  margin: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.only(top: 6),
                   child: Text(
                     appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 12),
@@ -477,6 +494,40 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                     maxLines: 1,
                     softWrap: false,
                   ),
+                ),
+              ),
+              Flexible(
+                child: ListView.builder(
+                    shrinkWrap: false,
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: event.usersList.length,
+                    clipBehavior: Clip.none,
+                    itemBuilder: (context, int index) {
+                      var trainer = event.usersList[index];
+                      return Container(
+                        margin: const EdgeInsets.only(right: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircularImage(
+                              size: MediaQuery.of(context).size.width*0.05,
+                              image: trainer.imageUrl,
+                              color: AppColors.white,
+                              borderWidth: 0.5,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              trainer.firstName!+" "+trainer.lastName![0]+".",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 12),
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                              softWrap: false,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                 ),
               ),
             ],
@@ -494,7 +545,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           margin: const EdgeInsets.all(1),
           padding: EdgeInsets.all(details.bounds.width*0.05),
           decoration: BoxDecoration(
-            color: event.isPrivate! ?  AppColors.black : appointment.color,
+            color: appointment.color,
             borderRadius: const BorderRadius.all(
               Radius.circular(4),
             ),
@@ -530,7 +581,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         margin: const EdgeInsets.all(1),
         padding: EdgeInsets.only(left: details.bounds.width*0.05),
         decoration: BoxDecoration(
-          color: event.isPrivate! ?  AppColors.black : appointment.color,
+          color: appointment.color,
           borderRadius: const BorderRadius.all(
             Radius.circular(4),
           ),
@@ -558,10 +609,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         child: Container(
           height: details.bounds.height,
           width: details.bounds.width,
-          margin: const EdgeInsets.all(0),
+          margin: const EdgeInsets.symmetric(vertical: 2),
           padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.04),
           decoration: BoxDecoration(
-            color: event.isPrivate! ?  AppColors.black : appointment.color,
+            color: appointment.color,
             borderRadius: BorderRadius.all(
               Radius.circular(details.bounds.width*0.04),
             ),
@@ -613,26 +664,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     return Container();
   }
 
-  // Filter
-
-  void filterByEventTypeAndTrainers() {
-    // Filter By
-    int cnt = 0;
-    // Has Filter Update
-    if (cnt == 5) {
-      setState(() {
-        hasFilter = false;
-      });
-    } else {
-      setState(() {
-        hasFilter = true;
-      });
-    }
-
-    // Navigator Pop
-    Navigator.pop(context);
-  }
-
   String returnFilteredRolesString() {
     String filteredEvents = "";
     int cnt = 0;
@@ -651,6 +682,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       return filteredEvents.split(", ")[0]+", "+filteredEvents.split(", ")[1];
     }
     return filteredEvents;
+  }
+
+  String returnFilteredStaffMembersString() {
+    String filteredMembers = "";
+    for (Usuario trainer in selectedTrainers) {
+      filteredMembers += trainer.name!+", ";
+    }
+    return filteredMembers.substring(0,filteredMembers.length-2);
   }
 
   @override
@@ -734,6 +773,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                 final PageController _pageController = PageController(initialPage: 0);
                                                 int _currentPage = 0;
                                                 bool isTypeEvent = true;
+                                                List<Usuario> selectedTrainersBottom = List.from(selectedTrainers);
                                                 // Widget
                                                 return StatefulBuilder(
                                                   builder: (BuildContext context, StateSetter setStateBottom) {
@@ -761,8 +801,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                     ),
                                                                     onPressed: () {
                                                                       setStateBottom(() {
-                                                                        filterByCalendar = [true, true, true, true, true];
+                                                                        filterByCalendar = [true, true];
+                                                                        selectedTrainers = List.from(_brandTrainers);
                                                                       });
+                                                                      // Navigator Pop
+                                                                      Navigator.pop(context);
                                                                     }
                                                                 ),
                                                                 dense: true,
@@ -825,14 +868,17 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                             );
                                                                           },
                                                                           title: Text(
-                                                                              AppLocalizations.of(context)!.active+" "+AppLocalizations.of(context)!.lastNDays(30.toString()),
+                                                                              AppLocalizations.of(context)!.trainers,
                                                                               style: Theme.of(context).textTheme.bodyText1,
                                                                               textAlign: TextAlign.left
                                                                           ),
                                                                           subtitle: Text(
-                                                                              "returnFilteredRolesString()",
+                                                                              returnFilteredStaffMembersString(),
                                                                               style: Theme.of(context).textTheme.caption,
-                                                                              textAlign: TextAlign.left
+                                                                              textAlign: TextAlign.left,
+                                                                              maxLines: 1,
+                                                                              overflow: TextOverflow.ellipsis
+                                                                            ,
                                                                           ),
                                                                           trailing: SizedBox(
                                                                             width: MediaQuery.of(context).size.width * 0.15,
@@ -847,9 +893,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                       children: [
                                                                         ListTile(
                                                                           onTap: () {
-                                                                            setStateBottom(() {
-                                                                              filterByEventTypeAndTrainers();
-                                                                            });
+                                                                            // Check if the Only True
+                                                                            var filterActive = List.from(filterByCalendar);
+                                                                            filterActive.retainWhere((element) => element == true);
+                                                                            if (!(filterActive.length == 1 && filterByCalendar[0])) {
+                                                                              filterByCalendar[0] = !filterByCalendar[0];
+                                                                              // Navigator Pop
+                                                                              Navigator.pop(context);
+                                                                            }
                                                                           },
                                                                           title: Text(
                                                                               AppLocalizations.of(context)!.groupEvent,
@@ -863,9 +914,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                         ),
                                                                         ListTile(
                                                                           onTap: () {
-                                                                            setStateBottom(() {
-
-                                                                            });
+                                                                            // Check if the Only True
+                                                                            var filterActive = List.from(filterByCalendar);
+                                                                            filterActive.retainWhere((element) => element == true);
+                                                                            if (!(filterActive.length == 1 && filterByCalendar[1])) {
+                                                                              filterByCalendar[1] = !filterByCalendar[1];
+                                                                              // Navigator Pop
+                                                                              Navigator.pop(context);
+                                                                            }
                                                                           },
                                                                           title: Text(
                                                                               AppLocalizations.of(context)!.privateEvent,
@@ -879,41 +935,88 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                         ),
                                                                       ],
                                                                     ) :
-                                                                    Column(
-                                                                      children: [
-                                                                        ListTile(
-                                                                          onTap: () {
-                                                                            setStateBottom(() {
-
-                                                                            });
-                                                                          },
-                                                                          title: Text(
-                                                                              AppLocalizations.of(context)!.yes,
-                                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                                              textAlign: TextAlign.left
+                                                                    Container(
+                                                                      height: MediaQuery.of(context).size.height * 0.21,
+                                                                      padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width * 0.04),
+                                                                      child: GridView.builder(
+                                                                          shrinkWrap: true,
+                                                                          physics: const ClampingScrollPhysics(),
+                                                                          scrollDirection: Axis.vertical,
+                                                                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                            crossAxisCount: 2,
+                                                                            childAspectRatio: 3.5,
+                                                                            crossAxisSpacing: 15,
+                                                                            mainAxisSpacing: 15.0,
                                                                           ),
-                                                                          trailing: true ? SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                        ),
-                                                                        ListTile(
-                                                                          onTap: () {
-                                                                            setStateBottom(() {
-
-                                                                            });
-                                                                          },
-                                                                          title: Text(
-                                                                              AppLocalizations.of(context)!.no,
-                                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                                              textAlign: TextAlign.left
-                                                                          ),
-                                                                          trailing: true ? SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                        ),
-                                                                      ],
+                                                                          itemCount: _brandTrainers.length,
+                                                                          itemBuilder: (context, int index) {
+                                                                            var trainer = _brandTrainers[index];
+                                                                            return GestureDetector(
+                                                                              onTap: () {
+                                                                                setStateBottom(() {
+                                                                                  if (selectedTrainersBottom.contains(trainer)) {
+                                                                                    selectedTrainersBottom.remove(trainer);
+                                                                                    selectedTrainers.remove(trainer);
+                                                                                  } else {
+                                                                                    selectedTrainersBottom.add(trainer);
+                                                                                    selectedTrainers.add(trainer);
+                                                                                  }
+                                                                                });
+                                                                                // Navigator Pop
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Container(
+                                                                                margin: const EdgeInsets.only(right: 5),
+                                                                                child: Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  children: [
+                                                                                    CircularImage(
+                                                                                      size: MediaQuery.of(context).size.width*0.1,
+                                                                                      image: trainer.imageUrl,
+                                                                                      color: Theme.of(context).primaryColor,
+                                                                                      borderWidth: 1.0,
+                                                                                    ),
+                                                                                    const SizedBox(width: 8),
+                                                                                    Flexible(
+                                                                                      child: Text(
+                                                                                        trainer.firstName!+" "+trainer.lastName![0]+".",
+                                                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                                                        overflow: TextOverflow.fade,
+                                                                                        maxLines: 1,
+                                                                                        softWrap: false,
+                                                                                      ),
+                                                                                    ),
+                                                                                    const SizedBox(width: 8),
+                                                                                    SizedBox(
+                                                                                      height: MediaQuery.of(context).size.width * 0.06,
+                                                                                      width: MediaQuery.of(context).size.width * 0.06,
+                                                                                      child: MaterialButton(
+                                                                                        elevation: 4,
+                                                                                        color: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
+                                                                                        textColor: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
+                                                                                        child: selectedTrainersBottom.contains(trainer) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.04) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
+                                                                                        padding: EdgeInsets.zero,
+                                                                                        shape: const CircleBorder(),
+                                                                                        onPressed: () {
+                                                                                          setStateBottom(() {
+                                                                                            if (selectedTrainersBottom.contains(trainer)) {
+                                                                                              selectedTrainersBottom.remove(trainer);
+                                                                                              selectedTrainers.remove(trainer);
+                                                                                            } else {
+                                                                                              selectedTrainersBottom.add(trainer);
+                                                                                              selectedTrainers.add(trainer);
+                                                                                            }
+                                                                                          });
+                                                                                          // Navigator Pop
+                                                                                          Navigator.pop(context);
+                                                                                        },
+                                                                                      ),
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          }),
                                                                     ),
                                                                   ],
                                                                 ),
@@ -926,7 +1029,32 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                   } ,
                                                 );
                                               },
-                                            );
+                                            ).whenComplete(() {
+                                              setState(() {
+                                                // Filter By Type Of Events
+                                                if (filterByCalendar[0] && filterByCalendar[1]) {
+                                                  // Group/Private Selected
+                                                  hasFilter = false;
+                                                  filterEventsNumber = 0;
+                                                } else if (filterByCalendar[0]) {
+                                                  // Group Selected
+                                                  filterEventsNumber = 1;
+                                                  hasFilter = true;
+                                                } else if(filterByCalendar[1]) {
+                                                  // Private Selected
+                                                  filterEventsNumber = 2;
+                                                  hasFilter = true;
+                                                }
+                                                // Filter By Staff Members
+                                                if (filterByCalendar[0] && filterByCalendar[1]) {
+                                                  if (selectedTrainers.length == _brandTrainers.length) {
+                                                    hasFilter = false;
+                                                  } else {
+                                                    hasFilter = true;
+                                                  }
+                                                }
+                                              });
+                                            });
                                           },
                                           child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
                                             Icons.filter_list,
@@ -1009,7 +1137,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   ),
                 );
               } else {
-                List<Event> tempEvents = documentsToEvents(snapshot.data!.docs);
+                List<Event> tempEvents = documentsToEvents(snapshot.data!.docs, filterEventsNumber, selectedTrainers);
                 eventsList = List.from(tempEvents);
                 return SliverFillRemaining(
                   child: SfCalendarTheme(
@@ -1111,7 +1239,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                       scheduleViewMonthHeaderBuilder: (BuildContext buildContext, ScheduleViewMonthHeaderDetails details) {
                         return Container(
                           color: Theme.of(context).scaffoldBackgroundColor,
-                          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
+                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.03, horizontal: MediaQuery.of(context).size.width*0.05),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1159,6 +1287,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         height: MediaQuery.of(context).size.width*0.15,
         width: MediaQuery.of(context).size.width*0.15,
         child: SpeedDial(
+          heroTag: null,
           animatedIcon: AnimatedIcons.add_event,
           animationDuration: const Duration(milliseconds: 300),
           foregroundColor: AppColors.white,
@@ -1289,6 +1418,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     return regions;
   }
 
+  Color getColor(Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
+      return Theme.of(context).colorScheme.secondary;
+    } else {
+      return Colors.transparent;
+    }
+  }
+
   Widget timeRegionBuilder(BuildContext context, TimeRegionDetails timeRegionDetails) {
     return Container(
       color: const Color(0x40B5B5B5),
@@ -1349,70 +1486,72 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     }
     return AppointmentDataSource(tempAllAppointments);
   }
-/*
-  AppointmentDataSource _getCalendarDataSource() {
-    List<Appointment> tempAllAppointments = [];
-    for (var i=0; i < eventsList.length; i++) {
-      var event = eventsList[i];
-      // Date Time
-      var startDate = DateTime(
-        int.parse(event.year!),
-        int.parse(event.month!),
-        int.parse(event.day!),
-        int.parse(event.hour!),
-        int.parse(event.minute!),
-      );
-      var hour = event.duration.toString().split(".")[0];
-      var min = event.duration!.toStringAsFixed(2).split(".")[1];
-      var endDate =  startDate.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
-      // Subject
-      var subject;
-      var color;
-      if (event.isPrivate!) {
-        subject = "${event.numClients}";
-        color = Colors.black;
-      } else {
-        subject = "${event.numClients}/${event.maxMembers}";
-        // Colors
-        double numClients = double.parse(event.numClients.toString());
-        double maxMembers = double.parse(event.maxMembers.toString());
-        double bookedCapacity = numClients/maxMembers;
-        if(bookedCapacity <= 0.20) color = Colors.green;
-        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = const Color(0xFFA8C76C);
-        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = const Color(0xFFECE014);
-        else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
-        else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
-        else if(bookedCapacity == 1) color = Colors.red;
-      }
-      // Afegir percentatges de members al Event.
-      tempAllAppointments.add(Appointment(
-        id: event.id,
-        startTime: startDate,
-        endTime: endDate,
-        subject: subject,
-        color: color,
-        startTimeZone: '',
-        endTimeZone: '',
-      ));
-    }
-    allAppointments = tempAllAppointments;
-    return AppointmentDataSource(allAppointments);
-  }
 
- */
-
-  List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
+  List<Event> documentsToEvents(List<DocumentSnapshot> documents, int filterSelection, List<Usuario> selectedTrainers) {
     List<Event> events = [];
+    List<Usuario> eventTrainers = [];
+    List<Event> groupEvents = [];
+    List<Event> privateEvents = [];
+    List<String> selectedTrainersIDs = [];
+    for (var trainer in selectedTrainers) {
+      selectedTrainersIDs.add(trainer.id!);
+    }
     for(int i = 0; i < documents.length; i++) {
       Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
-      if (currentUser.isTrainer!) {
-        events.add(evt);
-      } else {
-        if (!evt.isPrivate!) {
-          events.add(evt);
+      // Check Trainers in Event
+      for (Usuario trainer in _brandTrainers) {
+        int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+        if (index != -1) {
+          eventTrainers.add(trainer);
         }
       }
+      evt.setUserList = eventTrainers;
+      eventTrainers = [];
+      /* How to Fetch Trainer before
+      if (evt.usersList.isEmpty) {
+        evt.setUserList = await _eventDataService.getEventUsers(evt.id!);
+      }*/
+      // Type of Events
+      if (evt.isPrivate! == false) {
+        /* Only If Contains Some of the Trainers Selected
+        int index =  evt.usersList.indexWhere((element) => selectedTrainersIDs.contains(element.id!));
+        if (index != -1) {
+          groupEvents.add(evt);
+        }*/
+        groupEvents.add(evt);
+      } else {
+        /* Only If Contains Some of the Trainers Selected
+        int index =  evt.usersList.indexWhere((element) => selectedTrainersIDs.contains(element.id!));
+        if (index != -1) {
+          privateEvents.add(evt);
+        }*/
+        privateEvents.add(evt);
+      }
     }
+    // Order By
+    groupEvents.sort((a,b) {
+      var aDate =  a.doneAt!.toDate();
+      var bDate =  b.doneAt!.toDate();
+      return aDate.compareTo(bDate);
+    });
+    privateEvents.sort((a,b) {
+      var aDate =  a.doneAt!.toDate();
+      var bDate =  b.doneAt!.toDate();
+      return aDate.compareTo(bDate);
+    });
+    // Filter By
+    if (filterSelection == 0) {
+      // Active/Inactive Selected
+      events.addAll(groupEvents);
+      events.addAll(privateEvents);
+    } else if(filterSelection == 1) {
+      // Group Events Selected
+      events.addAll(groupEvents);
+    } else if(filterSelection == 2) {
+      // Group Events Selected
+      events.addAll(privateEvents);
+    }
+    // Return List of Events
     return events;
   }
 
@@ -1434,14 +1573,15 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     // Action Depending on View
     if (_controller.view == CalendarView.day) {
       // Select the Date If Possible
-      if (details.date!.isAfter(DateTime.now()) && canEdit) {
-        _controller.selectedDate = details.date;
-      }
+      _controller.selectedDate = details.date;
     } else if (_controller.view == CalendarView.week) {
       // Select the Date If Possible
-      if (details.date!.isAfter(DateTime.now()) && canEdit) {
-        _controller.selectedDate = details.date;
-      }
+      selectedValue = '1';
+      _controller.view = CalendarView.day;
+      _controller.selectedDate = details.date;
+      setState(() {
+        _controller.displayDate =details.date!.subtract(const Duration(hours: 1));
+      });
     } else if (_controller.view == CalendarView.month){
       _controller.displayDate = details.date;
       _controller.view = CalendarView.day;
