@@ -615,24 +615,42 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   // Filter
 
+  void filterByEventTypeAndTrainers() {
+    // Filter By
+    int cnt = 0;
+    // Has Filter Update
+    if (cnt == 5) {
+      setState(() {
+        hasFilter = false;
+      });
+    } else {
+      setState(() {
+        hasFilter = true;
+      });
+    }
+
+    // Navigator Pop
+    Navigator.pop(context);
+  }
+
   String returnFilteredRolesString() {
-    String filteredRoles = "";
+    String filteredEvents = "";
     int cnt = 0;
     if (filterByCalendar[0]) {
-      filteredRoles += AppLocalizations.of(context)!.owner+", ";
+      filteredEvents += AppLocalizations.of(context)!.groupEvent+", ";
       cnt += 1;
     }
     if (filterByCalendar[1]) {
-      filteredRoles += AppLocalizations.of(context)!.administrador+", ";
+      filteredEvents += AppLocalizations.of(context)!.privateEvent+", ";
       cnt += 1;
     }
     if (cnt == 1) {
-      return filteredRoles.split(", ")[0];
+      return filteredEvents.split(", ")[0];
     }
-    if (cnt == 2 && filterByCalendar[2] == false) {
-      return filteredRoles.split(", ")[0]+", "+filteredRoles.split(", ")[1];
+    if (cnt == 2) {
+      return filteredEvents.split(", ")[0]+", "+filteredEvents.split(", ")[1];
     }
-    return filteredRoles;
+    return filteredEvents;
   }
 
   @override
@@ -715,7 +733,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                 // Page View Controller
                                                 final PageController _pageController = PageController(initialPage: 0);
                                                 int _currentPage = 0;
-                                                bool isRoles = true;
+                                                bool isTypeEvent = true;
                                                 // Widget
                                                 return StatefulBuilder(
                                                   builder: (BuildContext context, StateSetter setStateBottom) {
@@ -772,9 +790,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                         ListTile(
                                                                           onTap: () {
                                                                             setStateBottom(() {
-                                                                              isRoles = true;
+                                                                              isTypeEvent = true;
                                                                             });
-                                                                            mixpanel!.track('brand_trainers_filter_roles');
                                                                             _pageController.nextPage(
                                                                               duration: const Duration(milliseconds: 500),
                                                                               curve: Curves.ease,
@@ -786,7 +803,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                               textAlign: TextAlign.left
                                                                           ),
                                                                           subtitle: Text(
-                                                                              "returnFilteredRolesString()",
+                                                                              returnFilteredRolesString(),
                                                                               style: Theme.of(context).textTheme.caption,
                                                                               textAlign: TextAlign.left
                                                                           ),
@@ -800,9 +817,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                         ListTile(
                                                                           onTap: () {
                                                                             setStateBottom(() {
-                                                                              isRoles = false;
+                                                                              isTypeEvent = false;
                                                                             });
-                                                                            mixpanel!.track('brand_trainers_filter_active');
                                                                             _pageController.nextPage(
                                                                               duration: const Duration(milliseconds: 500),
                                                                               curve: Curves.ease,
@@ -827,20 +843,20 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                    isRoles ? Column(
+                                                                    isTypeEvent ? Column(
                                                                       children: [
                                                                         ListTile(
                                                                           onTap: () {
                                                                             setStateBottom(() {
-
+                                                                              filterByEventTypeAndTrainers();
                                                                             });
                                                                           },
                                                                           title: Text(
-                                                                              AppLocalizations.of(context)!.owner,
+                                                                              AppLocalizations.of(context)!.groupEvent,
                                                                               style: Theme.of(context).textTheme.bodyText1,
                                                                               textAlign: TextAlign.left
                                                                           ),
-                                                                          trailing: true ? SizedBox(
+                                                                          trailing: filterByCalendar[0] ? SizedBox(
                                                                             width: MediaQuery.of(context).size.width * 0.15,
                                                                             child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
                                                                           ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
@@ -852,27 +868,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                             });
                                                                           },
                                                                           title: Text(
-                                                                              AppLocalizations.of(context)!.administrador,
+                                                                              AppLocalizations.of(context)!.privateEvent,
                                                                               style: Theme.of(context).textTheme.bodyText1,
                                                                               textAlign: TextAlign.left
                                                                           ),
-                                                                          trailing: true ? SizedBox(
-                                                                            width: MediaQuery.of(context).size.width * 0.15,
-                                                                            child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                          ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                                        ),
-                                                                        ListTile(
-                                                                          onTap: () {
-                                                                            setStateBottom(() {
-
-                                                                            });
-                                                                          },
-                                                                          title: Text(
-                                                                              AppLocalizations.of(context)!.trainer,
-                                                                              style: Theme.of(context).textTheme.bodyText1,
-                                                                              textAlign: TextAlign.left
-                                                                          ),
-                                                                          trailing: true ? SizedBox(
+                                                                          trailing: filterByCalendar[1] ? SizedBox(
                                                                             width: MediaQuery.of(context).size.width * 0.15,
                                                                             child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
                                                                           ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),

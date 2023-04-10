@@ -222,7 +222,7 @@ class _Clients extends State<Clients> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.03),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -269,8 +269,8 @@ class _Clients extends State<Clients> {
                           ),
                           FittedBox(
                             fit: BoxFit.fitWidth,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width*0.25,
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width*0.23,
                               /*
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.green, width: 1.0),
@@ -280,25 +280,30 @@ class _Clients extends State<Clients> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      if (searchClicked == false) {
-                                        mixpanel!.track('brand_clients_search_button');
-                                      } else {
-                                        mixpanel!.track('brand_clients_search_close');
-                                      }
-                                      setState(() {
-                                        searchClicked = !searchClicked;
-                                        searchController.clear();
-                                        filterSearchResults("");
-                                      });
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    alignment: Alignment.centerRight,
-                                    icon: Icon(
-                                      searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
-                                      color: AppColors.white,
-                                      size: MediaQuery.of(context).size.width*0.07,
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        if (searchClicked == false) {
+                                          mixpanel!.track('brand_clients_search_button');
+                                        } else {
+                                          mixpanel!.track('brand_clients_search_close');
+                                        }
+                                        setState(() {
+                                          searchClicked = !searchClicked;
+                                          searchController.clear();
+                                          filterSearchResults("");
+                                        });
+                                      },
+                                      splashRadius: 20,
+                                      splashColor: Theme.of(context).backgroundColor, // Splash color
+                                      padding: EdgeInsets.zero,
+                                      alignment: Alignment.center,
+                                      icon: Icon(
+                                        searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
+                                        color: AppColors.white,
+                                        size: MediaQuery.of(context).size.width*0.07,
+                                      ),
                                     ),
                                   ),
                                   ClipOval(

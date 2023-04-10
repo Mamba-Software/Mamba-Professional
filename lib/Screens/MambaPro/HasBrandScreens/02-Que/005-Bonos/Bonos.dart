@@ -207,205 +207,201 @@ class _BonosProState extends State<BonosPro> {
                             height: MediaQuery.of(context).size.height * 0.08,
                             width: MediaQuery.of(context).size.width * 0.40,
                           ),
-
-                          Padding(
-                            padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.025),
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.width*0.09,
-                              width: MediaQuery.of(context).size.width*0.09,
-                              child: ClipOval(
-                                child: Material(
-                                  color: hasFilter ? AppColors.white : Colors.transparent, // Button color
-                                  child: InkWell(
-                                    splashColor: Theme.of(context).backgroundColor, // Splash color
-                                    onTap: () async {
-                                      mixpanel!.track('brand_bonos_filter_button');
-                                      await showModalBottomSheet<int?>(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(20),
-                                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width*0.09,
+                            width: MediaQuery.of(context).size.width*0.09,
+                            child: ClipOval(
+                              child: Material(
+                                color: hasFilter ? AppColors.white : Colors.transparent, // Button color
+                                child: InkWell(
+                                  splashColor: Theme.of(context).backgroundColor, // Splash color
+                                  onTap: () async {
+                                    mixpanel!.track('brand_bonos_filter_button');
+                                    await showModalBottomSheet<int?>(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                          top: Radius.circular(20),
                                         ),
-                                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                                        builder: (BuildContext context) {
-                                          // Page View Controller
-                                          final PageController _pageController = PageController(initialPage: 0);
-                                          int _currentPage = 0;
-                                          // Widget
-                                          return StatefulBuilder(
-                                            builder: (BuildContext context, StateSetter setStateBottom) {
-                                              return FractionallySizedBox(
-                                                heightFactor: 0.25,
-                                                child: SizedBox(
-                                                  height: MediaQuery.of(context).size.height * 0.5,
-                                                  width: MediaQuery.of(context).size.width,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                      children: [
-                                                        ListTile(
-                                                          title: Text(
-                                                              AppLocalizations.of(context)!.filterBy,
-                                                              style: Theme.of(context).textTheme.caption,
-                                                              textAlign: TextAlign.left
+                                      ),
+                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                      builder: (BuildContext context) {
+                                        // Page View Controller
+                                        final PageController _pageController = PageController(initialPage: 0);
+                                        int _currentPage = 0;
+                                        // Widget
+                                        return StatefulBuilder(
+                                          builder: (BuildContext context, StateSetter setStateBottom) {
+                                            return FractionallySizedBox(
+                                              heightFactor: 0.25,
+                                              child: SizedBox(
+                                                height: MediaQuery.of(context).size.height * 0.5,
+                                                width: MediaQuery.of(context).size.width,
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                    children: [
+                                                      ListTile(
+                                                        title: Text(
+                                                            AppLocalizations.of(context)!.filterBy,
+                                                            style: Theme.of(context).textTheme.caption,
+                                                            textAlign: TextAlign.left
+                                                        ),
+                                                        trailing: TextButton(
+                                                          child: Text(
+                                                              AppLocalizations.of(context)!.clear,
+                                                              style: Theme.of(context).textTheme.caption
                                                           ),
-                                                          trailing: TextButton(
-                                                            child: Text(
-                                                                AppLocalizations.of(context)!.clear,
-                                                                style: Theme.of(context).textTheme.caption
-                                                            ),
-                                                            onPressed: () {
-                                                              mixpanel!.track('brand_bonos_filter_clean');
-                                                              setStateBottom(() {
-                                                                filterByBonos[0] = true;
-                                                                filterByBonos[1] = true;
-                                                              });
-                                                              // Navigator Pop
-                                                              Navigator.pop(context);
-                                                            },
-                                                          ),
-                                                          dense: true,
-                                                          onTap: _currentPage == 0 ? null : () {
-                                                            mixpanel!.track('brand_bonos_filter_back');
-                                                            _pageController.previousPage(
-                                                              duration: const Duration(milliseconds: 500),
-                                                              curve: Curves.ease,
-                                                            );
+                                                          onPressed: () {
+                                                            mixpanel!.track('brand_bonos_filter_clean');
+                                                            setStateBottom(() {
+                                                              filterByBonos[0] = true;
+                                                              filterByBonos[1] = true;
+                                                            });
+                                                            // Navigator Pop
+                                                            Navigator.pop(context);
                                                           },
                                                         ),
-                                                        SizedBox(
-                                                          height: MediaQuery.of(context).size.height * 0.15,
-                                                          width: MediaQuery.of(context).size.width,
-                                                          child: PageView(
-                                                            physics: const NeverScrollableScrollPhysics(),
-                                                            controller: _pageController,
-                                                            onPageChanged: (int page) {
-                                                              setStateBottom(() {
-                                                                _currentPage = page;
-                                                              });
-                                                            },
-                                                            children: <Widget>[
-                                                              Column(
-                                                                children: [
-                                                                  ListTile(
-                                                                    onTap: () {
-                                                                      mixpanel!.track('brand_bonos_filter_active');
-                                                                      _pageController.nextPage(
-                                                                        duration: const Duration(milliseconds: 500),
-                                                                        curve: Curves.ease,
-                                                                      );
-                                                                    },
-                                                                    title: Text(
-                                                                        AppLocalizations.of(context)!.bono+" "+AppLocalizations.of(context)!.active+"s",
-                                                                        style: Theme.of(context).textTheme.bodyText1,
-                                                                        textAlign: TextAlign.left
-                                                                    ),
-                                                                    subtitle: Text(
-                                                                        returnFilteredActiveBonosString(),
-                                                                        style: Theme.of(context).textTheme.caption,
-                                                                        textAlign: TextAlign.left
-                                                                    ),
-                                                                    trailing: SizedBox(
-                                                                      width: MediaQuery.of(context).size.width * 0.15,
-                                                                      child: Center(
-                                                                          child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                                      ),
+                                                        dense: true,
+                                                        onTap: _currentPage == 0 ? null : () {
+                                                          mixpanel!.track('brand_bonos_filter_back');
+                                                          _pageController.previousPage(
+                                                            duration: const Duration(milliseconds: 500),
+                                                            curve: Curves.ease,
+                                                          );
+                                                        },
+                                                      ),
+                                                      SizedBox(
+                                                        height: MediaQuery.of(context).size.height * 0.15,
+                                                        width: MediaQuery.of(context).size.width,
+                                                        child: PageView(
+                                                          physics: const NeverScrollableScrollPhysics(),
+                                                          controller: _pageController,
+                                                          onPageChanged: (int page) {
+                                                            setStateBottom(() {
+                                                              _currentPage = page;
+                                                            });
+                                                          },
+                                                          children: <Widget>[
+                                                            Column(
+                                                              children: [
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    mixpanel!.track('brand_bonos_filter_active');
+                                                                    _pageController.nextPage(
+                                                                      duration: const Duration(milliseconds: 500),
+                                                                      curve: Curves.ease,
+                                                                    );
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(context)!.bono+" "+AppLocalizations.of(context)!.active+"s",
+                                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                                      textAlign: TextAlign.left
+                                                                  ),
+                                                                  subtitle: Text(
+                                                                      returnFilteredActiveBonosString(),
+                                                                      style: Theme.of(context).textTheme.caption,
+                                                                      textAlign: TextAlign.left
+                                                                  ),
+                                                                  trailing: SizedBox(
+                                                                    width: MediaQuery.of(context).size.width * 0.15,
+                                                                    child: Center(
+                                                                        child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
                                                                     ),
                                                                   ),
-                                                                ],
-                                                              ),
-                                                              Column(
-                                                                children: [
-                                                                  ListTile(
-                                                                    onTap: () {
-                                                                      // Check if the Only True
-                                                                      var filterActive = List.from(filterByBonos);
-                                                                      filterActive.retainWhere((element) => element == true);
-                                                                      if (!(filterActive.length == 1 && filterByBonos[0])) {
-                                                                        filterByBonos[0] = !filterByBonos[0];
-                                                                        mixpanel!.track('brand_bonos_filter_active', properties: {'Values': [filterByBonos[0] ? 'Yes' : ' ', filterByBonos[1] ? 'No' : ' ' ]});
-                                                                        // Navigator Pop
-                                                                        Navigator.pop(context);
-                                                                      }
-                                                                    },
-                                                                    title: Text(
-                                                                        AppLocalizations.of(context)!.yes,
-                                                                        style: Theme.of(context).textTheme.bodyText1,
-                                                                        textAlign: TextAlign.left
-                                                                    ),
-                                                                    trailing: filterByBonos[0] ? SizedBox(
-                                                                      width: MediaQuery.of(context).size.width * 0.15,
-                                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Column(
+                                                              children: [
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive = List.from(filterByBonos);
+                                                                    filterActive.retainWhere((element) => element == true);
+                                                                    if (!(filterActive.length == 1 && filterByBonos[0])) {
+                                                                      filterByBonos[0] = !filterByBonos[0];
+                                                                      mixpanel!.track('brand_bonos_filter_active', properties: {'Values': [filterByBonos[0] ? 'Yes' : ' ', filterByBonos[1] ? 'No' : ' ' ]});
+                                                                      // Navigator Pop
+                                                                      Navigator.pop(context);
+                                                                    }
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(context)!.yes,
+                                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                                      textAlign: TextAlign.left
                                                                   ),
-                                                                  ListTile(
-                                                                    onTap: () {
-                                                                      // Check if the Only True
-                                                                      var filterActive = List.from(filterByBonos);
-                                                                      filterActive.retainWhere((element) => element == true);
-                                                                      if (!(filterActive.length == 1 && filterByBonos[1])) {
-                                                                        filterByBonos[1] = !filterByBonos[1];
-                                                                        mixpanel!.track('brand_bonos_filter_active', properties: {'Values': [filterByBonos[0] ? 'Yes' : ' ', filterByBonos[1] ? 'No' : ' ' ]});
-                                                                        // Navigator Pop
-                                                                        Navigator.pop(context);
-                                                                      }
+                                                                  trailing: filterByBonos[0] ? SizedBox(
+                                                                    width: MediaQuery.of(context).size.width * 0.15,
+                                                                    child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                  ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                                ListTile(
+                                                                  onTap: () {
+                                                                    // Check if the Only True
+                                                                    var filterActive = List.from(filterByBonos);
+                                                                    filterActive.retainWhere((element) => element == true);
+                                                                    if (!(filterActive.length == 1 && filterByBonos[1])) {
+                                                                      filterByBonos[1] = !filterByBonos[1];
+                                                                      mixpanel!.track('brand_bonos_filter_active', properties: {'Values': [filterByBonos[0] ? 'Yes' : ' ', filterByBonos[1] ? 'No' : ' ' ]});
+                                                                      // Navigator Pop
+                                                                      Navigator.pop(context);
+                                                                    }
 
-                                                                    },
-                                                                    title: Text(
-                                                                        AppLocalizations.of(context)!.no,
-                                                                        style: Theme.of(context).textTheme.bodyText1,
-                                                                        textAlign: TextAlign.left
-                                                                    ),
-                                                                    trailing: filterByBonos[1] ? SizedBox(
-                                                                      width: MediaQuery.of(context).size.width * 0.15,
-                                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                  },
+                                                                  title: Text(
+                                                                      AppLocalizations.of(context)!.no,
+                                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                                      textAlign: TextAlign.left
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
+                                                                  trailing: filterByBonos[1] ? SizedBox(
+                                                                    width: MediaQuery.of(context).size.width * 0.15,
+                                                                    child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                  ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ],
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              );
-                                            } ,
-                                          );
-                                        },
-                                      ).whenComplete(() {
-                                        setState(() {
-                                          // Filter By
-                                          if (filterByBonos[0] && filterByBonos[1]) {
-                                            // Active/Inactive Selected
-                                            hasFilter = false;
-                                            filterBonosNumber = 0;
-                                          } else if (filterByBonos[0]) {
-                                            // Active Selected
-                                            filterBonosNumber = 1;
-                                            hasFilter = true;
-                                          } else if(filterByBonos[1]) {
-                                            // Inactive Selected
-                                            filterBonosNumber = 2;
-                                            hasFilter = true;
-                                          } else {
-                                            // None Selected
-                                            filterBonosNumber = 3;
-                                          }
-                                        });
+                                              ),
+                                            );
+                                          } ,
+                                        );
+                                      },
+                                    ).whenComplete(() {
+                                      setState(() {
+                                        // Filter By
+                                        if (filterByBonos[0] && filterByBonos[1]) {
+                                          // Active/Inactive Selected
+                                          hasFilter = false;
+                                          filterBonosNumber = 0;
+                                        } else if (filterByBonos[0]) {
+                                          // Active Selected
+                                          filterBonosNumber = 1;
+                                          hasFilter = true;
+                                        } else if(filterByBonos[1]) {
+                                          // Inactive Selected
+                                          filterBonosNumber = 2;
+                                          hasFilter = true;
+                                        } else {
+                                          // None Selected
+                                          filterBonosNumber = 3;
+                                        }
                                       });
-                                    },
-                                    child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
-                                      Icons.filter_list,
-                                      color: hasFilter ? AppColors.darkGrey :  AppColors.white,
-                                      size: MediaQuery.of(context).size.width*0.07,
-                                    )),
-                                  ),
+                                    });
+                                  },
+                                  child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
+                                    Icons.filter_list,
+                                    color: hasFilter ? AppColors.darkGrey :  AppColors.white,
+                                    size: MediaQuery.of(context).size.width*0.07,
+                                  )),
                                 ),
                               ),
                             ),

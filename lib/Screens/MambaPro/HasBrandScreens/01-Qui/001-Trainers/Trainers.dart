@@ -293,7 +293,7 @@ class _Trainers extends State<Trainers> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.03),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -341,7 +341,7 @@ class _Trainers extends State<Trainers> {
                           FittedBox(
                             fit: BoxFit.fitWidth,
                             child: SizedBox(
-                              width: MediaQuery.of(context).size.width*0.25,
+                              width: MediaQuery.of(context).size.width*0.23,
                               /*
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.green, width: 1.0),
@@ -366,10 +366,10 @@ class _Trainers extends State<Trainers> {
                                           searchClicked = !searchClicked;
                                         });
                                       },
-                                      splashRadius: 10,
+                                      splashRadius: 20,
                                       splashColor: Theme.of(context).backgroundColor, // Splash color
                                       padding: EdgeInsets.zero,
-                                      alignment: Alignment.centerRight,
+                                      alignment: Alignment.center,
                                       icon: Icon(
                                         searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
                                         color: AppColors.white,
