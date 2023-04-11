@@ -64,8 +64,8 @@ var dynamicLinkBrandId;
 
 //Revenue Cat
 const googleApiKey = 'goog_xHoFXqoNpoesuLjeweHEqSuEvXy';
-const appleApiKey = '';
-const entitlementID = 'Completo';
+const appleApiKey = 'appl_zARUDaqRUYylGLSphTBVkIdjELo';
+const entitlementID = 'AllFeatures';
 
 void setBrandActive()
 {
