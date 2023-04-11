@@ -62,6 +62,11 @@ final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 // Dynamic Links Path
 var dynamicLinkBrandId;
 
+//Revenue Cat
+const googleApiKey = 'goog_xHoFXqoNpoesuLjeweHEqSuEvXy';
+const appleApiKey = '';
+const entitlementID = 'Completo';
+
 void setBrandActive()
 {
   if(currentBrand.endDatePay != null)

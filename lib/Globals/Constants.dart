@@ -3,8 +3,6 @@ class Constants {
   // App Name
   static String appName = "Mamba";
 
-  //Revenue Cat
-  static const entitlementID = 'Completo';
 
   // Constant Assets
   static String logoExtended = "assets/images/ExtendedWhite.png";
