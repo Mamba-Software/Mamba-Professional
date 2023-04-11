@@ -635,7 +635,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             children: [
               Flexible(
                 child: Text(
-                  event.title!+event.title!+event.title!+event.title!,
+                  event.title!,
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
                   overflow: TextOverflow.fade,
                   textAlign: TextAlign.start,
