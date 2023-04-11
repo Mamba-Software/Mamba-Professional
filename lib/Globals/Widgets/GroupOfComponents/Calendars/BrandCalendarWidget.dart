@@ -132,7 +132,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   void getUserBrandDetails() async {
     _brand = await _brandDataService.getBrandDetails(widget.brandId);
-    getBrandTrainerEvents();
+    _brandTrainers = await _brandDataService.getBrandTrainers(widget.brandId);
+    selectedTrainers = List.from(_brandTrainers);
+    for (Usuario trainer in _brandTrainers) {
+      trainer.setEventsList = await _eventDataService.getUserEvents(trainer.id!);
+    }
     if (currentUser.brandRole < 3) {
       canEdit = true;
     } else {
@@ -141,11 +145,19 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     initCalendar();
   }
 
-  void getBrandTrainerEvents() async {
-    _brandTrainers = await _brandDataService.getBrandTrainers(widget.brandId);
-    selectedTrainers = List.from(_brandTrainers);
-    for (Usuario trainer in _brandTrainers) {
-      trainer.setEventsList = await _eventDataService.getUserEvents(trainer.id!);
+  void getNewEventMemberDetails(Event event) async {
+    event.setUserList = await _eventDataService.getEventUsers(event.id!);
+    for (Usuario user in event.usersList) {
+      if (user.isTrainer == true) {
+        for (Usuario trainer in _brandTrainers) {
+          if (user.id == trainer.id) {
+            List<Event> oldEventList =  trainer.eventsList;
+            oldEventList.add(event);
+            trainer.setEventsList = oldEventList;
+            break;
+          }
+        }
+      }
     }
     setState(() {});
   }
@@ -610,7 +622,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           height: details.bounds.height,
           width: details.bounds.width,
           margin: const EdgeInsets.symmetric(vertical: 2),
-          padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.04),
+          padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.04, vertical: details.bounds.width*0.02),
           decoration: BoxDecoration(
             color: appointment.color,
             borderRadius: BorderRadius.all(
@@ -618,15 +630,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             ),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
               Flexible(
                 child: Text(
-                  event.title!,
+                  event.title!+event.title!+event.title!+event.title!,
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.clip,
+                  overflow: TextOverflow.fade,
                   textAlign: TextAlign.start,
                   maxLines: 1,
                   softWrap: false,
@@ -634,17 +645,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               ),
               Flexible(
                 child: Container(
-                  margin: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.only(top: 2),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
-                      ),
                       Text(
                         appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
                         style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
@@ -652,8 +656,50 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         maxLines: 1,
                         softWrap: false,
                       ),
+                      Text(
+                        DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                        overflow: TextOverflow.fade,
+                        maxLines: 1,
+                        softWrap: false,
+                      ),
+
                     ],
                   ),
+                ),
+              ),
+              Flexible(
+                child: ListView.builder(
+                    shrinkWrap: false,
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: event.usersList.length,
+                    clipBehavior: Clip.none,
+                    itemBuilder: (context, int index) {
+                      var trainer = event.usersList[index];
+                      return Container(
+                        margin: const EdgeInsets.only(right: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircularImage(
+                              size: MediaQuery.of(context).size.width*0.05,
+                              image: trainer.imageUrl,
+                              color: AppColors.white,
+                              borderWidth: 0.5,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              trainer.firstName!+" "+trainer.lastName![0]+".",
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                              softWrap: false,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                 ),
               ),
             ],
@@ -955,15 +1001,19 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                               onTap: () {
                                                                                 setStateBottom(() {
                                                                                   if (selectedTrainersBottom.contains(trainer)) {
-                                                                                    selectedTrainersBottom.remove(trainer);
-                                                                                    selectedTrainers.remove(trainer);
+                                                                                    if (selectedTrainersBottom.length > 1) {
+                                                                                      selectedTrainersBottom.remove(trainer);
+                                                                                      selectedTrainers.remove(trainer);
+                                                                                      // Navigator Pop
+                                                                                      Navigator.pop(context);
+                                                                                    }
                                                                                   } else {
                                                                                     selectedTrainersBottom.add(trainer);
                                                                                     selectedTrainers.add(trainer);
+                                                                                    // Navigator Pop
+                                                                                    Navigator.pop(context);
                                                                                   }
                                                                                 });
-                                                                                // Navigator Pop
-                                                                                Navigator.pop(context);
                                                                               },
                                                                               child: Container(
                                                                                 margin: const EdgeInsets.only(right: 5),
@@ -1000,15 +1050,19 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                                                                         onPressed: () {
                                                                                           setStateBottom(() {
                                                                                             if (selectedTrainersBottom.contains(trainer)) {
-                                                                                              selectedTrainersBottom.remove(trainer);
-                                                                                              selectedTrainers.remove(trainer);
+                                                                                              if (selectedTrainersBottom.length > 1) {
+                                                                                                selectedTrainersBottom.remove(trainer);
+                                                                                                selectedTrainers.remove(trainer);
+                                                                                                // Navigator Pop
+                                                                                                Navigator.pop(context);
+                                                                                              }
                                                                                             } else {
                                                                                               selectedTrainersBottom.add(trainer);
                                                                                               selectedTrainers.add(trainer);
+                                                                                              // Navigator Pop
+                                                                                              Navigator.pop(context);
                                                                                             }
                                                                                           });
-                                                                                          // Navigator Pop
-                                                                                          Navigator.pop(context);
                                                                                         },
                                                                                       ),
                                                                                     )
@@ -1215,7 +1269,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                       // Schedule View
                       scheduleViewSettings: ScheduleViewSettings(
                           hideEmptyScheduleWeek: true,
-                          appointmentItemHeight: MediaQuery.of(context).size.height*0.08,
+                          appointmentItemHeight: MediaQuery.of(context).size.height*0.12,
                           appointmentTextStyle: Theme.of(context).textTheme.bodyText2,
                           dayHeaderSettings: DayHeaderSettings(
                             dateTextStyle: Theme.of(context).textTheme.bodyText2,
@@ -1434,6 +1488,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   AppointmentDataSource _getCalendarDataSource() {
     List<Appointment> tempAllAppointments = [];
+    List<String> selectedTrainersIDs = [];
+    for (var trainer in selectedTrainers) {
+      selectedTrainersIDs.add(trainer.id!);
+    }
     for (var i=0; i < eventsList.length; i++) {
       var event = eventsList[i];
       // Date Time
@@ -1473,16 +1531,48 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           color = Colors.red;
         }
       }
-      // Afegir percentatges de members al Event.
-      tempAllAppointments.add(Appointment(
-        id: event.id,
-        startTime: startDate,
-        endTime: endDate,
-        subject: subject,
-        color: color,
-        startTimeZone: '',
-        endTimeZone: '',
-      ));
+      // Only If Selected Trainers
+      if (event.usersList.isNotEmpty) {
+        int index =  event.usersList.indexWhere((element) => selectedTrainersIDs.contains(element.id!));
+        if (index != -1) {
+          // Afegir percentatges de members al Event.
+          tempAllAppointments.add(Appointment(
+            id: event.id,
+            startTime: startDate,
+            endTime: endDate,
+            subject: subject,
+            color: color,
+            startTimeZone: '',
+            endTimeZone: '',
+          ));
+        }
+      } else {
+        getNewEventMemberDetails(event);
+        tempAllAppointments.add(Appointment(
+          id: event.id,
+          startTime: startDate,
+          endTime: endDate,
+          subject: subject,
+          color: color,
+          startTimeZone: '',
+          endTimeZone: '',
+        ));
+        /*
+        int index =  event.usersList.indexWhere((element) => selectedTrainersIDs.contains(element.id!));
+        if (index != -1) {
+          // Afegir percentatges de members al Event.
+          tempAllAppointments.add(Appointment(
+            id: event.id,
+            startTime: startDate,
+            endTime: endDate,
+            subject: subject,
+            color: color,
+            startTimeZone: '',
+            endTimeZone: '',
+          ));
+        }
+         */
+      }
     }
     return AppointmentDataSource(tempAllAppointments);
   }
@@ -1492,10 +1582,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     List<Usuario> eventTrainers = [];
     List<Event> groupEvents = [];
     List<Event> privateEvents = [];
-    List<String> selectedTrainersIDs = [];
-    for (var trainer in selectedTrainers) {
-      selectedTrainersIDs.add(trainer.id!);
-    }
     for(int i = 0; i < documents.length; i++) {
       Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
       // Check Trainers in Event
@@ -1513,18 +1599,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       }*/
       // Type of Events
       if (evt.isPrivate! == false) {
-        /* Only If Contains Some of the Trainers Selected
-        int index =  evt.usersList.indexWhere((element) => selectedTrainersIDs.contains(element.id!));
-        if (index != -1) {
-          groupEvents.add(evt);
-        }*/
         groupEvents.add(evt);
       } else {
-        /* Only If Contains Some of the Trainers Selected
-        int index =  evt.usersList.indexWhere((element) => selectedTrainersIDs.contains(element.id!));
-        if (index != -1) {
-          privateEvents.add(evt);
-        }*/
         privateEvents.add(evt);
       }
     }

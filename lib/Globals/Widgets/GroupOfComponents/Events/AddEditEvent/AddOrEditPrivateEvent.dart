@@ -1514,7 +1514,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 child: SizedBox(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: "4",
+                    heroTag: null,
                     onPressed: () {
                       if (_selectedIndex == 1) {
                         if (widget.eventId != null) {
@@ -1557,7 +1557,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 child: SizedBox(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: "5",
+                    heroTag: null,
                     onPressed: () async {
                       if (_selectedIndex == 0) {
                         if (formKeyInfo.currentState!.validate()){
