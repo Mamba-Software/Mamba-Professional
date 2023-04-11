@@ -752,7 +752,7 @@ class _Trainers extends State<Trainers> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
-                          Icons.manage_accounts,
+                          Icons.manage_accounts_outlined,
                           color: Theme.of(context).colorScheme.secondary,
                           size: MediaQuery.of(context).size.width*0.10,
                         ),

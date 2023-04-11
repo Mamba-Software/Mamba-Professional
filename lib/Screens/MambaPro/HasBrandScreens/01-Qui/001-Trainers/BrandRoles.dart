@@ -290,28 +290,40 @@ class _BrandRolesState extends State<BrandRoles> {
                       height: MediaQuery.of(context).size.height*0.1,
                       width: MediaQuery.of(context).size.width*0.9,
                       decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
                         borderRadius: const BorderRadius.all(
                           Radius.circular(10),
                         ),
-                        //border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                        border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Icon(
                             Icons.badge_outlined,
-                            color: Theme.of(context).primaryColor,
+                            color: Theme.of(context).colorScheme.secondary,
                             size: MediaQuery.of(context).size.width*0.10,
                           ),
                           SizedBox(width: MediaQuery.of(context).size.width*0.05),
                           Flexible(
-                            child: Text(
-                              AppLocalizations.of(context)!.addTrainerDescription,
-                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
+                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  AppLocalizations.of(context)!.shareInvitationText.split(AppLocalizations.of(context)!.clients.toLowerCase())[0]+AppLocalizations.of(context)!.trainers.toLowerCase()+AppLocalizations.of(context)!.shareInvitationText.split(AppLocalizations.of(context)!.clients.toLowerCase())[1],
+                                  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                  textAlign: TextAlign.start,
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: false,
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
 
                         ],
                       ),
