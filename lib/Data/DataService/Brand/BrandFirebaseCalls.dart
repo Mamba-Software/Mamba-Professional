@@ -180,6 +180,40 @@ class BrandFirebaseCalls {
       return brand;
   }
 
+  Future<bool> checkIfBrandBonoHasPurchases(String brandId, String bonoId) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Bonos")
+          .doc(bonoId)
+          .collection("Purchases")
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return true;
+      } else {
+        // Check if there is any open Request
+        QuerySnapshot querySnapshot2 = await _firestore
+            .collection(brands)
+            .doc(brandId)
+            .collection("Bonos")
+            .doc("Bonos Requests")
+            .collection("Bonos Requests")
+            .where("bonoId", isEqualTo: bonoId)
+            .get();
+        if (querySnapshot2.docs.isNotEmpty) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (e) {
+      e.toString();
+      return false;
+    }
+  }
+
+
   //Getters
 
   Future<Brand> getBrandDetails(String brandID) async {
@@ -707,27 +741,20 @@ class BrandFirebaseCalls {
 
   Future<void> updateBono(String brandId, Bono bono, Condition condition) async {
     await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc(bono.id)
-        .update({
-      "title": bono.title,
+    .collection(brands)
+    .doc(brandId)
+    .collection("Bonos")
+    .doc(bono.id)
+    .update({
+      "title": bono.title!,
       "description": bono.description,
+      "price": bono.price!,
+      "sessions": bono.sessions,
       "isActive": bono.isActive,
       "color": bono.color,
       "opacity": bono.opacity,
       "imageUrl": bono.imageUrl,
       "isDegradate": bono.isDegradate,
-    }).catchError((err) {
-      print(err);
-    });
-    await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc(bono.id).collection('Conditions').doc('Conditions')
-        .update({
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
       "cancelTime": condition.cancelTime,
@@ -925,6 +952,16 @@ class BrandFirebaseCalls {
         .doc("Bonos Requests")
         .collection("Bonos Requests")
         .doc(bonoRequestId)
+        .delete();
+  }
+
+  // Delete Brand Bono Request
+  Future<void> deleteBrandBono(String brandId, String bonoId) async {
+    // Delete Brand Bono
+    await _firestore.collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bonoId)
         .delete();
   }
 

@@ -123,6 +123,8 @@ class _BonosProState extends State<BonosPro> {
               brand: _brand,
               bono: bono,
               edit: edit,
+              duplicate: false,
+              delete: false,
             ),
           ),
         )).whenComplete(() => () {

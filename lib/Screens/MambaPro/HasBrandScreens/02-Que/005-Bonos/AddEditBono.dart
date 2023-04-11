@@ -21,15 +21,18 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../../../../Data/LibraryModels/lDegradate.dart';
 import '../../../../../Globals/Utils/Bonos/BonosUtils.dart';
 import '../../../../../Globals/Widgets/Components/Images/RectangularImage.dart';
+import '../../../../../Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBonoDialog.dart';
 import '../../03-Com/007-Contenido/SelectBrandImages.dart';
 
 class AddEditBono extends StatefulWidget {
   Brand brand;
   Bono bono;
   bool edit;
+  bool duplicate;
+  bool delete;
 
   AddEditBono(
-      {Key? key, required this.brand, required this.bono, required this.edit})
+      {Key? key, required this.brand, required this.bono, required this.edit, required this.duplicate, required this.delete})
       : super(key: key);
 
   @override
@@ -135,13 +138,16 @@ class _AddEditBonoState extends State<AddEditBono>
   List<Color> colors = [];
   List<Color> colorsDeg = [];
 
+  // Check if Bono has Purchases
+  bool hasPurchases = false;
+
   @override
   initState() {
     isLoading = false;
     _tabController = TabController(length: 5, vsync: this);
     var color;
     var degradate1, degradate2;
-    if (widget.edit == true) {
+    if (widget.edit == true || widget.duplicate == true) {
       bono.id = widget.bono.id;
       bono.title = widget.bono.title;
       bono.description = widget.bono.description;
@@ -158,6 +164,9 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.isDegradate = widget.bono.isDegradate;
       bono.opacity = widget.bono.opacity;
       getCondition();
+      if (widget.edit == true) {
+        getPurchases();
+      }
       mixpanel!.track('edit_bono_info');
     } else {
       isSelectedDays[1] = true;
@@ -176,7 +185,7 @@ class _AddEditBonoState extends State<AddEditBono>
       colorsDeg.add(degradate2);
     }
     colorSelected = colors[0].value;
-    if (widget.edit == true) {
+    if (widget.edit == true || widget.duplicate == true) {
       _currentSliderValue = bono.opacity! * 100;
       if (bono.imageUrl == '') {
         bonoImage = false;
@@ -190,6 +199,10 @@ class _AddEditBonoState extends State<AddEditBono>
     } else {
       colorSelected = colors[int.parse(bono.color!)].value;
     }
+    // Open Delete Dialog
+    Future.delayed(Duration.zero, () {
+      checkIfDeleteIsTrue();
+    });
   }
 
   void getCondition() async {
@@ -213,6 +226,41 @@ class _AddEditBonoState extends State<AddEditBono>
     }
     weeklyController.text = condition.weeklySessions.toString();
     freeCancellController.text = condition.cancelTime.toString();
+  }
+
+  Future<void> getPurchases() async {
+    bool temp = await _brandDataService.checkIfBrandBonoHasPurchases(widget.brand.id!, widget.bono.id!);
+    setState(() {
+      hasPurchases = temp;
+    });
+  }
+
+  Future<void> checkIfDeleteIsTrue() async {
+    await getPurchases();
+    // Open Delete Dialog
+    if (widget.delete == true) {
+      print("hola");
+      // DeleteDialog
+      var result = await showDialog(
+        context: context,
+        builder: (_) {
+          return DeleteBonoDialog(
+            hasPurchases: hasPurchases,
+          );
+        }
+      );
+      if (result) {
+        if (hasPurchases) {
+          // Deactivate
+          await _brandDataService.updateBonoActive(widget.brand.id!, bono.id!, !bono.isActive!);
+          Navigator.pop(context);
+        } else {
+          // Delete Bono
+          await _brandDataService.deleteBrandBono(widget.brand.id!, bono.id!);
+          Navigator.pop(context);
+        }
+      }
+    }
   }
 
   @override
@@ -286,6 +334,42 @@ class _AddEditBonoState extends State<AddEditBono>
                   Navigator.pop(context);
                 },
               ),
+              actions: [
+                widget.edit == true ? IconButton(
+                    onPressed: () async {
+                      // DeleteDialog
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return DeleteBonoDialog(
+                              hasPurchases: hasPurchases,
+                            );
+                          }
+                      );
+                      if (result) {
+                        if (hasPurchases) {
+                          // Deactivate
+                          await _brandDataService.updateBonoActive(widget.brand.id!, bono.id!, !bono.isActive!);
+                          Navigator.pop(context);
+                        } else {
+                          // Delete Bono
+                          await _brandDataService.deleteBrandBono(widget.brand.id!, bono.id!);
+                          Navigator.pop(context);
+                        }
+                      }
+                    },
+                    icon: SizedBox(
+                      width: MediaQuery.of(context).size.width*0.15,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
+                        ],
+                      ),
+                    )
+                ) : Container(),
+                SizedBox(width: MediaQuery.of(context).size.width*0.03)
+              ],
               bottom: PreferredSize(
                 preferredSize: const Size.fromHeight(0),
                 child: IgnorePointer(
@@ -684,8 +768,59 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget pricePage() {
     return Scaffold(
       body: SingleChildScrollView(
-          child: Column(
-        children: [
+        child: Column(
+          children: [
+          widget.edit == true ? hasPurchases ? Container(
+              height: MediaQuery.of(context).size.height*0.15,
+              width: MediaQuery.of(context).size.width*0.9,
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.red.withOpacity(0.2),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                border: Border.all(color: AppColors.red, width: 2),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(context)!.bonosPurchasedWarning,
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
+                    ),
+                  ),
+                ],
+              ),
+            ) : Container(
+            height: MediaQuery.of(context).size.height*0.10,
+            width: MediaQuery.of(context).size.width*0.9,
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.2),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(10),
+              ),
+              border: Border.all(color: Colors.green, width: 2),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outlined, color: Colors.green, size:  MediaQuery.of(context).size.width*0.08,),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.bonosCanPurchasedWarning,
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+                  ),
+                ),
+              ],
+            ),
+          ) : Container(),
           Form(
             key: formKePrice,
             child: Padding(
@@ -701,7 +836,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.sesionsBonoDesc,
                         0.toString(),
                         AppLocalizations.of(context)!.sessionPlease,
-                        widget.edit ? false : true,
+                        widget.edit && hasPurchases ? false : true,
                         clasesController,
                         false,
                         'ses'),
@@ -712,7 +847,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         "",
                         0.toString(),
                         AppLocalizations.of(context)!.pricePlease,
-                        widget.edit ? false : true,
+                        widget.edit && hasPurchases ? false : true,
                         priceController,
                         false,
                         'price'),
@@ -730,6 +865,57 @@ class _AddEditBonoState extends State<AddEditBono>
       body: SingleChildScrollView(
           child: Column(
         children: [
+          widget.edit == true ? hasPurchases ? Container(
+            height: MediaQuery.of(context).size.height*0.15,
+            width: MediaQuery.of(context).size.width*0.9,
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.red.withOpacity(0.2),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(10),
+              ),
+              border: Border.all(color: AppColors.red, width: 2),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.bonosPurchasedWarning,
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
+                  ),
+                ),
+              ],
+            ),
+          ) : Container(
+            height: MediaQuery.of(context).size.height*0.10,
+            width: MediaQuery.of(context).size.width*0.9,
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.2),
+              borderRadius: const BorderRadius.all(
+                Radius.circular(10),
+              ),
+              border: Border.all(color: Colors.green, width: 2),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outlined, color: Colors.green, size:  MediaQuery.of(context).size.width*0.08,),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.bonosCanPurchasedWarning,
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+                  ),
+                ),
+              ],
+            ),
+          ) : Container(),
           Form(
             child: Padding(
               padding: EdgeInsets.symmetric(
@@ -744,7 +930,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.expiresAtDesc,
                         AppLocalizations.of(context)!.titleHint,
                         AppLocalizations.of(context)!.titleError,
-                        widget.edit ? false : true,
+                        widget.edit && hasPurchases ? false : true,
                         titleController,
                         'exp'),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
@@ -754,7 +940,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.freeCancelDesc,
                         AppLocalizations.of(context)!.titleHint,
                         AppLocalizations.of(context)!.titleError,
-                        widget.edit ? false : true,
+                        widget.edit && hasPurchases ? false : true,
                         freeCancellController,
                         'ses') : Container(),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
@@ -764,10 +950,10 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.trainsPerWeekDesc,
                         AppLocalizations.of(context)!.titleHint,
                         AppLocalizations.of(context)!.titleError,
-                        widget.edit ? false : true,
+                        widget.edit && hasPurchases ? false : true,
                         weeklyController,
                         'maxw'),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                   ]),
             ),
           ),
@@ -1589,7 +1775,7 @@ class _AddEditBonoState extends State<AddEditBono>
                             scale: 1.3,
                             child: Checkbox(
                               value: noSessions,
-                              onChanged: !widget.edit? setSeeSessions : null,
+                              onChanged: widget.edit == false ? setSeeSessions : null,
                               checkColor: AppColors.white,
                               activeColor: Styles.mainColor,
                             ),
@@ -1637,7 +1823,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                               RegExp('[0-9.,]')),
                                         ]
                                       : null,
-                              initialValue: widget.edit == true
+                              initialValue: widget.edit == true || widget.duplicate == true
                                   ? variable == 'title'
                                       ? bono.title
                                       : variable == 'desc'
@@ -1656,7 +1842,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                       ? 100
                                       : null,
                               controller:
-                                  widget.edit == true ? null : controller,
+                              widget.edit == true || widget.duplicate == true ? null : controller,
                               validator: (val) =>
                                   val!.isEmpty ? errorText : null,
                               textCapitalization: variable == 'title'
@@ -1728,7 +1914,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                                   RegExp('[0-9.,]')),
                                             ]
                                           : null,
-                                  initialValue: widget.edit == true
+                                  initialValue: widget.edit == true || widget.duplicate == true
                                       ? variable == 'title'
                                           ? bono.title
                                           : variable == 'desc'
@@ -1747,7 +1933,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                           ? 100
                                           : null,
                                   controller:
-                                      widget.edit == true ? null : controller,
+                                  widget.edit == true || widget.duplicate == true ? null : controller,
                                   validator: (val) =>
                                       val!.isEmpty ? errorText : null,
                                   textCapitalization: variable == 'title'

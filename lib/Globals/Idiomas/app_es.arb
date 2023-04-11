@@ -901,6 +901,10 @@
   "@edit":{
     "description": "notInBrand text"
   },
+  "duplicate": "Duplicar",
+  "@duplicate":{
+    "description": "notInBrand text"
+  },
   "save": "Guardar",
   "@save":{
     "description": "notInBrand text"
@@ -2100,6 +2104,30 @@
   },
   "bonosDescriptionPrivateWarning": "No has seleccionado ningún bono.\nCualquier persona invitada podrá unirse al evento y no se restringirá la entrada al mismo.",
   "@bonosDescriptionPrivateWarning":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosCanPurchasedWarning": "Puedes cambiar el precio, las sesiones o las condiciones de este bono ya que ningún cliente lo ha comprado.",
+  "@bonosCanPurchasedWarning":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosPurchasedWarning": "No puedes cambiar el precio, las sesiones o las condiciones de este bono.\nDe esta manera, garantizamos la misma oferta entre todos los usuarios, ya que algunos ya lo han comprado.",
+  "@bonosPurchasedWarning":{
+    "bonosClient": "Bonos client text"
+  },
+  "deleteBonoConfirmation": "¿Seguro que quieres eliminar este bono?",
+  "@deleteBonoConfirmation":{
+    "description": "addEvent text"
+  },
+  "deactivateBonoConfirmation": "¿Seguro que quieres desactivar este bono?",
+  "@deactivateBonoConfirmation":{
+    "description": "addEvent text"
+  },
+  "bonosCanDeleteWarning": "Puedes borrar esta bono por completo ya que ningún cliente lo ha comprado.",
+  "@bonosCanDeleteWarning":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosNoDeleteWarning": "No puedes borrar el bono porque ya lo compraron algunos clientes, pero puedes desactivarlo temporalmente.",
+  "@bonosNoDeleteWarning":{
     "bonosClient": "Bonos client text"
   },
   "inviteClientDescription": "Podrás invitar a un cliente una vez el evento haya sido creado",

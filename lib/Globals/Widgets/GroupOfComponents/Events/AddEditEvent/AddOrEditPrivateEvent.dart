@@ -842,21 +842,21 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
-                                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                                            color: AppColors.red.withOpacity(0.2),
                                             borderRadius: const BorderRadius.all(
                                               Radius.circular(10),
                                             ),
-                                            border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                                            border: Border.all(color: AppColors.red, width: 2),
                                           ),
                                           child: Row(
                                             children: [
-                                              Icon(Icons.warning_amber_outlined, color: Theme.of(context).colorScheme.secondary, size:  MediaQuery.of(context).size.width*0.08,),
+                                              Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
                                               const SizedBox(width: 8),
                                               Flexible(
                                                 child: Text(
                                                   AppLocalizations.of(context)!.bonosDescriptionPrivateWarning,
                                                   textAlign: TextAlign.left,
-                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
                                                 ),
                                               ),
                                             ],
