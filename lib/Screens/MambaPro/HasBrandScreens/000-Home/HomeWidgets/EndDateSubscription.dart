@@ -9,6 +9,8 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:purchases_flutter/models/customer_info_wrapper.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 
@@ -28,6 +30,8 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
   DateFormat formatter = DateFormat('dd/MM/yy');
   bool ShowTextExpired = false;
   int difference = 0;
+
+  late Offerings offerings;
 
 
   @override
@@ -53,7 +57,16 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
 
   Future<void> getBrandSubscription() async
   {
-    if(brandIsActive && currentBrand.subscriptionId != null) {
+    //CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+
+    //if (customerInfo.entitlements.all[entitlementID] != null &&
+      //  customerInfo.entitlements.all[entitlementID]?.isActive == true) {
+   // } else {
+      offerings = await Purchases.getOfferings();
+      print(offerings);
+    //}
+
+      if(brandIsActive && currentBrand.subscriptionId != null) {
       subscription =
       await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
       difference = currentBrand.endDatePay!.toDate().difference(DateTime.now()).inDays;
@@ -181,6 +194,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                 ActiveSubscription(
                   brandId: currentBrand.id!,
                   subscription: subscription,
+                  offerings: offerings,
                 ),
           )
       );
@@ -196,6 +210,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
             builder: (context) =>
                 PayWall(
                   brandId: currentBrand.id!,
+                  offerigns: offerings,
                 ),
           )
       );

@@ -19,13 +19,14 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../../Providers/ThemeProvider.dart';
 
 class PayWall extends StatefulWidget {
   String brandId;
   bool? comesFromInitPage;
-  PayWall({Key? key, required this.brandId, this.comesFromInitPage}) : super(key: key);
+  final Offerings? offerigns;
+  PayWall({Key? key, required this.brandId, this.comesFromInitPage, this.offerigns}) : super(key: key);
 
   @override
   _PayWallState createState() => _PayWallState();

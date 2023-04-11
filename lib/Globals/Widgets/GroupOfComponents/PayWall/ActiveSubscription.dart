@@ -6,13 +6,15 @@ import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:purchases_flutter/models/offerings_wrapper.dart';
 
 
 class ActiveSubscription extends StatefulWidget {
   Subscription subscription;
   String brandId;
+  Offerings? offerings;
 
-  ActiveSubscription({Key? key, required this.subscription, required this.brandId}) : super(key: key);
+  ActiveSubscription({Key? key, required this.subscription, required this.brandId, this.offerings}) : super(key: key);
 
   @override
   _ActiveSubscriptionState createState() => _ActiveSubscriptionState();
@@ -37,6 +39,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
         CupertinoPageRoute<bool?>(
           builder: (context) => PayWall(
             brandId: widget.brandId,
+            offerigns: widget.offerings,
           ),
         )
     );
@@ -225,6 +228,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                           builder: (context) =>
                                               PayWall(
                                                 brandId: widget.brandId,
+                                                offerigns: widget.offerings,
                                               ),
                                         )
                                     );

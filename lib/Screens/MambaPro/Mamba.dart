@@ -21,6 +21,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -58,6 +59,7 @@ class _MambaState extends State<Mamba> {
   void initState() {
     super.initState();
     isLoading = true;
+    initPlatformState();
     // Handle LocalNotificationsService
     localNotificationService.initialize();
     handleAndlistenNotifications(context);
@@ -101,6 +103,21 @@ class _MambaState extends State<Mamba> {
     getUserAndBrand();
     // On StartUp Dialogs
     launchOnStartUpDialogs();
+  }
+
+  Future<void> initPlatformState() async {
+    // Enable debug logs before calling `configure`.
+    await Purchases.setLogLevel(LogLevel.debug);
+
+    /*
+    - appUserID is nil, so an anonymous ID will be generated automatically by the Purchases SDK. Read more about Identifying Users here: https://docs.revenuecat.com/docs/user-ids
+    - observerMode is false, so Purchases will automatically handle finishing transactions. Read more about Observer Mode here: https://docs.revenuecat.com/docs/observer-mode
+    */
+    PurchasesConfiguration configuration;
+
+    configuration = PurchasesConfiguration(googleApiKey);
+
+    await Purchases.configure(configuration);
   }
 
   // On StartUp Dialogs

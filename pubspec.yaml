@@ -99,6 +99,7 @@ dependencies:
   flutter_bloc: ^7.1.0
   dropdown_button2: ^1.0.0
   geoflutterfire2: ^2.3.12
+  purchases_flutter: ^4.11.1
 
 flutter_icons:
   # Platforms

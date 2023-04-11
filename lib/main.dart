@@ -24,11 +24,13 @@ import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
+import 'Globals/store_config.dart';
 import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 
 // Declaring Instance of AppThemes();
@@ -45,6 +47,23 @@ Future<void> _backgroundMessageHandler(RemoteMessage message) async {
 // Starting app function. After initialization, we define the global providers:
 // - Language Provider: To change the Language of the App.
 Future<void> main() async {
+  /*
+  if (Platform.isIOS || Platform.isMacOS) {
+    StoreConfig(
+      store: Store.appleStore,
+      apiKey: appleApiKey,
+    );
+  } else if (Platform.isAndroid) {
+    // Run the app passing --dart-define=AMAZON=true
+    const useAmazon = bool.fromEnvironment("amazon");
+    StoreConfig(
+      store:  Store.googlePlay,
+      apiKey: googleApiKey,
+    );
+  }*/
+
+
+
   await runZonedGuarded(() async {
     // Initialize App
     WidgetsFlutterBinding.ensureInitialized();
@@ -125,6 +144,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
     }
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
