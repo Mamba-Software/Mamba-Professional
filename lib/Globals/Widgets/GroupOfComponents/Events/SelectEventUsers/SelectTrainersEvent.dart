@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -132,7 +133,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                   searchController.clear();
                   filterSearchResults("");
                 },
-                icon: Icon(Icons.clear, color: AppColors.grey,),
+                icon: const Icon(Icons.clear, color: AppColors.grey,),
               ),
             ],
           ),
@@ -180,78 +181,78 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
                   ),
                 ) : SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                 Expanded(
-                  child: Container(
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        itemCount: filteredTrainers.length,
-                        itemBuilder: (context, index) {
-                          Usuario user = filteredTrainers[index];
-                          return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 0),
-                            child: ListTile(
-                              tileColor: selectedTrainers.contains(user) ? Theme.of(context).backgroundColor.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
-                              leading: Stack(
-                                alignment: Alignment.bottomRight,
-                                children: [
-                                  CircularImage(
-                                    size: MediaQuery.of(context).size.width*0.15,
-                                    image: user.imageUrl,
-                                    color: Theme.of(context).primaryColor,
-                                    borderWidth: 1.0,
-                                  ),
-                                  Positioned(
-                                    top: MediaQuery.of(context).size.width*0.07,
-                                    left: MediaQuery.of(context).size.width*0.07,
-                                    child: Theme(
-                                        data: ThemeData(unselectedWidgetColor: Colors.transparent),
-                                        child: Checkbox(
-                                          checkColor: Colors.white,
-                                          tristate: false,
-                                          fillColor: MaterialStateProperty.resolveWith(getColor),
-                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                          value: selectedTrainers.contains(user),
-                                          shape: CircleBorder(
-                                              side: BorderSide.none
-                                          ),
-                                          onChanged: (bool? value) {},
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: filteredTrainers.length,
+                      itemBuilder: (context, index) {
+                        Usuario user = filteredTrainers[index];
+                        DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 0),
+                          child: ListTile(
+                            tileColor: selectedTrainers.contains(user) ? Theme.of(context).backgroundColor.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
+                            leading: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                CircularImage(
+                                  size: MediaQuery.of(context).size.width*0.15,
+                                  image: user.imageUrl,
+                                  color: Theme.of(context).primaryColor,
+                                  borderWidth: 1.0,
+                                ),
+                                Positioned(
+                                  top: MediaQuery.of(context).size.width*0.07,
+                                  left: MediaQuery.of(context).size.width*0.07,
+                                  child: Theme(
+                                      data: ThemeData(unselectedWidgetColor: Colors.transparent),
+                                      child: Checkbox(
+                                        checkColor: Colors.white,
+                                        tristate: false,
+                                        fillColor: MaterialStateProperty.resolveWith(getColor),
+                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        value: selectedTrainers.contains(user),
+                                        shape: const CircleBorder(
+                                            side: BorderSide.none
                                         ),
-                                    ),
+                                        onChanged: (bool? value) {},
+                                      ),
                                   ),
-                                ]
-                              ),
-                              title: Text(
-                                getUsersFullName(user),
-                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.left,
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "@${user.nick!}",
-                                    style: Theme.of(context).textTheme.caption,
-                                  ),
-                                ],
-                              ),
-                              onTap: () {
-                                var selectedUsers = selectedTrainers;
-                                if (selectedUsers.contains(user)) {
-                                  selectedUsers.remove(user);
-                                  setState(() {
-                                    selectedTrainers = selectedUsers;
-                                  });
-                                } else {
-                                  selectedUsers.add(user);
-                                  setState(() {
-                                    selectedTrainers = selectedUsers;
-                                  });
-                                }
-                              },
+                                ),
+                              ]
                             ),
-                          );
-                        }
-                    ),
+                            title: Text(
+                              getUsersFullName(user),
+                              style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left,
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
+                                  AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
+                                  style: Theme.of(context).textTheme.caption,
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              var selectedUsers = selectedTrainers;
+                              if (selectedUsers.contains(user)) {
+                                selectedUsers.remove(user);
+                                setState(() {
+                                  selectedTrainers = selectedUsers;
+                                });
+                              } else {
+                                selectedUsers.add(user);
+                                setState(() {
+                                  selectedTrainers = selectedUsers;
+                                });
+                              }
+                            },
+                          ),
+                        );
+                      }
                   ),
                 ),
               ],

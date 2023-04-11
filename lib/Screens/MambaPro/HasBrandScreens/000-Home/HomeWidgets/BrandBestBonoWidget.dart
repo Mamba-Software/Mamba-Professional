@@ -56,6 +56,8 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
             brand: _brand,
             bono: bono,
             edit: edit,
+            duplicate: false,
+            delete: false,
           ),
         ),
       )

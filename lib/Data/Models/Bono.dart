@@ -44,7 +44,6 @@ class Bono {
 
   Bono.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
     id = documentId;
-    print(id);
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
       title = documentSnapshot.get("title").toString();
     }

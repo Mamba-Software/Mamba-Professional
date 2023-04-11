@@ -33,6 +33,7 @@ class UserDataService {
   // Get Data
   Future<Usuario> getUserDetails(String userId) => _firebase.getUserDetails(userId);
   Future<Brand?> getUserBrands(String userId) => _firebase.getUserBrands(userId);
+  Future<Brand?> getUserBrandsToAdd(String userId, String brandId) => _firebase.getUserBrandsToAdd(userId,brandId);
   Future<Usuario> getUserCoverDetails(String userId) => _firebase.getUserCoverDetails(userId);
   Future<List<RequestToBrand>> getUserRequests(String userId) => _firebase.getUserRequests(userId);
   Future<List<NotificationEvent>> getUserFirstNotificationsLimit10(String userId) => _firebase.getUserFirstNotificationsLimit10(userId);

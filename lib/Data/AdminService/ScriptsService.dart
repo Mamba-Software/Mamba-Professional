@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
+import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'dart:io';
@@ -16,6 +18,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import '../DataService/Brand/BrandDataService.dart';
 
@@ -2399,6 +2402,261 @@ class ScriptsDatabaseService {
             });
           }
         }
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> JMFsolveUsersBlockedMarch08() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 08th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Users/BlockedByUsers collection:\n');
+      print('--------------');
+      print('\n');
+
+      String users = "7777 Users";
+      Usuario user = new Usuario();
+      QuerySnapshot querySnapshot3;
+      QuerySnapshot querySnapshot4;
+
+      // Get all the Trainers
+      QuerySnapshot querySnapshot = await _firestore.collection(users).where("isTrainer", isEqualTo: true).get();
+      // Per Trainer Get their Brand
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        String userId = querySnapshot.docs[i].id;
+        print(userId);
+        //user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+
+        await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("BlockedByUsers")
+            .doc('test')
+            .set({
+          "userId": 'test',
+        });
+        print('=================================================================================');
+        print('=================================================================================');
+        print('USER WITH ID: '+userId);
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //TODO EXECUTE IN PROD tirar amb la funció zzzzBrandUpdatesCoverData ya tirada
+  Future<bool> JMFassignZipCodeAndLocation13AndBaseImage() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 13th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Brand and UserBrand collection:\n');
+      print('--------------');
+      print('\n');
+
+      String brands = "7777 Brands";
+      Usuario user = new Usuario();
+      QuerySnapshot querySnapshot4;
+      String baseImage = "";
+
+      QuerySnapshot querySnapshotBrands = await _firestore.collection(brands).get();
+
+      for (int i = 0; i < querySnapshotBrands.docs.length; i++) {
+
+        String brandId = querySnapshotBrands.docs[i].id;
+        print(brandId);
+        QuerySnapshot querySnapshot2 = await _firestore.collection(brands).doc(brandId).collection("Images").get();
+        // Images
+        if (querySnapshot2.size > 0) {
+            baseImage = ImageObject.fromObjectAllData(querySnapshot2.docs[0].id, querySnapshot2.docs[0]).url!;
+            await _firestore
+                .collection(brands)
+                .doc(brandId).collection("Images").doc(querySnapshot2.docs[0].id)
+                .update({
+              "isBaseImage": true,
+            });
+        } else {
+          QuerySnapshot querySnapshot3 = await _firestore.collection(library).doc('Images').collection("Events").get();
+          Random rnd = Random();
+          int index = rnd.nextInt(querySnapshot3.size);
+          baseImage = ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!;
+        }
+        QuerySnapshot querySnapshotLocations = await _firestore.collection(brands).doc(brandId).collection("Locations").where("isBaseLocation", isEqualTo: true).get();
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+            .collection(locations)
+            .doc(querySnapshotLocations.docs[0].id).get();
+        var location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        //user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+
+        await _firestore
+            .collection(brands)
+            .doc(brandId)
+            .update({
+          "zipCode": location.zipCode,
+          "city": location.city,
+          "baseImage": baseImage,
+          "latitude": location.latitude,
+          "longitude": location.longitude,
+          ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
+        });
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //TODO DOING RIGHT NOW
+  Future<bool> JMFassignBrandIdToUserEvents() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 13th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Event and UserBrand collection:\n');
+      print('--------------');
+      print('\n');
+
+      String events = "7777 Events";
+      String users = "7777 Users";
+
+      QuerySnapshot querySnapshotUsers= await _firestore.collection(users).get();
+
+      for (int i = 0; i < querySnapshotUsers.docs.length; i++) {
+        String userId = querySnapshotUsers.docs[i].id;
+        QuerySnapshot querySnapshotEventsUser = await _firestore.collection(users).doc(userId).collection("Events").get();
+
+        for (int j = 0; j < querySnapshotEventsUser.docs.length; j++)
+          {
+            String eventId = querySnapshotEventsUser.docs[j].id;
+            DocumentSnapshot<Map<String, dynamic>> _documentSnapshotEvent = await _firestore
+                .collection(events)
+                .doc(querySnapshotEventsUser.docs[j].id).get();
+            Event event = Event.fromObjectAllData(_documentSnapshotEvent.id, _documentSnapshotEvent);
+            await _firestore
+                .collection(users)
+                .doc(userId).collection("Events").doc(eventId)
+                .update({
+              "brandID": event.brandID,
+            });
+          }
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> JMFassignBrandIdToLocationEvents() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 13th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Event and UserBrand collection:\n');
+      print('--------------');
+      print('\n');
+
+      String events = "7777 Events";
+      String locations = "7777 Locations";
+
+      QuerySnapshot querySnapshotLocations = await _firestore.collection(locations).get();
+
+      for (int i = 0; i < querySnapshotLocations.docs.length; i++) {
+        String locationId = querySnapshotLocations.docs[i].id;
+        QuerySnapshot querySnapshotEventsLocation = await _firestore.collection(locations).doc(locationId).collection("Events").get();
+
+        for (int j = 0; j < querySnapshotEventsLocation.docs.length; j++)
+        {
+          String eventId = querySnapshotEventsLocation.docs[j].id;
+          DocumentSnapshot<Map<String, dynamic>> _documentSnapshotEvent = await _firestore
+              .collection(events)
+              .doc(querySnapshotEventsLocation.docs[j].id).get();
+          Event event = Event.fromObjectAllData(_documentSnapshotEvent.id, _documentSnapshotEvent);
+          await _firestore
+              .collection(locations)
+              .doc(locationId).collection("Events").doc(eventId)
+              .update({
+            "brandID": event.brandID,
+          });
+        }
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  //TODO PRIMERA EN EXECUTARSE S'ha de tirar amb la cloud function de zzzzLocationUpdatesCoverData YA TIRADA
+  Future<bool> JMFassignGeoPointToLocations() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 13th MARCH 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Event and UserBrand collection:\n');
+      print('--------------');
+      print('\n');
+
+      String locations = "7777 Locations";
+
+      QuerySnapshot querySnapshotLocations = await _firestore.collection(locations).get();
+
+      for (int i = 0; i < querySnapshotLocations.docs.length; i++) {
+        String locationId = querySnapshotLocations.docs[i].id;
+        Location location = Location.fromObjectAllData(locationId, querySnapshotLocations.docs[i]);
+        QuerySnapshot querySnapshotEventsLocation = await _firestore.collection(locations).doc(locationId).collection("Events").get();
+        await _firestore
+            .collection(locations)
+            .doc(locationId)
+            .update({
+          ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.latitude!),
+        });
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
         print('=================================================================================');
         print('=================================================================================');
         print('\n');

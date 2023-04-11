@@ -361,7 +361,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                           Row(
                                             children: [
                                               Icon(
-                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                event.isPrivate! ? Icons.person : Icons.groups,
                                                 color: AppColors.white,
                                                 size: details.bounds.width*0.05,
                                               ),
@@ -424,7 +424,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                           Row(
                                             children: [
                                               Icon(
-                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                event.isPrivate! ? Icons.person : Icons.groups,
                                                 color: AppColors.white,
                                                 size: details.bounds.width*0.05,
                                               ),
@@ -497,7 +497,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Icon(
-                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                event.isPrivate! ? Icons.person : Icons.groups,
                                                 color: AppColors.white,
                                                 size: details.bounds.width*0.2,
                                               ),
@@ -547,7 +547,7 @@ class _UserCalendarWidgetState extends State<UserCalendarWidget> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Icon(
-                                                event.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                                event.isPrivate! ? Icons.person : Icons.groups,
                                                 color: AppColors.white,
                                                 size: details.bounds.width*0.2,
                                               ),

@@ -68,7 +68,6 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
 
   @override
   Widget build(BuildContext context) {
-    print(subscription.subscriptionId);
     return isLoading? Container() : FittedBox(
       fit: BoxFit.fitHeight,
       child: !brandIsActive? GestureDetector(

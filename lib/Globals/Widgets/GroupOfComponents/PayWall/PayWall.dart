@@ -699,7 +699,7 @@ class _PayWallState extends State<PayWall> {
               }
               else
                 {
-                  _topSnackBar.topsnackbar(context, AppLocalizations.of(context)!.youCanPurcahseNow, AppColors.mainColor);
+                  _topSnackBar.showSnackBarTop(context, AppLocalizations.of(context)!.youCanPurcahseNow, AppColors.mainColor);
                 }
             },
             child: Center(
@@ -929,7 +929,7 @@ class _PayWallState extends State<PayWall> {
               }
               else
               {
-                _topSnackBar.topsnackbar(context, AppLocalizations.of(context)!.youCanPurcahseNow, AppColors.mainColor);
+                _topSnackBar.showSnackBarTop(context, AppLocalizations.of(context)!.youCanPurcahseNow, AppColors.mainColor);
               }
             },
             child: Center(

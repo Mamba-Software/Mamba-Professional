@@ -549,7 +549,7 @@
   "@roles":{
     "description": "createBrand Text"
   },
-  "rolesDescription": "Administra los permisos de tu marca",
+  "rolesDescription": "Administra el staff de tu marca",
   "@rolesDescription":{
     "description": "createBrand Text"
   },
@@ -823,6 +823,10 @@
   "@select":{
     "description": "Siguiente text"
   },
+  "selectAll": "Seleccionar todos",
+  "@selectAll":{
+    "description": "Siguiente text"
+  },
   "next": "Siguiente",
   "@next":{
     "description": "Siguiente text"
@@ -895,6 +899,10 @@
   },
   "edit": "Editar",
   "@edit":{
+    "description": "notInBrand text"
+  },
+  "duplicate": "Duplicar",
+  "@duplicate":{
     "description": "notInBrand text"
   },
   "save": "Guardar",
@@ -1844,6 +1852,14 @@
   "@myImagesDeleteDescription": {
     "description": "Wellcome message"
   },
+  "myImagesFavouriteDescription": "¿Estás seguro de que quieres seleccionar esta imagen como tu imagen favorita?\n\nSe usará como portada de tu marca para todos los otros usuarios.",
+  "@myImagesFavouriteDescription": {
+    "description": "Wellcome message"
+  },
+  "myImagesFavouriteDelete": "Siempre debes tener una imagen favorita como portada de tu marca para todos los otros usuarios.",
+  "@myImagesFavouriteDelete": {
+    "description": "Wellcome message"
+  },
   "userJoinEventUser": "Te has unido al evento {name}",
   "@userJoinEventUser": {
     "description": "Wellcome message",
@@ -2074,12 +2090,44 @@
   "@bonosClient":{
     "bonosClient": "Bonos client text"
   },
-  "bonosDescription": "Si este evento no es gratuito, selecciona los bonos con los que te puedes unir",
+  "bonosDescription": "Selecciona los bonos que permiten a los usuarios unirse a este evento",
   "@bonosDescription":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosDescriptionWarning": "No has seleccionado ningún bono.\nCualquier persona podrá unirse al evento y no se restringirá la entrada al mismo.",
+  "@bonosDescriptionWarning":{
     "bonosClient": "Bonos client text"
   },
   "bonosDescriptionPrivate": "Selecciona los bonos que debe tener un cliente para poder ser invitado a este evento",
   "@bonosDescriptionPrivate":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosDescriptionPrivateWarning": "No has seleccionado ningún bono.\nCualquier persona invitada podrá unirse al evento y no se restringirá la entrada al mismo.",
+  "@bonosDescriptionPrivateWarning":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosCanPurchasedWarning": "Puedes cambiar el precio, las sesiones o las condiciones de este bono ya que ningún cliente lo ha comprado.",
+  "@bonosCanPurchasedWarning":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosPurchasedWarning": "No puedes cambiar el precio, las sesiones o las condiciones de este bono.\nDe esta manera, garantizamos la misma oferta entre todos los usuarios, ya que algunos ya lo han comprado.",
+  "@bonosPurchasedWarning":{
+    "bonosClient": "Bonos client text"
+  },
+  "deleteBonoConfirmation": "¿Seguro que quieres eliminar este bono?",
+  "@deleteBonoConfirmation":{
+    "description": "addEvent text"
+  },
+  "deactivateBonoConfirmation": "¿Seguro que quieres desactivar este bono?",
+  "@deactivateBonoConfirmation":{
+    "description": "addEvent text"
+  },
+  "bonosCanDeleteWarning": "Puedes borrar esta bono por completo ya que ningún cliente lo ha comprado.",
+  "@bonosCanDeleteWarning":{
+    "bonosClient": "Bonos client text"
+  },
+  "bonosNoDeleteWarning": "No puedes borrar el bono porque ya lo compraron algunos clientes, pero puedes desactivarlo temporalmente.",
+  "@bonosNoDeleteWarning":{
     "bonosClient": "Bonos client text"
   },
   "inviteClientDescription": "Podrás invitar a un cliente una vez el evento haya sido creado",
@@ -2306,7 +2354,7 @@
   "@buyDate": {
     "description": "Donde message"
   },
-  "bonoRequestDescription": "Compras de bonos pendientes de confirmación",
+  "bonoRequestDescription": "Pendientes de confirmación",
   "@bonoRequestDescription": {
     "description": "Create bono message"
   },
@@ -3116,9 +3164,21 @@
   "chooseYourPlan":  "Escoge tu plan",
   "@chooseYourPlan": {
     "description": "chooseYourPlan message"
-    },
+  },
+  "yourPlan":  "Tu plan",
+  "@yourPlan": {
+    "description": "chooseYourPlan message"
+  },
   "addClient":  "Añadir clientes",
   "@addClient": {
     "description": "addClient message"
+  },
+  "addClientDescription": "Añadir clientes a tu marca",
+  "@addClientDescription":{
+    "description": "createBrand Text"
+  },
+  "addTrainerDescription": "Añadir staff a tu marca",
+  "@addTrainerDescription":{
+    "description": "createBrand Text"
   }
 }
