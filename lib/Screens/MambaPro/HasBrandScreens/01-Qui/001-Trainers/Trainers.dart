@@ -281,7 +281,7 @@ class _Trainers extends State<Trainers> {
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: true,
+            floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -749,7 +749,7 @@ class _Trainers extends State<Trainers> {
                       border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
                           Icons.manage_accounts,
@@ -758,13 +758,25 @@ class _Trainers extends State<Trainers> {
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
                         Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.rolesDescription,
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                            textAlign: TextAlign.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.rolesDescription,
+                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+
                       ],
                     ),
                   ),

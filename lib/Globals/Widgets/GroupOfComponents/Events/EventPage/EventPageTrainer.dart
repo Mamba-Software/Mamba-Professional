@@ -674,7 +674,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
             systemOverlayStyle: returnSystemBarColor(),
-            floating: true,
+            floating: false,
             pinned: true,
             centerTitle: true,
             title: appBarExpanded ? Text(

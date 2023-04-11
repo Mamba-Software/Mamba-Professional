@@ -2326,7 +2326,7 @@
   "@buyDate": {
     "description": "Donde message"
   },
-  "bonoRequestDescription": "Compras de bonos pendientes de confirmación",
+  "bonoRequestDescription": "Pendientes de confirmación",
   "@bonoRequestDescription": {
     "description": "Create bono message"
   },

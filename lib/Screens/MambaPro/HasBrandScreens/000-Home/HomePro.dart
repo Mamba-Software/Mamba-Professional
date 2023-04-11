@@ -110,7 +110,7 @@ class _HomePro extends State<HomePro> {
             expandedHeight: MediaQuery.of(context).size.height*0.18,
             elevation: 2,
             systemOverlayStyle: returnSystemBarColor(),
-            floating: true,
+            floating: false,
             pinned: true,
             centerTitle: true,
             flexibleSpace: FlexibleSpaceBar(

@@ -209,7 +209,7 @@ class _Clients extends State<Clients> {
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: true,
+            floating: false,
             pinned: true,
             //snap: true,
             flexibleSpace: FlexibleSpaceBar(
@@ -627,7 +627,7 @@ class _Clients extends State<Clients> {
                       border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
                           Icons.group_add_outlined,
@@ -636,12 +636,25 @@ class _Clients extends State<Clients> {
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
                         Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.addClientDescription,
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.addClient,
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.shareInvitationText,
+                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+
                       ],
                     ),
                   ),

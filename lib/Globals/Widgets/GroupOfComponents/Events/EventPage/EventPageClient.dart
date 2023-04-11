@@ -580,7 +580,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
             //systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5)),
-            floating: true,
+            floating: false,
             pinned: true,
             centerTitle: true,
             title: appBarExpanded ? Text(

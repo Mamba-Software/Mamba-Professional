@@ -161,7 +161,7 @@ class _BrandImagesState extends State<BrandImages> {
               expandedHeight: MediaQuery.of(context).size.height*0.15,
               systemOverlayStyle: SystemUiOverlayStyle.light,
               elevation: 4,
-              floating: true,
+              floating: false,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(

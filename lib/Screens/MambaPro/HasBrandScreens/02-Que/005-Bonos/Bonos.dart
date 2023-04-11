@@ -179,7 +179,7 @@ class _BonosProState extends State<BonosPro> {
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: true,
+            floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -493,20 +493,39 @@ class _BonosProState extends State<BonosPro> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(
-                            Icons.confirmation_number_outlined,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: MediaQuery.of(context).size.width*0.10,
-                          ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
                           Flexible(
-                            child: Text(
-                              AppLocalizations.of(context)!.bonoRequestDescription,
-                              style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                              textAlign: TextAlign.center,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.confirmation_number_outlined,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                  size: MediaQuery.of(context).size.width*0.10,
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                Flexible(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.purchaseHistory,
+                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                                        textAlign: TextAlign.start,
+                                      ),
+                                      Text(
+                                        AppLocalizations.of(context)!.bonoRequestDescription,
+                                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                        textAlign: TextAlign.start,
+                                        overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                        softWrap: false,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width*0.05),
                           StreamBuilder<QuerySnapshot>(
                               stream: _brandDataService.getBonosRequestsFromBrand(widget.brandId),
                               builder: (context, snapshot) {

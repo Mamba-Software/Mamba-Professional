@@ -137,7 +137,7 @@ class LocalNotificationService {
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);    
     // Get Event
-    print(notification.eventId!);
+    //print(notification.eventId!);
     Event event = await _eventDataService.getSingleEvent(notification.eventId!);
     String eventTimeTime = StringUtils().hourMinutesToString(int.parse(event.hour!), int.parse(event.minute!));
     // Check with Type of Notification
