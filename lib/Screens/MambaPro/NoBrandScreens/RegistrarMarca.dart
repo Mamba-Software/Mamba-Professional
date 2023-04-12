@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
@@ -64,6 +66,9 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
   var ubicacionController =  TextEditingController();
   bool hasLocation = false;
   bool errorLocation = false;
+
+  Subscription subscritionPromo = Subscription();
+  final _promotionDataService = PromotionsDataService();
 
   // 4th TAB: Time
   // Time Picker Horari de Trabajo
@@ -126,6 +131,14 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
       "active" + currentUser.id!: false,
     }, name: nameBrandController.text.trim(), users: []);
     await _brandDataService.updateBrandRoom(result, room.id);
+    subscritionPromo =
+    await _promotionDataService
+        .getValidSubscription(
+        '7DAYSTRIAL', result);
+    await _brandDataService
+        .updateBrandPay(result,
+        subscritionPromo.duration!,
+        subscritionPromo.id!, subscritionPromo.title!);
     brandIsActive = false;
     // Pushing to Splash Screen
     await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires

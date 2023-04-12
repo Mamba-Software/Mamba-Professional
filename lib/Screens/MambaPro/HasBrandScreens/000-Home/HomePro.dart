@@ -65,26 +65,6 @@ class _HomePro extends State<HomePro> {
     getBrandImage();
   }
 
-  void setBrandActive()
-  {
-    if(currentBrand.endDatePay != null)
-    {
-      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
-      {
-
-        brandIsActive = true;
-      }
-      else
-      {
-        brandIsActive = false;
-      }
-    }
-    else
-    {
-      brandIsActive = false;
-    }
-  }
-
   Future<void> getBrandImage() async {
     var temp = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
     setState(() {

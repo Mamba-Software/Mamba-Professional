@@ -30,12 +30,16 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/Sess
 import 'package:mamba_castelldefels/Screens/MambaPro/Sesions/SesionsScreens/UserEventHistoryWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Sesions/SesionsScreens/UserRecentEventsWidget.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileViewUser extends StatefulWidget {
   @override
   String userID;
   bool viewOnly;
-  ProfileViewUser({Key? key, required this.userID, required this.viewOnly}) : super(key: key);
+  bool? comesFromChat;
+  ValueChanged<bool?>? blockedChanged;
+
+  ProfileViewUser({Key? key, required this.userID, required this.viewOnly, this.comesFromChat, this.blockedChanged}) : super(key: key);
   _ProfileViewUserState createState() => _ProfileViewUserState();
 }
 
@@ -53,6 +57,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   bool isDeleted = false;
   // Usuario
   Usuario user = Usuario();
+  bool blockedUser = false;
+  bool blockedByUser = false;
   // DateJoined
   DateTime dateJoined = DateTime.now();
   // User Event Stats
@@ -78,11 +84,19 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     getUser();
     super.initState();
   }
+
+  // Check if this user is blocked by the user
+  Future<void> checkUserBlocked() async {
+    blockedUser = await _userDataService.checkUserBlocked(currentUser.id!, widget.userID);
+    blockedByUser = await _userDataService.checkUserBlocked(widget.userID, currentUser.id!);
+  }
+
   // Gets the user info from firebase.
   void getUser() async {
     user = await _userDataService.getUserDetails(widget.userID);
     dateJoined = DateFormat('dd-MM-yyyy').parse(user.dateJoined!);
     checkIfHasAllBrandBonos();
+    checkUserBlocked();
     getUserEventsFinished();
   }
 
@@ -1035,9 +1049,9 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: user.isTrainer! == false ? 0.35 : 0.25,
+                        heightFactor: user.isTrainer! == false ? 0.50 : 0.40,
                         child: SizedBox(
-                          height: MediaQuery.of(context).size.height*0.4,
+                          height: MediaQuery.of(context).size.height*0.5,
                           width: MediaQuery.of(context).size.width,
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02, vertical: MediaQuery.of(context).size.width*0.03),
@@ -1051,7 +1065,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       textAlign: TextAlign.left
                                   ),
                                 ),
-                                ListTile(
+                                !blockedByUser? ListTile(
                                   leading: Icon(
                                     Icons.chat_outlined,
                                     size: MediaQuery.of(context).size.width*0.06,
@@ -1085,10 +1099,21 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       _roomDataService.updateRoom(room.id, room.metadata!);
                                     });
                                     if (!deleteRoom!) {
-                                      _roomDataService.deleteRoom(room.id);
                                       mixpanel!.track('profile_view_chat_empty');
+                                      _roomDataService.deleteRoom(room.id);
                                     }
                                   },
+                                ) : ListTile(
+                                  leading: Icon(
+                                    Icons.chat_outlined,
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  title: Text(
+                                      AppLocalizations.of(context)!.chatBottomNav,
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                                      textAlign: TextAlign.left
+                                  ),
                                 ),
                                 user.isTrainer! == false ? ListTile(
                                   leading: Icon(
@@ -1177,6 +1202,56 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     }
                                   },
                                 ) : Container(),
+                                ListTile(
+                                  leading: Icon(
+                                    Icons.flag_outlined,
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                    color: AppColors.red,
+                                  ),
+                                  title: Text(
+                                      AppLocalizations.of(context)!.report,
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.red,),
+                                      textAlign: TextAlign.left
+                                  ),
+                                  onTap: () async {
+                                    mixpanel!.track('profile_view_report_button');
+                                    launchEmail();
+                                  },
+                                ),
+                                ListTile(
+                                  leading: Icon(
+                                    blockedUser ? Icons.disabled_visible : Icons.block,
+                                    size: MediaQuery.of(context).size.width*0.06,
+                                    color: AppColors.red,
+                                  ),
+                                  title: Text(
+                                      blockedUser? AppLocalizations.of(context)!.unblock : AppLocalizations.of(context)!.block,
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.red,),
+                                      textAlign: TextAlign.left
+                                  ),
+                                  onTap: () async {
+                                    Navigator.pop(context);
+                                    if(!blockedUser)
+                                    {
+                                      mixpanel!.track('profile_view_unblock_button');
+                                      _userDataService.addUserBlocked(currentUser.id!, user.id!);
+                                    }
+                                    else {
+                                      mixpanel!.track(
+                                          'profile_view_block_button');
+                                      _userDataService.deleteUserBlocked(
+                                          currentUser.id!, user.id!);
+                                    }
+                                    setState(() {
+                                      blockedUser = !blockedUser;
+
+                                    });
+                                    if(widget.comesFromChat != null && widget.comesFromChat == true)
+                                    {
+                                      widget.blockedChanged!(blockedUser);
+                                    }
+                                  },
+                                ),
                               ],
                             ),
                           ),
@@ -1223,6 +1298,20 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
         ),
       ),
     );
+  }
+
+  Future<void> launchEmail() async {
+    final Uri params = Uri(
+      scheme: 'mailto',
+      path: 'mambastylecastelldefels@gmail.com',
+      query: 'subject=Report '+ widget.userID + '&body=' +  AppLocalizations.of(context)!.reportUserFor,
+    );
+    var url = params.toString();
+    // const url = 'mailto:mambastylecastelldefels@gmail.com';
+    //if (await canLaunchUrl(Uri.parse(url))) {
+    await launchUrl(Uri.parse(url));
+
+    //}
   }
 
   bool canDeleteFromBrand() {

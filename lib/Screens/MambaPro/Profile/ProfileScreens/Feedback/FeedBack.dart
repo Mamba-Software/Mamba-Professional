@@ -175,6 +175,7 @@ class _FeedBackState extends State<FeedBack> {
             SizedBox(height: MediaQuery.of(context).size.height*0.05,),
             GestureDetector(
               onTap: () {
+                /*
                 Navigator.push(
                   context,
                     CupertinoPageRoute<String>(
@@ -183,6 +184,7 @@ class _FeedBackState extends State<FeedBack> {
                   )).whenComplete(() {
                       checkIfAnswered();
                   });
+                 */
               },
               child: Stack(
                 alignment: Alignment.bottomCenter,

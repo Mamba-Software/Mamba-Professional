@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
@@ -47,6 +48,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
   final _dynamicLinkUtils = DynamicLinkUtils();
+  final _userDataService = UserDataService();
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
@@ -107,6 +109,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   String deletedObject = "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/not-found-image.jpg?alt=media&token=70687295-6a17-4735-9c0a-e5749c777319";
   // Event Bonos
   List<Bono> eventBonos = [];
+  List<String> userIsBlockedBy = [];
 
   @override
   initState() {
@@ -163,6 +166,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     setState(() {
       isFull = (event!.numClients!/event!.maxMembers! == 1);
     });
+    await getUsersBlockedUser();
     await getEventUsers();
     await getEventBonos();
     await getEventLocation(event!.id!);
@@ -174,6 +178,10 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
         });
       });
     }
+  }
+
+  Future<void> getUsersBlockedUser() async {
+    userIsBlockedBy = await _userDataService.getBlockedByUsers(currentUser.id!);
   }
 
   Future<void> getEventBonos() async {
@@ -1262,6 +1270,11 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   itemCount: eventClients.length,
                                   itemBuilder: (context, int index) {
                                     var client = eventClients[index];
+                                    print(userIsBlockedBy[0]);
+                                    print(client.id);
+                                    if(userIsBlockedBy.contains(client.id)) {
+                                      client.isPrivate = true;
+                                    }
                                     var clientFeedback = eventClientsFeedback[index];
                                     return GestureDetector(
                                       onTap: () {

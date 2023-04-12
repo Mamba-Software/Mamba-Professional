@@ -233,17 +233,6 @@ class _MambaState extends State<Mamba> {
     });
   }
 
-  void setBrandActive()
-  {
-    if(currentBrand.endDatePay != null)
-    {
-      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
-      {
-          brandIsActive = true;
-      }
-    }
-  }
-
   // listenNotifications if User Taps on Notifications
   Future<void> handleAndlistenNotifications(BuildContext context) async {
     // Did Launch the App

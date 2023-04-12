@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "331547241606-6f4hu47s7oqlhb4agg02a8fpbpir3ddi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mamba.mambaprofessionalapp",
+            "certificate_hash": "d0b74db4338aeac09fc0864fdc8d6e1b05cf3576"
+          }
+        },
+        {
+          "client_id": "331547241606-pboj0pf5jjstb9pntecp4g2uulotqr2g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mamba.mambaprofessionalapp",
+            "certificate_hash": "9cfd6b3f5415df794e35a0528024405f8f512f96"
+          }
+        },
+        {
           "client_id": "331547241606-kan54dkiql9kp2cgk41fata2nubl239s.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -58,11 +74,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "331547241606-16ebe70vk109mlsti2vros68l6lm3d3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mamba.mambastyleapp",
+            "certificate_hash": "682ef15e16b3acc62181dad3120a4589945fe40f"
+          }
+        },
+        {
           "client_id": "331547241606-a3sl6m287a306tlvtooc02v9dot8a545.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.mamba.mambastyleapp",
             "certificate_hash": "3dc288cc70d7b86e5f28b56beebae121b0e981c9"
+          }
+        },
+        {
+          "client_id": "331547241606-mn9i3kigsv27da65lenbvi9vr8kgqf4k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mamba.mambastyleapp",
+            "certificate_hash": "26a91111e9f629e6676ceaa9aecb9224a93e5f00"
           }
         },
         {

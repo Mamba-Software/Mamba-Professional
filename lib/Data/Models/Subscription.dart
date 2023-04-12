@@ -12,6 +12,7 @@ class Subscription {
   bool? isActive;
   int? duration;
   String? promotion;
+  String? subscriptionId;
 
   Subscription({
     this.id,
@@ -23,6 +24,7 @@ class Subscription {
     this.isActive,
     this.duration,
     this.promotion,
+    this.subscriptionId,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,9 @@ class Subscription {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('descriptionCat')) {
       descriptionCat = documentSnapshot.get("descriptionCat").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('subscriptionId')) {
+      subscriptionId = documentSnapshot.get("subscriptionId").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('duration')) {
       duration = documentSnapshot.get("duration");

@@ -11,7 +11,7 @@ import '../Data/LibraryModels/lColor.dart';
 bool isProduction = true;
 
 // App Version
-var appVersion = "MAMBA v0.0.10";
+var appVersion = "MAMBA v0.0.11";
 
 List<lColor> currentColors = [];
 List<lDegradate> currentDegradates = [];//0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
@@ -61,6 +61,26 @@ final GlobalKey<ScaffoldState> mambaProScaffoldKey = GlobalKey<ScaffoldState>();
 
 // Dynamic Links Path
 var dynamicLinkBrandId;
+
+void setBrandActive()
+{
+  if(currentBrand.endDatePay != null)
+  {
+    if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+    {
+
+      brandIsActive = true;
+    }
+    else
+    {
+      brandIsActive = false;
+    }
+  }
+  else
+  {
+    brandIsActive = false;
+  }
+}
 
 
 

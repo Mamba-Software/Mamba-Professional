@@ -12,6 +12,8 @@ import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
+import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/OrderFilter/OrderFilter.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -19,6 +21,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileVie
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../015-AddMembers/MembershipRequestsPro.dart';
@@ -47,11 +51,14 @@ class _Clients extends State<Clients> {
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
   final _roomDataService = RoomDataService();
+  final _dynamicLinkUtils = DynamicLinkUtils();
   // Boolean Loading
   bool isLoading = false;
   // Search Controller
   bool searchClicked = false;
   var searchController = TextEditingController();
+
+  String brandUrlClient = "";
 
   // Members Page
   List<Usuario> allMembers = [];
@@ -82,6 +89,13 @@ class _Clients extends State<Clients> {
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
+    });
+  }
+
+  Future<void> getBrandLink() async {
+    Uri brandUriClient = await _dynamicLinkUtils.createDynamicLinkWithIdClient(currentBrand.id!, currentBrand.logoUrl!, currentBrand.name!);
+    setState(() {
+      brandUrlClient = brandUriClient.toString();
     });
   }
 
@@ -179,6 +193,7 @@ class _Clients extends State<Clients> {
       }),
       );
     isLoading = true;
+    getBrandLink();
     getAllUsers();
   }
 
@@ -612,6 +627,51 @@ class _Clients extends State<Clients> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                ListTile(
+                  leading: Container(
+                    height: MediaQuery.of(context).size.width*0.2,
+                    width: MediaQuery.of(context).size.width*0.15,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                      color:  Theme.of(context).scaffoldBackgroundColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.add, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.07),
+                  ),
+                  title: Text(
+                    AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.clients,
+                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.left,
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.shareInvitationText,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ],
+                  ),
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      builder: (BuildContext context) {
+                        return const FractionallySizedBox(
+                          heightFactor: 0.75,
+                          child: ShareBrandLink(addStaff: false,),
+                        );
+                      },
+                    );
+                  },
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.004),
               ],
             ),
           ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
@@ -691,6 +751,7 @@ class _Clients extends State<Clients> {
           SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               Usuario user = filteredMembers[index];
+              DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
               return ListTile(
                 leading: CircularImage(
                   size: MediaQuery.of(context).size.width*0.15,
@@ -707,7 +768,8 @@ class _Clients extends State<Clients> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "@${user.nick!}",
+                      user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
+                      AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
                       style: Theme.of(context).textTheme.caption,
                     ),
                   ],
@@ -718,7 +780,8 @@ class _Clients extends State<Clients> {
                   padding: const EdgeInsets.all(0),
                   onPressed: false ? () {
                   } : null,
-                ) : IconButton(
+                ) :
+                IconButton(
                   icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.all(0),

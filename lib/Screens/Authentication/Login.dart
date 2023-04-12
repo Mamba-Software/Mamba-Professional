@@ -628,34 +628,54 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   }
 
   void signInWithGoogle() async {
-    final user = await googleSignIn.signIn();
-    if (user == null) {
-      setState(() {
-        isLoadingGoogle = false;
-      });
-      showInSnackBar(AppLocalizations.of(context)!.loginError);
-    } else {
-      final googleAuth = await user.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
-      bool userExists = await _userDataService.checkIfUserExists(authResult.user!.uid);
-      if (userExists) {
-        // Check it is no Trainer
-        bool? isTrainer;
-        try {
-          isTrainer = await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
-          if (isTrainer != null && isTrainer == false) {
-            await _userDataService.signOut();
-            await googleSignIn.signOut();
+    try {
+      final user = await googleSignIn.signIn();
+      if (user == null) {
+        setState(() {
+          isLoadingGoogle = false;
+        });
+        showInSnackBar(AppLocalizations.of(context)!.loginError);
+      } else {
+        final googleAuth = await user.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+        UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(credential);
+        bool userExists = await _userDataService.checkIfUserExists(authResult.user!.uid);
+        if (userExists) {
+          // Check it is no Trainer
+          bool? isTrainer;
+          try {
+            isTrainer = await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
+            if (isTrainer != null && isTrainer == false) {
+              await _userDataService.signOut();
+              await googleSignIn.signOut();
+              setState(() {
+                isLoadingGoogle = false;
+              });
+              showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
+            } else {
+              mixpanel!.track('mamba_google_login_completed');
+              Navigator.pushReplacement(
+                  context,
+                  CupertinoPageRoute<void>(
+                    builder: (context) => const SplashScreen(),
+                    settings: const RouteSettings(name: 'SplashScreen'),
+                  )
+              );
+            }
+          } catch (e) {
             setState(() {
-              isLoadingGoogle = false;
+              isLoading = false;
             });
-            showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
-          } else {
-            mixpanel!.track('mamba_google_login_completed');
+            showInSnackBar(AppLocalizations.of(context)!.loginError);
+          }
+        } else {
+          // Create an account and a user for this new person from google
+          bool result = await _userDataService.addUserGoogle(authResult, Localizations.localeOf(context).languageCode);
+          if (result) {
+            mixpanel!.track('mamba_google_register_completed');
             Navigator.pushReplacement(
                 context,
                 CupertinoPageRoute<void>(
@@ -663,32 +683,20 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   settings: const RouteSettings(name: 'SplashScreen'),
                 )
             );
+          } else {
+            setState(() {
+              isLoadingGoogle = false;
+            });
+            showInSnackBar(AppLocalizations.of(context)!.loginError);
           }
-        } catch (e) {
-          setState(() {
-            isLoading = false;
-          });
-          showInSnackBar(AppLocalizations.of(context)!.loginError);
-        }
-      } else {
-        // Create an account and a user for this new person from google
-        bool result = await _userDataService.addUserGoogle(authResult, Localizations.localeOf(context).languageCode);
-        if (result) {
-          mixpanel!.track('mamba_google_register_completed');
-          Navigator.pushReplacement(
-              context,
-              CupertinoPageRoute<void>(
-                builder: (context) => const SplashScreen(),
-                settings: const RouteSettings(name: 'SplashScreen'),
-              )
-          );
-        } else {
-          setState(() {
-            isLoadingGoogle = false;
-          });
-          showInSnackBar(AppLocalizations.of(context)!.loginError);
         }
       }
+    } catch (e) {
+      setState(() {
+        isLoadingGoogle = false;
+      });
+      print(e.toString());
+      showInSnackBar(AppLocalizations.of(context)!.registerError);
     }
   }
 

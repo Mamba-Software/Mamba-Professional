@@ -24,7 +24,7 @@ class MambaProUtils {
     if(pageIndex == 2)return Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)),);
     if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
-    if(pageIndex == 8)return Text(AppLocalizations.of(context)!.information);
+    if(pageIndex == 8)return Text(AppLocalizations.of(context)!.information, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 7)return Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 9)return Text(AppLocalizations.of(context)!.stats, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
@@ -43,7 +43,7 @@ class MambaProUtils {
   {
     if(pageIndexView == 1) return Icon(Icons.badge_outlined, color: returnColor(context));
     if(pageIndexView == 2) return Icon(Icons.group_outlined, color: returnColor(context));
-    if(pageIndexView == 8) return Icon(Icons.feed_outlined, color: Theme.of(context).primaryColor);
+    if(pageIndexView == 8) return Icon(Icons.feed_outlined, color: returnColor(context));
     if(pageIndexView == 13) return Icon(Icons.question_mark_outlined, color: returnColor(context));
     if(pageIndexView == 4) return Icon(Icons.category, color: returnColor(context));
     if(pageIndexView == 5) return Icon(Icons.confirmation_number_outlined, color: returnColor(context),);
