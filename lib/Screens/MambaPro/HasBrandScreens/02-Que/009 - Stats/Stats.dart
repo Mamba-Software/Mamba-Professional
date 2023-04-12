@@ -282,7 +282,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 expandedHeight: MediaQuery.of(context).size.height * 0.13,
                 systemOverlayStyle: SystemUiOverlayStyle.light,
                 elevation: 0,
-                floating: true,
+                floating: false,
                 pinned: true,
                 forceElevated: innerBoxIsScrolled,
                 //snap: true,
@@ -426,7 +426,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 expandedHeight: MediaQuery.of(context).size.height * 0.13,
                 systemOverlayStyle: SystemUiOverlayStyle.light,
                 elevation: 0,
-                floating: true,
+                floating: false,
                 pinned: true,
                 forceElevated: innerBoxIsScrolled,
                 //snap: true,
@@ -556,7 +556,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           width: double.infinity,
           // color: Theme.of(context).backgroundColor,
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).scaffoldBackgroundColor,
             border: Border(
               top: BorderSide(width: 1, color: Theme.of(context).primaryColor),
             ),

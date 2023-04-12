@@ -19,6 +19,7 @@ class BrandDataService {
   // Check Data
   Future<bool> checkIfBrandExists(String brandId) => _firebase.checkIfBrandExists(brandId);
   Future<Brand?> checkUserIsBrandCreator(String userId) => _firebase.checkUserIsBrandCreator(userId);
+  Future<bool> checkIfBrandBonoHasPurchases(String brandId, String bonoId) => _firebase.checkIfBrandBonoHasPurchases(brandId, bonoId);
 
   // Get Data
   Future<Brand> getBrandDetails(String brandId) => _firebase.getBrandDetails(brandId);
@@ -52,6 +53,7 @@ class BrandDataService {
   // Update Data
   Future<void> updateBrandInfo(String brandID, String name,String description, int maxMembers, List<double> workShift, int bookingWindow) => _firebase.updateBrandInfo(brandID, name, description, maxMembers, workShift, bookingWindow);
   Future<String> updateBrandPhoto(String brandID, File image) => _firebase.updateBrandPhoto(brandID, image);
+  Future<void> updateBrandBaseImage(String brandID, ImageObject newBaseImage, String? oldBaseImage) => _firebase.updateBrandBaseImage(brandID, newBaseImage, oldBaseImage);
   Future<void> updateBrandBaseLocation(String brandID, String locationID) => _firebase.updateBrandBaseLocation(brandID, locationID);
   Future<void> updateBrandRoom(String brandID, String roomId) => _firebase.updateBrandRoom(brandID, roomId);
   Future<void> updateBono(String brandId, Bono bono, Condition condition) => _firebase.updateBono(brandId, bono, condition);
@@ -67,6 +69,7 @@ class BrandDataService {
   Future<void> deleteBrandUsers(String brandId) => _firebase.deleteBrandUsers(brandId);
   Future<void> deleteBrandEvents(String brandId) => _firebase.deleteBrandEvents(brandId);
   Future<void> deleteBrandLocations(String brandId) => _firebase.deleteBrandLocations(brandId);
+  Future<void> deleteBrandBono(String brandId, String bonoId) => _firebase.deleteBrandBono(brandId, bonoId);
   Future<void> deleteBrandBonoRequest(String brandId, String userId, String? bonoRequestId) => _firebase.deleteBrandBonoRequest(brandId, userId, bonoRequestId);
   Future<void> deleteUserBrandBonos(String brandId, String userId) => _firebase.deleteUserBrandBonos(brandId, userId);
 

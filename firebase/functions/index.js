@@ -333,6 +333,12 @@ exports.brandUpdatesCoverData = functions
       } else if (before.logoUrl != after.logoUrl) {
         coverDataChange = true;
       }
+      else if(before.zipCode != after.zipCode || before.city != after.city || before.longitude != after.longitude || before.latitude != after.latitude) {
+        coverDataChange =true;
+      }
+      else if(before.baseImage != after.baseImage) {
+        coverDataChange =true;
+      }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -354,6 +360,12 @@ exports.brandUpdatesCoverData = functions
           .update({
             "name": after.name,
             "logoUrl": after.logoUrl,
+            "zipCode": after.zipCode,
+            "city": after.city,
+            "longitude": after.longitude,
+            "latitude": after.latitude,
+            "baseImage": after.baseImage,
+            "geoPosition": after.geoPosition,
           });
         }
         // Update the Brands Subcollection in Events
@@ -713,6 +725,9 @@ exports.locationUpdatesCoverData = functions
       } else if (before.longitude != after.longitude) {
         coverDataChange = true;
       }
+      else if(before.geoPosition != after.geoPosition) {
+              coverDataChange =true;
+      }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -728,6 +743,7 @@ exports.locationUpdatesCoverData = functions
           "description": after.description,
           "latitude": after.latitude,
           "longitude": after.longitude,
+          "geoPosition": after.geoPosition,
         });
         // Update All Events in this Location
         const eventLocationsSnapshot = await db.collection("Locations").doc(locationId).collection("Events").get();
@@ -746,6 +762,13 @@ exports.locationUpdatesCoverData = functions
             "description": after.description,
             "latitude": after.latitude,
             "longitude": after.longitude,
+            "geoPosition": after.geoPosition,
+          });
+          await db
+          .collection("Events")
+          .doc(id)
+          .update({
+          "geoPosition": after.geoPosition,
           });
         }
       }
@@ -778,6 +801,17 @@ exports.userJoinsBrand = functions
         userDoc.isTrainer,
         userDoc.notificationToken,
         );
+        if(userDoc.isTrainer == true)
+        {
+            await db
+                    .collection("Users")
+                    .doc(userId)
+                    .collection("BlockedByUsers")
+                    .doc("test")
+                    .set({
+                  "userId": "test",
+                });
+        }
       // Get Data of the Brand
       const brandSnapshot = await db.collection("Brands").doc(brandId).get();
       const brandDoc = brandSnapshot.data();
@@ -836,6 +870,12 @@ exports.userJoinsBrand = functions
         "dateJoined": formatted,
         "myMonthlySessions": 0,
         "myTotalSessions": 0,
+        "zipCode": brandDoc.zipCode,
+        "city": brandDoc.city,
+        "longitude": brandDoc.longitude,
+        "latitude": brandDoc.latitude,
+        "baseImage": brandDoc.baseImage,
+        "geoPosition": brandDoc.geoPosition,
       });
       // Update Date Joined Users/Brand
       await db.doc("/Brands/"+brandId+"/Users/"+userId+"").update({
@@ -1130,6 +1170,7 @@ exports.userAddsLocation = functions
        "description": locationDoc.description,
        "latitude": locationDoc.latitude,
        "longitude": locationDoc.longitude,
+       "geoPosition": locationDoc.geoPosition,
      });
       return null;
     });
@@ -1409,6 +1450,7 @@ exports.userAddsEvent = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
+          "brandID": eventDoc.brandID,
         });
         // If Event Private
         // Add to Locations/Events/Private Events/PrivateEvents
@@ -1433,6 +1475,7 @@ exports.userAddsEvent = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
+          "brandID": eventDoc.brandID,
         });
        }
      }
@@ -1602,6 +1645,7 @@ exports.userJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        "brandID": eventDoc.brandID,
       });
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
@@ -1626,6 +1670,7 @@ exports.userJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        "brandID": eventDoc.brandID,
       });
      }
       // Update Number of Client and Trainers on Each of Event Subcollection
@@ -2418,6 +2463,14 @@ exports.zzzzBrandUpdatesCoverData = functions
       } else if (before.logoUrl != after.logoUrl) {
         coverDataChange = true;
       }
+      //TODO INTEGRATE .12
+      else if(before.zipCode != after.zipCode || before.city != after.city || before.longitude != after.longitude || before.latitude != after.latitude) {
+        coverDataChange = true;
+      }
+      else if(before.baseImage != after.baseImage) {
+        coverDataChange = true;
+      }
+      //TODO INTEGRATE .12
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -2429,8 +2482,8 @@ exports.zzzzBrandUpdatesCoverData = functions
           "Brands Users Num =",
           brandsUsersSnapshot.size,
           );
+          //TODO INTEGRATION VERSION .12
         for (var i in brandsUsersSnapshot.docs) {
-          const id = brandsUsersSnapshot.docs[i].id;
           await db
           .collection("7777 Users")
           .doc(id)
@@ -2439,8 +2492,15 @@ exports.zzzzBrandUpdatesCoverData = functions
           .update({
             "name": after.name,
             "logoUrl": after.logoUrl,
+            "zipCode": after.zipCode,
+            "city": after.city,
+            "longitude": after.longitude,
+            "latitude": after.latitude,
+            "baseImage": after.baseImage,
+            "geoPosition": after.geoPosition,
           });
         }
+        //TODO INTEGRATE .12
         // Update the Brands Subcollection in Events
         const brandEventsSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Events").get();
         functions.logger.log(
@@ -2794,6 +2854,9 @@ exports.zzzzLocationUpdatesCoverData = functions
       } else if (before.longitude != after.longitude) {
         coverDataChange = true;
       }
+      else if (before.geoPosition != after.geoPosition) {
+              coverDataChange = true;
+      }
       functions.logger.log(
         "COVER DATA CHANGED?",
         coverDataChange,
@@ -2809,6 +2872,8 @@ exports.zzzzLocationUpdatesCoverData = functions
           "description": after.description,
           "latitude": after.latitude,
           "longitude": after.longitude,
+          //TODO INTEGRATION VERSION .12
+          "geoPosition": after.geoPosition,
         });
         // Update All Events in this Location
         const eventLocationsSnapshot = await db.collection("7777 Locations").doc(locationId).collection("Events").get();
@@ -2827,7 +2892,17 @@ exports.zzzzLocationUpdatesCoverData = functions
             "description": after.description,
             "latitude": after.latitude,
             "longitude": after.longitude,
+            //TODO INTEGRATION VERSION .12
+            "geoPosition": after.geoPosition,
           });
+            //TODO INTEGRATION VERSION .12
+             await db
+            .collection("7777 Events")
+            .doc(id)
+            .update({
+              //TODO INTEGRATION VERSION .12
+              "geoPosition": after.geoPosition,
+            });
         }
       }
       return null;
@@ -2859,6 +2934,17 @@ exports.zzzzUserJoinsBrand = functions
         userDoc.isTrainer,
         userDoc.notificationToken,
         );
+        if(userDoc.isTrainer == true)
+        {
+            await db
+                    .collection("7777 Users")
+                    .doc(userId)
+                    .collection("BlockedByUsers")
+                    .doc("test")
+                    .set({
+                  "userId": "test",
+                });
+        }
       // Get Data of the Brand
       const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
       const brandDoc = brandSnapshot.data();
@@ -2908,7 +2994,8 @@ exports.zzzzUserJoinsBrand = functions
       }
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
-      var formatted = day+"-"+month+"-"+result;          
+      var formatted = day+"-"+month+"-"+result;
+
       // Update Date Joined Users/Brand
       await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
         "name": brandDoc.name,
@@ -2916,6 +3003,13 @@ exports.zzzzUserJoinsBrand = functions
         "dateJoined": formatted,      
         "myMonthlySessions": 0,
         "myTotalSessions": 0,
+        //TODO INTEGRATION VERSION .12
+        "zipCode": brandDoc.zipCode,
+        "city": brandDoc.city,
+        "longitude": brandDoc.longitude,
+        "latitude": brandDoc.latitude,
+        "baseImage": brandDoc.baseImage,
+        "geoPosition": brandDoc.geoPosition,
       });
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
@@ -3210,6 +3304,8 @@ exports.zzzzUserAddsLocation = functions
        "description": locationDoc.description,
        "latitude": locationDoc.latitude,
        "longitude": locationDoc.longitude,
+       //TODO INTEGRATE .12
+       "geoPosition": locationDoc.geoPosition,
      });
       return null;
     });
@@ -3486,6 +3582,8 @@ exports.zzzzUserAddsEvent = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
+          //TODO INTEGRATION .12
+          "brandID": eventDoc.brandID,
         });
         // If Event Private
         // Add to Locations/Events/Private Events/PrivateEvents
@@ -3510,6 +3608,8 @@ exports.zzzzUserAddsEvent = functions
           "numTrainers": numTrainers,
           "numClients": numClients,
           "maxMembers": eventDoc.maxMembers,
+          //TODO INTEGRATION .12
+          "brandID": eventDoc.brandID,
         });
        }
      }
@@ -3672,6 +3772,8 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        //TODO INTEGRATION .12
+        "brandID": eventDoc.brandID,
       });
 
       //TODO AFEGIT JOAN MANEL INTEGRACIÓ BONOS
@@ -3723,6 +3825,8 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        //TODO INTEGRATION .12
+        "brandID": eventDoc.brandID,
       });
      }
       // Update Number of Client and Trainers on Each of Event Subcollection
@@ -3756,7 +3860,7 @@ exports.zzzzUserJoinsEvent = functions
       }
       // Brand´s Event Second
       for (var i in eventBrandsSnapshot.docs) {
-        const id = eventBrandsSnapshot.docs[i].id;      
+        const id = eventBrandsSnapshot.docs[i].id;
         // Update Last Event At
         await db
         .collection("7777 Brands")

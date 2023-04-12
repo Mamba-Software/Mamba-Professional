@@ -43,6 +43,9 @@ class BonoCard extends StatefulWidget {
 }
 
 class BonoCardState extends State<BonoCard> {
+  // Modal Clicked
+  bool isModalClicked = false;
+
   // Models i base de Dades
   Bono bono = Bono();
   Brand brand = Brand();
@@ -176,7 +179,7 @@ class BonoCardState extends State<BonoCard> {
                         )
                       : null,
                   color: Color(int.parse(_lColor.getlColor(bono.color!).hexa!)).withOpacity(bono.opacity!),
-                  borderRadius: BorderRadius.all(Radius.circular(widget.width*0.03))),
+                  borderRadius: BorderRadius.all(Radius.circular(widget.width*0.05))),
           // Animation
           duration: const Duration(milliseconds: 500),
           curve: Curves.fastOutSlowIn,
@@ -351,22 +354,54 @@ class BonoCardState extends State<BonoCard> {
                                                                 Colors.white),
                                                     textAlign: TextAlign.left,
                                                   ),
-                                            bono.isActive! == false ? Row(
-                                              children: [
-                                                SizedBox(
-                                                  width: widget.width * 0.05,
+                                            SizedBox(
+                                              width: widget.width * 0.05,
+                                            ),
+                                            bono.isActive! == false ? SizedBox(
+                                              height: widget.height * 0.15,
+                                              width: widget.width * 0.2,
+                                              child: FittedBox(
+                                                fit: BoxFit.contain,
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: AppColors.red,
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      AppLocalizations.of(context)!.desactive.toUpperCase(),
+                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                                                      textAlign: TextAlign.center,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.visible,
+                                                    ),
+                                                  ),
                                                 ),
-                                                Text(
-                                                  "("+AppLocalizations.of(context)!.desactive+")",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.copyWith(
-                                                      color: Colors.white, fontSize: 12),
-                                                  textAlign: TextAlign.left,
+                                              ),
+                                            ) : SizedBox(
+                                              height: widget.height * 0.15,
+                                              width: widget.width * 0.2,
+                                              child: FittedBox(
+                                                fit: BoxFit.contain,
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Colors.green,
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      AppLocalizations.of(context)!.active.toUpperCase(),
+                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                                                      textAlign: TextAlign.center,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.visible,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ],
-                                            ) : Container(),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -762,11 +797,20 @@ class BonoCardState extends State<BonoCard> {
                   : Container(),
               isExpanded && widget.onlyView == false
                   ? GestureDetector(
-                      onTap: () {
-                        if (widget.onlyView != null &&
-                            widget.onlyView == false) {
-                          navigateToAddBonosScreen(bono, brand, true);
-                        }
+                      onTap: () async {
+                        await showModalBottomSheet<bool?>(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
+                            ),
+                          ),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          builder: (BuildContext context) {
+                            return modalBottomSheet();
+                          },
+                        );
                       },
                       child: Container(
                         height: widget.height * 0.4,
@@ -806,7 +850,7 @@ class BonoCardState extends State<BonoCard> {
           height: isExpanded ? widget.height * isExpandedHeight : widget.height,
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.3),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
+            borderRadius: BorderRadius.all(Radius.circular(widget.width*0.05)),
           ),
           // Animation
           duration: const Duration(milliseconds: 500),
@@ -857,38 +901,47 @@ class BonoCardState extends State<BonoCard> {
                 ),
               )
                   : Container(),
-              isExpanded && widget.onlyView == false
-                  ? GestureDetector(
-                onTap: () {
-                  if (widget.onlyView != null &&
-                      widget.onlyView == false) {
-                    navigateToAddBonosScreen(bono, brand, true);
-                  }
-                },
-                child: Container(
-                  height: widget.height * 0.4,
-                  width: widget.width,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
+              isExpanded && widget.onlyView == false ?
+                GestureDetector(
+                  onTap: () async {
+                    await showModalBottomSheet<bool?>(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20),
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      builder: (BuildContext context) {
+                        return modalBottomSheet();
+                      },
+                    );
+                  },
+                  child: Container(
+                    height: widget.height * 0.4,
+                    width: widget.width,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(
+                        widget.clientView != null &&
+                            widget.clientView == true
+                            ? AppLocalizations.of(
+                            context)!.buy
+                            : AppLocalizations.of(context)!.edit,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline3
+                            ?.copyWith(color: Theme.of(context).primaryColorDark),
+                      ),
                     ),
                   ),
-                  child: Center(
-                    child: Text(
-                      widget.clientView != null &&
-                          widget.clientView == true
-                          ? AppLocalizations.of(
-                          context)!.buy
-                          : AppLocalizations.of(context)!.edit,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline3
-                          ?.copyWith(color: Theme.of(context).primaryColorDark),
-                    ),
-                  ),
-                ),
               )
                   : Container(),
             ],
@@ -899,19 +952,136 @@ class BonoCardState extends State<BonoCard> {
     );
   }
 
-  // Navigate to Add Bonos
-  void navigateToAddBonosScreen(Bono bono, Brand brand, bool edit) {
-    Bono bonoNew = Bono();
-    bonoNew = bono;
-    isExpanded = false;
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => AddEditBono(
-            brand: brand,
-            bono: bono,
-            edit: edit,
+  // Modal Bottom Sheet Add/Edit/DeleteBono
+  Widget modalBottomSheet() {
+    return FractionallySizedBox(
+      heightFactor: 0.37,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        },
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.4,
+          width: MediaQuery.of(context).size.width,
+          child: Padding(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text(
+                      AppLocalizations.of(context)!.choseOption,
+                      style: Theme.of(context).textTheme.caption,
+                      textAlign: TextAlign.left
+                  ),
+                  trailing: SizedBox(
+                    width: MediaQuery.of(context).size.width*0.5,
+                    child: Text(
+                      widget.bono.title!.toUpperCase(),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                  dense: true,
+                  onTap: null,
+                ),
+                ListTile(
+                  onTap: () async {
+                    if (widget.onlyView != null && widget.onlyView == false) {
+                      await _brandDataService.updateBonoActive(widget.brand.id!, bono.id!, !bono.isActive!);
+                      Navigator.pop(context);
+                    }
+                  },
+                  minLeadingWidth: MediaQuery.of(context).size.width*0.06,
+                  leading: Icon(bono.isActive! ? Icons.pause_circle_outline  : Icons.play_circle_outline, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
+                  title: Text(
+                      (bono.isActive! ? AppLocalizations.of(context)!.mambaProActivated.split(" ")[0] : AppLocalizations.of(context)!.mambaProDesactivated.split(" ")[0])+" "+AppLocalizations.of(context)!.bono.toLowerCase(),
+                      style: Theme.of(context).textTheme.bodyText1,
+                      textAlign: TextAlign.left
+                  ),
+                ),
+                ListTile(
+                  onTap: () async {
+                    if (widget.onlyView != null && widget.onlyView == false) {
+                      navigateToAddBonosScreen(bono, brand, true, false, false);
+                      setState(() {
+                        isModalClicked = true;
+                      });
+                    }
+                  },
+                  minLeadingWidth: MediaQuery.of(context).size.width*0.06,
+                  leading: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
+                  title: Text(
+                      AppLocalizations.of(context)!.editBono,
+                      style: Theme.of(context).textTheme.bodyText1,
+                      textAlign: TextAlign.left
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    if (widget.onlyView != null && widget.onlyView == false) {
+                      navigateToAddBonosScreen(bono, brand, false, true, false);
+                      setState(() {
+                        isModalClicked = true;
+                      });
+                    }
+                  },
+                  minLeadingWidth: MediaQuery.of(context).size.width*0.06,
+                  leading: Icon(Icons.file_copy_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
+                  title: Text(
+                      AppLocalizations.of(context)!.duplicate+" "+AppLocalizations.of(context)!.bono.toLowerCase(),
+                      style: Theme.of(context).textTheme.bodyText1,
+                      textAlign: TextAlign.left
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    if (widget.onlyView != null && widget.onlyView == false) {
+                      navigateToAddBonosScreen(bono, brand, true, false, true);
+                      setState(() {
+                        isModalClicked = true;
+                      });
+                    }
+                  },
+                  minLeadingWidth: MediaQuery.of(context).size.width*0.06,
+                  leading: Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.06),
+                  title: Text(
+                      AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.bono.toLowerCase(),
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
+                      textAlign: TextAlign.left
+                  ),
+                ),
+              ],
+            ),
           ),
-        ));
+        ),
+      ),
+    );
+  }
+
+
+  // Navigate to Add Bonos
+  Future<void> navigateToAddBonosScreen(Bono bono, Brand brand, bool edit, bool duplicate, bool delete) async {
+    isExpanded = false;
+    await Navigator.push(
+      context,
+      CupertinoPageRoute<void>(
+        builder: (context) => AddEditBono(
+          brand: brand,
+          bono: bono,
+          edit: edit,
+          duplicate: duplicate,
+          delete: delete,
+        ),
+      )).whenComplete(() => {
+        if (isModalClicked) {
+          Navigator.pop(context)
+        }
+    });
   }
 }

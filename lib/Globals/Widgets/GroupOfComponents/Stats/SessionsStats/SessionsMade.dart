@@ -58,7 +58,7 @@ class SessionsMadeState extends State<SessionsMade> {
       {
         formatter = formatterCat;
       }
-    print(filteredEvents);
+    //print(filteredEvents);
     filteredEvents = widget.events;
     filteredBackEvents = widget.backEvents;
     orderEvents();

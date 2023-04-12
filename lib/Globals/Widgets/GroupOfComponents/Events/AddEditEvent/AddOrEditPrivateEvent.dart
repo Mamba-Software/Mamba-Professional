@@ -138,7 +138,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future<void> initializeEventInfo() async {
-    if (widget.dateTime == null) {
+    if (widget.dateTime == null || widget.dateTime!.isBefore(DateTime.now())) {
       startDate = DateTime(
         startDate.year,
         startDate.month,
@@ -147,7 +147,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         0,
       );
     } else {
-      startDate = widget.dateTime!;
+      startDate = DateTime(
+        widget.dateTime!.year,
+        widget.dateTime!.month,
+        widget.dateTime!.day,
+        widget.dateTime!.hour,
+        0,
+      );
     }
     // Define Start Date Controller
     startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
@@ -543,10 +549,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.lock_outlined,
+                  Icons.person,
                   color: Theme.of(context).primaryColor,
-                  size: MediaQuery.of(context).size.width*0.05,
+                  size: MediaQuery.of(context).size.width*0.06,
                 ),
+                /*
                 SizedBox(height: MediaQuery.of(context).size.width*0.01),
                 FittedBox(
                   fit: BoxFit.contain,
@@ -555,7 +562,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                       style: Theme.of(context).textTheme.bodyText2,
                       textAlign: TextAlign.center
                   ),
-                ),
+                ),                
+                 */
               ],
             ),
           ),
@@ -676,6 +684,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
                                                         hintStyle: Theme.of(context).textTheme.caption,
+                                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red, height: 0.1),
                                                         hintText: AppLocalizations.of(context)!.titleHint,
                                                         border: InputBorder.none,
                                                         focusedBorder: InputBorder.none,
@@ -690,7 +699,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               )
                                           ),
                                           Padding(
-                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01),
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.018),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
@@ -759,12 +768,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           Padding(
                                             padding: const EdgeInsets.only(top: 15.0),
                                             child: ListTile(
-                                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.07,),
                                               title: Text(
                                                   location.description!,
                                                 style: Theme.of(context).textTheme.bodyText2,
                                               ),
-                                              trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                                              trailing: Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.07,),
+                                              contentPadding: EdgeInsets.zero,
                                               onTap: () async {
                                                 setState(() {
                                                   isLoading = true;
@@ -786,109 +796,168 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 }
                                               },
                                             ),
-                                          ),
-                                          allBonos.isNotEmpty ? Column(
-                                            children: [
-                                              Padding(
-                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    children: <Widget>[
-                                                      Column(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: <Widget>[
-                                                          Text(
-                                                            AppLocalizations.of(context)!.bonos,
-                                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  )
-                                              ),
-                                              Padding(
-                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.0),
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    children: <Widget>[
-                                                      Flexible(
-                                                        child: Text(
-                                                          AppLocalizations.of(context)!.bonosDescription,
-                                                          style: Theme.of(context).textTheme.caption,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  )
-                                              ),
-                                            ],
-                                          ) : Container(),
+                                          ),                                         
                                         ]
                                     ),
                                   ),
-                                  allBonos.isNotEmpty ? SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    height: MediaQuery.of(context).size.height*0.21,
-                                    child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: const BouncingScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: allBonos.length,
-                                        itemBuilder: (context, int index) {
-                                          var bono = allBonos[index];
-                                          return Row(
+                                  allBonos.isNotEmpty && brandClientsSelected.isEmpty ? Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      AppLocalizations.of(context)!.bonos,
+                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                        Padding(
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, bottom: MediaQuery.of(context).size.height*0.0),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                Flexible(
+                                                  child: Text(
+                                                    AppLocalizations.of(context)!.bonosDescriptionPrivate,
+                                                    style: Theme.of(context).textTheme.caption,
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                        selectedBonos.isEmpty ? Container(
+                                          height: MediaQuery.of(context).size.height*0.1,
+                                          width: MediaQuery.of(context).size.width*0.9,
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.red.withOpacity(0.2),
+                                            borderRadius: const BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                            border: Border.all(color: AppColors.red, width: 2),
+                                          ),
+                                          child: Row(
                                             children: [
-                                              index == 0 ? SizedBox(width: MediaQuery.of(context).size.width * 0.05) : Container(),
-                                              Padding(
-                                                padding: const EdgeInsets.only(right: 16.0),
-                                                child: Container(
-                                                    width: MediaQuery.of(context).size.width * 0.75,
-                                                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
-                                                    child: Stack(
-                                                      alignment: Alignment.bottomLeft,
+                                              Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
+                                              const SizedBox(width: 8),
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.bonosDescriptionPrivateWarning,
+                                                  textAlign: TextAlign.left,
+                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ) : Container(),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            TextButton(
+                                              child: Text(
+                                                AppLocalizations.of(context)!.selectAll,
+                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey),
+                                              ),
+                                              onPressed: () async {
+                                                for (var bono in allBonos) {
+                                                  int index = selectedBonos.indexWhere((element) => element == bono.id);
+                                                  if (index == -1) {
+                                                    setState(() {
+                                                      selectedBonos.add(bono.id!);
+                                                    });
+                                                  }
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        ListView.builder(
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            padding: EdgeInsets.zero,
+                                            shrinkWrap: true,
+                                            itemCount: allBonos.length,
+                                            itemBuilder: (context, int index) {
+                                              var bono = allBonos[index];
+                                              return Container(
+                                                height: MediaQuery.of(context).size.height * 0.05,
+                                                width: MediaQuery.of(context).size.width * 0.9,
+                                                margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Row(
                                                       children: [
-                                                        Positioned(
-                                                          top: 10,
-                                                          child: BonoCard(
-                                                            height: MediaQuery.of(context).size.height * 0.18,
-                                                            width: MediaQuery.of(context).size.width * 0.7,
-                                                            bono: bono,
-                                                            brand: currentBrand,
-                                                            canExpand: false,
-                                                            onlyView: true,
-                                                          ),
+                                                        BonoCard(
+                                                          height: MediaQuery.of(context).size.height * 0.05,
+                                                          width: MediaQuery.of(context).size.width * 0.17,
+                                                          bono: bono,
+                                                          brand: currentBrand,
+                                                          canExpand: false,
+                                                          onlyView: true,
                                                         ),
-                                                        Positioned(
-                                                          top: -6,
-                                                          left: MediaQuery.of(context).size.width * 0.57,
-                                                          child: MaterialButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                if (selectedBonos.contains(bono.id!)) {
-                                                                  selectedBonos.remove(bono.id!);
-                                                                } else {
-                                                                  selectedBonos.add(bono.id!);
-                                                                }
-                                                              });
-                                                            },
-                                                            elevation: 8,
-                                                            color: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
-                                                            textColor: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
-                                                            child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06,) : Container(),
-                                                            padding: null,
-                                                            shape: const CircleBorder(),
+                                                        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                                                        SizedBox(
+                                                          height: MediaQuery.of(context).size.height * 0.05,
+                                                          width: MediaQuery.of(context).size.width * 0.6,
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            children: [
+                                                              Flexible(
+                                                                child: Text(
+                                                                  bono.title!.toUpperCase(),
+                                                                  style: Theme.of(context).textTheme.bodyText1,
+                                                                  maxLines: 1,
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: MediaQuery.of(context).size.height * 0.04,
+                                                      width: MediaQuery.of(context).size.width * 0.1,
+                                                      child: MaterialButton(
+                                                        elevation: 4,
+                                                        color: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
+                                                        textColor: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
+                                                        child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
+                                                        padding: EdgeInsets.zero,
+                                                        shape: const CircleBorder(),
+                                                        onPressed: () {
+                                                          setState(() {
+                                                            if (selectedBonos.contains(bono.id!)) {
+                                                              selectedBonos.remove(bono.id!);
+                                                            } else {
+                                                              selectedBonos.add(bono.id!);
+                                                            }
+                                                          });
+                                                        },
+                                                      ),
                                                     )
+                                                  ],
                                                 ),
-                                              ),
-                                              index == allBonos.length-1 ? SizedBox(width: MediaQuery.of(context).size.width * 0.01) : Container(),
-                                            ],
-                                          );
-                                        }
+                                              );
+                                            }
+                                        ),
+                                      ],
                                     ),
                                   ) : Container(),
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                                 ],
                               ),
                             
@@ -1445,7 +1514,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 child: SizedBox(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: "4",
+                    heroTag: null,
                     onPressed: () {
                       if (_selectedIndex == 1) {
                         if (widget.eventId != null) {
@@ -1488,7 +1557,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 child: SizedBox(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: "5",
+                    heroTag: null,
                     onPressed: () async {
                       if (_selectedIndex == 0) {
                         if (formKeyInfo.currentState!.validate()){

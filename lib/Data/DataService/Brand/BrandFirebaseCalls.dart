@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -18,6 +19,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:uuid/uuid.dart';
 
 // Brand Firebase Service Class. All calls to Firebase are in this class.
@@ -123,6 +125,7 @@ class BrandFirebaseCalls {
         "description": location.description,
         "longitude": location.longitude,
         "latitude": location.latitude,
+        ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
       });
     } catch (e) {
       print(e.toString());
@@ -176,6 +179,40 @@ class BrandFirebaseCalls {
     else
       return brand;
   }
+
+  Future<bool> checkIfBrandBonoHasPurchases(String brandId, String bonoId) async {
+    try {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Bonos")
+          .doc(bonoId)
+          .collection("Purchases")
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        return true;
+      } else {
+        // Check if there is any open Request
+        QuerySnapshot querySnapshot2 = await _firestore
+            .collection(brands)
+            .doc(brandId)
+            .collection("Bonos")
+            .doc("Bonos Requests")
+            .collection("Bonos Requests")
+            .where("bonoId", isEqualTo: bonoId)
+            .get();
+        if (querySnapshot2.docs.isNotEmpty) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } catch (e) {
+      e.toString();
+      return false;
+    }
+  }
+
 
   //Getters
 
@@ -489,6 +526,11 @@ class BrandFirebaseCalls {
   //Add
 
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers, int bookingWindow) async {
+    QuerySnapshot querySnapshot3 = await _firestore.collection(library).doc('Images').collection("Events").get();
+    Random rnd = Random();
+    int index = rnd.nextInt(querySnapshot3.size);
+    //int index = 0;
+
     bool firestoreError = false;
     var uid = Uuid().v4();
     final DateTime now = DateTime.now();
@@ -507,6 +549,7 @@ class BrandFirebaseCalls {
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
       "isActive": false,
+      "baseImage": ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -555,11 +598,12 @@ class BrandFirebaseCalls {
         await storageRef.getDownloadURL().then((value) async {
           // Add Image to the Brand Images Subcollection
           await _firestore.collection(brands).doc(brandID)
-              .collection("Images")
-              .doc(uid)
-              .set({
+          .collection("Images")
+          .doc(uid)
+          .set({
             "url": value,
             "timestamp": Timestamp.now(),
+            "isBaseImage": false,
           });
         });
       });
@@ -654,12 +698,38 @@ class BrandFirebaseCalls {
     return result;
   }
 
+  Future<void> updateBrandBaseImage(String brandID, ImageObject newBaseImage, String? oldBaseImage) async {
+    // Brands Cover Data
+    await _firestore.collection(brands).doc(brandID).update({
+      "baseImage": newBaseImage.url!,
+    });
+    // Brands / Image
+    await _firestore.collection(brands).doc(brandID).collection("Images").doc(newBaseImage.id).update({
+      "isBaseImage": true,
+    });
+    // Only if there is an Old Base Image
+    if (oldBaseImage != null) {
+      await _firestore.collection(brands).doc(brandID).collection("Images").doc(oldBaseImage).update({
+        "isBaseImage": false,
+      });
+    }
+  }
+
   Future<void> updateBrandBaseLocation(String brandID, String locationID) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
+        .collection(locations)
+        .doc(locationID).get();
+    Location location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     await _firestore
         .collection(brands)
         .doc(brandID)
         .update({
-      "baseLocation": locationID
+      "baseLocation": locationID,
+      "zipCode": location.zipCode,
+      "city": location.city,
+      "latitude": location.latitude,
+      "longitude": location.longitude,
+      ...GeoFlutterUtils.getGeoPoint(location.latitude!, location.longitude!),
     });
   }
 
@@ -671,27 +741,20 @@ class BrandFirebaseCalls {
 
   Future<void> updateBono(String brandId, Bono bono, Condition condition) async {
     await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc(bono.id)
-        .update({
-      "title": bono.title,
+    .collection(brands)
+    .doc(brandId)
+    .collection("Bonos")
+    .doc(bono.id)
+    .update({
+      "title": bono.title!,
       "description": bono.description,
+      "price": bono.price!,
+      "sessions": bono.sessions,
       "isActive": bono.isActive,
       "color": bono.color,
       "opacity": bono.opacity,
       "imageUrl": bono.imageUrl,
       "isDegradate": bono.isDegradate,
-    }).catchError((err) {
-      print(err);
-    });
-    await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Bonos")
-        .doc(bono.id).collection('Conditions').doc('Conditions')
-        .update({
       "expirationTime": condition.expirationTime,
       "weeklySessions": condition.weeklySessions,
       "cancelTime": condition.cancelTime,
@@ -889,6 +952,16 @@ class BrandFirebaseCalls {
         .doc("Bonos Requests")
         .collection("Bonos Requests")
         .doc(bonoRequestId)
+        .delete();
+  }
+
+  // Delete Brand Bono Request
+  Future<void> deleteBrandBono(String brandId, String bonoId) async {
+    // Delete Brand Bono
+    await _firestore.collection(brands)
+        .doc(brandId)
+        .collection("Bonos")
+        .doc(bonoId)
         .delete();
   }
 

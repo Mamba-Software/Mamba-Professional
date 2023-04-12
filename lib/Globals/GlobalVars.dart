@@ -7,11 +7,11 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
-// IS PRODUCTION?
+// IS PRODUCTION ?
 bool isProduction = true;
 
 // App Version
-var appVersion = "MAMBA v0.0.11";
+var appVersion = "MAMBA v0.0.12";
 
 List<lColor> currentColors = [];
 List<lDegradate> currentDegradates = [];//0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835

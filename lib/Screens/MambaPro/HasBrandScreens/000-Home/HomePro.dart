@@ -110,7 +110,7 @@ class _HomePro extends State<HomePro> {
             expandedHeight: MediaQuery.of(context).size.height*0.18,
             elevation: 2,
             systemOverlayStyle: returnSystemBarColor(),
-            floating: true,
+            floating: false,
             pinned: true,
             centerTitle: true,
             flexibleSpace: FlexibleSpaceBar(
@@ -189,7 +189,7 @@ class _HomePro extends State<HomePro> {
                   ),
                   child: IconButton(
                     icon: Icon(
-                      Icons.qr_code,
+                      Icons.person_add,
                       color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.height*0.035,
                     ),
