@@ -2473,11 +2473,13 @@ class ScriptsDatabaseService {
       print('\n');
 
       String brands = "7777 Brands";
+      String locations = "7777 Locations";
       Usuario user = new Usuario();
       QuerySnapshot querySnapshot4;
       String baseImage = "";
-
+      print('before');
       QuerySnapshot querySnapshotBrands = await _firestore.collection(brands).get();
+      print('after');
 
       for (int i = 0; i < querySnapshotBrands.docs.length; i++) {
 
@@ -2494,17 +2496,22 @@ class ScriptsDatabaseService {
               "isBaseImage": true,
             });
         } else {
+          print('else');
           QuerySnapshot querySnapshot3 = await _firestore.collection(library).doc('Images').collection("Events").get();
           Random rnd = Random();
           int index = rnd.nextInt(querySnapshot3.size);
           baseImage = ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!;
+          print('else2');
         }
         QuerySnapshot querySnapshotLocations = await _firestore.collection(brands).doc(brandId).collection("Locations").where("isBaseLocation", isEqualTo: true).get();
+        print('3rd cause');
         DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
             .collection(locations)
             .doc(querySnapshotLocations.docs[0].id).get();
+        print(querySnapshotLocations.docs[0].id);
         var location = Location.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
         //user = Usuario.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        print(location);
 
         await _firestore
             .collection(brands)
@@ -2526,6 +2533,7 @@ class ScriptsDatabaseService {
       }
       return true;
     } catch (e) {
+      print(e.toString());
       return false;
     }
   }
@@ -2550,11 +2558,13 @@ class ScriptsDatabaseService {
 
       for (int i = 0; i < querySnapshotUsers.docs.length; i++) {
         String userId = querySnapshotUsers.docs[i].id;
+        print(userId);
         QuerySnapshot querySnapshotEventsUser = await _firestore.collection(users).doc(userId).collection("Events").get();
 
         for (int j = 0; j < querySnapshotEventsUser.docs.length; j++)
           {
             String eventId = querySnapshotEventsUser.docs[j].id;
+            print(eventId);
             DocumentSnapshot<Map<String, dynamic>> _documentSnapshotEvent = await _firestore
                 .collection(events)
                 .doc(querySnapshotEventsUser.docs[j].id).get();
@@ -2646,8 +2656,8 @@ class ScriptsDatabaseService {
 
       for (int i = 0; i < querySnapshotLocations.docs.length; i++) {
         String locationId = querySnapshotLocations.docs[i].id;
+        print(locationId);
         Location location = Location.fromObjectAllData(locationId, querySnapshotLocations.docs[i]);
-        QuerySnapshot querySnapshotEventsLocation = await _firestore.collection(locations).doc(locationId).collection("Events").get();
         await _firestore
             .collection(locations)
             .doc(locationId)
