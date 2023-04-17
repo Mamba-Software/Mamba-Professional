@@ -62,7 +62,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
     //if (customerInfo.entitlements.all[entitlementID] != null &&
       //  customerInfo.entitlements.all[entitlementID]?.isActive == true) {
    // } else {
-      //offerings = await Purchases.getOfferings();
+      offerings = await Purchases.getOfferings();
       print(offerings);
     //}
 
