@@ -717,5 +717,7 @@
   "yourPlan":  "El teu pla",
   "addClient":  "Afegir clients",
   "addClientDescription": "Afegir clients al a teva marca",
-  "addTrainerDescription": "Afegir staff al a teva marca"
+  "addTrainerDescription": "Afegir staff al a teva marca",
+  "perMonth": "/ mes",
+  "perYear": "/ any (-25%)"
 }

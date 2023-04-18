@@ -31,7 +31,6 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
   bool ShowTextExpired = false;
   int difference = 0;
 
-  late Offerings offerings;
 
 
   @override
@@ -57,16 +56,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
 
   Future<void> getBrandSubscription() async
   {
-    //CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-
-    //if (customerInfo.entitlements.all[entitlementID] != null &&
-      //  customerInfo.entitlements.all[entitlementID]?.isActive == true) {
-   // } else {
-    CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-    print(customerInfo);
-      offerings = await Purchases.getOfferings();
-      print(offerings);
-    //}
+    print(currentUser.customerInfo?.activeSubscriptions!);
 
       if(brandIsActive && currentBrand.subscriptionId != null) {
       subscription =
@@ -163,7 +153,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                         textAlign: TextAlign.left
                     ),
                     subtitle: Text(
-                        AppLocalizations.of(context)!.expiresAt + ' ' + formatter.format(currentBrand.endDatePay!.toDate()).toString(),
+                        AppLocalizations.of(context)!.expiresAt + ' ' + formatter.format(DateTime.parse((currentUser.customerInfo!.entitlements.all[entitlementID]!.expirationDate!))).toString() ,
                         style: Theme
                             .of(context)
                             .textTheme
@@ -196,7 +186,6 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                 ActiveSubscription(
                   brandId: currentBrand.id!,
                   subscription: subscription,
-                  offerings: offerings,
                 ),
           )
       );
@@ -212,7 +201,6 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
             builder: (context) =>
                 PayWall(
                   brandId: currentBrand.id!,
-                  offerigns: offerings,
                 ),
           )
       );

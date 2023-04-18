@@ -3180,5 +3180,13 @@
   "addTrainerDescription": "Añadir staff a tu marca",
   "@addTrainerDescription":{
     "description": "createBrand Text"
+  },
+  "perMonth": "/ mes",
+  "@perMonth": {
+    "description": "perMonth message"
+  },
+  "perYear": "/ año (-25%)",
+  "@perYear": {
+    "description": "perYear message"
   }
 }

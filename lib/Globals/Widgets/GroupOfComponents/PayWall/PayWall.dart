@@ -25,8 +25,7 @@ import '../../../Providers/ThemeProvider.dart';
 class PayWall extends StatefulWidget {
   String brandId;
   bool? comesFromInitPage;
-  final Offerings? offerigns;
-  PayWall({Key? key, required this.brandId, this.comesFromInitPage, this.offerigns}) : super(key: key);
+  PayWall({Key? key, required this.brandId, this.comesFromInitPage}) : super(key: key);
 
   @override
   _PayWallState createState() => _PayWallState();
@@ -69,6 +68,31 @@ class _PayWallState extends State<PayWall> {
 
   Future<void> getSubscriptions()
   async {
+    subscriptionList.clear();
+    try {
+      Offerings offerings = await Purchases.getOfferings();
+      if (offerings.current != null && offerings.current?.monthly != null) {
+        print(offerings.current?.monthly!.storeProduct);
+        //print(offerings.current?.annual!.storeProduct);
+        if(offerings.current?.monthly?.storeProduct != null)
+          {
+            subscriptionList.add(Subscription.fromOfferingAllData(offerings.current?.monthly!.storeProduct, AppLocalizations.of(context)!.perMonth, offerings.current!.monthly!));
+          }
+        // Get the price and introductory period from the Product
+      }
+      if (offerings.current != null && offerings.current?.annual != null) {
+        print(offerings.current?.annual!.storeProduct);
+        //print(offerings.current?.annual!.storeProduct);
+        if(offerings.current?.annual?.storeProduct != null)
+        {
+          subscriptionList.add(Subscription.fromOfferingAllData(offerings.current?.annual!.storeProduct, AppLocalizations.of(context)!.perYear, offerings.current!.annual!));
+        }
+        // Get the price and introductory period from the Product
+      }
+    }  catch (e) {
+      // optional error handling
+    }
+/*
     if(subscritionPromo.id == null)
       {
         subscriptionList = await _promotionDataService.getSubscriptions("");
@@ -76,7 +100,7 @@ class _PayWallState extends State<PayWall> {
     else
       {
         subscriptionList = await _promotionDataService.getSubscriptions(subscritionPromo.id);
-      }
+      }*/
     finalSizeBox = subscriptionList.length * 0.07;
     setState(() {
       loadingPromotions = false;
@@ -96,15 +120,15 @@ class _PayWallState extends State<PayWall> {
         title = subscritionPromo.title!;
         if(currentUser.idioma == 'es')
           {
-            textToShow = subscritionPromo.descriptionEsp!;
+            textToShow = subscritionPromo.descriptionAdapted!;
           }
         else if(currentUser.idioma == 'ca')
           {
-            textToShow = subscritionPromo.descriptionCat!;
+            textToShow = subscritionPromo.descriptionAdapted!;
           }
         else
           {
-            textToShow = subscritionPromo.descriptionEsp!;
+            textToShow = subscritionPromo.descriptionAdapted!;
           }
       }
     if(fromSeeSubsc)
@@ -196,7 +220,6 @@ class _PayWallState extends State<PayWall> {
           ),
         ),
         persistentFooterButtons:   <Widget>[Container(
-
           child:
           seePromotions
               ? Padding(
@@ -501,6 +524,281 @@ class _PayWallState extends State<PayWall> {
 
   Widget generateOneSubscription(int index)
   {
+    return Column(
+      children: [
+        GestureDetector(
+            onTap: () async {
+              mixpanel!.track('brand_clicked_subscription');
+              FocusManager.instance.primaryFocus?.unfocus();
+              try {
+                var purchaserInfo = await Purchases.purchasePackage(subscriptionList[index].package!);
+                if (purchaserInfo.entitlements.active.isNotEmpty && purchaserInfo.entitlements.all[entitlementID]!.isActive) {
+                  mixpanel!.track('brand_subscribed');
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    CupertinoPageRoute<void>(
+                      builder: (context) => const SplashScreen(),
+                      settings: const RouteSettings(name: 'SplashScreen'),
+                    ),
+                        (_) => false,
+                  );
+                }
+              } on PlatformException catch (e) {
+                var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+                  ('ERROR ON PURCHASING');
+                }
+              }
+              //
+              /*
+                await showModalBottomSheet<int?>(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                  ),
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  builder: (BuildContext context) {
+                    // Page View Controller
+                    final PageController _pageController = PageController(
+                        initialPage: 0);
+                    int _currentPage = 0;
+                    bool isRoles = true;
+                    // Widget
+                    return ModalBuy(subscriptionList[index]);
+                  },
+                );*/
+            },
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: AppColors.mainColor,
+                    width: 1,
+                  ),
+                  color: index == subscriptionList.length - 1? AppColors.mainColor : null,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                width: MediaQuery.of(context).size.width * 0.90,
+                height: MediaQuery.of(context).size.height * 0.07,
+                child:  Center(
+                  child: index == subscriptionList.length - 1? Text(
+                    subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
+                    style:  Theme.of(context)
+                        .textTheme
+                        .headline1
+                        ?.copyWith(
+                        color: Theme.of(context)
+                            .primaryColorDark,
+                    ),
+                  ) : Text(
+                    subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1
+                        ?.copyWith(
+                        color: Theme.of(context)
+                            .primaryColor
+                    ),
+                  ),
+
+                ),
+              ),
+            )
+        ),
+        index == subscriptionList.length - 1? Container() : SizedBox(
+            height: MediaQuery.of(context).size.height *
+                0.02),
+      ],
+    );
+  }
+
+  Widget ModalBuy(Subscription sub)
+  {
+    return StatefulBuilder(
+      builder: (BuildContext context,
+          StateSetter setStateBottom) {
+        return FractionallySizedBox(
+          heightFactor: 0.40,
+          child: SizedBox(
+            height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.5,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            child: Padding(
+              padding: EdgeInsets.all(MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.02),
+              child: Column(
+                mainAxisAlignment:
+                MainAxisAlignment.start,
+                children: [
+                  ListTile(
+                    title: Text(
+                        'Mamba Pro',
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption,
+                        textAlign: TextAlign.left
+                    ),
+                    trailing: Text(
+                        AppLocalizations.of(context)!.subscriptionsAppBar,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption
+                    ),
+                    dense: true,
+                  ),
+                  Divider(color: Theme
+                      .of(context)
+                      .dividerColor,
+                      thickness: 1.5,
+                      indent: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.05,
+                      endIndent: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.05),
+                  ListTile(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        Constants.subscriptionImage,),
+                    ),
+                    title: Text(
+                        sub.title!,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1,
+                        textAlign: TextAlign.left
+                    ),
+                    subtitle: Text(
+                        'Fitness is Business',
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption
+                    ),
+                    dense: true,
+                  ),
+                  ListTile(
+                    title: Row(
+                      children: [
+                        Text(sub.description!),
+                        //Text(AppLocalizations.of(context)!.uniquePromotion),
+                        Icon(
+                          Icons.done,
+                          color: Colors.green,
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                        AppLocalizations.of(context)!.startToday,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1,
+                        textAlign: TextAlign.left
+                    ),
+                    trailing: Text(
+                        textToShow,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1
+                    ),
+                    dense: true,
+                  ),
+                  ListTile(
+                      title: Center(
+                        child: GestureDetector(
+                          onTap: () async {
+                            mixpanel!.track('brand_subscribed');
+                            try {
+                              var purchaserInfo = await Purchases.purchasePackage(sub.package!);
+                              if (purchaserInfo.entitlements.active.isNotEmpty && purchaserInfo.entitlements.all[entitlementID]!.isActive) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  CupertinoPageRoute<void>(
+                                    builder: (context) => const SplashScreen(),
+                                    settings: const RouteSettings(name: 'SplashScreen'),
+                                  ),
+                                      (_) => false,
+                                );
+                              }
+                            } on PlatformException catch (e) {
+                              var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                              if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+                                ('ERROR ON PURCHASING');
+                              }
+                            }
+                            /*await _brandDataService
+                                .updateBrandPay(widget.brandId,
+                                subscritionPromo.duration!,
+                                subscritionPromo.id!, subscritionPromo.title!);*/
+                            // currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
+
+                          },
+                          child: Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.mainColor,
+                                borderRadius: BorderRadius
+                                    .circular(10),
+                              ),
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.90,
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.05,
+                              child: Center(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.subscribeNow,
+                                    style: Theme
+                                        .of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        ?.copyWith(
+                                        fontWeight: FontWeight
+                                            .bold,
+                                        color: AppColors.black
+                                    ),
+                                  )
+
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+  /*
+  Widget generateOneSubscriptionOld(int index)
+  {
     if(index == subscriptionList.length - 1)
       {
         return GestureDetector(
@@ -717,7 +1015,7 @@ class _PayWallState extends State<PayWall> {
                 height: MediaQuery.of(context).size.height * 0.07,
                 child:  Center(
                   child: Text(
-                    currentUser.idioma == 'ca'? subscriptionList[index].descriptionCat! : subscriptionList[index].descriptionEsp!,
+                    subscriptionList[index].priceString!,
                     style: Theme.of(context)
                         .textTheme
                         .headline1
@@ -966,6 +1264,8 @@ class _PayWallState extends State<PayWall> {
       ],
     );
   }
+
+   */
 
 
 

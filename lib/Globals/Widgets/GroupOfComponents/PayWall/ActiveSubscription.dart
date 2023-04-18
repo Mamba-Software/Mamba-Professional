@@ -12,9 +12,8 @@ import 'package:purchases_flutter/models/offerings_wrapper.dart';
 class ActiveSubscription extends StatefulWidget {
   Subscription subscription;
   String brandId;
-  Offerings? offerings;
 
-  ActiveSubscription({Key? key, required this.subscription, required this.brandId, this.offerings}) : super(key: key);
+  ActiveSubscription({Key? key, required this.subscription, required this.brandId}) : super(key: key);
 
   @override
   _ActiveSubscriptionState createState() => _ActiveSubscriptionState();
@@ -39,7 +38,6 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
         CupertinoPageRoute<bool?>(
           builder: (context) => PayWall(
             brandId: widget.brandId,
-            offerigns: widget.offerings,
           ),
         )
     );
@@ -228,7 +226,6 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                           builder: (context) =>
                                               PayWall(
                                                 brandId: widget.brandId,
-                                                offerigns: widget.offerings,
                                               ),
                                         )
                                     );

@@ -67,8 +67,16 @@ const googleApiKey = 'goog_xHoFXqoNpoesuLjeweHEqSuEvXy';
 const appleApiKey = 'appl_zARUDaqRUYylGLSphTBVkIdjELo';
 const entitlementID = 'AllFeatures';
 
+//JMF 18042023 REVENUECAT
 void setBrandActive()
 {
+  if (currentUser.customerInfo!.entitlements.active.isNotEmpty && currentUser.customerInfo!.entitlements.all[entitlementID]!.isActive) {
+    brandIsActive = true;
+  }
+  else {
+    brandIsActive = false;
+  }
+  /*
   if(currentBrand.endDatePay != null)
   {
     if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
@@ -84,7 +92,7 @@ void setBrandActive()
   else
   {
     brandIsActive = false;
-  }
+  }*/
 }
 
 

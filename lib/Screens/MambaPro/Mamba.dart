@@ -59,7 +59,6 @@ class _MambaState extends State<Mamba> {
   void initState() {
     super.initState();
     isLoading = true;
-    initPlatformState();
     // Handle LocalNotificationsService
     localNotificationService.initialize();
     handleAndlistenNotifications(context);
@@ -104,7 +103,7 @@ class _MambaState extends State<Mamba> {
     // On StartUp Dialogs
     launchOnStartUpDialogs();
   }
-
+/*
   Future<void> initPlatformState() async {
     // Enable debug logs before calling `configure`.
     await Purchases.setLogLevel(LogLevel.debug);
@@ -118,7 +117,7 @@ class _MambaState extends State<Mamba> {
     configuration = PurchasesConfiguration(googleApiKey);
 
     await Purchases.configure(configuration);
-  }
+  }*/
 
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
@@ -230,6 +229,10 @@ class _MambaState extends State<Mamba> {
   void getUserAndBrand() async {
     // Get User Main Data
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
+    //JMF 18042023 REVENUECAT
+    currentUser.customerInfo = await Purchases.getCustomerInfo();
+    print('USARUOI MASTER');
+    print(currentUser.customerInfo);
     // Get User Brand
     List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
     currentUser.setBrandList = brands;
