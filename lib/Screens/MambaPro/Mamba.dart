@@ -3,10 +3,12 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -23,6 +25,7 @@ import 'package:notification_permissions/notification_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
+import '../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
@@ -103,21 +106,6 @@ class _MambaState extends State<Mamba> {
     // On StartUp Dialogs
     launchOnStartUpDialogs();
   }
-/*
-  Future<void> initPlatformState() async {
-    // Enable debug logs before calling `configure`.
-    await Purchases.setLogLevel(LogLevel.debug);
-
-    /*
-    - appUserID is nil, so an anonymous ID will be generated automatically by the Purchases SDK. Read more about Identifying Users here: https://docs.revenuecat.com/docs/user-ids
-    - observerMode is false, so Purchases will automatically handle finishing transactions. Read more about Observer Mode here: https://docs.revenuecat.com/docs/observer-mode
-    */
-    PurchasesConfiguration configuration;
-
-    configuration = PurchasesConfiguration(googleApiKey);
-
-    await Purchases.configure(configuration);
-  }*/
 
   // On StartUp Dialogs
   Future<void> launchOnStartUpDialogs() async {
@@ -227,12 +215,9 @@ class _MambaState extends State<Mamba> {
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
+    bool oldSuscription = false;
     // Get User Main Data
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
-    //JMF 18042023 REVENUECAT
-    currentUser.customerInfo = await Purchases.getCustomerInfo();
-    print('USARUOI MASTER');
-    print(currentUser.customerInfo);
     // Get User Brand
     List<Brand> brands = await _brandDataService.getAllBrandsFromUser(currentUser.id!);
     currentUser.setBrandList = brands;
@@ -242,11 +227,28 @@ class _MambaState extends State<Mamba> {
       Brand brand = currentUser.brandsList[0];
       currentBrand.setBasicData = await _brandDataService.getBrandDetails(brand.id!);
       currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
+
+      currentUser.customerInfo = await Purchases.getCustomerInfo();
+      if(currentUser.id == currentBrand.adminID) {
+        print(currentUser.customerInfo);
+        userIsAdmin = true;
+      }
+      //JMF 25042023 REVENUECAT
+      if(currentBrand.subscriptionId != null) {
+        Subscription subscription = await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
+        //Check if new revenueCatPurchases or Old
+        if(subscription.isRevenueCat == null || subscription.isRevenueCat == false) {
+          oldSuscription = true;
+        }
+      }
+
+
+
       // Get Role in Brand
       int role = await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
       currentUser.setBrandRole = role;
       mixpanel!.getPeople().set("Brands Roles", [role]);
-      setBrandActive();
+      setBrandActive(oldSuscription);
     }
     setState(() {
       isLoading = false;
@@ -273,9 +275,11 @@ class _MambaState extends State<Mamba> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ? Scaffold(
-      body: LoadingView(),
-    ) :
+    return isLoading ?
+      Scaffold(
+        body: LoadingView(),
+      )
+     :
       hasBrand ? !brandIsActive? currentUser.brandRole < 2? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
   }
 

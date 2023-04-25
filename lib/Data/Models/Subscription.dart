@@ -18,6 +18,7 @@ class Subscription {
   String? priceString;
   String? subscriptionPeriod;
   Package? package;
+  bool? isRevenueCat;
 
 
   Subscription({
@@ -35,6 +36,7 @@ class Subscription {
     this.subscriptionPeriod,
     this.description,
     this.package,
+    this.isRevenueCat
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -69,6 +71,9 @@ class Subscription {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('promotion')) {
       promotion = documentSnapshot.get("promotion");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isRevenueCat')) {
+      isRevenueCat = documentSnapshot.get("isRevenueCat");
     }
   }
 

@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../Globals/Providers/ThemeProvider.dart';
+import '../../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'HomeWidgets/BrandBestBonoWidget.dart';
 
 // Step 1: Define a Callback.
@@ -51,7 +52,6 @@ class _HomePro extends State<HomePro> {
 
   @override
   initState() {
-    setBrandActive();
     super.initState();
     _scrollController = ScrollController()
     ..addListener(() => _isAppBarExpanded ?
@@ -100,6 +100,7 @@ class _HomePro extends State<HomePro> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<BrandSuscriptionCubit>().getBrandSuscription();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: CustomScrollView(

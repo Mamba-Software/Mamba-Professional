@@ -40,6 +40,7 @@ var currentUser = Usuario();
 var currentBrand = Brand();
 bool hasBrand = false;
 bool brandIsActive = false;
+bool userIsAdmin = false;
 
 // Unread Notifications And Chats
 var unreadNotifications = 0;
@@ -68,31 +69,38 @@ const appleApiKey = 'appl_zARUDaqRUYylGLSphTBVkIdjELo';
 const entitlementID = 'AllFeatures';
 
 //JMF 18042023 REVENUECAT
-void setBrandActive()
+void setBrandActive(bool oldSuscription)
 {
-  if (currentUser.customerInfo!.entitlements.active.isNotEmpty && currentUser.customerInfo!.entitlements.all[entitlementID]!.isActive) {
-    brandIsActive = true;
-  }
-  else {
-    brandIsActive = false;
-  }
-  /*
-  if(currentBrand.endDatePay != null)
-  {
-    if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
-    {
-
+  if(userIsAdmin && !oldSuscription) {
+    if (currentUser.customerInfo!.entitlements.active.isNotEmpty &&
+        currentUser.customerInfo!.entitlements.all[entitlementID]!.isActive) {
       brandIsActive = true;
     }
-    else
-    {
+    else {
       brandIsActive = false;
     }
   }
   else
-  {
-    brandIsActive = false;
-  }*/
+    {
+      if(currentBrand.endDatePay != null)
+      {
+        if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
+        {
+
+          brandIsActive = true;
+        }
+        else
+        {
+          brandIsActive = false;
+        }
+      }
+      else
+      {
+        brandIsActive = false;
+      }
+    }
+
+
 }
 
 

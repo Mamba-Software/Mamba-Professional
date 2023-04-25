@@ -178,7 +178,6 @@ class LocalNotificationService {
     //      Remote Firebase Notifications we send the whole Notification with Arguments
     print("onClickedNotification. Payload....");
     print(payload);
-    setBrandActive();
     if(!brandIsActive)
       {
         payload = "SplashScreen";
