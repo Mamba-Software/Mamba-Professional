@@ -785,24 +785,47 @@ class BrandFirebaseCalls {
     });
   }
 
-  Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title) async {
-    DateTime now = DateTime.now();
+  Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title, DateTime endDate, bool revenueCatSub) async {
     Timestamp initTime = Timestamp.fromDate(DateTime.now());
-    var temp = now.add(Duration(days: time));
-    Timestamp endTime = Timestamp.fromDate(temp);
+    Timestamp endTime = Timestamp.fromDate(DateTime.now());
     var uid = Uuid().v4();
-    await _firestore
-        .collection(brands)
-        .doc(brandID)
-        .collection("Subscriptions")
-        .doc(uid)
-        .set({
-      "subscriptionId": subscriptionId,
-      "endDate": endTime,
-      "startDate": initTime,
-      "isActive": true,
-      "title": title,
-    });
+    if(!revenueCatSub) {
+      DateTime now = DateTime.now();
+      initTime = Timestamp.fromDate(DateTime.now());
+      var temp = now.add(Duration(days: time));
+      endTime = Timestamp.fromDate(temp);
+      await _firestore
+          .collection(brands)
+          .doc(brandID)
+          .collection("Subscriptions")
+          .doc(uid)
+          .set({
+        "subscriptionId": subscriptionId,
+        "endDate": endTime,
+        "startDate": initTime,
+        "isActive": true,
+        "title": title,
+      });
+    }
+    else
+      {
+        initTime = Timestamp.fromDate(DateTime.now());
+        endTime = Timestamp.fromDate(endDate);
+        await _firestore
+            .collection(brands)
+            .doc(brandID)
+            .collection("Subscriptions")
+            .doc(uid)
+            .set({
+          "subscriptionId": subscriptionId,
+          "endDate": endTime,
+          "startDate": initTime,
+          "isActive": true,
+          "title": title,
+          "isRevenueCat": revenueCatSub,
+        });
+      }
+
     await _firestore.collection(brands).doc(brandID).update({
       "endDatePay": endTime,
       "subscriptionId": uid,

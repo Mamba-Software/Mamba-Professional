@@ -138,7 +138,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     await _brandDataService
         .updateBrandPay(result,
         subscritionPromo.duration!,
-        subscritionPromo.id!, subscritionPromo.title!);
+        subscritionPromo.id!, subscritionPromo.title!, DateTime.now(), false);
     brandIsActive = false;
     // Pushing to Splash Screen
     await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires

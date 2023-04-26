@@ -16,7 +16,6 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
   }
 
   Future<void> getBrandSuscription() async {
-    print('test');
     DateFormat formatter = DateFormat('dd/MM/yy');
     Brand brand = new Brand();
     final _brandDataService = BrandDataService();
