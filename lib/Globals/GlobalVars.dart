@@ -74,6 +74,7 @@ void setBrandActive(bool oldSuscription)
   if(userIsAdmin && !oldSuscription) {
     if (currentUser.customerInfo!.entitlements.active.isNotEmpty &&
         currentUser.customerInfo!.entitlements.all[entitlementID]!.isActive) {
+      print('brandIsActive');
       brandIsActive = true;
     }
     else {

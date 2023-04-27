@@ -28,17 +28,31 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
           if(subscription.isRevenueCat == true) {
             if(userIsAdmin) {
               currentUser.customerInfo = await Purchases.getCustomerInfo();
+              print(currentUser.customerInfo);
             }
             setBrandActive(false);
-            emit(BrandSuscriptionLoadedTrue(subscription.title!, formatter.format(subscription.endDate!.toDate()).toString()));
+            print('brand');
+            if(brandIsActive) {
+              emit(BrandSuscriptionLoadedTrue(subscription));
             }
+            else {
+              emit(BrandSuscriptionLoadedFalse());
+            }
+          }
         }
         else {
           setBrandActive(true);
-          emit(BrandSuscriptionLoadedTrue(subscription.title!, formatter.format(subscription.endDate!.toDate()).toString()));
+          if(brandIsActive) {
+            emit(BrandSuscriptionLoadedTrue(subscription));
+          }
+          else {
+            emit(BrandSuscriptionLoadedFalse());
+          }
         }
       }
-      emit(BrandSuscriptionLoadedFalse());
+      else {
+        emit(BrandSuscriptionLoadedFalse());
+      }
     } catch(e) {
       emit(BrandSuscriptionLoadedFalse());
     }

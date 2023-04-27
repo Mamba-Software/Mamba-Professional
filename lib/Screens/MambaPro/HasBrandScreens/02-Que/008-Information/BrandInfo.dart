@@ -82,7 +82,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   //Paywall
   Subscription subscription = Subscription();
-  bool ShowTextExpired = false;
+  bool ShowTextExpired = true;
 
   // App Bar and Scroll View
   bool appBarExpanded = false;

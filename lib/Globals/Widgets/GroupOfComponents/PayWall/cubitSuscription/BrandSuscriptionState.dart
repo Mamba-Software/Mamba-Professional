@@ -19,13 +19,12 @@ class BrandSuscriptionLoading extends BrandSuscriptionState {
 }
 
 class BrandSuscriptionLoadedTrue extends BrandSuscriptionState {
-  final String title;
-  final String expirationDate;
+  final Subscription subscription;
 
-  const BrandSuscriptionLoadedTrue(this.title, this.expirationDate);
+  const BrandSuscriptionLoadedTrue(this.subscription);
 
   @override
-  List<Object?> get props => [title, expirationDate];
+  List<Object?> get props => [subscription];
 }
 
 class BrandSuscriptionLoadedFalse extends BrandSuscriptionState {
