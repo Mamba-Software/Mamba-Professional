@@ -23,6 +23,7 @@ class Brand {
   int? bookingWindow;
   Timestamp? endDatePay;
   String? subscriptionId;
+  String? adminAppUserId;
 
   List<String> promotions = [];
   List<ImageObject> imagesList = [];
@@ -46,6 +47,7 @@ class Brand {
     this.bookingWindow,
     this.endDatePay,
     this.subscriptionId,
+    this.adminAppUserId,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +96,9 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('subscriptionId')) {
       subscriptionId = documentSnapshot.get("subscriptionId").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('adminAppUserId')) {
+      adminAppUserId = documentSnapshot.get("adminAppUserId").toString();
+    }
   }
 
   Brand.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -127,6 +132,8 @@ class Brand {
     bookingWindow = brand.bookingWindow;
     endDatePay = brand.endDatePay;
     subscriptionId = brand.subscriptionId;
+    adminAppUserId = brand.adminAppUserId;
+
   }
 
   // Requests

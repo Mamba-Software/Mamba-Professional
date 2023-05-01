@@ -835,6 +835,12 @@ class BrandFirebaseCalls {
     });
   }
 
+  Future<void> updateBrandAdminId(String brandID, String? appUserId) async {
+    await _firestore.collection(brands).doc(brandID).update({
+      "adminAppUserId": appUserId,
+    });
+  }
+
   //Delete
 
   Future<void> deleteBrand(String brandId) async {

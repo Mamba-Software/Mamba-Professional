@@ -21,6 +21,22 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
     final _brandDataService = BrandDataService();
     Subscription subscription = Subscription();
     try {
+      //Está en la antigua suscripción metodo
+      if(currentBrand.adminAppUserId == null) {
+        setBrandActive(true);
+        if(brandIsActive) {
+          emit(BrandSuscriptionLoadedTrue(subscription));
+        }
+        else {
+          setBrandActive(false);
+          emit(BrandSuscriptionLoadedFalse());
+        }
+      }
+      //Nuevo metodo de suscripcion
+      else {
+        emit(BrandSuscriptionLoadedFalse());
+      }
+      /*
       if(brandIsActive && currentBrand.subscriptionId != null) {
         subscription =
         await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
@@ -52,7 +68,7 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
       }
       else {
         emit(BrandSuscriptionLoadedFalse());
-      }
+      }*/
     } catch(e) {
       emit(BrandSuscriptionLoadedFalse());
     }

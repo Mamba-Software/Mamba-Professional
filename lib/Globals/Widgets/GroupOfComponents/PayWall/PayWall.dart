@@ -534,10 +534,14 @@ class _PayWallState extends State<PayWall> {
                 var purchaserInfo = await Purchases.purchasePackage(subscriptionList[index].package!);
                 if (purchaserInfo.entitlements.active.isNotEmpty && purchaserInfo.entitlements.all[entitlementID]!.isActive) {
                   mixpanel!.track('brand_subscribed');
+                  if(currentBrand.adminAppUserId == null) {
+                    _brandDataService.updateBrandAdminId(currentBrand.id!, currentUser.customerInfo?.originalAppUserId);
+                  }
+                  /*
                   await _brandDataService
                       .updateBrandPay(widget.brandId,
                       30,
-                      subscriptionList[index].subscriptionId!, subscriptionList[index].title!, DateTime.parse((purchaserInfo.entitlements.all[entitlementID]!.expirationDate!)), true);
+                      subscriptionList[index].subscriptionId!, subscriptionList[index].title!, DateTime.parse((purchaserInfo.entitlements.all[entitlementID]!.expirationDate!)), true);*/
                   Navigator.pushAndRemoveUntil(
                     context,
                     CupertinoPageRoute<void>(
