@@ -72,13 +72,10 @@ class _PayWallState extends State<PayWall> {
     try {
       Offerings offerings = await Purchases.getOfferings();
       if (offerings.current != null && offerings.current?.monthly != null) {
-        print(offerings.current?.monthly!.storeProduct);
-        //print(offerings.current?.annual!.storeProduct);
         if(offerings.current?.monthly?.storeProduct != null)
-          {
-            subscriptionList.add(Subscription.fromOfferingAllData(offerings.current?.monthly!.storeProduct, AppLocalizations.of(context)!.perMonth, offerings.current!.monthly!));
-          }
-        // Get the price and introductory period from the Product
+        {
+          subscriptionList.add(Subscription.fromOfferingAllData(offerings.current?.monthly!.storeProduct, AppLocalizations.of(context)!.perMonth, offerings.current!.monthly!));
+        }
       }
       if (offerings.current != null && offerings.current?.annual != null) {
         print(offerings.current?.annual!.storeProduct);

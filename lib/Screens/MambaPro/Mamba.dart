@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Suscription/SuscriptionDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
@@ -45,6 +47,7 @@ class _MambaState extends State<Mamba> {
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
+  final _suscriptionDataService = SuscriptionDataService();
   final _settingsDataService = SettingsDataService();
   final _mambaProUtils = MambaProUtils();
   final SharePlusUtils _sharePlusUtils = SharePlusUtils();
@@ -225,34 +228,46 @@ class _MambaState extends State<Mamba> {
       // Setting the Brand to the User
       hasBrand = true;
       Brand brand = currentUser.brandsList[0];
-      currentBrand.setBasicData = await _brandDataService.getBrandDetails(brand.id!);
-      currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
+      currentBrand.setBasicData =
+      await _brandDataService.getBrandDetails(brand.id!);
+      currentBrand.setUserList =
+      await _brandDataService.getBrandUsers(brand.id!);
 
       currentUser.customerInfo = await Purchases.getCustomerInfo();
-      if(currentUser.id == currentBrand.adminID) {
+      if (currentUser.id == currentBrand.adminID) {
         print(currentUser.customerInfo);
         userIsAdmin = true;
       }
       //JMF 25042023 REVENUECAT
-      if(currentBrand.subscriptionId != null) {
-        Subscription subscription = await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
-        //Check if new revenueCatPurchases or Old
-        if(subscription.isRevenueCat == null || subscription.isRevenueCat == false) {
-          oldSuscription = true;
+      if (currentBrand.adminAppUserId != null) {
+        Subscription subscription = await _suscriptionDataService
+            .getBrandSubscription(currentBrand.adminAppUserId!);
+        if (subscription.subscriptionId == null) {
+          DateTime pastDate = DateTime.now().subtract(Duration(days: 100));
+          Timestamp timestamp = Timestamp.fromDate(pastDate);
+          currentBrand.endDatePay = timestamp;
+        }
+        else {
+          if(!subscription.unsuscribed!) {
+            currentBrand.endDatePay = Timestamp.fromDate((subscription.endDate!.toDate()).add((Duration(days: 500))));
+          }
+          else {
+            currentBrand.endDatePay = subscription.endDate;
+          }
         }
       }
 
-
-
       // Get Role in Brand
-      int role = await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
+      int role = await _brandDataService.getUserBrandRole(
+          brand.id!, currentUser.id!);
       currentUser.setBrandRole = role;
       mixpanel!.getPeople().set("Brands Roles", [role]);
-      setBrandActive(oldSuscription);
+      setBrandActive();
+
+      setState(() {
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
   // listenNotifications if User Taps on Notifications

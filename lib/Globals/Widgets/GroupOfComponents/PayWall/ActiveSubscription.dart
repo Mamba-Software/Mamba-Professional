@@ -136,7 +136,8 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                             Padding(
                               padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
                               child: Text(
-                                  AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.startDate!.toDate()), formatter.format(subscription.endDate!.toDate()).toString()),
+                                  subscription.unsuscribed!? AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.startDate!.toDate()), formatter.format(subscription.endDate!.toDate()).toString()) :
+                                  AppLocalizations.of(context)!.moreSubInfoRenAut(formatter.format(subscription.startDate!.toDate())),
                                   style: Theme
                                       .of(context)
                                       .textTheme

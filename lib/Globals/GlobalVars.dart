@@ -69,20 +69,8 @@ const appleApiKey = 'appl_zARUDaqRUYylGLSphTBVkIdjELo';
 const entitlementID = 'AllFeatures';
 
 //JMF 18042023 REVENUECAT
-void setBrandActive(bool oldSuscription)
+void setBrandActive()
 {
-  if(userIsAdmin && !oldSuscription) {
-    if (currentUser.customerInfo!.entitlements.active.isNotEmpty &&
-        currentUser.customerInfo!.entitlements.all[entitlementID]!.isActive) {
-      print('brandIsActive');
-      brandIsActive = true;
-    }
-    else {
-      brandIsActive = false;
-    }
-  }
-  else
-    {
       if(currentBrand.endDatePay != null)
       {
         if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
@@ -99,9 +87,6 @@ void setBrandActive(bool oldSuscription)
       {
         brandIsActive = false;
       }
-    }
-
-
 }
 
 

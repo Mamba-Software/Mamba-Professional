@@ -18,7 +18,7 @@ class Subscription {
   String? priceString;
   String? subscriptionPeriod;
   Package? package;
-  bool? isRevenueCat;
+  bool? unsuscribed;
 
 
   Subscription({
@@ -36,7 +36,7 @@ class Subscription {
     this.subscriptionPeriod,
     this.description,
     this.package,
-    this.isRevenueCat
+    this.unsuscribed
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -72,9 +72,6 @@ class Subscription {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('promotion')) {
       promotion = documentSnapshot.get("promotion");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isRevenueCat')) {
-      isRevenueCat = documentSnapshot.get("isRevenueCat");
-    }
   }
 
   Subscription.fromOfferingAllData(StoreProduct? storeProduct, String desc, Package _package ) {
@@ -86,5 +83,22 @@ class Subscription {
     price = storeProduct?.price;
     priceString = storeProduct?.priceString;
     package = _package;
+  }
+
+  Subscription.fromRevenueSubscription(var sub, String subId) {
+    title = sub['product_plan_identifier'];
+    description = sub['product_plan_identifier'];
+    subscriptionId = subId;
+    subscriptionPeriod = sub['product_plan_identifier'];
+    endDate = Timestamp.fromDate(DateTime.parse(sub['expires_date']).toLocal());
+    startDate = Timestamp.fromDate(DateTime.parse(sub['purchase_date']).toLocal());
+
+    if(sub['unsubscribe_detected_at'] == null) {
+      unsuscribed = false;
+    }
+    else {
+      unsuscribed = true;
+    }
+
   }
 }

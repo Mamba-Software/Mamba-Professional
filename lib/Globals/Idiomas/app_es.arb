@@ -2976,6 +2976,15 @@
       }
     }
   },
+  "moreSubInfoRenAut": "El plan fue adquirido el {initDate} y su renovación es automática",
+  "@moreSubInfoRenAut": {
+    "description": "moreSubInfoRenAut message",
+    "placeholders": {
+      "initDate": {
+        "type": "String"
+      }
+    }
+  },
   "subscriptionIncludes": "Incluye todo",
   "@subscriptionIncludes": {
     "description": "subscriptionIncludes message"
@@ -3188,5 +3197,9 @@
   "perYear": "/ año (-25%)",
   "@perYear": {
     "description": "perYear message"
+  },
+  "autoRenovation": "Renovación automática",
+  "@autoRenovation": {
+    "description": "autoRenovation message"
   }
 }
