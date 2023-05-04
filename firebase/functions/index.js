@@ -5218,6 +5218,118 @@ exports.zzzzUserCancelsPurchaseEvent = functions
   return null;
   });
 
+// Change user suscription
+exports.updateBrandSubscription = functions
+.region("europe-west1")
+.firestore
+.document("/BrandSubscriptions/{brandId}")
+.onWrite(async (change, context) => {
+  // Get context params
+  const brandId = context.params.brandId;
+
+  // BrandSubscription after Data
+  const after = change.after.data();
+
+
+  functions.logger.log(
+   "Entitlement",
+   after
+   );
+
+   const entitlements = after.entitlements;
+
+    // Retrieve the AllFeatures sub-map from the entitlements map
+    var allFeatures = entitlements.AllFeatures;
+
+    // Use the allFeatures sub-map value
+     functions.logger.log(
+   "AFTER",
+   allFeatures
+   );
+
+  // Retrieve the expires_date field from the AllFeatures sub-map
+    var expiresDate = allFeatures.expires_date;
+    var product_identifier = allFeatures.product_identifier;
+
+    // Extract the date part (yyyy-mm-dd) from the expires_date string
+    var expiresDateStr = expiresDate;
+
+    // Convert the expires_date string to a Date object
+    var expiresDateObj = new Date(expiresDateStr);
+
+    functions.logger.log(
+     "expireDate",
+     expiresDateObj
+     );
+
+    // Get today's date
+    var today = new Date();
+    var todayStr = today.toISOString();
+    var todayObj = new Date(todayStr);
+
+    functions.logger.log(
+     "TODAY",
+     todayObj
+     );
+
+    const subscriptions = after.subscriptions;
+    var subscription = subscriptions[product_identifier];
+    functions.logger.log(
+     "subscription",
+     subscription
+     );
+    var sandbox = subscription.is_sandbox;
+    functions.logger.log(
+     "ISSANDBOX",
+     sandbox
+     );
+
+     var brandCollection = "7777 Brands";
+     if(sandbox === false)
+     {
+       brandCollection = "Brands";
+     }
+
+     var unsuscribed = false;
+
+     if(subscription.unsubscribe_detected_at != null)
+     {
+        unsuscribed = true;
+     }
+
+    // Check if the expires_date is after or at the same date as today's date
+    if (expiresDateObj >= todayObj) {
+        const map = {
+            "expires_date": expiresDate,
+            "original_purchase_date": subscription.original_purchase_date,
+            "product_plan_identifier": product_identifier,
+            "brandIsActive": true,
+            "unsuscribed": unsuscribed,
+          };
+      // The expires_date is after or at the same date as today's date
+        functions.logger.log(
+     "SUSCRITO"
+     );
+       const brandSnapDoc = await db.collection(brandCollection).doc(brandId).update({
+              "subscription": map,
+        });
+    } else {
+    const map = {
+                "expires_date": expiresDate,
+                "original_purchase_date": subscription.original_purchase_date,
+                "product_plan_identifier": product_identifier,
+                "brandIsActive": false,
+                "unsuscribed": unsuscribed,
+              };
+      // The expires_date is before today's date
+      const brandSnapDoc = await db.collection(brandCollection).doc(brandId).update({
+                    "subscription": map,
+              });
+    }
+
+    return null
+})
+
 
 
 

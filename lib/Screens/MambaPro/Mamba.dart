@@ -218,7 +218,7 @@ class _MambaState extends State<Mamba> {
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
-    bool oldSuscription = false;
+
     // Get User Main Data
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
     // Get User Brand
@@ -233,41 +233,16 @@ class _MambaState extends State<Mamba> {
       currentBrand.setUserList =
       await _brandDataService.getBrandUsers(brand.id!);
 
-      currentUser.customerInfo = await Purchases.getCustomerInfo();
-      if (currentUser.id == currentBrand.adminID) {
-        print(currentUser.customerInfo);
-        userIsAdmin = true;
-      }
-      //JMF 25042023 REVENUECAT
-      if (currentBrand.adminAppUserId != null) {
-        Subscription subscription = await _suscriptionDataService
-            .getBrandSubscription(currentBrand.adminAppUserId!);
-        if (subscription.subscriptionId == null) {
-          DateTime pastDate = DateTime.now().subtract(Duration(days: 100));
-          Timestamp timestamp = Timestamp.fromDate(pastDate);
-          currentBrand.endDatePay = timestamp;
-        }
-        else {
-          if(!subscription.unsuscribed!) {
-            currentBrand.endDatePay = Timestamp.fromDate((subscription.endDate!.toDate()).add((Duration(days: 500))));
-          }
-          else {
-            currentBrand.endDatePay = subscription.endDate;
-          }
-        }
-      }
-
       // Get Role in Brand
       int role = await _brandDataService.getUserBrandRole(
           brand.id!, currentUser.id!);
       currentUser.setBrandRole = role;
       mixpanel!.getPeople().set("Brands Roles", [role]);
       setBrandActive();
-
-      setState(() {
-        isLoading = false;
-      });
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   // listenNotifications if User Taps on Notifications

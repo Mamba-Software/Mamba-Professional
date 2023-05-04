@@ -32,7 +32,6 @@ class Usuario {
   String? sessions;
   bool? active;
   Timestamp? lastEventAt;
-  CustomerInfo? customerInfo;
 
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];

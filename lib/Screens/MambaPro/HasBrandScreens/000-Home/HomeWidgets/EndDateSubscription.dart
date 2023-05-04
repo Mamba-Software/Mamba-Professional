@@ -110,7 +110,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                                   textAlign: TextAlign.left
                               ),
                               subtitle: Text(
-                                  suscriptionState.subscription.unsuscribed!? AppLocalizations.of(context)!.expiresAt + ' ' + formatter.format(DateTime.parse((currentUser.customerInfo!.entitlements.all[entitlementID]!.expirationDate!))).toString() :  AppLocalizations.of(context)!.autoRenovation ,
+                                  suscriptionState.subscription.unsuscribed!? AppLocalizations.of(context)!.expiresAt + ' ' + formatter.format(suscriptionState.subscription.endDate!.toDate()).toString() :  AppLocalizations.of(context)!.autoRenovation ,
                                   style: Theme
                                       .of(context)
                                       .textTheme

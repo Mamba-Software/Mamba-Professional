@@ -181,6 +181,13 @@ class FirebaseDatabaseService {
     }
   }
 
+  Future<String> checkMonthOffer() async {
+    // Get Minimum Version from Settings Collection
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
+    String monthFree = _documentSnapshot.get("monthFree");
+    return monthFree;
+  }
+
   Future<User?> getCurrentUser() async {
     User? currentUser;
     currentUser = await _auth.currentUser;

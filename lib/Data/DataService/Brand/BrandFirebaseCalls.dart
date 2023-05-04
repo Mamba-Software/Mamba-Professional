@@ -835,9 +835,17 @@ class BrandFirebaseCalls {
     });
   }
 
-  Future<void> updateBrandAdminId(String brandID, String? appUserId) async {
+  Future<void> updateBrandSubscriptionRevenueCat(String brandID,String? expires_date, String? original_purchase_date, String? product_plan_identifier, String? unsuscribedAT) async {
+    Map<String, dynamic> map = {
+      "expires_date": expires_date,
+      "original_purchase_date": original_purchase_date,
+      "product_plan_identifier": product_plan_identifier,
+      "brandIsActive": true,
+      "unsuscribed": (unsuscribedAT == null) ? false : true,
+    };
+    print(map);
     await _firestore.collection(brands).doc(brandID).update({
-      "adminAppUserId": appUserId,
+      "subscription": map,
     });
   }
 

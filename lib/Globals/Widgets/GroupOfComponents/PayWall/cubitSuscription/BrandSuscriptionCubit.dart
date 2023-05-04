@@ -25,66 +25,11 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
     Subscription subscription = Subscription();
     try {
       //Está en la antigua suscripción metodo
-      if(currentBrand.adminAppUserId == null && currentBrand.subscriptionId != null) {
-        subscription =
-        await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
-        setBrandActive();
-        if(brandIsActive) {
-          emit(BrandSuscriptionLoadedTrue(subscription));
-        }
-        else {
-          emit(BrandSuscriptionLoadedFalse());
-        }
-      }
-      //Nuevo metodo de suscripcion
-      else {
-        subscription = await _suscriptionDataService.getBrandSubscription(currentBrand.adminAppUserId!);
-        if(subscription.subscriptionId == null) {
-          DateTime pastDate = DateTime.now().subtract(Duration(days: 100));
-          Timestamp timestamp = Timestamp.fromDate(pastDate);
-          currentBrand.endDatePay = timestamp;
+      if(currentBrand.subscription == null) {
+        if(currentBrand.subscriptionId != null) {
+          subscription =
+          await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
           setBrandActive();
-          emit(BrandSuscriptionLoadedFalse());
-        }
-        else {
-          List<StoreProduct> product = await Purchases.getProducts([subscription.subscriptionId!]);
-          if(product.isNotEmpty) {
-              subscription.title = product[0].description!;
-              subscription.description = product[0].description;
-          }
-
-          if(!subscription.unsuscribed!) {
-            currentBrand.endDatePay = Timestamp.fromDate((subscription.endDate!.toDate()).add((Duration(days: 500))));
-          }
-          else {
-            currentBrand.endDatePay = subscription.endDate;
-          }
-          setBrandActive();
-          emit(BrandSuscriptionLoadedTrue(subscription));
-        }
-      }
-      /*
-      if(brandIsActive && currentBrand.subscriptionId != null) {
-        subscription =
-        await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
-        if(subscription.isRevenueCat != null) {
-          if(subscription.isRevenueCat == true) {
-            if(userIsAdmin) {
-              currentUser.customerInfo = await Purchases.getCustomerInfo();
-              print(currentUser.customerInfo);
-            }
-            setBrandActive(false);
-            print('brand');
-            if(brandIsActive) {
-              emit(BrandSuscriptionLoadedTrue(subscription));
-            }
-            else {
-              emit(BrandSuscriptionLoadedFalse());
-            }
-          }
-        }
-        else {
-          setBrandActive(true);
           if(brandIsActive) {
             emit(BrandSuscriptionLoadedTrue(subscription));
           }
@@ -92,11 +37,38 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
             emit(BrandSuscriptionLoadedFalse());
           }
         }
+        else {
+          emit(BrandSuscriptionLoadedFalse());
+        }
+
       }
+      //Nuevo metodo de suscripcion
       else {
-        emit(BrandSuscriptionLoadedFalse());
-      }*/
+        brand = await _brandDataService.getBrandDetails(currentBrand.id!);
+        currentBrand.subscription = brand.subscription!;
+        setBrandActive();
+        if(brandIsActive) {
+
+          subscription.title = currentBrand.subscription!['product_plan_identifier'];
+          subscription.description = currentBrand.subscription!['product_plan_identifier'];
+          subscription.subscriptionId = currentBrand.subscription!['product_plan_identifier'];
+          subscription.endDate = Timestamp.fromDate(DateTime.parse(currentBrand.subscription!['expires_date'].toString()));
+          subscription.startDate = Timestamp.fromDate(DateTime.parse(currentBrand.subscription!['original_purchase_date'].toString()));
+          subscription.unsuscribed = currentBrand.subscription!['unsuscribed'];
+
+          List<StoreProduct> product = await Purchases.getProducts([subscription.subscriptionId!]);
+          if(product.isNotEmpty) {
+            subscription.title = product[0].description!;
+            subscription.description = product[0].description;
+          }
+          emit(BrandSuscriptionLoadedTrue(subscription));
+        }
+        else {
+          emit(BrandSuscriptionLoadedFalse());
+        }
+      }
     } catch(e) {
+      print(e);
       emit(BrandSuscriptionLoadedFalse());
     }
   }

@@ -217,6 +217,7 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
           onTap: () =>  {
             Navigator.pop(context),
+            setBrandActive(),
             if(brandIsActive) {
               setState(() {
                 pageIndex = _pageIndex;
@@ -292,6 +293,7 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
           onTap: () =>  {
             Navigator.pop(context),
+            setBrandActive(),
             if((brandIsActive))
               {
                 setState(() {
