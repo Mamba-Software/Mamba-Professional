@@ -29,6 +29,7 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
         if(currentBrand.subscriptionId != null) {
           subscription =
           await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
+          subscription.unsuscribed = true;
           setBrandActive();
           if(brandIsActive) {
             emit(BrandSuscriptionLoadedTrue(subscription));

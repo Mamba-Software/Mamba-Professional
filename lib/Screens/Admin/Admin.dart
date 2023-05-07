@@ -120,7 +120,7 @@ class EachList extends StatelessWidget{
         break;
       case 3:
        // var result = await _script.getStatisticsSpecific();
-        var result = await _script.JMFassignZipCodeAndLocation13AndBaseImage();
+        var result = await _script.JMFupgradeEndDatePay1week();
         print("RESULT: "+result.toString());
         break;
 

@@ -21,7 +21,7 @@ class PromotionsDataService {
 
   final _firebase = FirebaseDatabaseService();
 
-  Future<List<Subscription>> getSubscriptions(String? promotion) => _firebase.getSubscriptions(promotion);
+  Future<List<Subscription>> getSubscriptions(String? promotion, String brandId) => _firebase.getSubscriptions(promotion, brandId);
   Future<Subscription> getValidSubscription(String subscriptionId, String brandId) => _firebase.getValidSubscription(subscriptionId, brandId);
   Future<Promotion> getValidPromotion(String promotionId) => _firebase.getValidPromotion(promotionId);
   Future<bool> checkIfBrandUsedSubscription(String subscriptionId, String brandId) => _firebase.checkIfBrandUsedSubscription(subscriptionId, brandId);

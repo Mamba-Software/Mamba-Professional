@@ -21,6 +21,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import '../DataService/Brand/BrandDataService.dart';
+import '../Models/Subscription.dart';
 
 class ScriptsDatabaseService {
   // Firebase Instances
@@ -2673,6 +2674,70 @@ class ScriptsDatabaseService {
       }
       return true;
     } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> JMFupgradeEndDatePay1week() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 7th MAY 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying Brand and Brands/subscriptions collection:\n');
+      print('--------------');
+      print('\n');
+
+      String brands = "7777 Brands";
+      String subscriptions = "Subscriptions";
+
+      QuerySnapshot querySnapshotBrands = await _firestore.collection(brands).get();
+
+      for (int i = 0; i < querySnapshotBrands.docs.length; i++) {
+
+        String brandId = querySnapshotBrands.docs[i].id;
+        print(brandId);
+        Brand brand = Brand.fromObjectAllData(brandId, querySnapshotBrands.docs[i]);
+        if(brand.endDatePay != null && brand.subscriptionId != null) {
+          print(brand.endDatePay!.toDate());
+          brand.endDatePay = Timestamp.fromDate(
+              brand.endDatePay!.toDate().add(Duration(days: 7)));
+          print(brand.endDatePay!.toDate());
+          DocumentSnapshot _documentSnapshot = await _firestore
+              .collection(brands)
+              .doc(brandId)
+              .collection(subscriptions)
+              .doc(brand.subscriptionId!).get();
+          Subscription sub = Subscription.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+          if(sub.subscriptionId == 'FITNESSISBUSINESS') {
+            await _firestore
+                .collection(brands)
+                .doc(brandId)
+                .update({
+              "endDatePay": brand.endDatePay,
+            });
+            await _firestore
+                .collection(brands)
+                .doc(brandId)
+                .collection(subscriptions)
+                .doc(brand.subscriptionId!)
+                .update({
+              "endDate": brand.endDatePay,
+            });
+          }
+        }
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+        print('=================================================================================');
+        print('=================================================================================');
+        print('\n');
+      }
+      return true;
+    } catch (e) {
+      print(e.toString());
       return false;
     }
   }

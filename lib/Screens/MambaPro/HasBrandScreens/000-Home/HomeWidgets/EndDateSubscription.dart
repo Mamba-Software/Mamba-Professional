@@ -47,6 +47,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
               return Container();
             case BrandSuscriptionLoadedTrue:
               final suscriptionState = state as BrandSuscriptionLoadedTrue;
+              difference = suscriptionState.subscription.endDate!.toDate().difference(DateTime.now()).inDays;
               return FittedBox(
                 fit: BoxFit.fitHeight,
                 child: suscriptionState.subscription.subscriptionId  == '7DAYSTRIAL'? freeTrialMamba() : GestureDetector(

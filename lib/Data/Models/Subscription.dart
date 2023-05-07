@@ -50,7 +50,7 @@ class Subscription {
       descriptionAdapted = documentSnapshot.get("descriptionEsp").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('descriptionCat')) {
-      descriptionAdapted = documentSnapshot.get("descriptionCat").toString();
+      description = documentSnapshot.get("descriptionCat").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('subscriptionId')) {
       subscriptionId = documentSnapshot.get("subscriptionId").toString();
@@ -71,6 +71,9 @@ class Subscription {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('promotion')) {
       promotion = documentSnapshot.get("promotion");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('price')) {
+      priceString = documentSnapshot.get("price").toString();
     }
   }
 

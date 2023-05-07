@@ -3350,7 +3350,7 @@ class FirebaseDatabaseService {
     }
   }
   // Get Valid Promotion
-  Future<List<Subscription>> getSubscriptions(String? promotion) async {
+  Future<List<Subscription>> getSubscriptions(String? promotion, String brandId) async {
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     DateTime now = DateTime.now();
     Timestamp tmstp = Timestamp.fromDate(now);
@@ -3361,22 +3361,25 @@ class FirebaseDatabaseService {
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         subscriptionTemp = Subscription.fromObjectAllData(
             querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        if(subscriptionTemp.isActive! && subscriptionTemp.startDate!.compareTo(tmstp) < 0 && tmstp.compareTo(subscriptionTemp.endDate!) < 0)
-          {
-            if(subscriptionTemp.promotion == "")
-              {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+        await _firestore.collection(subscriptions).doc(querySnapshot.docs[i].id)
+            .collection('Brands').doc(brandId).get();
+        if (!_documentSnapshot2.exists) {
+          if (subscriptionTemp.isActive! &&
+              subscriptionTemp.startDate!.compareTo(tmstp) < 0 &&
+              tmstp.compareTo(subscriptionTemp.endDate!) < 0) {
+            if (subscriptionTemp.promotion == "") {
+              subscriptionsList.add(subscriptionTemp
+              );
+            }
+            else {
+              if (subscriptionTemp.promotion == promotion) {
                 subscriptionsList.add(subscriptionTemp
                 );
               }
-            else
-              {
-                if(subscriptionTemp.promotion == promotion)
-                  {
-                    subscriptionsList.add(subscriptionTemp
-                    );
-                  }
-              }
+            }
           }
+        }
       }
     } catch (e) {
       print(e);

@@ -338,6 +338,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           return const SizedBox(height: 10);
                         case BrandSuscriptionLoadedTrue:
                           final suscriptionState = state as BrandSuscriptionLoadedTrue;
+                          difference = suscriptionState.subscription.endDate!.toDate().difference(DateTime.now()).inDays;
                           return Padding(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 0),
                             child: Column(

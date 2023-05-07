@@ -55,8 +55,6 @@ class _PayWallState extends State<PayWall> {
   List<Subscription> subscriptionList = [];
   double finalSizeBox = 0.01;
   final _topSnackBar = TopSnackBarDef();
-  String textToShow = "";
-  String title = "";
 
 
   // Boolean Loading
@@ -72,7 +70,24 @@ class _PayWallState extends State<PayWall> {
 
   Future<void> getSubscriptions()
   async {
+    List<Subscription> subscriptionListAux = [];
     subscriptionList.clear();
+    if(currentBrand.subscription == null) {
+      if (subscritionPromo.id == null) {
+        subscriptionListAux = await _promotionDataService.getSubscriptions("", currentBrand.id!);
+      }
+      else {
+        subscriptionListAux =
+        await _promotionDataService.getSubscriptions(subscritionPromo.id, currentBrand.id!);
+      }
+      for (int j = 0; j < subscriptionListAux.length; ++j) {
+        if (currentUser.idioma == "ca") {
+          subscriptionListAux[j].descriptionAdapted =
+              subscriptionListAux[j].description;
+        }
+        subscriptionList.add(subscriptionListAux[j]);
+      }
+    }
     try {
       Purchases.getCustomerInfo();
       String monthFree = await _settingsDataService.checkMonthOffer();
@@ -104,15 +119,6 @@ class _PayWallState extends State<PayWall> {
     }  catch (e) {
       // optional error handling
     }
-/*
-    if(subscritionPromo.id == null)
-      {
-        subscriptionList = await _promotionDataService.getSubscriptions("");
-      }
-    else
-      {
-        subscriptionList = await _promotionDataService.getSubscriptions(subscritionPromo.id);
-      }*/
     finalSizeBox = subscriptionList.length * 0.07;
     setState(() {
       loadingPromotions = false;
@@ -127,22 +133,6 @@ class _PayWallState extends State<PayWall> {
     await _promotionDataService
         .getValidSubscription(
         promotionController.text, widget.brandId);
-    if(subscritionPromo.id != null)
-      {
-        title = subscritionPromo.title!;
-        if(currentUser.idioma == 'es')
-          {
-            textToShow = subscritionPromo.descriptionAdapted!;
-          }
-        else if(currentUser.idioma == 'ca')
-          {
-            textToShow = subscritionPromo.descriptionAdapted!;
-          }
-        else
-          {
-            textToShow = subscritionPromo.descriptionAdapted!;
-          }
-      }
     if(fromSeeSubsc)
     {
       setState(() {
@@ -537,30 +527,42 @@ class _PayWallState extends State<PayWall> {
             onTap: () async {
               mixpanel!.track('brand_clicked_subscription');
               FocusManager.instance.primaryFocus?.unfocus();
-              try {
-                Purchases.logIn(currentBrand.id!);
-                var purchaserInfo = await Purchases.purchasePackage(subscriptionList[index].package!);
-                if (purchaserInfo.entitlements.active.isNotEmpty && purchaserInfo.entitlements.all[entitlementID]!.isActive) {
-                  mixpanel!.track('brand_subscribed');
-                  _brandDataService.updateBrandSubscriptionRevenueCat(currentBrand.id!, purchaserInfo.entitlements.all[entitlementID]!.expirationDate, purchaserInfo.entitlements.all[entitlementID]!.originalPurchaseDate, purchaserInfo.entitlements.all[entitlementID]!.productIdentifier, purchaserInfo.entitlements.all[entitlementID]!.unsubscribeDetectedAt);
-                  Purchases.logOut();
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    CupertinoPageRoute<void>(
-                      builder: (context) => const SplashScreen(),
-                      settings: const RouteSettings(name: 'SplashScreen'),
-                    ),
-                        (_) => false,
-                  );
-                }
-              } on PlatformException catch (e) {
-                var errorCode = PurchasesErrorHelper.getErrorCode(e);
-                if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-                  ('ERROR ON PURCHASING');
+              if(subscriptionList[index].package != null) {
+                try {
+                  Purchases.logIn(currentBrand.id!);
+                  var purchaserInfo = await Purchases.purchasePackage(
+                      subscriptionList[index].package!);
+                  if (purchaserInfo.entitlements.active.isNotEmpty &&
+                      purchaserInfo.entitlements.all[entitlementID]!.isActive) {
+                    mixpanel!.track('brand_subscribed');
+                    _brandDataService.updateBrandSubscriptionRevenueCat(
+                        currentBrand.id!,
+                        purchaserInfo.entitlements.all[entitlementID]!
+                            .expirationDate,
+                        purchaserInfo.entitlements.all[entitlementID]!
+                            .originalPurchaseDate,
+                        purchaserInfo.entitlements.all[entitlementID]!
+                            .productIdentifier,
+                        purchaserInfo.entitlements.all[entitlementID]!
+                            .unsubscribeDetectedAt);
+                    Purchases.logOut();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      CupertinoPageRoute<void>(
+                        builder: (context) => const SplashScreen(),
+                        settings: const RouteSettings(name: 'SplashScreen'),
+                      ),
+                          (_) => false,
+                    );
+                  }
+                } on PlatformException catch (e) {
+                  var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                  if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+                    ('ERROR ON PURCHASING');
+                  }
                 }
               }
-              //
-              /*
+              else {
                 await showModalBottomSheet<int?>(
                   context: context,
                   isScrollControlled: true,
@@ -579,7 +581,9 @@ class _PayWallState extends State<PayWall> {
                     // Widget
                     return ModalBuy(subscriptionList[index]);
                   },
-                );*/
+                );
+              }
+              //
             },
             child: Center(
               child: Container(
@@ -595,7 +599,7 @@ class _PayWallState extends State<PayWall> {
                 height: MediaQuery.of(context).size.height * 0.07,
                 child:  Center(
                   child: index == subscriptionList.length - 1? Text(
-                    subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
+                    subscriptionList[index].package == null? subscriptionList[index].descriptionAdapted! : subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
                     style:  Theme.of(context)
                         .textTheme
                         .headline1
@@ -604,7 +608,7 @@ class _PayWallState extends State<PayWall> {
                             .primaryColorDark,
                     ),
                   ) : Text(
-                    subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
+                    subscriptionList[index].package == null? subscriptionList[index].descriptionAdapted! : subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
                     style: Theme.of(context)
                         .textTheme
                         .headline1
@@ -706,8 +710,7 @@ class _PayWallState extends State<PayWall> {
                   ListTile(
                     title: Row(
                       children: [
-                        Text(sub.description!),
-                        //Text(AppLocalizations.of(context)!.uniquePromotion),
+                        Text(AppLocalizations.of(context)!.uniquePromotion),
                         Icon(
                           Icons.done,
                           color: Colors.green,
@@ -725,7 +728,7 @@ class _PayWallState extends State<PayWall> {
                         textAlign: TextAlign.left
                     ),
                     trailing: Text(
-                        textToShow,
+                        sub.descriptionAdapted!,
                         style: Theme
                             .of(context)
                             .textTheme
@@ -738,29 +741,20 @@ class _PayWallState extends State<PayWall> {
                         child: GestureDetector(
                           onTap: () async {
                             mixpanel!.track('brand_subscribed');
-                            try {
-                              var purchaserInfo = await Purchases.purchasePackage(sub.package!);
-                              if (purchaserInfo.entitlements.active.isNotEmpty && purchaserInfo.entitlements.all[entitlementID]!.isActive) {
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  CupertinoPageRoute<void>(
-                                    builder: (context) => const SplashScreen(),
-                                    settings: const RouteSettings(name: 'SplashScreen'),
-                                  ),
-                                      (_) => false,
-                                );
-                              }
-                            } on PlatformException catch (e) {
-                              var errorCode = PurchasesErrorHelper.getErrorCode(e);
-                              if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-                                ('ERROR ON PURCHASING');
-                              }
-                            }
-                            /*await _brandDataService
+                            await _brandDataService
                                 .updateBrandPay(widget.brandId,
-                                subscritionPromo.duration!,
-                                subscritionPromo.id!, subscritionPromo.title!);*/
-                            // currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
+                                sub.duration!,
+                                sub.id!,
+                                sub.title!, DateTime.now(), false);
+                              // currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              CupertinoPageRoute<void>(
+                                builder: (context) => const SplashScreen(),
+                                settings: const RouteSettings(name: 'SplashScreen'),
+                              ),
+                                  (_) => false,
+                            );
 
                           },
                           child: Center(

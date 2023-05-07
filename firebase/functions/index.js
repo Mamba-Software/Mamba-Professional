@@ -863,20 +863,35 @@ exports.userJoinsBrand = functions
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
-      // Update Date Joined Users/Brand
-      await db.doc("/Users/"+userId+"/Brands/"+brandId+"").set({
-        "name": brandDoc.name,
-        "logoUrl": brandDoc.logoUrl,
-        "dateJoined": formatted,
-        "myMonthlySessions": 0,
-        "myTotalSessions": 0,
-        "zipCode": brandDoc.zipCode,
-        "city": brandDoc.city,
-        "longitude": brandDoc.longitude,
-        "latitude": brandDoc.latitude,
-        "baseImage": brandDoc.baseImage,
-        "geoPosition": brandDoc.geoPosition,
-      });
+
+      //JMF 05052023 POR SI VIENEN DE LA WEB
+      if (brandDoc.adminID == userId) {
+           // Update Date Joined Users/Brand
+          await db.doc("/Users/"+userId+"/Brands/"+brandId+"").set({
+            "name": brandDoc.name,
+            "logoUrl": brandDoc.logoUrl,
+            "dateJoined": formatted,
+            "myMonthlySessions": 0,
+            "myTotalSessions": 0,
+          });
+      }
+      else {
+            // Update Date Joined Users/Brand
+            await db.doc("/Users/"+userId+"/Brands/"+brandId+"").set({
+              "name": brandDoc.name,
+              "logoUrl": brandDoc.logoUrl,
+              "dateJoined": formatted,
+              "myMonthlySessions": 0,
+              "myTotalSessions": 0,
+              "zipCode": brandDoc.zipCode,
+              "city": brandDoc.city,
+              "longitude": brandDoc.longitude,
+              "latitude": brandDoc.latitude,
+              "baseImage": brandDoc.baseImage,
+              "geoPosition": brandDoc.geoPosition,
+            });
+      }
+
       // Update Date Joined Users/Brand
       await db.doc("/Brands/"+brandId+"/Users/"+userId+"").update({
         "dateJoined": formatted,
@@ -2996,21 +3011,36 @@ exports.zzzzUserJoinsBrand = functions
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
 
-      // Update Date Joined Users/Brand
-      await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
-        "name": brandDoc.name,
-        "logoUrl": brandDoc.logoUrl,
-        "dateJoined": formatted,      
-        "myMonthlySessions": 0,
-        "myTotalSessions": 0,
-        //TODO INTEGRATION VERSION .12
-        "zipCode": brandDoc.zipCode,
-        "city": brandDoc.city,
-        "longitude": brandDoc.longitude,
-        "latitude": brandDoc.latitude,
-        "baseImage": brandDoc.baseImage,
-        "geoPosition": brandDoc.geoPosition,
-      });
+      //JMF 05052023 POR SI VIENEN DE LA WEB
+      if (brandDoc.adminID == userId)
+      {
+           // Update Date Joined Users/Brand
+          await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
+            "name": brandDoc.name,
+            "logoUrl": brandDoc.logoUrl,
+            "dateJoined": formatted,
+            "myMonthlySessions": 0,
+            "myTotalSessions": 0,
+          });
+      }
+      else
+      {
+            // Update Date Joined Users/Brand
+            await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
+              "name": brandDoc.name,
+              "logoUrl": brandDoc.logoUrl,
+              "dateJoined": formatted,
+              "myMonthlySessions": 0,
+              "myTotalSessions": 0,
+              //TODO INTEGRATION VERSION .12
+              "zipCode": brandDoc.zipCode,
+              "city": brandDoc.city,
+              "longitude": brandDoc.longitude,
+              "latitude": brandDoc.latitude,
+              "baseImage": brandDoc.baseImage,
+              "geoPosition": brandDoc.geoPosition,
+            });
+      }
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
         "dateJoined": formatted,
