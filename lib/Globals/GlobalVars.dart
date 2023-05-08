@@ -64,7 +64,7 @@ var dynamicLinkBrandId;
 
 //Revenue Cat
 const googleApiKey = 'goog_xHoFXqoNpoesuLjeweHEqSuEvXy';
-const appleApiKey = 'appl_zARUDaqRUYylGLSphTBVkIdjELo';
+const appleApiKey = 'appl_WdXLePsgLfQWTsDgYXYWYkdbDCj';
 const entitlementID = 'AllFeatures';
 
 //JMF 18042023 REVENUECAT
