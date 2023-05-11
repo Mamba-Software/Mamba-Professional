@@ -270,7 +270,7 @@ class _MambaState extends State<Mamba> {
         body: LoadingView(),
       )
      :
-      hasBrand ? !brandIsActive? currentUser.brandRole < 2? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
+      hasBrand ? !brandIsActive? currentUser.id == currentBrand.adminID? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
   }
 
 

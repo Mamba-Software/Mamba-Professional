@@ -174,18 +174,6 @@ class _BrandScreenState extends State<BrandScreen> {
     );
   }
 
-  void navigateToPayWall()
-  {
-    Navigator.pushAndRemoveUntil(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const SplashScreen(),
-        settings: const RouteSettings(name: 'SplashScreen'),
-      ),
-          (_) => false,
-    );
-  }
-
   // Function to Handle Favourites when User clicks on them
   void handleChangedFavourites() {
     setState(() {
@@ -218,16 +206,11 @@ class _BrandScreenState extends State<BrandScreen> {
           onTap: () =>  {
             Navigator.pop(context),
             setBrandActive(),
-            if(brandIsActive) {
               setState(() {
                 pageIndex = _pageIndex;
                 setFavourites();
               }),
-            }
-            else
-              {
-                navigateToPayWall()
-              }
+
           }
       );
     } else {
@@ -294,17 +277,10 @@ class _BrandScreenState extends State<BrandScreen> {
           onTap: () =>  {
             Navigator.pop(context),
             setBrandActive(),
-            if((brandIsActive))
-              {
-                setState(() {
-                  pageIndex = _pageIndex;
-                  setFavourites();
-                }),
-              }
-            else
-              {
-                navigateToPayWall()
-              }
+            setState(() {
+              pageIndex = _pageIndex;
+              setFavourites();
+            }),
           }
       );
     }

@@ -108,30 +108,34 @@ class _BonosProState extends State<BonosPro> {
 
   // Navigate to Add Bonos
   Future<void> navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) async {
-    await Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
-            child: AddEditBono(
-              brand: _brand,
-              bono: bono,
-              edit: edit,
-              duplicate: false,
-              delete: false,
-            ),
-          ),
-        )).whenComplete(() => () {
-      setState(() {
+      await navigateToPayWall(context);
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) =>
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus &&
+                        currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                  },
+                  child: AddEditBono(
+                    brand: _brand,
+                    bono: bono,
+                    edit: edit,
+                    duplicate: false,
+                    delete: false,
+                  ),
+                ),
+          )).whenComplete(() =>
+          () {
+        setState(() {
 
+        });
       });
-    });
   }
 
   Widget returnBono(Bono _bono) {
