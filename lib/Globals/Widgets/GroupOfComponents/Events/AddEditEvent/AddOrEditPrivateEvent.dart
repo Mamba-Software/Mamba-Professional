@@ -637,6 +637,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               children: [
                 Scaffold(
                   body: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       child: Column(
                         children: [
                           Form(
@@ -837,7 +838,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             )
                                         ),
                                         selectedBonos.isEmpty ? Container(
-                                          height: MediaQuery.of(context).size.height*0.1,
                                           width: MediaQuery.of(context).size.width*0.9,
                                           margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
                                           padding: const EdgeInsets.all(8),
@@ -861,7 +861,31 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               ),
                                             ],
                                           ),
-                                        ) : Container(),
+                                        ) : Container(
+                                          width: MediaQuery.of(context).size.width*0.9,
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withOpacity(0.2),
+                                            borderRadius: const BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                            border: Border.all(color: Colors.green, width: 2),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.info_outlined, color: Colors.green, size:  MediaQuery.of(context).size.width*0.08,),
+                                              const SizedBox(width: 8),
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.bonosDescriptionGreat,
+                                                  textAlign: TextAlign.left,
+                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
@@ -957,7 +981,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                       ],
                                     ),
                                   ) : Container(),
-                                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                                 ],
                               ),
                             

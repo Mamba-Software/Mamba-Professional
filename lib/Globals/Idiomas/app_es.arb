@@ -2098,6 +2098,10 @@
   "@bonosDescriptionWarning":{
     "bonosClient": "Bonos client text"
   },
+  "bonosDescriptionGreat": "Has seleccionado algún bono.\nLa entrada al evento esta restringida.",
+  "@bonosDescriptionGreat":{
+    "bonosClient": "Bonos client text"
+  },
   "bonosDescriptionPrivate": "Selecciona los bonos que debe tener un cliente para poder ser invitado a este evento",
   "@bonosDescriptionPrivate":{
     "bonosClient": "Bonos client text"

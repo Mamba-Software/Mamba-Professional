@@ -504,6 +504,7 @@
   "bonosClient": "Bonos de clients",
   "bonosDescription": "Selecciona els vals que permenten als usuaris a unir-se a aquest esdeveniment",
   "bonosDescriptionWarning": "No has seleccionat cap val.\nQualsevol persona podrà unir-se a l'esdeveniment i no es restringirà l'entrada a aquest.",
+  "bonosDescriptionGreat": "Has seleccionat algun val.\nL'entrada a l'esdeveniment està restringida.",
   "bonosDescriptionPrivate": "Selecciona els vals que ha de tenir un client per a poder ser convidat a aquest esdeveniment",
   "bonosDescriptionPrivateWarning": "No has seleccionat cap val.\nQualsevol persona convidada podrà unir-se a l'esdeveniment i no es restringirà l'entrada a aquest.",
   "bonosCanPurchasedWarning": "Pots canviar el preu, les sessions o les condicions d'aquest val ja que cap client l'ha comprat.",

@@ -48,7 +48,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   bool get _isAppBarExpanded {
     return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.25 - kToolbarHeight);
   }
-  String selectedValue = '0';
+  String selectedValue = '2';
   var items = ['0', '1', '2', '3', '4', '5', '6'];
 
   // Acceso a Base de Datos
@@ -184,8 +184,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       _controller.displayDate = dateTime.subtract(const Duration(hours: 1));
     }
     // Initial Calendar View
-    selectedValue = '1';
-    _controller.view = CalendarView.day;
+    selectedValue = '2';
+    _controller.view = CalendarView.week;
     // Date Joined Information
     dateJoined = DateFormat('dd-MM-yyyy').parse(_brand.dateJoined!);
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
