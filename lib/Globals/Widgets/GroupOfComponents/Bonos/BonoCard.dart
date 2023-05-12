@@ -1068,15 +1068,25 @@ class BonoCardState extends State<BonoCard> {
   // Navigate to Add Bonos
   Future<void> navigateToAddBonosScreen(Bono bono, Brand brand, bool edit, bool duplicate, bool delete) async {
     isExpanded = false;
+
     await Navigator.push(
       context,
       CupertinoPageRoute<void>(
-        builder: (context) => AddEditBono(
-          brand: brand,
-          bono: bono,
-          edit: edit,
-          duplicate: duplicate,
-          delete: delete,
+        builder: (context) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            }
+          },
+          child: AddEditBono(
+            brand: brand,
+            bono: bono,
+            edit: edit,
+            duplicate: duplicate,
+            delete: delete,
+          ),
         ),
       )).whenComplete(() => {
         if (isModalClicked) {

@@ -510,16 +510,18 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           SizedBox(width: MediaQuery.of(context).size.width*0.03)
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.0),
-          child: Column(
-            children: [
-              SizedBox(height: MediaQuery.of(context).size.width*0.03),
-              LinearProgressIndicator(
-                value: addEventTabValue,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ],
+          preferredSize: const Size.fromHeight(0),
+          child: IgnorePointer(
+            child: Column(
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.width*0.03),
+                LinearProgressIndicator(
+                  value: addEventTabValue,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -581,7 +583,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                         });
                                                       },
                                                       onEditingComplete: () {
-                                                        if (descriptionController.text.isEmpty) focusNodeDescController.requestFocus();
+                                                        if (descriptionController.text.isEmpty) {
+                                                          focusNodeDescController.requestFocus();
+                                                        } else {
+                                                          focusNodetitleController.unfocus();
+                                                        }
                                                       },
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(

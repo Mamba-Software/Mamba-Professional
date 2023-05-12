@@ -573,7 +573,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           SizedBox(width: MediaQuery.of(context).size.width*0.03)
         ],
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.0),
+          preferredSize: const Size.fromHeight(0),
           child: Column(
             children: [
               SizedBox(height: MediaQuery.of(context).size.width*0.03),
@@ -621,7 +621,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: <Widget>[
                                                       Text(
                                                         AppLocalizations.of(context)!.title,
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                        style: Theme.of(context).textTheme.headline1,
                                                       ),
                                                     ],
                                                   ),
@@ -644,7 +644,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         });
                                                       },
                                                       onEditingComplete: () {
-                                                        if (descriptionController.text.isEmpty) focusNodeDescController.requestFocus();
+                                                        if (descriptionController.text.isEmpty) {
+                                                          focusNodeDescController.requestFocus();
+                                                        } else {
+                                                          focusNodetitleController.unfocus();
+                                                        }
                                                       },
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
@@ -674,7 +678,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: <Widget>[
                                                       Text(
                                                         AppLocalizations.of(context)!.description,
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                        style: Theme.of(context).textTheme.headline1,
                                                       ),
                                                     ],
                                                   ),
@@ -724,7 +728,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: <Widget>[
                                                       Text(
                                                         AppLocalizations.of(context)!.location,
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                        style: Theme.of(context).textTheme.headline1,
                                                       ),
                                                     ],
                                                   ),
@@ -781,7 +785,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   children: <Widget>[
                                                     Text(
                                                       AppLocalizations.of(context)!.bonos,
-                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      style: Theme.of(context).textTheme.headline1,
                                                     ),
                                                   ],
                                                 ),
@@ -1117,7 +1121,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: [
                                                   Text(
                                                     AppLocalizations.of(context)!.recurrentEvent,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.headline1,
                                                   ),
                                                   const SizedBox(width: 10,),
                                                   Checkbox(
@@ -1287,7 +1291,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             children: [
                                               Text(
                                                 AppLocalizations.of(context)!.recurrentEvent,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                style: Theme.of(context).textTheme.headline1,
                                               ),
                                               const SizedBox(width: 10,),
                                               Checkbox(
@@ -1328,7 +1332,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: <Widget>[
                                                   Text(
                                                     AppLocalizations.of(context)!.designatedTrainers,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.headline1,
                                                   ),
                                                 ],
                                               ),
@@ -1448,7 +1452,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: <Widget>[
                                                   Text(
                                                     AppLocalizations.of(context)!.addDesignatedClients,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.headline1,
                                                   ),
                                                 ],
                                               ),

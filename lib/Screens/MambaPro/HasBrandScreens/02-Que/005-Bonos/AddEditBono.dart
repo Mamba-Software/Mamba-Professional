@@ -91,11 +91,13 @@ class _AddEditBonoState extends State<AddEditBono>
 
   // Title Controller
   var titleController = TextEditingController();
-  String? titleString;
-
+  FocusNode focusNodetitleController = FocusNode();
   var descriptionController = TextEditingController();
-  var clasesController = TextEditingController();
+  FocusNode focusNodeDescController = FocusNode();
+  var sessionsController = TextEditingController();
+  FocusNode focusNodeSessionsController = FocusNode();
   var priceController = TextEditingController();
+  FocusNode focusNodePriceController = FocusNode();
   var freeCancellController = TextEditingController();
   var weeklyController = TextEditingController();
   var monthlyController = TextEditingController();
@@ -155,7 +157,7 @@ class _AddEditBonoState extends State<AddEditBono>
       bono.sessions = widget.bono.sessions;
       if (bono.sessions! > 5000) {
         noSessions = true;
-        clasesController.text = '';
+        sessionsController.text = '';
       }
       bono.isActive = widget.bono.isActive;
       bono.compras = widget.bono.compras;
@@ -317,7 +319,7 @@ class _AddEditBonoState extends State<AddEditBono>
           )
         : Scaffold(
             appBar: AppBar(
-              toolbarHeight: MediaQuery.of(context).size.height * 0.12,
+              toolbarHeight: MediaQuery.of(context).size.height*0.07,
               title: Text(
                 widget.edit
                     ? AppLocalizations.of(context)!.editBono
@@ -375,110 +377,7 @@ class _AddEditBonoState extends State<AddEditBono>
                 child: IgnorePointer(
                   child: Column(
                     children: [
-                      TabBar(
-                        controller: _tabController,
-                        indicatorColor: Colors.transparent,
-                        onTap: (index) {
-                          _selectedIndex = index;
-                        },
-                        tabs: [
-                          Tab(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.info_outlined,
-                                    color: tabs[0]
-                                        ? Theme.of(context).colorScheme.secondary
-                                        : Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                    size:
-                                        MediaQuery.of(context).size.width * 0.06,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Tab(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.euro,
-                                    color: tabs[1]
-                                        ? Theme.of(context).colorScheme.secondary
-                                        : Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                    size:
-                                        MediaQuery.of(context).size.width * 0.06,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Tab(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.format_list_numbered,
-                                    color: tabs[2]
-                                        ? Theme.of(context).colorScheme.secondary
-                                        : Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                    size:
-                                        MediaQuery.of(context).size.width * 0.06,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Tab(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.palette_outlined,
-                                    color: tabs[3]
-                                        ? Theme.of(context).colorScheme.secondary
-                                        : Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                    size:
-                                        MediaQuery.of(context).size.width * 0.06,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Tab(
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.playlist_add_check,
-                                    color: tabs[4]
-                                        ? Theme.of(context).colorScheme.secondary
-                                        : Theme.of(context)
-                                            .scaffoldBackgroundColor,
-                                    size:
-                                        MediaQuery.of(context).size.width * 0.06,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      SizedBox(height: MediaQuery.of(context).size.width*0.03),
                       LinearProgressIndicator(
                         value: addBonosTabValue,
                         backgroundColor:
@@ -732,6 +631,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.titleError,
                         true,
                         titleController,
+                        focusNodetitleController,
                         false,
                         'title'),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
@@ -743,6 +643,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.descriptionError,
                         true,
                         descriptionController,
+                        focusNodeDescController,
                         false,
                         'desc'),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
@@ -753,7 +654,8 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.descriptionError,
                         AppLocalizations.of(context)!.descriptionError,
                         true,
-                        descriptionController,
+                        null,
+                        null,
                         true,
                         bono.isActive),
                   ]),
@@ -837,7 +739,8 @@ class _AddEditBonoState extends State<AddEditBono>
                         0.toString(),
                         AppLocalizations.of(context)!.sessionPlease,
                         widget.edit && hasPurchases ? false : true,
-                        clasesController,
+                        sessionsController,
+                        focusNodeSessionsController,
                         false,
                         'ses'),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
@@ -849,6 +752,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.pricePlease,
                         widget.edit && hasPurchases ? false : true,
                         priceController,
+                        focusNodePriceController,
                         false,
                         'price'),
                   ]),
@@ -863,102 +767,103 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget conditionsPage() {
     return Scaffold(
       body: SingleChildScrollView(
-          child: Column(
-        children: [
-          widget.edit == true ? hasPurchases ? Container(
-            height: MediaQuery.of(context).size.height*0.15,
-            width: MediaQuery.of(context).size.width*0.9,
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: AppColors.red.withOpacity(0.2),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(10),
-              ),
-              border: Border.all(color: AppColors.red, width: 2),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    AppLocalizations.of(context)!.bonosPurchasedWarning,
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
-                  ),
+        child: Column(
+          children: [
+            widget.edit == true ? hasPurchases ? Container(
+              height: MediaQuery.of(context).size.height*0.15,
+              width: MediaQuery.of(context).size.width*0.9,
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.red.withOpacity(0.2),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
                 ),
-              ],
-            ),
-          ) : Container(
-            height: MediaQuery.of(context).size.height*0.10,
-            width: MediaQuery.of(context).size.width*0.9,
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.green.withOpacity(0.2),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(10),
+                border: Border.all(color: AppColors.red, width: 2),
               ),
-              border: Border.all(color: Colors.green, width: 2),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.info_outlined, color: Colors.green, size:  MediaQuery.of(context).size.width*0.08,),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    AppLocalizations.of(context)!.bonosCanPurchasedWarning,
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(context)!.bonosPurchasedWarning,
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.3),
+                    ),
                   ),
+                ],
+              ),
+            ) : Container(
+              height: MediaQuery.of(context).size.height*0.10,
+              width: MediaQuery.of(context).size.width*0.9,
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.2),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(10),
                 ),
-              ],
+                border: Border.all(color: Colors.green, width: 2),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outlined, color: Colors.green, size:  MediaQuery.of(context).size.width*0.08,),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      AppLocalizations.of(context)!.bonosCanPurchasedWarning,
+                      textAlign: TextAlign.left,
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+                    ),
+                  ),
+                ],
+              ),
+            ) : Container(),
+            Form(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      optionConditionsWrite(
+                          TextInputType.text,
+                          AppLocalizations.of(context)!.expiresAt + "...",
+                          AppLocalizations.of(context)!.expiresAtDesc,
+                          AppLocalizations.of(context)!.titleHint,
+                          AppLocalizations.of(context)!.titleError,
+                          widget.edit && hasPurchases ? false : true,
+                          titleController,
+                          'exp'),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      !noSessions? optionConditionsWrite(
+                          TextInputType.number,
+                          AppLocalizations.of(context)!.freeCancel,
+                          AppLocalizations.of(context)!.freeCancelDesc,
+                          AppLocalizations.of(context)!.titleHint,
+                          AppLocalizations.of(context)!.titleError,
+                          widget.edit && hasPurchases ? false : true,
+                          freeCancellController,
+                          'ses') : Container(),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      optionConditionsWrite(
+                          TextInputType.number,
+                          AppLocalizations.of(context)!.trainsPerWeek,
+                          AppLocalizations.of(context)!.trainsPerWeekDesc,
+                          AppLocalizations.of(context)!.titleHint,
+                          AppLocalizations.of(context)!.titleError,
+                          widget.edit && hasPurchases ? false : true,
+                          weeklyController,
+                          'maxw'),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                    ]),
+              ),
             ),
-          ) : Container(),
-          Form(
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.05),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    optionConditionsWrite(
-                        TextInputType.text,
-                        AppLocalizations.of(context)!.expiresAt + "...",
-                        AppLocalizations.of(context)!.expiresAtDesc,
-                        AppLocalizations.of(context)!.titleHint,
-                        AppLocalizations.of(context)!.titleError,
-                        widget.edit && hasPurchases ? false : true,
-                        titleController,
-                        'exp'),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    !noSessions? optionConditionsWrite(
-                        TextInputType.number,
-                        AppLocalizations.of(context)!.freeCancel,
-                        AppLocalizations.of(context)!.freeCancelDesc,
-                        AppLocalizations.of(context)!.titleHint,
-                        AppLocalizations.of(context)!.titleError,
-                        widget.edit && hasPurchases ? false : true,
-                        freeCancellController,
-                        'ses') : Container(),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    optionConditionsWrite(
-                        TextInputType.number,
-                        AppLocalizations.of(context)!.trainsPerWeek,
-                        AppLocalizations.of(context)!.trainsPerWeekDesc,
-                        AppLocalizations.of(context)!.titleHint,
-                        AppLocalizations.of(context)!.titleError,
-                        widget.edit && hasPurchases ? false : true,
-                        weeklyController,
-                        'maxw'),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                  ]),
-            ),
-          ),
-        ],
-      )),
+          ],
+        )
+      ),
       resizeToAvoidBottomInset: true,
     );
   }
@@ -1009,10 +914,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                     "Opacidad",
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1
-                                        ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 25),
+                                        .headline1,
                                   ),
                                 ],
                               ),
@@ -1071,10 +973,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                   AppLocalizations.of(context)!.photo,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .headline1
-                                      ?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 25),
+                                      .headline1,
                                 ),
                               ],
                             ),
@@ -1239,10 +1138,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                       AppLocalizations.of(context)!.colorSolid,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline1
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 25),
+                                          .headline1,
                                     ),
                                   ],
                                 ),
@@ -1325,10 +1221,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                         .degradateSolid,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline1
-                                        ?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 25),
+                                        .headline1,
                                   ),
                                 ],
                               ),
@@ -1439,8 +1332,7 @@ class _AddEditBonoState extends State<AddEditBono>
                       AppLocalizations.of(context)!.preseeBono,
                       style: Theme.of(context)
                           .textTheme
-                          .headline1
-                          ?.copyWith(fontWeight: FontWeight.bold, fontSize: 25),
+                          .headline1,
                     ),
                   ),
                 ],
@@ -1486,7 +1378,7 @@ class _AddEditBonoState extends State<AddEditBono>
 
   void setSeeSessions(bool? seeSes) {
     noSessions = seeSes!;
-    clasesController.text = '';
+    sessionsController.text = '';
     bono.sessions = 10000;
     if(noSessions) {
       freeCancellController.text = '0';
@@ -1663,6 +1555,7 @@ class _AddEditBonoState extends State<AddEditBono>
       var errorText,
       bool editable,
       var controller,
+      var focusNode,
       bool checkBox,
       var variable) {
     return Column(
@@ -1684,10 +1577,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               titleText,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25),
+                                  .headline1,
                             ),
                             subtitleText != ""
                                 ?  Padding(
@@ -1713,9 +1603,6 @@ class _AddEditBonoState extends State<AddEditBono>
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1
-                                      ?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 25),
                                 ),
                                 subtitleText != ""
                                     ? Padding(
@@ -1743,10 +1630,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               titleText,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline1
-                                  ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 25),
+                                  .headline1,
                             ),
                             subtitleText != "" ? variable != 'ses'? Padding(
                               padding: const EdgeInsets.only(top: 8.0),
@@ -2017,8 +1901,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     children: <Widget>[
                       Text(
                         titleText,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(
-                            fontWeight: FontWeight.bold, fontSize: 25),
+                        style: Theme.of(context).textTheme.headline1,
                       ),
                       subtitleText != ""
                           ? Padding(

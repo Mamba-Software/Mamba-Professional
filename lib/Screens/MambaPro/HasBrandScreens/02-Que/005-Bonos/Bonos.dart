@@ -129,8 +129,7 @@ class _BonosProState extends State<BonosPro> {
                     delete: false,
                   ),
                 ),
-          )).whenComplete(() =>
-          () {
+          )).whenComplete(() => () {
         setState(() {
 
         });
