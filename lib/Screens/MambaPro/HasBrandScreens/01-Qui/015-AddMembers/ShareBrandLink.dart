@@ -115,9 +115,8 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 gapless: false,
                 embeddedImage: Image.asset(Constants.logoQRMamba).image,
                 embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: const Size(45, 45),
+                  size: const Size(80, 80),
                 ),
-
               )
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.03),
@@ -255,7 +254,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 gapless: false,
                 embeddedImage: Image.asset(Constants.logoQRMamba).image,
                 embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: const Size(45, 45),
+                  size: const Size(80, 80),
                 ),
               )
           ),
