@@ -114,7 +114,7 @@ class _MambaState extends State<Mamba> {
   Future<void> launchOnStartUpDialogs() async {
     // First check if minimum version
     print("Checking Minimum App Version...");
-    checkMinimumAppVersion();
+    //checkMinimumAppVersion();
     // Check if invited into Brand
     print("Checking if invited into Brand...");
     checkBrandInvite();

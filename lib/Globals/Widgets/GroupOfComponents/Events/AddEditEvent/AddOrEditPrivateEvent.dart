@@ -675,6 +675,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
+                                                      autofocus: true,
                                                       controller: titleController,
                                                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
                                                       onChanged: (val) {

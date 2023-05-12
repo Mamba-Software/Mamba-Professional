@@ -612,6 +612,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
+                                                      autofocus: true,
                                                       controller: titleController,
                                                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
                                                       onChanged: (val) {
