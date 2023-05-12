@@ -237,6 +237,10 @@ class _MambaState extends State<Mamba> {
       int role = await _brandDataService.getUserBrandRole(
           brand.id!, currentUser.id!);
       currentUser.setBrandRole = role;
+      if(currentUser.id == currentBrand.adminID) {
+          Purchases.logOut();
+          Purchases.logIn(currentBrand.id!);
+      }
       mixpanel!.getPeople().set("Brands Roles", [role]);
       setBrandActive();
     }
