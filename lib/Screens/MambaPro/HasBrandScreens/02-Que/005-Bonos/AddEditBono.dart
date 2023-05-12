@@ -503,7 +503,7 @@ class _AddEditBonoState extends State<AddEditBono>
                */
             ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             body: Column(
               children: [
                 Expanded(

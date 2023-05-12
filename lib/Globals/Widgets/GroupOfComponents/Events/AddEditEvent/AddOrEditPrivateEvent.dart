@@ -70,9 +70,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   Event event = Event();
   // Title Controller
   var titleController = TextEditingController();
+  FocusNode focusNodetitleController = FocusNode();
   String? titleString;
   // Description Controller
   var descriptionController = TextEditingController();
+  FocusNode focusNodeDescController = FocusNode();
   String? descriptionString;
   // Event Image
   bool isRandomImage = true;
@@ -133,6 +135,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       mixpanel!.track('edit_event_info', properties: {'isPrivate': true});
     } else {
       initializeEventInfo();
+      focusNodetitleController.requestFocus();
       mixpanel!.track('add_event_info', properties: {'isPrivate': true});
     }
   }
@@ -492,7 +495,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     ) :
     Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.12,
+        toolbarHeight: MediaQuery.of(context).size.height*0.07,
         title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
@@ -570,59 +573,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           SizedBox(width: MediaQuery.of(context).size.width*0.03)
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0),
-          child: IgnorePointer(
-            child: Column(
-              children: [
-                TabBar(
-                  controller: _tabController,
-                  indicatorColor: Colors.transparent,
-                  onTap: (index) {
-                    _selectedIndex = index;
-                  },
-                  tabs: [
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                LinearProgressIndicator(
-                  value: addEventTabValue,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ],
-            )
+          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.0),
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.width*0.03),
+              LinearProgressIndicator(
+                value: addEventTabValue,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ],
           ),
         ),
       ),
@@ -675,13 +635,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
-                                                      autofocus: true,
+                                                      focusNode: focusNodetitleController,
                                                       controller: titleController,
                                                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
                                                       onChanged: (val) {
                                                         setState(() {
                                                           titleString = val;
                                                         });
+                                                      },
+                                                      onEditingComplete: () {
+                                                        if (descriptionController.text.isEmpty) focusNodeDescController.requestFocus();
                                                       },
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
@@ -725,6 +688,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
+                                                      focusNode: focusNodeDescController,
                                                       keyboardType: TextInputType.visiblePassword,
                                                       controller: descriptionController,
                                                       minLines: 1,
@@ -840,7 +804,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         ),
                                         selectedBonos.isEmpty ? Container(
                                           width: MediaQuery.of(context).size.width*0.9,
-                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025, bottom: MediaQuery.of(context).size.height*0.01),
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
                                             color: AppColors.red.withOpacity(0.2),
@@ -864,7 +828,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ),
                                         ) : Container(
                                           width: MediaQuery.of(context).size.width*0.9,
-                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025, bottom: MediaQuery.of(context).size.height*0.01),
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
                                             color: Colors.green.withOpacity(0.2),
@@ -1561,6 +1525,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         });
                       }
                       _tabController!.animateTo(_selectedIndex -= 1);
+                      FocusScopeNode currentFocus = FocusScope.of(context);
+                      if (!currentFocus.hasPrimaryFocus &&
+                          currentFocus.focusedChild != null) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      }
                       setState(() {
                         addEventTabValue -= 0.33;
                       });
@@ -1597,6 +1566,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                               mixpanel!.track('add_event_datetime', properties: {'isPrivate': true});
                             }
                             _tabController!.animateTo(_selectedIndex += 1);
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
                             setState(() {
                               addEventTabValue += 0.33;
                               tabs[1] = true;

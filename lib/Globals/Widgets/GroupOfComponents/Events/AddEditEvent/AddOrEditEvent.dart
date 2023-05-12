@@ -63,9 +63,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   Event event = Event();
   // Title Controller
   var titleController = TextEditingController();
+  FocusNode focusNodetitleController = FocusNode();
   String? titleString;
   // Description Controller
   var descriptionController = TextEditingController();
+  FocusNode focusNodeDescController = FocusNode();
   String? descriptionString;
   // Event Image
   bool isRandomImage = true;
@@ -126,6 +128,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       mixpanel!.track('edit_event_info', properties: {'isPrivate': false});
     } else {
       initializeEventInfo();
+      focusNodetitleController.requestFocus();
       mixpanel!.track('add_event_info', properties: {'isPrivate': false});
     }
   }
@@ -429,7 +432,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     ) :
     Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.12,
+        toolbarHeight: MediaQuery.of(context).size.height*0.07,
         title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
@@ -507,59 +510,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           SizedBox(width: MediaQuery.of(context).size.width*0.03)
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0),
-          child: IgnorePointer(
-            child: Column(
-              children: [
-                TabBar(
-                  controller: _tabController,
-                  indicatorColor: Colors.transparent,
-                  onTap: (index) {
-                    _selectedIndex = index;
-                  },
-                  tabs: [
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                LinearProgressIndicator(
-                  value: addEventTabValue,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ],
-            )
+          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.0),
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.width*0.03),
+              LinearProgressIndicator(
+                value: addEventTabValue,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ],
           ),
         ),
       ),
@@ -612,13 +572,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
-                                                      autofocus: true,
+                                                      focusNode: focusNodetitleController,
                                                       controller: titleController,
                                                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
                                                       onChanged: (val) {
                                                         setState(() {
                                                           titleString = val;
                                                         });
+                                                      },
+                                                      onEditingComplete: () {
+                                                        if (descriptionController.text.isEmpty) focusNodeDescController.requestFocus();
                                                       },
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
@@ -662,6 +625,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
+                                                      focusNode: focusNodeDescController,
                                                       keyboardType: TextInputType.visiblePassword,
                                                       controller: descriptionController,
                                                       minLines: 1,
@@ -777,7 +741,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                           ),
                                           selectedBonos.isEmpty ? Container(
                                             width: MediaQuery.of(context).size.width*0.9,
-                                            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025, bottom: MediaQuery.of(context).size.height*0.01),
                                             padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
                                               color: AppColors.red.withOpacity(0.2),
@@ -801,7 +765,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             ),
                                           ) : Container(
                                             width: MediaQuery.of(context).size.width*0.9,
-                                            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025, bottom: MediaQuery.of(context).size.height*0.01),
                                             padding: const EdgeInsets.all(8),
                                             decoration: BoxDecoration(
                                               color: Colors.green.withOpacity(0.2),
@@ -1438,7 +1402,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: <Widget>[
-                                              Icon(Icons.person, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.05,),
+                                              Icon(Icons.person, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.05,),
                                               Container(
                                                 padding: const EdgeInsets.only(left: 20),
                                                 width: MediaQuery.of(context).size.width*0.11,
@@ -1486,164 +1450,171 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.01),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _selectedIndex != 0 ? Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
-                child: SizedBox(
-                  height: 50,
-                  child: FloatingActionButton.extended(
-                    heroTag: null,
-                    onPressed: () {
-                      if (_selectedIndex == 1) {
-                        if (widget.eventId != null) {
-                          mixpanel!.track('edit_event_info', properties: {'isPrivate': false});
-                        } else {
-                          mixpanel!.track('add_event_info', properties: {'isPrivate': false});
-                        }
-                        setState(() {
-                          tabs[1] = false;
-                        });
-                      } else if (_selectedIndex == 2) {
+      floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _selectedIndex != 0 ? Padding(
+              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
+              child: SizedBox(
+                height: 50,
+                child: FloatingActionButton.extended(
+                  heroTag: null,
+                  onPressed: () {
+                    if (_selectedIndex == 1) {
+                      if (widget.eventId != null) {
+                        mixpanel!.track('edit_event_info', properties: {'isPrivate': false});
+                      } else {
+                        mixpanel!.track('add_event_info', properties: {'isPrivate': false});
+                      }
+                      setState(() {
+                        tabs[1] = false;
+                      });
+                    } else if (_selectedIndex == 2) {
+                      if (widget.eventId != null) {
+                        mixpanel!.track('edit_event_datetime', properties: {'isPrivate': false});
+                      } else {
+                        mixpanel!.track('add_event_datetime', properties: {'isPrivate': false});
+                      }
+                      setState(() {
+                        tabs[2] = false;
+                      });
+                    }
+                    _tabController!.animateTo(_selectedIndex -= 1);
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus &&
+                        currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                    setState(() {
+                      addEventTabValue -= 0.33;
+                    });
+
+                  },
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Container(),
+                  label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorDark),),
+                ),
+              ),
+            ) :  Padding(
+              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
+              child: Container(
+                height: 50,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
+              child: SizedBox(
+                height: 50,
+                child: FloatingActionButton.extended(
+                  heroTag: null,
+                  onPressed: () async {
+                    if (_selectedIndex == 0) {
+                      if (formKeyInfo.currentState!.validate()) {
                         if (widget.eventId != null) {
                           mixpanel!.track('edit_event_datetime', properties: {'isPrivate': false});
                         } else {
                           mixpanel!.track('add_event_datetime', properties: {'isPrivate': false});
                         }
+                        _tabController!.animateTo(_selectedIndex += 1);
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus &&
+                            currentFocus.focusedChild != null) {
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        }
                         setState(() {
-                          tabs[2] = false;
+                          addEventTabValue += 0.33;
+                          tabs[1] = true;
+                        });
+                      } else {
+                        if (widget.eventId != null) {
+                          mixpanel!.track('edit_event_info_error', properties: {'isPrivate': false});
+                        } else {
+                          mixpanel!.track('add_event_info_error', properties: {'isPrivate': false});
+                        }
+                      }
+                    } else if (_selectedIndex == 1) {
+                      setState(() {
+                        errorDate = false;
+                      });
+                      if (validateDateAndTime(startDate, double.parse(duration))) {
+                        if (widget.eventId != null) {
+                          mixpanel!.track('edit_event_members', properties: {'isPrivate': false});
+                        } else {
+                          mixpanel!.track('add_event_members', properties: {'isPrivate': false});
+                        }
+                        _tabController!.animateTo(_selectedIndex += 1);
+                        setState(() {
+                          addEventTabValue += 0.33;
+                          tabs[2] = true;
+                        });
+                      } else {
+                        if (widget.eventId != null) {
+                          mixpanel!.track('edit_event_datetime_error', properties: {'isPrivate': false});
+                        } else {
+                          mixpanel!.track('add_event_datetime_error', properties: {'isPrivate': false});
+                        }
+                        setState(() {
+                          errorDate = true;
                         });
                       }
-                      _tabController!.animateTo(_selectedIndex -= 1);
-                      setState(() {
-                        addEventTabValue -= 0.33;
-                      });
-
-                    },
-                    backgroundColor: Theme.of(context).primaryColor,
-                    icon: Container(),
-                    label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorDark),),
-                  ),
-                ),
-              ) :  Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
-                child: Container(
-                  height: 50,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
-                child: SizedBox(
-                  height: 50,
-                  child: FloatingActionButton.extended(
-                    heroTag: null,
-                    onPressed: () async {
-                      if (_selectedIndex == 0) {
-                        if (formKeyInfo.currentState!.validate()) {
-                          if (widget.eventId != null) {
-                            mixpanel!.track('edit_event_datetime', properties: {'isPrivate': false});
-                          } else {
-                            mixpanel!.track('add_event_datetime', properties: {'isPrivate': false});
-                          }
-                          _tabController!.animateTo(_selectedIndex += 1);
-                          setState(() {
-                            addEventTabValue += 0.33;
-                            tabs[1] = true;
-                          });
-                        } else {
-                          if (widget.eventId != null) {
-                            mixpanel!.track('edit_event_info_error', properties: {'isPrivate': false});
-                          } else {
-                            mixpanel!.track('add_event_info_error', properties: {'isPrivate': false});
-                          }
-                        }
-                      } else if (_selectedIndex == 1) {
+                    } else if (_selectedIndex == 2) {
+                      if (brandTrainersSelected.isEmpty) {
                         setState(() {
-                          errorDate = false;
+                          errorNoTrainerSelected = true;
                         });
-                        if (validateDateAndTime(startDate, double.parse(duration))) {
-                          if (widget.eventId != null) {
-                            mixpanel!.track('edit_event_members', properties: {'isPrivate': false});
-                          } else {
-                            mixpanel!.track('add_event_members', properties: {'isPrivate': false});
-                          }
-                          _tabController!.animateTo(_selectedIndex += 1);
-                          setState(() {
-                            addEventTabValue += 0.33;
-                            tabs[2] = true;
-                          });
+                        if (widget.eventId != null) {
+                          mixpanel!.track('edit_event_trainers_error', properties: {'isPrivate': false});
                         } else {
-                          if (widget.eventId != null) {
-                            mixpanel!.track('edit_event_datetime_error', properties: {'isPrivate': false});
-                          } else {
-                            mixpanel!.track('add_event_datetime_error', properties: {'isPrivate': false});
-                          }
-                          setState(() {
-                            errorDate = true;
-                          });
+                          mixpanel!.track('add_event_trainers_error', properties: {'isPrivate': false});
                         }
-                      } else if (_selectedIndex == 2) {
-                        if (brandTrainersSelected.isEmpty) {
-                          setState(() {
-                            errorNoTrainerSelected = true;
-                          });
-                          if (widget.eventId != null) {
-                            mixpanel!.track('edit_event_trainers_error', properties: {'isPrivate': false});
-                          } else {
-                            mixpanel!.track('add_event_trainers_error', properties: {'isPrivate': false});
-                          }
-                        } else if (brandClientsSelected.length > eventMaxMembers) {
-                          setState(() {
-                            errorClientsSelected = true;
-                          });
-                          if (widget.eventId != null) {
-                            mixpanel!.track('edit_event_clients_error', properties: {'isPrivate': false});
-                          } else {
-                            mixpanel!.track('add_event_clients_error', properties: {'isPrivate': false});
-                          }
+                      } else if (brandClientsSelected.length > eventMaxMembers) {
+                        setState(() {
+                          errorClientsSelected = true;
+                        });
+                        if (widget.eventId != null) {
+                          mixpanel!.track('edit_event_clients_error', properties: {'isPrivate': false});
                         } else {
-                          if (widget.eventId == null) {
-                            _addEventFunction();
+                          mixpanel!.track('add_event_clients_error', properties: {'isPrivate': false});
+                        }
+                      } else {
+                        if (widget.eventId == null) {
+                          _addEventFunction();
+                        } else {
+                          if (event.eventGroupId == null) {
+                            _updateEventFunction();
                           } else {
-                            if (event.eventGroupId == null) {
-                              _updateEventFunction();
-                            } else {
-                              var result = await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return const EditRecurrentEventDialog();
-                                },
-                              );
-                              if (result != null) {
-                                if (result == 1) {
-                                  print("Edit Only This Event..");
-                                  _updateEventFunction();
-                                } else {
-                                  print("Edit This Event and the Rest Forward ...");
-                                  _updateRecurrentEventFunction();
-                                }
+                            var result = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const EditRecurrentEventDialog();
+                              },
+                            );
+                            if (result != null) {
+                              if (result == 1) {
+                                print("Edit Only This Event..");
+                                _updateEventFunction();
+                              } else {
+                                print("Edit This Event and the Rest Forward ...");
+                                _updateRecurrentEventFunction();
                               }
                             }
                           }
                         }
                       }
-                    },
-                    backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).colorScheme.secondary,
-                    icon: Container(),
-                    label: widget.eventId == null ? Text(
-                      _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),) : Text(
-                      _selectedIndex == 2 ? AppLocalizations.of(context)!.editEvent : AppLocalizations.of(context)!.next,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),),
-                  ),
+                    }
+                  },
+                  backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).colorScheme.secondary,
+                  icon: Container(),
+                  label: widget.eventId == null ? Text(
+                    _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),) : Text(
+                    _selectedIndex == 2 ? AppLocalizations.of(context)!.editEvent : AppLocalizations.of(context)!.next,
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),),
                 ),
               ),
-            ],
-          ),
-      ),
+            ),
+          ],
+        ),
     );
   }
 
