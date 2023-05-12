@@ -235,7 +235,7 @@ class _HomePro extends State<HomePro> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
-                  currentUser.brandRole < 2 ? EndDateSubscription() : Container(),
+                  currentUser.id == currentBrand.adminID ? EndDateSubscription() : Container(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),

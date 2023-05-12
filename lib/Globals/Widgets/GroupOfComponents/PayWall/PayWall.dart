@@ -529,7 +529,6 @@ class _PayWallState extends State<PayWall> {
               FocusManager.instance.primaryFocus?.unfocus();
               if(subscriptionList[index].package != null) {
                 try {
-                  Purchases.logIn(currentBrand.id!);
                   var purchaserInfo = await Purchases.purchasePackage(
                       subscriptionList[index].package!);
                   if (purchaserInfo.entitlements.active.isNotEmpty &&
@@ -545,7 +544,6 @@ class _PayWallState extends State<PayWall> {
                             .productIdentifier,
                         purchaserInfo.entitlements.all[entitlementID]!
                             .unsubscribeDetectedAt);
-                    Purchases.logOut();
                     Navigator.pushAndRemoveUntil(
                       context,
                       CupertinoPageRoute<void>(

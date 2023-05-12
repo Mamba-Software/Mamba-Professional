@@ -1,14 +1,16 @@
 // This file contains all the Global Variabels used throgh the App.
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
 // IS PRODUCTION ?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
 var appVersion = "MAMBA v0.0.13";
@@ -95,6 +97,20 @@ void setBrandActive()
   else
   {
     brandIsActive = false;
+  }
+}
+
+Future<void> navigateToPayWall(var context)
+async {
+  if(!brandIsActive) {
+    await Navigator.pushAndRemoveUntil(
+      context,
+      CupertinoPageRoute<void>(
+        builder: (context) => const SplashScreen(),
+        settings: const RouteSettings(name: 'SplashScreen'),
+      ),
+          (_) => false,
+    );
   }
 }
 

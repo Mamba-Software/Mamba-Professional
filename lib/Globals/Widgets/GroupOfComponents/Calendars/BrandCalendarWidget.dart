@@ -203,35 +203,39 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     return Event();
   }
 
-  void _addEvent(DateTime dateTime) {
-    mixpanel!.track('brand_calendar_plan_event', properties: {'isPrivate': false});
-    // Date Time
-    DateTime eventDate = DateTime.now();
-    eventDate = DateTime(
-      dateTime.year,
-      dateTime.month,
-      dateTime.day,
-      dateTime.hour
-    );
-    // Navigate to Add or Edit Event
-    Navigator.push(
-        context,
-        CupertinoPageRoute<String>(
-          builder: (context) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
-            child: AddOrEditEvent(
-              locale: Localizations.localeOf(context),
-              dateTime: eventDate,
-            ),
-          ),
-        )
-    );
+  Future<void> _addEvent(DateTime dateTime) async {
+      await navigateToPayWall(context);
+      mixpanel!.track(
+          'brand_calendar_plan_event', properties: {'isPrivate': false});
+      // Date Time
+      DateTime eventDate = DateTime.now();
+      eventDate = DateTime(
+          dateTime.year,
+          dateTime.month,
+          dateTime.day,
+          dateTime.hour
+      );
+      // Navigate to Add or Edit Event
+      Navigator.push(
+          context,
+          CupertinoPageRoute<String>(
+            builder: (context) =>
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus &&
+                        currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                  },
+                  child: AddOrEditEvent(
+                    locale: Localizations.localeOf(context),
+                    dateTime: eventDate,
+                  ),
+                ),
+          )
+      );
   }
 
   void _addPrivateEvent(DateTime dateTime) {

@@ -237,6 +237,10 @@ class _MambaState extends State<Mamba> {
       int role = await _brandDataService.getUserBrandRole(
           brand.id!, currentUser.id!);
       currentUser.setBrandRole = role;
+      if(currentUser.id == currentBrand.adminID) {
+          Purchases.logOut();
+          Purchases.logIn(currentBrand.id!);
+      }
       mixpanel!.getPeople().set("Brands Roles", [role]);
       setBrandActive();
     }
@@ -270,7 +274,7 @@ class _MambaState extends State<Mamba> {
         body: LoadingView(),
       )
      :
-      hasBrand ? !brandIsActive? currentUser.brandRole < 2? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
+      hasBrand ? !brandIsActive? currentUser.id == currentBrand.adminID? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
   }
 
 
