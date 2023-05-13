@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -18,7 +16,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
@@ -33,7 +30,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAu
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectClientsEvent.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -517,7 +513,98 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   @override
   Widget build(BuildContext context) {
     return isLoading ? Scaffold(
-      appBar: null,
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height*0.08,
+        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
+            : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          widget.eventId != null ? IconButton(
+              onPressed: () async {
+                if (event.eventGroupId == null) {
+                  // DeleteDialog
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
+                      }
+                  );
+                  if (result) {
+                    _deleteEventFunction();
+                  }
+                } else {
+                  var result = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const DeleteRecurrentEventDialog();
+                    },
+                  );
+                  if (result != null) {
+                    if (result == 1) {
+                      print("Deleting Only This Event..");
+                      _deleteEventFunction();
+                    } else {
+                      print("Delete This Event and the Rest Forward ...");
+                      _deleteRecurrentEventFunction();
+                    }
+                  }
+                }
+              },
+              icon: SizedBox(
+                width: MediaQuery.of(context).size.width*0.15,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
+                  ],
+                ),
+              )
+          ) : SizedBox(
+            width: MediaQuery.of(context).size.width*0.15,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Theme.of(context).primaryColor,
+                  size: MediaQuery.of(context).size.width*0.06,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.1,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                        AppLocalizations.of(context)!.private,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width*0.03)
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.width*0.03),
+              LinearProgressIndicator(
+                value: addEventTabValue,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ],
+          ),
+        ),
+      ),
       body: LoadingView(
         text: isRecurrentLoadingText
       ),
@@ -858,7 +945,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             ),
                                                             location.isBaseLocation! ? Text(
                                                               AppLocalizations.of(context)!.baseLocation,
-                                                              style: Theme.of(context).textTheme.caption,
+                                                              style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
                                                             ) : Container(),
                                                           ],
                                                         ),
@@ -2149,7 +2236,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     setState(() {
       isLoading = true;
       // Updating Loading Text
-      isRecurrentLoadingText = AppLocalizations.of(context)!.editing +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
+      isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
     });
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!, true);

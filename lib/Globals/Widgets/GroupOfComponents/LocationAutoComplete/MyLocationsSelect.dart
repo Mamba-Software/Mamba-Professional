@@ -255,7 +255,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                                             ),
                                             location.isBaseLocation! ? Text(
                                               AppLocalizations.of(context)!.baseLocation,
-                                              style: Theme.of(context).textTheme.caption,
+                                              style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
                                             ) : Container(),
                                           ],
                                         ),
