@@ -239,6 +239,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   Future<void> getBrandBonos() async {
     allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
     allBonos.removeWhere((element) => element.isActive == false);
+    allBonos.sort((a,b) {
+      var aSessions =  a.sessions;
+      var bSessions =  b.sessions;
+      return aSessions!.compareTo(bSessions!);
+    });
   }
 
   Future<void> getEventBonos() async {
@@ -799,7 +804,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 borderRadius: BorderRadius.circular(15),
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                      //color: Theme.of(context).backgroundColor,
+                                                      color: Theme.of(context).scaffoldBackgroundColor,
                                                       border: Border.all(color: Theme.of(context).primaryColor, width: 1),
                                                       borderRadius: const BorderRadius.all(Radius.circular(15.0))
                                                   ),
@@ -842,9 +847,18 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       ),
                                                       SizedBox(width: MediaQuery.of(context).size.width * 0.04),
                                                       Expanded(
-                                                        child: Text(
-                                                          location.description!,
-                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              location.description!,
+                                                              style: Theme.of(context).textTheme.bodyText2,
+                                                            ),
+                                                            location.isBaseLocation! ? Text(
+                                                              AppLocalizations.of(context)!.baseLocation,
+                                                              style: Theme.of(context).textTheme.caption,
+                                                            ) : Container(),
+                                                          ],
                                                         ),
                                                       ),
                                                       SizedBox(width: MediaQuery.of(context).size.width * 0.02),
@@ -1064,8 +1078,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       width: MediaQuery.of(context).size.width * 0.1,
                                                       child: MaterialButton(
                                                         elevation: 4,
-                                                        color: selectedBonos.contains(bono.id!) ? Theme.of(context).primaryColor : AppColors.grey,
-                                                        textColor: selectedBonos.contains(bono.id!) ? Theme.of(context).primaryColor : AppColors.grey,
+                                                        color: selectedBonos.contains(bono.id!) ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
+                                                        textColor: selectedBonos.contains(bono.id!) ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
                                                         child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
                                                         padding: EdgeInsets.zero,
                                                         shape: const CircleBorder(),
@@ -1405,8 +1419,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             values[v % 7] = !values[v % 7]!;
                                                           });
                                                         },
-                                                        selectedElevation: 15,
-                                                        elevation: 5,
+                                                        selectedElevation: 8,
+                                                        elevation: 4,
                                                         disabledElevation: 0,
                                                         values: values,
                                                       ),

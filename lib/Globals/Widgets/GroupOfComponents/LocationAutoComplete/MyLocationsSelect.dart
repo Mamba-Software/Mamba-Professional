@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart' as googlePlace;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
@@ -35,11 +37,23 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
   var searchTrainersController = TextEditingController();
   // Locations From Brand
   List<Location> locationList = [];
+  // Google Maps
+  GoogleMapController? mapController;
+  final Completer<GoogleMapController> _controller = Completer();
 
   Future<void> getAllLocations() async {
     setState(() {
       isLoading = false;
     });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+      setState(() {
+        mapController = controller;
+      });
+    }
   }
 
   @override
@@ -74,7 +88,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
       body:  isLoading ?
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,),
+          title: Text(AppLocalizations.of(context)!.myLocations, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
@@ -88,7 +102,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
           :
       Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,),
+          title: Text(AppLocalizations.of(context)!.myLocations, style: Theme.of(context).appBarTheme.titleTextStyle,),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
@@ -169,16 +183,89 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                         itemCount: locationList.length,
                         itemBuilder: (context, index) {
                           Location location = locationList[index];
-                          return ListTile(
-                              leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: location.isBaseLocation! ?  Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
-                              title: Text(
-                                  location.description!,
-                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: location.isBaseLocation! ?  Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor,)
+                          CameraPosition _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
+                          Marker marker = Marker(
+                            markerId: const MarkerId('1'),
+                            position: LatLng(location.latitude!,location.longitude!),
+                            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+                            onTap: () {},
+                          );
+                          Set<Marker> markers = <Marker>{};
+                          markers.add(marker);
+                          return GestureDetector(
+                            onTap: () async {
+                              Navigator.of(context).pop(location.id);
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03, vertical: MediaQuery.of(context).size.width*0.02,),
+                              child: Material(
+                                elevation: 4,
+                                borderRadius: BorderRadius.circular(15),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                      border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                                      borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: MediaQuery.of(context).size.height*0.1,
+                                        width: MediaQuery.of(context).size.height*0.1,
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(15),
+                                            bottomLeft: Radius.circular(15),
+                                          ),
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(15),
+                                            bottomLeft: Radius.circular(15),
+                                          ),
+                                          child: GoogleMap(
+                                            onMapCreated: _onMapCreated,
+                                            initialCameraPosition: _initialPosition,
+                                            scrollGesturesEnabled: false,
+                                            zoomGesturesEnabled: false,
+                                            rotateGesturesEnabled: false,
+                                            mapToolbarEnabled: false,
+                                            zoomControlsEnabled: false,
+                                            minMaxZoomPreference: const MinMaxZoomPreference(16,16),
+                                            myLocationButtonEnabled: false,
+                                            mapType: MapType.satellite,
+                                            markers: markers,
+                                            trafficEnabled: false,
+                                            indoorViewEnabled: false,
+                                            buildingsEnabled: false,
+                                            onTap: null,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              location.description!,
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                            ),
+                                            location.isBaseLocation! ? Text(
+                                              AppLocalizations.of(context)!.baseLocation,
+                                              style: Theme.of(context).textTheme.caption,
+                                            ) : Container(),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              onTap: () {
-                                Navigator.of(context).pop(location.id);
-                              },
-                            );
+                            ),
+                          );
                         }
                     );
                   }
