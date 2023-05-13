@@ -23,6 +23,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
 
   // Booleans
   bool isTrainer = false;
+  bool isImage = false;
   // Variables
   final _dynamicLinkUtils = DynamicLinkUtils();
   String brandUrlClient = "";
@@ -115,7 +116,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 gapless: false,
                 embeddedImage: Image.asset(Constants.logoQRMamba).image,
                 embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: const Size(80, 80),
+                  size: const Size(65, 65),
                 ),
               )
           ),
@@ -254,7 +255,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 gapless: false,
                 embeddedImage: Image.asset(Constants.logoQRMamba).image,
                 embeddedImageStyle: QrEmbeddedImageStyle(
-                  size: const Size(80, 80),
+                  size: const Size(65, 65),
                 ),
               )
           ),

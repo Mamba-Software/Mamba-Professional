@@ -1340,7 +1340,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   Widget whichFloatingActionButton() {
     return canEdit ? Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(10),
       child: SizedBox(
         height: MediaQuery.of(context).size.width*0.15,
         width: MediaQuery.of(context).size.width*0.15,

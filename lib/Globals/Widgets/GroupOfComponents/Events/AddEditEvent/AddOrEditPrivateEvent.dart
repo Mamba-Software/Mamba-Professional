@@ -515,7 +515,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     return isLoading ? Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height*0.08,
-        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
+        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.createEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
@@ -612,7 +612,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height*0.08,
-        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
+        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.createEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(

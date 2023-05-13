@@ -456,7 +456,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     return isLoading ? Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height*0.08,
-        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
+        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.createEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
@@ -555,7 +555,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     Scaffold(
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height*0.08,
-        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
+        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.createEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
@@ -907,7 +907,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                         ],
                                       ),
                                     ),
-                                    allBonos.isNotEmpty && brandClientsSelected.isEmpty ? Padding(
+                                    allBonos.isNotEmpty ? Padding(
                                       padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                                       child: Column(
                                         children: [
@@ -2462,7 +2462,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         minute: updatedStartDate.minute.toString(),
         duration: double.parse(duration),
         locationId: location.id,
-        numClients: brandClientsSelected.length,
+        numClients: originalClients.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
       );
@@ -2536,6 +2536,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Trainer Added "+user.id.toString());
       }
+      /*
       /// Continue With Clients
       for (int i = 0; i < eventClients.length; i++) {
         var user = eventClients[i];
@@ -2577,6 +2578,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Client Added "+user.id.toString());
       }
+       */
     }
     mixpanel!.track('edit_event_completed', properties: {
       'descriptionLength': event.description!.length.toString(),
