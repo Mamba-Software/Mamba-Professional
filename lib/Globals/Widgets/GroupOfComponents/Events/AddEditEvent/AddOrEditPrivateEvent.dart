@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
@@ -83,6 +86,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   // Location
   String? originalLocationId;
   Location location = Location();
+  Set<Marker> markers = <Marker>{};
+  CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
+  GoogleMapController? mapController;
+  final Completer<GoogleMapController> _controller = Completer();
   // Starting Date and Time
   DateTime startDate = DateTime.now();
   DateTime originalStartDate = DateTime.now();
@@ -256,9 +263,26 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
 
   Future<void> getLocation(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
+    _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
+    Marker marker = Marker(
+      markerId: const MarkerId('1'),
+      position: LatLng(location.latitude!,location.longitude!),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+      onTap: () {},
+    );
+    markers.add(marker);
     setState(() {
       isLoading = false;
     });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+      setState(() {
+        mapController = controller;
+      });
+    }
   }
 
   Future selectDate() async {
@@ -362,53 +386,51 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         }, //: null,
         child: Padding(
           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.width*0.17,
-                  width: MediaQuery.of(context).size.width*0.17,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
-                    border: Border.all(
-                      width: 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.width*0.17,
+                width: MediaQuery.of(context).size.width*0.17,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  border: Border.all(
+                    width: 1,
+                    color: Theme.of(context).primaryColor,
+                    style: BorderStyle.solid,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                    ),
+                  ],
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                      Icons.person_add_alt_1,
                       color: Theme.of(context).primaryColor,
-                      style: BorderStyle.solid,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        spreadRadius: 3,
-                        blurRadius: 4,
-                      ),
-                    ],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                        Icons.person_add_alt_1,
-                        color: Theme.of(context).primaryColor,
-                        size:  MediaQuery.of(context).size.width*0.05
-                    ),
+                      size:  MediaQuery.of(context).size.width*0.05
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.add,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width*0.025),
+              SizedBox(
+                width: MediaQuery.of(context).size.width*0.2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.add,
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
@@ -495,7 +517,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     ) :
     Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.07,
+        toolbarHeight: MediaQuery.of(context).size.height*0.08,
         title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
@@ -556,17 +578,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                   color: Theme.of(context).primaryColor,
                   size: MediaQuery.of(context).size.width*0.06,
                 ),
-                /*
-                SizedBox(height: MediaQuery.of(context).size.width*0.01),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                      AppLocalizations.of(context)!.private,
-                      style: Theme.of(context).textTheme.bodyText2,
-                      textAlign: TextAlign.center
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.1,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                        AppLocalizations.of(context)!.private,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center
+                    ),
                   ),
-                ),                
-                 */
+                ),
               ],
             ),
           ),
@@ -653,13 +675,20 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
                                                         hintStyle: Theme.of(context).textTheme.caption,
-                                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red, height: 0.1),
+                                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
                                                         hintText: AppLocalizations.of(context)!.titleHint,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
+                                                        errorBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.red),
+                                                        ),
+                                                        disabledBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
+                                                        enabledBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
+                                                        focusedBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
                                                       ),
                                                       enabled: true,
                                                     ),
@@ -668,7 +697,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               )
                                           ),
                                           Padding(
-                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.018),
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
@@ -706,11 +735,18 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       decoration: InputDecoration(
                                                         hintStyle: Theme.of(context).textTheme.caption,
                                                         hintText:AppLocalizations.of(context)!.descriptionError,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
+                                                        errorBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.red),
+                                                        ),
+                                                        disabledBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
+                                                        enabledBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
+                                                        focusedBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -718,7 +754,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               )
                                           ),
                                           Padding(
-                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
@@ -735,6 +771,92 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 ],
                                               )
                                           ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.018),
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                var result = await Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute<String>(
+                                                      builder: (context) => MyLocationsSelect(
+                                                        brandId: currentBrand.id!,
+                                                      ),
+                                                    )
+                                                );
+                                                if (result != null) {
+                                                  getLocation(result);
+                                                } else {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                }
+                                              },
+                                              child: Material(
+                                                elevation: 4,
+                                                borderRadius: BorderRadius.circular(15),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      //color: Theme.of(context).backgroundColor,
+                                                      border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                                                      borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Container(
+                                                        height: MediaQuery.of(context).size.height*0.1,
+                                                        width: MediaQuery.of(context).size.height*0.1,
+                                                        decoration: const BoxDecoration(
+                                                          borderRadius: BorderRadius.only(
+                                                            topLeft: Radius.circular(15),
+                                                            bottomLeft: Radius.circular(15),
+                                                          ),
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius: const BorderRadius.only(
+                                                            topLeft: Radius.circular(15),
+                                                            bottomLeft: Radius.circular(15),
+                                                          ),
+                                                          child: GoogleMap(
+                                                            onMapCreated: _onMapCreated,
+                                                            initialCameraPosition: _initialPosition,
+                                                            scrollGesturesEnabled: false,
+                                                            zoomGesturesEnabled: false,
+                                                            rotateGesturesEnabled: false,
+                                                            mapToolbarEnabled: false,
+                                                            zoomControlsEnabled: false,
+                                                            minMaxZoomPreference: const MinMaxZoomPreference(16,16),
+                                                            myLocationButtonEnabled: false,
+                                                            mapType: MapType.satellite,
+                                                            markers: markers,
+                                                            trafficEnabled: false,
+                                                            indoorViewEnabled: false,
+                                                            buildingsEnabled: false,
+                                                            onTap: null,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                      Expanded(
+                                                        child: Text(
+                                                          location.description!,
+                                                          style: Theme.of(context).textTheme.bodyText2,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                                      Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.08),
+                                                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          /*
                                           Padding(
                                             padding: const EdgeInsets.only(top: 15.0),
                                             child: ListTile(
@@ -766,7 +888,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 }
                                               },
                                             ),
-                                          ),                                         
+                                          ),
+                                          */
                                         ]
                                     ),
                                   ),
@@ -775,7 +898,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                     child: Column(
                                       children: [
                                         Padding(
-                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -793,7 +916,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             )
                                         ),
                                         Padding(
-                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, bottom: MediaQuery.of(context).size.height*0.0),
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.0),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -861,9 +984,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             TextButton(
                                               child: Text(
                                                 AppLocalizations.of(context)!.selectAll,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w700),
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                primary: Theme.of(context).primaryColor,
                                               ),
                                               onPressed: () async {
+                                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                                  FocusManager.instance.primaryFocus?.unfocus();
+                                                }
                                                 for (var bono in allBonos) {
                                                   int index = selectedBonos.indexWhere((element) => element == bono.id);
                                                   if (index == -1) {
@@ -884,54 +1014,66 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             itemBuilder: (context, int index) {
                                               var bono = allBonos[index];
                                               return Container(
-                                                height: MediaQuery.of(context).size.height * 0.05,
+                                                height: MediaQuery.of(context).size.height * 0.075,
                                                 width: MediaQuery.of(context).size.width * 0.9,
                                                 margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
                                                 child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Row(
+                                                    Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         BonoCard(
                                                           height: MediaQuery.of(context).size.height * 0.05,
-                                                          width: MediaQuery.of(context).size.width * 0.17,
+                                                          width: MediaQuery.of(context).size.width * 0.18,
                                                           bono: bono,
                                                           brand: currentBrand,
                                                           canExpand: false,
                                                           onlyView: true,
                                                         ),
-                                                        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                                                        SizedBox(
-                                                          height: MediaQuery.of(context).size.height * 0.05,
-                                                          width: MediaQuery.of(context).size.width * 0.6,
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            children: [
-                                                              Flexible(
-                                                                child: Text(
-                                                                  bono.title!.toUpperCase(),
-                                                                  style: Theme.of(context).textTheme.bodyText1,
-                                                                  maxLines: 1,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
+                                                      ]
                                                     ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            bono.title!.toUpperCase(),
+                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                          Flexible(
+                                                            child: Text(
+                                                              (bono.sessions! == 10000 ? AppLocalizations.of(context)!.sessions+" "+AppLocalizations.of(context)!.ilimitadas : bono.sessions!.toString()+" "+AppLocalizations.of(context)!.sessions.toLowerCase())
+                                                                  +" desde "+bono.price!.toStringAsFixed(2)+"€",
+                                                              style: Theme.of(context).textTheme.caption,
+                                                              maxLines: 1,
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
                                                     SizedBox(
                                                       height: MediaQuery.of(context).size.height * 0.04,
                                                       width: MediaQuery.of(context).size.width * 0.1,
                                                       child: MaterialButton(
                                                         elevation: 4,
-                                                        color: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
-                                                        textColor: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
-                                                        child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
+                                                        color: selectedBonos.contains(bono.id!) ? Theme.of(context).primaryColor : AppColors.grey,
+                                                        textColor: selectedBonos.contains(bono.id!) ? Theme.of(context).primaryColor : AppColors.grey,
+                                                        child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
                                                         padding: EdgeInsets.zero,
                                                         shape: const CircleBorder(),
                                                         onPressed: () {
+                                                          FocusScopeNode currentFocus = FocusScope.of(context);
+                                                          if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                                            FocusManager.instance.primaryFocus?.unfocus();
+                                                          }
                                                           setState(() {
                                                             if (selectedBonos.contains(bono.id!)) {
                                                               selectedBonos.remove(bono.id!);
@@ -941,7 +1083,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           });
                                                         },
                                                       ),
-                                                    )
+                                                    ),
+
                                                   ],
                                                 ),
                                               );
@@ -962,6 +1105,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       child: Column(
                         children: [
                           Padding(
@@ -969,139 +1113,214 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        height: MediaQuery.of(context).size.height * 0.20,
-                                        width: MediaQuery.of(context).size.width * 0.90,
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context).backgroundColor,
-                                            borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                                      Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
+                                        child: Text(
+                                          AppLocalizations.of(context)!.selectDayTime,
+                                          style: Theme.of(context).textTheme.headline1,
                                         ),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05, horizontal: MediaQuery.of(context).size.width*0.05),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.calendar_today_outlined, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                        width: MediaQuery.of(context).size.width*0.45,
-                                                        child: GestureDetector(
-                                                            onTap: () {
-                                                              selectDate();
-                                                            },
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              children: <Widget>[
-                                                                Flexible(
-                                                                  child: TextFormField(
-                                                                    controller: startDateController,
-                                                                    readOnly: true,
-                                                                    enabled: false,
-                                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                                    decoration: const InputDecoration(
-                                                                      border: InputBorder.none,
-                                                                      focusedBorder: InputBorder.none,
-                                                                      enabledBorder: InputBorder.none,
-                                                                      errorBorder: InputBorder.none,
-                                                                      disabledBorder: InputBorder.none,
-                                                                    ),
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(Icons.calendar_today_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.07,),
+                                                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                                                Flexible(
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        selectDate();
+                                                      },
+                                                      child: TextFormField(
+                                                        controller: startDateController,
+                                                        readOnly: true,
+                                                        enabled: false,
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        decoration: const InputDecoration(
+                                                          border: InputBorder.none,
+                                                          focusedBorder: InputBorder.none,
+                                                          enabledBorder: InputBorder.none,
+                                                          errorBorder: InputBorder.none,
+                                                          disabledBorder: InputBorder.none,
                                                         ),
-                                                      ),
-                                                    ],
+                                                        textAlign: TextAlign.start,
+                                                      )
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.schedule, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                        width: MediaQuery.of(context).size.width*0.25,
-                                                        child: GestureDetector(
-                                                            onTap: () {
-                                                              selectTime();
-                                                            },
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              children: <Widget>[
-                                                                Flexible(
-                                                                  child: TextFormField(
-                                                                    controller: startTimeController,
-                                                                    readOnly: true,
-                                                                    enabled: false,
-                                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                                    decoration: const InputDecoration(
-                                                                      border: InputBorder.none,
-                                                                      focusedBorder: InputBorder.none,
-                                                                      enabledBorder: InputBorder.none,
-                                                                      errorBorder: InputBorder.none,
-                                                                      disabledBorder: InputBorder.none,
-                                                                    ),
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: MediaQuery.of(context).size.width * 0.01),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.schedule, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
+                                                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                Flexible(
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        selectTime();
+                                                      },
+                                                      child: TextFormField(
+                                                        controller: startTimeController,
+                                                        readOnly: true,
+                                                        enabled: false,
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        decoration: const InputDecoration(
+                                                          border: InputBorder.none,
+                                                          focusedBorder: InputBorder.none,
+                                                          enabledBorder: InputBorder.none,
+                                                          errorBorder: InputBorder.none,
+                                                          disabledBorder: InputBorder.none,
                                                         ),
+                                                        textAlign: TextAlign.start,
+                                                      )
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: MediaQuery.of(context).size.width * 0.01),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Icon(Icons.timer_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
+                                                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                Flexible(
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        selectDuration();
+                                                      },
+                                                      child: TextFormField(
+                                                        controller: durationController,
+                                                        readOnly: true,
+                                                        enabled: false,
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        decoration: const InputDecoration(
+                                                          border: InputBorder.none,
+                                                          focusedBorder: InputBorder.none,
+                                                          enabledBorder: InputBorder.none,
+                                                          errorBorder: InputBorder.none,
+                                                          disabledBorder: InputBorder.none,
+                                                        ),
+                                                        textAlign: TextAlign.start,
+                                                      )
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      /*
+                                      Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                                        child: Material(
+                                          elevation: 4,
+                                          borderRadius: BorderRadius.circular(15),
+                                          child: Container(
+                                            height: MediaQuery.of(context).size.height * 0.16,
+                                            width: MediaQuery.of(context).size.width * 0.90,
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                                                borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.05),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                mainAxisSize: MainAxisSize.max,
+                                                children: [
+                                                  Row(
+                                                    mainAxisSize: MainAxisSize.max,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: <Widget>[
+                                                      Row(
+                                                        children: [
+                                                          Icon(Icons.calendar_today_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.width*0.06,),
+                                                          Container(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                            width: MediaQuery.of(context).size.width*0.45,
+                                                            child: GestureDetector(
+                                                                onTap: () {
+                                                                  selectDate();
+                                                                },
+                                                                child: Row(
+                                                                  mainAxisSize: MainAxisSize.max,
+                                                                  children: <Widget>[
+                                                                    Flexible(
+                                                                      child: TextFormField(
+                                                                        controller: startDateController,
+                                                                        readOnly: true,
+                                                                        enabled: false,
+                                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                                        decoration: const InputDecoration(
+                                                                          border: InputBorder.none,
+                                                                          focusedBorder: InputBorder.none,
+                                                                          enabledBorder: InputBorder.none,
+                                                                          errorBorder: InputBorder.none,
+                                                                          disabledBorder: InputBorder.none,
+                                                                        ),
+                                                                        textAlign: TextAlign.start,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                )
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Icon(Icons.schedule, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.width*0.06,),
+                                                          Container(
+                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                            width: MediaQuery.of(context).size.width*0.2,
+                                                            child: GestureDetector(
+                                                                onTap: () {
+                                                                  selectTime();
+                                                                },
+                                                                child: Row(
+                                                                  mainAxisSize: MainAxisSize.max,
+                                                                  children: <Widget>[
+                                                                    Flexible(
+                                                                      child: TextFormField(
+                                                                        controller: startTimeController,
+                                                                        readOnly: true,
+                                                                        enabled: false,
+                                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                                        decoration: const InputDecoration(
+                                                                          border: InputBorder.none,
+                                                                          focusedBorder: InputBorder.none,
+                                                                          enabledBorder: InputBorder.none,
+                                                                          errorBorder: InputBorder.none,
+                                                                          disabledBorder: InputBorder.none,
+                                                                        ),
+                                                                        textAlign: TextAlign.start,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                )
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ],
                                                   ),
 
                                                 ],
                                               ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
-                                                  Container(
-                                                    padding: const EdgeInsets.only(left: 20),
-                                                    width: MediaQuery.of(context).size.width*0.30,
-                                                    child: GestureDetector(
-                                                        onTap: () {
-                                                          selectDuration();
-                                                        },
-                                                        child: Row(
-                                                          mainAxisSize: MainAxisSize.max,
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Flexible(
-                                                              child: TextFormField(
-                                                                controller: durationController,
-                                                                readOnly: true,
-                                                                enabled: false,
-                                                                style: Theme.of(context).textTheme.bodyText2,
-                                                                decoration: const InputDecoration(
-                                                                  border: InputBorder.none,
-                                                                  focusedBorder: InputBorder.none,
-                                                                  enabledBorder: InputBorder.none,
-                                                                  errorBorder: InputBorder.none,
-                                                                  disabledBorder: InputBorder.none,
-                                                                ),
-                                                                textAlign: TextAlign.start,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                            ),
                                           ),
                                         ),
-                                      ),
+                                      )
+
+                                       */
                                       errorDate ? Padding(
                                         padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
                                         child: Center(
@@ -1115,7 +1334,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                       widget.eventId == null ? Column(
                                         children: [
                                           Padding(
-                                              padding: const EdgeInsets.only(top: 15,),
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
@@ -1124,20 +1343,27 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     style: Theme.of(context).textTheme.headline1,
                                                   ),
                                                   const SizedBox(width: 10,),
-                                                  Checkbox(
-                                                    checkColor: Colors.white,
-                                                    fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                    value: isRecurrent,
-                                                    onChanged: (bool? value) {
-                                                      setState(() {
-                                                        if (isRecurrent) {
-                                                          values = [false, false, false, false, false, false, false];
-                                                        } else {
-                                                          values[startDate.weekday-1] = true;
-                                                        }
-                                                        isRecurrent = value!;
-                                                      });
-                                                    },
+                                                  SizedBox(
+                                                    height: MediaQuery.of(context).size.height * 0.03,
+                                                    width: MediaQuery.of(context).size.width * 0.1,
+                                                    child: MaterialButton(
+                                                      elevation: 4,
+                                                      color: isRecurrent ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
+                                                      textColor: isRecurrent ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
+                                                      child: isRecurrent ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
+                                                      padding: EdgeInsets.zero,
+                                                      shape: const CircleBorder(),
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          if (isRecurrent) {
+                                                            values = [false, false, false, false, false, false, false];
+                                                          } else {
+                                                            values[startDate.weekday-1] = true;
+                                                          }
+                                                          isRecurrent = !isRecurrent;
+                                                        });
+                                                      },
+                                                    ),
                                                   ),
                                                 ],
                                               )
@@ -1145,7 +1371,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           isRecurrent ? Column(
                                             children: [
                                               Padding(
-                                                  padding: const EdgeInsets.only(top: 0),
+                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
                                                   child: Column(
                                                     mainAxisSize: MainAxisSize.max,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1158,10 +1384,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         ),
                                                       ),
                                                       WeekdaySelector(
-                                                        fillColor: Colors.white,
-                                                        selectedFillColor: Theme.of(context).colorScheme.secondary,
-                                                        textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
-                                                        selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
+                                                        fillColor: Theme.of(context).backgroundColor,
+                                                        textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
+                                                        selectedFillColor: Theme.of(context).primaryColor,
+
+                                                        selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColorDark),
                                                         firstDayOfWeek: 0,
                                                         shortWeekdays: [
                                                           AppLocalizations.of(context)!.mondayLetter,
@@ -1303,6 +1530,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             ],
                                           )
                                       ) : Container(),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                                     ]
                                 )
                             ),
@@ -1313,6 +1541,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       child: Column(
                         children: [
                           Padding(
@@ -1331,7 +1560,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                   Text(
-                                                    AppLocalizations.of(context)!.designatedTrainers,
+                                                    AppLocalizations.of(context)!.staff,
                                                     style: Theme.of(context).textTheme.headline1,
                                                   ),
                                                 ],
@@ -1451,7 +1680,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                   Text(
-                                                    AppLocalizations.of(context)!.addDesignatedClients,
+                                                    AppLocalizations.of(context)!.clients,
                                                     style: Theme.of(context).textTheme.headline1,
                                                   ),
                                                 ],
@@ -1719,7 +1948,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     if (states.any(interactiveStates.contains)) {
       return Colors.blue;
     }
-    return Theme.of(context).colorScheme.secondary;
+    return Theme.of(context).primaryColor;
   }
 
   Future<void> _addEventFunction() async {

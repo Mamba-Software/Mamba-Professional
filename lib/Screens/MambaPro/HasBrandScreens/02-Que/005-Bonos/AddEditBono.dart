@@ -241,7 +241,6 @@ class _AddEditBonoState extends State<AddEditBono>
     await getPurchases();
     // Open Delete Dialog
     if (widget.delete == true) {
-      print("hola");
       // DeleteDialog
       var result = await showDialog(
         context: context,
@@ -291,15 +290,11 @@ class _AddEditBonoState extends State<AddEditBono>
                     child: Column(
                   children: [
                     Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical:
-                                MediaQuery.of(context).size.height * 0.01),
+                        padding: EdgeInsets.symmetric(vertical:
+                        MediaQuery.of(context).size.height * 0.01),
                         child: Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.height * 0.01),
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.015,
+                          margin: EdgeInsets.symmetric(vertical:
+                                  MediaQuery.of(context).size.height * 0.01), width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height * 0.015,
                           child: ClipRRect(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(10)),
@@ -319,7 +314,7 @@ class _AddEditBonoState extends State<AddEditBono>
           )
         : Scaffold(
             appBar: AppBar(
-              toolbarHeight: MediaQuery.of(context).size.height*0.07,
+              toolbarHeight: MediaQuery.of(context).size.height*0.08,
               title: Text(
                 widget.edit
                     ? AppLocalizations.of(context)!.editBono
@@ -611,59 +606,60 @@ class _AddEditBonoState extends State<AddEditBono>
 
   Widget informationPage() {
     return Scaffold(
-      body: SingleChildScrollView(
-          child: Column(
-        children: [
-          Form(
-            key: formKeyInfo,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.05),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    optionTextWrite(
-                        TextInputType.text,
-                        AppLocalizations.of(context)!.nameBono,
-                        "",
-                        AppLocalizations.of(context)!.titleHint,
-                        AppLocalizations.of(context)!.titleError,
-                        true,
-                        titleController,
-                        focusNodetitleController,
-                        false,
-                        'title'),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    optionTextWrite(
-                        TextInputType.text,
-                        AppLocalizations.of(context)!.descriptionBono,
-                        "",
-                        AppLocalizations.of(context)!.descriptionError,
-                        AppLocalizations.of(context)!.descriptionError,
-                        true,
-                        descriptionController,
-                        focusNodeDescController,
-                        false,
-                        'desc'),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    optionTextWrite(
-                        TextInputType.multiline,
-                        AppLocalizations.of(context)!.activeBonoQues,
-                        AppLocalizations.of(context)!.activeBonoQuesDesc,
-                        AppLocalizations.of(context)!.descriptionError,
-                        AppLocalizations.of(context)!.descriptionError,
-                        true,
-                        null,
-                        null,
-                        true,
-                        bono.isActive),
-                  ]),
-            ),
-          ),
-        ],
-      )),
       resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Form(
+              key: formKeyInfo,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.05),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      optionTextWrite(
+                          TextInputType.text,
+                          AppLocalizations.of(context)!.nameBono,
+                          "",
+                          AppLocalizations.of(context)!.titleHint,
+                          AppLocalizations.of(context)!.titleError,
+                          true,
+                          titleController,
+                          focusNodetitleController,
+                          false,
+                          'title'),
+                      optionTextWrite(
+                          TextInputType.text,
+                          AppLocalizations.of(context)!.descriptionBono,
+                          "",
+                          AppLocalizations.of(context)!.descriptionError,
+                          AppLocalizations.of(context)!.descriptionError,
+                          true,
+                          descriptionController,
+                          focusNodeDescController,
+                          false,
+                          'desc'),
+                      optionTextWrite(
+                          TextInputType.multiline,
+                          AppLocalizations.of(context)!.activeBonoQues,
+                          AppLocalizations.of(context)!.activeBonoQuesDesc,
+                          AppLocalizations.of(context)!.descriptionError,
+                          AppLocalizations.of(context)!.descriptionError,
+                          true,
+                          null,
+                          null,
+                          true,
+                          bono.isActive),
+                    ]),
+              ),
+            ),
+          ],
+        )
+      ),
+
     );
   }
 
@@ -726,8 +722,7 @@ class _AddEditBonoState extends State<AddEditBono>
           Form(
             key: formKePrice,
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width * 0.05),
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
@@ -837,7 +832,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           widget.edit && hasPurchases ? false : true,
                           titleController,
                           'exp'),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                       !noSessions? optionConditionsWrite(
                           TextInputType.number,
                           AppLocalizations.of(context)!.freeCancel,
@@ -1748,8 +1743,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                   }
                                 });
                               },
-                              style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(
-    color: Theme.of(context).disabledColor),
+                              style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
                               decoration: InputDecoration(
                                 suffixText: variable == 'ses'
                                     ? "sesiones"
@@ -1762,7 +1756,9 @@ class _AddEditBonoState extends State<AddEditBono>
                                 errorBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.red),
                                 ),
-                                disabledBorder: InputBorder.none,
+                                disabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
                                 enabledBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
                                 ),
@@ -1854,7 +1850,9 @@ class _AddEditBonoState extends State<AddEditBono>
                                     errorBorder: const UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.red),
                                     ),
-                                    disabledBorder: InputBorder.none,
+                                    disabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
                                     enabledBorder: const UnderlineInputBorder(
                                       borderSide:
                                           BorderSide(color: Colors.grey),
@@ -1979,7 +1977,9 @@ class _AddEditBonoState extends State<AddEditBono>
                               errorBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.red),
                               ),
-                              disabledBorder: InputBorder.none,
+                              disabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
                               enabledBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                               ),

@@ -432,7 +432,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     ) :
     Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.07,
+        toolbarHeight: MediaQuery.of(context).size.height*0.08,
         title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
