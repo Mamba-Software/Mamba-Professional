@@ -218,6 +218,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Event Title
     titleController.text = event.title!;
     titleString = titleController.text;
+    // Event Description
+    descriptionController.text = event.description!;
     // Event Image
     eventImageUrl = event.imageUrl;
     isRandomImage = false;
@@ -1129,6 +1131,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                     mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      // Date and Time
                                       Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
                                         child: Text(
@@ -1230,111 +1233,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ],
                                         ),
                                       ),
-                                      /*
-                                      Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-                                        child: Material(
-                                          elevation: 4,
-                                          borderRadius: BorderRadius.circular(15),
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.height * 0.16,
-                                            width: MediaQuery.of(context).size.width * 0.90,
-                                            decoration: BoxDecoration(
-                                                color: Theme.of(context).scaffoldBackgroundColor,
-                                                border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                                                borderRadius: const BorderRadius.all(Radius.circular(15.0))
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.05),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                mainAxisSize: MainAxisSize.max,
-                                                children: [
-                                                  Row(
-                                                    mainAxisSize: MainAxisSize.max,
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: <Widget>[
-                                                      Row(
-                                                        children: [
-                                                          Icon(Icons.calendar_today_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.width*0.06,),
-                                                          Container(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                            width: MediaQuery.of(context).size.width*0.45,
-                                                            child: GestureDetector(
-                                                                onTap: () {
-                                                                  selectDate();
-                                                                },
-                                                                child: Row(
-                                                                  mainAxisSize: MainAxisSize.max,
-                                                                  children: <Widget>[
-                                                                    Flexible(
-                                                                      child: TextFormField(
-                                                                        controller: startDateController,
-                                                                        readOnly: true,
-                                                                        enabled: false,
-                                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                                        decoration: const InputDecoration(
-                                                                          border: InputBorder.none,
-                                                                          focusedBorder: InputBorder.none,
-                                                                          enabledBorder: InputBorder.none,
-                                                                          errorBorder: InputBorder.none,
-                                                                          disabledBorder: InputBorder.none,
-                                                                        ),
-                                                                        textAlign: TextAlign.start,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                )
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Icon(Icons.schedule, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.width*0.06,),
-                                                          Container(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                            width: MediaQuery.of(context).size.width*0.2,
-                                                            child: GestureDetector(
-                                                                onTap: () {
-                                                                  selectTime();
-                                                                },
-                                                                child: Row(
-                                                                  mainAxisSize: MainAxisSize.max,
-                                                                  children: <Widget>[
-                                                                    Flexible(
-                                                                      child: TextFormField(
-                                                                        controller: startTimeController,
-                                                                        readOnly: true,
-                                                                        enabled: false,
-                                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                                        decoration: const InputDecoration(
-                                                                          border: InputBorder.none,
-                                                                          focusedBorder: InputBorder.none,
-                                                                          enabledBorder: InputBorder.none,
-                                                                          errorBorder: InputBorder.none,
-                                                                          disabledBorder: InputBorder.none,
-                                                                        ),
-                                                                        textAlign: TextAlign.start,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                )
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-
-                                       */
                                       errorDate ? Padding(
                                         padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
                                         child: Center(
@@ -1345,6 +1243,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ),
                                         ),
                                       ) : Container(),
+                                      // Recurrent Event
                                       widget.eventId == null ? Column(
                                         children: [
                                           Padding(
@@ -1524,8 +1423,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ) : Container(),
                                           SizedBox(height: MediaQuery.of(context).size.height*0.05)
                                         ],
-                                      ) : Container(),
-                                      event.eventGroupId != null ? Padding(
+                                      ) : event.eventGroupId != null ? Padding(
                                           padding: const EdgeInsets.only(top: 15,),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
@@ -1535,15 +1433,47 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 style: Theme.of(context).textTheme.headline1,
                                               ),
                                               const SizedBox(width: 10,),
-                                              Checkbox(
-                                                checkColor: Colors.white,
-                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                value: true,
-                                                onChanged: null,
+                                              SizedBox(
+                                                height: MediaQuery.of(context).size.height * 0.03,
+                                                width: MediaQuery.of(context).size.width * 0.1,
+                                                child: MaterialButton(
+                                                  elevation: 4,
+                                                  color: Theme.of(context).primaryColor,
+                                                  textColor: Theme.of(context).primaryColor,
+                                                  child: Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05),
+                                                  padding: EdgeInsets.zero,
+                                                  shape: const CircleBorder(),
+                                                  onPressed: () {},
+                                                ),
                                               ),
                                             ],
                                           )
-                                      ) : Container(),
+                                      ) : Padding(
+                                          padding: const EdgeInsets.only(top: 15,),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!.recurrentEvent,
+                                                style: Theme.of(context).textTheme.headline1,
+                                              ),
+                                              const SizedBox(width: 10,),
+                                              SizedBox(
+                                                height: MediaQuery.of(context).size.height * 0.03,
+                                                width: MediaQuery.of(context).size.width * 0.1,
+                                                child: MaterialButton(
+                                                    elevation: 4,
+                                                    color: Theme.of(context).backgroundColor,
+                                                    textColor: Theme.of(context).backgroundColor,
+                                                    child: SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
+                                                    padding: EdgeInsets.zero,
+                                                    shape: const CircleBorder(),
+                                                    onPressed: () {}
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                      ),
                                       SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                                     ]
                                 )
@@ -1980,6 +1910,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Event Members
     eventMembers.addAll(brandClientsSelected);
     if (!isRecurrent) {
+      // Updating Loading Text
+      setState(() {
+        isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
+      });
       // Creating Event Object
       Event event = Event(
         isPrivate: true,
@@ -2214,6 +2148,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     mixpanel!.timeEvent("delete_event_completed");
     setState(() {
       isLoading = true;
+      // Updating Loading Text
+      isRecurrentLoadingText = AppLocalizations.of(context)!.editing +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
     });
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!, true);
@@ -2251,6 +2187,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     mixpanel!.timeEvent("edit_event_completed");
     setState(() {
       isLoading = true;
+      // Updating Loading Text
+      isRecurrentLoadingText = AppLocalizations.of(context)!.editing +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
     });
     // Get Random Photo if no Image Selected
     if (isRandomImage) {
