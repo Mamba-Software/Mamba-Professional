@@ -105,7 +105,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Function to get the favourites of the user
   void getFavourites() async {
-    //favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
+    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
     if (favourites.contains(pageIndex)) {
       iconStar = true;
     }

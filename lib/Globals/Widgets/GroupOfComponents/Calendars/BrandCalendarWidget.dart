@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -49,6 +50,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   var items = ['0', '1', '2', '3', '4', '5', '6'];
 
   // Acceso a Base de Datos
+  final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
   final _eventDataService = EventDataService();
   // Boolean Loading
@@ -151,27 +153,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     setState(() {});
   }
 
-  void initCalendar() {
-    // Init App Bar Title
-    if (widget.dateTime == null) {
-      DateTime now = DateTime.now();
-      int currentDay = now.weekday;
-      displayDateTimeStart = now.subtract(Duration(days: currentDay - 1));
-      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 7));
-      _controller.displayDate = DateTime.now().subtract(const Duration(hours: 1));
-    } else {
-      DateTime dateTime = DateTime(
-          widget.dateTime!.year,
-          widget.dateTime!.month,
-          widget.dateTime!.day,
-          DateTime.now().minute,
-          DateTime.now().second,
-      );
-      int currentDay = dateTime.weekday;
-      displayDateTimeStart = dateTime.subtract(Duration(days: currentDay - 1));
-      displayDateTimeEnd = displayDateTimeStart.add(const Duration(days: 6));
-      _controller.displayDate = dateTime.subtract(const Duration(hours: 1));
-    }
+  Future<void> initCalendar() async {
     // Initial Calendar View
     selectedValue = '2';
     _controller.view = CalendarView.week;
@@ -183,7 +165,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     // Calcula el TimeSlotView per cadascuna
     double difference = _endHour!-_startHour!;
     _baseTimeSlotViewZoom = ((MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom)-MediaQuery.of(context).size.height*0.25)/difference;
-    _timeSlotViewZoom = _baseTimeSlotViewZoom;
+    _timeSlotViewScale = await _userDataService.getUserZoomScale(widget.brandId, currentUser.id!);
+    _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
     setState(() {
       isLoading = false;
     });
@@ -267,7 +250,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     switch (_controller.view) {
       case CalendarView.schedule:
         return Text(
-          AppLocalizations.of(context)!.schedule,
+          AppLocalizations.of(context)!.schedule+" ",
           style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
         );
       case CalendarView.day:
@@ -294,9 +277,21 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(dateTimeStart))+" ",
           style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
         );
-      default:
+      case CalendarView.month:
         return Text(
           StringUtils().toCapitalized(DateFormat(middleMonthDate.year == DateTime.now().year ? 'MMMM ' : 'MMMM yyyy ', Localizations.localeOf(context).languageCode,).format(middleMonthDate)),
+          style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+        );
+      default:
+        return dateTimeStart.year == DateTime.now().year ? Text(
+          StringUtils().toCapitalized(DateFormat('dd', Localizations.localeOf(context).languageCode,).format(dateTimeStart))+" - "+
+              StringUtils().toCapitalized(DateFormat('dd', Localizations.localeOf(context).languageCode,).format(dateTimeStart.add(const Duration(days: 6))))+" "+
+              StringUtils().toCapitalized(DateFormat('MMMM', Localizations.localeOf(context).languageCode,).format(dateTimeStart))+" ",
+          style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+        ) : Text(
+          StringUtils().toCapitalized(DateFormat('dd', Localizations.localeOf(context).languageCode,).format(dateTimeStart))+" - "+
+              StringUtils().toCapitalized(DateFormat('dd', Localizations.localeOf(context).languageCode,).format(dateTimeStart.add(const Duration(days: 6))))+" "+
+              StringUtils().toCapitalized(DateFormat('MMMM yyyy', Localizations.localeOf(context).languageCode,).format(dateTimeStart))+" ",
           style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
         );
     }
@@ -499,65 +494,262 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               Radius.circular(4),
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                child: Text(
-                  event.title!,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.start,
-                  softWrap: true,
-                ),
-              ),
-              Flexible(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 12),
-                    overflow: TextOverflow.fade,
-                    maxLines: 1,
-                    softWrap: false,
-                  ),
-                ),
-              ),
-              Flexible(
-                child: ListView.builder(
-                    shrinkWrap: false,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: event.usersList.length,
-                    clipBehavior: Clip.none,
-                    itemBuilder: (context, int index) {
-                      var trainer = event.usersList[index];
-                      return Container(
-                        margin: const EdgeInsets.only(right: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CircularImage(
-                              size: MediaQuery.of(context).size.width*0.05,
-                              image: trainer.imageUrl,
-                              color: AppColors.white,
-                              borderWidth: 0.5,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              trainer.firstName!+" "+trainer.lastName![0]+".",
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 12),
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
-                              softWrap: false,
-                            ),
-                          ],
+          child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                if (constraints.maxHeight > MediaQuery.of(context).size.height*0.10) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          event.title!,
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.start,
+                          softWrap: true,
                         ),
-                      );
-                    }
-                ),
-              ),
-            ],
+                      ),
+                      Flexible(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            softWrap: false,
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          height: MediaQuery.of(context).size.width*0.05,
+                          child: ListView.builder(
+                              shrinkWrap: false,
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: event.usersList.length,
+                              clipBehavior: Clip.none,
+                              itemBuilder: (context, int index) {
+                                var trainer = event.usersList[index];
+                                return Container(
+                                  margin: const EdgeInsets.only(right: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      CircularImage(
+                                        size: MediaQuery.of(context).size.width*0.05,
+                                        image: trainer.imageUrl,
+                                        color: AppColors.white,
+                                        borderWidth: 0.5,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        trainer.firstName!+" "+trainer.lastName![0]+".",
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 12),
+                                        overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                        softWrap: false,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (constraints.maxHeight > MediaQuery.of(context).size.height*0.07) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          event.title!,
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white,fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                        ),
+                      ),
+                      Flexible(
+                        child: Text(
+                          appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          softWrap: false,
+                        ),
+                      ),
+                      Flexible(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.width*0.05,
+                          child: ListView.builder(
+                              shrinkWrap: false,
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: event.usersList.length,
+                              clipBehavior: Clip.none,
+                              itemBuilder: (context, int index) {
+                                var trainer = event.usersList[index];
+                                return Container(
+                                  margin: const EdgeInsets.only(right: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      CircularImage(
+                                        size: MediaQuery.of(context).size.width*0.05,
+                                        image: trainer.imageUrl,
+                                        color: AppColors.white,
+                                        borderWidth: 0.5,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        trainer.firstName!+" "+trainer.lastName![0]+".",
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 12),
+                                        overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                        softWrap: false,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else if (constraints.maxHeight > MediaQuery.of(context).size.height*0.05) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                            children: [
+                              TextSpan(
+                                  text: event.title!
+                              ),
+                              event.isPrivate! ? TextSpan(
+                                text: "   "+appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase()+"   ",
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
+                              ) : TextSpan(
+                                text: "   "+appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase()+"   ",
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.width*0.05,
+                          child: ListView.builder(
+                              shrinkWrap: false,
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: event.usersList.length,
+                              clipBehavior: Clip.none,
+                              itemBuilder: (context, int index) {
+                                var trainer = event.usersList[index];
+                                return Container(
+                                  margin: const EdgeInsets.only(right: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      CircularImage(
+                                        size: MediaQuery.of(context).size.width*0.05,
+                                        image: trainer.imageUrl,
+                                        color: AppColors.white,
+                                        borderWidth: 0.5,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        trainer.firstName!+" "+trainer.lastName![0]+".",
+                                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 12),
+                                        overflow: TextOverflow.fade,
+                                        maxLines: 1,
+                                        softWrap: false,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.fade,
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                            children: [
+                              TextSpan(
+                                  text: event.title!
+                              ),
+                              event.isPrivate! ? TextSpan(
+                                text: "   "+appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase()+"   ",
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
+                              ) : TextSpan(
+                                text: "   "+appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase()+"   ",
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      /*
+                      event.title!.length+("   "+appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase()).length < 35 ? Flexible(
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.width*0.05,
+                          child: ListView.builder(
+                              shrinkWrap: false,
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: event.usersList.length,
+                              clipBehavior: Clip.antiAlias,
+                              itemBuilder: (context, int index) {
+                                var trainer = event.usersList[index];
+                                return Container(
+                                  margin: const EdgeInsets.only(right: 5),
+                                  child: CircularImage(
+                                    size: MediaQuery.of(context).size.width*0.05,
+                                    image: trainer.imageUrl,
+                                    color: AppColors.white,
+                                    borderWidth: 0.5,
+                                  ),
+                                );
+                              }
+                          ),
+                        ),
+                      ) : Container(),
+                       */
+                    ],
+                  );
+                }
+              }
           ),
+
         ),
       );
     } else if (_controller.view == CalendarView.week) {
@@ -569,35 +761,69 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           height: details.bounds.height,
           width: details.bounds.width,
           margin: const EdgeInsets.all(1),
-          padding: EdgeInsets.all(details.bounds.width*0.05),
+          padding: EdgeInsets.symmetric(vertical: details.bounds.width*0.05, horizontal: details.bounds.width*0.1),
           decoration: BoxDecoration(
             color: appointment.color,
             borderRadius: const BorderRadius.all(
               Radius.circular(4),
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                child: Text(
-                  event.title!,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.start,
-                  softWrap: true,
-                ),
-              ),
-              /*
-              Text(
-                //appointment.subject+" per.",
-                appointment.subject,
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 9),
-                textAlign: TextAlign.start,
-                softWrap: true,
-              ),
-               */
-            ],
+          child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                if (constraints.maxHeight > MediaQuery.of(context).size.height*0.10) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.fade,
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
+                            children: [
+                              TextSpan(
+                                  text: event.title!+"\n"
+                              ),
+                              TextSpan(
+                                text: event.isPrivate! ? appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : appointment.subject,
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: RichText(
+                          textAlign: TextAlign.start,
+                          softWrap: true,
+                          overflow: TextOverflow.fade,
+                          text: TextSpan(
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600, fontSize: 11),
+                            children: [
+                              TextSpan(
+                                  text: event.title!+"\n"
+                              ),
+                              TextSpan(
+                                text: event.isPrivate! ? appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : appointment.subject,
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              }
           ),
+
         ),
       );
     } else if (_controller.view == CalendarView.month){
@@ -1212,6 +1438,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                         _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
                       });
                     } : null,
+                    onScaleEnd: (ScaleEndDetails scaleEndDetails) {
+                      _userDataService.updateUserZoomScale(widget.brandId, currentUser.id!, _timeSlotViewScale);
+                    },
                     child: Stack(
                       alignment: Alignment.bottomRight,
                       children: [
@@ -1352,6 +1581,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
                               padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0115),
+                              width: MediaQuery.of(context).size.width*0.19,
                               decoration: BoxDecoration(
                                 color: Theme.of(context).backgroundColor,
                                 borderRadius: const BorderRadius.all(

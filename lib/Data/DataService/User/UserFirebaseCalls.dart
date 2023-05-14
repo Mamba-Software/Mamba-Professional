@@ -385,6 +385,15 @@ class UserFirebaseCalls {
     else return [];
   }
 
+  Future<double> getUserZoomScale(String brandId, String userId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).get();
+    if ((_documentSnapshot.data() as Map<String,dynamic>).containsKey('zoomScale')) {
+      return _documentSnapshot.get("zoomScale");
+    } else {
+      return 1.0;
+    }
+  }
+
   Future<List<ReceivedNotification>> getLocalNotifications(String userId) async {
     List<ReceivedNotification> notis = [];
     QuerySnapshot querySnapshot = await _firestore
@@ -765,6 +774,12 @@ class UserFirebaseCalls {
   Future<void> addFavouriteToUser(String brandID, String userId, List<int> favourites) async {
     await _firestore.collection(brands).doc(brandID).collection("Users").doc(userId).update({
       "favourites": favourites,
+    });
+  }
+
+  Future<void> updateUserZoomScale(String userId, String brandId, double zoomScale) async {
+    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).update({
+      "zoomScale": zoomScale,
     });
   }
 
