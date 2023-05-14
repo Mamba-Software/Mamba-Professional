@@ -41,11 +41,15 @@ class _BrandImagesState extends State<BrandImages> {
   final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
+  String isLoadingText = "";
+  String isLoadingTextExtra = "";
   bool canEdit = false;
   // Bool Max Images Added
   bool maxImagesAdded = false;
   // Max Number of Images
   final int _maxImages = 10;
+  int currentImage = 1;
+  int totalCurrentImage = 1;
   // Images uploaded
   List<ImageObject> _imagesUploaded = [];
   ImageObject baseImage = ImageObject();
@@ -68,6 +72,11 @@ class _BrandImagesState extends State<BrandImages> {
       );
     canEdit = currentUser.brandRole < 2 ? true : false;
     isLoading = true;
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        isLoadingText = AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+      });
+    });
     getBrandContentImages();
   }
 
@@ -81,11 +90,20 @@ class _BrandImagesState extends State<BrandImages> {
         maxImagesAdded = true;
       });
     } else {
+      int currentImage = 1;
       setState(() {
         isLoading = true;
+        isLoadingText = AppLocalizations.of(context)!.adding+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
         maxImagesAdded = false;
       });
-      await _brandDataService.addBrandContentPictures(widget.brandId, temp);
+      for (File f in temp) {
+        // Updating Loading Text
+        setState(() {
+          isLoadingTextExtra =  " (" + currentImage.toString()+"/"+temp.length.toString()+")";
+        });
+        currentImage += 1;
+        await _brandDataService.addBrandContentPictureIndividual(widget.brandId, f);
+      }
       getBrandContentImages();
       mixpanel!.track('brand_images_added');
     }
@@ -116,6 +134,7 @@ class _BrandImagesState extends State<BrandImages> {
     }
     setState(() {
       isLoading = false;
+      isLoadingTextExtra = "";
     });
   }
 
@@ -258,7 +277,8 @@ class _BrandImagesState extends State<BrandImages> {
             isLoading ? SliverFillRemaining(
               child: Center(
                     child: LoadingView(
-                      text: AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...",
+                      //text: (AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...") + isLoadingTextExtra!,
+                      text: isLoadingText + isLoadingTextExtra,
                     )
                 )
             ) : SliverToBoxAdapter(
@@ -486,6 +506,8 @@ class _BrandImagesState extends State<BrandImages> {
                                       mixpanel!.track('brand_images_delete');
                                       setState(() {
                                         isLoading = true;
+                                        isLoadingText = AppLocalizations.of(context)!.deleting+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+                                        isLoadingTextExtra =  " (" + 1.toString()+"/"+1.toString()+")";
                                       });
                                       await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
                                       getBrandContentImages();

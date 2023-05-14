@@ -67,7 +67,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
               height: MediaQuery.of(context).size.height*0.007,
               width: MediaQuery.of(context).size.width*0.15,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: Colors.grey,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(5),
                 ),

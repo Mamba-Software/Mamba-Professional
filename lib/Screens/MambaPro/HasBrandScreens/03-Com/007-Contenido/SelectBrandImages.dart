@@ -31,6 +31,8 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
   final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
+  String isLoadingText = "";
+  String isLoadingTextExtra = "";
   // Bool Max Images Added
   bool maxImagesAdded = false;
   // Max Number of Images
@@ -44,6 +46,11 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
     super.initState();
     _scrollController = ScrollController();
     isLoading = true;
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        isLoadingText = AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+      });
+    });
     getBrandContentImages();
   }
 
@@ -55,11 +62,20 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
         maxImagesAdded = true;
       });
     } else {
+      int currentImage = 1;
       setState(() {
         isLoading = true;
+        isLoadingText = AppLocalizations.of(context)!.adding+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
         maxImagesAdded = false;
       });
-      await _brandDataService.addBrandContentPictures(widget.brandId, temp);
+      for (File f in temp) {
+        // Updating Loading Text
+        setState(() {
+          isLoadingTextExtra =  " (" + currentImage.toString()+"/"+temp.length.toString()+")";
+        });
+        currentImage += 1;
+        await _brandDataService.addBrandContentPictureIndividual(widget.brandId, f);
+      }
       getBrandContentImages();
     }
   }
@@ -75,6 +91,7 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
     _imagesUploaded = List.from(_imagesUploaded.reversed);
     setState(() {
       isLoading = false;
+      isLoadingTextExtra = "";
     });
   }
 
@@ -85,13 +102,13 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
         title: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
             Container(
               height: MediaQuery.of(context).size.height*0.007,
               width: MediaQuery.of(context).size.width*0.15,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: const BorderRadius.all(
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.all(
                   Radius.circular(5),
                 ),
               ),
@@ -122,7 +139,9 @@ class _SelectBrandImagesState extends State<SelectBrandImages> {
         slivers: [
           isLoading ? SliverFillRemaining(
             child: Center(
-                  child: LoadingView()
+                  child: LoadingView(
+                    text: isLoadingText + isLoadingTextExtra,
+                  )
               )
           ) : SliverToBoxAdapter(
               child: Padding(

@@ -1114,6 +1114,10 @@
   "@editEvent":{
     "description": "addEvent text"
   },
+  "adding": "Añadiendo",
+  "@adding":{
+    "description": "addEvent text"
+  },
   "creating": "Creando",
   "@creating":{
     "description": "addEvent text"

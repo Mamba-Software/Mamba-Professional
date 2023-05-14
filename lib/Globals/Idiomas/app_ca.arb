@@ -259,6 +259,7 @@
   "until": "Fins al {date}",
   "addEvent": "Afegir esdeveniment",
   "createEvent": "Crear esdeveniment",
+  "adding": "Afegint",
   "creating": "Creant",
   "editing": "Editant",
   "updating": "Actualizant",

@@ -532,7 +532,7 @@ class BrandFirebaseCalls {
     //int index = 0;
 
     bool firestoreError = false;
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
@@ -586,11 +586,32 @@ class BrandFirebaseCalls {
     });
   }
 
+  Future<void> addBrandContentPictureIndividual(String brandID, File image) async {
+    // Add each brand to the .../BrandId/images directory
+    final uid = const Uuid().v4();
+    // Upload the image to Firebase Storage
+    var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + uid + ".jpeg");
+    var uploadTask = storageRef.putFile(image);
+    await uploadTask.whenComplete(() async {
+      await storageRef.getDownloadURL().then((value) async {
+        // Add Image to the Brand Images Subcollection
+        await _firestore.collection(brands).doc(brandID)
+        .collection("Images")
+        .doc(uid)
+        .set({
+          "url": value,
+          "timestamp": Timestamp.now(),
+          "isBaseImage": false,
+        });
+      });
+    });
+  }
+
   Future<void> addBrandContentPictures(String brandID, List<File> images) async {
     // Add each brand to the .../BrandId/images directory
     for (var i=0; i<images.length; i++) {
       var image = images[i];
-      final uid = Uuid().v4();
+      final uid = const Uuid().v4();
       // Upload the image to Firebase Storage
       var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + uid + ".jpeg");
       var uploadTask = storageRef.putFile(image);
@@ -623,7 +644,7 @@ class BrandFirebaseCalls {
   }
 
   Future<void> addBonoToBrand(String brandId, Bono bono, Condition condition) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -650,7 +671,7 @@ class BrandFirebaseCalls {
   }
 
   Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, String price, String classes, Timestamp timeRequested) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -788,7 +809,7 @@ class BrandFirebaseCalls {
   Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title, DateTime endDate, bool revenueCatSub) async {
     Timestamp initTime = Timestamp.fromDate(DateTime.now());
     Timestamp endTime = Timestamp.fromDate(DateTime.now());
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     if(!revenueCatSub) {
       DateTime now = DateTime.now();
       initTime = Timestamp.fromDate(DateTime.now());
