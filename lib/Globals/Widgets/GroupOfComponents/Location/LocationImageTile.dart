@@ -207,69 +207,97 @@ class _LocationImageTileState extends State<LocationImageTile> {
                       fit: BoxFit.fitWidth,
                       child: TextButton(
                         onPressed: () async {
-                          if (location.isBaseLocation!) {
-                            // Generate a new token here
-                            final sessionToken = Uuid().v4();
-                            final language = currentUser.idioma;
-                            final Suggestion? result = await showSearch(
-                              context: context,
-                              delegate: AddressSearch(sessionToken, language!),
-                            );
-                            // We have a result for our locations search
-                            if (result!.placeId != "") {
-                              Location loc = Location();
-                              loc.placeId = result.placeId;
-                              final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(loc.placeId!);
-                              // Get the information on Strings
-                              if(placeDetails.street!=null) {
-                                loc.street = placeDetails.street!;
-                              } else {
-                                loc.street="N/A";
-                              }
-                              if(placeDetails.streetNumber!=null) {
-                                loc.streetNumber = placeDetails.streetNumber!;
-                              } else {
-                                loc.streetNumber="N/A";
-                              }
-                              if(placeDetails.city!=null) {
-                                loc.city = placeDetails.city!;
-                              } else {
-                                loc.city="N/A";
-                              }
-                              if(placeDetails.zipCode!=null) {
-                                loc.zipCode = placeDetails.zipCode!;
-                              } else {
-                                loc.zipCode="N/A";
-                              }
-                              //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
-                              // Build Correct Description
-                              loc.description = "${loc.street} ${loc.streetNumber}, ${loc.city}, ${loc.zipCode}";
-                              // Get Latitude/Longitude
-                              var temp = await gPlace!.details.get(loc.placeId!);
-                              if (temp != null && temp.result != null && mounted) {
-                                detailsResult = temp.result;
-                                loc.latitude = detailsResult!.geometry!.location!.lat!;
-                                loc.longitude = detailsResult!.geometry!.location!.lng!;
-                              }
-                              // Save location to DataBase
-                              await _locationDataService.updateLocation(location.id!,widget.brandId, true, loc.placeId!, loc.description!, loc.street!, loc.streetNumber!, loc.city!, loc.zipCode!, loc.latitude!, loc.longitude!);
-                              // Notifying update
-                              widget.locationChanged(true);
-                              mixpanel!.track('brand_locations_edited');
-                            }
-                          } else {
-                            var result = await showDialog(
+                          if(!brandIsActive) {
+                            await navigateToPayWall(context);
+                          }
+                          else {
+                            if (location.isBaseLocation!) {
+                              // Generate a new token here
+                              final sessionToken = Uuid().v4();
+                              final language = currentUser.idioma;
+                              final Suggestion? result = await showSearch(
                                 context: context,
-                                builder: (_) {
-                                  return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.myLocationsDeleteDescription);
+                                delegate: AddressSearch(
+                                    sessionToken, language!),
+                              );
+                              // We have a result for our locations search
+                              if (result!.placeId != "") {
+                                Location loc = Location();
+                                loc.placeId = result.placeId;
+                                final placeDetails = await LocationPlacesSearch(
+                                    sessionToken, language)
+                                    .getPlaceDetailFromId(loc.placeId!);
+                                // Get the information on Strings
+                                if (placeDetails.street != null) {
+                                  loc.street = placeDetails.street!;
+                                } else {
+                                  loc.street = "N/A";
                                 }
-                            );
-                            if (result) {
-                              //print("Deleting Location "+location.description!);
-                              await _locationDataService.deleteLocation(location.id!, currentBrand.baseLocation!);
-                              //print("Deleted");
-                              widget.locationChanged(true);
-                              mixpanel!.track('brand_locations_deleted');
+                                if (placeDetails.streetNumber != null) {
+                                  loc.streetNumber = placeDetails.streetNumber!;
+                                } else {
+                                  loc.streetNumber = "N/A";
+                                }
+                                if (placeDetails.city != null) {
+                                  loc.city = placeDetails.city!;
+                                } else {
+                                  loc.city = "N/A";
+                                }
+                                if (placeDetails.zipCode != null) {
+                                  loc.zipCode = placeDetails.zipCode!;
+                                } else {
+                                  loc.zipCode = "N/A";
+                                }
+                                //if(placeDetails.fullAddress!=null) location.description = placeDetails.fullAddress!;
+                                // Build Correct Description
+                                loc.description =
+                                "${loc.street} ${loc.streetNumber}, ${loc
+                                    .city}, ${loc.zipCode}";
+                                // Get Latitude/Longitude
+                                var temp = await gPlace!.details.get(
+                                    loc.placeId!);
+                                if (temp != null && temp.result != null &&
+                                    mounted) {
+                                  detailsResult = temp.result;
+                                  loc.latitude =
+                                  detailsResult!.geometry!.location!.lat!;
+                                  loc.longitude =
+                                  detailsResult!.geometry!.location!.lng!;
+                                }
+                                // Save location to DataBase
+                                await _locationDataService.updateLocation(
+                                    location.id!,
+                                    widget.brandId,
+                                    true,
+                                    loc.placeId!,
+                                    loc.description!,
+                                    loc.street!,
+                                    loc.streetNumber!,
+                                    loc.city!,
+                                    loc.zipCode!,
+                                    loc.latitude!,
+                                    loc.longitude!);
+                                // Notifying update
+                                widget.locationChanged(true);
+                                mixpanel!.track('brand_locations_edited');
+                              }
+                            } else {
+                              var result = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return DeleteConfirmationDialog(
+                                        text: AppLocalizations.of(context)!
+                                            .myLocationsDeleteDescription);
+                                  }
+                              );
+                              if (result) {
+                                //print("Deleting Location "+location.description!);
+                                await _locationDataService.deleteLocation(
+                                    location.id!, currentBrand.baseLocation!);
+                                //print("Deleted");
+                                widget.locationChanged(true);
+                                mixpanel!.track('brand_locations_deleted');
+                              }
                             }
                           }
                         },

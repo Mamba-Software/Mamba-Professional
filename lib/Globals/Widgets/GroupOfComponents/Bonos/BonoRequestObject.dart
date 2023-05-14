@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -170,37 +171,43 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
         ),
       ),
       onTap: () async {
-        await showModalBottomSheet<bool?>(
-          context: context,
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
-          ),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          builder: (BuildContext context) {
-            return FractionallySizedBox(
-              heightFactor: 0.95,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  FocusScopeNode currentFocus = FocusScope.of(context);
-                  if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  }
-                },
-                child: OtorgarBono(
-                  bono: widget.bono,
-                  user: widget.user,
-                  brand: widget.brand,
-                  bonoRequest: widget.bonoRequest,
-                  edit: false,
-                ),
+        if(!brandIsActive) {
+          await navigateToPayWall(context);
+        }
+        else {
+          await showModalBottomSheet<bool?>(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20),
               ),
-            );
-          },
-        );
+            ),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            builder: (BuildContext context) {
+              return FractionallySizedBox(
+                heightFactor: 0.95,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus &&
+                        currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                  },
+                  child: OtorgarBono(
+                    bono: widget.bono,
+                    user: widget.user,
+                    brand: widget.brand,
+                    bonoRequest: widget.bonoRequest,
+                    edit: false,
+                  ),
+                ),
+              );
+            },
+          );
+        }
       },
     );
   }

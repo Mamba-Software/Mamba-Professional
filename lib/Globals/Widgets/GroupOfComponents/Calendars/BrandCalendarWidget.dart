@@ -242,35 +242,43 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     }
   }
 
-  void _addPrivateEvent(DateTime dateTime) {
-    mixpanel!.track('brand_calendar_plan_event', properties: {'isPrivate': true});
-    // Date Time
-    DateTime eventDate = DateTime.now();
-    eventDate = DateTime(
+  void _addPrivateEvent(DateTime dateTime) async {
+    if(!brandIsActive) {
+      await navigateToPayWall(context);
+    }
+    else {
+      mixpanel!.track(
+          'brand_calendar_plan_event', properties: {'isPrivate': true});
+      // Date Time
+      DateTime eventDate = DateTime.now();
+      eventDate = DateTime(
         dateTime.year,
         dateTime.month,
         dateTime.day,
         dateTime.hour,
-    );
-    // Navigate to Add or Edit Event
-    Navigator.push(
-        context,
-        CupertinoPageRoute<String>(
-          builder: (context) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
-            child: AddOrEditPrivateEvent(
-              locale: Localizations.localeOf(context),
-              dateTime: eventDate,
-            ),
-          ),
-        )
-    );
+      );
+      // Navigate to Add or Edit Event
+      Navigator.push(
+          context,
+          CupertinoPageRoute<String>(
+            builder: (context) =>
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus &&
+                        currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                  },
+                  child: AddOrEditPrivateEvent(
+                    locale: Localizations.localeOf(context),
+                    dateTime: eventDate,
+                  ),
+                ),
+          )
+      );
+    }
   }
 
   Widget _buildTitleFromDate(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {

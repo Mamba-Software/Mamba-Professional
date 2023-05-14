@@ -3202,5 +3202,9 @@
   "autoRenovation": "Renovación automática",
   "@autoRenovation": {
     "description": "autoRenovation message"
+  },
+  "notSubNotAdmin": "Su marca no dispone de un plan, solo el administrador de la marca puede subscribirse a uno",
+    "@notSubNotAdmin": {
+      "description": "notSubNotAdmin message"
   }
 }

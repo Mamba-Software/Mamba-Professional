@@ -126,7 +126,7 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   // Navigate to Notifications Screen
-  void navigateToNotificationsScreen() {
+  Future<void> navigateToNotificationsScreen() async {
     if(brandIsActive) {
       Navigator.push(
           context,
@@ -142,10 +142,13 @@ class _BrandScreenState extends State<BrandScreen> {
         });
       });
     }
+    else {
+      await navigateToPayWall(context);
+    }
   }
 
   // Navigate to Notifications Screen
-  void navigateToChatScreen() {
+  Future<void> navigateToChatScreen() async {
     if(brandIsActive) {
       Navigator.push(
           context,
@@ -160,6 +163,9 @@ class _BrandScreenState extends State<BrandScreen> {
           unreadChats = temp;
         });
       });
+    }
+    else {
+      await navigateToPayWall(context);
     }
   }
 

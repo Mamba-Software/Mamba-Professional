@@ -1379,56 +1379,70 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                 child: FloatingActionButton.extended(
                   heroTag: "9",
                   onPressed: () async {
-                    mixpanel!.track('event_view_edit_button', properties: {'isPrivate': event!.isPrivate!});
-                    bool? result;
-                    if (event!.isPrivate!) {
-                      result = await Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                FocusScopeNode currentFocus = FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                }
-                              },
-                              child:  AddOrEditPrivateEvent(
-                                locale: Localizations.localeOf(context),
-                                eventId: event!.id!,
-                              ),
-                            ),
-                          )
-                      );
-                    } else {
-                      result = await Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                FocusScopeNode currentFocus = FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                }
-                              },
-                              child:  AddOrEditEvent(
-                                locale: Localizations.localeOf(context),
-                                eventId: event!.id!,
-                              ),
-                            ),
-                          )
-                      );
+                    if(!brandIsActive) {
+                      await navigateToPayWall(context);
                     }
-                    if (result != null && result) {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      getEventInfo();
-                      print("Updating Event ...");
-                    } else if (result != null && !result) {
-                      print("Deleting Event ...");
-                      Navigator.pop(context);
+                    else {
+                      mixpanel!.track('event_view_edit_button',
+                          properties: {'isPrivate': event!.isPrivate!});
+                      bool? result;
+                      if (event!.isPrivate!) {
+                        result = await Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) =>
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () {
+                                      FocusScopeNode currentFocus = FocusScope
+                                          .of(context);
+                                      if (!currentFocus.hasPrimaryFocus &&
+                                          currentFocus.focusedChild != null) {
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      }
+                                    },
+                                    child: AddOrEditPrivateEvent(
+                                      locale: Localizations.localeOf(context),
+                                      eventId: event!.id!,
+                                    ),
+                                  ),
+                            )
+                        );
+                      } else {
+                        result = await Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) =>
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: () {
+                                      FocusScopeNode currentFocus = FocusScope
+                                          .of(context);
+                                      if (!currentFocus.hasPrimaryFocus &&
+                                          currentFocus.focusedChild != null) {
+                                        FocusManager.instance.primaryFocus
+                                            ?.unfocus();
+                                      }
+                                    },
+                                    child: AddOrEditEvent(
+                                      locale: Localizations.localeOf(context),
+                                      eventId: event!.id!,
+                                    ),
+                                  ),
+                            )
+                        );
+                      }
+                      if (result != null && result) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        getEventInfo();
+                        print("Updating Event ...");
+                      } else if (result != null && !result) {
+                        print("Deleting Event ...");
+                        Navigator.pop(context);
+                      }
                     }
                   },
                   backgroundColor: Colors.green,

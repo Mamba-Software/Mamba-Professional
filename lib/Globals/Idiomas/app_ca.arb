@@ -722,5 +722,6 @@
   "addTrainerDescription": "Afegir staff al a teva marca",
   "perMonth": "/ mes",
   "perYear": "/ any (-25%)",
-  "autoRenovation": "Renovació automàtica"
+  "autoRenovation": "Renovació automàtica",
+  "notSubNotAdmin": "La seva marca no disposa d'un pla, només l'administrador de la marca pot subscribirse's a un"
 }

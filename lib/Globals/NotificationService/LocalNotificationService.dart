@@ -177,11 +177,6 @@ class LocalNotificationService {
     //      LocalNotifications only send String payload
     //      Remote Firebase Notifications we send the whole Notification with Arguments
     print("onClickedNotification. Payload....");
-    print(payload);
-    if(!brandIsActive)
-      {
-        payload = "SplashScreen";
-      }
     switch (payload) {
       case "SplashScreen":
         break;
