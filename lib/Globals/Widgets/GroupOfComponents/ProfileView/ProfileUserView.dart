@@ -104,6 +104,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   Future<void> getUserEventsFinished() async {
     List res = await _eventDataService.getUserEventsStats(widget.userID);
     totalEvents = res[0];
+    // Remove Events that are not from this Brand
+    totalEvents.removeWhere((element) => element.brandID != currentBrand.id!);
     if (totalEvents.length > 4) {
       lastEvents = List.from(totalEvents.sublist(0, 4));
     } else {
@@ -126,8 +128,9 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
     listBonos.removeWhere((element) => element.isActive == false);
     userBonos = await _userDataService.getUserBonos(user.id!);
     for (int i = 0; i < userBonos.length; ++i) {
-      bonoFound = listBonos.firstWhere((element) => element.id == userBonos[i].id);
-      if (bonoFound.id != '') {
+      int index = listBonos.indexWhere((element) => element.id == userBonos[i].id);
+      if (index != -1) {
+        bonoFound = listBonos[index];
         listBonos.remove(bonoFound);
       }
     }
@@ -872,7 +875,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                 ),
                 totalEvents.isNotEmpty ? TextButton(
                     child: Text(
-                        AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.eventHistory,
+                        AppLocalizations.of(context)!.seeMap.split(" ")[0]+" "+AppLocalizations.of(context)!.historial.toLowerCase(),
                         style: Theme.of(context).textTheme.caption?.copyWith(decoration: TextDecoration.underline)
                     ),
                     onPressed: navigateToEventHistoryScreen
@@ -1049,7 +1052,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: user.isTrainer! == false ? 0.50 : 0.40,
+                        heightFactor: user.isTrainer! == false ? 0.41 : 0.35,
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height*0.5,
                           width: MediaQuery.of(context).size.width,

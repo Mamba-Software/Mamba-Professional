@@ -1622,6 +1622,7 @@ class FirebaseDatabaseService {
     // Variables
     double averageTime = 0;
     double totalTime = 0;
+    List<Brand> brandLoaded = [];
     List<Event> eventsList = [];
     List<int> weeksInRow = [];
     DateTime today = DateTime.now();
@@ -1634,6 +1635,18 @@ class FirebaseDatabaseService {
     // Calculations
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      Brand? brand;
+      int index = brandLoaded.indexWhere((element) => element.id == event.brandID);
+      if (index != -1) {
+        brand = brandLoaded[index];
+      } else {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(event.brandID).get();
+        brand = Brand.fromObjectOnlyCoverData(event.brandID!, _documentSnapshot);
+        brandLoaded.add(brand);
+      }
+      event.brandID = brand.id;
+      event.brandName = brand.name;
+      event.brandLogo = brand.logoUrl;
       var hour = event.duration.toString().split(".")[0];
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate = event.doneAt!.toDate().add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
