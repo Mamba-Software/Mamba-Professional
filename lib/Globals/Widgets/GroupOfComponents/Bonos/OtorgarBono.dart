@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MultipleBrands/MultipleBrandsUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -51,7 +52,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
 
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
-
+  DateTime dateJoined = DateTime.now();
 
   final NotificationService _notificationService = NotificationService();
 
@@ -98,6 +99,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
 
   @override
   void initState() {
+    super.initState();
     user = widget.user;
     if (widget.edit != null && widget.edit == true) {
       mixpanel!.track('edit_bono_view');
@@ -113,7 +115,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       paymentMethod = 2;
     }
     getBonos();
-    super.initState();
   }
 
   List<Widget> _buildPageIndicator() {
@@ -175,9 +176,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         seeConditions = true;
         await getPurchase();
       }
-
     }
-
+    dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
     setState(() {});
   }
 
@@ -292,16 +292,17 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: MediaQuery.of(context).size.width * 0.08),
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
                       child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                         decoration: BoxDecoration(
                             color: Theme.of(context).backgroundColor,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(10))),
+                            borderRadius: const BorderRadius.all(Radius.circular(10))
+                        ),
                         child: ListTile(
-                          minLeadingWidth:
-                              MediaQuery.of(context).size.width * 0.15,
+                          contentPadding: EdgeInsets.zero,
+                          dense: true,
+                          minLeadingWidth: MediaQuery.of(context).size.width * 0.1,
                           leading: CircularImage(
                             size: MediaQuery.of(context).size.width * 0.15,
                             image: widget.user.imageUrl,
@@ -320,7 +321,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "@${widget.user.nick!}",
+                                user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
+                                AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
                                 style: Theme.of(context).textTheme.caption,
                               ),
                             ],
@@ -328,10 +330,10 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                           trailing: IconButton(
                             icon: Icon(
                               Icons.arrow_forward_ios,
-                              color: isBonoRequest? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
-                              size: MediaQuery.of(context).size.height * 0.03,
+                              color: isBonoRequest ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
+                              size: MediaQuery.of(context).size.height * 0.02,
                             ),
-                            alignment: Alignment.centerRight,
+                            alignment: Alignment.center,
                             padding: const EdgeInsets.all(0),
                             onPressed: false ? () {} : null,
                           ),

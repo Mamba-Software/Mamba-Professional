@@ -2542,7 +2542,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         minute: updatedStartDate.minute.toString(),
         duration: double.parse(duration),
         locationId: location.id,
-        numClients: brandClientsSelected.length,
+        numClients: originalClients.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
       );
@@ -2616,6 +2616,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Trainer Added "+user.id.toString());
       }
+      /*
       /// Continue With Clients
       for (int i = 0; i < eventClients.length; i++) {
         var user = eventClients[i];
@@ -2657,6 +2658,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Client Added "+user.id.toString());
       }
+       */
     }
     mixpanel!.track('edit_event_completed', properties: {
       'descriptionLength': event.description!.length.toString(),

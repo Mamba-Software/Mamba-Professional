@@ -689,7 +689,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                         onlyFuture: false,
                                       )
                                   );
-                                  if (pickedTimeTemp != null) {
+                                  if (pickedTimeTemp != null ) {
                                     setState(() {
                                       endTime = pickedTimeTemp;
                                       endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
@@ -712,11 +712,11 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                             ],
                           ),
                           errorTime != null ? Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                            padding: const EdgeInsets.only(left: 0, right: 0, top: 10.0, bottom: 0),
                             child: Text(
                               errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
                               style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                              textAlign: TextAlign.center,
+                              textAlign: TextAlign.left,
                             ),
                           ) : Container(),
                           SizedBox(height: MediaQuery.of(context).size.height*0.04),
@@ -1105,13 +1105,15 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       });
       return false;
     }
+    /*
     if (TimeOfDay(hour: start.hour, minute: start.minute) == const TimeOfDay(hour: 0, minute: 00) && TimeOfDay(hour: end.hour, minute: end.minute) == const TimeOfDay(hour: 23, minute: 00)) {
       setState(() {
         errorTime = 1;
       });
       return false;
     }
-    if (toDouble(start) > toDouble(end)) {
+     */
+    if (toDouble(start) >= toDouble(end)) {
       setState(() {
         errorTime = 2;
       });

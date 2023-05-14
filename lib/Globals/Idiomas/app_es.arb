@@ -3137,6 +3137,14 @@
   "@subscribeNow": {
     "description": "subscribeNow message"
   },
+  "paySubscription": "Pagar suscripción",
+  "@paySubscription": {
+    "description": "subscribeNow message"
+  },
+  "paySubscriptionDesc": "Sólo el creador",
+  "@paySubscriptionDesc": {
+    "description": "subscribeNow message"
+  },
   "block": "Bloquear",
   "@block": {
     "description": "block message"

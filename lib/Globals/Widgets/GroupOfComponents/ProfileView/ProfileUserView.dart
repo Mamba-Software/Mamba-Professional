@@ -1140,6 +1140,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                   onTap: hasAllBrandBonos == false ? () async {
                                     mixpanel!.track('profile_view_give_bono');
                                     Navigator.pop(context);
+                                    // Cupertino Modal
                                     showModalBottomSheet<bool?>(
                                       context: context,
                                       isScrollControlled: true,
@@ -1151,7 +1152,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                       clipBehavior: Clip.antiAliasWithSaveLayer,
                                       builder: (BuildContext context) {
                                         return FractionallySizedBox(
-                                          heightFactor: 0.95,
+                                          heightFactor: 0.935,
                                           child: GestureDetector(
                                             behavior: HitTestBehavior.opaque,
                                             onTap: () {

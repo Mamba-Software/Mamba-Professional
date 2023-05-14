@@ -6,9 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ConfirmBuyBono.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
 
 class BonoRequestObject extends StatefulWidget {
@@ -181,7 +179,7 @@ class BonoRequestObjectState extends State<BonoRequestObject> {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           builder: (BuildContext context) {
             return FractionallySizedBox(
-              heightFactor: 0.95,
+              heightFactor: 0.935,
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () {

@@ -1247,8 +1247,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                       timeSlotViewSettings: TimeSlotViewSettings(
                           timeIntervalHeight: _controller.view == CalendarView.week ? -1 : MediaQuery.of(context).size.height*0.15,
                           timeIntervalWidth: 60,
-                          startHour: _startHour!-1,
-                          endHour:  _endHour!+1,
+                          startHour: _startHour! != 0 ? _startHour!-1 : _startHour!,
+                          endHour:  _endHour! != 24 ? _endHour!+1 : _endHour!,
                           timeFormat: 'HH:mm',
                           dayFormat: 'EE',
                           dateFormat: 'd',
