@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
@@ -102,16 +103,23 @@ void setBrandActive()
 
 Future<void> navigateToPayWall(var context)
 async {
-  if(!brandIsActive) {
-    await Navigator.pushAndRemoveUntil(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const SplashScreen(),
-        settings: const RouteSettings(name: 'SplashScreen'),
+  await Navigator.push(
+    context,
+    PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => PayWall(
+        brandId: currentBrand.id!,
       ),
-          (_) => false,
-    );
-  }
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1), // Empieza desde abajo
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        );
+      },
+    ),
+  );
 }
 
 

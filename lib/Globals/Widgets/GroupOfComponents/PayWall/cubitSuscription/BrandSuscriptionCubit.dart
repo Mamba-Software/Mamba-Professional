@@ -14,19 +14,34 @@ part 'BrandSuscriptionState.dart';
 class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
 
   BrandSuscriptionCubit() : super(BrandSuscriptionInitial()) {
-    getBrandSuscription();
+    Stream<DocumentSnapshot<Object?>> getBrandSubscriptionStream(String userId) {
+      final _brandDataService = BrandDataService();
+      return _brandDataService.getBrandSubscriptionStream(currentBrand.id!);
+    }
+
+    getBrandSubscriptionStream(currentBrand.id!).listen((querySnapshot) async {
+      DocumentSnapshot document = querySnapshot;
+      getBrandSuscription(document);
+    });
   }
 
-  Future<void> getBrandSuscription() async {
+  Future<void> getBrandSuscription(DocumentSnapshot document) async {
+    print('MODIFICACION EN LA MARCA');
     DateFormat formatter = DateFormat('dd/MM/yy');
     Brand brand = new Brand();
+    brand = Brand.fromObjectAllData(document.id, document);
     final _suscriptionDataService = SuscriptionDataService();
     final _brandDataService = BrandDataService();
     Subscription subscription = Subscription();
     try {
       //Está en la antigua suscripción metodo
-      if(currentBrand.subscription == null) {
-        if(currentBrand.subscriptionId != null) {
+      if(brand.subscription == null) {
+        if(brand.subscriptionId != null) {
+          currentBrand.subscriptionId = brand.subscriptionId;
+          if(brand.endDatePay != null) {
+              currentBrand.endDatePay = brand.endDatePay;
+              print(currentBrand.endDatePay!.toDate());
+          }
           subscription =
           await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);
           subscription.unsuscribed = true;
@@ -45,7 +60,6 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
       }
       //Nuevo metodo de suscripcion
       else {
-        brand = await _brandDataService.getBrandDetails(currentBrand.id!);
         currentBrand.subscription = brand.subscription!;
         setBrandActive();
         if(brandIsActive) {

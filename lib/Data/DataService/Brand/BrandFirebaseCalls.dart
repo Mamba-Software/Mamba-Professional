@@ -1092,4 +1092,12 @@ class BrandFirebaseCalls {
         .snapshots();
   }
 
+  //Get subscription from brand
+  Stream<DocumentSnapshot> getBrandSubscriptionStream(String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .snapshots();
+  }
+
 }

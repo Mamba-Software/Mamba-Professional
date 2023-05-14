@@ -1076,15 +1076,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   Future<void> navigateToSubscriptionsScreen() async {
       mixpanel!.track('brand_see_paywall');
-      await Navigator.push(
-          context,
-          CupertinoPageRoute<bool?>(
-            builder: (context) =>
-                PayWall(
-                  brandId: widget.brandId,
-                ),
-          )
-      );
+      await navigateToPayWall(context);
   }
 
   Widget textToShow()
@@ -1128,15 +1120,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   {
     return GestureDetector(
       onTap: () async {
-        await Navigator.push(
-            context,
-            CupertinoPageRoute<bool?>(
-              builder: (context) =>
-                  PayWall(
-                    brandId: currentBrand.id!,
-                  ),
-            )
-        );
+        await navigateToPayWall(context);
       },
       child: Container(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
@@ -1171,15 +1155,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
             ),
             trailing: GestureDetector(
               onTap: () async {
-                await Navigator.push(
-                    context,
-                    CupertinoPageRoute<bool?>(
-                      builder: (context) =>
-                          PayWall(
-                            brandId: currentBrand.id!,
-                          ),
-                    )
-                );
+                await navigateToPayWall(context);
               },
               child: Container(
                 height: MediaQuery.of(context).size.height*0.05,

@@ -204,7 +204,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
   }
 
   Future<void> _addEvent(DateTime dateTime) async {
+    if(!brandIsActive) {
       await navigateToPayWall(context);
+    }
+    else {
       mixpanel!.track(
           'brand_calendar_plan_event', properties: {'isPrivate': false});
       // Date Time
@@ -236,6 +239,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 ),
           )
       );
+    }
   }
 
   void _addPrivateEvent(DateTime dateTime) {

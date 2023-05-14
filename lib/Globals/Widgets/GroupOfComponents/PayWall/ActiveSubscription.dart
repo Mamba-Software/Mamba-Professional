@@ -33,14 +33,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
 
   Future<void> navigateToSubscriptionsScreen() async {
     mixpanel!.track('brand_see_paywall');
-    await Navigator.push(
-        context,
-        CupertinoPageRoute<bool?>(
-          builder: (context) => PayWall(
-            brandId: widget.brandId,
-          ),
-        )
-    );
+    await navigateToPayWall(context);
     setState(() {
     });
   }
@@ -221,15 +214,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                 GestureDetector(
                                   onTap: () async {
                                     mixpanel!.track('brand_see_paywall');
-                                    await Navigator.push(
-                                        context,
-                                        CupertinoPageRoute<bool?>(
-                                          builder: (context) =>
-                                              PayWall(
-                                                brandId: widget.brandId,
-                                              ),
-                                        )
-                                    );
+                                    await navigateToPayWall(context);
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(

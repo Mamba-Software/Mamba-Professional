@@ -108,7 +108,10 @@ class _BonosProState extends State<BonosPro> {
 
   // Navigate to Add Bonos
   Future<void> navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) async {
+    if(!brandIsActive) {
       await navigateToPayWall(context);
+    }
+    else {
       await Navigator.push(
           context,
           CupertinoPageRoute<void>(
@@ -136,6 +139,7 @@ class _BonosProState extends State<BonosPro> {
 
         });
       });
+    }
   }
 
   Widget returnBono(Bono _bono) {

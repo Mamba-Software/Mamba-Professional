@@ -100,7 +100,6 @@ class _HomePro extends State<HomePro> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<BrandSuscriptionCubit>().getBrandSuscription();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: CustomScrollView(

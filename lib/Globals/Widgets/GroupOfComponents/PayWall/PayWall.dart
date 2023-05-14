@@ -544,14 +544,7 @@ class _PayWallState extends State<PayWall> {
                             .productIdentifier,
                         purchaserInfo.entitlements.all[entitlementID]!
                             .unsubscribeDetectedAt);
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      CupertinoPageRoute<void>(
-                        builder: (context) => const SplashScreen(),
-                        settings: const RouteSettings(name: 'SplashScreen'),
-                      ),
-                          (_) => false,
-                    );
+                    Navigator.pop(context);
                   }
                 } on PlatformException catch (e) {
                   var errorCode = PurchasesErrorHelper.getErrorCode(e);
@@ -745,14 +738,7 @@ class _PayWallState extends State<PayWall> {
                                 sub.id!,
                                 sub.title!, DateTime.now(), false);
                               // currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              CupertinoPageRoute<void>(
-                                builder: (context) => const SplashScreen(),
-                                settings: const RouteSettings(name: 'SplashScreen'),
-                              ),
-                                  (_) => false,
-                            );
+                            Navigator.pop(context);
 
                           },
                           child: Center(
