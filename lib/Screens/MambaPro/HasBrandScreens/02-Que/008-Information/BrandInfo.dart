@@ -227,6 +227,14 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
             elevation: 4,
             floating: false,
             pinned: true,
+            title: AnimatedOpacity(
+                opacity: appBarExpanded ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                    AppLocalizations.of(context)!.information,
+                    style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
+                )
+            ),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -273,7 +281,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.information, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -553,7 +560,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                   descriptionControllerTemp = value;
                                 });
                               },
-                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                              //validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
                               minLines: 1,
                               maxLines: 5,
                               maxLength: 250,

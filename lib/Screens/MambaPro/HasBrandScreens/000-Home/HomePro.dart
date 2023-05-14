@@ -157,7 +157,11 @@ class _HomePro extends State<HomePro> {
               ),
               titlePadding: EdgeInsets.zero,
             ),
-            title: appBarExpanded ? Text(currentBrand.name!, style: Theme.of(context).appBarTheme.titleTextStyle) : Container(),
+            title: AnimatedOpacity(
+                opacity: appBarExpanded ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 200),
+                child: Text(currentBrand.name!, style: Theme.of(context).appBarTheme.titleTextStyle)
+            ),
             leadingWidth: MediaQuery.of(context).size.width*0.18,
             leading: Padding(
               padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06),

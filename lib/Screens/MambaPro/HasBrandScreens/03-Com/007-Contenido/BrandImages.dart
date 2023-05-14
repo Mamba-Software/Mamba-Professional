@@ -209,7 +209,14 @@ class _BrandImagesState extends State<BrandImages> {
                 titlePadding: EdgeInsets.zero,
                 //centerTitle: true,
               ),
-              title: appBarExpanded ? Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
+              title: AnimatedOpacity(
+                  opacity: appBarExpanded ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                      AppLocalizations.of(context)!.photos,
+                      style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
+                  )
+              ),
               centerTitle: true,
               leading: Builder(
                 builder: (BuildContext innerContext) => Padding(

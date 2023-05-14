@@ -314,17 +314,14 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                   titlePadding: EdgeInsets.zero,
                   //centerTitle: true,
                 ),
-                title: appBarExpanded
-                    ? Text(
+                title: AnimatedOpacity(
+                    opacity: appBarExpanded ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Text(
                         AppLocalizations.of(context)!.stats,
-                        style: Theme.of(context)
-                            .appBarTheme
-                            .titleTextStyle
-                            ?.copyWith(
-                              color: AppColors.white,
-                            ),
-                      )
-                    : Container(),
+                        style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
+                    )
+                ),
                 centerTitle: true,
                 leading: Builder(
                   builder: (BuildContext innerContext) => Padding(
