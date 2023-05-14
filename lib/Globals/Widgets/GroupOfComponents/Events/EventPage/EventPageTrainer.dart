@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/services.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -56,7 +57,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.25 - kToolbarHeight);
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.23 - kToolbarHeight);
   }
   // Boolean Loading
   bool isFirstBuild = true;
@@ -171,11 +172,9 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     await getEventBonos();
     await getEventLocation(event!.id!);
     if (mounted) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        setState(() {
-          isLoading = false;
-          isLoadingBody = false;
-        });
+      setState(() {
+        isLoading = false;
+        isLoadingBody = false;
       });
     }
   }
@@ -186,6 +185,11 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
 
   Future<void> getEventBonos() async {
     eventBonos = await _eventDataService.getEventBonos(widget.eventId, currentBrand.id!);
+    eventBonos.sort((a,b) {
+      var aSessions =  a.sessions;
+      var bSessions =  b.sessions;
+      return aSessions!.compareTo(bSessions!);
+    });
   }
 
   Future<void> getEventUsers() async {
@@ -361,7 +365,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   Widget buildAverageFeedbackWidget() {
     if (event!.averageIntensityScore != null) {
       return FittedBox(
-        fit: BoxFit.fitHeight,
+        fit: BoxFit.contain,
         child: Container(
             height: MediaQuery.of(context).size.width*0.1,
             padding: const EdgeInsets.all(5),
@@ -480,25 +484,60 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                            Shimmer.fromColors(
-                              baseColor: AppColors.grey,
-                              highlightColor: AppColors.grey.withOpacity(0.5),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height * 0.04,
-                                width: MediaQuery.of(context).size.width*0.4,
-                                decoration: const BoxDecoration(
-                                    color: AppColors.grey,
-                                    borderRadius: BorderRadius.all(Radius.circular(15.0))
+                            Row(
+                              children: [
+                                Shimmer.fromColors(
+                                  baseColor: AppColors.grey,
+                                  highlightColor: AppColors.grey.withOpacity(0.5),
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height * 0.08,
+                                    width: MediaQuery.of(context).size.height * 0.08,
+                                    decoration: const BoxDecoration(
+                                      color: AppColors.grey,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                SizedBox(width: MediaQuery.of(context).size.height*0.02),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Shimmer.fromColors(
+                                      baseColor: AppColors.grey,
+                                      highlightColor: AppColors.grey.withOpacity(0.5),
+                                      child: Container(
+                                        height: MediaQuery.of(context).size.height * 0.04,
+                                        width: MediaQuery.of(context).size.width*0.4,
+                                        decoration: const BoxDecoration(
+                                            color: AppColors.grey,
+                                            borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                    Shimmer.fromColors(
+                                      baseColor: AppColors.grey,
+                                      highlightColor: AppColors.grey.withOpacity(0.5),
+                                      child: Container(
+                                        height: MediaQuery.of(context).size.height * 0.02,
+                                        width: MediaQuery.of(context).size.width*0.3,
+                                        decoration: const BoxDecoration(
+                                            color: AppColors.grey,
+                                            borderRadius: BorderRadius.all(Radius.circular(15.0))
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.02),
                             Shimmer.fromColors(
                               baseColor: AppColors.grey,
                               highlightColor: AppColors.grey.withOpacity(0.5),
@@ -528,7 +567,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height * 0.07,
-                                    width: MediaQuery.of(context).size.width*0.66,
+                                    width: MediaQuery.of(context).size.width*0.7,
                                     decoration: const BoxDecoration(
                                         color: AppColors.grey,
                                         borderRadius: BorderRadius.all(Radius.circular(15.0))
@@ -554,7 +593,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height * 0.07,
-                                    width: MediaQuery.of(context).size.width*0.66,
+                                    width: MediaQuery.of(context).size.width*0.7,
                                     decoration: const BoxDecoration(
                                         color: AppColors.grey,
                                         borderRadius: BorderRadius.all(Radius.circular(15.0))
@@ -568,7 +607,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -578,7 +617,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                               highlightColor: AppColors.grey.withOpacity(0.5),
                               child: Container(
                                 height: MediaQuery.of(context).size.height*0.13,
-                                width: MediaQuery.of(context).size.width*0.84,
+                                width: MediaQuery.of(context).size.width*0.9,
                                 decoration: const BoxDecoration(
                                     color: AppColors.grey,
                                     borderRadius: BorderRadius.all(Radius.circular(15.0))
@@ -589,7 +628,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -667,680 +706,788 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
     Scaffold(
       appBar: null,
       resizeToAvoidBottomInset: true,
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          SliverAppBar(
-            expandedHeight: MediaQuery.of(context).size.height*0.22,
-            elevation: 0,
-            systemOverlayStyle: returnSystemBarColor(),
-            floating: false,
-            pinned: true,
-            centerTitle: true,
-            title: appBarExpanded ? Text(
-                titleController.text,
-                style: Theme.of(context).appBarTheme.titleTextStyle
-            ) : Container(),
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: CachedNetworkImageProvider(event!.imageUrl!),
+      body: ExtendedNestedScrollView(
+          pinnedHeaderSliverHeightBuilder: () {
+            return MediaQuery.of(context).size.height*0.10;
+          },
+          physics: const BouncingScrollPhysics(),
+          controller: _scrollController,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                expandedHeight: MediaQuery.of(context).size.height*0.22,
+                elevation: 0,
+                systemOverlayStyle: returnSystemBarColor(),
+                floating: false,
+                pinned: true,
+                centerTitle: true,
+                title: AnimatedOpacity(
+                    opacity: appBarExpanded ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 100),
+                    child: Text(
+                        titleController.text,
+                        style: Theme.of(context).appBarTheme.titleTextStyle
                     )
                 ),
-                child: const Center(),
-              ),
-              titlePadding: EdgeInsets.zero,
-              //centerTitle: true,
-            ),
-            leadingWidth: MediaQuery.of(context).size.width*0.2,
-            leading: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Material(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  child: InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(13),
-                      child : Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(event!.imageUrl!),
+                        )
                     ),
-                    onTap: () => Navigator.pop(context),
+                    child: const Center(),
                   ),
+                  titlePadding: EdgeInsets.zero,
+                  //centerTitle: true,
                 ),
-              ),
-            ),
-            actions: [
-              isLoadingBody == false && canEdit && event!.isPrivate! == false ? Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-                child: Container(
-                  height: MediaQuery.of(context).size.width*0.06,
-                  width: MediaQuery.of(context).size.width*0.12,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    shape: BoxShape.circle
-                  ),
-                  child: buildPlacesLeftWidget(placesLeft),
-                ),
-              ) : !canEdit ? Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
-                child: Container(
-                  height: MediaQuery.of(context).size.width*0.06,
-                  width: MediaQuery.of(context).size.width*0.12,
-                  decoration: BoxDecoration(
+                leadingWidth: MediaQuery.of(context).size.width*0.2,
+                leading: Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Material(
                       color: Theme.of(context).scaffoldBackgroundColor,
-                      shape: BoxShape.circle
+                      child: InkWell(
+                        child: Padding(
+                          padding: const EdgeInsets.all(13),
+                          child : Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
+                        ),
+                        onTap: () => Navigator.pop(context),
+                      ),
+                    ),
                   ),
-                  child: buildAverageFeedbackWidget(),
                 ),
-              ) : Container(),
-            ],
-          ),
-          !isLoadingBody ? SliverToBoxAdapter(child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
+                actions: [
+                  isLoadingBody == false && canEdit && event!.isPrivate! == false ? Padding(
+                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                    child: Container(
+                      height: MediaQuery.of(context).size.width*0.06,
+                      width: MediaQuery.of(context).size.width*0.12,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          shape: BoxShape.circle
+                      ),
+                      child: buildPlacesLeftWidget(placesLeft),
+                    ),
+                  ) : !canEdit ? Padding(
+                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                    child: Container(
+                      height: MediaQuery.of(context).size.width*0.06,
+                      width: MediaQuery.of(context).size.width*0.12,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          shape: BoxShape.circle
+                      ),
+                      child: buildAverageFeedbackWidget(),
+                    ),
+                  ) : Container(),
+                ],
               ),
-              child: Column(
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
+            ];
+          },
+          body: !isLoadingBody ? SafeArea(
+            top: false,
+            bottom: false,
+            child: Builder(
+              builder: (context) => CustomScrollView(
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverToBoxAdapter(child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                        Form(
-                          key: formKeyInfo,
+                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: TextField(
-                                      controller: titleController,
-                                      readOnly: true,
-                                      style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
-                                      decoration: InputDecoration(
-                                        hintStyle: Theme.of(context).textTheme.caption,
-                                        hintText:AppLocalizations.of(context)!.titleError,
-                                        border: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                        enabledBorder: InputBorder.none,
-                                        errorBorder: InputBorder.none,
-                                        disabledBorder: InputBorder.none,
+                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              Form(
+                                key: formKeyInfo,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CircularImage(
+                                          size: MediaQuery.of(context).size.width*0.15,
+                                          image: currentBrand.logoUrl,
+                                          color: Theme.of(context).primaryColor,
+                                          borderWidth: 0.5,
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                titleController.text,
+                                                style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
+                                                textAlign: TextAlign.start,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Text(
+                                                currentBrand.name!,
+                                                style: Theme.of(context).textTheme.caption,
+                                                textAlign: TextAlign.start,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                                    Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            Flexible(
+                                              child: TextFormField(
+                                                controller: descriptionController,
+                                                readOnly: true,
+                                                minLines: 1,
+                                                maxLines: 4,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                decoration: InputDecoration(
+                                                  hintStyle: Theme.of(context).textTheme.caption,
+                                                  hintText:AppLocalizations.of(context)!.noDescription,
+                                                  border: InputBorder.none,
+                                                  focusedBorder: InputBorder.none,
+                                                  enabledBorder: InputBorder.none,
+                                                  errorBorder: InputBorder.none,
+                                                  disabledBorder: InputBorder.none,
+                                                  contentPadding: const EdgeInsets.all(0),
+                                                ),
+                                                textAlign: TextAlign.justify,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                              errorDate ? Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Center(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.errorDate,
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ): Container(),
+                              Container(
+                                height: MediaQuery.of(context).size.height * 0.08,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      height: MediaQuery.of(context).size.height * 0.06,
+                                      width: MediaQuery.of(context).size.height * 0.06,
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5.0))
                                       ),
-                                      textAlign: TextAlign.left,
+                                      child: Center(
+                                          child: Text(
+                                              event!.day.toString(),
+                                              style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
+                                              textAlign: TextAlign.center
+                                          )
+                                      ),
+                                    ),
+                                    SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                    SizedBox(
+                                        height: MediaQuery.of(context).size.height * 0.08,
+                                        width: MediaQuery.of(context).size.width*0.64,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Flexible(
+                                                child: TextFormField(
+                                                  controller: startDateController,
+                                                  readOnly: true,
+                                                  enabled: false,
+                                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                  decoration: InputDecoration(
+                                                    labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                    border: InputBorder.none,
+                                                    focusedBorder: InputBorder.none,
+                                                    enabledBorder: InputBorder.none,
+                                                    errorBorder: InputBorder.none,
+                                                    disabledBorder: InputBorder.none,
+                                                  ),
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: MediaQuery.of(context).size.height * 0.08,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      height: MediaQuery.of(context).size.height * 0.06,
+                                      width: MediaQuery.of(context).size.height * 0.06,
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                      ),
+                                      child: Center(
+                                          child: Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,)
+                                      ),
+                                    ),
+                                    SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                    SizedBox(
+                                        height: MediaQuery.of(context).size.height * 0.08,
+                                        width: MediaQuery.of(context).size.width*0.64,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Flexible(
+                                                child: TextFormField(
+                                                  controller: durationController,
+                                                  readOnly: true,
+                                                  enabled: false,
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  decoration: const InputDecoration(
+                                                    border: InputBorder.none,
+                                                    focusedBorder: InputBorder.none,
+                                                    enabledBorder: InputBorder.none,
+                                                    errorBorder: InputBorder.none,
+                                                    disabledBorder: InputBorder.none,
+                                                    contentPadding: EdgeInsets.zero,
+                                                  ),
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                height: MediaQuery.of(context).size.height * 0.08,
+                                width: MediaQuery.of(context).size.width * 0.90,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).scaffoldBackgroundColor,
+                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      height: MediaQuery.of(context).size.height * 0.06,
+                                      width: MediaQuery.of(context).size.height * 0.06,
+                                      decoration: BoxDecoration(
+                                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5.0))
+                                      ),
+                                      child: Center(
+                                          child: Icon(
+                                            event!.isPrivate! ? Icons.person : Icons.groups,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                            size: MediaQuery.of(context).size.width*0.06,
+                                          )
+                                      ),
+                                    ),
+                                    SizedBox(width: MediaQuery.of(context).size.width*0.04),
+                                    SizedBox(
+                                        height: MediaQuery.of(context).size.height * 0.08,
+                                        width: MediaQuery.of(context).size.width*0.64,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Flexible(
+                                                child: TextFormField(
+                                                  initialValue: event!.isPrivate! ? AppLocalizations.of(context)!.privateEvent : AppLocalizations.of(context)!.groupEvent,
+                                                  readOnly: true,
+                                                  enabled: false,
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  decoration: const InputDecoration(
+                                                    border: InputBorder.none,
+                                                    focusedBorder: InputBorder.none,
+                                                    enabledBorder: InputBorder.none,
+                                                    errorBorder: InputBorder.none,
+                                                    disabledBorder: InputBorder.none,
+                                                    contentPadding: EdgeInsets.zero,
+                                                  ),
+                                                  textAlign: TextAlign.start,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                            Container(
+                              height: MediaQuery.of(context).size.height*0.13,
+                              width: MediaQuery.of(context).size.width*0.9,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).backgroundColor,
+                                  borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                              ),
+                              child: Stack(
+                                children: <Widget>[
+                                  Center(
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
+                                        bottomRight: Radius.circular(15),
+                                        bottomLeft: Radius.circular(15),
+                                      ),
+                                      child: Align(
+                                        alignment: Alignment.bottomRight,
+                                        heightFactor: 1,
+                                        widthFactor: 2.5,
+                                        child: GoogleMap(
+                                          onMapCreated: _onMapCreated,
+                                          initialCameraPosition: _initialPosition,
+                                          scrollGesturesEnabled: false,
+                                          zoomGesturesEnabled: false,
+                                          rotateGesturesEnabled: false,
+                                          mapToolbarEnabled: false,
+                                          zoomControlsEnabled: false,
+                                          minMaxZoomPreference: const MinMaxZoomPreference(17,17),
+                                          myLocationButtonEnabled: false,
+                                          markers: markers,
+                                          mapType: MapType.hybrid,
+                                          onTap: _onLaunchCoordinates,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 5.0,
+                                    bottom: 5.0,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Theme.of(context).scaffoldBackgroundColor
+                                      ),
+                                      padding: const EdgeInsets.all(10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.location_on,
+                                            color: Theme.of(context).colorScheme.secondary,
+                                            size: 15,
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 5.0),
+                                            child: Text(
+                                              location.description!,
+                                              style: Theme.of(context).textTheme.bodyText2,
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                              Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      Flexible(
-                                        child: TextFormField(
-                                          controller: descriptionController,
-                                          readOnly: true,
-                                          minLines: 1,
-                                          maxLines: 4,
-                                          style: Theme.of(context).textTheme.bodyText2,
-                                          decoration: InputDecoration(
-                                            hintStyle: Theme.of(context).textTheme.caption,
-                                            hintText:AppLocalizations.of(context)!.noDescription,
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            contentPadding: const EdgeInsets.all(0),
-                                          ),
-                                          textAlign: TextAlign.justify,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        errorDate ? Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Center(
-                            child: Text(
-                              AppLocalizations.of(context)!.errorDate,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ): Container(),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.08,
-                          width: MediaQuery.of(context).size.width * 0.84,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0))
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                height: MediaQuery.of(context).size.height * 0.06,
-                                width: MediaQuery.of(context).size.height * 0.06,
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
-                                ),
-                                child: Center(
-                                    child: Text(
-                                        event!.day.toString(),
-                                        style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.secondary),
-                                        textAlign: TextAlign.center
-                                    )
-                                ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.08,
-                                  width: MediaQuery.of(context).size.width*0.64,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          child: TextFormField(
-                                            controller: startDateController,
-                                            readOnly: true,
-                                            enabled: false,
-                                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                            decoration: InputDecoration(
-                                              labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                                              border: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                              errorBorder: InputBorder.none,
-                                              disabledBorder: InputBorder.none,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.08,
-                          width: MediaQuery.of(context).size.width * 0.84,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0))
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                height: MediaQuery.of(context).size.height * 0.06,
-                                width: MediaQuery.of(context).size.height * 0.06,
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
-                                ),
-                                child: Center(
-                                    child: Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary, size: MediaQuery.of(context).size.width*0.06,)
-                                ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.08,
-                                  width: MediaQuery.of(context).size.width*0.64,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          child: TextFormField(
-                                            controller: durationController,
-                                            readOnly: true,
-                                            enabled: false,
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                            decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                              errorBorder: InputBorder.none,
-                                              disabledBorder: InputBorder.none,
-                                              contentPadding: EdgeInsets.zero,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.08,
-                          width: MediaQuery.of(context).size.width * 0.90,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              borderRadius: const BorderRadius.all(Radius.circular(5.0))
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                height: MediaQuery.of(context).size.height * 0.06,
-                                width: MediaQuery.of(context).size.height * 0.06,
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.08),
-                                    borderRadius: const BorderRadius.all(Radius.circular(5.0))
-                                ),
-                                child: Center(
-                                    child: Icon(
-                                      event!.isPrivate! ? Icons.person : Icons.groups,
-                                      color: Theme.of(context).colorScheme.secondary,
-                                      size: MediaQuery.of(context).size.width*0.06,
-                                    )
-                                ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.04),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.08,
-                                  width: MediaQuery.of(context).size.width*0.64,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          child: TextFormField(
-                                            initialValue: event!.isPrivate! ? AppLocalizations.of(context)!.privateEvent : AppLocalizations.of(context)!.groupEvent,
-                                            readOnly: true,
-                                            enabled: false,
-                                            style: Theme.of(context).textTheme.bodyText2,
-                                            decoration: const InputDecoration(
-                                              border: InputBorder.none,
-                                              focusedBorder: InputBorder.none,
-                                              enabledBorder: InputBorder.none,
-                                              errorBorder: InputBorder.none,
-                                              disabledBorder: InputBorder.none,
-                                              contentPadding: EdgeInsets.zero,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Container(
-                        height: MediaQuery.of(context).size.height*0.13,
-                        width: MediaQuery.of(context).size.width*0.84,
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).backgroundColor,
-                            borderRadius: const BorderRadius.all(Radius.circular(15.0))
-                        ),
-                        child: Stack(
-                          children: <Widget>[
-                            Center(
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15),
-                                  bottomRight: Radius.circular(15),
-                                  bottomLeft: Radius.circular(15),
-                                ),
-                                child: Align(
-                                  alignment: Alignment.bottomRight,
-                                  heightFactor: 1,
-                                  widthFactor: 2.5,
-                                  child: GoogleMap(
-                                    onMapCreated: _onMapCreated,
-                                    initialCameraPosition: _initialPosition,
-                                    scrollGesturesEnabled: false,
-                                    zoomGesturesEnabled: false,
-                                    rotateGesturesEnabled: false,
-                                    mapToolbarEnabled: false,
-                                    zoomControlsEnabled: false,
-                                    minMaxZoomPreference: const MinMaxZoomPreference(17,17),
-                                    myLocationButtonEnabled: false,
-                                    markers: markers,
-                                    mapType: MapType.hybrid,
-                                    onTap: _onLaunchCoordinates,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 5.0,
-                              bottom: 5.0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Theme.of(context).scaffoldBackgroundColor
-                                ),
-                                padding: const EdgeInsets.all(10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.location_on,
-                                      color: Theme.of(context).colorScheme.secondary,
-                                      size: 15,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 5.0),
-                                      child: Text(
-                                        location.description!,
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      eventBonos.isNotEmpty ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(height: MediaQuery.of(context).size.height*0.025),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08, vertical: 10),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Text(
-                                  AppLocalizations.of(context)!.bonosNecesarios,
-                                  style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                        Column(
+                          children: [
+                            eventBonos.isNotEmpty ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(height: MediaQuery.of(context).size.height*0.025),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      Text(
+                                        AppLocalizations.of(context)!.bonosNecesarios,
+                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                  child: ListView.builder(
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      itemCount: eventBonos.length,
+                                      itemBuilder: (context, int index) {
+                                        var bono = eventBonos[index];
+                                        return SizedBox(
+                                          height: MediaQuery.of(context).size.height * 0.075,
+                                          width: MediaQuery.of(context).size.width * 0.9,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    BonoCard(
+                                                      height: MediaQuery.of(context).size.height * 0.05,
+                                                      width: MediaQuery.of(context).size.width * 0.18,
+                                                      bono: bono,
+                                                      brand: currentBrand,
+                                                      canExpand: false,
+                                                      onlyView: true,
+                                                    ),
+                                                  ]
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      bono.title!.toUpperCase(),
+                                                      style: Theme.of(context).textTheme.bodyText1,
+                                                      maxLines: 1,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                    Flexible(
+                                                      child: Text(
+                                                        (bono.sessions! == 10000 ? AppLocalizations.of(context)!.sessions+" "+AppLocalizations.of(context)!.ilimitadas : bono.sessions!.toString()+" "+AppLocalizations.of(context)!.sessions.toLowerCase())
+                                                            +" desde "+bono.price!.toStringAsFixed(2)+"€",
+                                                        style: Theme.of(context).textTheme.caption,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                  ),
                                 ),
                               ],
+                            ) : Container(),
+                            SizedBox(height: MediaQuery.of(context).size.height*0.025),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 10),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Text(
+                                    AppLocalizations.of(context)!.trainers,
+                                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08),
-                            child: ListView.builder(
-                                physics: const NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
+                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width*0.92,
+                              child: GridView.builder(
                                 shrinkWrap: true,
-                                itemCount: eventBonos.length,
+                                padding: EdgeInsets.zero,
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  childAspectRatio: 0.75,
+                                ),
+                                itemCount: eventTrainers.length,
                                 itemBuilder: (context, int index) {
-                                  var bono = eventBonos[index];
-                                  return SizedBox(
-                                    height: MediaQuery.of(context).size.height * 0.06,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                  var trainer = eventTrainers[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      mixpanel!.track('event_view_trainer_tap', properties: {'isPrivate': event!.isPrivate!});
+                                      Navigator.push(context, CupertinoPageRoute<void>(
+                                          builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false,)));
+                                    },
+                                    child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        BonoCard(
-                                          height: MediaQuery.of(context).size.height * 0.04,
-                                          width: MediaQuery.of(context).size.width * 0.14,
-                                          bono: bono,
-                                          brand: currentBrand,
-                                          canExpand: false,
-                                          onlyView: true,
+                                        Stack(
+                                          alignment: Alignment.bottomCenter,
+                                          children: [
+                                            SizedBox(
+                                              height: MediaQuery.of(context).size.width*0.22,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  CircularImage(
+                                                    size: MediaQuery.of(context).size.width*0.2,
+                                                    image: trainer.imageUrl,
+                                                    color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                                        SizedBox(
-                                          height: MediaQuery.of(context).size.height * 0.04,
-                                          child: Text(
-                                            bono.title!.toUpperCase(),
-                                            style: Theme.of(context).textTheme.bodyText1,
+                                        Container(
+                                          width: MediaQuery.of(context).size.width*0.3,
+                                          margin: const EdgeInsets.only(top: 3),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  trainer.name! != AppLocalizations.of(context)!.notFoundUser ? trainer.firstName! : trainer.name!,
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  textAlign: TextAlign.center,
+                                                  softWrap: true,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
                                   );
-                                }
-                            ),
-                          ),
-                        ],
-                      ) : Container(),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08, vertical: 10),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Text(
-                              AppLocalizations.of(context)!.trainers,
-                              style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height*0.15,
-                              width: MediaQuery.of(context).size.width*0.99,
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: eventTrainers.length,
-                                  itemBuilder: (context, int index) {
-                                    var trainer = eventTrainers[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        mixpanel!.track('event_view_trainer_tap', properties: {'isPrivate': event!.isPrivate!});
-                                        Navigator.push(context, CupertinoPageRoute<void>(
-                                            builder: (context) => ProfileViewUser(userID: trainer.id!, viewOnly: false)));
-                                      },
-                                      child: Padding(
-                                        padding: !(index == 0 || index == eventTrainers.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.08, right: 8.0) : EdgeInsets.only(right: eventTrainers.length != 1 ? MediaQuery.of(context).size.width*0.08 : 8.0, left: 8.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            CircularImage(
-                                              size: MediaQuery.of(context).size.width*0.18,
-                                              image: trainer.imageUrl,
-                                              color: Theme.of(context).primaryColor,
-                                              borderWidth: 1,
-                                            ),
-                                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                            SizedBox(
-                                              width: MediaQuery.of(context).size.width*0.2,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      trainer.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(trainer.name!) : trainer.name!,
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                },
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.08, vertical: 15),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Text(
-                              AppLocalizations.of(context)!.clients,
-                              style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 15),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Text(
+                                    AppLocalizations.of(context)!.clients,
+                                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  (event!.isPrivate! == false) ? Row(
+                                    children: [
+                                      Text(
+                                        "( "+event!.numClients.toString(),
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                      ),
+                                      Text(
+                                        " / ",
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                      ),
+                                      Text(
+                                        event!.maxMembers.toString()+" )",
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                      ),
+                                    ],
+                                  ) : Row(
+                                    children: [
+                                      Text(
+                                        "( "+event!.numClients.toString()+" )",
+                                        style: Theme.of(context).textTheme.bodyText2,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(width: 16),
-                            (event!.isPrivate! == false) ? Row(
+                            eventClients.isEmpty ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  "( "+event!.numClients.toString(),
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                                Text(
-                                  " / ",
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                ),
-                                Text(
-                                  event!.maxMembers.toString()+" )",
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                        height: 100,
+                                        child: Image.asset(Constants.emptyPeople)
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.noClientJoining,
+                                      style: Theme.of(context).textTheme.caption,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
                               ],
-                            ) : Row(
-                              children: [
-                                Text(
-                                  "( "+event!.numClients.toString()+" )",
-                                  style: Theme.of(context).textTheme.bodyText2,
+                            ) : SizedBox(
+                              width: MediaQuery.of(context).size.width*0.92,
+                              child: GridView.builder(
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  childAspectRatio: 0.75,
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 0),
-                        child:
-                        eventClients.isEmpty ?
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [
-                                SizedBox(
-                                    height: 100,
-                                    child: Image.asset(Constants.emptyPeople)
-                                ),
-                                Text(
-                                  AppLocalizations.of(context)!.noClientJoining,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ) :
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height*0.15,
-                              width: MediaQuery.of(context).size.width,
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const BouncingScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: eventClients.length,
-                                  itemBuilder: (context, int index) {
-                                    var client = eventClients[index];
-                                    //print(client.id);
-                                    if(userIsBlockedBy.contains(client.id)) {
-                                      client.isPrivate = true;
-                                    }
-                                    var clientFeedback = eventClientsFeedback[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        mixpanel!.track('event_view_client_tap', properties: {
-                                          'isPrivate': event!.isPrivate!,
-                                          'hasFeedback': clientFeedback != null ? true : false,
-                                        });
-                                        Navigator.push(context, CupertinoPageRoute<void>(
-                                            builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
-                                      },
-                                      child: Padding(
-                                        padding: !(index == 0 || index == eventClients.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : (index == 0) ? EdgeInsets.only(left: MediaQuery.of(context).size.width*0.08, right: 8.0) : EdgeInsets.only(right: eventClients.length != 1 ? MediaQuery.of(context).size.width*0.08 : 8.0, left: 8.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                itemCount: eventClients.length,
+                                itemBuilder: (context, int index) {
+                                  var client = eventClients[index];
+                                  if (userIsBlockedBy.contains(client.id)) {
+                                    client.isPrivate = true;
+                                  }
+                                  var clientFeedback = eventClientsFeedback[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      mixpanel!.track('event_view_client_tap', properties: {
+                                        'isPrivate': event!.isPrivate!,
+                                        'hasFeedback': clientFeedback != null ? true : false,
+                                      });
+                                      Navigator.push(context, CupertinoPageRoute<void>(builder: (context) => ProfileViewUser(userID: client.id!, viewOnly: false)));
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Stack(
+                                          alignment: Alignment.bottomCenter,
                                           children: [
-                                            CircularImage(
-                                              size: MediaQuery.of(context).size.width*0.18,
-                                              image: client.imageUrl,
-                                              color: Theme.of(context).primaryColor,
-                                              borderWidth: 1,
-                                            ),
-                                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                             SizedBox(
-                                              width: MediaQuery.of(context).size.width*0.2,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                              height: MediaQuery.of(context).size.width*0.22,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      client.name! != AppLocalizations.of(context)!.notFoundUser ? StringUtils().splitCommonName(client.name!) : client.name!,
-                                                      style: Theme.of(context).textTheme.bodyText2,
-                                                      textAlign: TextAlign.center,
-                                                    ),
+                                                  CircularImage(
+                                                    size: MediaQuery.of(context).size.width*0.2,
+                                                    image: client.imageUrl,
+                                                    color: Theme.of(context).primaryColor,
+                                                    borderWidth: 1,
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                            SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                            clientFeedback != null ? SizedBox(
-                                              height: MediaQuery.of(context).size.height*0.02,
-                                              width: MediaQuery.of(context).size.width*0.1,
-                                              child: FittedBox(
-                                                  fit: BoxFit.fitHeight,
-                                                  child: buildEventFeedbackIcon(clientFeedback)
+                                            clientFeedback != null ? Container(
+                                              constraints: BoxConstraints(
+                                                maxWidth: MediaQuery.of(context).size.width*0.15,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                borderRadius: BorderRadius.circular(15),
+                                                border: Border.all(
+                                                  width: 0.5,
+                                                  color: Theme.of(context).primaryColor,
+                                                ),
+                                              ),
+                                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                        clientFeedback.toString(),
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        maxLines: 1,
+                                                        softWrap: true,
+                                                        textAlign: TextAlign.center
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: MediaQuery.of(context).size.width*0.04,
+                                                    child: Image.asset(Constants.fireEmojiImage),
+                                                  ),
+                                                ],
                                               ),
                                             ) : Container(),
                                           ],
                                         ),
-                                      ),
-                                    );
-                                  }
+                                        Container(
+                                          width: MediaQuery.of(context).size.width*0.3,
+                                          margin: const EdgeInsets.only(top: 3),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  client.name! != AppLocalizations.of(context)!.notFoundUser ? client.firstName! : client.name!,
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  textAlign: TextAlign.center,
+                                                  softWrap: true,
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
                             ),
+                            canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.2) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
                           ],
                         ),
-                      ),
-                      canEdit ? SizedBox(height: MediaQuery.of(context).size.height*0.2) : SizedBox(height: MediaQuery.of(context).size.height*0.05),
-                    ],
+                      ],
+                    ),
+                  ))
+                ],
+              ),
+            ),
+          ) : SafeArea(
+            top: false,
+            bottom: false,
+            child: Builder(
+              builder: (context) => CustomScrollView(
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverFillRemaining(
+                      child: Center(
+                          child: LoadingView()
+                      )
                   ),
                 ],
               ),
-          )) : SliverFillRemaining(
-              child: Center(
-                  child: LoadingView()
-              )
-          ),
-        ],
+            ),
+          )
       ),
       floatingActionButton: whichFloatingActionButton(context),
     );
