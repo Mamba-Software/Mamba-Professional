@@ -26,7 +26,6 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
   }
 
   Future<void> getBrandSuscription(DocumentSnapshot document) async {
-    print('MODIFICACION EN LA MARCA');
     DateFormat formatter = DateFormat('dd/MM/yy');
     Brand brand = new Brand();
     brand = Brand.fromObjectAllData(document.id, document);
@@ -36,11 +35,11 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
     try {
       //Está en la antigua suscripción metodo
       if(brand.subscription == null) {
+        currentBrand.subscription = null;
         if(brand.subscriptionId != null) {
           currentBrand.subscriptionId = brand.subscriptionId;
           if(brand.endDatePay != null) {
               currentBrand.endDatePay = brand.endDatePay;
-              print(currentBrand.endDatePay!.toDate());
           }
           subscription =
           await _brandDataService.getBrandSubscription(currentBrand.id!, currentBrand.subscriptionId!);

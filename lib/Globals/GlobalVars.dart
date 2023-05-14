@@ -101,25 +101,49 @@ void setBrandActive()
   }
 }
 
-Future<void> navigateToPayWall(var context)
+Future<void> navigateToPayWall(var context, [bool fromActiveSubs = false])
 async {
-  await Navigator.push(
-    context,
-    PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => PayWall(
-        brandId: currentBrand.id!,
+  if(fromActiveSubs) {
+    await Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => PayWall(
+          brandId: currentBrand.id!,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1), // Starts from below
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
       ),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 1), // Empieza desde abajo
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        );
-      },
-    ),
-  );
+    ).whenComplete(() {
+      Navigator.pop(context);
+    });
+  }
+  else {
+    await Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            PayWall(
+              brandId: currentBrand.id!,
+            ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 1), // Empieza desde abajo
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
 }
 
 

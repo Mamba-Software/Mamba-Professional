@@ -2968,23 +2968,20 @@
   "@subscriptionsAppBar": {
     "description": "subscriptionsAppBar message"
   },
-  "moreSubInfo": "El plan fue adquirido el {initDate} y expira el {endDate}",
+  "moreSubInfo": "El plan expira el {endDate}",
   "@moreSubInfo": {
     "description": "moreSubInfo message",
     "placeholders": {
-      "initDate": {
-        "type": "String"
-      },
       "endDate": {
         "type": "String"
       }
     }
   },
-  "moreSubInfoRenAut": "El plan fue adquirido el {initDate} y su renovación es automática",
+  "moreSubInfoRenAut": "El plan se renovará automáticamente el {endDate}",
   "@moreSubInfoRenAut": {
     "description": "moreSubInfoRenAut message",
     "placeholders": {
-      "initDate": {
+      "endDate": {
         "type": "String"
       }
     }

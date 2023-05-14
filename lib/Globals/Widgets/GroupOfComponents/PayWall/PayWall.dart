@@ -50,6 +50,7 @@ class _PayWallState extends State<PayWall> {
   //PayWall
   bool seePromotions = true;
   bool loadingPromotions = false;
+  int activeSubscription = -1;
   var promotionController = TextEditingController();
   Subscription subscritionPromo = Subscription();
   List<Subscription> subscriptionList = [];
@@ -253,7 +254,7 @@ class _PayWallState extends State<PayWall> {
                         width: MediaQuery.of(context).size.width * 0.90,
                         height: MediaQuery.of(context).size.height * 0.07,
                         child:  Center(
-                          child: Text(
+                          child: loadingPromotions? LoadingView(isSmall: true, color: Colors.black, hasLogo: false,) : Text(
                             AppLocalizations.of(context)!.seeSubscriptionPayWall,
                             style: Theme.of(context)
                                 .textTheme
@@ -525,6 +526,9 @@ class _PayWallState extends State<PayWall> {
       children: [
         GestureDetector(
             onTap: () async {
+              setState(() {
+                activeSubscription = index;
+              });
               mixpanel!.track('brand_clicked_subscription');
               FocusManager.instance.primaryFocus?.unfocus();
               if(subscriptionList[index].package != null) {
@@ -574,6 +578,9 @@ class _PayWallState extends State<PayWall> {
                   },
                 );
               }
+              setState(() {
+                activeSubscription = -1;
+              });
               //
             },
             child: Center(
@@ -589,7 +596,7 @@ class _PayWallState extends State<PayWall> {
                 width: MediaQuery.of(context).size.width * 0.90,
                 height: MediaQuery.of(context).size.height * 0.07,
                 child:  Center(
-                  child: index == subscriptionList.length - 1? Text(
+                  child: (activeSubscription == index)? LoadingView(isSmall: true, color: index == subscriptionList.length - 1? Colors.black : AppColors.mainColor, hasLogo: false,) : index == subscriptionList.length - 1? Text(
                     subscriptionList[index].package == null? subscriptionList[index].descriptionAdapted! : subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
                     style:  Theme.of(context)
                         .textTheme
@@ -739,7 +746,7 @@ class _PayWallState extends State<PayWall> {
                                 sub.title!, DateTime.now(), false);
                               // currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
                             Navigator.pop(context);
-
+                            Navigator.pop(context);
                           },
                           child: Center(
                             child: Container(

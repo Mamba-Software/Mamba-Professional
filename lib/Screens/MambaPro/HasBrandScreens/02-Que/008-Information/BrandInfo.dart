@@ -329,7 +329,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
           ) : SliverToBoxAdapter(
             child: Column(
               children: [
-                currentUser.brandRole < 2 ? BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
+                currentUser.id == currentBrand.adminID ? BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
                     builder: (context, state) {
                       switch (state.runtimeType) {
                         case BrandSuscriptionInitial:
