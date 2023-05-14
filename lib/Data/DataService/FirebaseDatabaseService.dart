@@ -1264,7 +1264,6 @@ class FirebaseDatabaseService {
               "logoUrl": currentBrand.logoUrl,
             });
         // Set the Location Document in "\Events\Location"
-
         await _firestore.collection(events).doc(eventID)
             .collection("Locations")
             .doc(event.locationId!)

@@ -1635,7 +1635,7 @@ exports.userJoinsEvent = functions
       });*/
       var isPrivate = false;
       if (eventDoc.isPrivate != undefined) {
-        isPrivate == eventDoc.isPrivate;
+        isPrivate = eventDoc.isPrivate;
       }
       let imageUrl = "";
       if (eventDoc.imageUrl != null) {

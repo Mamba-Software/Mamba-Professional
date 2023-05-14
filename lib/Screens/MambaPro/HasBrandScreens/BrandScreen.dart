@@ -135,8 +135,7 @@ class _BrandScreenState extends State<BrandScreen> {
             settings: const RouteSettings(name: 'Notifications'),
           )
       ).whenComplete(() async {
-        var temp = await _userDataService.getUnreadNotifications(
-            currentUser.id!);
+        var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
         setState(() {
           unreadNotifications = temp;
         });
