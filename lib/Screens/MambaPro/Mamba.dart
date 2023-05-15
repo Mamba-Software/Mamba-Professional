@@ -1,33 +1,31 @@
 // ignore_for_file: avoid_print
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:io';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Suscription/SuscriptionDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
-import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
 import 'package:notification_permissions/notification_permissions.dart';
-import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:store_redirect/store_redirect.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
-import '../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
@@ -161,32 +159,267 @@ class _MambaState extends State<Mamba> {
     if (result[0] == false) {
       mixpanel!.track('minimum_app_version_open', properties: {'isMandatory': result[1]});
       if (result[1] && isProduction == true) {
-        Future.delayed(Duration.zero, () {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return WillPopScope(
-                onWillPop: () async => false,
-                child: AppUpdateDialog(
-                  isMandatory: true,
-                ),
-              );
-            },
-          );
-        });
-      } else {
-        var returnDialog = await showDialog(
+        await showDialog<String>(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) {
-            return AppUpdateDialog(
-              isMandatory: false,
+            return Platform.isIOS ? CupertinoAlertDialog(
+              title: Text(
+                  AppLocalizations.of(context)!.updateAppTitle,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+              ),
+              content: Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  Text(
+                    AppLocalizations.of(context)!.updateAppText,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  Container(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.015),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: AppColors.ligthRed.withOpacity(0.8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: AppColors.white,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                          Text(
+                            AppLocalizations.of(context)!.mandatoryUpdate,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5, color: AppColors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      )
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.update,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+                  ),
+                  style: TextButton.styleFrom(
+                    primary: Theme.of(context).primaryColor
+                  ),
+                  onPressed: () async {
+                    mixpanel!.track('minimum_app_version_update', properties: {'isMandatory': true});
+                    await StoreRedirect.redirect(
+                      androidAppId: "com.mamba.mambaprofessionalapp",
+                      iOSAppId: "1642701679",
+                    );
+                  },
+                ),
+              ],
+            ) : AlertDialog(
+              actionsPadding: EdgeInsets.zero,
+              title: Text(
+                  AppLocalizations.of(context)!.updateAppTitle,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+              ),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  Text(
+                    AppLocalizations.of(context)!.updateAppText,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  Container(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.015),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: AppColors.ligthRed.withOpacity(0.8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: AppColors.white,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                          Text(
+                            AppLocalizations.of(context)!.mandatoryUpdate,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5, color: AppColors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      )
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.update,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+                  ),
+                  style: TextButton.styleFrom(
+                      primary: Theme.of(context).primaryColor
+                  ),
+                  onPressed: () async {
+                    mixpanel!.track('minimum_app_version_update', properties: {'isMandatory': true});
+                    await StoreRedirect.redirect(
+                      androidAppId: "com.mamba.mambaprofessionalapp",
+                      iOSAppId: "1642701679",
+                    );
+                  },
+                ),
+              ],
             );
           },
         );
-        if (returnDialog == null) {
-          mixpanel!.track('minimum_app_version_close', properties: {'isMandatory': false});
-        }
+      } else {
+        await showDialog<String>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return Platform.isIOS ? CupertinoAlertDialog(
+              title: Text(
+                  AppLocalizations.of(context)!.updateAppTitle,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+              ),
+              content: Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  Text(
+                    AppLocalizations.of(context)!.updateAppText,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  Container(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.015),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: AppColors.ligthRed.withOpacity(0.8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: AppColors.white,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                          Text(
+                            AppLocalizations.of(context)!.mandatoryUpdate,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5, color: AppColors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      )
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.update,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+                  ),
+                  style: TextButton.styleFrom(
+                      primary: Theme.of(context).primaryColor
+                  ),
+                  onPressed: () async {
+                    mixpanel!.track('minimum_app_version_update', properties: {'isMandatory': true});
+                    await StoreRedirect.redirect(
+                      androidAppId: "com.mamba.mambaprofessionalapp",
+                      iOSAppId: "1642701679",
+                    );
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.cancel,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+                  ),
+                  style: TextButton.styleFrom(
+                      primary: Theme.of(context).primaryColor
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ) : AlertDialog(
+              actionsPadding: EdgeInsets.zero,
+              title: Text(
+                  AppLocalizations.of(context)!.updateAppTitle,
+                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+              ),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  Text(
+                    AppLocalizations.of(context)!.updateAppText,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+                  Container(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.015),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: AppColors.ligthRed.withOpacity(0.8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: AppColors.white,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                          Text(
+                            AppLocalizations.of(context)!.mandatoryUpdate,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5, color: AppColors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      )
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.update,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+                  ),
+                  style: TextButton.styleFrom(
+                      primary: Theme.of(context).primaryColor
+                  ),
+                  onPressed: () async {
+                    mixpanel!.track('minimum_app_version_update', properties: {'isMandatory': true});
+                    await StoreRedirect.redirect(
+                      androidAppId: "com.mamba.mambaprofessionalapp",
+                      iOSAppId: "1642701679",
+                    );
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      AppLocalizations.of(context)!.cancel,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold)
+                  ),
+                  style: TextButton.styleFrom(
+                      primary: Theme.of(context).primaryColor
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            );
+          },
+        );
       }
     }
   }
