@@ -6,7 +6,8 @@ class SelectDaysDialog extends StatefulWidget {
 
   String title;
   int intialDays;
-  SelectDaysDialog({Key? key, required this.title, required this.intialDays}) : super(key: key);
+  int? daysMax;
+  SelectDaysDialog({Key? key, required this.title, required this.intialDays, this.daysMax}) : super(key: key);
 
   @override
   _SelectDaysDialogState createState() => _SelectDaysDialogState();
@@ -21,6 +22,9 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
   @override
   void initState() {
     pickedDays = widget.intialDays;
+    if (widget.daysMax != null) {
+      daysMax = widget.daysMax!;
+    }
     super.initState();
   }
 

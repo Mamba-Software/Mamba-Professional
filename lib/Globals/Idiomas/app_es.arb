@@ -2398,7 +2398,7 @@
   "@sesionsBono": {
     "description": "Sesions bono message"
   },
-  "sesionsBonoDesc": "Indica que tu bono no tiene límite de sesiones y define la fecha de expiración en la siguiente pantalla.",
+  "sesionsBonoDesc": "Indica que tu bono cuenta con sesiones ilimitadas.",
   "@sesionsBonoDesc": {
     "description": "Sesions bono message"
   },
@@ -2518,13 +2518,17 @@
   "@expiresAtDesc":{
     "description": "expiresAt Text"
   },
-  "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.\n\nDejar valor en 0 para evitar esta condición.",
+  "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.",
   "@freeCancelDesc":{
     "description": "cancelTimeAt Text"
   },
-  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana (lunes a domingo).\n\nDejar en 0 para evitar esta condición.",
+  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana",
   "@trainsPerWeekDesc":{
     "description": "trainsPerWekk Text"
+  },
+  "expireDate":  "Fecha de expiración",
+  "@expireDate":{
+    "description": "noExpireDate Text"
   },
   "noExpireDate":  "No tiene fecha de expiración",
   "@noExpireDate":{
