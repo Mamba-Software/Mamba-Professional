@@ -496,7 +496,7 @@
   "@description":{
     "description": "Descripción Text"
   },
-  "descriptionHint": "Describe el error detalladamente",
+  "descriptionHint": "Añade una descripción",
   "@descriptionHint":{
     "description": "Descripción Text"
   },
@@ -2382,11 +2382,15 @@
   "@descriptionBono": {
     "description": "Description bono message"
   },
-  "activeBonoQues": "Activar/Desactivar bono",
-  "@activeBonoQues": {
+  "activarBono": "Activar bono",
+  "@activarBono": {
     "description": "Active bono message"
   },
-  "activeBonoQuesDesc": "Si esta activo, tus clientes podrán comprarlo. Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
+  "desactivarBono": "Desactivar bono",
+  "@desactivarBono": {
+    "description": "Active bono message"
+  },
+  "activeBonoQuesDesc": "Tus clientes sólo pueden comprarlo si está activo. Puedes activar o desactivar el bono una vez creado.",
   "@activeBonoQuesDesc": {
     "description": "Active bono message"
   },
@@ -2394,7 +2398,7 @@
   "@sesionsBono": {
     "description": "Sesions bono message"
   },
-  "sesionsBonoDesc": "Haz clic para indicar que tu bono no tiene límite de sesiones. En la siguiente pantalla, podrás definir la fecha de expiración.",
+  "sesionsBonoDesc": "Indica que tu bono no tiene límite de sesiones y define la fecha de expiración en la siguiente pantalla.",
   "@sesionsBonoDesc": {
     "description": "Sesions bono message"
   },

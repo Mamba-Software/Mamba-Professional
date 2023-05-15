@@ -828,7 +828,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
                                                         hintStyle: Theme.of(context).textTheme.caption,
-                                                        hintText:AppLocalizations.of(context)!.descriptionError,
+                                                        hintText:AppLocalizations.of(context)!.descriptionHint,
                                                         errorBorder: const UnderlineInputBorder(
                                                           borderSide: BorderSide(color: Colors.red),
                                                         ),

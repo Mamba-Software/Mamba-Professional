@@ -198,13 +198,13 @@ class _AddEditBonoState extends State<AddEditBono>
       if (bono.isDegradate!) {
         colorSelected = colorsDeg[int.parse(bono.color!)].value;
       }
+      // Open Delete Dialog
+      Future.delayed(Duration.zero, () {
+        checkIfDeleteIsTrue();
+      });
     } else {
       colorSelected = colors[int.parse(bono.color!)].value;
     }
-    // Open Delete Dialog
-    Future.delayed(Duration.zero, () {
-      checkIfDeleteIsTrue();
-    });
   }
 
   void getCondition() async {
@@ -622,7 +622,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     children: [
                       optionTextWrite(
                           TextInputType.text,
-                          AppLocalizations.of(context)!.nameBono,
+                          AppLocalizations.of(context)!.title,
                           "",
                           AppLocalizations.of(context)!.titleHint,
                           AppLocalizations.of(context)!.titleError,
@@ -633,9 +633,9 @@ class _AddEditBonoState extends State<AddEditBono>
                           'title'),
                       optionTextWrite(
                           TextInputType.text,
-                          AppLocalizations.of(context)!.descriptionBono,
+                          AppLocalizations.of(context)!.description,
                           "",
-                          AppLocalizations.of(context)!.descriptionError,
+                          AppLocalizations.of(context)!.descriptionHint,
                           AppLocalizations.of(context)!.descriptionError,
                           true,
                           descriptionController,
@@ -644,7 +644,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           'desc'),
                       optionTextWrite(
                           TextInputType.multiline,
-                          AppLocalizations.of(context)!.activeBonoQues,
+                          bono.isActive! ? AppLocalizations.of(context)!.desactivarBono : AppLocalizations.of(context)!.activarBono,
                           AppLocalizations.of(context)!.activeBonoQuesDesc,
                           AppLocalizations.of(context)!.descriptionError,
                           AppLocalizations.of(context)!.descriptionError,
@@ -729,7 +729,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   children: [
                     optionTextWrite(
                         TextInputType.number,
-                        AppLocalizations.of(context)!.sesionsBono,
+                        AppLocalizations.of(context)!.sessions,
                         AppLocalizations.of(context)!.sesionsBonoDesc,
                         0.toString(),
                         AppLocalizations.of(context)!.sessionPlease,
@@ -741,7 +741,7 @@ class _AddEditBonoState extends State<AddEditBono>
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     optionTextWrite(
                         const TextInputType.numberWithOptions(decimal: true),
-                        AppLocalizations.of(context)!.priceBono,
+                        AppLocalizations.of(context)!.price,
                         "",
                         0.toString(),
                         AppLocalizations.of(context)!.pricePlease,
@@ -750,7 +750,38 @@ class _AddEditBonoState extends State<AddEditBono>
                         focusNodePriceController,
                         false,
                         'price'),
-                  ]),
+                    optionConditionsWrite(
+                        TextInputType.text,
+                        AppLocalizations.of(context)!.expiresAt + "...",
+                        AppLocalizations.of(context)!.expiresAtDesc,
+                        AppLocalizations.of(context)!.titleHint,
+                        AppLocalizations.of(context)!.titleError,
+                        widget.edit && hasPurchases ? false : true,
+                        titleController,
+                        'exp'),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    !noSessions? optionConditionsWrite(
+                        TextInputType.number,
+                        AppLocalizations.of(context)!.freeCancel,
+                        AppLocalizations.of(context)!.freeCancelDesc,
+                        AppLocalizations.of(context)!.titleHint,
+                        AppLocalizations.of(context)!.titleError,
+                        widget.edit && hasPurchases ? false : true,
+                        freeCancellController,
+                        'ses') : Container(),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                    optionConditionsWrite(
+                        TextInputType.number,
+                        AppLocalizations.of(context)!.trainsPerWeek,
+                        AppLocalizations.of(context)!.trainsPerWeekDesc,
+                        AppLocalizations.of(context)!.titleHint,
+                        AppLocalizations.of(context)!.titleError,
+                        widget.edit && hasPurchases ? false : true,
+                        weeklyController,
+                        'maxw'),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                  ]
+              ),
             ),
           ),
         ],
@@ -1556,132 +1587,138 @@ class _AddEditBonoState extends State<AddEditBono>
     return Column(
       children: [
         Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                !checkBox && variable != 'ses'
-                    ? Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              titleText,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1,
-                            ),
-                            subtitleText != ""
-                                ?  Padding(
-                                  padding: const EdgeInsets.only(top: 8.0),
-                                  child: Text(
-                                      subtitleText,
-                                      style: Theme.of(context).textTheme.caption,
-                                    ),
-                                )
-                                :  Container(),
-                          ],
-                        ),
-                      )
-                    : variable != 'ses'
-                        ? Flexible(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              !checkBox && variable != 'ses'
+                  ? Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            titleText,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1,
+                          ),
+                          subtitleText != ""
+                              ?  Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                    subtitleText,
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
+                              )
+                              :  Container(),
+                        ],
+                      ),
+                    )
+                  : variable != 'ses'
+                      ? Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
                                   titleText,
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline1
-                                ),
-                                subtitleText != ""
-                                    ? Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Text(
-                                          subtitleText,
-                                          style:
-                                              Theme.of(context).textTheme.caption,
+                              ),
+                              subtitleText != ""
+                                  ? Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                              subtitleText,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .caption,
+                                          ),
                                         ),
-                                    )
-                                    : Container(),
-                              ],
-                            ),
-                          )
-                        : Container(),
+                                        checkBox ? Container(
+                                          margin: const EdgeInsets.only(left: 4.0),
+                                          child: CupertinoSwitch(
+                                            value: bono.isActive!,
+                                            onChanged: setBonoActivation,
+                                            trackColor: Theme.of(context).backgroundColor,
+                                            thumbColor: bono.isActive! ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
+                                            activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                                          ),
+                                        )
+                                            : Container(),
+                                      ],
+                                    ), 
+                                  )
+                                  : Container(),
+                            ],
+                          ),
+                        )
+                      : Container(),
 
-                variable == 'ses'
-                    ? Flexible(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              titleText,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1,
-                            ),
-                            subtitleText != "" ? variable != 'ses'? Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                subtitleText,
-                                style: Theme.of(context).textTheme.caption,
-                              ),
-                            ) : isSelectedDays[0] == false? Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                subtitleText,
-                                style: Theme.of(context).textTheme.caption,
-                              ),
-                            ) : Container() : Container(),
-                          ],
-                        ),
-                      )
-                    : Container(),
-
-                variable == 'ses' && isSelectedDays[0] == false
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Transform.scale(
-                            scale: 1.3,
-                            child: Checkbox(
-                              value: noSessions,
-                              onChanged: widget.edit == false ? setSeeSessions : null,
-                              checkColor: AppColors.white,
-                              activeColor: Styles.mainColor,
-                            ),
-                          )
-                        ],
-                      )
-                    : Container(),
-
-                checkBox
-                    ? Column(
+              variable == 'ses'
+                  ? Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Transform.scale(
-                            scale: 1.3,
-                            child: Checkbox(
-                              value: bono.isActive,
-                              onChanged: setBonoActivation,
-                              checkColor: AppColors.white,
-                              activeColor: Styles.mainColor,
+                          Text(
+                            titleText,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1,
+                          ),
+                          subtitleText != "" ?
+                            variable != 'ses' ? Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                subtitleText,
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                          ) :
+                              isSelectedDays[0] == false ? Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    subtitleText,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .caption,
+                                  ),
+                                ),
+                                Container(
+                                    margin: const EdgeInsets.only(left: 4.0),
+                                    child: CupertinoSwitch(
+                                      value: noSessions,
+                                      onChanged: widget.edit == false ? setSeeSessions : null,
+                                      trackColor: Theme.of(context).backgroundColor,
+                                      thumbColor: noSessions ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
+                                      activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                                    )
+                                )
+                              ],
                             ),
                           )
+                            : Container()
+                          : Container(),
                         ],
-                      )
-                    : Container(),
-              ],
-            )),
+                      ),
+                    )
+                  : Container(),
+            ],
+          )
+        ),
         !checkBox && variable != 'ses'
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1720,8 +1757,26 @@ class _AddEditBonoState extends State<AddEditBono>
                                   : variable == 'desc'
                                       ? 100
                                       : null,
-                              controller:
-                              widget.edit == true || widget.duplicate == true ? null : controller,
+                              autofocus: widget.edit == true || widget.duplicate == true ? false : variable == 'title' || variable == 'ses' ? true : false,
+                              controller: widget.edit == true || widget.duplicate == true ? null : controller,
+                              focusNode: variable == 'title'
+                                  ? focusNodetitleController
+                                  : variable == 'desc'
+                                  ? focusNodeDescController
+                                  : variable == 'ses'
+                                  ? focusNodeSessionsController
+                                  : focusNodePriceController,
+                              onEditingComplete: () {
+                                if (variable == 'title' && descriptionController.text.isEmpty) {
+                                  focusNodeDescController.requestFocus();
+                                } else if (variable == 'desc') {
+                                  focusNodeDescController.unfocus();
+                                } else if (variable == 'ses') {
+                                  focusNodetitleController.unfocus();
+                                } else {
+                                  focusNodetitleController.unfocus();
+                                }
+                              },
                               validator: (val) =>
                                   val!.isEmpty ? errorText : null,
                               textCapitalization: variable == 'title'

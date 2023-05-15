@@ -773,7 +773,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
                                                         hintStyle: Theme.of(context).textTheme.caption,
-                                                        hintText:AppLocalizations.of(context)!.descriptionError,
+                                                        hintText:AppLocalizations.of(context)!.descriptionHint,
                                                         errorBorder: const UnderlineInputBorder(
                                                           borderSide: BorderSide(color: Colors.red),
                                                         ),
