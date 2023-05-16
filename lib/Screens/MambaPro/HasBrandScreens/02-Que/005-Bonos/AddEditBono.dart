@@ -59,6 +59,8 @@ class _AddEditBonoState extends State<AddEditBono>
   bool bonoImage = false;
 
   bool noSessions = false;
+  bool weekSessions = false;
+  bool cancelTimeSessions = false;
 
   var colorSelected = 0;
   var colorSelectedDeg = 0;
@@ -108,7 +110,8 @@ class _AddEditBonoState extends State<AddEditBono>
   // Description Controller
   String? descriptionString;
   final formKeyInfo = GlobalKey<FormState>();
-  final formKePrice = GlobalKey<FormState>();
+  final formKeyPrice = GlobalKey<FormState>();
+  final formKeyConditions = GlobalKey<FormState>();
 
   // Duration
   TextEditingController durationController = TextEditingController();
@@ -532,7 +535,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               }
                             }
                           } else if (_selectedIndex == 1) {
-                            if (formKePrice.currentState!.validate()) {
+                            if (formKeyPrice.currentState!.validate()) {
                               setState(() {
                                 FocusManager.instance.primaryFocus?.unfocus();
                               });
@@ -553,16 +556,49 @@ class _AddEditBonoState extends State<AddEditBono>
                               }
                             }
                           } else if (_selectedIndex == 2) {
-                            _tabController!.animateTo(_selectedIndex += 1);
-                            setState(() {
-                              addBonosTabValue += 0.20;
-                              tabs[3] = true;
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            });
-                            if (widget.edit) {
-                              mixpanel!.track('edit_bono_style');
+                            if (formKeyConditions.currentState!.validate()) {
+                              _tabController!.animateTo(_selectedIndex += 1);
+                              setState(() {
+                                addBonosTabValue += 0.20;
+                                tabs[3] = true;
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              });
+                              if (widget.edit) {
+                                mixpanel!.track('edit_bono_style');
+                              } else {
+                                mixpanel!.track('add_bono_style');
+                              }
                             } else {
-                              mixpanel!.track('add_bono_style');
+                              if (weekSessions && !cancelTimeSessions) {
+                                if (weeklyController.text.isNotEmpty) {
+                                  _tabController!.animateTo(_selectedIndex += 1);
+                                  setState(() {
+                                    addBonosTabValue += 0.20;
+                                    tabs[3] = true;
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                  });
+                                  if (widget.edit) {
+                                    mixpanel!.track('edit_bono_style');
+                                  } else {
+                                    mixpanel!.track('add_bono_style');
+                                  }
+                                }
+                              }
+                              if (!weekSessions && cancelTimeSessions) {
+                                if (freeCancellController.text.isNotEmpty) {
+                                  _tabController!.animateTo(_selectedIndex += 1);
+                                  setState(() {
+                                    addBonosTabValue += 0.20;
+                                    tabs[3] = true;
+                                    FocusManager.instance.primaryFocus?.unfocus();
+                                  });
+                                  if (widget.edit) {
+                                    mixpanel!.track('edit_bono_style');
+                                  } else {
+                                    mixpanel!.track('add_bono_style');
+                                  }
+                                }
+                              }
                             }
                           } else if (_selectedIndex == 3) {
                             _tabController!.animateTo(_selectedIndex += 1);
@@ -720,7 +756,7 @@ class _AddEditBonoState extends State<AddEditBono>
             ),
           ) : Container(),
           Form(
-            key: formKePrice,
+            key: formKeyPrice,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
               child: Column(
@@ -731,7 +767,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         TextInputType.number,
                         AppLocalizations.of(context)!.sessions,
                         AppLocalizations.of(context)!.sesionsBonoDesc,
-                        0.toString(),
+                        AppLocalizations.of(context)!.sessionHint,
                         AppLocalizations.of(context)!.sessionPlease,
                         widget.edit && hasPurchases ? false : true,
                         sessionsController,
@@ -743,7 +779,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         const TextInputType.numberWithOptions(decimal: true),
                         AppLocalizations.of(context)!.price,
                         "",
-                        0.toString(),
+                        AppLocalizations.of(context)!.priceHint,
                         AppLocalizations.of(context)!.pricePlease,
                         widget.edit && hasPurchases ? false : true,
                         priceController,
@@ -818,6 +854,7 @@ class _AddEditBonoState extends State<AddEditBono>
               ),
             ) : Container(),
             Form(
+              key: formKeyConditions,
               child: Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: MediaQuery.of(context).size.width * 0.05),
@@ -829,31 +866,31 @@ class _AddEditBonoState extends State<AddEditBono>
                           TextInputType.text,
                           AppLocalizations.of(context)!.expireDate,
                           AppLocalizations.of(context)!.expiresAtDesc,
-                          AppLocalizations.of(context)!.titleHint,
+                          AppLocalizations.of(context)!.titleError,
                           AppLocalizations.of(context)!.titleError,
                           widget.edit && hasPurchases ? false : true,
                           titleController,
                           'exp'),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                      !noSessions? optionConditionsWrite(
-                          TextInputType.number,
-                          AppLocalizations.of(context)!.freeCancel,
-                          AppLocalizations.of(context)!.freeCancelDesc,
-                          AppLocalizations.of(context)!.titleHint,
-                          AppLocalizations.of(context)!.titleError,
-                          widget.edit && hasPurchases ? false : true,
-                          freeCancellController,
-                          'ses') : Container(),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                       optionConditionsWrite(
                           TextInputType.number,
                           AppLocalizations.of(context)!.trainsPerWeek,
                           AppLocalizations.of(context)!.trainsPerWeekDesc,
-                          AppLocalizations.of(context)!.titleHint,
-                          AppLocalizations.of(context)!.titleError,
+                          AppLocalizations.of(context)!.sessionHint,
+                          AppLocalizations.of(context)!.sessionPlease,
                           widget.edit && hasPurchases ? false : true,
                           weeklyController,
                           'maxw'),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      !noSessions? optionConditionsWrite(
+                          TextInputType.number,
+                          AppLocalizations.of(context)!.freeCancel,
+                          AppLocalizations.of(context)!.freeCancelDesc,
+                          AppLocalizations.of(context)!.freeCancelHint,
+                          AppLocalizations.of(context)!.freeCancelError,
+                          widget.edit && hasPurchases ? false : true,
+                          freeCancellController,
+                          'canFree') : Container(),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                     ]),
               ),
@@ -1388,26 +1425,24 @@ class _AddEditBonoState extends State<AddEditBono>
   }
 
   void setWeekSessions(bool? seeSes) {
-    noSessions = seeSes!;
-    sessionsController.text = '0';
-    bono.sessions = 10000;
-    if(noSessions) {
-      freeCancellController.text = '0';
-      condition.cancelTime = 0;
+    weekSessions = seeSes!;
+    if (weekSessions) {
+      weeklyController.text = '';
+    } else {
+      weeklyController.text = '';
+      condition.weeklySessions = 0;
     }
-
     setState(() {});
   }
 
   void setCancelHours(bool? seeSes) {
-    noSessions = seeSes!;
-    sessionsController.text = '0';
-    bono.sessions = 10000;
-    if(noSessions) {
-      freeCancellController.text = '0';
+    cancelTimeSessions = seeSes!;
+    if (cancelTimeSessions) {
+      freeCancellController.text = '';
+    } else {
+      freeCancellController.text = '';
       condition.cancelTime = 0;
     }
-
     setState(() {});
   }
 
@@ -1722,99 +1757,96 @@ class _AddEditBonoState extends State<AddEditBono>
                 children: [
                   Padding(
                     padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00),
-                    child: Stack(
-                      alignment: Alignment.centerRight,
-                      children: <Widget>[
-                        TextFormField(
-                          keyboardType: keyboard,
-                          inputFormatters:
-                              variable == 'ses' || variable == 'price'
-                                  ? [
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp('[0-9.,]')),
-                                    ]
-                                  : null,
-                          initialValue: widget.edit == true || widget.duplicate == true
-                              ? variable == 'title'
-                                  ? bono.title
-                                  : variable == 'desc'
-                                      ? bono.description
-                                      : variable == 'ses'
-                                          ? bono.sessions.toString()
-                                          : variable == 'price'
-                                              ? bono.price.toString()
-                                              : null
-                              : null,
-                          maxLines: variable == 'desc' ? 5 : null,
-                          minLines: 1,
-                          maxLength: variable == 'title'
-                              ? 20
-                              : variable == 'desc'
-                                  ? 100
-                                  : null,
-                          autofocus: widget.edit == true || widget.duplicate == true ? false : variable == 'title' && titleController.text.isEmpty ? true : false,
-                          controller: widget.edit == true || widget.duplicate == true ? null : controller,
-                          focusNode: variable == 'title'
-                              ? focusNodetitleController
-                              : variable == 'desc'
-                              ? focusNodeDescController
-                              : variable == 'ses'
-                              ? focusNodeSessionsController
-                              : focusNodePriceController,
-                          onEditingComplete: () {
-                            if (variable == 'title' && descriptionController.text.isEmpty) {
-                              focusNodeDescController.requestFocus();
-                            } else if (variable == 'desc') {
-                              focusNodeDescController.unfocus();
-                            } else if (variable == 'ses') {
-                              focusNodetitleController.unfocus();
-                            } else {
-                              focusNodetitleController.unfocus();
-                            }
-                          },
-                          validator: (val) => val!.isEmpty ? errorText : null,
-                          textCapitalization: variable == 'title'
-                              ? TextCapitalization.words
-                              : TextCapitalization.sentences,
-                          onChanged: (val) {
-                            setState(() {
-                              if (variable == 'title') {
-                                bono.title = val;
+                    child: Row(
+                      children: [
+                        Flexible(
+                          child: TextFormField(
+                            keyboardType: keyboard,
+                            inputFormatters:
+                                variable == 'ses' || variable == 'price'
+                                    ? [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9.,]')),
+                                      ]
+                                    : null,
+                            initialValue: widget.edit == true || widget.duplicate == true
+                                ? variable == 'title'
+                                    ? bono.title
+                                    : variable == 'desc'
+                                        ? bono.description
+                                        : variable == 'ses'
+                                            ? bono.sessions.toString()
+                                            : variable == 'price'
+                                                ? bono.price.toString()
+                                                : null
+                                : null,
+                            maxLines: variable == 'desc' ? 5 : null,
+                            minLines: 1,
+                            maxLength: variable == 'title'
+                                ? 20
+                                : variable == 'desc'
+                                    ? 100
+                                    : null,
+                            autofocus: widget.edit == true || widget.duplicate == true ? false : variable == 'title' && titleController.text.isEmpty ? true : false,
+                            controller: widget.edit == true || widget.duplicate == true ? null : controller,
+                            focusNode: variable == 'title'
+                                ? focusNodetitleController
+                                : variable == 'desc'
+                                ? focusNodeDescController
+                                : variable == 'ses'
+                                ? focusNodeSessionsController
+                                : focusNodePriceController,
+                            onEditingComplete: () {
+                              if (variable == 'title' && descriptionController.text.isEmpty) {
+                                focusNodeDescController.requestFocus();
                               } else if (variable == 'desc') {
-                                bono.description = val;
+                                focusNodeDescController.unfocus();
                               } else if (variable == 'ses') {
-                                bono.sessions = int.parse(val);
-                              } else if (variable == 'price') {
-                                double price = double.parse(val.replaceAll(',', '.'));
-                                print(roundDouble(price, 2));
-                                bono.price = roundDouble(price, 2);
+                                focusNodetitleController.unfocus();
+                              } else {
+                                focusNodetitleController.unfocus();
                               }
-                            });
-                          },
-                          style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                          decoration: InputDecoration(
-                            hintStyle: Theme.of(context).textTheme.caption,
-                            hintText: hintText,
-                            //border: InputBorder.none,
-                            errorBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
+                            },
+                            validator: (val) => val!.isEmpty ? errorText : null,
+                            textCapitalization: variable == 'title'
+                                ? TextCapitalization.words
+                                : TextCapitalization.sentences,
+                            onChanged: (val) {
+                              setState(() {
+                                if (variable == 'title') {
+                                  bono.title = val;
+                                } else if (variable == 'desc') {
+                                  bono.description = val;
+                                } else if (variable == 'ses') {
+                                  bono.sessions = int.parse(val);
+                                } else if (variable == 'price') {
+                                  double price = double.parse(val.replaceAll(',', '.'));
+                                  print(roundDouble(price, 2));
+                                  bono.price = roundDouble(price, 2);
+                                }
+                              });
+                            },
+                            style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                            decoration: InputDecoration(
+                              suffixText: variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
+                              suffixStyle: Theme.of(context).textTheme.caption,
+                              hintStyle: Theme.of(context).textTheme.caption,
+                              hintText: hintText,
+                              errorBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.red),
+                              ),
+                              disabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              enabledBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
+                              focusedBorder: const UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                              ),
                             ),
-                            disabledBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            enabledBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: const UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
+                            enabled: editable,
                           ),
-                          enabled: editable,
-                        ),
-                        Text(
-                          variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
-                          style: Theme.of(context).textTheme.caption,
-                          textAlign: TextAlign.left,
                         ),
                       ],
                     )
@@ -1835,86 +1867,82 @@ class _AddEditBonoState extends State<AddEditBono>
                     children: [
                       Padding(
                           padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00),
-                          child: Stack(
-                            alignment: Alignment.centerRight,
-                            children: <Widget>[
-                              TextFormField(
-                                keyboardType: keyboard,
-                                inputFormatters:
-                                variable == 'ses' || variable == 'price'
-                                    ? [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp('[0-9.,]')),
-                                ]
-                                    : null,
-                                initialValue: widget.edit == true || widget.duplicate == true
-                                    ? variable == 'title'
-                                    ? bono.title
-                                    : variable == 'desc'
-                                    ? bono.description
-                                    : variable == 'ses'
-                                    ? bono.sessions.toString()
-                                    : variable == 'price'
-                                    ? bono.price.toString()
-                                    : null
-                                    : null,
-                                maxLines: variable == 'desc' ? 5 : null,
-                                minLines: 1,
-                                maxLength: variable == 'title'
-                                    ? 20
-                                    : variable == 'desc'
-                                    ? 100
-                                    : null,
-                                autofocus: widget.edit == true || widget.duplicate == true ? false : variable == 'ses' && sessionsController.text.isEmpty && noSessions == false ? true : false,
-                                controller: widget.edit == true || widget.duplicate == true ? null : controller,
-                                validator: (val) =>
-                                val!.isEmpty ? errorText : null,
-                                textCapitalization: variable == 'title'
-                                    ? TextCapitalization.words
-                                    : TextCapitalization.sentences,
-                                onChanged: (val) {
-                                  setState(() {
-                                    if (variable == 'title') {
-                                      bono.title = val;
-                                    } else if (variable == 'desc') {
-                                      bono.description = val;
-                                    } else if (variable == 'ses') {
-                                      bono.sessions = int.parse(val);
-                                    } else if (variable == 'price') {
-                                      double price = double.parse(
-                                          val.replaceAll(',', '.'));
-                                      print(roundDouble(price, 2));
-                                      bono.price = roundDouble(price, 2);
-                                    }
-                                  });
-                                },
-                                style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                                decoration: InputDecoration(
-                                  hintStyle:
-                                  Theme.of(context).textTheme.caption,
-                                  hintText: hintText,
-                                  //border: InputBorder.none,
-                                  errorBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: TextFormField(
+                                  keyboardType: keyboard,
+                                  inputFormatters:
+                                  variable == 'ses' || variable == 'price'
+                                      ? [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp('[0-9.,]')),
+                                  ]
+                                      : null,
+                                  initialValue: widget.edit == true || widget.duplicate == true
+                                      ? variable == 'title'
+                                      ? bono.title
+                                      : variable == 'desc'
+                                      ? bono.description
+                                      : variable == 'ses'
+                                      ? bono.sessions.toString()
+                                      : variable == 'price'
+                                      ? bono.price.toString()
+                                      : null
+                                      : null,
+                                  maxLines: variable == 'desc' ? 5 : null,
+                                  minLines: 1,
+                                  maxLength: variable == 'title'
+                                      ? 20
+                                      : variable == 'desc'
+                                      ? 100
+                                      : null,
+                                  autofocus: widget.edit == true || widget.duplicate == true ? false : variable == 'ses' && sessionsController.text.isEmpty && noSessions == false ? true : false,
+                                  controller: widget.edit == true || widget.duplicate == true ? null : controller,
+                                  validator: (val) =>
+                                  val!.isEmpty ? errorText : null,
+                                  textCapitalization: variable == 'title'
+                                      ? TextCapitalization.words
+                                      : TextCapitalization.sentences,
+                                  onChanged: (val) {
+                                    setState(() {
+                                      if (variable == 'title') {
+                                        bono.title = val;
+                                      } else if (variable == 'desc') {
+                                        bono.description = val;
+                                      } else if (variable == 'ses') {
+                                        bono.sessions = int.parse(val);
+                                      } else if (variable == 'price') {
+                                        double price = double.parse(val.replaceAll(',', '.'));
+                                        print(roundDouble(price, 2));
+                                        bono.price = roundDouble(price, 2);
+                                      }
+                                    });
+                                  },
+                                  style: editable? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                                  decoration: InputDecoration(
+                                    suffixText: variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
+                                    suffixStyle: Theme.of(context).textTheme.caption,
+                                    hintStyle: Theme.of(context).textTheme.caption,
+                                    hintText: hintText,
+                                    //border: InputBorder.none,
+                                    errorBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    disabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: Colors.grey),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: Colors.grey),
+                                    ),
                                   ),
-                                  disabledBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  enabledBorder: const UnderlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.grey),
-                                  ),
-                                  focusedBorder: const UnderlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.grey),
-                                  ),
+                                  enabled: editable,
                                 ),
-                                enabled: editable,
-                              ),
-                              Text(
-                                variable == 'ses' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'price' ? "euros (€)" : "",
-                                style: Theme.of(context).textTheme.caption,
-                                textAlign: TextAlign.left,
                               ),
                             ],
                           )
@@ -1951,123 +1979,186 @@ class _AddEditBonoState extends State<AddEditBono>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      titleText,
+                      style: Theme.of(context).textTheme.headline1,
+                    ),
+                    variable == 'exp' ? Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        subtitleText,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ) :
+                    variable == 'canFree' ? Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              subtitleText,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption,
+                            ),
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(left: 4.0),
+                              child: CupertinoSwitch(
+                                value: cancelTimeSessions,
+                                onChanged: widget.edit == true && hasPurchases ? null : setCancelHours,
+                                trackColor: Theme.of(context).backgroundColor,
+                                thumbColor: cancelTimeSessions ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
+                                activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                              )
+                          )
+                        ],
+                      ),
+                    ) :
+                    variable == 'maxw' ? Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              subtitleText,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption,
+                            ),
+                          ),
+                          Container(
+                              margin: const EdgeInsets.only(left: 4.0),
+                              child: CupertinoSwitch(
+                                value: weekSessions,
+                                onChanged: widget.edit == true && hasPurchases ? null : setWeekSessions,
+                                trackColor: Theme.of(context).backgroundColor,
+                                thumbColor: weekSessions ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
+                                activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                              )
+                          )
+                        ],
+                      ),
+                    ) :
+                    Container(),
+                  ],
+                ),
+              ),
+            ],
+          )
+        ),
+        variable == 'exp' ?
+        Padding(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        titleText,
-                        style: Theme.of(context).textTheme.headline1,
-                      ),
-                      subtitleText != "" ?
-                      variable == 'exp' ? Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          subtitleText,
-                          style: Theme.of(context).textTheme.caption,
-                        ),
-                      ) :
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                subtitleText,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption,
-                              ),
-                            ),
-                            Container(
-                                margin: const EdgeInsets.only(left: 4.0),
-                                child: CupertinoSwitch(
-                                  value: noSessions,
-                                  onChanged: widget.edit == true && hasPurchases ? null : setWeekSessions,
-                                  trackColor: Theme.of(context).backgroundColor,
-                                  thumbColor: noSessions ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-                                  activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-                                )
-                            )
-                          ],
-                        ),
-                      )
-                      : Container(),
-                    ],
+                daysSelectoWidget(0, 'No expira', true),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                daysSelectoWidget(1, '30', false),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                daysSelectoWidget(2, '60', false),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                daysSelectoWidget(3, '90', false),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+              ],
+            ))
+        : variable == 'canFree' && cancelTimeSessions ?
+        Row(
+          children: <Widget>[
+            Flexible(
+              child: TextFormField(
+                keyboardType: keyboard,
+                controller: controller,
+                maxLines: null,
+                minLines: 1,
+                validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 7 ? errorText : null,
+                onChanged: (val) {
+                  setState(() {
+                    if (variable == 'maxw') {
+                      condition.weeklySessions = int.parse(val);
+                    } else if (variable == 'canFree') {
+                      condition.cancelTime = int.parse(val);
+                    }
+                  });
+                },
+                style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                decoration: InputDecoration(
+                  suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.trainsPerWeek.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
+                  suffixStyle: Theme.of(context).textTheme.caption,
+                  hintStyle: Theme.of(context).textTheme.caption,
+                  hintText: hintText,
+                  errorBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red),
+                  ),
+                  disabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
                   ),
                 ),
-              ],
-            )),
-        variable == 'exp'
-            ? Padding(
-                padding: EdgeInsets.only(top: umq.height(context, 0.03)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    daysSelectoWidget(0, 'No expira', true),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                    daysSelectoWidget(1, '30', false),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                    daysSelectoWidget(2, '60', false),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                    daysSelectoWidget(3, '90', false),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                  ],
-                ))
-            : variable == 'maxw' || variable == 'ses'
-                ? Padding(
-                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.00),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          child: TextFormField(
-                            keyboardType: keyboard,
-                            controller: controller,
-                            maxLines: null,
-                            minLines: 1,
-                            validator: (val) => val!.isEmpty ? errorText : null,
-                            onChanged: (val) {
-                              setState(() {
-                                if (variable == 'maxw') {
-                                  condition.weeklySessions = int.parse(val);
-                                } else if (variable == 'ses') {
-                                  condition.cancelTime = int.parse(val);
-                                } else if (variable == 'price') {
-                                  bono.price = double.parse(val);
-                                }
-                              });
-                            },
-                            style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                            decoration: InputDecoration(
-                              //suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.trainsPerWeek.toLowerCase() : variable == 'ses' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                              //suffixStyle: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                              hintStyle: Theme.of(context).textTheme.caption,
-                              hintText: hintText,
-                              border: InputBorder.none,
-                            ),
-                            enabled: editable,
-                          ),
-                        ),
-                        Text(
-                          variable == 'maxw' ? AppLocalizations.of(context)!.trainsPerWeek.toLowerCase() : variable == 'ses' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                          style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                        ),
-                      ],
-                    ),
-                  )
-                : Container(),
+                enabled: editable,
+              ),
+            ),
+          ],
+        )
+        : variable == 'maxw' && weekSessions ?
+        Row(
+          children: <Widget>[
+            Flexible(
+              child: TextFormField(
+                keyboardType: keyboard,
+                controller: controller,
+                maxLines: null,
+                minLines: 1,
+                validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 7 ? errorText : null,
+                onChanged: (val) {
+                  setState(() {
+                    condition.weeklySessions = int.parse(val);
+                  });
+                },
+                style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                decoration: InputDecoration(
+                  suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.sessions.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
+                  suffixStyle: Theme.of(context).textTheme.caption,
+                  hintStyle: Theme.of(context).textTheme.caption,
+                  hintText: hintText,
+                  errorBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.red),
+                  ),
+                  disabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  enabledBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
+                enabled: editable,
+              ),
+            ),
+          ],
+        )
+        : Container(),
       ],
     );
   }

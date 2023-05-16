@@ -488,7 +488,7 @@
   "@titleHint":{
     "description": "Título Hint Text"
   },
-  "titleError": "Por favor introduce un título",
+  "titleError": "Introduce un título por favor",
   "@titleError":{
     "description": "Título Error Text"
   },
@@ -2486,12 +2486,20 @@
   "@price": {
     "description": "price message"
   },
+  "priceHint": "Añade el precio",
+  "@priceHint": {
+    "description": "price message"
+  },
   "pricePlease": "Añade el precio por favor",
   "@pricePlease": {
     "description": "price message"
   },
   "session": "sesión",
   "@session":{
+    "description": "session Text"
+  },
+  "sessionHint": "Añade las sesiones",
+  "@sessionHint":{
     "description": "session Text"
   },
   "sessionPlease": "Añade las sesiones por favor",
@@ -2517,6 +2525,14 @@
   "expiresAtDesc": "Número de días hasta el vencimiento de este bono.",
   "@expiresAtDesc":{
     "description": "expiresAt Text"
+  },
+  "freeCancelHint":  "Añade las horas",
+  "@freeCancelHint":{
+    "description": "cancelTimeAt Text"
+  },
+  "freeCancelError":  "Añade las horas por favor",
+  "@freeCancelError":{
+    "description": "cancelTimeAt Text"
   },
   "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.",
   "@freeCancelDesc":{

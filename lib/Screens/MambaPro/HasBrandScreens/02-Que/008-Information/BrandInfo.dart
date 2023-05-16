@@ -567,8 +567,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                               enabled: canEdit,
                               style: Theme.of(context).textTheme.bodyText2,
                               decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.descriptionHint,
                                 hintStyle: Theme.of(context).textTheme.caption,
-                                hintText: AppLocalizations.of(context)!.descriptionError,
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
