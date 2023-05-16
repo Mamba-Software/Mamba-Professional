@@ -103,7 +103,9 @@ class _AddEditBonoState extends State<AddEditBono>
   var priceController = TextEditingController();
   FocusNode focusNodePriceController = FocusNode();
   var freeCancellController = TextEditingController();
+  FocusNode focusNodeFreeCancelController = FocusNode();
   var weeklyController = TextEditingController();
+  FocusNode focusNodeWeeklyController = FocusNode();
   var monthlyController = TextEditingController();
   var daysSelectorController = TextEditingController();
 
@@ -464,8 +466,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                   }
                                   setState(() {
                                     tabs[3] = false;
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
+                                    FocusManager.instance.primaryFocus?.unfocus();
                                   });
                                 } else if (_selectedIndex == 4) {
                                   if (widget.edit) {
@@ -536,10 +537,10 @@ class _AddEditBonoState extends State<AddEditBono>
                             }
                           } else if (_selectedIndex == 1) {
                             if (formKeyPrice.currentState!.validate()) {
+                              _tabController!.animateTo(_selectedIndex += 1);
                               setState(() {
                                 FocusManager.instance.primaryFocus?.unfocus();
                               });
-                              Timer(const Duration(milliseconds: 100), test);
                               addBonosTabValue += 0.20;
                               tabs[2] = true;
                               priceController.text = bono.price!.toStringAsFixed(2);
@@ -644,6 +645,7 @@ class _AddEditBonoState extends State<AddEditBono>
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -702,6 +704,7 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget pricePage() {
     return Scaffold(
       body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: Column(
           children: [
           widget.edit == true ? hasPurchases ? Container(
@@ -800,6 +803,7 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget conditionsPage() {
     return Scaffold(
       body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: Column(
           children: [
             widget.edit == true ? hasPurchases ? Container(
@@ -868,30 +872,36 @@ class _AddEditBonoState extends State<AddEditBono>
                           AppLocalizations.of(context)!.expiresAtDesc,
                           AppLocalizations.of(context)!.titleError,
                           AppLocalizations.of(context)!.titleError,
+                          AppLocalizations.of(context)!.titleError,
                           widget.edit && hasPurchases ? false : true,
                           titleController,
+                          null,
                           'exp'),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                       optionConditionsWrite(
                           TextInputType.number,
                           AppLocalizations.of(context)!.trainsPerWeek,
                           AppLocalizations.of(context)!.trainsPerWeekDesc,
                           AppLocalizations.of(context)!.sessionHint,
                           AppLocalizations.of(context)!.sessionPlease,
+                          AppLocalizations.of(context)!.trainsPerWeekError,
                           widget.edit && hasPurchases ? false : true,
                           weeklyController,
+                          focusNodeWeeklyController,
                           'maxw'),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                      !noSessions? optionConditionsWrite(
+                      optionConditionsWrite(
                           TextInputType.number,
                           AppLocalizations.of(context)!.freeCancel,
                           AppLocalizations.of(context)!.freeCancelDesc,
                           AppLocalizations.of(context)!.freeCancelHint,
                           AppLocalizations.of(context)!.freeCancelError,
+                          AppLocalizations.of(context)!.freeCancelErrorSecond,
                           widget.edit && hasPurchases ? false : true,
                           freeCancellController,
-                          'canFree') : Container(),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                          focusNodeFreeCancelController,
+                          'canFree'),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.2),
                     ]),
               ),
             ),
@@ -925,6 +935,7 @@ class _AddEditBonoState extends State<AddEditBono>
           ),
           Expanded(
             child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
@@ -1348,6 +1359,7 @@ class _AddEditBonoState extends State<AddEditBono>
   Widget confirmationPage() {
     return Scaffold(
       body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -1417,6 +1429,10 @@ class _AddEditBonoState extends State<AddEditBono>
       condition.cancelTime = 0;
       sessionsController.text = '';
       bono.sessions = 10000;
+      cancelTimeSessions = false;
+      if (priceController.text.isEmpty) {
+        focusNodePriceController.requestFocus();
+      }
     } else {
       sessionsController.text = '';
       bono.sessions = 0;
@@ -1428,6 +1444,7 @@ class _AddEditBonoState extends State<AddEditBono>
     weekSessions = seeSes!;
     if (weekSessions) {
       weeklyController.text = '';
+      focusNodeWeeklyController.requestFocus();
     } else {
       weeklyController.text = '';
       condition.weeklySessions = 0;
@@ -1439,6 +1456,7 @@ class _AddEditBonoState extends State<AddEditBono>
     cancelTimeSessions = seeSes!;
     if (cancelTimeSessions) {
       freeCancellController.text = '';
+      focusNodeFreeCancelController.requestFocus();
     } else {
       freeCancellController.text = '';
       condition.cancelTime = 0;
@@ -1458,96 +1476,67 @@ class _AddEditBonoState extends State<AddEditBono>
   }
 
   Widget daysSelectoWidget(int index, String numberDays, bool customized) {
-    return GestureDetector(
-      onTap: () {
-        if(widget.edit == false) {
-          isSelectedDays[0] = false;
-          isSelectedDays[1] = false;
-          isSelectedDays[2] = false;
-          isSelectedDays[3] = false;
-          isSelectedDays[index] = true;
-
-          if (isSelectedDays[0]) {
-            condition.expirationTime = 0;
-          }
-          if (isSelectedDays[1]) {
-            condition.expirationTime = 30;
-          }
-          if (isSelectedDays[2]) {
-            condition.expirationTime = 60;
-          }
-          if (isSelectedDays[3]) {
-            condition.expirationTime = 90;
-          }
-          //bono.condition!.expirationTime = condition.expirationTime;
-
-          setState(() {});
-        }
-      },
-      child:
-      customized == false? Container(
-        height: MediaQuery.of(context).size.width * 0.15,
-        width: MediaQuery.of(context).size.width * 0.2,
-        decoration: BoxDecoration(
-            border: Border.all(
-              width: isSelectedDays[index] == true
-                  ? 3 : 1,
-              color: isSelectedDays[index] == true
-                  ? Styles.mainColor
-                  : widget.edit == false? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.06,
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  customized == false ? numberDays+" "+AppLocalizations.of(context)!.days.toLowerCase() : AppLocalizations.of(context)!.noExpireDate,
+                  style: Theme.of(context).textTheme.bodyText1,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            borderRadius: const BorderRadius.all(Radius.circular(20))),
-        child: Align(
-          alignment: Alignment.center,
-          //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                customized == false ? numberDays : "No expira",
-                style: widget.edit == false? Theme.of(context).textTheme.button : Theme.of(context).textTheme.button!.copyWith(color: Theme.of(context).disabledColor),
-              ),
-              customized == false
-                  ? Text(
-                      AppLocalizations.of(context)!.days,
-                      style: widget.edit == false? Theme.of(context).textTheme.button : Theme.of(context).textTheme.button!.copyWith(color: Theme.of(context).disabledColor),
-                    )
-                  : Container(),
-            ],
           ),
-        ),
-      ) : !noSessions?
-      Container(
-        height: MediaQuery.of(context).size.width * 0.15,
-        width: MediaQuery.of(context).size.width * 0.2,
-        decoration: BoxDecoration(
-            border: Border.all(
-              width: isSelectedDays[index] == true ? 3 : 1,
-              color: isSelectedDays[index] == true
-                  ? Styles.mainColor
-                  : widget.edit == false? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.035,
+            width: MediaQuery.of(context).size.height * 0.06,
+            child: MaterialButton(
+              elevation: 2,
+              color: isSelectedDays[index] == true ? Theme.of(context).primaryColor : widget.edit == false ? Theme.of(context).backgroundColor : Theme.of(context).disabledColor,
+              textColor: isSelectedDays[index] == true ? Theme.of(context).primaryColor : widget.edit == false ? Theme.of(context).backgroundColor : Theme.of(context).disabledColor,
+              child: isSelectedDays[index] == true ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : widget.edit == false ? SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,) : Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05),
+              padding: EdgeInsets.zero,
+              shape: const CircleBorder(),
+              onPressed: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                }
+                if(widget.edit == false) {
+                  isSelectedDays[0] = false;
+                  isSelectedDays[1] = false;
+                  isSelectedDays[2] = false;
+                  isSelectedDays[3] = false;
+                  isSelectedDays[index] = true;
+                  if (isSelectedDays[0]) {
+                    condition.expirationTime = 0;
+                  }
+                  if (isSelectedDays[1]) {
+                    condition.expirationTime = 30;
+                  }
+                  if (isSelectedDays[2]) {
+                    condition.expirationTime = 60;
+                  }
+                  if (isSelectedDays[3]) {
+                    condition.expirationTime = 90;
+                  }
+                  setState(() {});
+                }
+              },
             ),
-            borderRadius: const BorderRadius.all(Radius.circular(20))),
-        child: Align(
-          alignment: Alignment.center,
-          //padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.06, vertical: MediaQuery.of(context).size.width * 0.02),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                customized == false ? numberDays : "No expira",
-                style: widget.edit == false? Theme.of(context).textTheme.button : Theme.of(context).textTheme.button!.copyWith(color: Theme.of(context).disabledColor),
-              ),
-              customized == false
-                  ? Text(
-                AppLocalizations.of(context)!.days,
-                style: widget.edit == false? Theme.of(context).textTheme.button : Theme.of(context).textTheme.button!.copyWith(color: Theme.of(context).disabledColor),
-              )
-                  : Container(),
-            ],
           ),
-        ),
-      ) : Container(),
+        ],
+      ),
     );
   }
 
@@ -1681,8 +1670,8 @@ class _AddEditBonoState extends State<AddEditBono>
                                             value: bono.isActive!,
                                             onChanged: setBonoActivation,
                                             trackColor: Theme.of(context).backgroundColor,
-                                            thumbColor: bono.isActive! ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-                                            activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                                            thumbColor: bono.isActive! ? Theme.of(context).primaryColorDark : Theme.of(context).scaffoldBackgroundColor,
+                                            activeColor: Theme.of(context).primaryColor
                                           ),
                                         )
                                             : Container(),
@@ -1735,8 +1724,8 @@ class _AddEditBonoState extends State<AddEditBono>
                                       value: noSessions,
                                       onChanged: widget.edit == true && hasPurchases ? null : setSeeSessions,
                                       trackColor: Theme.of(context).backgroundColor,
-                                      thumbColor: noSessions ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-                                      activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                                      thumbColor: noSessions ? Theme.of(context).primaryColorDark : Theme.of(context).scaffoldBackgroundColor,
+                                      activeColor: Theme.of(context).primaryColor
                                     )
                                 )
                               ],
@@ -1972,8 +1961,10 @@ class _AddEditBonoState extends State<AddEditBono>
       var subtitleText,
       var hintText,
       var errorText,
+      var errorTextSecond,
       bool editable,
       var controller,
+      var focusNode,
       var variable) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2002,27 +1993,34 @@ class _AddEditBonoState extends State<AddEditBono>
                     ) :
                     variable == 'canFree' ? Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
                         children: [
-                          Flexible(
-                            child: Text(
-                              subtitleText,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .caption,
-                            ),
-                          ),
-                          Container(
-                              margin: const EdgeInsets.only(left: 4.0),
-                              child: CupertinoSwitch(
-                                value: cancelTimeSessions,
-                                onChanged: widget.edit == true && hasPurchases ? null : setCancelHours,
-                                trackColor: Theme.of(context).backgroundColor,
-                                thumbColor: cancelTimeSessions ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-                                activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: noSessions == true ? Text(
+                                  AppLocalizations.of(context)!.freeCancelInfo,
+                                  style: Theme.of(context).textTheme.caption,
+                                ) : Text(
+                                  subtitleText,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption,
+                                ),
+                              ),
+                              Container(
+                                  margin: const EdgeInsets.only(left: 4.0),
+                                  child: CupertinoSwitch(
+                                    value: cancelTimeSessions,
+                                    onChanged: (widget.edit == true && hasPurchases) || noSessions == true ? null : setCancelHours,
+                                    trackColor: !noSessions ? Theme.of(context).backgroundColor : Theme.of(context).disabledColor,
+                                    thumbColor: cancelTimeSessions ? Theme.of(context).primaryColorDark : Theme.of(context).scaffoldBackgroundColor,
+                                    activeColor: Theme.of(context).primaryColor
+                                  )
                               )
-                          )
+                            ],
+                          ),
                         ],
                       ),
                     ) :
@@ -2045,8 +2043,8 @@ class _AddEditBonoState extends State<AddEditBono>
                                 value: weekSessions,
                                 onChanged: widget.edit == true && hasPurchases ? null : setWeekSessions,
                                 trackColor: Theme.of(context).backgroundColor,
-                                thumbColor: weekSessions ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-                                activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                                thumbColor: weekSessions ? Theme.of(context).primaryColorDark : Theme.of(context).scaffoldBackgroundColor,
+                                activeColor: Theme.of(context).primaryColor,
                               )
                           )
                         ],
@@ -2060,75 +2058,73 @@ class _AddEditBonoState extends State<AddEditBono>
           )
         ),
         variable == 'exp' ?
-        Padding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                daysSelectoWidget(0, 'No expira', true),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                daysSelectoWidget(1, '30', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                daysSelectoWidget(2, '60', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                daysSelectoWidget(3, '90', false),
-                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-              ],
-            ))
-        : variable == 'canFree' && cancelTimeSessions ?
-        Row(
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Flexible(
-              child: TextFormField(
-                keyboardType: keyboard,
-                controller: controller,
-                maxLines: null,
-                minLines: 1,
-                validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 7 ? errorText : null,
-                onChanged: (val) {
-                  setState(() {
-                    if (variable == 'maxw') {
-                      condition.weeklySessions = int.parse(val);
-                    } else if (variable == 'canFree') {
-                      condition.cancelTime = int.parse(val);
-                    }
-                  });
-                },
-                style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
-                decoration: InputDecoration(
-                  suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.trainsPerWeek.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
-                  suffixStyle: Theme.of(context).textTheme.caption,
-                  hintStyle: Theme.of(context).textTheme.caption,
-                  hintText: hintText,
-                  errorBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.red),
-                  ),
-                  disabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-                enabled: editable,
-              ),
-            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+            daysSelectoWidget(0, 'No expira', true),
+            daysSelectoWidget(1, '30', false),
+            daysSelectoWidget(2, '60', false),
+            daysSelectoWidget(3, '90', false),
           ],
         )
+        : variable == 'canFree' && cancelTimeSessions ?
+        Row(
+            children: <Widget>[
+              Flexible(
+                child: TextFormField(
+                  keyboardType: keyboard,
+                  focusNode: focusNode,
+                  controller: controller,
+                  maxLines: null,
+                  minLines: 1,
+                  validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 48 ? errorTextSecond : null,
+                  onChanged: (val) {
+                    setState(() {
+                      if (variable == 'maxw') {
+                        condition.weeklySessions = int.parse(val);
+                      } else if (variable == 'canFree') {
+                        condition.cancelTime = int.parse(val);
+                      }
+                    });
+                  },
+                  style: editable ? Theme.of(context).textTheme.bodyText1 : Theme.of(context).textTheme.bodyText1?.copyWith(color: Theme.of(context).disabledColor),
+                  decoration: InputDecoration(
+                    suffixText: variable == 'maxw' ? AppLocalizations.of(context)!.trainsPerWeek.toLowerCase() : variable == 'canFree' ? AppLocalizations.of(context)!.hoursString.toLowerCase() : "",
+                    suffixStyle: Theme.of(context).textTheme.caption,
+                    hintStyle: Theme.of(context).textTheme.caption,
+                    hintText: hintText,
+                    errorBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red),
+                    ),
+                    disabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    enabledBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                  ),
+                  enabled: editable,
+                ),
+              ),
+            ],
+          )
         : variable == 'maxw' && weekSessions ?
         Row(
           children: <Widget>[
             Flexible(
               child: TextFormField(
                 keyboardType: keyboard,
+                focusNode: focusNode,
                 controller: controller,
                 maxLines: null,
                 minLines: 1,
-                validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 7 ? errorText : null,
+                validator: (val) => val!.isEmpty ? errorText : null,
                 onChanged: (val) {
                   setState(() {
                     condition.weeklySessions = int.parse(val);
@@ -2163,7 +2159,4 @@ class _AddEditBonoState extends State<AddEditBono>
     );
   }
 
-  void test() {
-    _tabController!.animateTo(_selectedIndex += 1);
-  }
 }

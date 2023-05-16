@@ -568,10 +568,12 @@
   "expired": "Expirat",
   "esgotat": "Esgotat",
   "expiresAtDesc": "Nombre de dies fins al venciment d'aquest val.",
-
   "freeCancelHint":  "Afegeix les hores",
   "freeCancelError":  "Afegeix les hores si us plau",
+  "freeCancelErrorSecond":  "No pot ser superior a 72 hores.",
   "freeCancelDesc":  "Nombre d'hores mínim per a cancel·lar l'assistència a una sessió de manera gratuïta.",
+  "freeCancelInfo":  "Val sense límit de sessions, el que significa que la cancel·lació és gratuïta i sense restriccions.",
+  "trainsPerWeekError": "El nombre màxim de sessions per setmana no pot ser superior a 7.",
   "trainsPerWeekDesc": "Nombre màxim de sessions que poden realitzar els teus clients en una mateixa setmana.",
   "expiresAt": "Data d'expiració",
   "noExpireDate":  "No té data d'expiració",

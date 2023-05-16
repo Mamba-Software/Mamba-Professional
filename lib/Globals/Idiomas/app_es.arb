@@ -2534,9 +2534,21 @@
   "@freeCancelError":{
     "description": "cancelTimeAt Text"
   },
+  "freeCancelErrorSecond":  "No puede ser superior a 72 horas",
+  "@freeCancelErrorSecond":{
+    "description": "cancelTimeAt Text"
+  },
   "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.",
   "@freeCancelDesc":{
     "description": "cancelTimeAt Text"
+  },
+  "freeCancelInfo":  "Bono sin límite de sesiones, lo que significa que la cancelación es gratuita y sin restricciones.",
+  "@freeCancelInfo":{
+    "description": "cancelTimeAt Text"
+  },
+  "trainsPerWeekError": "El número máximo de sesiones por semana no puede ser superior a 7",
+  "@trainsPerWeekError":{
+    "description": "trainsPerWekk Text"
   },
   "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana",
   "@trainsPerWeekDesc":{
