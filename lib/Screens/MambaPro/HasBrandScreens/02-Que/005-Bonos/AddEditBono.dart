@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
@@ -19,6 +20,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MediaQuery/MediaQuery.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../../../../Data/LibraryModels/lDegradate.dart';
 import '../../../../../Globals/Utils/Bonos/BonosUtils.dart';
@@ -73,6 +75,7 @@ class _AddEditBonoState extends State<AddEditBono>
 
   // Boolean Loading
   bool isLoading = false;
+  bool isDark = false;
   bool openBono = false;
 
   TextEditingController startDateController = TextEditingController();
@@ -211,6 +214,7 @@ class _AddEditBonoState extends State<AddEditBono>
     } else {
       colorSelected = colors[int.parse(bono.color!)].value;
     }
+    isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
   }
 
   void getCondition() async {
@@ -664,6 +668,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           "",
                           AppLocalizations.of(context)!.titleHint,
                           AppLocalizations.of(context)!.titleError,
+                          null,
                           true,
                           titleController,
                           focusNodetitleController,
@@ -675,6 +680,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           "",
                           AppLocalizations.of(context)!.descriptionHint,
                           AppLocalizations.of(context)!.descriptionError,
+                          null,
                           true,
                           descriptionController,
                           focusNodeDescController,
@@ -686,6 +692,7 @@ class _AddEditBonoState extends State<AddEditBono>
                           AppLocalizations.of(context)!.activeBonoQuesDesc,
                           AppLocalizations.of(context)!.descriptionError,
                           AppLocalizations.of(context)!.descriptionError,
+                          null,
                           true,
                           null,
                           null,
@@ -710,7 +717,7 @@ class _AddEditBonoState extends State<AddEditBono>
           widget.edit == true ? hasPurchases ? Container(
               height: MediaQuery.of(context).size.height*0.15,
               width: MediaQuery.of(context).size.width*0.9,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: AppColors.red.withOpacity(0.2),
@@ -735,7 +742,7 @@ class _AddEditBonoState extends State<AddEditBono>
             ) : Container(
             height: MediaQuery.of(context).size.height*0.10,
             width: MediaQuery.of(context).size.width*0.9,
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.green.withOpacity(0.2),
@@ -772,6 +779,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         AppLocalizations.of(context)!.sesionsBonoDesc,
                         AppLocalizations.of(context)!.sessionHint,
                         AppLocalizations.of(context)!.sessionPlease,
+                        AppLocalizations.of(context)!.sessionPlease,
                         widget.edit && hasPurchases ? false : true,
                         sessionsController,
                         focusNodeSessionsController,
@@ -784,6 +792,7 @@ class _AddEditBonoState extends State<AddEditBono>
                         "",
                         AppLocalizations.of(context)!.priceHint,
                         AppLocalizations.of(context)!.pricePlease,
+                        null,
                         widget.edit && hasPurchases ? false : true,
                         priceController,
                         focusNodePriceController,
@@ -809,7 +818,7 @@ class _AddEditBonoState extends State<AddEditBono>
             widget.edit == true ? hasPurchases ? Container(
               height: MediaQuery.of(context).size.height*0.15,
               width: MediaQuery.of(context).size.width*0.9,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: AppColors.red.withOpacity(0.2),
@@ -834,7 +843,7 @@ class _AddEditBonoState extends State<AddEditBono>
             ) : Container(
               height: MediaQuery.of(context).size.height*0.10,
               width: MediaQuery.of(context).size.width*0.9,
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.04),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.green.withOpacity(0.2),
@@ -1425,17 +1434,22 @@ class _AddEditBonoState extends State<AddEditBono>
   void setSeeSessions(bool? seeSes) {
     noSessions = seeSes!;
     if (noSessions) {
-      freeCancellController.text = '0';
-      condition.cancelTime = 0;
       sessionsController.text = '';
       bono.sessions = 10000;
+      freeCancellController.text = '0';
+      condition.cancelTime = 0;
       cancelTimeSessions = false;
       if (priceController.text.isEmpty) {
         focusNodePriceController.requestFocus();
       }
+      if (isSelectedDays[0]) {
+        isSelectedDays[0] = false;
+        isSelectedDays[1] = true;
+      }
     } else {
       sessionsController.text = '';
       bono.sessions = 0;
+      focusNodeSessionsController.requestFocus();
     }
     setState(() {});
   }
@@ -1475,9 +1489,9 @@ class _AddEditBonoState extends State<AddEditBono>
     });
   }
 
-  Widget daysSelectoWidget(int index, String numberDays, bool customized) {
+  Widget daysSelectoWidget(int index, String numberDays, bool editable, bool notShow) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.06,
+      height: MediaQuery.of(context).size.height * 0.05,
       width: MediaQuery.of(context).size.width * 0.9,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1489,52 +1503,49 @@ class _AddEditBonoState extends State<AddEditBono>
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  customized == false ? numberDays+" "+AppLocalizations.of(context)!.days.toLowerCase() : AppLocalizations.of(context)!.noExpireDate,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  numberDays != "0" ? numberDays+" "+AppLocalizations.of(context)!.days.toLowerCase() : "No expira",
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.035,
+          notShow == false ? SizedBox(
+            height: MediaQuery.of(context).size.height * 0.034,
             width: MediaQuery.of(context).size.height * 0.06,
             child: MaterialButton(
               elevation: 2,
-              color: isSelectedDays[index] == true ? Theme.of(context).primaryColor : widget.edit == false ? Theme.of(context).backgroundColor : Theme.of(context).disabledColor,
-              textColor: isSelectedDays[index] == true ? Theme.of(context).primaryColor : widget.edit == false ? Theme.of(context).backgroundColor : Theme.of(context).disabledColor,
-              child: isSelectedDays[index] == true ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : widget.edit == false ? SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,) : Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05),
+              color: isSelectedDays[index] == true ? editable ? Theme.of(context).primaryColor : Theme.of(context).disabledColor : Theme.of(context).backgroundColor,
+              child: isSelectedDays[index] == true ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
               padding: EdgeInsets.zero,
               shape: const CircleBorder(),
-              onPressed: () {
+              onPressed: editable == false ? () {} : () {
                 FocusScopeNode currentFocus = FocusScope.of(context);
                 if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
                   FocusManager.instance.primaryFocus?.unfocus();
                 }
-                if(widget.edit == false) {
-                  isSelectedDays[0] = false;
-                  isSelectedDays[1] = false;
-                  isSelectedDays[2] = false;
-                  isSelectedDays[3] = false;
-                  isSelectedDays[index] = true;
-                  if (isSelectedDays[0]) {
-                    condition.expirationTime = 0;
-                  }
-                  if (isSelectedDays[1]) {
-                    condition.expirationTime = 30;
-                  }
-                  if (isSelectedDays[2]) {
-                    condition.expirationTime = 60;
-                  }
-                  if (isSelectedDays[3]) {
-                    condition.expirationTime = 90;
-                  }
-                  setState(() {});
+                isSelectedDays[0] = false;
+                isSelectedDays[1] = false;
+                isSelectedDays[2] = false;
+                isSelectedDays[3] = false;
+                isSelectedDays[index] = true;
+                if (isSelectedDays[0]) {
+                  condition.expirationTime = 0;
                 }
+                if (isSelectedDays[1]) {
+                  condition.expirationTime = 30;
+                }
+                if (isSelectedDays[2]) {
+                  condition.expirationTime = 60;
+                }
+                if (isSelectedDays[3]) {
+                  condition.expirationTime = 90;
+                }
+                setState(() {});
               },
             ),
-          ),
+          ) : Container(),
         ],
       ),
     );
@@ -1600,6 +1611,7 @@ class _AddEditBonoState extends State<AddEditBono>
       var subtitleText,
       var hintText,
       var errorText,
+      var errorTextSecond,
       bool editable,
       var controller,
       var focusNode,
@@ -1669,9 +1681,9 @@ class _AddEditBonoState extends State<AddEditBono>
                                           child: CupertinoSwitch(
                                             value: bono.isActive!,
                                             onChanged: setBonoActivation,
-                                            trackColor: Theme.of(context).backgroundColor,
-                                            thumbColor: bono.isActive! ? Theme.of(context).primaryColorDark : Theme.of(context).scaffoldBackgroundColor,
-                                            activeColor: Theme.of(context).primaryColor
+                                            trackColor: Colors.green.withOpacity(0.4),
+                                            thumbColor: AppColors.white,
+                                            activeColor: Colors.green,
                                           ),
                                         )
                                             : Container(),
@@ -1704,8 +1716,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                 subtitleText,
                                 style: Theme.of(context).textTheme.caption,
                               ),
-                          ) :
-                              isSelectedDays[0] == false ? Padding(
+                          ) : Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1723,15 +1734,14 @@ class _AddEditBonoState extends State<AddEditBono>
                                     child: CupertinoSwitch(
                                       value: noSessions,
                                       onChanged: widget.edit == true && hasPurchases ? null : setSeeSessions,
-                                      trackColor: Theme.of(context).backgroundColor,
-                                      thumbColor: noSessions ? Theme.of(context).primaryColorDark : Theme.of(context).scaffoldBackgroundColor,
-                                      activeColor: Theme.of(context).primaryColor
+                                      thumbColor: AppColors.white,
+                                      activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
+                                      trackColor: editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
                                     )
                                 )
                               ],
                             ),
                           )
-                            : Container()
                           : Container(),
                         ],
                       ),
@@ -1766,7 +1776,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                         : variable == 'ses'
                                             ? bono.sessions.toString()
                                             : variable == 'price'
-                                                ? bono.price.toString()
+                                                ? bono.price!.toStringAsFixed(2)
                                                 : null
                                 : null,
                             maxLines: variable == 'desc' ? 5 : null,
@@ -1861,6 +1871,7 @@ class _AddEditBonoState extends State<AddEditBono>
                               Flexible(
                                 child: TextFormField(
                                   keyboardType: keyboard,
+                                  focusNode: focusNodeSessionsController,
                                   inputFormatters:
                                   variable == 'ses' || variable == 'price'
                                       ? [
@@ -1876,7 +1887,7 @@ class _AddEditBonoState extends State<AddEditBono>
                                       : variable == 'ses'
                                       ? bono.sessions.toString()
                                       : variable == 'price'
-                                      ? bono.price.toString()
+                                      ? bono.price!.toStringAsFixed(2)
                                       : null
                                       : null,
                                   maxLines: variable == 'desc' ? 5 : null,
@@ -2014,9 +2025,9 @@ class _AddEditBonoState extends State<AddEditBono>
                                   child: CupertinoSwitch(
                                     value: cancelTimeSessions,
                                     onChanged: (widget.edit == true && hasPurchases) || noSessions == true ? null : setCancelHours,
-                                    trackColor: !noSessions ? Theme.of(context).backgroundColor : Theme.of(context).disabledColor,
-                                    thumbColor: cancelTimeSessions ? Theme.of(context).primaryColorDark : Theme.of(context).scaffoldBackgroundColor,
-                                    activeColor: Theme.of(context).primaryColor
+                                    thumbColor: AppColors.white,
+                                    activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
+                                    trackColor: !noSessions && editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
                                   )
                               )
                             ],
@@ -2042,9 +2053,9 @@ class _AddEditBonoState extends State<AddEditBono>
                               child: CupertinoSwitch(
                                 value: weekSessions,
                                 onChanged: widget.edit == true && hasPurchases ? null : setWeekSessions,
-                                trackColor: Theme.of(context).backgroundColor,
-                                thumbColor: weekSessions ? Theme.of(context).primaryColorDark : Theme.of(context).scaffoldBackgroundColor,
-                                activeColor: Theme.of(context).primaryColor,
+                                thumbColor: AppColors.white,
+                                activeColor: editable ? Colors.green : Colors.green.withOpacity(0.4),
+                                trackColor: editable ? Colors.green.withOpacity(0.4) : Theme.of(context).disabledColor,
                               )
                           )
                         ],
@@ -2064,10 +2075,10 @@ class _AddEditBonoState extends State<AddEditBono>
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-            daysSelectoWidget(0, 'No expira', true),
-            daysSelectoWidget(1, '30', false),
-            daysSelectoWidget(2, '60', false),
-            daysSelectoWidget(3, '90', false),
+            daysSelectoWidget(0, '0', editable, noSessions),
+            daysSelectoWidget(1, '30', editable, false),
+            daysSelectoWidget(2, '60', editable, false),
+            daysSelectoWidget(3, '90', editable, false),
           ],
         )
         : variable == 'canFree' && cancelTimeSessions ?
