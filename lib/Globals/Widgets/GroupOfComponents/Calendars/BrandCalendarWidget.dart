@@ -1616,7 +1616,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         height: MediaQuery.of(context).size.width*0.15,
         width: MediaQuery.of(context).size.width*0.15,
         child: SpeedDial(
-          heroTag: null,
+          heroTag: "46",
           animatedIcon: AnimatedIcons.add_event,
           animationDuration: const Duration(milliseconds: 300),
           foregroundColor: AppColors.white,

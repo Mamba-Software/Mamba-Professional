@@ -130,7 +130,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
-                  heroTag: null,
+                  heroTag: "43",
                   onPressed: () {
                     Navigator.pop(context, pickedDate);
                   },

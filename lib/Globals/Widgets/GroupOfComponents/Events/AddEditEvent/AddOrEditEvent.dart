@@ -1681,7 +1681,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               child: SizedBox(
                 height: 50,
                 child: FloatingActionButton.extended(
-                  heroTag: null,
+                  heroTag: "47",
                   onPressed: () {
                     if (_selectedIndex == 1) {
                       if (widget.eventId != null) {
@@ -1729,7 +1729,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               child: SizedBox(
                 height: 50,
                 child: FloatingActionButton.extended(
-                  heroTag: null,
+                  heroTag: "48",
                   onPressed: () async {
                     if (_selectedIndex == 0) {
                       if (formKeyInfo.currentState!.validate()) {

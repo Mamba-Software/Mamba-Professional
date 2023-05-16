@@ -91,7 +91,7 @@ class _SelectMembersDialogState extends State<SelectMembersDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
-                  heroTag: null,
+                  heroTag: "44",
                   onPressed: () {
                     Navigator.pop(context, pickedMembers);
                   },

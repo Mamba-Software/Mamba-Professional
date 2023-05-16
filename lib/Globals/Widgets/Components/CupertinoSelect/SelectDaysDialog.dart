@@ -95,7 +95,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
-                  heroTag: null,
+                  heroTag: "42",
                   onPressed: () {
                     Navigator.pop(context, pickedDays);
                   },

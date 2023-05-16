@@ -92,7 +92,7 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 FloatingActionButton.extended(
-                  heroTag: null,
+                  heroTag: "41",
                   onPressed: () {
                     Navigator.pop(context, pickedDuration);
                   },
