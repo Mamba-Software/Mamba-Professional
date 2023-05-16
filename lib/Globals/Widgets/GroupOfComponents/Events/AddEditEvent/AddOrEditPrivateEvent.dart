@@ -1163,7 +1163,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     ),
                                                     SizedBox(width: MediaQuery.of(context).size.width * 0.04),
                                                     SizedBox(
-                                                      height: MediaQuery.of(context).size.height * 0.04,
+                                                      height: MediaQuery.of(context).size.height * 0.034,
                                                       width: MediaQuery.of(context).size.width * 0.1,
                                                       child: MaterialButton(
                                                         elevation: 4,
@@ -1336,33 +1336,31 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           Padding(
                                               padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
                                               child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Text(
                                                     AppLocalizations.of(context)!.recurrentEvent,
                                                     style: Theme.of(context).textTheme.headline1,
                                                   ),
-                                                  const SizedBox(width: 10,),
                                                   SizedBox(
-                                                    height: MediaQuery.of(context).size.height * 0.03,
+                                                    height: MediaQuery.of(context).size.height * 0.035,
                                                     width: MediaQuery.of(context).size.width * 0.1,
-                                                    child: MaterialButton(
-                                                      elevation: 4,
-                                                      color: isRecurrent ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
-                                                      textColor: isRecurrent ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
-                                                      child: isRecurrent ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
-                                                      padding: EdgeInsets.zero,
-                                                      shape: const CircleBorder(),
-                                                      onPressed: () {
+                                                    child: CupertinoSwitch(
+                                                      value: isRecurrent,
+                                                      onChanged: (bool newVal) {
                                                         setState(() {
                                                           if (isRecurrent) {
                                                             values = [false, false, false, false, false, false, false];
                                                           } else {
                                                             values[startDate.weekday-1] = true;
                                                           }
-                                                          isRecurrent = !isRecurrent;
+                                                          isRecurrent = newVal;
                                                         });
                                                       },
+                                                      trackColor: Colors.green.withOpacity(0.4),
+                                                      thumbColor: AppColors.white,
+                                                      activeColor: Colors.green,
                                                     ),
                                                   ),
                                                 ],
@@ -1514,23 +1512,21 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           padding: const EdgeInsets.only(top: 15,),
                                           child: Row(
                                             mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
                                                 AppLocalizations.of(context)!.recurrentEvent,
                                                 style: Theme.of(context).textTheme.headline1,
                                               ),
-                                              const SizedBox(width: 10,),
                                               SizedBox(
-                                                height: MediaQuery.of(context).size.height * 0.03,
+                                                height: MediaQuery.of(context).size.height * 0.035,
                                                 width: MediaQuery.of(context).size.width * 0.1,
-                                                child: MaterialButton(
-                                                  elevation: 4,
-                                                  color: Theme.of(context).primaryColor,
-                                                  textColor: Theme.of(context).primaryColor,
-                                                  child: Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05),
-                                                  padding: EdgeInsets.zero,
-                                                  shape: const CircleBorder(),
-                                                  onPressed: () {},
+                                                child: CupertinoSwitch(
+                                                  value: true,
+                                                  onChanged: null,
+                                                  trackColor: Colors.green.withOpacity(0.4),
+                                                  thumbColor: AppColors.white,
+                                                  activeColor: Colors.green,
                                                 ),
                                               ),
                                             ],
@@ -1538,24 +1534,22 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                       ) : Padding(
                                           padding: const EdgeInsets.only(top: 15,),
                                           child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               Text(
                                                 AppLocalizations.of(context)!.recurrentEvent,
                                                 style: Theme.of(context).textTheme.headline1,
                                               ),
-                                              const SizedBox(width: 10,),
                                               SizedBox(
-                                                height: MediaQuery.of(context).size.height * 0.03,
+                                                height: MediaQuery.of(context).size.height * 0.035,
                                                 width: MediaQuery.of(context).size.width * 0.1,
-                                                child: MaterialButton(
-                                                    elevation: 4,
-                                                    color: Theme.of(context).backgroundColor,
-                                                    textColor: Theme.of(context).backgroundColor,
-                                                    child: SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
-                                                    padding: EdgeInsets.zero,
-                                                    shape: const CircleBorder(),
-                                                    onPressed: () {}
+                                                child: CupertinoSwitch(
+                                                  value: false,
+                                                  onChanged: null,
+                                                  trackColor: Colors.green.withOpacity(0.4),
+                                                  thumbColor: AppColors.white,
+                                                  activeColor: Colors.green,
                                                 ),
                                               ),
                                             ],
