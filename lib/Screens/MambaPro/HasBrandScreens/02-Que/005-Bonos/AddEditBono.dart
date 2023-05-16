@@ -2091,7 +2091,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   controller: controller,
                   maxLines: null,
                   minLines: 1,
-                  validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 48 ? errorTextSecond : null,
+                  validator: (val) => val!.isEmpty ? errorText : int.parse(val) > 72 ? errorTextSecond : null,
                   onChanged: (val) {
                     setState(() {
                       if (variable == 'maxw') {
