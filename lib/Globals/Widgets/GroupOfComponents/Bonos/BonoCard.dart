@@ -24,6 +24,7 @@ class BonoCard extends StatefulWidget {
   bool? isExpanded;
   bool? onlyView;
   bool? clientView;
+  bool? hideActive;
 
   BonoCard({
     Key? key,
@@ -35,6 +36,7 @@ class BonoCard extends StatefulWidget {
     required this.canExpand,
     this.isExpanded,
     this.clientView,
+    this.hideActive,
     required this.onlyView,
   }) : super(key: key);
 
@@ -357,6 +359,7 @@ class BonoCardState extends State<BonoCard> {
                                             SizedBox(
                                               width: widget.width * 0.05,
                                             ),
+                                            widget.hideActive == true ? Container() :
                                             bono.isActive! == false ? SizedBox(
                                               height: widget.height * 0.15,
                                               width: widget.width * 0.2,

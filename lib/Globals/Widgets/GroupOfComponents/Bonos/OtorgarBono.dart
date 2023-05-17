@@ -454,7 +454,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                 bono: bono,
                                 brand: widget.brand,
                                 canExpand: false,
-                                onlyView: true
+                                onlyView: true,
+                                hideActive: true,
                             ),
                           );
                         }

@@ -1134,6 +1134,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           brand: currentBrand,
                                                           canExpand: false,
                                                           onlyView: true,
+                                                          hideActive: true,
                                                         ),
                                                       ]
                                                     ),

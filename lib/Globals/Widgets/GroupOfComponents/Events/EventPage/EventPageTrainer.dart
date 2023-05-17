@@ -1186,6 +1186,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                                       brand: currentBrand,
                                                       canExpand: false,
                                                       onlyView: true,
+                                                      hideActive: true,
                                                     ),
                                                   ]
                                               ),

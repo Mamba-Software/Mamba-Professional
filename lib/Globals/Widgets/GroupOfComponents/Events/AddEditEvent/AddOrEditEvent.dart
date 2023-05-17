@@ -1045,6 +1045,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                               brand: currentBrand,
                                                               canExpand: false,
                                                               onlyView: true,
+                                                              hideActive: true,
                                                             ),
                                                           ]
                                                       ),
