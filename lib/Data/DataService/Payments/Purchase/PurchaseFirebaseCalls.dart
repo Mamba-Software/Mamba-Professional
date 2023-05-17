@@ -54,6 +54,11 @@ class PurchaseFirebaseCalls {
         .doc(purchaseId)
         .get();
     purchase = Purchase.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+    // Get Brand From Purchase
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 = await _firestore.collection(brands).doc(purchase.brandId).get();
+    Brand brand = Brand.fromObjectOnlyCoverData(_documentSnapshot2.id, _documentSnapshot2);
+    // Set Purchased Brand Bono
+    purchase.setPurchasedBrandBono = brand;
     // Get Purchase Events
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore

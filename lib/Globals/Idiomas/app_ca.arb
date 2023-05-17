@@ -548,6 +548,8 @@
   "noData": "Sense dades",
   "paymentMethod": "Mètode de pagament",
   "paymentMethodConfirm": "Confirma el mètode de pagament si us plau.",
+  "paymentMethodOriginal": "El mètode de pagament indicat inicialment és: ",
+  "paymentMethodEdit": "Pots editar el mètode de pagament en qualsevol moment.",
   "cashPaymentMethod": "Efectiu",
   "transferPaymentMethod": "Transferència",
   "giftPaymentMethod": "Regal",

@@ -2438,6 +2438,14 @@
   "@paymentMethod": {
     "description": "Donde message"
   },
+  "paymentMethodOriginal": "El método de pago indicado inicilamente es: ",
+  "@paymentMethodOriginal": {
+    "description": "Donde message"
+  },
+  "paymentMethodEdit": "Puedes editar el método de pago en cualquier momento.",
+  "@paymentMethodEdit": {
+    "description": "Donde message"
+  },
   "paymentMethodConfirm": "Confirma el método de pago por favor.",
   "@paymentMethodConfirm": {
     "description": "Donde message"

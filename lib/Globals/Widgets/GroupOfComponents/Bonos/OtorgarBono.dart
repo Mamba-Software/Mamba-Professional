@@ -24,6 +24,8 @@ import 'package:mamba_castelldefels/Globals/Utils/MultipleBrands/MultipleBrandsU
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import '../../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
 import '../../Components/TopSnackBar/TopSnackBar.dart';
@@ -80,6 +82,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   bool isFirstBuild = true;
 
   // Payment Method
+  Purchase purchase = Purchase();
   int? paymentMethod;
   String originalPaymentString = "";
 
@@ -116,16 +119,19 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   void initState() {
     super.initState();
     user = widget.user;
+    // EDIT BONO OR PURCHASE
     if (widget.edit != null && widget.edit == true) {
       mixpanel!.track('edit_bono_view');
       editBono = true;
     }
+    // ACCEPT PURCHASE
     if (widget.bonoRequest != null) {
       mixpanel!.track('bono_confirmation_view');
       isBonoRequest = true;
       paymentMethod = widget.bonoRequest?.paymentMethod;
       startDate = DateTime.now();
     } else {
+      // GIFT BONO
       mixpanel!.track('give_bono_view');
       paymentMethod = 2;
     }
@@ -154,12 +160,15 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   }
 
   Future<void> getPurchase() async {
-    Purchase? purchase = await _purchaseDataService.getPurchaseInfo(bonoSelected.purchaseId!);
+    purchase = await _purchaseDataService.getPurchaseInfo(bonoSelected.purchaseId!);
     startDate = purchase.purchasedAt!.toDate();
+    paymentMethod = purchase.paymentMethod;
+    isFirstBuild = true;
     setConditionsBono(bonoSelected);
   }
 
   Future<void> getBonos() async {
+    // Otorgar Bono
     if (!editBono && !isBonoRequest) {
       bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
       bonos.removeWhere((element) => element.isActive == false);
@@ -180,14 +189,17 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         setConditionsBono(bonoSelected);
       }
     } else {
+      // Edit Bono && Bono Request
       bonos.add(widget.bono!);
       bonoSelected.setBasicData = bonos[0];
       bonoSelected.setConditionsData = bonos[0].condition!;
       isBonoSelected = true;
+      // Accept Bono Request
       if (isBonoRequest) {
         seeConditions = false;
         setConditionsBono(bonoSelected);
       } else {
+        // Edit Bono Request
         seeConditions = true;
         await getPurchase();
       }
@@ -235,14 +247,11 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   Widget build(BuildContext context) {
     if (isFirstBuild) {
       originalPaymentString = AppLocalizations.of(context)!.giftPaymentMethod;
-      if(paymentMethod == 0)
-        {
-          originalPaymentString = AppLocalizations.of(context)!.cashPaymentMethod;
-        }
-      else if(paymentMethod == 1)
-        {
-          originalPaymentString = AppLocalizations.of(context)!.transferPaymentMethod;
-        }
+      if (paymentMethod == 0) {
+        originalPaymentString = AppLocalizations.of(context)!.cashPaymentMethod;
+      } else if(paymentMethod == 1) {
+        originalPaymentString = AppLocalizations.of(context)!.transferPaymentMethod;
+      }
       isFirstBuild = false;
     }
     return Scaffold(
@@ -387,8 +396,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 ),
               ),
             ),
-            SizedBox(
-                height: MediaQuery.of(context).size.height * 0.04),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
             /// BONOS
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
@@ -416,10 +424,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     height: MediaQuery.of(context).size.height*0.01
                 ),
               ],
-            ) : SizedBox(
-                height: MediaQuery.of(context).size.height*0.01
-            ),
-            Container(
+            ) : SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            !editBono || purchase.id == null ? Container(
               width: MediaQuery.of(context).size.width,
               constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height*0.22,
@@ -463,11 +469,38 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                   ),
                 ],
               ),
+            ) :
+            Container(
+              width: MediaQuery.of(context).size.width,
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height*0.22,
+                minHeight: MediaQuery.of(context).size.height*0.22,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
+                    child: ClientBonoCard(
+                      height: MediaQuery.of(context).size.height*0.22,
+                      width: MediaQuery.of(context).size.width*0.84,
+                      bono: bonoSelected,
+                      brand: purchase.brand!,
+                      purchase: purchase,
+                      isExpanded: false,
+                      canExpand: false,
+                      onlyView: true,
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             /// CONDITIONS
-            Padding(
-              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.03),
+            !editBono ? Padding(
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -489,6 +522,24 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         seeConditions = !seeConditions;
                       });
                     },
+                  ),
+                ],
+              ),
+            ) : Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.03,
+                  left: MediaQuery.of(context).size.width * 0.05,
+                  right: MediaQuery.of(context).size.width * 0.05,
+                  bottom: MediaQuery.of(context).size.height * 0.02
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.conditions,
+                    //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
+                    style: Theme.of(context).textTheme.headline1,
                   ),
                 ],
               ),
@@ -607,7 +658,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
             ) : Container(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.04),
             /// PAYMENT METHOD
-            !editBono ? SizedBox(
+            SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
               width: MediaQuery.of(context).size.width * 0.9,
               child: Column(
@@ -622,49 +673,58 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                   ),
                 ],
               ),
-            ) : Container(),
-            !editBono ?  Padding(
+            ),
+            !editBono ? Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
               child: RichText(
                 text: TextSpan(
                   style: Theme.of(context).textTheme.bodyText2,
                   children: [
                     TextSpan(
-                        text: widget.user.firstName! +
-                            AppLocalizations.of(context)!
-                                .paymentIndication,
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption
-                            ?.copyWith(height: 1.5)),
+                        text: widget.user.firstName! + AppLocalizations.of(context)!.paymentIndication,
+                        style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)),
                     TextSpan(
                       text: originalPaymentString,
-                      style: Theme.of(context)
-                          .textTheme
-                          .caption
-                          ?.copyWith(
-                              fontWeight: FontWeight.bold, height: 1.5),
+                      style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.bold, height: 1.5),
                     ),
                     TextSpan(
-                        text: ". " +
-                            AppLocalizations.of(context)!
-                                .paymentMethodConfirm,
-                        style: Theme.of(context)
-                            .textTheme
-                            .caption
-                            ?.copyWith(height: 1.5)),
+                        text: ". " + AppLocalizations.of(context)!.paymentMethodConfirm,
+                        style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)
+                    ),
                   ],
                 ),
               ),
-            ) : Container(),
-            !editBono ?  SizedBox(height: MediaQuery.of(context).size.height * 0.02) : Container(),
-            !editBono ?  Padding(
+            ) :
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+              child: RichText(
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.bodyText2,
+                  children: [
+                    TextSpan(
+                        text: AppLocalizations.of(context)!.paymentMethodOriginal,
+                        style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)),
+                    TextSpan(
+                      text: originalPaymentString,
+                      style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.bold, height: 1.5),
+                    ),
+                    TextSpan(
+                        text: ". " + AppLocalizations.of(context)!.paymentMethodEdit,
+                        style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
                     onTap: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       setState(() {
                         paymentMethod = 0;
                       });
@@ -731,6 +791,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       setState(() {
                         paymentMethod = 1;
                       });
@@ -798,6 +859,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                   ),
                   GestureDetector(
                     onTap: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       setState(() {
                         paymentMethod = 2;
                       });
@@ -864,14 +926,15 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                   ),
                 ],
               ),
-            ) : Container(),
+            ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             /// DELETE BONO REQUEST
             isBonoRequest ? Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.03),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
               child: TextButton(
                   child: Text(AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(), style: Theme.of(context).textTheme.bodyText2?.copyWith(decoration: TextDecoration.underline), ),
                   onPressed: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
                     setState(() {
                       isLoading = true;
                     });
@@ -880,7 +943,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     Navigator.of(context).pop();
                   }
               ),
-            ) : SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            ) : SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             /// CONFIRMATION BUTTON
             isBonoSelected ? GestureDetector(
               onTap: isLoading ? null : () async {
@@ -1513,6 +1576,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       focusNodeWeeklyController.requestFocus();
     } else {
       weeklyController.text = '';
+      focusNodeWeeklyController.unfocus();
       bonoSelected.condition?.weeklySessions = 0;
     }
     setState(() {});
@@ -1526,6 +1590,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     } else {
       freeCancellController.text = '';
       bonoSelected.condition?.cancelTime = 0;
+      focusNodeFreeCancelController.unfocus();
     }
     setState(() {});
   }
