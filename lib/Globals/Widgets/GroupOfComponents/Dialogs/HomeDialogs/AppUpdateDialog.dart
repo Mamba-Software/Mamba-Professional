@@ -70,7 +70,7 @@ class AppUpdateDialog extends StatelessWidget {
 
                   SizedBox(height: MediaQuery.of(context).size.height*0.01,),
                   Center(
-                    child: Container(
+                    child: SizedBox(
                         height: MediaQuery.of(context).size.height*0.15,
                         child: Image.asset(Constants.appUpdateImage)
                     ),
@@ -97,8 +97,10 @@ class AppUpdateDialog extends StatelessWidget {
                         androidAppId: "com.mamba.mambaprofessionalapp",
                         iOSAppId: "1642701679",
                       );
-                      await Future.delayed(const Duration(seconds: 3));
-                      Navigator.pop(context, true);
+                      if (isMandatory == false) {
+                        await Future.delayed(const Duration(seconds: 3));
+                        Navigator.pop(context, true);
+                      }
                     },
                   ),
                 ],
