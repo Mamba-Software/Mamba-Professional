@@ -3273,5 +3273,44 @@
   "autoRenovation": "Renovación automática",
   "@autoRenovation": {
     "description": "autoRenovation message"
+  },
+  "bonoExpirationWeekTitleNotification": "\uD83D\uDCC5 \uD83D\uDD52 ¡Tu bono caduca {bono} en una semana! \uD83D\uDD52 \uD83D\uDCC5 ",
+  "@bonoExpirationWeekTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "bonoExpirationWeekBodyNotification": "Este es un recordatorio amistoso de que tu bono caducará en una semana. ¡Asegúrate de reservar tus sesiones antes de que sea demasiado tarde!",
+  "@bonoExpirationWeekBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "bonoExpirationDaysTitleNotification": "⏰ \uD83D\uDCC6 ¡Tu bono {bono} caduca en 3 días! \uD83D\uDCC6 ⏰ ",
+  "@bonoExpirationDaysTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "bonoExpirationDaysBodyNotification": "Este es un recordatorio amistoso de que tu bono caducará en tan solo 3 días. ¡No te quedes sin disfrutar de tus sesiones restantes!",
+  "@bonoExpirationDaysBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "bonoExpirationTomorrowTitleNotification": "\uD83D\uDEA8 ❗️ ¡Tu bono {bono} caduca mañana! ❗️ \uD83D\uDEA8 ",
+  "@bonoExpirationTomorrowTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "bonoExpirationTomorrowBodyNotification": "Este es un recordatorio urgente de que tu bono caduca mañana. ¡No te pierdas la oportunidad de utilizar tus sesiones restantes! Reserva ahora.",
+  "@bonoExpirationTomorrowBodyNotification": {
+    "description": "beforeEventBodyNotification message"
   }
 }

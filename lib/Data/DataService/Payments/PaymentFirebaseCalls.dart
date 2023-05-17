@@ -17,29 +17,28 @@ class PaymentFirebaseCalls {
 
   //Adders
 
-  Future<void> addPurchaseToPayments(Purchase purchase, Bono bonoSelected) async
-  {
-      var uid = Uuid().v4();
-      await _firestore
-          .collection(payments)
-          .doc("Purchases")
-          .collection("Purchases")
-          .doc(uid)
-          .set({
-        "purchasedAt": purchase.purchasedAt!,
-        "userId": purchase.userId,
-        "brandId": purchase.brandId!,
-        "bonoId": purchase.bonoId,
-        "price": purchase.price, //bonoSelected.price
-        "sessions": bonoSelected.sessions,
-        "weeklySessions": bonoSelected.condition?.weeklySessions,
-        "cancelTime": bonoSelected.condition?.cancelTime,
-        "expirationTime": bonoSelected.condition?.expirationTime,
-        "paymentMethod": purchase.paymentMethod,
-      }).catchError((err) {
-        print(err);
-      });
-
+  Future<String> addPurchaseToPayments(Purchase purchase, Bono bonoSelected) async {
+    var uid = const Uuid().v4();
+    await _firestore
+    .collection(payments)
+    .doc("Purchases")
+    .collection("Purchases")
+    .doc(uid)
+    .set({
+      "purchasedAt": purchase.purchasedAt!,
+      "userId": purchase.userId,
+      "brandId": purchase.brandId!,
+      "bonoId": purchase.bonoId,
+      "price": purchase.price, //bonoSelected.price
+      "sessions": bonoSelected.sessions,
+      "weeklySessions": bonoSelected.condition?.weeklySessions,
+      "cancelTime": bonoSelected.condition?.cancelTime,
+      "expirationTime": bonoSelected.condition?.expirationTime,
+      "paymentMethod": purchase.paymentMethod,
+    }).catchError((err) {
+      print(err);
+    });
+    return uid;
   }
 
 }

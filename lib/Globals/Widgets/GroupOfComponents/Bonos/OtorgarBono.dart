@@ -17,19 +17,16 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
-import 'package:mamba_castelldefels/Globals/Utils/MultipleBrands/MultipleBrandsUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
-import '../../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
 import '../../Components/TopSnackBar/TopSnackBar.dart';
 
 
@@ -55,11 +52,13 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   final _userDataService = UserDataService();
   final _purchaseDataService = PurchaseDataService();
 
+  int originalExpirationTime = 0;
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
   DateTime dateJoined = DateTime.now();
 
   final NotificationService _notificationService = NotificationService();
+  final LocalNotificationService _localNotificationService = LocalNotificationService();
 
   final formKeyInfo = GlobalKey<FormState>();
 
@@ -100,7 +99,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   bool isBonoSelected = false;
 
   int indexBono = 0;
-  var _topSnackBar = TopSnackBar();
 
   bool editBono = false;
   bool seeConditions = false;
@@ -164,6 +162,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     purchase = await _purchaseDataService.getPurchaseInfo(bonoSelected.purchaseId!);
     startDate = purchase.purchasedAt!.toDate();
     paymentMethod = purchase.paymentMethod;
+    originalExpirationTime = bonoSelected.condition!.expirationTime!;
     isFirstBuild = true;
     setConditionsBono(bonoSelected);
   }
@@ -173,6 +172,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     if (!editBono && !isBonoRequest) {
       bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
       userBonos = await _userDataService.getUserBonos(user.id!);
+      // Remove the ones that the user already has
       Bono bonoDelete;
       for (int i = 0; i < userBonos.length; ++i) {
         bonoDelete = bonos.firstWhere((element) => element.id == userBonos[i].id);
@@ -180,6 +180,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
           bonos.remove(bonoDelete);
         }
       }
+      // Remove the unactive bonos.
       bonos.removeWhere((element) => element.isActive == false);
       _numPages = bonos.length;
       if (bonos.isNotEmpty) {
@@ -962,10 +963,20 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     bonoSelected.sessions = 10000;
                   }
                   if (editBono) {
+                    /// EDIT BONO REQUEST
                     mixpanel!.track('edit_bono_confirmed');
-                    _userDataService.updateUserBono(user.id!, currentBrand.id!, bonoSelected);
+                    await _userDataService.updateUserBono(user.id!, currentBrand.id!, bonoSelected);
+                    /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
+                    if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
+                      // Delete Local Notifications if Expiration Time has change in Update
+                      _localNotificationService.deleteRemoteBonoExpirationLocalNotification(user.id!, currentBrand.id!, bonoSelected.purchaseId!);
+                      // Local Notifications Service
+                      _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
+                    }
+                    mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
                     await Future.delayed(const Duration(seconds: 1));
                   } else if (isBonoRequest) {
+                    /// CONFIRM BONO REQUEST
                     // Build Purchase Object
                     Purchase purchase = Purchase();
                     purchase.purchasedAt = Timestamp.now();
@@ -983,11 +994,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     // Notifications Service
                     _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
                     // Build Purchase Object
-                    await _paymentDataService.addPurchaseToPayments(purchase, bonoSelected);
+                    String purchaseId = await _paymentDataService.addPurchaseToPayments(purchase, bonoSelected);
                     await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
                     await _brandDataService.updateBonoCompras(widget.brand.id!, purchase.bonoId!);
+                    // Local Notifications Service
+                    _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
                     mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
                   } else {
+                    /// OTORGAR BONO
                     // Build Purchase Object
                     Purchase purchase = Purchase();
                     purchase.purchasedAt = Timestamp.now();
@@ -998,9 +1012,12 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     purchase.paymentMethod = paymentMethod;
                     // Build Purchase Object
                     _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
-                    await _paymentDataService.addPurchaseToPayments(purchase, bonoSelected);
+                    // Save Purchase Object
+                    String purchaseId = await _paymentDataService.addPurchaseToPayments(purchase, bonoSelected);
                     await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
-                    await Future.delayed(const Duration(seconds: 3));
+                    await Future.delayed(const Duration(seconds: 2));
+                    // Local Notifications Service
+                    _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
                     mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
                   }
                   Navigator.of(context).pop();

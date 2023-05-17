@@ -737,5 +737,11 @@
   "addTrainerDescription": "Afegir staff al a teva marca",
   "perMonth": "/ mes",
   "perYear": "/ any (-25%)",
-  "autoRenovation": "Renovació automàtica"
+  "autoRenovation": "Renovació automàtica",
+  "bonoExpirationWeekTitleNotification": "\uD83D\uDCC5 \uD83D\uDD52 El teu val {bono} caduca d'aquí una setmana! \uD83D\uDD52 \uD83D\uDCC5",
+  "bonoExpirationWeekBodyNotification": "Aquest és un recordatori amistós que el teu val caduca d'aquí una setmana. Assegura't de reservar les teves sessions abans que sigui massa tard!",
+  "bonoExpirationDaysTitleNotification": "⏰ \uD83D\uDCC6 El teu val {bono} caduca en 3 dies! \uD83D\uDCC6 ⏰",
+  "bonoExpirationDaysBodyNotification": "Aquest és un recordatori amistós que el teu val caduca en tan sols 3 dies. No et quedis sense gaudir de les teves sessions restants!",
+  "bonoExpirationTomorrowTitleNotification": "\uD83D\uDEA8 ❗️ El teu Bono {bono} caduca demà! ❗️ \uD83D\uDEA8",
+  "bonoExpirationTomorrowBodyNotification": "Aquest és un recordatori urgent que el teu val caduca demà. No et perdis l'oportunitat d'utilitzar les teves sessions restants! Reserva ara!"
 }

@@ -750,6 +750,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
               Text(
                 AppLocalizations.of(context)!.myProgress,
                 style: Theme.of(context).textTheme.headline3,
@@ -900,109 +901,52 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                AppLocalizations.of(context)!.myProgress,
-                style: Theme.of(context).textTheme.headline3,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.02),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height*0.05,
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            isYearly = false;
-                          });
-                        },
-                        style: ButtonStyle(
-                            elevation: MaterialStateProperty.all(4),
-                            backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                            animationDuration: const Duration(milliseconds: 100),
-                            overlayColor: MaterialStateProperty.all(Theme.of(context).backgroundColor.withOpacity(0.2)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                )
-                            )
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 10.0,
-                              width: 10.0,
-                              decoration: BoxDecoration(
-                                  color: isYearly ? Theme.of(context).primaryColorDark.withOpacity(0.2) : Theme.of(context).primaryColorDark,
-                                  shape: BoxShape.circle
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              AppLocalizations.of(context)!.lastNMonths(6.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            isYearly = true;
-                          });
-                        },
-                        style: ButtonStyle(
-                            elevation: MaterialStateProperty.all(4),
-                            backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                            animationDuration: const Duration(milliseconds: 100),
-                            overlayColor: MaterialStateProperty.all(Theme.of(context).backgroundColor.withOpacity(0.2)),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                )
-                            )
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 10.0,
-                              width: 10.0,
-                              decoration: BoxDecoration(
-                                  color: isYearly == false ? Theme.of(context).primaryColorDark.withOpacity(0.2) : Theme.of(context).primaryColorDark,
-                                  shape: BoxShape.circle
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              AppLocalizations.of(context)!.lastYear,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  )
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                      AppLocalizations.of(context)!.recentEvents,
+                      style: Theme.of(context).textTheme.headline3,
+                      textAlign: TextAlign.center
+                  ),
+                ],
               ),
               SizedBox(height: MediaQuery.of(context).size.height*0.03),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height*0.25,
-                    width: MediaQuery.of(context).size.width*0.85,
+                    height: MediaQuery.of(context).size.height*0.15,
+                    width: MediaQuery.of(context).size.width*0.9,
                     decoration: BoxDecoration(
                         color: AppColors.grey,
-                        borderRadius: BorderRadius.circular(10)
+                        borderRadius: BorderRadius.circular(15)
                     ),
                   ),
                 ],
               ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.02),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.15,
+                    width: MediaQuery.of(context).size.width*0.9,
+                    decoration: BoxDecoration(
+                        color: AppColors.grey,
+                        borderRadius: BorderRadius.circular(15)
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height*0.01),
             ],
           ),
         ),
       );
     }
+
   }
 
   // Navigate to Event History Screen

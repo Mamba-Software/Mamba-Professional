@@ -439,6 +439,24 @@ class UserFirebaseCalls {
     return notis;
   }
 
+  // Get First Notifications
+  Future<List<ReceivedNotification>> findBonoLocalNotification(String userId, String bonoId, String purchaseId) async {
+    List<ReceivedNotification> notis = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Local Notifications")
+        .where("bonoId", isEqualTo: bonoId)
+        .where("purchaseId", isEqualTo: purchaseId)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      notis.add(
+          ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
+      );
+    }
+    return notis;
+  }
+
   Future<List<Bono>> getUserBonos(String? userId) async {
     List<Bono> userBonos = [];
     QuerySnapshot querySnapshot = await _firestore.collection(users)
