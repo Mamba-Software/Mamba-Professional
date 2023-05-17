@@ -141,8 +141,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   Future<void> getBrandDetails() async {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
     var dateJoinedSplit = brand.dateJoined!.split("-");
-    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]),
-        int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
+    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]), int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
   }
 
   Future<void> getCollections() async {
@@ -896,7 +895,8 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           heightFactor: 0.935,
           child: SelectCalendarDate(
             dateRange: [startDate, endDate],
-            brandDateJoined: dateJoinedBrand,
+            dateJoined: dateJoinedBrand,
+            isFuture: false,
           ),
         );
       },

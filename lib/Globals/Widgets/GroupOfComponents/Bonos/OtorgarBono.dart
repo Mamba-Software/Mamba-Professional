@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +26,7 @@ import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import '../../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/CalendarPopUpView.dart';
@@ -103,7 +105,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   bool editBono = false;
   bool seeConditions = false;
 
-  List<bool> isSelectedDays = [false, false, false, false];
+  List<bool> isSelectedDays = [false, false, false, false, false];
 
   bool noSessions = false;
   bool weekSessions = false;
@@ -129,7 +131,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       mixpanel!.track('bono_confirmation_view');
       isBonoRequest = true;
       paymentMethod = widget.bonoRequest?.paymentMethod;
-      startDate = DateTime.now();
     } else {
       // GIFT BONO
       mixpanel!.track('give_bono_view');
@@ -171,7 +172,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     // Otorgar Bono
     if (!editBono && !isBonoRequest) {
       bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
-      bonos.removeWhere((element) => element.isActive == false);
       userBonos = await _userDataService.getUserBonos(user.id!);
       Bono bonoDelete;
       for (int i = 0; i < userBonos.length; ++i) {
@@ -180,6 +180,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
           bonos.remove(bonoDelete);
         }
       }
+      bonos.removeWhere((element) => element.isActive == false);
       _numPages = bonos.length;
       if (bonos.isNotEmpty) {
         bonoSelected.setBasicData = bonos[0];
@@ -212,13 +213,11 @@ class _OtorgarBonoState extends State<OtorgarBono> {
 
   void setConditionsBono(Bono _bono) {
     int? days = _bono.condition?.expirationTime!;
-    print(days);
     priceController.text = _bono.price.toString();
     if(_bono.sessions! > 5000) {
       sessionsController.text = '';
       noSessions = true;
-    }
-    else {
+    } else {
       sessionsController.text = _bono.sessions.toString();
       noSessions = false;
     }
@@ -230,11 +229,12 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     isSelectedDays[1] = false;
     isSelectedDays[2] = false;
     isSelectedDays[3] = false;
+    isSelectedDays[4] = false;
     if (_bono.condition?.expirationTime == 0) {
       isSelectedDays[0] = true;
-    }  else {
-      isSelectedDays[1] = true;
-       endDate = startDate.add(Duration(days: days!));
+    } else {
+      isSelectedDays[4] = true;
+      endDate = startDate.add(Duration(days: days!));
     }
   }
 
@@ -441,7 +441,6 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         controller: _pageController,
                         onPageChanged: (int page) {
                           setState(()  {
-                            //bonoSelected = bonos[page];
                             bonoSelected.setBasicData = bonos[page];
                             bonoSelected.setConditionsData = bonos[page].condition!;
                             isBonoSelected = true;
@@ -516,7 +515,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         Icon(seeConditions ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: MediaQuery.of(context).size.width*0.08, color: Theme.of(context).primaryColor),
                       ],
                     ),
-                    style: const ButtonStyle(),
+                    style: TextButton.styleFrom(
+                      primary: Theme.of(context).primaryColor,
+                    ),
                     onPressed: editBono? null : () async {
                       setState(() {
                         seeConditions = !seeConditions;
@@ -550,6 +551,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 key: formKeyInfo,
                 child: Column(
                   children: [
+                    /// SESSIONS
                     Container(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                       decoration: BoxDecoration(
@@ -558,7 +560,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       ),
                       child: optionTextWrite(
                           TextInputType.number,
-                          AppLocalizations.of(context)!.sesionsBono,
+                          AppLocalizations.of(context)!.sessions,
                           AppLocalizations.of(context)!.sesionsBonoDesc,
                           AppLocalizations.of(context)!.sessionHint,
                           AppLocalizations.of(context)!.sessionPlease,
@@ -570,7 +572,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       false),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                    !editBono ? Container(
+                    /// PRICE
+                    Container(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                       decoration: BoxDecoration(
                           color: Theme.of(context).backgroundColor,
@@ -578,7 +581,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       ),
                       child: optionTextWrite(
                           const TextInputType.numberWithOptions(decimal: true),
-                          AppLocalizations.of(context)!.priceBono,
+                          AppLocalizations.of(context)!.price,
                           "",
                           AppLocalizations.of(context)!.priceHint,
                           AppLocalizations.of(context)!.pricePlease,
@@ -588,8 +591,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                           false,
                           'price',
                       false),
-                    ) : Container(),
-                    !editBono ? SizedBox(height: MediaQuery.of(context).size.height * 0.01) : Container(),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    /// EXPIRATION DATE
                     Container(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                       decoration: BoxDecoration(
@@ -606,11 +610,12 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                         true,
                         titleController,
                         null,
-                        'exp',
+                        'expEdit',
                         false
-                      ),
+                      )
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    /// WEEKLY SESSIONS
                     Container(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
                       decoration: BoxDecoration(
@@ -631,6 +636,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                           false
                       ),
                     ),
+                    /// CANCEL TIME
                     SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                     Container(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
@@ -1001,51 +1007,34 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 }
               },
               child: Container(
-                  height:
-                      MediaQuery.of(context).size.height * 0.1,
+                  height: MediaQuery.of(context).size.height*0.09,
                   width: double.infinity,
                   color: Theme.of(context).primaryColor,
                   child: isLoading
                       ? Center(
-                          child: SizedBox(
-                            width: MediaQuery.of(context)
-                                    .size
-                                    .width *
-                                0.06,
-                            height: MediaQuery.of(context)
-                                    .size
-                                    .height *
-                                0.03,
+                          child: Container(
+                            padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+                            height: MediaQuery.of(context).size.width * 0.08,
+                            width: MediaQuery.of(context).size.width * 0.06,
                             child: CircularProgressIndicator(
-                              color: Theme.of(context)
-                                  .primaryColorDark,
+                              color: Theme.of(context).primaryColorDark,
                               strokeWidth: 2.5,
                             ),
                           ),
                         )
                       : Center(
                           child: Padding(
-                            padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(context)
-                                        .size
-                                        .height *
-                                    0.00),
+                            padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
                             child: Text(
-                              AppLocalizations.of(context)!
-                                  .confirm,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline1
-                                  ?.copyWith(
-                                    color: Theme.of(context)
-                                        .primaryColorDark,
-                                  ),
+                              AppLocalizations.of(context)!.confirm,
+                              style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
                             ),
                           ),
-                        )),
+                        )
+              ),
             ) :
             Container(
-              height: MediaQuery.of(context).size.height * 0.1,
+              height: MediaQuery.of(context).size.height*0.09,
               width: double.infinity,
               color: Theme.of(context).primaryColor,
               child: isLoading ? Center(
@@ -1375,7 +1364,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                       titleText,
                       style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                    variable == 'exp' ? Padding(
+                    variable == 'exp' || variable == 'expEdit' ? Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
                         subtitleText,
@@ -1455,10 +1444,21 @@ class _OtorgarBonoState extends State<OtorgarBono> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-            daysSelectoWidget(0, '0', editable, noSessions),
-            daysSelectoWidget(1, '30', editable, false),
-            daysSelectoWidget(2, '60', editable, false),
-            daysSelectoWidget(3, '90', editable, false),
+            daysSelectorWidget(0, '0', editable, noSessions),
+            daysSelectorWidget(1, '30', editable, false),
+            daysSelectorWidget(2, '60', editable, false),
+            daysSelectorWidget(3, '90', editable, false),
+          ],
+        )
+        : variable == 'expEdit' ?
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+            daysSelectorWidget(0, '0', editable, noSessions),
+            daysSelectorWidget(4, 'Edit', editable, false),
           ],
         )
         : variable == 'canFree' && cancelTimeSessions ?
@@ -1595,7 +1595,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     setState(() {});
   }
 
-  Widget daysSelectoWidget(int index, String numberDays, bool editable, bool notShow) {
+  Widget daysSelectorWidget(int index, String numberDays, bool editable, bool notShow) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.06,
       width: MediaQuery.of(context).size.width * 0.9,
@@ -1608,14 +1608,32 @@ class _OtorgarBonoState extends State<OtorgarBono> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                numberDays == "Edit" ? InkWell(
+                  onTap: _show,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Flexible(
+                        child: Text(
+                          AppLocalizations.of(context)!.from+" "+StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(startDate))
+                          +" "+AppLocalizations.of(context)!.to.toLowerCase()+" "+StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(endDate)),
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                ) :
                 Text(
                   numberDays != "0" ? numberDays+" "+AppLocalizations.of(context)!.days.toLowerCase() : "No expira",
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                numberDays != "0" ? Text(
+                numberDays != "0" && numberDays != "Edit" ? Text(
                 AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(startDate.add(Duration(days: int.parse(numberDays)))))),
+
                 style: Theme.of(context).textTheme.caption,
                 textAlign: TextAlign.left,
                 ) : Container(),
@@ -1640,6 +1658,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 isSelectedDays[1] = false;
                 isSelectedDays[2] = false;
                 isSelectedDays[3] = false;
+                isSelectedDays[4] = false;
                 isSelectedDays[index] = true;
                 if (isSelectedDays[0]) {
                   bonoSelected.condition!.expirationTime = 0;
@@ -1653,6 +1672,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 if (isSelectedDays[3]) {
                   bonoSelected.condition!.expirationTime = 90;
                 }
+                if (isSelectedDays[4]) {
+                  bonoSelected.condition?.expirationTime = endDate.difference(startDate).inDays + 1;
+                }
                 setState(() {});
               },
             ),
@@ -1663,23 +1685,52 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   }
 
   void _show() async {
-    await showDialog<dynamic>(
+    FocusManager.instance.primaryFocus?.unfocus();
+    List<DateTime>? result = await showModalBottomSheet<List<DateTime>>(
       context: context,
-      builder: (BuildContext context) => CalendarPopupView(
-        barrierDismissible: true,
-        minimumDate: DateTime.now(),
-        initialEndDate: endDate,
-        initialStartDate: startDate,
-        onApplyClick: (DateTime startData, DateTime endData) {
-          setState(() {
-            isSelectedDays[0] = false;
-            isSelectedDays[1] = true;
-            startDate = startData;
-            endDate = endData;
-            bonoSelected.condition?.expirationTime = endDate.difference(startDate).inDays + 1;
-          });
-        },
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
       ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.935,
+          child: SelectCalendarDate(
+            dateRange: [startDate, endDate],
+            dateJoined: dateJoined,
+            isFuture: true,
+          ),
+        );
+      },
     );
+    if (result != null) {
+      startDate = result.first;
+      endDate = result.last;
+      isSelectedDays[0] = false;
+      isSelectedDays[1] = false;
+      isSelectedDays[2] = false;
+      isSelectedDays[3] = false;
+      isSelectedDays[4] = false;
+      isSelectedDays[4] = true;
+      if (isSelectedDays[0]) {
+        bonoSelected.condition!.expirationTime = 0;
+      }
+      if (isSelectedDays[1]) {
+        bonoSelected.condition!.expirationTime = 30;
+      }
+      if (isSelectedDays[2]) {
+        bonoSelected.condition!.expirationTime = 60;
+      }
+      if (isSelectedDays[3]) {
+        bonoSelected.condition!.expirationTime = 90;
+      }
+      if (isSelectedDays[4]) {
+        bonoSelected.condition?.expirationTime = endDate.difference(startDate).inDays + 1;
+      }
+      setState(() {});
+    }
   }
 }

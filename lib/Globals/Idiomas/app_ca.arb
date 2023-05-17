@@ -611,6 +611,8 @@
   "editBonoClientDesc": "Verifica la información abans d'editar el val del client",
   "average": "de mitja",
   "purchaseHistory": "Historial de compres",
+  "comingNDays": "Pròxims {days} Dies",
+  "endOfMonth": "Final de Mes",
   "lastNDays": "Últims {days} Dies",
   "previousMonth": "Mes Anterior",
   "facturation": "Facturació",
