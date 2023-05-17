@@ -257,6 +257,7 @@ class _AddEditBonoState extends State<AddEditBono>
         builder: (_) {
           return DeleteBonoDialog(
             hasPurchases: hasPurchases,
+            isActive: bono.isActive!,
           );
         }
       );
@@ -350,10 +351,11 @@ class _AddEditBonoState extends State<AddEditBono>
                           builder: (_) {
                             return DeleteBonoDialog(
                               hasPurchases: hasPurchases,
+                              isActive: bono.isActive!,
                             );
                           }
                       );
-                      if (result) {
+                      if (result != null && result) {
                         if (hasPurchases) {
                           // Deactivate
                           await _brandDataService.updateBonoActive(widget.brand.id!, bono.id!, !bono.isActive!);
