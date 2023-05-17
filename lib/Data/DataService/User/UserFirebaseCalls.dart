@@ -682,14 +682,10 @@ class UserFirebaseCalls {
     });
   }
 
+  // Add Local Notification
   Future<void> addLocalNotification(String userId, ReceivedNotification notification) async {
     String id = notification.id!.toString();
     Timestamp now = Timestamp.now();
-    // Event Id
-    String payloadFeedback = notification.payload!.substring(0,2);
-    String payloadSubString = notification.payload!.substring(2);
-    bool isFeedback = payloadFeedback == "F-";
-    String eventId = isFeedback ? payloadSubString : notification.payload!;
     // Firebase Query
     await _firestore
         .collection(users)
@@ -697,7 +693,9 @@ class UserFirebaseCalls {
         .collection("Local Notifications")
         .doc(id)
         .set({
-      "eventId": eventId,
+      "eventId": notification.eventId,
+      "bonoId": notification.bonoId,
+      "purchaseId": notification.purchaseId,
       "payload": notification.payload!,
       "createdAt": now,
       "firesAt": notification.firesAt!,

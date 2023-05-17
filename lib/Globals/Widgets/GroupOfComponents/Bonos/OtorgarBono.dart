@@ -969,9 +969,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
                     if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
                       // Delete Local Notifications if Expiration Time has change in Update
-                      _localNotificationService.deleteRemoteBonoExpirationLocalNotification(user.id!, currentBrand.id!, bonoSelected.purchaseId!);
+                      await _localNotificationService.deleteRemoteBonoExpirationLocalNotification(user.id!, currentBrand.id!, bonoSelected.purchaseId!);
                       // Local Notifications Service
-                      _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
+                      await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
                     }
                     mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
                     await Future.delayed(const Duration(seconds: 1));
@@ -998,7 +998,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
                     await _brandDataService.updateBonoCompras(widget.brand.id!, purchase.bonoId!);
                     // Local Notifications Service
-                    _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
+                    await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
                     mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
                   } else {
                     /// OTORGAR BONO
@@ -1017,7 +1017,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
                     await Future.delayed(const Duration(seconds: 2));
                     // Local Notifications Service
-                    _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
+                    await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
                     mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
                   }
                   Navigator.of(context).pop();

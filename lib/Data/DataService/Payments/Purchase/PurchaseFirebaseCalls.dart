@@ -56,9 +56,23 @@ class PurchaseFirebaseCalls {
     purchase = Purchase.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     // Get Brand From Purchase
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 = await _firestore.collection(brands).doc(purchase.brandId).get();
-    Brand brand = Brand.fromObjectOnlyCoverData(_documentSnapshot2.id, _documentSnapshot2);
+    Brand brand =  Brand.fromObjectOnlyCoverData(_documentSnapshot2.id, _documentSnapshot2);
     // Set Purchased Brand Bono
     purchase.setPurchasedBrandBono = brand;
+    // Get Bono From Purchase
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 = await _firestore.collection(brands).doc(purchase.brandId).collection("Bonos").doc(purchase.bonoId).get();
+    Bono bono =  Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
+    // Add Conditions of This purchase
+    bono.setBrandId = purchase.brandId!;
+    bono.setBonoPrice = _documentSnapshot.get("price").toDouble();
+    bono.setBonoSessions = _documentSnapshot.get("sessions");
+    bono.setConditionsData = Condition(
+      expirationTime: _documentSnapshot.get("expirationTime"),
+      cancelTime: _documentSnapshot.get("cancelTime"),
+      weeklySessions: _documentSnapshot.get("weeklySessions"),
+    );
+    // Set Purchased Bono
+    purchase.setPurchasedBono = bono;
     // Get Purchase Events
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
@@ -73,6 +87,7 @@ class PurchaseFirebaseCalls {
     }
     // Set Purchase Events
     purchase.setPurchasedEventsData = events;
+
     return purchase;
   }
 
