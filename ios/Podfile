@@ -45,6 +45,9 @@ post_install do |installer|
         if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] == '8.0'
           config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
         end
+        if config.build_settings['WRAPPER_EXTENSION'] == 'bundle'
+          config.build_settings['DEVELOPMENT_TEAM'] = 'BZCZLP92PQ'
+        end
       end
     end
   end
