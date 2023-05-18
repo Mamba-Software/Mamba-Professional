@@ -61,7 +61,7 @@ class MambaProUtils {
 
   Color returnColor(var context)
   {
-    return brandIsActive? Theme.of(context).primaryColor : Theme.of(context).disabledColor;
+    return Theme.of(context).primaryColor;
   }
 
 

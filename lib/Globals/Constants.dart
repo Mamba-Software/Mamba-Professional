@@ -3,6 +3,7 @@ class Constants {
   // App Name
   static String appName = "Mamba";
 
+
   // Constant Assets
   static String logoExtended = "assets/images/ExtendedWhite.png";
   static String logoExtendedYellow = "assets/images/ExtendedYellow.png";
@@ -10,6 +11,7 @@ class Constants {
   static String logoSimple = "assets/images/SimpleWhite.png";
   static String logoSimpleYellow = "assets/images/SimpleYellow.png";
   static String logoSimplePurple = "assets/images/SimplePurple.png";
+  static String logoQRMamba = "assets/images/logoQRMamba.png";
   static String fotoPerfil = "assets/images/as.png";
   static String chatImage = "assets/images/chatImage.png";
   static String emptyCalendar = "assets/images/emptyCalendar.png";

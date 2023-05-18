@@ -1059,40 +1059,48 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: MediaQuery.of(context).size.height*0.05),
             buildContainersWidget(),
             SizedBox(height: MediaQuery.of(context).size.height*0.008),
-            CarouselSlider(
-              items: buildProfileCarousel,
-              carouselController: _controller,
-              options: CarouselOptions(
-                  autoPlay: false,
-                  initialPage: _current,
-                  viewportFraction: 1,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _current = index;
-                    });
-                  }
-              ),
+            Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                CarouselSlider(
+                  items: buildProfileCarousel,
+                  carouselController: _controller,
+                  options: CarouselOptions(
+                    height: MediaQuery.of(context).size.height*0.3,
+                    autoPlay: false,
+                    initialPage: _current,
+                    viewportFraction: 1,
+                    enlargeCenterPage: false,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _current = index;
+                      });
+                    },
+                  ),
+                ),
+                Positioned(
+                  bottom: MediaQuery.of(context).size.height*0.06,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: buildProfileCarousel.asMap().entries.map((entry) {
+                      return GestureDetector(
+                        onTap: () => _controller.animateToPage(entry.key),
+                        child: Container(
+                          width: 8.0,
+                          height: 8.0,
+                          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == entry.key ? 0.9 : 0.4)
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height*0.04,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: buildProfileCarousel.asMap().entries.map((entry) {
-                  return GestureDetector(
-                    onTap: () => _controller.animateToPage(entry.key),
-                    child: Container(
-                      width: 8.0,
-                      height: 8.0,
-                      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: (Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black).withOpacity(_current == entry.key ? 0.9 : 0.4)
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.04),
           ],
         ),
       ),

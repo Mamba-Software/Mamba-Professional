@@ -181,6 +181,13 @@ class FirebaseDatabaseService {
     }
   }
 
+  Future<String> checkMonthOffer() async {
+    // Get Minimum Version from Settings Collection
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
+    String monthFree = _documentSnapshot.get("monthFree");
+    return monthFree;
+  }
+
   Future<User?> getCurrentUser() async {
     User? currentUser;
     currentUser = await _auth.currentUser;
@@ -1257,7 +1264,6 @@ class FirebaseDatabaseService {
               "logoUrl": currentBrand.logoUrl,
             });
         // Set the Location Document in "\Events\Location"
-
         await _firestore.collection(events).doc(eventID)
             .collection("Locations")
             .doc(event.locationId!)
@@ -1616,6 +1622,7 @@ class FirebaseDatabaseService {
     // Variables
     double averageTime = 0;
     double totalTime = 0;
+    List<Brand> brandLoaded = [];
     List<Event> eventsList = [];
     List<int> weeksInRow = [];
     DateTime today = DateTime.now();
@@ -1628,6 +1635,18 @@ class FirebaseDatabaseService {
     // Calculations
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      Brand? brand;
+      int index = brandLoaded.indexWhere((element) => element.id == event.brandID);
+      if (index != -1) {
+        brand = brandLoaded[index];
+      } else {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(event.brandID).get();
+        brand = Brand.fromObjectOnlyCoverData(event.brandID!, _documentSnapshot);
+        brandLoaded.add(brand);
+      }
+      event.brandID = brand.id;
+      event.brandName = brand.name;
+      event.brandLogo = brand.logoUrl;
       var hour = event.duration.toString().split(".")[0];
       var min = event.duration!.toStringAsFixed(2).split(".")[1];
       var endDate = event.doneAt!.toDate().add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
@@ -3343,7 +3362,7 @@ class FirebaseDatabaseService {
     }
   }
   // Get Valid Promotion
-  Future<List<Subscription>> getSubscriptions(String? promotion) async {
+  Future<List<Subscription>> getSubscriptions(String? promotion, String brandId) async {
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     DateTime now = DateTime.now();
     Timestamp tmstp = Timestamp.fromDate(now);
@@ -3354,22 +3373,25 @@ class FirebaseDatabaseService {
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         subscriptionTemp = Subscription.fromObjectAllData(
             querySnapshot.docs[i].id, querySnapshot.docs[i]);
-        if(subscriptionTemp.isActive! && subscriptionTemp.startDate!.compareTo(tmstp) < 0 && tmstp.compareTo(subscriptionTemp.endDate!) < 0)
-          {
-            if(subscriptionTemp.promotion == "")
-              {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 =
+        await _firestore.collection(subscriptions).doc(querySnapshot.docs[i].id)
+            .collection('Brands').doc(brandId).get();
+        if (!_documentSnapshot2.exists) {
+          if (subscriptionTemp.isActive! &&
+              subscriptionTemp.startDate!.compareTo(tmstp) < 0 &&
+              tmstp.compareTo(subscriptionTemp.endDate!) < 0) {
+            if (subscriptionTemp.promotion == "") {
+              subscriptionsList.add(subscriptionTemp
+              );
+            }
+            else {
+              if (subscriptionTemp.promotion == promotion) {
                 subscriptionsList.add(subscriptionTemp
                 );
               }
-            else
-              {
-                if(subscriptionTemp.promotion == promotion)
-                  {
-                    subscriptionsList.add(subscriptionTemp
-                    );
-                  }
-              }
+            }
           }
+        }
       }
     } catch (e) {
       print(e);

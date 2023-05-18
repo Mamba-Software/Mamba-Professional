@@ -267,7 +267,7 @@ class _SettingsPrivacyState extends State<SettingsTheme> {
       floatingActionButton: isUpdated ? Padding(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.03),
         child: FloatingActionButton.extended(
-          heroTag: "82",
+          heroTag: "62",
           onPressed: () async {
             setState(() {
               isLoading = true;

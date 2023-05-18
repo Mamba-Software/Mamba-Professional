@@ -660,7 +660,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                                       style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.bold),
                                       decoration: InputDecoration(
                                         hintStyle: Theme.of(context).textTheme.caption,
-                                        hintText:AppLocalizations.of(context)!.titleError,
+                                        hintText:AppLocalizations.of(context)!.titleHint,
                                         border: InputBorder.none,
                                         focusedBorder: InputBorder.none,
                                         enabledBorder: InputBorder.none,
@@ -1941,7 +1941,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03),
                         child: FloatingActionButton.extended(
-                          heroTag: "50",
+                          heroTag: "51",
                           onPressed: () async {
                             var result = await showDialog(
                                 context: context,

@@ -903,7 +903,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                     builder: (BuildContext context) {
                       bono.setPurchaseId = widget.purchase.id!;
                       return FractionallySizedBox(
-                        heightFactor: 0.95,
+                        heightFactor: 0.935,
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
                           onTap: () {

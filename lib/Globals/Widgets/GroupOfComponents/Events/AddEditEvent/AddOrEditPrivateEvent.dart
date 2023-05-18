@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
@@ -15,7 +16,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
@@ -30,7 +30,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LocationAu
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectClientsEvent.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/SelectBrandImages.dart';
 import 'package:uuid/uuid.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -70,9 +69,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   Event event = Event();
   // Title Controller
   var titleController = TextEditingController();
+  FocusNode focusNodetitleController = FocusNode();
   String? titleString;
   // Description Controller
   var descriptionController = TextEditingController();
+  FocusNode focusNodeDescController = FocusNode();
   String? descriptionString;
   // Event Image
   bool isRandomImage = true;
@@ -81,6 +82,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   // Location
   String? originalLocationId;
   Location location = Location();
+  Set<Marker> markers = <Marker>{};
+  CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
+  GoogleMapController? mapController;
+  final Completer<GoogleMapController> _controller = Completer();
   // Starting Date and Time
   DateTime startDate = DateTime.now();
   DateTime originalStartDate = DateTime.now();
@@ -133,6 +138,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       mixpanel!.track('edit_event_info', properties: {'isPrivate': true});
     } else {
       initializeEventInfo();
+      focusNodetitleController.requestFocus();
       mixpanel!.track('add_event_info', properties: {'isPrivate': true});
     }
   }
@@ -208,6 +214,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Event Title
     titleController.text = event.title!;
     titleString = titleController.text;
+    // Event Description
+    descriptionController.text = event.description!;
     // Event Image
     eventImageUrl = event.imageUrl;
     isRandomImage = false;
@@ -229,6 +237,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   Future<void> getBrandBonos() async {
     allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
     allBonos.removeWhere((element) => element.isActive == false);
+    allBonos.sort((a,b) {
+      var aSessions =  a.sessions;
+      var bSessions =  b.sessions;
+      return aSessions!.compareTo(bSessions!);
+    });
   }
 
   Future<void> getEventBonos() async {
@@ -253,9 +266,26 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
 
   Future<void> getLocation(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
+    _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
+    Marker marker = Marker(
+      markerId: const MarkerId('1'),
+      position: LatLng(location.latitude!,location.longitude!),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+      onTap: () {},
+    );
+    markers.add(marker);
     setState(() {
       isLoading = false;
     });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+      setState(() {
+        mapController = controller;
+      });
+    }
   }
 
   Future selectDate() async {
@@ -359,53 +389,51 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         }, //: null,
         child: Padding(
           padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.width*0.17,
-                  width: MediaQuery.of(context).size.width*0.17,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
-                    border: Border.all(
-                      width: 1,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.width*0.17,
+                width: MediaQuery.of(context).size.width*0.17,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  border: Border.all(
+                    width: 1,
+                    color: Theme.of(context).primaryColor,
+                    style: BorderStyle.solid,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 2,
+                    ),
+                  ],
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Icon(
+                      Icons.person_add_alt_1,
                       color: Theme.of(context).primaryColor,
-                      style: BorderStyle.solid,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        spreadRadius: 3,
-                        blurRadius: 4,
-                      ),
-                    ],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                        Icons.person_add_alt_1,
-                        color: Theme.of(context).primaryColor,
-                        size:  MediaQuery.of(context).size.width*0.05
-                    ),
+                      size:  MediaQuery.of(context).size.width*0.05
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.add,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width*0.025),
+              SizedBox(
+                width: MediaQuery.of(context).size.width*0.2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      AppLocalizations.of(context)!.add,
+                      style: Theme.of(context).textTheme.bodyText2,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
@@ -485,15 +513,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   @override
   Widget build(BuildContext context) {
     return isLoading ? Scaffold(
-      appBar: null,
-      body: LoadingView(
-        text: isRecurrentLoadingText
-      ),
-    ) :
-    Scaffold(
       appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.12,
-        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.addEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
+        toolbarHeight: MediaQuery.of(context).size.height*0.08,
+        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.createEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
             : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
         leading: IconButton(
@@ -553,17 +575,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                   color: Theme.of(context).primaryColor,
                   size: MediaQuery.of(context).size.width*0.06,
                 ),
-                /*
-                SizedBox(height: MediaQuery.of(context).size.width*0.01),
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                      AppLocalizations.of(context)!.private,
-                      style: Theme.of(context).textTheme.bodyText2,
-                      textAlign: TextAlign.center
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.1,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                        AppLocalizations.of(context)!.private,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center
+                    ),
                   ),
-                ),                
-                 */
+                ),
               ],
             ),
           ),
@@ -571,58 +593,112 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0),
-          child: IgnorePointer(
-            child: Column(
-              children: [
-                TabBar(
-                  controller: _tabController,
-                  indicatorColor: Colors.transparent,
-                  onTap: (index) {
-                    _selectedIndex = index;
-                  },
-                  tabs: [
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.info_outlined, color: tabs[0] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.calendar_today_outlined, color: tabs[1] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.group, color: tabs[2] ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.06,)
-                          ],
-                        ),
-                      ),
-                    ),
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.width*0.03),
+              LinearProgressIndicator(
+                value: addEventTabValue,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: LoadingView(
+        text: isRecurrentLoadingText
+      ),
+    ) :
+    Scaffold(
+      appBar: AppBar(
+        toolbarHeight: MediaQuery.of(context).size.height*0.08,
+        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.createEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
+            : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          widget.eventId != null ? IconButton(
+              onPressed: () async {
+                if (event.eventGroupId == null) {
+                  // DeleteDialog
+                  var result = await showDialog(
+                      context: context,
+                      builder: (_) {
+                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
+                      }
+                  );
+                  if (result) {
+                    _deleteEventFunction();
+                  }
+                } else {
+                  var result = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const DeleteRecurrentEventDialog();
+                    },
+                  );
+                  if (result != null) {
+                    if (result == 1) {
+                      print("Deleting Only This Event..");
+                      _deleteEventFunction();
+                    } else {
+                      print("Delete This Event and the Rest Forward ...");
+                      _deleteRecurrentEventFunction();
+                    }
+                  }
+                }
+              },
+              icon: SizedBox(
+                width: MediaQuery.of(context).size.width*0.15,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
                   ],
                 ),
-                LinearProgressIndicator(
-                  value: addEventTabValue,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).colorScheme.secondary,
+              )
+          ) : SizedBox(
+            width: MediaQuery.of(context).size.width*0.15,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Theme.of(context).primaryColor,
+                  size: MediaQuery.of(context).size.width*0.06,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.1,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                        AppLocalizations.of(context)!.private,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center
+                    ),
+                  ),
                 ),
               ],
-            )
+            ),
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width*0.03)
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: Column(
+            children: [
+              SizedBox(height: MediaQuery.of(context).size.width*0.03),
+              LinearProgressIndicator(
+                value: addEventTabValue,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ],
           ),
         ),
       ),
@@ -637,6 +713,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
               children: [
                 Scaffold(
                   body: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       child: Column(
                         children: [
                           Form(
@@ -660,7 +737,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: <Widget>[
                                                       Text(
                                                         AppLocalizations.of(context)!.title,
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                        style: Theme.of(context).textTheme.headline1,
                                                       ),
                                                     ],
                                                   ),
@@ -674,6 +751,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
+                                                      focusNode: focusNodetitleController,
                                                       controller: titleController,
                                                       validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.titleError : null,
                                                       onChanged: (val) {
@@ -681,16 +759,30 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           titleString = val;
                                                         });
                                                       },
+                                                      onEditingComplete: () {
+                                                        if (descriptionController.text.isEmpty) {
+                                                          focusNodeDescController.requestFocus();
+                                                        } else {
+                                                          focusNodetitleController.unfocus();
+                                                        }
+                                                      },
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
                                                         hintStyle: Theme.of(context).textTheme.caption,
-                                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red, height: 0.1),
+                                                        errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
                                                         hintText: AppLocalizations.of(context)!.titleHint,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
+                                                        errorBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.red),
+                                                        ),
+                                                        disabledBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
+                                                        enabledBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
+                                                        focusedBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
                                                       ),
                                                       enabled: true,
                                                     ),
@@ -699,7 +791,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               )
                                           ),
                                           Padding(
-                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.018),
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
@@ -709,7 +801,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: <Widget>[
                                                       Text(
                                                         AppLocalizations.of(context)!.description,
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                        style: Theme.of(context).textTheme.headline1,
                                                       ),
                                                     ],
                                                   ),
@@ -723,6 +815,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: TextFormField(
+                                                      focusNode: focusNodeDescController,
                                                       keyboardType: TextInputType.visiblePassword,
                                                       controller: descriptionController,
                                                       minLines: 1,
@@ -735,12 +828,19 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       style: Theme.of(context).textTheme.bodyText2,
                                                       decoration: InputDecoration(
                                                         hintStyle: Theme.of(context).textTheme.caption,
-                                                        hintText:AppLocalizations.of(context)!.descriptionError,
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
+                                                        hintText:AppLocalizations.of(context)!.descriptionHint,
+                                                        errorBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.red),
+                                                        ),
+                                                        disabledBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
+                                                        enabledBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
+                                                        focusedBorder: const UnderlineInputBorder(
+                                                          borderSide: BorderSide(color: Colors.grey),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -748,7 +848,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               )
                                           ),
                                           Padding(
-                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: <Widget>[
@@ -758,13 +858,108 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     children: <Widget>[
                                                       Text(
                                                         AppLocalizations.of(context)!.location,
-                                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                        style: Theme.of(context).textTheme.headline1,
                                                       ),
                                                     ],
                                                   ),
                                                 ],
                                               )
                                           ),
+                                          Padding(
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.018),
+                                            child: GestureDetector(
+                                              onTap: () async {
+                                                setState(() {
+                                                  isLoading = true;
+                                                });
+                                                var result = await Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute<String>(
+                                                      builder: (context) => MyLocationsSelect(
+                                                        brandId: currentBrand.id!,
+                                                      ),
+                                                    )
+                                                );
+                                                if (result != null) {
+                                                  getLocation(result);
+                                                } else {
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                }
+                                              },
+                                              child: Material(
+                                                elevation: 4,
+                                                borderRadius: BorderRadius.circular(15),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                                      border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                                                      borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Container(
+                                                        height: MediaQuery.of(context).size.height*0.1,
+                                                        width: MediaQuery.of(context).size.height*0.1,
+                                                        decoration: const BoxDecoration(
+                                                          borderRadius: BorderRadius.only(
+                                                            topLeft: Radius.circular(15),
+                                                            bottomLeft: Radius.circular(15),
+                                                          ),
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius: const BorderRadius.only(
+                                                            topLeft: Radius.circular(15),
+                                                            bottomLeft: Radius.circular(15),
+                                                          ),
+                                                          child: GoogleMap(
+                                                            onMapCreated: _onMapCreated,
+                                                            initialCameraPosition: _initialPosition,
+                                                            scrollGesturesEnabled: false,
+                                                            zoomGesturesEnabled: false,
+                                                            rotateGesturesEnabled: false,
+                                                            mapToolbarEnabled: false,
+                                                            zoomControlsEnabled: false,
+                                                            minMaxZoomPreference: const MinMaxZoomPreference(16,16),
+                                                            myLocationButtonEnabled: false,
+                                                            mapType: MapType.satellite,
+                                                            markers: markers,
+                                                            trafficEnabled: false,
+                                                            indoorViewEnabled: false,
+                                                            buildingsEnabled: false,
+                                                            onTap: null,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              location.description!,
+                                                              style: Theme.of(context).textTheme.bodyText2,
+                                                            ),
+                                                            location.isBaseLocation! ? Text(
+                                                              AppLocalizations.of(context)!.baseLocation,
+                                                              style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                                                            ) : Container(),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                                      Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.08),
+                                                      SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          /*
                                           Padding(
                                             padding: const EdgeInsets.only(top: 15.0),
                                             child: ListTile(
@@ -796,7 +991,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 }
                                               },
                                             ),
-                                          ),                                         
+                                          ),
+                                          */
                                         ]
                                     ),
                                   ),
@@ -805,7 +1001,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                     child: Column(
                                       children: [
                                         Padding(
-                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03),
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -815,7 +1011,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   children: <Widget>[
                                                     Text(
                                                       AppLocalizations.of(context)!.bonos,
-                                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                      style: Theme.of(context).textTheme.headline1,
                                                     ),
                                                   ],
                                                 ),
@@ -823,7 +1019,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             )
                                         ),
                                         Padding(
-                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, bottom: MediaQuery.of(context).size.height*0.0),
+                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.0),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: <Widget>[
@@ -837,9 +1033,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             )
                                         ),
                                         selectedBonos.isEmpty ? Container(
-                                          height: MediaQuery.of(context).size.height*0.1,
                                           width: MediaQuery.of(context).size.width*0.9,
-                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025, bottom: MediaQuery.of(context).size.height*0.01),
                                           padding: const EdgeInsets.all(8),
                                           decoration: BoxDecoration(
                                             color: AppColors.red.withOpacity(0.2),
@@ -861,16 +1056,47 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               ),
                                             ],
                                           ),
-                                        ) : Container(),
+                                        ) : Container(
+                                          width: MediaQuery.of(context).size.width*0.9,
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.025, bottom: MediaQuery.of(context).size.height*0.01),
+                                          padding: const EdgeInsets.all(8),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.withOpacity(0.2),
+                                            borderRadius: const BorderRadius.all(
+                                              Radius.circular(10),
+                                            ),
+                                            border: Border.all(color: Colors.green, width: 2),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(Icons.info_outlined, color: Colors.green, size:  MediaQuery.of(context).size.width*0.08,),
+                                              const SizedBox(width: 8),
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.bonosDescriptionGreat,
+                                                  textAlign: TextAlign.left,
+                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.green, height: 1.3),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             TextButton(
                                               child: Text(
                                                 AppLocalizations.of(context)!.selectAll,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey),
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w700),
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                primary: Theme.of(context).primaryColor,
                                               ),
                                               onPressed: () async {
+                                                FocusScopeNode currentFocus = FocusScope.of(context);
+                                                if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                                  FocusManager.instance.primaryFocus?.unfocus();
+                                                }
                                                 for (var bono in allBonos) {
                                                   int index = selectedBonos.indexWhere((element) => element == bono.id);
                                                   if (index == -1) {
@@ -891,54 +1117,67 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             itemBuilder: (context, int index) {
                                               var bono = allBonos[index];
                                               return Container(
-                                                height: MediaQuery.of(context).size.height * 0.05,
+                                                height: MediaQuery.of(context).size.height * 0.075,
                                                 width: MediaQuery.of(context).size.width * 0.9,
                                                 margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
                                                 child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   crossAxisAlignment: CrossAxisAlignment.center,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
-                                                    Row(
+                                                    Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
                                                       children: [
                                                         BonoCard(
                                                           height: MediaQuery.of(context).size.height * 0.05,
-                                                          width: MediaQuery.of(context).size.width * 0.17,
+                                                          width: MediaQuery.of(context).size.width * 0.18,
                                                           bono: bono,
                                                           brand: currentBrand,
                                                           canExpand: false,
                                                           onlyView: true,
+                                                          hideActive: true,
                                                         ),
-                                                        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-                                                        SizedBox(
-                                                          height: MediaQuery.of(context).size.height * 0.05,
-                                                          width: MediaQuery.of(context).size.width * 0.6,
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            children: [
-                                                              Flexible(
-                                                                child: Text(
-                                                                  bono.title!.toUpperCase(),
-                                                                  style: Theme.of(context).textTheme.bodyText1,
-                                                                  maxLines: 1,
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
+                                                      ]
                                                     ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            bono.title!.toUpperCase(),
+                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                          Flexible(
+                                                            child: Text(
+                                                              (bono.sessions! == 10000 ? AppLocalizations.of(context)!.sessions+" "+AppLocalizations.of(context)!.ilimitadas : bono.sessions!.toString()+" "+AppLocalizations.of(context)!.sessions.toLowerCase())
+                                                                  +" desde "+bono.price!.toStringAsFixed(2)+"€",
+                                                              style: Theme.of(context).textTheme.caption,
+                                                              maxLines: 1,
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
                                                     SizedBox(
-                                                      height: MediaQuery.of(context).size.height * 0.04,
+                                                      height: MediaQuery.of(context).size.height * 0.034,
                                                       width: MediaQuery.of(context).size.width * 0.1,
                                                       child: MaterialButton(
                                                         elevation: 4,
-                                                        color: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
-                                                        textColor: selectedBonos.contains(bono.id!) ? AppColors.mainColor : AppColors.grey,
-                                                        child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
+                                                        color: selectedBonos.contains(bono.id!) ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
+                                                        textColor: selectedBonos.contains(bono.id!) ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor,
+                                                        child: selectedBonos.contains(bono.id!) ? Icon(Icons.check, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
                                                         padding: EdgeInsets.zero,
                                                         shape: const CircleBorder(),
                                                         onPressed: () {
+                                                          FocusScopeNode currentFocus = FocusScope.of(context);
+                                                          if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                                                            FocusManager.instance.primaryFocus?.unfocus();
+                                                          }
                                                           setState(() {
                                                             if (selectedBonos.contains(bono.id!)) {
                                                               selectedBonos.remove(bono.id!);
@@ -948,7 +1187,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           });
                                                         },
                                                       ),
-                                                    )
+                                                    ),
+
                                                   ],
                                                 ),
                                               );
@@ -957,7 +1197,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                       ],
                                     ),
                                   ) : Container(),
-                                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                                  SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                                 ],
                               ),
                             
@@ -969,6 +1209,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       child: Column(
                         children: [
                           Padding(
@@ -976,137 +1217,108 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                 child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        height: MediaQuery.of(context).size.height * 0.20,
-                                        width: MediaQuery.of(context).size.width * 0.90,
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context).backgroundColor,
-                                            borderRadius: const BorderRadius.all(Radius.circular(15.0))
+                                      // Date and Time
+                                      Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
+                                        child: Text(
+                                          AppLocalizations.of(context)!.selectDayTime,
+                                          style: Theme.of(context).textTheme.headline1,
                                         ),
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05, horizontal: MediaQuery.of(context).size.width*0.05),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.calendar_today_outlined, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                        width: MediaQuery.of(context).size.width*0.45,
-                                                        child: GestureDetector(
-                                                            onTap: () {
-                                                              selectDate();
-                                                            },
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              children: <Widget>[
-                                                                Flexible(
-                                                                  child: TextFormField(
-                                                                    controller: startDateController,
-                                                                    readOnly: true,
-                                                                    enabled: false,
-                                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                                    decoration: const InputDecoration(
-                                                                      border: InputBorder.none,
-                                                                      focusedBorder: InputBorder.none,
-                                                                      enabledBorder: InputBorder.none,
-                                                                      errorBorder: InputBorder.none,
-                                                                      disabledBorder: InputBorder.none,
-                                                                    ),
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(Icons.calendar_today_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.07,),
+                                                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                                                Flexible(
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        selectDate();
+                                                      },
+                                                      child: TextFormField(
+                                                        controller: startDateController,
+                                                        readOnly: true,
+                                                        enabled: false,
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        decoration: const InputDecoration(
+                                                          border: InputBorder.none,
+                                                          focusedBorder: InputBorder.none,
+                                                          enabledBorder: InputBorder.none,
+                                                          errorBorder: InputBorder.none,
+                                                          disabledBorder: InputBorder.none,
                                                         ),
-                                                      ),
-                                                    ],
+                                                        textAlign: TextAlign.start,
+                                                      )
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.schedule, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
-                                                      Container(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                        width: MediaQuery.of(context).size.width*0.25,
-                                                        child: GestureDetector(
-                                                            onTap: () {
-                                                              selectTime();
-                                                            },
-                                                            child: Row(
-                                                              mainAxisSize: MainAxisSize.max,
-                                                              children: <Widget>[
-                                                                Flexible(
-                                                                  child: TextFormField(
-                                                                    controller: startTimeController,
-                                                                    readOnly: true,
-                                                                    enabled: false,
-                                                                    style: Theme.of(context).textTheme.bodyText2,
-                                                                    decoration: const InputDecoration(
-                                                                      border: InputBorder.none,
-                                                                      focusedBorder: InputBorder.none,
-                                                                      enabledBorder: InputBorder.none,
-                                                                      errorBorder: InputBorder.none,
-                                                                      disabledBorder: InputBorder.none,
-                                                                    ),
-                                                                    textAlign: TextAlign.start,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: MediaQuery.of(context).size.width * 0.01),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.schedule, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
+                                                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                Flexible(
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        selectTime();
+                                                      },
+                                                      child: TextFormField(
+                                                        controller: startTimeController,
+                                                        readOnly: true,
+                                                        enabled: false,
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        decoration: const InputDecoration(
+                                                          border: InputBorder.none,
+                                                          focusedBorder: InputBorder.none,
+                                                          enabledBorder: InputBorder.none,
+                                                          errorBorder: InputBorder.none,
+                                                          disabledBorder: InputBorder.none,
                                                         ),
-                                                      ),
-                                                    ],
+                                                        textAlign: TextAlign.start,
+                                                      )
                                                   ),
-
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Icon(Icons.timer_outlined, color: Theme.of(context).colorScheme.secondary,size: MediaQuery.of(context).size.width*0.05,),
-                                                  Container(
-                                                    padding: const EdgeInsets.only(left: 20),
-                                                    width: MediaQuery.of(context).size.width*0.30,
-                                                    child: GestureDetector(
-                                                        onTap: () {
-                                                          selectDuration();
-                                                        },
-                                                        child: Row(
-                                                          mainAxisSize: MainAxisSize.max,
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          children: <Widget>[
-                                                            Flexible(
-                                                              child: TextFormField(
-                                                                controller: durationController,
-                                                                readOnly: true,
-                                                                enabled: false,
-                                                                style: Theme.of(context).textTheme.bodyText2,
-                                                                decoration: const InputDecoration(
-                                                                  border: InputBorder.none,
-                                                                  focusedBorder: InputBorder.none,
-                                                                  enabledBorder: InputBorder.none,
-                                                                  errorBorder: InputBorder.none,
-                                                                  disabledBorder: InputBorder.none,
-                                                                ),
-                                                                textAlign: TextAlign.start,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                    ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: MediaQuery.of(context).size.width * 0.01),
+                                            Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Icon(Icons.timer_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
+                                                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                Flexible(
+                                                  child: GestureDetector(
+                                                      onTap: () {
+                                                        selectDuration();
+                                                      },
+                                                      child: TextFormField(
+                                                        controller: durationController,
+                                                        readOnly: true,
+                                                        enabled: false,
+                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        decoration: const InputDecoration(
+                                                          border: InputBorder.none,
+                                                          focusedBorder: InputBorder.none,
+                                                          enabledBorder: InputBorder.none,
+                                                          errorBorder: InputBorder.none,
+                                                          disabledBorder: InputBorder.none,
+                                                        ),
+                                                        textAlign: TextAlign.start,
+                                                      )
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       errorDate ? Padding(
@@ -1119,32 +1331,38 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ),
                                         ),
                                       ) : Container(),
+                                      // Recurrent Event
                                       widget.eventId == null ? Column(
                                         children: [
                                           Padding(
-                                              padding: const EdgeInsets.only(top: 15,),
+                                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
                                               child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Text(
                                                     AppLocalizations.of(context)!.recurrentEvent,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                    style: Theme.of(context).textTheme.headline1,
                                                   ),
-                                                  const SizedBox(width: 10,),
-                                                  Checkbox(
-                                                    checkColor: Colors.white,
-                                                    fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                    value: isRecurrent,
-                                                    onChanged: (bool? value) {
-                                                      setState(() {
-                                                        if (isRecurrent) {
-                                                          values = [false, false, false, false, false, false, false];
-                                                        } else {
-                                                          values[startDate.weekday-1] = true;
-                                                        }
-                                                        isRecurrent = value!;
-                                                      });
-                                                    },
+                                                  SizedBox(
+                                                    height: MediaQuery.of(context).size.height * 0.035,
+                                                    width: MediaQuery.of(context).size.width * 0.1,
+                                                    child: CupertinoSwitch(
+                                                      value: isRecurrent,
+                                                      onChanged: (bool newVal) {
+                                                        setState(() {
+                                                          if (isRecurrent) {
+                                                            values = [false, false, false, false, false, false, false];
+                                                          } else {
+                                                            values[startDate.weekday-1] = true;
+                                                          }
+                                                          isRecurrent = newVal;
+                                                        });
+                                                      },
+                                                      trackColor: Colors.green.withOpacity(0.4),
+                                                      thumbColor: AppColors.white,
+                                                      activeColor: Colors.green,
+                                                    ),
                                                   ),
                                                 ],
                                               )
@@ -1152,7 +1370,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           isRecurrent ? Column(
                                             children: [
                                               Padding(
-                                                  padding: const EdgeInsets.only(top: 0),
+                                                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
                                                   child: Column(
                                                     mainAxisSize: MainAxisSize.max,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1165,10 +1383,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         ),
                                                       ),
                                                       WeekdaySelector(
-                                                        fillColor: Colors.white,
-                                                        selectedFillColor: Theme.of(context).colorScheme.secondary,
-                                                        textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black),
-                                                        selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
+                                                        fillColor: Theme.of(context).backgroundColor,
+                                                        textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
+                                                        selectedFillColor: Theme.of(context).primaryColor,
+
+                                                        selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColorDark),
                                                         firstDayOfWeek: 0,
                                                         shortWeekdays: [
                                                           AppLocalizations.of(context)!.mondayLetter,
@@ -1185,8 +1404,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                             values[v % 7] = !values[v % 7]!;
                                                           });
                                                         },
-                                                        selectedElevation: 15,
-                                                        elevation: 5,
+                                                        selectedElevation: 8,
+                                                        elevation: 4,
                                                         disabledElevation: 0,
                                                         values: values,
                                                       ),
@@ -1290,26 +1509,54 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ) : Container(),
                                           SizedBox(height: MediaQuery.of(context).size.height*0.05)
                                         ],
-                                      ) : Container(),
-                                      event.eventGroupId != null ? Padding(
+                                      ) : event.eventGroupId != null ? Padding(
                                           padding: const EdgeInsets.only(top: 15,),
                                           child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                AppLocalizations.of(context)!.recurrentEvent,
+                                                style: Theme.of(context).textTheme.headline1,
+                                              ),
+                                              SizedBox(
+                                                height: MediaQuery.of(context).size.height * 0.035,
+                                                width: MediaQuery.of(context).size.width * 0.1,
+                                                child: CupertinoSwitch(
+                                                  value: true,
+                                                  onChanged: null,
+                                                  trackColor: Colors.green.withOpacity(0.4),
+                                                  thumbColor: AppColors.white,
+                                                  activeColor: Colors.green,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                      ) : Padding(
+                                          padding: const EdgeInsets.only(top: 15,),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             mainAxisSize: MainAxisSize.max,
                                             children: [
                                               Text(
                                                 AppLocalizations.of(context)!.recurrentEvent,
-                                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                style: Theme.of(context).textTheme.headline1,
                                               ),
-                                              const SizedBox(width: 10,),
-                                              Checkbox(
-                                                checkColor: Colors.white,
-                                                fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                value: true,
-                                                onChanged: null,
+                                              SizedBox(
+                                                height: MediaQuery.of(context).size.height * 0.035,
+                                                width: MediaQuery.of(context).size.width * 0.1,
+                                                child: CupertinoSwitch(
+                                                  value: false,
+                                                  onChanged: null,
+                                                  trackColor: Colors.green.withOpacity(0.4),
+                                                  thumbColor: AppColors.white,
+                                                  activeColor: Colors.green,
+                                                ),
                                               ),
                                             ],
                                           )
-                                      ) : Container(),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                                     ]
                                 )
                             ),
@@ -1320,6 +1567,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 ),
                 Scaffold(
                   body: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       child: Column(
                         children: [
                           Padding(
@@ -1338,8 +1586,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                   Text(
-                                                    AppLocalizations.of(context)!.designatedTrainers,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                    AppLocalizations.of(context)!.staff,
+                                                    style: Theme.of(context).textTheme.headline1,
                                                   ),
                                                 ],
                                               ),
@@ -1458,8 +1706,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                   Text(
-                                                    AppLocalizations.of(context)!.addDesignatedClients,
-                                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                                    AppLocalizations.of(context)!.clients,
+                                                    style: Theme.of(context).textTheme.headline1,
                                                   ),
                                                 ],
                                               ),
@@ -1514,7 +1762,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 child: SizedBox(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "49",
                     onPressed: () {
                       if (_selectedIndex == 1) {
                         if (widget.eventId != null) {
@@ -1536,6 +1784,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                         });
                       }
                       _tabController!.animateTo(_selectedIndex -= 1);
+                      FocusScopeNode currentFocus = FocusScope.of(context);
+                      if (!currentFocus.hasPrimaryFocus &&
+                          currentFocus.focusedChild != null) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      }
                       setState(() {
                         addEventTabValue -= 0.33;
                       });
@@ -1557,7 +1810,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                 child: SizedBox(
                   height: 50,
                   child: FloatingActionButton.extended(
-                    heroTag: null,
+                    heroTag: "50",
                     onPressed: () async {
                       if (_selectedIndex == 0) {
                         if (formKeyInfo.currentState!.validate()){
@@ -1572,6 +1825,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                               mixpanel!.track('add_event_datetime', properties: {'isPrivate': true});
                             }
                             _tabController!.animateTo(_selectedIndex += 1);
+                            FocusScopeNode currentFocus = FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
                             setState(() {
                               addEventTabValue += 0.33;
                               tabs[1] = true;
@@ -1716,7 +1974,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     if (states.any(interactiveStates.contains)) {
       return Colors.blue;
     }
-    return Theme.of(context).colorScheme.secondary;
+    return Theme.of(context).primaryColor;
   }
 
   Future<void> _addEventFunction() async {
@@ -1734,6 +1992,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     // Event Members
     eventMembers.addAll(brandClientsSelected);
     if (!isRecurrent) {
+      // Updating Loading Text
+      setState(() {
+        isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
+      });
       // Creating Event Object
       Event event = Event(
         isPrivate: true,
@@ -1968,6 +2230,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     mixpanel!.timeEvent("delete_event_completed");
     setState(() {
       isLoading = true;
+      // Updating Loading Text
+      isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
     });
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!, true);
@@ -2005,6 +2269,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     mixpanel!.timeEvent("edit_event_completed");
     setState(() {
       isLoading = true;
+      // Updating Loading Text
+      isRecurrentLoadingText = AppLocalizations.of(context)!.editing +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
     });
     // Get Random Photo if no Image Selected
     if (isRandomImage) {
@@ -2271,7 +2537,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         minute: updatedStartDate.minute.toString(),
         duration: double.parse(duration),
         locationId: location.id,
-        numClients: brandClientsSelected.length,
+        numClients: originalClients.length,
         numTrainers: brandTrainersSelected.length,
         maxMembers: eventMaxMembers,
       );
@@ -2345,6 +2611,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Trainer Added "+user.id.toString());
       }
+      /*
       /// Continue With Clients
       for (int i = 0; i < eventClients.length; i++) {
         var user = eventClients[i];
@@ -2386,6 +2653,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
         print("Client Added "+user.id.toString());
       }
+       */
     }
     mixpanel!.track('edit_event_completed', properties: {
       'descriptionLength': event.description!.length.toString(),

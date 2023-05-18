@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:purchases_flutter/models/offerings_wrapper.dart';
 
 
 class ActiveSubscription extends StatefulWidget {
@@ -32,14 +33,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
 
   Future<void> navigateToSubscriptionsScreen() async {
     mixpanel!.track('brand_see_paywall');
-    await Navigator.push(
-        context,
-        CupertinoPageRoute<bool?>(
-          builder: (context) => PayWall(
-            brandId: widget.brandId,
-          ),
-        )
-    );
+    await navigateToPayWall(context);
     setState(() {
     });
   }
@@ -135,7 +129,8 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                             Padding(
                               padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
                               child: Text(
-                                  AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.startDate!.toDate()), formatter.format(subscription.endDate!.toDate()).toString()),
+                                  subscription.unsuscribed!? AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.endDate!.toDate()).toString()) :
+                                  AppLocalizations.of(context)!.moreSubInfoRenAut(formatter.format(subscription.endDate!.toDate())),
                                   style: Theme
                                       .of(context)
                                       .textTheme
@@ -219,15 +214,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                 GestureDetector(
                                   onTap: () async {
                                     mixpanel!.track('brand_see_paywall');
-                                    await Navigator.push(
-                                        context,
-                                        CupertinoPageRoute<bool?>(
-                                          builder: (context) =>
-                                              PayWall(
-                                                brandId: widget.brandId,
-                                              ),
-                                        )
-                                    );
+                                    await navigateToPayWall(context, true);
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
