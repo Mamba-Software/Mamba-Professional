@@ -254,14 +254,13 @@ class _PayWallState extends State<PayWall> {
                         width: MediaQuery.of(context).size.width * 0.90,
                         height: MediaQuery.of(context).size.height * 0.07,
                         child:  Center(
-                          child: loadingPromotions? LoadingView(isSmall: true, color: Colors.black, hasLogo: false,) : Text(
+                          child: loadingPromotions? LoadingView(isSmall: true, color: AppColors.white, hasLogo: false,) : Text(
                             AppLocalizations.of(context)!.seeSubscriptionPayWall,
                             style: Theme.of(context)
                                 .textTheme
                                 .headline1
                                 ?.copyWith(
-                              color: Theme.of(context)
-                                  .primaryColorDark,
+                              color: AppColors.white,
                             ),
                           ),
 
@@ -596,14 +595,13 @@ class _PayWallState extends State<PayWall> {
                 width: MediaQuery.of(context).size.width * 0.90,
                 height: MediaQuery.of(context).size.height * 0.07,
                 child:  Center(
-                  child: (activeSubscription == index)? LoadingView(isSmall: true, color: index == subscriptionList.length - 1? Colors.black : AppColors.mainColor, hasLogo: false,) : index == subscriptionList.length - 1? Text(
+                  child: (activeSubscription == index)? LoadingView(isSmall: true, color: index == subscriptionList.length - 1 ? AppColors.white : AppColors.mainColor, hasLogo: false,) : index == subscriptionList.length - 1? Text(
                     subscriptionList[index].package == null? subscriptionList[index].descriptionAdapted! : subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
                     style:  Theme.of(context)
                         .textTheme
                         .headline1
                         ?.copyWith(
-                        color: Theme.of(context)
-                            .primaryColorDark,
+                      color: AppColors.white,
                     ),
                   ) : Text(
                     subscriptionList[index].package == null? subscriptionList[index].descriptionAdapted! : subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
@@ -611,8 +609,7 @@ class _PayWallState extends State<PayWall> {
                         .textTheme
                         .headline1
                         ?.copyWith(
-                        color: Theme.of(context)
-                            .primaryColor
+                      color: AppColors.white,
                     ),
                   ),
 

@@ -738,8 +738,7 @@
   "perMonth": "/ mes",
   "perYear": "/ any (-25%)",
   "autoRenovation": "Renovació automàtica",
-  "notSubNotAdmin": "La seva marca no disposa d'un pla, només l'administrador de la marca pot subscribirse's a un"
-  "autoRenovation": "Renovació automàtica",
+  "notSubNotAdmin": "La seva marca no disposa d'un pla, només l'administrador de la marca pot subscribirse's a un",
   "bonoExpirationWeekTitleNotification": "\uD83D\uDCC5 \uD83D\uDD52 El teu val {bono} caduca d'aquí una setmana! \uD83D\uDD52 \uD83D\uDCC5",
   "bonoExpirationWeekBodyNotification": "Aquest és un recordatori amistós que el teu val caduca d'aquí una setmana. Assegura't de reservar les teves sessions abans que sigui massa tard!",
   "bonoExpirationDaysTitleNotification": "⏰ \uD83D\uDCC6 El teu val {bono} caduca en 3 dies! \uD83D\uDCC6 ⏰",

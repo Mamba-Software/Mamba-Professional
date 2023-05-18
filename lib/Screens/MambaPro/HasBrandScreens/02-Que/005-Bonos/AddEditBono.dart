@@ -939,6 +939,7 @@ class _AddEditBonoState extends State<AddEditBono>
               canExpand: false,
               onlyView: true,
               condition: condition,
+              hideActive: true,
             ),
           ]),
           SizedBox(
@@ -1410,6 +1411,7 @@ class _AddEditBonoState extends State<AddEditBono>
                   isExpanded: true,
                   onlyView: true,
                   condition: condition,
+                  hideActive: true,
                 ),
               ],
             ),

@@ -251,4 +251,9 @@ class Event {
   set setLocation(Location location) {
     this.location = location;
   }
+
+  // Locations
+  set setBrandId(String brandID) {
+    this.brandID = brandID;
+  }
 }
