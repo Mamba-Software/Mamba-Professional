@@ -3028,23 +3028,20 @@
   "@subscriptionsAppBar": {
     "description": "subscriptionsAppBar message"
   },
-  "moreSubInfo": "El plan fue adquirido el {initDate} y expira el {endDate}",
+  "moreSubInfo": "El plan expira el {endDate}",
   "@moreSubInfo": {
     "description": "moreSubInfo message",
     "placeholders": {
-      "initDate": {
-        "type": "String"
-      },
       "endDate": {
         "type": "String"
       }
     }
   },
-  "moreSubInfoRenAut": "El plan fue adquirido el {initDate} y su renovación es automática",
+  "moreSubInfoRenAut": "El plan se renovará automáticamente el {endDate}",
   "@moreSubInfoRenAut": {
     "description": "moreSubInfoRenAut message",
     "placeholders": {
-      "initDate": {
+      "endDate": {
         "type": "String"
       }
     }
@@ -3312,5 +3309,9 @@
   "bonoExpirationTomorrowBodyNotification": "Este es un recordatorio urgente de que tu bono caduca mañana. ¡No te pierdas la oportunidad de utilizar tus sesiones restantes! Reserva ahora.",
   "@bonoExpirationTomorrowBodyNotification": {
     "description": "beforeEventBodyNotification message"
+  },
+  "notSubNotAdmin": "Su marca no dispone de un plan, solo el administrador de la marca puede subscribirse a uno",
+    "@notSubNotAdmin": {
+      "description": "notSubNotAdmin message"
   }
 }

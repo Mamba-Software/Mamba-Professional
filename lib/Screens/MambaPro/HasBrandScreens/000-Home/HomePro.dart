@@ -100,7 +100,6 @@ class _HomePro extends State<HomePro> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<BrandSuscriptionCubit>().getBrandSuscription();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: CustomScrollView(
@@ -229,10 +228,13 @@ class _HomePro extends State<HomePro> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   UserTodayWidget(
-                    onClicked: (boolean) {
+                    onClicked: (boolean) async {
                         if(brandIsActive) {
                           mixpanel!.track('brand_homepage_user_this_week');
                           widget.navigateToPage(10, DateTime.now(), CalendarView.week);
+                        }
+                        else {
+                          await navigateToPayWall(context);
                         }
                     },
                   ),
@@ -247,10 +249,13 @@ class _HomePro extends State<HomePro> {
                     height: MediaQuery.of(context).size.height * 0.1,
                     width: MediaQuery.of(context).size.width * 0.9,
                     brandId: currentBrand.id!,
-                    onClicked: (bool? value) {
+                    onClicked: (bool? value) async {
                           if(brandIsActive) {
                             mixpanel!.track('brand_homepage_membership_requests');
                             navigateToRequestsScreen();
+                          }
+                          else {
+                            await navigateToPayWall(context);
                           }
                     },
                   ) : Container(),
@@ -258,10 +263,13 @@ class _HomePro extends State<HomePro> {
                     height: MediaQuery.of(context).size.height * 0.1,
                     width: MediaQuery.of(context).size.width * 0.9,
                     brandId: currentBrand.id!,
-                    onClicked: (bool? value) {
+                    onClicked: (bool? value) async {
                         if(brandIsActive) {
                           mixpanel!.track('brand_homepage_bono_confirmation_requests');
                           navigateToBonosRequestScreen();
+                        }
+                        else {
+                          await navigateToPayWall(context);
                         }
                     }, //
                   ) : Container(),
@@ -276,7 +284,7 @@ class _HomePro extends State<HomePro> {
                                 height: MediaQuery.of(context).size.height * 0.07,
                                 width: MediaQuery.of(context).size.width * 0.43,
                                 isPrivate: false,
-                                onClicked: (bool? value) {
+                                onClicked: (bool? value) async {
                                   if(brandIsActive) {
                                     mixpanel!.track(
                                         'brand_homepage_plan_event', properties: {'isPrivate': false});
@@ -288,7 +296,7 @@ class _HomePro extends State<HomePro> {
                                 height: MediaQuery.of(context).size.height * 0.07,
                                 width: MediaQuery.of(context).size.width * 0.43,
                                 isPrivate: true,
-                                onClicked: (bool? value) {
+                                onClicked: (bool? value) async {
                                   if(brandIsActive) {
                                     mixpanel!.track(
                                         'brand_homepage_plan_event', properties: {'isPrivate': true});

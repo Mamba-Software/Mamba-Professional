@@ -82,30 +82,35 @@ class _BrandImagesState extends State<BrandImages> {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
-    mixpanel!.timeEvent('brand_images_added');
-    List<File>? temp = await ImageUtils().pickMultipleImage();
-    if ((temp!.length) > (_maxImages-_imagesUploaded.length)) {
-      mixpanel!.track('brand_images_max_images_error');
-      setState(() {
-        maxImagesAdded = true;
-      });
-    } else {
-      int currentImage = 1;
-      setState(() {
-        isLoading = true;
-        isLoadingText = AppLocalizations.of(context)!.adding+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
-        maxImagesAdded = false;
-      });
-      for (File f in temp) {
-        // Updating Loading Text
+    if(!brandIsActive) {
+      await navigateToPayWall(context);
+    }
+    else {
+      mixpanel!.timeEvent('brand_images_added');
+      List<File>? temp = await ImageUtils().pickMultipleImage();
+      if ((temp!.length) > (_maxImages-_imagesUploaded.length)) {
+        mixpanel!.track('brand_images_max_images_error');
         setState(() {
-          isLoadingTextExtra =  " (" + currentImage.toString()+"/"+temp.length.toString()+")";
+          maxImagesAdded = true;
         });
-        currentImage += 1;
-        await _brandDataService.addBrandContentPictureIndividual(widget.brandId, f);
+      } else {
+        int currentImage = 1;
+        setState(() {
+          isLoading = true;
+          isLoadingText = AppLocalizations.of(context)!.adding+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+          maxImagesAdded = false;
+        });
+        for (File f in temp) {
+          // Updating Loading Text
+          setState(() {
+            isLoadingTextExtra =  " (" + currentImage.toString()+"/"+temp.length.toString()+")";
+          });
+          currentImage += 1;
+          await _brandDataService.addBrandContentPictureIndividual(widget.brandId, f);
+        }
+        getBrandContentImages();
+        mixpanel!.track('brand_images_added');
       }
-      getBrandContentImages();
-      mixpanel!.track('brand_images_added');
     }
   }
 
@@ -431,28 +436,42 @@ class _BrandImagesState extends State<BrandImages> {
                             child: Center(
                               child: IconButton(
                                 onPressed: () async {
-                                  if(image.isBaseImage != null && image.isBaseImage!) {
-                                    //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
-                                  } else if(canClickFav){
-                                    var result = await showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return FavouriteConfirmationDialog(
-                                              text: AppLocalizations.of(context)!
-                                                  .myImagesFavouriteDescription);
-                                        }
-                                    );
-                                    if (result) {
-                                      setState(() {
-                                        canClickFav = false;
-                                        _imagesUploaded[_imagesUploaded.indexWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
-                                        image.isBaseImage = true;
-                                      });
-                                      await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
-                                      await getBrandContentImages();
-                                      setState(() {
-                                        canClickFav = true;
-                                      });
+                                  if(!brandIsActive) {
+                                    await navigateToPayWall(context);
+                                  }
+                                  else {
+                                    if (image.isBaseImage != null &&
+                                        image.isBaseImage!) {
+                                      //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                                    } else if (canClickFav) {
+                                      var result = await showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return FavouriteConfirmationDialog(
+                                                text: AppLocalizations.of(
+                                                    context)!
+                                                    .myImagesFavouriteDescription);
+                                          }
+                                      );
+                                      if (result) {
+                                        setState(() {
+                                          canClickFav = false;
+                                          _imagesUploaded[_imagesUploaded
+                                              .indexWhere((element) =>
+                                          element.isBaseImage != null &&
+                                              element.isBaseImage == true)]
+                                              .isBaseImage = false;
+                                          image.isBaseImage = true;
+                                        });
+                                        await _brandDataService
+                                            .updateBrandBaseImage(
+                                            widget.brandId, image,
+                                            baseImage.id!);
+                                        await getBrandContentImages();
+                                        setState(() {
+                                          canClickFav = true;
+                                        });
+                                      }
                                     }
                                   }
                                 },
@@ -493,30 +512,39 @@ class _BrandImagesState extends State<BrandImages> {
                             child: Center(
                               child: IconButton(
                                 onPressed: () async {
-                                  if((image.isBaseImage == null ||  !image.isBaseImage!) && canClickFav) {
-                                    var result = await showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return DeleteConfirmationDialog(
-                                              text: AppLocalizations.of(context)!
-                                                  .myImagesDeleteDescription);
-                                        }
-                                    );
-                                    if (result) {
-                                      mixpanel!.track('brand_images_delete');
-                                      setState(() {
-                                        isLoading = true;
-                                        isLoadingText = AppLocalizations.of(context)!.deleting+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
-                                        isLoadingTextExtra =  " (" + 1.toString()+"/"+1.toString()+")";
-                                      });
-                                      await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
-                                      getBrandContentImages();
-                                    }
+                                  if(!brandIsActive) {
+                                    await navigateToPayWall(context);
                                   }
-                                  else
-                                    {
+                                  else {
+                                    if ((image.isBaseImage == null ||
+                                        !image.isBaseImage!) && canClickFav) {
+                                      var result = await showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return DeleteConfirmationDialog(
+                                                text: AppLocalizations.of(
+                                                    context)!
+                                                    .myImagesDeleteDescription);
+                                          }
+                                      );
+                                      if (result) {
+                                        mixpanel!.track('brand_images_delete');
+                                        setState(() {
+                                          isLoading = true;
+                                          isLoadingText = AppLocalizations.of(context)!.deleting+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+                                          isLoadingTextExtra =  " (" + 1.toString()+"/"+1.toString()+")";
+                                        });
+                                        await _brandDataService
+                                            .deleteBrandContentPictures(
+                                            widget.brandId, image.id!,
+                                            image.url!);
+                                        getBrandContentImages();
+                                      }
+                                    }
+                                    else {
                                       //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
                                     }
+                                  }
                                 },
                                 icon: Icon(
                                     Icons.delete_outline,

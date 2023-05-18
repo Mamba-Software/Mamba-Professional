@@ -90,4 +90,7 @@ class BrandDataService {
   Stream<QuerySnapshot> getBonosRequestsFromBrand(String brandId) => _firebase.getBonosRequestsFromBrand(brandId);
   Stream<DocumentSnapshot> getBonoInfoStream(String brandId, String bonoId) => _firebase.getBonoInfoStream(brandId, bonoId);
 
+  //Subscription
+  Stream<DocumentSnapshot> getBrandSubscriptionStream(String brandId) => _firebase.getBrandSubscriptionStream(brandId);
+
 }

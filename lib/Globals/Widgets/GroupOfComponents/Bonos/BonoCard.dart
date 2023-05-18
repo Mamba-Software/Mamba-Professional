@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../../../Data/LibraryModels/lColor.dart';
@@ -801,19 +802,24 @@ class BonoCardState extends State<BonoCard> {
               isExpanded && widget.onlyView == false
                   ? GestureDetector(
                       onTap: () async {
-                        await showModalBottomSheet<bool?>(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20),
+                        if(!brandIsActive) {
+                          await navigateToPayWall(context);
+                        }
+                        else {
+                          await showModalBottomSheet<bool?>(
+                            context: context,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              ),
                             ),
-                          ),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          builder: (BuildContext context) {
-                            return modalBottomSheet();
-                          },
-                        );
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            builder: (BuildContext context) {
+                              return modalBottomSheet();
+                            },
+                          );
+                        }
                       },
                       child: Container(
                         height: widget.height * 0.4,

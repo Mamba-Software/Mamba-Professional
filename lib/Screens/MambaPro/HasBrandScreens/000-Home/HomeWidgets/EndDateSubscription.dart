@@ -132,15 +132,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
                 child: GestureDetector(
                   onTap: () async {
                     mixpanel!.track('brand_see_paywall');
-                    await Navigator.push(
-                        context,
-                        CupertinoPageRoute<bool?>(
-                          builder: (context) =>
-                              PayWall(
-                                brandId: currentBrand.id!,
-                              ),
-                        )
-                    );
+                    await navigateToPayWall(context);
                   },
                   child: Container(
                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
@@ -183,49 +175,11 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
     return   Text(ShowTextExpired? AppLocalizations.of(context)!.subscriptionExpired : AppLocalizations.of(context)!.noSubscription,  style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary), textAlign: TextAlign.center,);
   }
 
-  void navigateToSubscriptionOrPayWall(Subscription subscription)
-  async {
-    if(brandIsActive) {
-      mixpanel!.track('brand_see_active_subscription');
-      await Navigator.push(
-          context,
-          CupertinoPageRoute<bool?>(
-            builder: (context) =>
-                ActiveSubscription(
-                  brandId: currentBrand.id!,
-                  subscription: subscription,
-                ),
-          )
-      );
-      //context.read<BrandSuscriptionCubit>().getBrandSuscription();
-    }
-    else {
-      mixpanel!.track('brand_see_paywall');
-      await Navigator.push(
-          context,
-          CupertinoPageRoute<bool?>(
-            builder: (context) =>
-                PayWall(
-                  brandId: currentBrand.id!,
-                ),
-          )
-      );
-    }
-  }
-
   Widget freeTrialMamba()
   {
     return GestureDetector(
       onTap: () async {
-        await Navigator.push(
-            context,
-            CupertinoPageRoute<bool?>(
-              builder: (context) =>
-                  PayWall(
-                    brandId: currentBrand.id!,
-                  ),
-            )
-        );
+        await navigateToPayWall(context);
       },
       child: Container(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
@@ -260,15 +214,7 @@ class _EndDateSubscriptionState extends State<EndDateSubscription> {
             ),
             trailing: GestureDetector(
               onTap: () async {
-                await Navigator.push(
-                    context,
-                    CupertinoPageRoute<bool?>(
-                      builder: (context) =>
-                          PayWall(
-                            brandId: currentBrand.id!,
-                          ),
-                    )
-                );
+                await navigateToPayWall(context);
               },
               child: Container(
                 height: MediaQuery.of(context).size.height*0.05,

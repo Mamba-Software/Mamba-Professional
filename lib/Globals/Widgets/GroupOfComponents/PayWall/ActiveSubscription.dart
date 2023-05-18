@@ -33,14 +33,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
 
   Future<void> navigateToSubscriptionsScreen() async {
     mixpanel!.track('brand_see_paywall');
-    await Navigator.push(
-        context,
-        CupertinoPageRoute<bool?>(
-          builder: (context) => PayWall(
-            brandId: widget.brandId,
-          ),
-        )
-    );
+    await navigateToPayWall(context);
     setState(() {
     });
   }
@@ -136,8 +129,8 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                             Padding(
                               padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
                               child: Text(
-                                  subscription.unsuscribed!? AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.startDate!.toDate()), formatter.format(subscription.endDate!.toDate()).toString()) :
-                                  AppLocalizations.of(context)!.moreSubInfoRenAut(formatter.format(subscription.startDate!.toDate())),
+                                  subscription.unsuscribed!? AppLocalizations.of(context)!.moreSubInfo(formatter.format(subscription.endDate!.toDate()).toString()) :
+                                  AppLocalizations.of(context)!.moreSubInfoRenAut(formatter.format(subscription.endDate!.toDate())),
                                   style: Theme
                                       .of(context)
                                       .textTheme
@@ -221,15 +214,7 @@ class _ActiveSubscriptionState extends State<ActiveSubscription> {
                                 GestureDetector(
                                   onTap: () async {
                                     mixpanel!.track('brand_see_paywall');
-                                    await Navigator.push(
-                                        context,
-                                        CupertinoPageRoute<bool?>(
-                                          builder: (context) =>
-                                              PayWall(
-                                                brandId: widget.brandId,
-                                              ),
-                                        )
-                                    );
+                                    await navigateToPayWall(context, true);
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(

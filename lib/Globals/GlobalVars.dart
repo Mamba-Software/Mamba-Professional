@@ -5,7 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
@@ -100,17 +102,55 @@ void setBrandActive()
   }
 }
 
-Future<void> navigateToPayWall(var context)
+Future<void> navigateToPayWall(var context, [bool fromActiveSubs = false])
 async {
-  if(!brandIsActive) {
-    await Navigator.pushAndRemoveUntil(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const SplashScreen(),
-        settings: const RouteSettings(name: 'SplashScreen'),
-      ),
-          (_) => false,
-    );
+  final _topSnackBar = TopSnackBarDef();
+  if(currentUser.id == currentBrand.adminID) {
+    if (fromActiveSubs) {
+      await Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              PayWall(
+                brandId: currentBrand.id!,
+              ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 1), // Starts from below
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      ).whenComplete(() {
+        Navigator.pop(context);
+      });
+    }
+    else {
+      await Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              PayWall(
+                brandId: currentBrand.id!,
+              ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, 1), // Empieza desde abajo
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+        ),
+      );
+    }
+  }
+  else {
+    _topSnackBar.showSnackBarBottom(context,  AppLocalizations.of(context)!.notSubNotAdmin, 5);
   }
 }
 
