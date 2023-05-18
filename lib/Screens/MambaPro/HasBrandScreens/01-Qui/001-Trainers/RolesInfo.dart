@@ -1371,9 +1371,10 @@ class RolesInfo extends StatelessWidget {
                                       style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
+                                    const SizedBox(height: 2),
                                     Text(
                                       AppLocalizations.of(context)!.paySubscriptionDesc,
-                                      style: Theme.of(context).textTheme.caption,
+                                      style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 13),
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
