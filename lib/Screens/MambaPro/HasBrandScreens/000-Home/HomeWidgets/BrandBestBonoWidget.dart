@@ -108,10 +108,13 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if(brandIsActive) {
                               mixpanel!.track('brand_homepage_bonos_title');
                               widget.navigateToPage(5);
+                            }
+                            else {
+                              await navigateToPayWall(context);
                             }
                           },
                           child: Row(
@@ -128,10 +131,13 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                           ),
                         ),
                         bonoMostBuys == null ? Text("") : TextButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if(brandIsActive) {
                               mixpanel!.track('brand_homepage_bonos_most_buys');
                               widget.navigateToPage(5);
+                            }
+                            else {
+                              await navigateToPayWall(context);
                             }
                           },
                           child: Text(
@@ -214,6 +220,9 @@ class _BrandBestBonoWidgetState extends State<BrandBestBonoWidget> {
                                             );
                                             await Future.delayed(const Duration(seconds: 1));
                                             widget.navigateToPage(5);
+                                          }
+                                          else {
+                                            await navigateToPayWall(context);
                                           }
                                       },
                                       child: Text(

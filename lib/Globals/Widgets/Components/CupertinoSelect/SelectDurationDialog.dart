@@ -38,7 +38,7 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
@@ -52,7 +52,6 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
@@ -92,21 +91,21 @@ class _SelectDurationDialogState extends State<SelectDurationDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: TextButton(
-                      child: Text(
-                          AppLocalizations.of(context)!.entendido,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context, pickedDuration);
-                      }
+                FloatingActionButton.extended(
+                  heroTag: "41",
+                  onPressed: () {
+                    Navigator.pop(context, pickedDuration);
+                  },
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Container(),
+                  label: Text(
+                      AppLocalizations.of(context)!.confirm,
+                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
                   ),
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            SizedBox(height: MediaQuery.of(context).size.height*0.04),
           ],
         ),
       ),

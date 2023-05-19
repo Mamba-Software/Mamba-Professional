@@ -3,9 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -19,7 +22,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../../../Providers/ThemeProvider.dart';
 
 class PayWall extends StatefulWidget {
@@ -41,18 +44,18 @@ class _PayWallState extends State<PayWall> {
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
   final _promotionDataService = PromotionsDataService();
+  final _settingsDataService = SettingsDataService();
   String? brandId = '';
 
   //PayWall
   bool seePromotions = true;
   bool loadingPromotions = false;
+  int activeSubscription = -1;
   var promotionController = TextEditingController();
   Subscription subscritionPromo = Subscription();
   List<Subscription> subscriptionList = [];
   double finalSizeBox = 0.01;
   final _topSnackBar = TopSnackBarDef();
-  String textToShow = "";
-  String title = "";
 
 
   // Boolean Loading
@@ -68,14 +71,55 @@ class _PayWallState extends State<PayWall> {
 
   Future<void> getSubscriptions()
   async {
-    if(subscritionPromo.id == null)
-      {
-        subscriptionList = await _promotionDataService.getSubscriptions("");
+    List<Subscription> subscriptionListAux = [];
+    subscriptionList.clear();
+    if(currentBrand.subscription == null) {
+      if (subscritionPromo.id == null) {
+        subscriptionListAux = await _promotionDataService.getSubscriptions("", currentBrand.id!);
       }
-    else
-      {
-        subscriptionList = await _promotionDataService.getSubscriptions(subscritionPromo.id);
+      else {
+        subscriptionListAux =
+        await _promotionDataService.getSubscriptions(subscritionPromo.id, currentBrand.id!);
       }
+      for (int j = 0; j < subscriptionListAux.length; ++j) {
+        if (currentUser.idioma == "ca") {
+          subscriptionListAux[j].descriptionAdapted =
+              subscriptionListAux[j].description;
+        }
+        subscriptionList.add(subscriptionListAux[j]);
+      }
+    }
+    try {
+      Purchases.getCustomerInfo();
+      String monthFree = await _settingsDataService.checkMonthOffer();
+      Brand brand = await _brandDataService.getBrandDetails(currentBrand.id!);
+      Offerings offerings = await Purchases.getOfferings();
+      if (offerings.current != null && offerings.current?.monthly != null) {
+        if(offerings.current?.monthly?.storeProduct != null)
+        {
+          Subscription subMonth = Subscription.fromOfferingAllData(offerings.current?.monthly!.storeProduct, AppLocalizations.of(context)!.perMonth, offerings.current!.monthly!);
+          DateFormat format = DateFormat('dd-MM-yyyy');
+          if(brand.subscription == null && (brand.dateJoined != null && format.parse(brand.dateJoined!).isAfter(format.parse(monthFree))))
+          {
+            subMonth.priceString = "";
+            subMonth.descriptionAdapted = 'Primer mes gratis';
+          }
+
+          subscriptionList.add(subMonth);
+        }
+      }
+      if (offerings.current != null && offerings.current?.annual != null) {
+        print(offerings.current?.annual!.storeProduct);
+        //print(offerings.current?.annual!.storeProduct);
+        if(offerings.current?.annual?.storeProduct != null)
+        {
+          subscriptionList.add(Subscription.fromOfferingAllData(offerings.current?.annual!.storeProduct, AppLocalizations.of(context)!.perYear, offerings.current!.annual!));
+        }
+        // Get the price and introductory period from the Product
+      }
+    }  catch (e) {
+      // optional error handling
+    }
     finalSizeBox = subscriptionList.length * 0.07;
     setState(() {
       loadingPromotions = false;
@@ -90,22 +134,6 @@ class _PayWallState extends State<PayWall> {
     await _promotionDataService
         .getValidSubscription(
         promotionController.text, widget.brandId);
-    if(subscritionPromo.id != null)
-      {
-        title = subscritionPromo.title!;
-        if(currentUser.idioma == 'es')
-          {
-            textToShow = subscritionPromo.descriptionEsp!;
-          }
-        else if(currentUser.idioma == 'ca')
-          {
-            textToShow = subscritionPromo.descriptionCat!;
-          }
-        else
-          {
-            textToShow = subscritionPromo.descriptionEsp!;
-          }
-      }
     if(fromSeeSubsc)
     {
       setState(() {
@@ -195,7 +223,6 @@ class _PayWallState extends State<PayWall> {
           ),
         ),
         persistentFooterButtons:   <Widget>[Container(
-
           child:
           seePromotions
               ? Padding(
@@ -216,11 +243,6 @@ class _PayWallState extends State<PayWall> {
                       setState(() {
                         loadingPromotions = true;
                       });
-                      if( !await _promotionDataService.checkIfBrandUsedSubscription('FITNESSISBUSINESS', widget.brandId))
-                        {
-                          promotionController.text = 'FITNESSISBUSINESS';
-                          await getPromotion();
-                        }
                       await getSubscriptions();
                     },
                     child: Center(
@@ -232,14 +254,13 @@ class _PayWallState extends State<PayWall> {
                         width: MediaQuery.of(context).size.width * 0.90,
                         height: MediaQuery.of(context).size.height * 0.07,
                         child:  Center(
-                          child: Text(
+                          child: loadingPromotions? LoadingView(isSmall: true, color: AppColors.white, hasLogo: false,) : Text(
                             AppLocalizations.of(context)!.seeSubscriptionPayWall,
                             style: Theme.of(context)
                                 .textTheme
                                 .headline1
                                 ?.copyWith(
-                              color: Theme.of(context)
-                                  .primaryColorDark,
+                              color: AppColors.white,
                             ),
                           ),
 
@@ -500,248 +521,42 @@ class _PayWallState extends State<PayWall> {
 
   Widget generateOneSubscription(int index)
   {
-    if(index == subscriptionList.length - 1)
-      {
-        return GestureDetector(
-            onTap: () async {
-              mixpanel!.track('brand_clicked_subscription');
-              FocusManager.instance.primaryFocus?.unfocus();
-              //
-              if( !await _promotionDataService.checkIfBrandUsedSubscription('FITNESSISBUSINESS', widget.brandId)) {
-                setState(() {
-                  promotionController.text = 'FITNESSISBUSINESS';
-                });
-
-                await showModalBottomSheet<int?>(
-                  context: context,
-                  isScrollControlled: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(20),
-                    ),
-                  ),
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  builder: (BuildContext context) {
-                    // Page View Controller
-                    final PageController _pageController = PageController(
-                        initialPage: 0);
-                    int _currentPage = 0;
-                    bool isRoles = true;
-                    // Widget
-                    return StatefulBuilder(
-                      builder: (BuildContext context,
-                          StateSetter setStateBottom) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.40,
-                          child: SizedBox(
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.5,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
-                            child: Padding(
-                              padding: EdgeInsets.all(MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.02),
-                              child: Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children: [
-                                  ListTile(
-                                    title: Text(
-                                        'Mamba Pro',
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .caption,
-                                        textAlign: TextAlign.left
-                                    ),
-                                    trailing: Text(
-                                        AppLocalizations.of(context)!.subscriptionsAppBar,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .caption
-                                    ),
-                                    dense: true,
-                                  ),
-                                  Divider(color: Theme
-                                      .of(context)
-                                      .dividerColor,
-                                      thickness: 1.5,
-                                      indent: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width * 0.05,
-                                      endIndent: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width * 0.05),
-                                  ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.asset(
-                                        Constants.subscriptionImage,),
-                                    ),
-                                    title: Text(
-                                        title,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .bodyText1,
-                                        textAlign: TextAlign.left
-                                    ),
-                                    subtitle: Text(
-                                        'Fitness is Business',
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .caption
-                                    ),
-                                    dense: true,
-                                  ),
-                                  ListTile(
-                                    title: Row(
-                                      children: [
-                                        Text(AppLocalizations.of(context)!.uniquePromotion),
-                                        Icon(
-                                          Icons.done,
-                                          color: Colors.green,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  ListTile(
-                                    title: Text(
-                                        AppLocalizations.of(context)!.startToday,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .bodyText1,
-                                        textAlign: TextAlign.left
-                                    ),
-                                    trailing: Text(
-                                        textToShow,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .bodyText1
-                                    ),
-                                    dense: true,
-                                  ),
-                                  ListTile(
-                                      title: Center(
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            mixpanel!.track('brand_subscribed');
-                                            await _brandDataService
-                                                .updateBrandPay(widget.brandId,
-                                                subscritionPromo.duration!,
-                                                subscritionPromo.id!, subscritionPromo.title!);
-                                           // currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
-                                            Navigator.pushAndRemoveUntil(
-                                              context,
-                                              CupertinoPageRoute<void>(
-                                                builder: (context) => const SplashScreen(),
-                                                settings: const RouteSettings(name: 'SplashScreen'),
-                                              ),
-                                                  (_) => false,
-                                            );
-                                          },
-                                          child: Center(
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: AppColors.mainColor,
-                                                borderRadius: BorderRadius
-                                                    .circular(10),
-                                              ),
-                                              width: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width * 0.90,
-                                              height: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .height * 0.05,
-                                              child: Center(
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.subscribeNow,
-                                                    style: Theme
-                                                        .of(context)
-                                                        .textTheme
-                                                        .bodyText1
-                                                        ?.copyWith(
-                                                        fontWeight: FontWeight
-                                                            .bold,
-                                                        color: AppColors.black
-                                                    ),
-                                                  )
-
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
-              }
-              else
-                {
-                  _topSnackBar.showSnackBarTop(context, AppLocalizations.of(context)!.youCanPurcahseNow, AppColors.mainColor);
-                }
-            },
-            child: Center(
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColors.mainColor,
-                      width: 1,
-                    ),
-                    color: AppColors.mainColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                width: MediaQuery.of(context).size.width * 0.90,
-                height: MediaQuery.of(context).size.height * 0.07,
-                child:  Center(
-                  child: Text(
-                    currentUser.idioma == 'ca'? subscriptionList[index].descriptionCat! : subscriptionList[index].descriptionEsp!,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline1
-                        ?.copyWith(
-                      color: Theme.of(context)
-                          .primaryColorDark,
-                    ),
-                  ),
-
-                ),
-              ),
-            )
-        );
-      }
     return Column(
       children: [
         GestureDetector(
             onTap: () async {
+              setState(() {
+                activeSubscription = index;
+              });
               mixpanel!.track('brand_clicked_subscription');
               FocusManager.instance.primaryFocus?.unfocus();
-              //_topSnackBar.topsnackbar(context, 'Te regalamos la promoción 3MONTHS, disfruta de 3 meses gratuitos', AppColors.mainColor);
-              if( !await _promotionDataService.checkIfBrandUsedSubscription('FITNESSISBUSINESS', widget.brandId)) {
-                setState(() {
-                  promotionController.text = 'FITNESSISBUSINESS';
-                });
+              if(subscriptionList[index].package != null) {
+                try {
+                  var purchaserInfo = await Purchases.purchasePackage(
+                      subscriptionList[index].package!);
+                  if (purchaserInfo.entitlements.active.isNotEmpty &&
+                      purchaserInfo.entitlements.all[entitlementID]!.isActive) {
+                    mixpanel!.track('brand_subscribed');
+                    _brandDataService.updateBrandSubscriptionRevenueCat(
+                        currentBrand.id!,
+                        purchaserInfo.entitlements.all[entitlementID]!
+                            .expirationDate,
+                        purchaserInfo.entitlements.all[entitlementID]!
+                            .originalPurchaseDate,
+                        purchaserInfo.entitlements.all[entitlementID]!
+                            .productIdentifier,
+                        purchaserInfo.entitlements.all[entitlementID]!
+                            .unsubscribeDetectedAt);
+                    Navigator.pop(context);
+                  }
+                } on PlatformException catch (e) {
+                  var errorCode = PurchasesErrorHelper.getErrorCode(e);
+                  if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+                    ('ERROR ON PURCHASING');
+                  }
+                }
+              }
+              else {
                 await showModalBottomSheet<int?>(
                   context: context,
                   isScrollControlled: true,
@@ -758,179 +573,14 @@ class _PayWallState extends State<PayWall> {
                     int _currentPage = 0;
                     bool isRoles = true;
                     // Widget
-                    return StatefulBuilder(
-                      builder: (BuildContext context,
-                          StateSetter setStateBottom) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.40,
-                          child: SizedBox(
-                            height: MediaQuery
-                                .of(context)
-                                .size
-                                .height * 0.5,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width,
-                            child: Padding(
-                              padding: EdgeInsets.all(MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.02),
-                              child: Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                children: [
-                                  ListTile(
-                                    title: Text(
-                                        'Mamba Pro',
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .caption,
-                                        textAlign: TextAlign.left
-                                    ),
-                                    trailing: Text(
-                                        AppLocalizations.of(context)!.subscriptionsAppBar,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .caption
-                                    ),
-                                    dense: true,
-                                  ),
-                                  Divider(color: Theme
-                                      .of(context)
-                                      .dividerColor,
-                                      thickness: 1.5,
-                                      indent: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width * 0.05,
-                                      endIndent: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width * 0.05),
-                                  ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10),
-                                      child: Image.asset(
-                                        Constants.subscriptionImage,),
-                                    ),
-                                    title: Text(
-                                        title,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .bodyText1,
-                                        textAlign: TextAlign.left
-                                    ),
-                                    subtitle: Text(
-                                        'Fitness is Business',
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .caption
-                                    ),
-                                    dense: true,
-                                  ),
-                                  ListTile(
-                                    title: Row(
-                                      children: [
-                                        Text(AppLocalizations.of(context)!.uniquePromotion),
-                                        Icon(
-                                          Icons.done,
-                                          color: Colors.green,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  ListTile(
-                                    title: Text(
-                                        AppLocalizations.of(context)!.startToday,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .bodyText1,
-                                        textAlign: TextAlign.left
-                                    ),
-                                    trailing: Text(
-                                        textToShow,
-                                        style: Theme
-                                            .of(context)
-                                            .textTheme
-                                            .bodyText1
-                                    ),
-                                    dense: true,
-                                  ),
-                                  ListTile(
-                                      title: Center(
-                                        child: GestureDetector(
-                                          onTap: () async {
-                                            mixpanel!.track('brand_subscribed');
-                                            await _brandDataService
-                                                .updateBrandPay(widget.brandId,
-                                                subscritionPromo.duration!,
-                                                subscritionPromo.id!, subscritionPromo.title!);
-                                            //currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
-                                            Navigator.pushAndRemoveUntil(
-                                              context,
-                                              CupertinoPageRoute<void>(
-                                                builder: (context) => const SplashScreen(),
-                                                settings: const RouteSettings(name: 'SplashScreen'),
-                                              ),
-                                                  (_) => false,
-                                            );
-                                          },
-                                          child: Center(
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: AppColors.mainColor,
-                                                borderRadius: BorderRadius
-                                                    .circular(10),
-                                              ),
-                                              width: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width * 0.90,
-                                              height: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .height * 0.05,
-                                              child: Center(
-                                                  child: Text(
-                                                    AppLocalizations.of(context)!.subscribeNow,
-                                                    style: Theme
-                                                        .of(context)
-                                                        .textTheme
-                                                        .bodyText1
-                                                        ?.copyWith(
-                                                        fontWeight: FontWeight
-                                                            .bold,
-                                                        color: AppColors.black
-                                                    ),
-                                                  )
-
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
+                    return ModalBuy(subscriptionList[index]);
                   },
                 );
               }
-              else
-              {
-                _topSnackBar.showSnackBarTop(context, AppLocalizations.of(context)!.youCanPurcahseNow, AppColors.mainColor);
-              }
+              setState(() {
+                activeSubscription = -1;
+              });
+              //
             },
             child: Center(
               child: Container(
@@ -939,19 +589,27 @@ class _PayWallState extends State<PayWall> {
                     color: AppColors.mainColor,
                     width: 1,
                   ),
+                  color: index == subscriptionList.length - 1? AppColors.mainColor : null,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 width: MediaQuery.of(context).size.width * 0.90,
                 height: MediaQuery.of(context).size.height * 0.07,
                 child:  Center(
-                  child: Text(
-                    currentUser.idioma == 'ca'? subscriptionList[index].descriptionCat! : subscriptionList[index].descriptionEsp!,
+                  child: (activeSubscription == index)? LoadingView(isSmall: true, color: index == subscriptionList.length - 1 ? AppColors.white : AppColors.mainColor, hasLogo: false,) : index == subscriptionList.length - 1? Text(
+                    subscriptionList[index].package == null? subscriptionList[index].descriptionAdapted! : subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
+                    style:  Theme.of(context)
+                        .textTheme
+                        .headline1
+                        ?.copyWith(
+                      color: AppColors.white,
+                    ),
+                  ) : Text(
+                    subscriptionList[index].package == null? subscriptionList[index].descriptionAdapted! : subscriptionList[index].priceString! + ' ' + subscriptionList[index].descriptionAdapted!,
                     style: Theme.of(context)
                         .textTheme
                         .headline1
                         ?.copyWith(
-                      color: Theme.of(context)
-                          .primaryColor,
+                      color: AppColors.white,
                     ),
                   ),
 
@@ -959,10 +617,175 @@ class _PayWallState extends State<PayWall> {
               ),
             )
         ),
-        SizedBox(
+        index == subscriptionList.length - 1? Container() : SizedBox(
             height: MediaQuery.of(context).size.height *
                 0.02),
       ],
+    );
+  }
+
+  Widget ModalBuy(Subscription sub)
+  {
+    return StatefulBuilder(
+      builder: (BuildContext context,
+          StateSetter setStateBottom) {
+        return FractionallySizedBox(
+          heightFactor: 0.40,
+          child: SizedBox(
+            height: MediaQuery
+                .of(context)
+                .size
+                .height * 0.5,
+            width: MediaQuery
+                .of(context)
+                .size
+                .width,
+            child: Padding(
+              padding: EdgeInsets.all(MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.02),
+              child: Column(
+                mainAxisAlignment:
+                MainAxisAlignment.start,
+                children: [
+                  ListTile(
+                    title: Text(
+                        'Mamba Pro',
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption,
+                        textAlign: TextAlign.left
+                    ),
+                    trailing: Text(
+                        AppLocalizations.of(context)!.subscriptionsAppBar,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption
+                    ),
+                    dense: true,
+                  ),
+                  Divider(color: Theme
+                      .of(context)
+                      .dividerColor,
+                      thickness: 1.5,
+                      indent: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.05,
+                      endIndent: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.05),
+                  ListTile(
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        Constants.subscriptionImage,),
+                    ),
+                    title: Text(
+                        sub.title!,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1,
+                        textAlign: TextAlign.left
+                    ),
+                    subtitle: Text(
+                        'Fitness is Business',
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .caption
+                    ),
+                    dense: true,
+                  ),
+                  ListTile(
+                    title: Row(
+                      children: [
+                        Text(AppLocalizations.of(context)!.uniquePromotion),
+                        Icon(
+                          Icons.done,
+                          color: Colors.green,
+                        ),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    title: Text(
+                        AppLocalizations.of(context)!.startToday,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1,
+                        textAlign: TextAlign.left
+                    ),
+                    trailing: Text(
+                        sub.descriptionAdapted!,
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyText1
+                    ),
+                    dense: true,
+                  ),
+                  ListTile(
+                      title: Center(
+                        child: GestureDetector(
+                          onTap: () async {
+                            mixpanel!.track('brand_subscribed');
+                            await _brandDataService
+                                .updateBrandPay(widget.brandId,
+                                sub.duration!,
+                                sub.id!,
+                                sub.title!, DateTime.now(), false);
+                              // currentBrand.setBasicData = await _brandDataService.getBrandDetails(widget.brandId);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.mainColor,
+                                borderRadius: BorderRadius
+                                    .circular(10),
+                              ),
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.90,
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height * 0.05,
+                              child: Center(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.subscribeNow,
+                                    style: Theme
+                                        .of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        ?.copyWith(
+                                        fontWeight: FontWeight
+                                            .bold,
+                                        color: AppColors.black
+                                    ),
+                                  )
+
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 

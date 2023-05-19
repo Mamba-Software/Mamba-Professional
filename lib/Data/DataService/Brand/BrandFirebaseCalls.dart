@@ -532,7 +532,7 @@ class BrandFirebaseCalls {
     //int index = 0;
 
     bool firestoreError = false;
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
@@ -586,11 +586,32 @@ class BrandFirebaseCalls {
     });
   }
 
+  Future<void> addBrandContentPictureIndividual(String brandID, File image) async {
+    // Add each brand to the .../BrandId/images directory
+    final uid = const Uuid().v4();
+    // Upload the image to Firebase Storage
+    var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + uid + ".jpeg");
+    var uploadTask = storageRef.putFile(image);
+    await uploadTask.whenComplete(() async {
+      await storageRef.getDownloadURL().then((value) async {
+        // Add Image to the Brand Images Subcollection
+        await _firestore.collection(brands).doc(brandID)
+        .collection("Images")
+        .doc(uid)
+        .set({
+          "url": value,
+          "timestamp": Timestamp.now(),
+          "isBaseImage": false,
+        });
+      });
+    });
+  }
+
   Future<void> addBrandContentPictures(String brandID, List<File> images) async {
     // Add each brand to the .../BrandId/images directory
     for (var i=0; i<images.length; i++) {
       var image = images[i];
-      final uid = Uuid().v4();
+      final uid = const Uuid().v4();
       // Upload the image to Firebase Storage
       var storageRef = _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + uid + ".jpeg");
       var uploadTask = storageRef.putFile(image);
@@ -623,7 +644,7 @@ class BrandFirebaseCalls {
   }
 
   Future<void> addBonoToBrand(String brandId, Bono bono, Condition condition) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -650,7 +671,7 @@ class BrandFirebaseCalls {
   }
 
   Future<void> addBonoRequestToBrand(String brandId, String userId, String bonoId, String title, String price, String classes, Timestamp timeRequested) async {
-    var uid = Uuid().v4();
+    var uid = const Uuid().v4();
     await _firestore
         .collection(brands)
         .doc(brandId)
@@ -785,30 +806,67 @@ class BrandFirebaseCalls {
     });
   }
 
-  Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title) async {
-    DateTime now = DateTime.now();
+  Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title, DateTime endDate, bool revenueCatSub) async {
     Timestamp initTime = Timestamp.fromDate(DateTime.now());
-    var temp = now.add(Duration(days: time));
-    Timestamp endTime = Timestamp.fromDate(temp);
-    var uid = Uuid().v4();
-    await _firestore
-        .collection(brands)
-        .doc(brandID)
-        .collection("Subscriptions")
-        .doc(uid)
-        .set({
-      "subscriptionId": subscriptionId,
-      "endDate": endTime,
-      "startDate": initTime,
-      "isActive": true,
-      "title": title,
-    });
+    Timestamp endTime = Timestamp.fromDate(DateTime.now());
+    var uid = const Uuid().v4();
+    if(!revenueCatSub) {
+      DateTime now = DateTime.now();
+      initTime = Timestamp.fromDate(DateTime.now());
+      var temp = now.add(Duration(days: time));
+      endTime = Timestamp.fromDate(temp);
+      await _firestore
+          .collection(brands)
+          .doc(brandID)
+          .collection("Subscriptions")
+          .doc(uid)
+          .set({
+        "subscriptionId": subscriptionId,
+        "endDate": endTime,
+        "startDate": initTime,
+        "isActive": true,
+        "title": title,
+      });
+    }
+    else
+      {
+        initTime = Timestamp.fromDate(DateTime.now());
+        endTime = Timestamp.fromDate(endDate);
+        await _firestore
+            .collection(brands)
+            .doc(brandID)
+            .collection("Subscriptions")
+            .doc(uid)
+            .set({
+          "subscriptionId": subscriptionId,
+          "endDate": endTime,
+          "startDate": initTime,
+          "isActive": true,
+          "title": title,
+          "isRevenueCat": revenueCatSub,
+        });
+      }
+
     await _firestore.collection(brands).doc(brandID).update({
       "endDatePay": endTime,
       "subscriptionId": uid,
     });
     await _firestore.collection(subscriptions).doc(subscriptionId).collection('Brands').doc(brandID).set({
       "useDate": initTime,
+    });
+  }
+
+  Future<void> updateBrandSubscriptionRevenueCat(String brandID,String? expires_date, String? original_purchase_date, String? product_plan_identifier, String? unsuscribedAT) async {
+    Map<String, dynamic> map = {
+      "expires_date": expires_date,
+      "original_purchase_date": original_purchase_date,
+      "product_plan_identifier": product_plan_identifier,
+      "brandIsActive": true,
+      "unsuscribed": (unsuscribedAT == null) ? false : true,
+    };
+    print(map);
+    await _firestore.collection(brands).doc(brandID).update({
+      "subscription": map,
     });
   }
 
@@ -1052,6 +1110,14 @@ class BrandFirebaseCalls {
         .doc(brandId)
         .collection("Bonos")
         .doc(bonoId)
+        .snapshots();
+  }
+
+  //Get subscription from brand
+  Stream<DocumentSnapshot> getBrandSubscriptionStream(String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
         .snapshots();
   }
 

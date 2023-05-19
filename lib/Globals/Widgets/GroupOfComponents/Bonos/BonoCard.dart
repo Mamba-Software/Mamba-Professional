@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import '../../../../Data/LibraryModels/lColor.dart';
@@ -24,6 +25,7 @@ class BonoCard extends StatefulWidget {
   bool? isExpanded;
   bool? onlyView;
   bool? clientView;
+  bool? hideActive;
 
   BonoCard({
     Key? key,
@@ -35,6 +37,7 @@ class BonoCard extends StatefulWidget {
     required this.canExpand,
     this.isExpanded,
     this.clientView,
+    this.hideActive,
     required this.onlyView,
   }) : super(key: key);
 
@@ -357,6 +360,7 @@ class BonoCardState extends State<BonoCard> {
                                             SizedBox(
                                               width: widget.width * 0.05,
                                             ),
+                                            widget.hideActive == true ? Container() :
                                             bono.isActive! == false ? SizedBox(
                                               height: widget.height * 0.15,
                                               width: widget.width * 0.2,
@@ -798,19 +802,24 @@ class BonoCardState extends State<BonoCard> {
               isExpanded && widget.onlyView == false
                   ? GestureDetector(
                       onTap: () async {
-                        await showModalBottomSheet<bool?>(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20),
+                        if(!brandIsActive) {
+                          await navigateToPayWall(context);
+                        }
+                        else {
+                          await showModalBottomSheet<bool?>(
+                            context: context,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              ),
                             ),
-                          ),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          builder: (BuildContext context) {
-                            return modalBottomSheet();
-                          },
-                        );
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            builder: (BuildContext context) {
+                              return modalBottomSheet();
+                            },
+                          );
+                        }
                       },
                       child: Container(
                         height: widget.height * 0.4,
@@ -1068,15 +1077,25 @@ class BonoCardState extends State<BonoCard> {
   // Navigate to Add Bonos
   Future<void> navigateToAddBonosScreen(Bono bono, Brand brand, bool edit, bool duplicate, bool delete) async {
     isExpanded = false;
+
     await Navigator.push(
       context,
       CupertinoPageRoute<void>(
-        builder: (context) => AddEditBono(
-          brand: brand,
-          bono: bono,
-          edit: edit,
-          duplicate: duplicate,
-          delete: delete,
+        builder: (context) => GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            }
+          },
+          child: AddEditBono(
+            brand: brand,
+            bono: bono,
+            edit: edit,
+            duplicate: duplicate,
+            delete: delete,
+          ),
         ),
       )).whenComplete(() => {
         if (isModalClicked) {

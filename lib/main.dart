@@ -24,11 +24,14 @@ import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'dart:io' show Platform;
 
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
+import 'Globals/store_config.dart';
 import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 
 // Declaring Instance of AppThemes();
@@ -65,6 +68,7 @@ Future<void> main() async {
         trackAutomaticEvents: true,
         optOutTrackingDefault: false
     );
+    await initPlatformState();
     // Run App
     runApp(
       MultiProvider(
@@ -85,6 +89,20 @@ Future<void> main() async {
   }, (error, stackTrace) {
     FirebaseCrashlytics.instance.recordError(error, stackTrace);
   });
+
+}
+
+Future<void> initPlatformState() async {
+
+  await Purchases.setLogLevel(LogLevel.debug);
+
+  if (Platform.isAndroid) {
+    PurchasesConfiguration configuration = PurchasesConfiguration(googleApiKey);
+    await Purchases.configure(configuration);
+  } else if (Platform.isIOS) {
+    PurchasesConfiguration configuration = PurchasesConfiguration(appleApiKey);
+    await Purchases.configure(configuration);
+  }
 
 }
 
@@ -125,6 +143,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
     }
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {

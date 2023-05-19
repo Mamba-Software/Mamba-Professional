@@ -83,7 +83,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
   }
   
   // Navigate to Notifications Screen
-  void navigateToNotificationsScreen() {
+  Future<void> navigateToNotificationsScreen() async {
     if(brandIsActive)
     {
     Navigator.push(
@@ -98,10 +98,13 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
       });
     });
     }
+    else {
+      await navigateToPayWall(context);
+    }
   }
 
   // Navigate to Notifications Screen
-  void navigateToChatScreen() {
+  Future<void> navigateToChatScreen() async {
     if(brandIsActive) {
       Navigator.push(
           context,
@@ -116,10 +119,13 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
         });
       });
     }
+    else {
+      await navigateToPayWall(context);
+    }
   }
 
   // Navigate to Event Screen on Tap
-  void navigateToEventScreen(String eventId) {
+  Future<void> navigateToEventScreen(String eventId) async {
     if(brandIsActive) {
       mixpanel!.track('brand_homepage_user_event_view');
       // Navigate to Event Screen
@@ -132,6 +138,9 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                 ),
           )
       );
+    }
+    else {
+      await navigateToPayWall(context);
     }
   }
 

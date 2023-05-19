@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -19,8 +23,10 @@ final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
 class LocalNotificationService {
 
   // Data Service
-  var _userDataService = new UserDataService();
-  var _eventDataService = new EventDataService();
+  final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
+  final _purchaseDataService = PurchaseDataService();
   
   // Variables 
   static final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -177,12 +183,6 @@ class LocalNotificationService {
     //      LocalNotifications only send String payload
     //      Remote Firebase Notifications we send the whole Notification with Arguments
     print("onClickedNotification. Payload....");
-    print(payload);
-    setBrandActive();
-    if(!brandIsActive)
-      {
-        payload = "SplashScreen";
-      }
     switch (payload) {
       case "SplashScreen":
         break;
@@ -477,6 +477,74 @@ class LocalNotificationService {
     for (int i = 0; i < eventNotifications.length; i++) {
       ReceivedNotification notif = eventNotifications[i];
       _userDataService.deleteLocalNotification(userId, notif.id!.toString());
+    }
+  }
+
+  // ADD/DELETE BONO REMOTE NOTIFICATION
+
+  Future<void> addRemoteBonoExpirationLocalNotification(BuildContext context, String purchaseId) async {
+    // Getting Purchase Data
+    Purchase purchase = await _purchaseDataService.getPurchaseInfo(purchaseId);
+    // Send only if there is an expiration condition
+    if (purchase.bono!.condition!.expirationTime != 0) {
+      String title = "";
+      String body = "";
+      String payload = "";
+      // Getting Bono Data
+      String brandId = purchase.brandId!;
+      Bono bono = purchase.bono!;
+      // Setting the three differents notifications
+      DateTime purchasedDate = purchase.purchasedAt!.toDate();
+      purchasedDate = DateTime(purchasedDate.year, purchasedDate.month, purchasedDate.day+1, 9);
+      DateTime expirationDate = purchasedDate.add(Duration(days:bono.condition!.expirationTime!));
+      /// NOTIFICATION 1 DAY BEFORE
+      DateTime oneDayBefore = expirationDate.subtract(const Duration(days: 1));
+      // This means the Bono has finished with this session
+      title = AppLocalizations.of(context)!.bonoExpirationTomorrowTitleNotification(bono.title!.toUpperCase());
+      body = AppLocalizations.of(context)!.bonoExpirationTomorrowBodyNotification;
+      payload = "E-"+brandId;
+      // Notification 1 Day before
+      ReceivedNotification notificationOneDayBefore = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: title,
+        body: body,
+        payload: payload,
+        createdAt: Timestamp.now(),
+        firesAt: oneDayBefore,
+        purchaseId: purchase.id,
+      );
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(purchase.userId!, notificationOneDayBefore);
+      // To make sure not the same Timestamp
+      await Future.delayed(const Duration(seconds: 1));
+      /// NOTIFICATION 7 DAYS BEFORE
+      DateTime oneWeekBefore = expirationDate.subtract(const Duration(days: 1));
+      // This means the Bono has finished with this session
+      title = AppLocalizations.of(context)!.bonoExpirationWeekTitleNotification(bono.title!.toUpperCase());
+      body = AppLocalizations.of(context)!.bonoExpirationWeekBodyNotification;
+      payload = "E-"+brandId;
+      // Notification 1 Day before
+      ReceivedNotification notificationOneWeekBefore = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        title: title,
+        body: body,
+        payload: payload,
+        createdAt: Timestamp.now(),
+        firesAt: oneWeekBefore,
+        purchaseId: purchase.id,
+      );
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(purchase.userId!, notificationOneWeekBefore);
+    }
+  }
+
+  Future<void> deleteRemoteBonoExpirationLocalNotification(String userId, String bonoId, String purchaseId) async {
+    // Find Notifications under this Event Id.
+    List<ReceivedNotification> bonoNotifications = await _userDataService.findBonoLocalNotification(userId, bonoId, purchaseId);
+    // Delete the ones that have been fired
+    for (int i = 0; i < bonoNotifications.length; i++) {
+      ReceivedNotification notif = bonoNotifications[i];
+      _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
     }
   }
 

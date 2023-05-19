@@ -504,7 +504,14 @@ class _Clients extends State<Clients> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded || searchClicked ? Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: Colors.white),) : Container(),
+            title: AnimatedOpacity(
+                opacity: appBarExpanded || searchClicked  ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                    AppLocalizations.of(context)!.clients,
+                    style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
+                )
+            ),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
