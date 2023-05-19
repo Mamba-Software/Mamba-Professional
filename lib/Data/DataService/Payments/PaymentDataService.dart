@@ -13,7 +13,7 @@ class PaymentDataService {
   // Get Data
 
   // Add Data
-  Future<void> addPurchaseToPayments(Purchase purchase, Bono bonoSelected) => _firebase.addPurchaseToPayments(purchase, bonoSelected);
+  Future<String> addPurchaseToPayments(Purchase purchase, Bono bonoSelected) => _firebase.addPurchaseToPayments(purchase, bonoSelected);
 
   // Update Data
 

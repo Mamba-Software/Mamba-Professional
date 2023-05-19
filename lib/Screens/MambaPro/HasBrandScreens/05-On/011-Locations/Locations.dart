@@ -203,63 +203,102 @@ class _LocationsState extends State<Locations> {
                                 height: MediaQuery.of(context).size.height*0.08,
                                 child: canEdit ? IconButton(
                                   onPressed: () async {
-                                    mixpanel!.timeEvent('brand_locations_added');
-                                    // Generate a new token here
-                                    final sessionToken = const Uuid().v4();
-                                    final language = currentUser.idioma;
-                                    final Suggestion? result = await showSearch(
-                                      context: context,
-                                      delegate: AddressSearch(sessionToken, language!),
-                                    );
-                                    // We have a result for our locations search
-                                    if (result!.placeId != "") {
-                                      // Reload the Map
-                                      setState(() {
-                                        isLoading = true;
-                                        loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
-                                      });
-                                      Location location = Location();
-                                      location.placeId = result.placeId;
-                                      final placeDetails = await LocationPlacesSearch(sessionToken, language).getPlaceDetailFromId(location.placeId!);
-                                      // Get the information on Strings
-                                      if (placeDetails.street!=null) {
-                                        location.street = placeDetails.street!;
+                                    if(!brandIsActive) {
+                                      await navigateToPayWall(context);
+                                    }
+                                    else {
+                                      mixpanel!.timeEvent(
+                                          'brand_locations_added');
+                                      // Generate a new token here
+                                      final sessionToken = const Uuid().v4();
+                                      final language = currentUser.idioma;
+                                      final Suggestion? result = await showSearch(
+                                        context: context,
+                                        delegate: AddressSearch(
+                                            sessionToken, language!),
+                                      );
+                                      // We have a result for our locations search
+                                      if (result!.placeId != "") {
+                                        // Reload the Map
+                                        setState(() {
+                                          isLoading = true;
+                                          loadingText =
+                                              AppLocalizations.of(context)!
+                                                  .updating + " " +
+                                                  AppLocalizations.of(context)!
+                                                      .locations.toLowerCase() +
+                                                  "...";
+                                        });
+                                        Location location = Location();
+                                        location.placeId = result.placeId;
+                                        final placeDetails = await LocationPlacesSearch(
+                                            sessionToken, language)
+                                            .getPlaceDetailFromId(
+                                            location.placeId!);
+                                        // Get the information on Strings
+                                        if (placeDetails.street != null) {
+                                          location.street =
+                                          placeDetails.street!;
+                                        } else {
+                                          location.street = "N/A";
+                                        }
+                                        if (placeDetails.streetNumber != null) {
+                                          location.streetNumber =
+                                          placeDetails.streetNumber!;
+                                        } else {
+                                          location.streetNumber = "N/A";
+                                        }
+                                        if (placeDetails.city != null) {
+                                          location.city = placeDetails.city!;
+                                        } else {
+                                          location.city = "N/A";
+                                        }
+                                        if (placeDetails.zipCode != null) {
+                                          location.zipCode =
+                                          placeDetails.zipCode!;
+                                        } else {
+                                          location.zipCode = "N/A";
+                                        }
+                                        // Build Correct Description
+                                        location.description =
+                                        "${location.street} ${location
+                                            .streetNumber}, ${location
+                                            .city}, ${location.zipCode}";
+                                        // Get Latitude/Longitude
+                                        var temp = await gPlace!.details.get(
+                                            location.placeId!);
+                                        if (temp != null &&
+                                            temp.result != null && mounted) {
+                                          detailsResult = temp.result;
+                                          location.latitude =
+                                          detailsResult!.geometry!.location!
+                                              .lat!;
+                                          location.longitude =
+                                          detailsResult!.geometry!.location!
+                                              .lng!;
+                                        }
+                                        // Save location to DataBase
+                                        await _locationDataService.addLocation(
+                                            widget.brandId,
+                                            false,
+                                            location.placeId!,
+                                            location.description!,
+                                            location.street!,
+                                            location.streetNumber!,
+                                            location.city!,
+                                            location.zipCode!,
+                                            location.latitude!,
+                                            location.longitude!);
+                                        await Future.delayed(
+                                            const Duration(seconds: 4));
+                                        getAllLocations();
+                                        mixpanel!.track(
+                                            'brand_locations_added');
                                       } else {
-                                        location.street="N/A";
+                                        setState(() {
+                                          isLoading = false;
+                                        });
                                       }
-                                      if(placeDetails.streetNumber!=null) {
-                                        location.streetNumber = placeDetails.streetNumber!;
-                                      } else {
-                                        location.streetNumber="N/A";
-                                      }
-                                      if(placeDetails.city!=null) {
-                                        location.city = placeDetails.city!;
-                                      } else {
-                                        location.city="N/A";
-                                      }
-                                      if(placeDetails.zipCode!=null) {
-                                        location.zipCode = placeDetails.zipCode!;
-                                      } else {
-                                        location.zipCode="N/A";
-                                      }
-                                      // Build Correct Description
-                                      location.description = "${location.street} ${location.streetNumber}, ${location.city}, ${location.zipCode}";
-                                      // Get Latitude/Longitude
-                                      var temp = await gPlace!.details.get(location.placeId!);
-                                      if (temp != null && temp.result != null && mounted) {
-                                        detailsResult = temp.result;
-                                        location.latitude = detailsResult!.geometry!.location!.lat!;
-                                        location.longitude = detailsResult!.geometry!.location!.lng!;
-                                      }
-                                      // Save location to DataBase
-                                      await _locationDataService.addLocation(widget.brandId, false, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
-                                      await Future.delayed(const Duration(seconds: 4));
-                                      getAllLocations();
-                                      mixpanel!.track('brand_locations_added');
-                                    } else {
-                                      setState(() {
-                                        isLoading = false;
-                                      });
                                     }
                                   },
                                   alignment: Alignment.centerRight,

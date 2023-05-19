@@ -108,30 +108,36 @@ class _BonosProState extends State<BonosPro> {
 
   // Navigate to Add Bonos
   Future<void> navigateToAddBonosScreen(Bono bono, Brand _brand, bool edit) async {
-    await Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
-            child: AddEditBono(
-              brand: _brand,
-              bono: bono,
-              edit: edit,
-              duplicate: false,
-              delete: false,
-            ),
-          ),
-        )).whenComplete(() => () {
-      setState(() {
+    if(!brandIsActive) {
+      await navigateToPayWall(context);
+    }
+    else {
+      await Navigator.push(
+          context,
+          CupertinoPageRoute<void>(
+            builder: (context) =>
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    }
+                  },
+                  child: AddEditBono(
+                    brand: _brand,
+                    bono: bono,
+                    edit: edit,
+                    duplicate: false,
+                    delete: false,
+                  ),
+                ),
+          )).whenComplete(() => () {
+        setState(() {
 
+        });
       });
-    });
+    }
   }
 
   Widget returnBono(Bono _bono) {
@@ -183,6 +189,14 @@ class _BonosProState extends State<BonosPro> {
             elevation: 4,
             floating: false,
             pinned: true,
+            title: AnimatedOpacity(
+                opacity: appBarExpanded ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                  AppLocalizations.of(context)!.bonos,
+                  style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
+                )
+            ),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -424,15 +438,6 @@ class _BonosProState extends State<BonosPro> {
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded
-                ? Text(
-                    AppLocalizations.of(context)!.bonos,
-                    style:
-                        Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
-                              color: AppColors.white,
-                            ),
-                  )
-                : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(

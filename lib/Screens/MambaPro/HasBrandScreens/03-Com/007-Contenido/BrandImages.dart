@@ -41,11 +41,15 @@ class _BrandImagesState extends State<BrandImages> {
   final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
+  String isLoadingText = "";
+  String isLoadingTextExtra = "";
   bool canEdit = false;
   // Bool Max Images Added
   bool maxImagesAdded = false;
   // Max Number of Images
   final int _maxImages = 10;
+  int currentImage = 1;
+  int totalCurrentImage = 1;
   // Images uploaded
   List<ImageObject> _imagesUploaded = [];
   ImageObject baseImage = ImageObject();
@@ -68,26 +72,45 @@ class _BrandImagesState extends State<BrandImages> {
       );
     canEdit = currentUser.brandRole < 2 ? true : false;
     isLoading = true;
+    Future.delayed(Duration.zero, () {
+      setState(() {
+        isLoadingText = AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+      });
+    });
     getBrandContentImages();
   }
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
-    mixpanel!.timeEvent('brand_images_added');
-    List<File>? temp = await ImageUtils().pickMultipleImage();
-    if ((temp!.length) > (_maxImages-_imagesUploaded.length)) {
-      mixpanel!.track('brand_images_max_images_error');
-      setState(() {
-        maxImagesAdded = true;
-      });
-    } else {
-      setState(() {
-        isLoading = true;
-        maxImagesAdded = false;
-      });
-      await _brandDataService.addBrandContentPictures(widget.brandId, temp);
-      getBrandContentImages();
-      mixpanel!.track('brand_images_added');
+    if(!brandIsActive) {
+      await navigateToPayWall(context);
+    }
+    else {
+      mixpanel!.timeEvent('brand_images_added');
+      List<File>? temp = await ImageUtils().pickMultipleImage();
+      if ((temp!.length) > (_maxImages-_imagesUploaded.length)) {
+        mixpanel!.track('brand_images_max_images_error');
+        setState(() {
+          maxImagesAdded = true;
+        });
+      } else {
+        int currentImage = 1;
+        setState(() {
+          isLoading = true;
+          isLoadingText = AppLocalizations.of(context)!.adding+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+          maxImagesAdded = false;
+        });
+        for (File f in temp) {
+          // Updating Loading Text
+          setState(() {
+            isLoadingTextExtra =  " (" + currentImage.toString()+"/"+temp.length.toString()+")";
+          });
+          currentImage += 1;
+          await _brandDataService.addBrandContentPictureIndividual(widget.brandId, f);
+        }
+        getBrandContentImages();
+        mixpanel!.track('brand_images_added');
+      }
     }
   }
 
@@ -116,6 +139,7 @@ class _BrandImagesState extends State<BrandImages> {
     }
     setState(() {
       isLoading = false;
+      isLoadingTextExtra = "";
     });
   }
 
@@ -209,7 +233,14 @@ class _BrandImagesState extends State<BrandImages> {
                 titlePadding: EdgeInsets.zero,
                 //centerTitle: true,
               ),
-              title: appBarExpanded ? Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,),) : Container(),
+              title: AnimatedOpacity(
+                  opacity: appBarExpanded ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Text(
+                      AppLocalizations.of(context)!.photos,
+                      style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
+                  )
+              ),
               centerTitle: true,
               leading: Builder(
                 builder: (BuildContext innerContext) => Padding(
@@ -251,7 +282,8 @@ class _BrandImagesState extends State<BrandImages> {
             isLoading ? SliverFillRemaining(
               child: Center(
                     child: LoadingView(
-                      text: AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...",
+                      //text: (AppLocalizations.of(context)!.loading.split(".")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...") + isLoadingTextExtra!,
+                      text: isLoadingText + isLoadingTextExtra,
                     )
                 )
             ) : SliverToBoxAdapter(
@@ -404,28 +436,42 @@ class _BrandImagesState extends State<BrandImages> {
                             child: Center(
                               child: IconButton(
                                 onPressed: () async {
-                                  if(image.isBaseImage != null && image.isBaseImage!) {
-                                    //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
-                                  } else if(canClickFav){
-                                    var result = await showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return FavouriteConfirmationDialog(
-                                              text: AppLocalizations.of(context)!
-                                                  .myImagesFavouriteDescription);
-                                        }
-                                    );
-                                    if (result) {
-                                      setState(() {
-                                        canClickFav = false;
-                                        _imagesUploaded[_imagesUploaded.indexWhere((element) =>  element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
-                                        image.isBaseImage = true;
-                                      });
-                                      await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
-                                      await getBrandContentImages();
-                                      setState(() {
-                                        canClickFav = true;
-                                      });
+                                  if(!brandIsActive) {
+                                    await navigateToPayWall(context);
+                                  }
+                                  else {
+                                    if (image.isBaseImage != null &&
+                                        image.isBaseImage!) {
+                                      //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
+                                    } else if (canClickFav) {
+                                      var result = await showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return FavouriteConfirmationDialog(
+                                                text: AppLocalizations.of(
+                                                    context)!
+                                                    .myImagesFavouriteDescription);
+                                          }
+                                      );
+                                      if (result) {
+                                        setState(() {
+                                          canClickFav = false;
+                                          _imagesUploaded[_imagesUploaded
+                                              .indexWhere((element) =>
+                                          element.isBaseImage != null &&
+                                              element.isBaseImage == true)]
+                                              .isBaseImage = false;
+                                          image.isBaseImage = true;
+                                        });
+                                        await _brandDataService
+                                            .updateBrandBaseImage(
+                                            widget.brandId, image,
+                                            baseImage.id!);
+                                        await getBrandContentImages();
+                                        setState(() {
+                                          canClickFav = true;
+                                        });
+                                      }
                                     }
                                   }
                                 },
@@ -466,28 +512,39 @@ class _BrandImagesState extends State<BrandImages> {
                             child: Center(
                               child: IconButton(
                                 onPressed: () async {
-                                  if((image.isBaseImage == null ||  !image.isBaseImage!) && canClickFav) {
-                                    var result = await showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return DeleteConfirmationDialog(
-                                              text: AppLocalizations.of(context)!
-                                                  .myImagesDeleteDescription);
-                                        }
-                                    );
-                                    if (result) {
-                                      mixpanel!.track('brand_images_delete');
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
-                                      getBrandContentImages();
-                                    }
+                                  if(!brandIsActive) {
+                                    await navigateToPayWall(context);
                                   }
-                                  else
-                                    {
+                                  else {
+                                    if ((image.isBaseImage == null ||
+                                        !image.isBaseImage!) && canClickFav) {
+                                      var result = await showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return DeleteConfirmationDialog(
+                                                text: AppLocalizations.of(
+                                                    context)!
+                                                    .myImagesDeleteDescription);
+                                          }
+                                      );
+                                      if (result) {
+                                        mixpanel!.track('brand_images_delete');
+                                        setState(() {
+                                          isLoading = true;
+                                          isLoadingText = AppLocalizations.of(context)!.deleting+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+                                          isLoadingTextExtra =  " (" + 1.toString()+"/"+1.toString()+")";
+                                        });
+                                        await _brandDataService
+                                            .deleteBrandContentPictures(
+                                            widget.brandId, image.id!,
+                                            image.url!);
+                                        getBrandContentImages();
+                                      }
+                                    }
+                                    else {
                                       //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
                                     }
+                                  }
                                 },
                                 icon: Icon(
                                     Icons.delete_outline,

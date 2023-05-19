@@ -863,20 +863,35 @@ exports.userJoinsBrand = functions
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
-      // Update Date Joined Users/Brand
-      await db.doc("/Users/"+userId+"/Brands/"+brandId+"").set({
-        "name": brandDoc.name,
-        "logoUrl": brandDoc.logoUrl,
-        "dateJoined": formatted,
-        "myMonthlySessions": 0,
-        "myTotalSessions": 0,
-        "zipCode": brandDoc.zipCode,
-        "city": brandDoc.city,
-        "longitude": brandDoc.longitude,
-        "latitude": brandDoc.latitude,
-        "baseImage": brandDoc.baseImage,
-        "geoPosition": brandDoc.geoPosition,
-      });
+
+      //JMF 05052023 POR SI VIENEN DE LA WEB
+      if (brandDoc.adminID == userId) {
+           // Update Date Joined Users/Brand
+          await db.doc("/Users/"+userId+"/Brands/"+brandId+"").set({
+            "name": brandDoc.name,
+            "logoUrl": brandDoc.logoUrl,
+            "dateJoined": formatted,
+            "myMonthlySessions": 0,
+            "myTotalSessions": 0,
+          });
+      }
+      else {
+            // Update Date Joined Users/Brand
+            await db.doc("/Users/"+userId+"/Brands/"+brandId+"").set({
+              "name": brandDoc.name,
+              "logoUrl": brandDoc.logoUrl,
+              "dateJoined": formatted,
+              "myMonthlySessions": 0,
+              "myTotalSessions": 0,
+              "zipCode": brandDoc.zipCode,
+              "city": brandDoc.city,
+              "longitude": brandDoc.longitude,
+              "latitude": brandDoc.latitude,
+              "baseImage": brandDoc.baseImage,
+              "geoPosition": brandDoc.geoPosition,
+            });
+      }
+
       // Update Date Joined Users/Brand
       await db.doc("/Brands/"+brandId+"/Users/"+userId+"").update({
         "dateJoined": formatted,
@@ -1620,7 +1635,7 @@ exports.userJoinsEvent = functions
       });*/
       var isPrivate = false;
       if (eventDoc.isPrivate != undefined) {
-        isPrivate == eventDoc.isPrivate;
+        isPrivate = eventDoc.isPrivate;
       }
       let imageUrl = "";
       if (eventDoc.imageUrl != null) {
@@ -2996,21 +3011,36 @@ exports.zzzzUserJoinsBrand = functions
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
 
-      // Update Date Joined Users/Brand
-      await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
-        "name": brandDoc.name,
-        "logoUrl": brandDoc.logoUrl,
-        "dateJoined": formatted,      
-        "myMonthlySessions": 0,
-        "myTotalSessions": 0,
-        //TODO INTEGRATION VERSION .12
-        "zipCode": brandDoc.zipCode,
-        "city": brandDoc.city,
-        "longitude": brandDoc.longitude,
-        "latitude": brandDoc.latitude,
-        "baseImage": brandDoc.baseImage,
-        "geoPosition": brandDoc.geoPosition,
-      });
+      //JMF 05052023 POR SI VIENEN DE LA WEB
+      if (brandDoc.adminID == userId)
+      {
+           // Update Date Joined Users/Brand
+          await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
+            "name": brandDoc.name,
+            "logoUrl": brandDoc.logoUrl,
+            "dateJoined": formatted,
+            "myMonthlySessions": 0,
+            "myTotalSessions": 0,
+          });
+      }
+      else
+      {
+            // Update Date Joined Users/Brand
+            await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
+              "name": brandDoc.name,
+              "logoUrl": brandDoc.logoUrl,
+              "dateJoined": formatted,
+              "myMonthlySessions": 0,
+              "myTotalSessions": 0,
+              //TODO INTEGRATION VERSION .12
+              "zipCode": brandDoc.zipCode,
+              "city": brandDoc.city,
+              "longitude": brandDoc.longitude,
+              "latitude": brandDoc.latitude,
+              "baseImage": brandDoc.baseImage,
+              "geoPosition": brandDoc.geoPosition,
+            });
+      }
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
         "dateJoined": formatted,
@@ -5217,6 +5247,118 @@ exports.zzzzUserCancelsPurchaseEvent = functions
 
   return null;
   });
+
+// Change user suscription
+exports.updateBrandSubscription = functions
+.region("europe-west1")
+.firestore
+.document("/BrandSubscriptions/{brandId}")
+.onWrite(async (change, context) => {
+  // Get context params
+  const brandId = context.params.brandId;
+
+  // BrandSubscription after Data
+  const after = change.after.data();
+
+
+  functions.logger.log(
+   "Entitlement",
+   after
+   );
+
+   const entitlements = after.entitlements;
+
+    // Retrieve the AllFeatures sub-map from the entitlements map
+    var allFeatures = entitlements.AllFeatures;
+
+    // Use the allFeatures sub-map value
+     functions.logger.log(
+   "AFTER",
+   allFeatures
+   );
+
+  // Retrieve the expires_date field from the AllFeatures sub-map
+    var expiresDate = allFeatures.expires_date;
+    var product_identifier = allFeatures.product_identifier;
+
+    // Extract the date part (yyyy-mm-dd) from the expires_date string
+    var expiresDateStr = expiresDate;
+
+    // Convert the expires_date string to a Date object
+    var expiresDateObj = new Date(expiresDateStr);
+
+    functions.logger.log(
+     "expireDate",
+     expiresDateObj
+     );
+
+    // Get today's date
+    var today = new Date();
+    var todayStr = today.toISOString();
+    var todayObj = new Date(todayStr);
+
+    functions.logger.log(
+     "TODAY",
+     todayObj
+     );
+
+    const subscriptions = after.subscriptions;
+    var subscription = subscriptions[product_identifier];
+    functions.logger.log(
+     "subscription",
+     subscription
+     );
+    var sandbox = subscription.is_sandbox;
+    functions.logger.log(
+     "ISSANDBOX",
+     sandbox
+     );
+
+     var brandCollection = "7777 Brands";
+     if(sandbox === false)
+     {
+       brandCollection = "Brands";
+     }
+
+     var unsuscribed = false;
+
+     if(subscription.unsubscribe_detected_at != null)
+     {
+        unsuscribed = true;
+     }
+
+    // Check if the expires_date is after or at the same date as today's date
+    if (expiresDateObj >= todayObj) {
+        const map = {
+            "expires_date": expiresDate,
+            "original_purchase_date": subscription.original_purchase_date,
+            "product_plan_identifier": product_identifier,
+            "brandIsActive": true,
+            "unsuscribed": unsuscribed,
+          };
+      // The expires_date is after or at the same date as today's date
+        functions.logger.log(
+     "SUSCRITO"
+     );
+       const brandSnapDoc = await db.collection(brandCollection).doc(brandId).update({
+              "subscription": map,
+        });
+    } else {
+    const map = {
+                "expires_date": expiresDate,
+                "original_purchase_date": subscription.original_purchase_date,
+                "product_plan_identifier": product_identifier,
+                "brandIsActive": false,
+                "unsuscribed": unsuscribed,
+              };
+      // The expires_date is before today's date
+      const brandSnapDoc = await db.collection(brandCollection).doc(brandId).update({
+                    "subscription": map,
+              });
+    }
+
+    return null
+})
 
 
 

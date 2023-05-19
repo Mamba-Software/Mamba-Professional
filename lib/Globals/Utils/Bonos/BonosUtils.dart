@@ -91,6 +91,8 @@ class BonosUtils {
         bonos.add(bono);
       }
     }
+    // Remove Bonos that aren't from the Current Brand
+    bonos.removeWhere((element) => element.brandId != currentBrand.id!);
     return bonos;
   }
 

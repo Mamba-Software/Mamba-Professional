@@ -106,7 +106,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       await _brandDataService
           .updateBrandPay(brands[0].id!,
           8,
-          '7DAYSTRIAL', '7 Days Trial');
+          '7DAYSTRIAL', '7 Days Trial', DateTime.now(), false);
     }
     bool? brandCreated;
     if (dynamicLinkBrandId == null && hasBrand == false) {

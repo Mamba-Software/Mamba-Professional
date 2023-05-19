@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
@@ -15,7 +16,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
@@ -31,11 +32,14 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
+import '../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
@@ -102,7 +106,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Function to get the favourites of the user
   void getFavourites() async {
-    //favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
+    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
     if (favourites.contains(pageIndex)) {
       iconStar = true;
     }
@@ -123,7 +127,7 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   // Navigate to Notifications Screen
-  void navigateToNotificationsScreen() {
+  Future<void> navigateToNotificationsScreen() async {
     if(brandIsActive) {
       Navigator.push(
           context,
@@ -132,17 +136,19 @@ class _BrandScreenState extends State<BrandScreen> {
             settings: const RouteSettings(name: 'Notifications'),
           )
       ).whenComplete(() async {
-        var temp = await _userDataService.getUnreadNotifications(
-            currentUser.id!);
+        var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
         setState(() {
           unreadNotifications = temp;
         });
       });
     }
+    else {
+      await navigateToPayWall(context);
+    }
   }
 
   // Navigate to Notifications Screen
-  void navigateToChatScreen() {
+  Future<void> navigateToChatScreen() async {
     if(brandIsActive) {
       Navigator.push(
           context,
@@ -158,6 +164,9 @@ class _BrandScreenState extends State<BrandScreen> {
         });
       });
     }
+    else {
+      await navigateToPayWall(context);
+    }
   }
 
   // Navigate to Notifications Screen
@@ -168,18 +177,6 @@ class _BrandScreenState extends State<BrandScreen> {
           builder: (context) => const Profile(),
           settings: const RouteSettings(name: 'Profile'),
         )
-    );
-  }
-
-  void navigateToPayWall()
-  {
-    Navigator.pushAndRemoveUntil(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const SplashScreen(),
-        settings: const RouteSettings(name: 'SplashScreen'),
-      ),
-          (_) => false,
     );
   }
 
@@ -215,16 +212,11 @@ class _BrandScreenState extends State<BrandScreen> {
           onTap: () =>  {
             Navigator.pop(context),
             setBrandActive(),
-            if(brandIsActive) {
               setState(() {
                 pageIndex = _pageIndex;
                 setFavourites();
               }),
-            }
-            else
-              {
-                navigateToPayWall()
-              }
+
           }
       );
     } else {
@@ -291,17 +283,10 @@ class _BrandScreenState extends State<BrandScreen> {
           onTap: () =>  {
             Navigator.pop(context),
             setBrandActive(),
-            if((brandIsActive))
-              {
-                setState(() {
-                  pageIndex = _pageIndex;
-                  setFavourites();
-                }),
-              }
-            else
-              {
-                navigateToPayWall()
-              }
+            setState(() {
+              pageIndex = _pageIndex;
+              setFavourites();
+            }),
           }
       );
     }
@@ -913,41 +898,45 @@ class _BrandScreenState extends State<BrandScreen> {
       initDeviceSizes();
       isFirstBuild = false;
     }
-    return Scaffold(
-      key: mambaProScaffoldKey,
-      /*
-      appBar: AppBar(
-        toolbarHeight: 0,
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        //systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.white),
-      ),
-       */
-      drawer: Drawer(
-        backgroundColor: Theme.of(context).primaryColorDark,
-        child: ListView(
-          physics: const ClampingScrollPhysics(),
-          // Remove padding
-          padding: EdgeInsets.zero,
-          children: [
-            // Header
-            buildHeader(),
-            const Divider(color: AppColors.grey, thickness: 0, height: 1,),
-            SizedBox(height: safeAreaHeight * 0.02),
-            // Brand Options
-            // TODO: Passer Rol en aquesta funció
-            buildBrandListOptions(),
-            SizedBox(height: safeAreaHeight * 0.015),
-            Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
-            // Leave/Delete Brand
-            SizedBox(height: safeAreaHeight * 0.015),
-            buildBrandLeaveOption(),
-            SizedBox(height: safeAreaHeight * 0.05),
-          ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<BrandSuscriptionCubit>(
+          create: (_) => BrandSuscriptionCubit(),
+          lazy: false,
         ),
-      ),
-      body: isLoading ? LoadingView() : buildBodyNavigation() ,
+        BlocProvider<BrandEventsCubit>(
+          create: (_) => BrandEventsCubit(),
+          lazy: true,
+        ),
+      ],
+      child: Scaffold(
+        key: mambaProScaffoldKey,
+        drawer: Drawer(
+          backgroundColor: Theme.of(context).primaryColorDark,
+          child: ListView(
+            physics: const ClampingScrollPhysics(),
+            // Remove padding
+            padding: EdgeInsets.zero,
+            children: [
+              // Header
+              buildHeader(),
+              const Divider(color: AppColors.grey, thickness: 0, height: 1,),
+              SizedBox(height: safeAreaHeight * 0.02),
+              // Brand Options
+              // TODO: Passer Rol en aquesta funció
+              buildBrandListOptions(),
+              SizedBox(height: safeAreaHeight * 0.015),
+              Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
+              // Leave/Delete Brand
+              SizedBox(height: safeAreaHeight * 0.015),
+              buildBrandLeaveOption(),
+              SizedBox(height: safeAreaHeight * 0.05),
+            ],
+          ),
+        ),
+        body: isLoading ? LoadingView() : buildBodyNavigation() ,
 
+      ),
     );
   }
 

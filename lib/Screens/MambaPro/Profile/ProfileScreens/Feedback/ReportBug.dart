@@ -115,7 +115,7 @@ class _ReportBugState extends State<ReportBug> {
           },
           style: Theme.of(context).textTheme.bodyText2,
           decoration: InputDecoration(
-            hintText: AppLocalizations.of(context)!.titleHint,
+            hintText: AppLocalizations.of(context)!.titleError,
             hintStyle: Theme.of(context).textTheme.caption,
           ),
           enabled: true,

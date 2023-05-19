@@ -44,7 +44,7 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
@@ -58,7 +58,6 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
             widget.dateOfWeek == true ? Container(
               height: MediaQuery.of(context).size.height*0.24,
               width: MediaQuery.of(context).size.width,
@@ -130,21 +129,21 @@ class _SelectDateDialogState extends State<SelectDateDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: TextButton(
-                      child: Text(
-                          AppLocalizations.of(context)!.entendido,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context, pickedDate);
-                      }
+                FloatingActionButton.extended(
+                  heroTag: "43",
+                  onPressed: () {
+                    Navigator.pop(context, pickedDate);
+                  },
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Container(),
+                  label: Text(
+                      AppLocalizations.of(context)!.confirm,
+                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
                   ),
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            SizedBox(height: MediaQuery.of(context).size.height*0.04),
           ],
         ),
       ),

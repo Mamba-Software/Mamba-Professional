@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:shimmer/shimmer.dart';
 import 'Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -44,16 +45,6 @@ class _ChatCoreState extends State<ChatCore> {
 
   @override
   void initState() {
-    if(!brandIsActive)
-    {
-      Navigator.pushAndRemoveUntil(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) =>  PayWall(brandId: currentBrand.id!, comesFromInitPage: true,),
-        ),
-            (_) => false,
-      );
-    }
     super.initState();
     mixpanel!.track('user_chats_view');
     initializeFlutterFire();
@@ -667,18 +658,24 @@ class _ChatCoreState extends State<ChatCore> {
                       room.updatedAt);
 
                   return GestureDetector(
-                    onTap: ()  {
-                       Navigator.push(
-                          context,
-                          CupertinoPageRoute<bool>(
-                            builder: (context) => ChatPage(
-                              room: room,
-                            ),
-                          )
-                      ).whenComplete(() async{
-                        room.metadata!["active" + currentUser.id!] = false;
-                        _roomDataService.updateRoom(room.id, room.metadata!);
-                      });
+                    onTap: ()  async {
+                      if(!brandIsActive) {
+                        await navigateToPayWall(context);
+                      }
+                      else {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute<bool>(
+                              builder: (context) =>
+                                  ChatPage(
+                                    room: room,
+                                  ),
+                            )
+                        ).whenComplete(() async {
+                          room.metadata!["active" + currentUser.id!] = false;
+                          _roomDataService.updateRoom(room.id, room.metadata!);
+                        });
+                      }
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -808,18 +805,25 @@ class _ChatCoreState extends State<ChatCore> {
                       room.updatedAt);
 
                   return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            CupertinoPageRoute<Null>(
-                              builder: (context) => ChatPage(
-                                room: room,
-                              ),
-                            )
-                        ).whenComplete(() {
-                          room.metadata!["active" + currentUser.id!] = false;
-                          _roomDataService.updateRoom(room.id, room.metadata!);
-                        });
+                      onTap: () async {
+                        if(!brandIsActive) {
+                          await navigateToPayWall(context);
+                        }
+                        else {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute<Null>(
+                                builder: (context) =>
+                                    ChatPage(
+                                      room: room,
+                                    ),
+                              )
+                          ).whenComplete(() {
+                            room.metadata!["active" + currentUser.id!] = false;
+                            _roomDataService.updateRoom(
+                                room.id, room.metadata!);
+                          });
+                        }
                       },
                     child: Container(
                       padding: EdgeInsets.symmetric(

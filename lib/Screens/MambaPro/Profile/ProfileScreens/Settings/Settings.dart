@@ -21,6 +21,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -362,6 +363,7 @@ class _SettingsState extends State<Settings> {
                   setState(() {
                     isLoading = true;
                   });
+                  Purchases.logOut();
                   Future.delayed(const Duration(seconds: 1), () async {
                     _userDataService.signOut().then((value) =>
                         Navigator.pushAndRemoveUntil(

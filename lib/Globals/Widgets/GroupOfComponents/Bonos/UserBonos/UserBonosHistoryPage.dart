@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -90,6 +91,8 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
       var bDate =  b.purchasedAt!.toDate();
       return bDate.compareTo(aDate);
     });
+    // Remove Purchases not from the current Brand
+    listPurchases.removeWhere((element) => element.brandId != currentBrand.id!);
     // Create PageView List
     for (Purchase purchase in listPurchases) {
       var result = [];

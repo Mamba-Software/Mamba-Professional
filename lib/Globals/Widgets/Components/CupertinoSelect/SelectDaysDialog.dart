@@ -6,7 +6,8 @@ class SelectDaysDialog extends StatefulWidget {
 
   String title;
   int intialDays;
-  SelectDaysDialog({Key? key, required this.title, required this.intialDays}) : super(key: key);
+  int? daysMax;
+  SelectDaysDialog({Key? key, required this.title, required this.intialDays, this.daysMax}) : super(key: key);
 
   @override
   _SelectDaysDialogState createState() => _SelectDaysDialogState();
@@ -21,6 +22,9 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
   @override
   void initState() {
     pickedDays = widget.intialDays;
+    if (widget.daysMax != null) {
+      daysMax = widget.daysMax!;
+    }
     super.initState();
   }
 
@@ -39,7 +43,7 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
@@ -53,7 +57,6 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.01),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.02),
@@ -91,21 +94,21 @@ class _SelectDaysDialogState extends State<SelectDaysDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: TextButton(
-                      child: Text(
-                          AppLocalizations.of(context)!.entendido,
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context, pickedDays);
-                      }
+                FloatingActionButton.extended(
+                  heroTag: "42",
+                  onPressed: () {
+                    Navigator.pop(context, pickedDays);
+                  },
+                  backgroundColor: Theme.of(context).primaryColor,
+                  icon: Container(),
+                  label: Text(
+                      AppLocalizations.of(context)!.confirm,
+                      style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
                   ),
                 ),
               ],
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.02),
+            SizedBox(height: MediaQuery.of(context).size.height*0.04),
           ],
         ),
       ),
