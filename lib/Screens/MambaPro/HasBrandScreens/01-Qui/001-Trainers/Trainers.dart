@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Trainers extends StatefulWidget {
@@ -280,7 +281,7 @@ class _Trainers extends State<Trainers> {
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: true,
+            floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -292,7 +293,7 @@ class _Trainers extends State<Trainers> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                      padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.03),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -303,6 +304,7 @@ class _Trainers extends State<Trainers> {
                           ) : SizedBox(
                             width: MediaQuery.of(context).size.width*0.65,
                             child: TextField(
+                              autofocus: true,
                               controller: searchController,
                               onChanged: (value) {
                                 filterSearchResults(value);
@@ -339,7 +341,7 @@ class _Trainers extends State<Trainers> {
                           FittedBox(
                             fit: BoxFit.fitWidth,
                             child: SizedBox(
-                              width: MediaQuery.of(context).size.width*0.25,
+                              width: MediaQuery.of(context).size.width*0.23,
                               /*
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.green, width: 1.0),
@@ -349,25 +351,30 @@ class _Trainers extends State<Trainers> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      if (searchClicked == false) {
-                                        mixpanel!.track('brand_trainers_search_button');
-                                      } else {
-                                        mixpanel!.track('brand_trainers_search_close');
-                                      }
-                                      setState(() {
-                                        searchController.clear();
-                                        filterSearchResults("");
-                                        searchClicked = !searchClicked;
-                                      });
-                                    },
-                                    padding: EdgeInsets.zero,
-                                    alignment: Alignment.centerRight,
-                                    icon: Icon(
-                                      searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
-                                      color: AppColors.white,
-                                      size: MediaQuery.of(context).size.width*0.07,
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        if (searchClicked == false) {
+                                          mixpanel!.track('brand_trainers_search_button');
+                                        } else {
+                                          mixpanel!.track('brand_trainers_search_close');
+                                        }
+                                        setState(() {
+                                          searchController.clear();
+                                          filterSearchResults("");
+                                          searchClicked = !searchClicked;
+                                        });
+                                      },
+                                      splashRadius: 20,
+                                      splashColor: Theme.of(context).backgroundColor, // Splash color
+                                      padding: EdgeInsets.zero,
+                                      alignment: Alignment.center,
+                                      icon: Icon(
+                                        searchClicked == false ? Icons.search_outlined : Icons.close_outlined,
+                                        color: AppColors.white,
+                                        size: MediaQuery.of(context).size.width*0.07,
+                                      ),
                                     ),
                                   ),
                                   ClipOval(
@@ -742,22 +749,34 @@ class _Trainers extends State<Trainers> {
                       border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Icon(
-                          Icons.manage_accounts,
+                          Icons.manage_accounts_outlined,
                           color: Theme.of(context).colorScheme.secondary,
                           size: MediaQuery.of(context).size.width*0.10,
                         ),
                         SizedBox(width: MediaQuery.of(context).size.width*0.05),
                         Flexible(
-                          child: Text(
-                            AppLocalizations.of(context)!.rolesDescription,
-                            style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                            textAlign: TextAlign.center,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
+                                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.rolesDescription,
+                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                textAlign: TextAlign.start,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
+                            ],
                           ),
                         ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+
                       ],
                     ),
                   ),

@@ -47,11 +47,14 @@ class _BonosRequestsState extends State<BonosRequests> {
   Widget returnBonoRequest(BonoRequest _bonoRequest, var user, var bono) {
     Usuario _user = user;
     Bono _bono = bono;
-    return BonoRequestObject(
-      bono: _bono,
-      user: _user,
-      brand: currentBrand,
-      bonoRequest: _bonoRequest,
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      child: BonoRequestObject(
+        bono: _bono,
+        user: _user,
+        brand: currentBrand,
+        bonoRequest: _bonoRequest,
+      ),
     );
   }
 
@@ -77,8 +80,8 @@ class _BonosRequestsState extends State<BonosRequests> {
       body: StreamBuilder<QuerySnapshot>(
         stream: _brandDataService.getBonosRequestsFromBrand(widget.brandId),
         builder: (context, snapshot) {
-          if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null) {
-            return Center(child: LoadingView());
+          if (snapshot.hasData == false) {
+            return Container();
           } else {
             bonosRequestsList = _bonosUtils.documentsToBonosRequests(snapshot.data!.docs);
             if (bonosRequestsList.isNotEmpty) {
@@ -92,7 +95,7 @@ class _BonosRequestsState extends State<BonosRequests> {
                     BonoRequest bonoRequest = bonosRequestsList[index];
                     return Column(
                       children: [
-                        index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.02) : Container(),
+                        index == 0 ? const SizedBox(height: 4) : Container(),
                         FutureBuilder(
                             future: _userDataService.getUserDetails(bonoRequest.userId!),
                             // Run check for a single queryRow
@@ -275,7 +278,6 @@ class _BonosRequestsState extends State<BonosRequests> {
                 ),
               );
             }
-
           }
         }
       ),

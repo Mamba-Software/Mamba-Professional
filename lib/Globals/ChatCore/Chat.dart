@@ -399,7 +399,7 @@ Widget _customMessageBuilder(types.CustomMessage customMessage,{required int mes
     }
     else
       {
-        topSnackBarComp.topsnackbar(context, AppLocalizations.of(context)!.unBlockUserToSend , Colors.red);
+        topSnackBarComp.showSnackBarTop(context, AppLocalizations.of(context)!.unBlockUserToSend , Colors.red);
       }
 
   }

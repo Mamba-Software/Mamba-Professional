@@ -341,7 +341,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Icon(
-                Icons.lock_outlined,
+                Icons.person,
                 size: MediaQuery.of(context).size.width * 0.05,
                 color: AppColors.red,
               ),
@@ -674,7 +674,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             expandedHeight: MediaQuery.of(context).size.height*0.22,
             elevation: 0,
             systemOverlayStyle: returnSystemBarColor(),
-            floating: true,
+            floating: false,
             pinned: true,
             centerTitle: true,
             title: appBarExpanded ? Text(
@@ -952,7 +952,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                 ),
                                 child: Center(
                                     child: Icon(
-                                      event!.isPrivate! ? Icons.lock_outlined : Icons.groups,
+                                      event!.isPrivate! ? Icons.person : Icons.groups,
                                       color: Theme.of(context).colorScheme.secondary,
                                       size: MediaQuery.of(context).size.width*0.06,
                                     )
@@ -1270,8 +1270,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                   itemCount: eventClients.length,
                                   itemBuilder: (context, int index) {
                                     var client = eventClients[index];
-                                    print(userIsBlockedBy[0]);
-                                    print(client.id);
+                                    //print(client.id);
                                     if(userIsBlockedBy.contains(client.id)) {
                                       client.isPrivate = true;
                                     }

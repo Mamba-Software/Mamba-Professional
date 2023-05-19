@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
+import 'package:mamba_castelldefels/Globals/Utils/MultipleBrands/MultipleBrandsUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
@@ -868,6 +869,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                                         purchase.userId =
                                         widget.bonoRequest?.userId!;
                                         purchase.paymentMethod = paymentMethod;
+                                        //Add user to brand
+                                        Brand? userBrand = await _userDataService.getUserBrandsToAdd( widget.user.id!, widget.brand.id!);
+                                        if(userBrand == null) {
+                                          NotificationService().userJoinsBrand(
+                                              widget.user.id!, widget.brand.id!);
+                                              _brandDataService.addUserToBrand(
+                                              widget.user.id!, widget.brand.id!, 0);
+                                        }
                                         // Notifications Service
                                         _notificationService.userBuysBono(
                                             widget.user.id!, widget.brand.id!,

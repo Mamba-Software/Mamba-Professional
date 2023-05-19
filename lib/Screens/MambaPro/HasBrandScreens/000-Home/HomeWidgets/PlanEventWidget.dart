@@ -124,7 +124,7 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Icon(Icons.lock_outlined, size: widget.width*0.15, color: Theme.of(context).primaryColorDark),
+                            Icon(Icons.person, size: widget.width*0.15, color: Theme.of(context).primaryColorDark),
                           ],
                         ),
                       ),

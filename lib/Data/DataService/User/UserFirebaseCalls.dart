@@ -217,6 +217,19 @@ class UserFirebaseCalls {
     }
   }
 
+  Future<Brand?> getUserBrandsToAdd(String uid, String brandId) async {
+    DocumentSnapshot<Map<String, dynamic>> brandUser = await _firestore
+        .collection(users)
+        .doc(uid)
+        .collection("Brands").doc(brandId)
+        .get();
+    if (brandUser.exists) {
+      return Brand.fromObjectOnlyCoverData(brandUser.id, brandUser);
+    } else {
+      return null;
+    }
+  }
+
   Future<Usuario> getUserCoverDetails(String uid) async {
     try {
       DocumentSnapshot<

@@ -252,13 +252,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         isUpdated = false;
       }
     }
-
-    return isLoading ?
-    Scaffold(
-      body: LoadingView(),
-    )
-        :
-    Scaffold(
+    return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       resizeToAvoidBottomInset: true,
       body: CustomScrollView(
@@ -269,7 +263,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: true,
+            floating: false,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
@@ -356,640 +350,664 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               ),
             ],
           ),
-          currentUser.brandRole < 2? SliverToBoxAdapter(
+          isLoading ? SliverFillRemaining(
+            hasScrollBody: false,
             child: Column(
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                !brandIsActive? GestureDetector(
-                  onTap: navigateToSubscriptionsScreen,
-                  child: Container(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                    height: MediaQuery.of(context).size.height*0.1,
-                    width: MediaQuery.of(context).size.width*0.9,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(
-                          Icons.new_releases,
-                          color: Theme.of(context).colorScheme.secondary,
-                          size: MediaQuery.of(context).size.width*0.10,
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                        Flexible(
-                          child:  textToShow(),
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                      ],
-                    ),
+                Expanded(
+                  child: SizedBox(
+                      height: MediaQuery.of(context).size.height*0.65,
+                      child: Center(
+                          child: LoadingView()
+                      )
                   ),
-                ) : subscription.subscriptionId  == '7DAYSTRIAL'? freeTrialMamba() : GestureDetector(
-                  onTap: navigateToSubscriptionsScreen,
-                  child: Container(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
-                    height: MediaQuery.of(context).size.height*0.1,
-                    width: MediaQuery.of(context).size.width*0.9,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(0),
-                          child: Image.asset(Constants.subscriptionImage, width: MediaQuery.of(context).size.width*0.12, fit: BoxFit.cover,)
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                        Flexible(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                subscription.title!,
-                                style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                AppLocalizations.of(context)!.seeyourSub,
-                                style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                      ],
-                    ),
-                  ),
-
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
               ],
             ),
-          ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
-          SliverToBoxAdapter(
-            child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
-                child: Form(
-                  key: formKeyInfo,
+          ) : SliverToBoxAdapter(
+            child: Column(
+              children: [
+                currentUser.brandRole < 2 ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
                       Text(
-                        AppLocalizations.of(context)!.logo,
+                        AppLocalizations.of(context)!.yourPlan,
                         style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.28,
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                          child: GestureDetector(
-                            onTap: navigateToEditLogoScreen,
-                            child: CircularImage(
-                              size: MediaQuery.of(context).size.height * 0.25,
-                              image: currentBrand.logoUrl!,
-                              borderWidth: 1,
-                              color: Theme.of(context).primaryColor,
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      !brandIsActive? GestureDetector(
+                        onTap: navigateToSubscriptionsScreen,
+                        child: Container(
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                          height: MediaQuery.of(context).size.height*0.1,
+                          width: MediaQuery.of(context).size.width*0.9,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
                             ),
+                            border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                           ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-
-                      Text(
-                        AppLocalizations.of(context)!.nameBrand,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Flexible(
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          controller: nameBrandController,
-                          onChanged: (value) {
-                            setState(() {
-                              nameBrandControllerTemp = value;
-                            });
-                          },
-                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
-                          style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal),
-                          textAlign: TextAlign.center,
-                          textCapitalization: TextCapitalization.words,
-                          enabled: canEdit,
-                          decoration: InputDecoration(
-                            hintStyle: Theme.of(context).textTheme.caption,
-                            hintText: AppLocalizations.of(context)!.nameBrandError,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.createBrandDescDescription,
-                              style: Theme.of(context).textTheme.caption,
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Text(
-                        AppLocalizations.of(context)!.description,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Flexible(
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          controller: descriptionController,
-                          onChanged: (value) {
-                            setState(() {
-                              descriptionControllerTemp = value;
-                            });
-                          },
-                          validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
-                          minLines: 1,
-                          maxLines: 5,
-                          maxLength: 250,
-                          enabled: canEdit,
-                          style: Theme.of(context).textTheme.bodyText2,
-                          decoration: InputDecoration(
-                            hintStyle: Theme.of(context).textTheme.caption,
-                            hintText: AppLocalizations.of(context)!.descriptionError,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                      /*
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.maxNumberClientsError,
-                              style: Theme.of(context).textTheme.caption,
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Text(
-                        AppLocalizations.of(context)!.maxNumberClients,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      GestureDetector(
-                          onTap: () {
-                            selectSlot(context, 2, null);
-                          },
                           child: Row(
-                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(
+                                Icons.new_releases,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: MediaQuery.of(context).size.width*0.10,
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                              Flexible(
+                                child:  textToShow(),
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                            ],
+                          ),
+                        ),
+                      ) : subscription.subscriptionId  == '7DAYSTRIAL'? freeTrialMamba() : GestureDetector(
+                        onTap: navigateToSubscriptionsScreen,
+                        child: Container(
+                          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
+                          height: MediaQuery.of(context).size.height*0.1,
+                          width: MediaQuery.of(context).size.width*0.9,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                          ),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              new Flexible(
-                                child: TextFormField(
-                                  controller: membersController,
-                                  minLines: 1,
-                                  readOnly: true,
-                                  enabled: false,
-                                  style: Styles.purpleTextStyle,
-                                  decoration: InputDecoration(
-                                    hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                    hintText: AppLocalizations.of(context)!.maxNumberClientsError,
-                                    labelStyle: Styles.purpleTextStyle,
-                                    border: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                  ),
-                                  textAlign: TextAlign.start,
+                            children: [
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(0),
+                                  child: Image.asset(Constants.subscriptionImage, width: MediaQuery.of(context).size.width*0.12, fit: BoxFit.cover,)
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                              Flexible(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      subscription.title!,
+                                      style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      AppLocalizations.of(context)!.seeyourSub,
+                                      style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                            ],
+                          ),
+                        ),
+
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                      //SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    ],
+                  ),
+                ) : const SizedBox(height: 10),
+                Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
+                    child: Form(
+                      key: formKeyInfo,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.logo,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.28,
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                              child: GestureDetector(
+                                onTap: navigateToEditLogoScreen,
+                                child: CircularImage(
+                                  size: MediaQuery.of(context).size.height * 0.25,
+                                  image: currentBrand.logoUrl!,
+                                  borderWidth: 1,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Text(
+                            AppLocalizations.of(context)!.nameBrand,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Flexible(
+                            child: TextFormField(
+                              keyboardType: TextInputType.text,
+                              controller: nameBrandController,
+                              onChanged: (value) {
+                                setState(() {
+                                  nameBrandControllerTemp = value;
+                                });
+                              },
+                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
+                              style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal),
+                              textAlign: TextAlign.center,
+                              textCapitalization: TextCapitalization.words,
+                              enabled: canEdit,
+                              decoration: InputDecoration(
+                                hintStyle: Theme.of(context).textTheme.caption,
+                                hintText: AppLocalizations.of(context)!.nameBrandError,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.createBrandDescDescription,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.left,
                                 ),
                               ),
                             ],
-                          )
-                      ),
-                      errorMembers ? Text(
-                        AppLocalizations.of(context)!.maxNumberClientsError,
-                        style: Styles.redTextStyle.copyWith(fontSize: 12),
-                      ) : new Container(),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                      */
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.createBrandWorkshiftDescription,
-                              style: Theme.of(context).textTheme.caption,
-                              textAlign: TextAlign.left,
-                            ),
                           ),
-                        ],
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Text(
-                        AppLocalizations.of(context)!.workingHours,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          TextButton(
-                            onPressed: canEdit ? () async {
-                              DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
-                                  context: context,
-                                  builder: (_) => SelectTimeDialog(
-                                    title: AppLocalizations.of(context)!.selectTime,
-                                    startDate: startTime,
-                                    onlyFuture: false,
-                                  )
-                              );
-                              if (pickedTimeTemp != null) {
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Text(
+                            AppLocalizations.of(context)!.description,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Flexible(
+                            child: TextFormField(
+                              keyboardType: TextInputType.text,
+                              controller: descriptionController,
+                              onChanged: (value) {
                                 setState(() {
-                                  startTime = pickedTimeTemp;
-                                  startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute,));
+                                  descriptionControllerTemp = value;
                                 });
-                              }
-                            } : null,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(Radius.circular(5)),
-                                border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
-                                color: Colors.transparent,
-                              ),
-                              child: Text(
-                                startTimeController.text,
-                                style: Theme.of(context).textTheme.headline3,
-                              ),
-                            ),
-                          ),
-                          Text("-",
-                              style: Theme.of(context).textTheme.headline3),
-                          TextButton(
-                            onPressed: canEdit ? () async {
-                              DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
-                                  context: context,
-                                  builder: (_) => SelectTimeDialog(
-                                    title: AppLocalizations.of(context)!.selectTime,
-                                    startDate: endTime,
-                                    onlyFuture: false,
-                                  )
-                              );
-                              if (pickedTimeTemp != null) {
-                                setState(() {
-                                  endTime = pickedTimeTemp;
-                                  endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
-                                });
-                              }
-                            } : null,
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
-                                color: Colors.transparent,
-                              ),
-                              child: Text(
-                                  endTimeController.text,
-                                  style: Theme.of(context).textTheme.headline3
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      errorTime != null ? Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
-                        child: Text(
-                          errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                          textAlign: TextAlign.center,
-                        ),
-                      ) : Container(),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.bookingWindowDescription,
-                              style: Theme.of(context).textTheme.caption,
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Text(
-                        AppLocalizations.of(context)!.bookingWindow,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: GestureDetector(
-                          onTap: canEdit ? () {
-                            selectNumberOfDays();
-                          } : null,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(5)),
-                              border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
-                              color: Colors.transparent,
-                            ),
-                            height: MediaQuery.of(context).size.width*0.1,
-                            width: MediaQuery.of(context).size.width*0.2,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  bookingWindow.toString()+" "+AppLocalizations.of(context)!.days.toLowerCase(),
-                                  style: Theme.of(context).textTheme.headline3,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      /*
-                      SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.createBrandBreakDescription,
-                              style: Theme.of(context).textTheme.caption,
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Text(
-                        AppLocalizations.of(context)!.lunchBreak,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.43,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                TextButton(
-                                  onPressed: _breakList.length < breakLimit ? () async {
-                                    DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
-                                        context: context,
-                                        builder: (_) => SelectTimeDialog(
-                                          title: AppLocalizations.of(context)!.selectTime,
-                                          startDate: breakStartTime,
-                                          onlyFuture: false,
-                                        )
-                                    );
-                                    if (pickedTimeTemp != null) {
-                                      setState(() {
-                                        breakStartTime = pickedTimeTemp;
-                                        breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakStartTime.hour, breakStartTime.minute,));
-                                      });
-                                    }
-                                  } : null,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                      border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
-                                      color: Colors.transparent,
-                                    ),
-                                    child: Text(
-                                      breakStartTimeController.text,
-                                      style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
-                                    ),
-                                  ),
-                                ),
-                                Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
-                                TextButton(
-                                  onPressed: _breakList.length < breakLimit ? () async {
-                                    DateTime? pickedTimeTemp = await showCupertinoModalPopup(
-                                        context: context,
-                                        builder: (_) => SelectTimeDialog(
-                                          title: AppLocalizations.of(context)!.selectTime,
-                                          startDate: breakEndTime,
-                                          onlyFuture: false,
-                                        )
-                                    );
-                                    if (pickedTimeTemp != null) {
-                                      setState(() {
-                                        breakEndTime = pickedTimeTemp;
-                                        breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakEndTime.hour, breakEndTime.minute,));
-                                      });
-                                    }
-                                  } : null,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                      border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
-                                      color: Colors.transparent,
-                                    ),
-                                    child: Text(
-                                      breakEndTimeController.text,
-                                      style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          _breakList.length < breakLimit ? Padding(
-                            padding: const EdgeInsets.only(left: 0.0),
-                            child: OutlinedButton(
-                              onPressed: () {
-                                double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100.0;
-                                if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
-                                  setState(() {
-                                    errorBreakTime = true;
-                                  });
-                                } else {
-                                  DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
-                                  DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
-                                  _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
-                                  _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
-                                  setState(() {
-                                    errorBreakTime = false ;
-                                    _breakList.clear();
-                                    _breakList.add(_breakStartTime);
-                                    _breakList.add(_breakEndTime);
-                                  });
-                                }
                               },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon( Icons.add, color: Colors.white, size: 30,),
-                                ],
+                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                              minLines: 1,
+                              maxLines: 5,
+                              maxLength: 250,
+                              enabled: canEdit,
+                              style: Theme.of(context).textTheme.bodyText2,
+                              decoration: InputDecoration(
+                                hintStyle: Theme.of(context).textTheme.caption,
+                                hintText: AppLocalizations.of(context)!.descriptionError,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
                               ),
-                              style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                elevation: 3,
-                                shape: const CircleBorder(),
-                                padding: const EdgeInsets.all(5),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          /*
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!.maxNumberClientsError,
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.left,
                               ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        Text(
+                          AppLocalizations.of(context)!.maxNumberClients,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        GestureDetector(
+                            onTap: () {
+                              selectSlot(context, 2, null);
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                new Flexible(
+                                  child: TextFormField(
+                                    controller: membersController,
+                                    minLines: 1,
+                                    readOnly: true,
+                                    enabled: false,
+                                    style: Styles.purpleTextStyle,
+                                    decoration: InputDecoration(
+                                      hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
+                                      hintText: AppLocalizations.of(context)!.maxNumberClientsError,
+                                      labelStyle: Styles.purpleTextStyle,
+                                      border: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      errorBorder: InputBorder.none,
+                                      disabledBorder: InputBorder.none,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              ],
+                            )
+                        ),
+                        errorMembers ? Text(
+                          AppLocalizations.of(context)!.maxNumberClientsError,
+                          style: Styles.redTextStyle.copyWith(fontSize: 12),
+                        ) : new Container(),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                        */
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.createBrandWorkshiftDescription,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Text(
+                            AppLocalizations.of(context)!.workingHours,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: canEdit ? () async {
+                                  DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                                      context: context,
+                                      builder: (_) => SelectTimeDialog(
+                                        title: AppLocalizations.of(context)!.selectTime,
+                                        startDate: startTime,
+                                        onlyFuture: false,
+                                      )
+                                  );
+                                  if (pickedTimeTemp != null) {
+                                    setState(() {
+                                      startTime = pickedTimeTemp;
+                                      startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute,));
+                                    });
+                                  }
+                                } : null,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                    border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
+                                    color: Colors.transparent,
+                                  ),
+                                  child: Text(
+                                    startTimeController.text,
+                                    style: Theme.of(context).textTheme.headline3,
+                                  ),
+                                ),
+                              ),
+                              Text("-",
+                                  style: Theme.of(context).textTheme.headline3),
+                              TextButton(
+                                onPressed: canEdit ? () async {
+                                  DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                                      context: context,
+                                      builder: (_) => SelectTimeDialog(
+                                        title: AppLocalizations.of(context)!.selectTime,
+                                        startDate: endTime,
+                                        onlyFuture: false,
+                                      )
+                                  );
+                                  if (pickedTimeTemp != null) {
+                                    setState(() {
+                                      endTime = pickedTimeTemp;
+                                      endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
+                                    });
+                                  }
+                                } : null,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                                    border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
+                                    color: Colors.transparent,
+                                  ),
+                                  child: Text(
+                                      endTimeController.text,
+                                      style: Theme.of(context).textTheme.headline3
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          errorTime != null ? Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                            child: Text(
+                              errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                              textAlign: TextAlign.center,
                             ),
                           ) : Container(),
-                        ],
-                      ),
-                      errorBreakTime ? Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
-                        child: Text(
-                          AppLocalizations.of(context)!.workingHoursError1,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                          textAlign: TextAlign.center,
-                        ),
-                      ) : Container(),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: _breakList.length,
-                        itemBuilder: (context, int index) {
-                          if(index.isEven && !removedIndex.contains(index)) {
-                            return Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Container(
-                                  width: MediaQuery.of(context).size.width * 0.43,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      TextButton(
-                                        onPressed: false ? () {
-                                        } : null,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                            border: Border.all(color: Colors.green, width: 1.0),
-                                            color: Colors.transparent,
-                                          ),
-                                          child: Text(
-                                            '${_breakList[index].format(context)}',
-                                            style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
-                                          ),
-                                        ),
-                                      ),
-                                      Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
-                                      TextButton(
-                                        onPressed: false ? () {
-                                        } : null,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(8),
-                                          decoration: BoxDecoration(
-                                            borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                            border: Border.all(color: Colors.green, width: 1.0),
-                                            color: Colors.transparent,
-                                          ),
-                                          child: Text(
-                                            '${_breakList[index+1].format(context)}',
-                                            style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.bookingWindowDescription,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.left,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 0.0),
-                                  child: OutlinedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        removedIndex.add(index);
-                                        removedIndex.add(index+1);
-                                        breakLimit += 2;
-                                      });
-                                    },
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        const Icon( Icons.remove, color: Colors.white, size: 30,),
-                                      ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Text(
+                            AppLocalizations.of(context)!.bookingWindow,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: GestureDetector(
+                              onTap: canEdit ? () {
+                                selectNumberOfDays();
+                              } : null,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                  border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
+                                  color: Colors.transparent,
+                                ),
+                                height: MediaQuery.of(context).size.width*0.1,
+                                width: MediaQuery.of(context).size.width*0.2,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      bookingWindow.toString()+" "+AppLocalizations.of(context)!.days.toLowerCase(),
+                                      style: Theme.of(context).textTheme.headline3,
                                     ),
-                                    style: OutlinedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      elevation: 3,
-                                      shape: const CircleBorder(),
-                                      padding: const EdgeInsets.all(5),
-                                    ),
-                                  ),
+                                  ],
                                 ),
-                                Flexible(
-                                  child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
-                                ),
-                              ],
-                            );
-                          } else {
-                            return Container();
-                          }
-                        },
-                        shrinkWrap: true,
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                      _breakList.length < breakLimit ? Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              AppLocalizations.of(context)!.createBrandAddDescription,
-                              style: Theme.of(context).textTheme.bodyText2,
-                              textAlign: TextAlign.left,
+                              ),
                             ),
                           ),
+                          /*
+                        SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!.createBrandBreakDescription,
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        Text(
+                          AppLocalizations.of(context)!.lunchBreak,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.43,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  TextButton(
+                                    onPressed: _breakList.length < breakLimit ? () async {
+                                      DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                                          context: context,
+                                          builder: (_) => SelectTimeDialog(
+                                            title: AppLocalizations.of(context)!.selectTime,
+                                            startDate: breakStartTime,
+                                            onlyFuture: false,
+                                          )
+                                      );
+                                      if (pickedTimeTemp != null) {
+                                        setState(() {
+                                          breakStartTime = pickedTimeTemp;
+                                          breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakStartTime.hour, breakStartTime.minute,));
+                                        });
+                                      }
+                                    } : null,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                                        border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
+                                        color: Colors.transparent,
+                                      ),
+                                      child: Text(
+                                        breakStartTimeController.text,
+                                        style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
+                                      ),
+                                    ),
+                                  ),
+                                  Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
+                                  TextButton(
+                                    onPressed: _breakList.length < breakLimit ? () async {
+                                      DateTime? pickedTimeTemp = await showCupertinoModalPopup(
+                                          context: context,
+                                          builder: (_) => SelectTimeDialog(
+                                            title: AppLocalizations.of(context)!.selectTime,
+                                            startDate: breakEndTime,
+                                            onlyFuture: false,
+                                          )
+                                      );
+                                      if (pickedTimeTemp != null) {
+                                        setState(() {
+                                          breakEndTime = pickedTimeTemp;
+                                          breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakEndTime.hour, breakEndTime.minute,));
+                                        });
+                                      }
+                                    } : null,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                                        border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
+                                        color: Colors.transparent,
+                                      ),
+                                      child: Text(
+                                        breakEndTimeController.text,
+                                        style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            _breakList.length < breakLimit ? Padding(
+                              padding: const EdgeInsets.only(left: 0.0),
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100.0;
+                                  if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
+                                    setState(() {
+                                      errorBreakTime = true;
+                                    });
+                                  } else {
+                                    DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
+                                    DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
+                                    _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
+                                    _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
+                                    setState(() {
+                                      errorBreakTime = false ;
+                                      _breakList.clear();
+                                      _breakList.add(_breakStartTime);
+                                      _breakList.add(_breakEndTime);
+                                    });
+                                  }
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon( Icons.add, color: Colors.white, size: 30,),
+                                  ],
+                                ),
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                  elevation: 3,
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(5),
+                                ),
+                              ),
+                            ) : Container(),
+                          ],
+                        ),
+                        errorBreakTime ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                          child: Text(
+                            AppLocalizations.of(context)!.workingHoursError1,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                        ) : Container(),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _breakList.length,
+                          itemBuilder: (context, int index) {
+                            if(index.isEven && !removedIndex.contains(index)) {
+                              return Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Container(
+                                    width: MediaQuery.of(context).size.width * 0.43,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        TextButton(
+                                          onPressed: false ? () {
+                                          } : null,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                                              border: Border.all(color: Colors.green, width: 1.0),
+                                              color: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              '${_breakList[index].format(context)}',
+                                              style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
+                                            ),
+                                          ),
+                                        ),
+                                        Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
+                                        TextButton(
+                                          onPressed: false ? () {
+                                          } : null,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                                              border: Border.all(color: Colors.green, width: 1.0),
+                                              color: Colors.transparent,
+                                            ),
+                                            child: Text(
+                                              '${_breakList[index+1].format(context)}',
+                                              style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0.0),
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          removedIndex.add(index);
+                                          removedIndex.add(index+1);
+                                          breakLimit += 2;
+                                        });
+                                      },
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Icon( Icons.remove, color: Colors.white, size: 30,),
+                                        ],
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        elevation: 3,
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(5),
+                                      ),
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return Container();
+                            }
+                          },
+                          shrinkWrap: true,
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                        _breakList.length < breakLimit ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!.createBrandAddDescription,
+                                style: Theme.of(context).textTheme.bodyText2,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ) : Container(),
+                         */
+                          SizedBox(height: MediaQuery.of(context).size.height*0.10),
                         ],
-                      ) : Container(),
-                       */
-                      SizedBox(height: MediaQuery.of(context).size.height*0.10),
-                    ],
-                  ),
-                )
+                      ),
+                    )
+                ),
+              ],
             ),
           ),
+
         ],
       ),
       floatingActionButton: isUpdated ? Padding(
