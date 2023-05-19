@@ -133,12 +133,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     // Calcula el TimeSlotView per cadascuna
     double difference = _endHour!-_startHour!;
     _baseTimeSlotViewZoom = ((MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom)-MediaQuery.of(context).size.height*0.25)/difference;
-    /// TESTING TO CHANGE LATER DATE
-    //_timeSlotViewScale = await _userDataService.getUserZoomScale(widget.brandId, currentUser.id!);
-    _timeSlotViewScale = 1.0;
+    _timeSlotViewScale = await _userDataService.getUserZoomScale(widget.brandId, currentUser.id!);
     _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
     // Get The Events Needed
-    await context.read<BrandEventsCubit>().updateInitialBrandEvents();
+    await context.read<BrandEventsCubit>().updateInitialBrandEvents(_brandTrainers);
     setState(() {
       isLoading = false;
     });
@@ -1474,8 +1472,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                             });
                           } : null,
                           onScaleEnd: (ScaleEndDetails scaleEndDetails) {
-                            /// TESTING TO CHANGE LATER DATE
-                            //_userDataService.updateUserZoomScale(widget.brandId, currentUser.id!, _timeSlotViewScale);
+                            _userDataService.updateUserZoomScale(widget.brandId, currentUser.id!, _timeSlotViewScale);
                           },
                           child: Stack(
                             alignment: Alignment.bottomRight,
@@ -1611,7 +1608,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                       int.parse(eventsList.first.minute!),
                                     );
                                     if (viewChangedDetails.visibleDates[0].difference(startDateLastEvent).inDays < 60) {
-                                      context.read<BrandEventsCubit>().getMoreBrandEvents(eventsList.first.id!);
+                                      context.read<BrandEventsCubit>().getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
                                     }
                                   },
                                   onTap: onTapCalendar,
@@ -1868,32 +1865,73 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       if (event.usersList.isNotEmpty) {
         int index =  event.usersList.indexWhere((element) => selectedTrainersIDs.contains(element.id!));
         if (index != -1) {
-          // Afegir percentatges de members al Event.
-          tempAllAppointments.add(Appointment(
-            id: event.id,
-            startTime: startDate,
-            endTime: endDate,
-            subject: subject,
-            color: color,
-            startTimeZone: '',
-            endTimeZone: '',
-          ));
+          if (filterEventsNumber == 1) {
+            // Show Only Group Events
+            if (event.isPrivate == false) {
+              tempAllAppointments.add(Appointment(
+              id: event.id,
+              startTime: startDate,
+              endTime: endDate,
+              subject: subject,
+              color: color,
+              startTimeZone: '',
+              endTimeZone: '',
+            ));
+            }
+          } else if(filterEventsNumber == 2) {
+            // Show Only Group Events
+            if (event.isPrivate == true) {
+              tempAllAppointments.add(Appointment(
+                id: event.id,
+                startTime: startDate,
+                endTime: endDate,
+                subject: subject,
+                color: color,
+                startTimeZone: '',
+                endTimeZone: '',
+              ));
+            }
+          } else {
+            tempAllAppointments.add(Appointment(
+              id: event.id,
+              startTime: startDate,
+              endTime: endDate,
+              subject: subject,
+              color: color,
+              startTimeZone: '',
+              endTimeZone: '',
+            ));
+          }
         }
       } else {
         getNewEventMemberDetails(event);
-        tempAllAppointments.add(Appointment(
-          id: event.id,
-          startTime: startDate,
-          endTime: endDate,
-          subject: subject,
-          color: color,
-          startTimeZone: '',
-          endTimeZone: '',
-        ));
-        /*
-        int index =  event.usersList.indexWhere((element) => selectedTrainersIDs.contains(element.id!));
-        if (index != -1) {
-          // Afegir percentatges de members al Event.
+        if (filterEventsNumber == 1) {
+          // Show Only Group Events
+          if (event.isPrivate == false) {
+            tempAllAppointments.add(Appointment(
+              id: event.id,
+              startTime: startDate,
+              endTime: endDate,
+              subject: subject,
+              color: color,
+              startTimeZone: '',
+              endTimeZone: '',
+            ));
+          }
+        } else if(filterEventsNumber == 2) {
+          // Show Only Group Events
+          if (event.isPrivate == true) {
+            tempAllAppointments.add(Appointment(
+              id: event.id,
+              startTime: startDate,
+              endTime: endDate,
+              subject: subject,
+              color: color,
+              startTimeZone: '',
+              endTimeZone: '',
+            ));
+          }
+        } else {
           tempAllAppointments.add(Appointment(
             id: event.id,
             startTime: startDate,
@@ -1904,8 +1942,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
             endTimeZone: '',
           ));
         }
-         */
       }
+      //
     }
     return AppointmentDataSource(tempAllAppointments);
   }

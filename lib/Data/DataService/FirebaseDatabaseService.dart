@@ -850,8 +850,8 @@ class FirebaseDatabaseService {
         .limit(limit)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      events.add(Event.fromObjectOnlyCoverData(
-          querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      Event evt = Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      events.add(evt);
     }
     return events;
   }

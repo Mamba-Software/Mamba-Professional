@@ -829,8 +829,7 @@ class _BrandScreenState extends State<BrandScreen> {
       case 10:
         mixpanel!.track('brand_calendar_view');
         return BrandCalendarWidget(
-          //brandId: currentBrand.id!,
-          brandId: "50738633-dba0-48b9-bc55-e4fd52db6f59",
+          brandId: currentBrand.id!,
           dateTime: calendarDateTime,
           calendarView: calendarView,
           pinned: iconStar,

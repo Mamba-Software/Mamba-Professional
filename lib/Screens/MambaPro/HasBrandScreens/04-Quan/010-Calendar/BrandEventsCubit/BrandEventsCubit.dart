@@ -4,30 +4,43 @@ import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 part 'BrandEventsState.dart';
 
 class BrandEventsCubit extends Cubit<BrandEventsState> {
 
 
   final _eventDataService = EventDataService();
-  final limit = 200;
+  final limit = 50;
   List<Event> finishedEventsList = [];
   List<Event> upcomingEventsList = [];
 
   BrandEventsCubit() : super(const BrandEventsInitial());
 
-  Future<void> updateInitialBrandEvents() async {
+  Future<void> updateInitialBrandEvents(List<Usuario> _brandTrainers) async {
     try {
       // Set the State to Loading
       emit(const BrandEventsLoading());
       // Brand Id String
-      String brandId = "50738633-dba0-48b9-bc55-e4fd52db6f59";
+      String brandId = currentBrand.id!;
       // Get Last 100 Finished Events
       finishedEventsList = await _eventDataService.getBrandFirstCompletedEventsLimit(brandId, limit);
+      // Add The Trainers to the Event
+      List<Usuario> eventTrainers = [];
+      for (Event evt in finishedEventsList) {
+        for (Usuario trainer in _brandTrainers) {
+          int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+          if (index != -1) {
+            eventTrainers.add(trainer);
+          }
+        }
+        evt.setUserList = eventTrainers;
+        eventTrainers = [];
+      }
       // Open the Stream to Get Brand Upcoming Events
       _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
         List<DocumentSnapshot> documents = querySnapshot.docs;
-        upcomingEventsList = documentsToEvents(documents);
+        upcomingEventsList = documentsToEvents(documents, _brandTrainers);
         List<Event> finalList = finishedEventsList+upcomingEventsList;
         // Order Notification List Descending Time
         finalList.sort((a,b) {
@@ -56,13 +69,25 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
     }
   }
 
-  Future<void> getMoreBrandEvents(String eventId) async {
+  Future<void> getMoreBrandEvents(String eventId, List<Usuario> _brandTrainers) async {
     try {
       print("Getting More Brand Events");
       // Set the State to Loading
-      String brandId = "50738633-dba0-48b9-bc55-e4fd52db6f59";
+      String brandId = currentBrand.id!;
       // Get Last 100 Finished Events
-      List<Event> moreFinishedEvents = await _eventDataService.getBrandMoreCompletedEventsLimit(brandId, eventId, limit);
+      List<Event> moreFinishedEvents = await _eventDataService.getBrandMoreCompletedEventsLimit(brandId, eventId, limit*2);
+      // Add The Trainers to the Event
+      List<Usuario> eventTrainers = [];
+      for (Event evt in moreFinishedEvents) {
+        for (Usuario trainer in _brandTrainers) {
+          int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+          if (index != -1) {
+            eventTrainers.add(trainer);
+          }
+        }
+        evt.setUserList = eventTrainers;
+        eventTrainers = [];
+      }
       finishedEventsList = List.from(moreFinishedEvents+finishedEventsList);
       List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
       // Order Notification List Descending Time
@@ -90,72 +115,36 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
     }
   }
 
-}
-
-
-List<Event> documentsToEvents(List<DocumentSnapshot> documents) {
-  List<Event> events = [];
-  List<Usuario> eventTrainers = [];
-  List<Event> groupEvents = [];
-  List<Event> privateEvents = [];
-  for(int i = 0; i < documents.length; i++) {
-    Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
-    /* Check Trainers in Event
-    for (Usuario trainer in _brandTrainers) {
-      int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
-      if (index != -1) {
-        eventTrainers.add(trainer);
+  /*
+  TODO: FUTURE FILTER FERLO PER AQUI
+  Future<void> filterEvents(int filterSelection, List<Usuario> _selectedTrainers) async {
+    try {
+      print("Filtering Events ...");
+      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
+      /// Check Filter Selection for Type of Event
+      if (filterSelection == 0) {
+        // Show Both Private and Group Events
+      } else if(filterSelection == 1) {
+        // Show Only Group Events
+        finalList.removeWhere((element) => element.isPrivate == true);
+      } else if(filterSelection == 2) {
+        // Show Only Private Events
+        finalList.removeWhere((element) => element.isPrivate == false);
       }
-    }
-    evt.setUserList = eventTrainers;
-    eventTrainers = [];
-    /* How to Fetch Trainer before
-      if (evt.usersList.isEmpty) {
-        evt.setUserList = await _eventDataService.getEventUsers(evt.id!);
-      }*/
-     */
-    // Type of Events
-    if (evt.isPrivate! == false) {
-      groupEvents.add(evt);
-    } else {
-      privateEvents.add(evt);
+      emit(BrandEventsLoaded(finalList));
+    } catch(e) {
+      print("Filter Brand Events Error"+e.toString());
+      emit(BrandEventsError(e.toString()));
     }
   }
-  // Order By
-  groupEvents.sort((a,b) {
-    var aDate =  a.doneAt!.toDate();
-    var bDate =  b.doneAt!.toDate();
-    return aDate.compareTo(bDate);
-  });
-  privateEvents.sort((a,b) {
-    var aDate =  a.doneAt!.toDate();
-    var bDate =  b.doneAt!.toDate();
-    return aDate.compareTo(bDate);
-  });
-  /// TO CAHNGE
-  int filterSelection = 0;
-  // Filter By
-  if (filterSelection == 0) {
-    // Active/Inactive Selected
-    events.addAll(groupEvents);
-    events.addAll(privateEvents);
-  } else if(filterSelection == 1) {
-    // Group Events Selected
-    events.addAll(groupEvents);
-  } else if(filterSelection == 2) {
-    // Group Events Selected
-    events.addAll(privateEvents);
-  }
-  // Return List of Events
-  return events;
+   */
+
 }
 
-/*
-List<Event> documentsToEvents(List<DocumentSnapshot> documents, int filterSelection, List<Usuario> _brandTrainers, List<Usuario> selectedTrainers) {
+
+List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _brandTrainers) {
   List<Event> events = [];
   List<Usuario> eventTrainers = [];
-  List<Event> groupEvents = [];
-  List<Event> privateEvents = [];
   for(int i = 0; i < documents.length; i++) {
     Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
     // Check Trainers in Event
@@ -166,42 +155,15 @@ List<Event> documentsToEvents(List<DocumentSnapshot> documents, int filterSelect
       }
     }
     evt.setUserList = eventTrainers;
+    events.add(evt);
     eventTrainers = [];
-    /* How to Fetch Trainer before
-      if (evt.usersList.isEmpty) {
-        evt.setUserList = await _eventDataService.getEventUsers(evt.id!);
-      }*/
-    // Type of Events
-    if (evt.isPrivate! == false) {
-      groupEvents.add(evt);
-    } else {
-      privateEvents.add(evt);
-    }
   }
   // Order By
-  groupEvents.sort((a,b) {
+  events.sort((a,b) {
     var aDate =  a.doneAt!.toDate();
     var bDate =  b.doneAt!.toDate();
     return aDate.compareTo(bDate);
   });
-  privateEvents.sort((a,b) {
-    var aDate =  a.doneAt!.toDate();
-    var bDate =  b.doneAt!.toDate();
-    return aDate.compareTo(bDate);
-  });
-  // Filter By
-  if (filterSelection == 0) {
-    // Active/Inactive Selected
-    events.addAll(groupEvents);
-    events.addAll(privateEvents);
-  } else if(filterSelection == 1) {
-    // Group Events Selected
-    events.addAll(groupEvents);
-  } else if(filterSelection == 2) {
-    // Group Events Selected
-    events.addAll(privateEvents);
-  }
   // Return List of Events
   return events;
 }
- */
