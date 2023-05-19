@@ -16,7 +16,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/BrandCalendarWidget.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
@@ -32,6 +32,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -828,7 +829,8 @@ class _BrandScreenState extends State<BrandScreen> {
       case 10:
         mixpanel!.track('brand_calendar_view');
         return BrandCalendarWidget(
-          brandId: currentBrand.id!,
+          //brandId: currentBrand.id!,
+          brandId: "50738633-dba0-48b9-bc55-e4fd52db6f59",
           dateTime: calendarDateTime,
           calendarView: calendarView,
           pinned: iconStar,
@@ -903,17 +905,13 @@ class _BrandScreenState extends State<BrandScreen> {
           create: (_) => BrandSuscriptionCubit(),
           lazy: false,
         ),
+        BlocProvider<BrandEventsCubit>(
+          create: (_) => BrandEventsCubit(),
+          lazy: true,
+        ),
       ],
       child: Scaffold(
         key: mambaProScaffoldKey,
-        /*
-        appBar: AppBar(
-          toolbarHeight: 0,
-          elevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-          //systemOverlayStyle: const SystemUiOverlayStyle(statusBarColor: Colors.white),
-        ),
-         */
         drawer: Drawer(
           backgroundColor: Theme.of(context).primaryColorDark,
           child: ListView(

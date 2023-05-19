@@ -34,7 +34,7 @@ class EventDataService {
   Future<List<Event>> getBrandEventsThisMonth(String brandId) => _firebase.getBrandEventsThisMonth(brandId);
   Future<List> getUserEventsStats(String userId) => _firebase.getUserEventsStats(userId);
   Future<List<int>> getUserEventsFinished(String userId) => _firebase.getUserEventsFinished(userId);
-  Future<int> getBrandsEventsFinished(String brandId) => _firebase.getBrandsEventsFinished(brandId);
+  Future<List<Event>> getBrandsEventsFinished(String brandId) => _firebase.getBrandsEventsFinished(brandId);
   Future<int> getBrandsEventsUpcoming(String brandId) => _firebase.getBrandsEventsUpcoming(brandId);
   Future<List<Usuario>> getEventUsers(String eventId) => _firebase.getEventUsers(eventId);
   Future<Location> getEventLocation(String eventId) => _firebase.getEventLocation(eventId);
@@ -76,6 +76,8 @@ class EventDataService {
   Stream<QuerySnapshot> getUserEventsTodayStream(String userId) => _firebase.getUserEventsTodayStream(userId);
 
   Stream<QuerySnapshot> getBrandEventsStream(String brandId) => _firebase.getBrandEventsStream(brandId);
+
+  Stream<QuerySnapshot> getBrandUpcomingEventsStream(String brandId) => _firebase.getBrandUpcomingEventsStream(brandId);
 
   Stream<QuerySnapshot> getBrandsEventsTodayStream(String brandId) => _firebase.getBrandsEventsTodayStream(brandId);
 

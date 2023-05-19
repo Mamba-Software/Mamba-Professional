@@ -1543,7 +1543,7 @@ class FirebaseDatabaseService {
     }
 
     // Get All Events Finished Brand
-    Future<int> getBrandsEventsFinished(String brandId) async {
+    Future<List<Event>> getBrandsEventsFinished(String brandId) async {
       DateTime today = DateTime.now();
       List<Event> eventsList = [];
       QuerySnapshot querySnapshot = await _firestore
@@ -1551,10 +1551,8 @@ class FirebaseDatabaseService {
           .doc(brandId)
           .collection("Events")
           .get();
-
       for (int i = 0; i < querySnapshot.docs.length; i++) {
-        Event event = Event.fromObjectAllData(
-            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        Event event = Event.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
         var startDate = DateTime(
           int.parse(event.year!),
           int.parse(event.month!),
@@ -1566,7 +1564,7 @@ class FirebaseDatabaseService {
           eventsList.add(event);
         }
       }
-      return eventsList.length;
+      return eventsList;
     }
 
     // Get All Events Finished Brand
@@ -3488,6 +3486,16 @@ class FirebaseDatabaseService {
           .collection(brands)
           .doc(brandId)
           .collection("Events")
+          .snapshots();
+    }
+
+    Stream<QuerySnapshot> getBrandUpcomingEventsStream(String brandId) {
+      Timestamp now = Timestamp.fromDate(DateTime.now());
+      return _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Events")
+          .where("doneAt", isGreaterThan: now)
           .snapshots();
     }
 
