@@ -113,11 +113,13 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 data: brandUrlClient,
                 version: QrVersions.auto,
                 size: MediaQuery.of(context).size.width*0.5,
-                gapless: false,
+                gapless: true,
+                /*
                 embeddedImage: Image.asset(Constants.logoQRMamba).image,
                 embeddedImageStyle: QrEmbeddedImageStyle(
                   size: const Size(65, 65),
                 ),
+                 */
               )
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.03),
@@ -252,11 +254,13 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                 data: brandUrlTrainer,
                 version: QrVersions.auto,
                 size: MediaQuery.of(context).size.width*0.5,
-                gapless: false,
+                gapless: true,
+                /*
                 embeddedImage: Image.asset(Constants.logoQRMamba).image,
                 embeddedImageStyle: QrEmbeddedImageStyle(
                   size: const Size(65, 65),
                 ),
+                 */
               )
           ),
           SizedBox(height: MediaQuery.of(context).size.height*0.03),
