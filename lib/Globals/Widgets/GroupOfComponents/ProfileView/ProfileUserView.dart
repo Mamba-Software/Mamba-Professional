@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -996,7 +998,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: user.isTrainer! == false ? 0.41 : 0.35,
+                        heightFactor: user.isTrainer! == false ? Platform.isAndroid ? 0.46 : 0.41 : Platform.isAndroid ? 0.4 : 0.35,
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height*0.5,
                           width: MediaQuery.of(context).size.width,

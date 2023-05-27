@@ -84,8 +84,6 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
   
   // Navigate to Notifications Screen
   Future<void> navigateToNotificationsScreen() async {
-    if(brandIsActive)
-    {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
@@ -97,31 +95,22 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
         unreadNotifications = temp;
       });
     });
-    }
-    else {
-      await navigateToPayWall(context);
-    }
   }
 
   // Navigate to Notifications Screen
   Future<void> navigateToChatScreen() async {
-    if(brandIsActive) {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<void>(
-            builder: (context) => const ChatCore(),
-          )
-      ).whenComplete(() async {
-        var temp = await _userDataService.getUnreadConversations(
-            currentUser.id!);
-        setState(() {
-          unreadChats = temp;
-        });
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => const ChatCore(),
+        )
+    ).whenComplete(() async {
+      var temp = await _userDataService.getUnreadConversations(
+          currentUser.id!);
+      setState(() {
+        unreadChats = temp;
       });
-    }
-    else {
-      await navigateToPayWall(context);
-    }
+    });
   }
 
   // Navigate to Event Screen on Tap
