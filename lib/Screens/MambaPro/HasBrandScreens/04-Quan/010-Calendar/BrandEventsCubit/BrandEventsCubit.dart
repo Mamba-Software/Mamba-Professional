@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -14,6 +16,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
   final limit = 50;
   List<Event> finishedEventsList = [];
   List<Event> upcomingEventsList = [];
+  late StreamSubscription<QuerySnapshot> _subscription;
 
   BrandEventsCubit() : super(const BrandEventsInitial());
 
@@ -38,7 +41,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         eventTrainers = [];
       }
       // Open the Stream to Get Brand Upcoming Events
-      _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
+      _subscription = _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
         List<DocumentSnapshot> documents = querySnapshot.docs;
         upcomingEventsList = documentsToEvents(documents, _brandTrainers);
         List<Event> finalList = finishedEventsList+upcomingEventsList;
@@ -62,7 +65,12 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
         });
         // Emit a new state with the list of `Events`.
         emit(BrandEventsLoaded(finalList));
-      });
+      },
+      onError: (e) {
+        print("Brand Events Error"+e.toString());
+        emit(BrandEventsError(e.toString()));
+      },
+      );
     } catch(e) {
       print("Brand Events Error"+e.toString());
       emit(BrandEventsError(e.toString()));
@@ -113,6 +121,13 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       print("More Brand Events Error"+e.toString());
       emit(BrandEventsError(e.toString()));
     }
+  }
+
+  @override
+  Future<void> close() {
+    //print('LO CIERRO');
+    _subscription.cancel();
+    return super.close();
   }
 
   /*

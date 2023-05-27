@@ -99,6 +99,8 @@ class _BrandScreenState extends State<BrandScreen> {
   // Init Device Sizes
   initDeviceSizes() {
     safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
+    print("MediaQuery.of(context).padding.bottom");
+    print(MediaQuery.of(context).padding.bottom);
     safeAreaWidth = MediaQuery.of(context).size.width;
     print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
