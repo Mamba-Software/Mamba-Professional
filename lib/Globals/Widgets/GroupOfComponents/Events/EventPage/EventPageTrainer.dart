@@ -1525,7 +1525,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               SizedBox(
                 width: MediaQuery.of(context).size.width*0.25,
                 child: FloatingActionButton.extended(
-                  heroTag: "9",
+                  heroTag: "10",
                   onPressed: () async {
                     if(!brandIsActive) {
                       await navigateToPayWall(context);
