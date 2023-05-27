@@ -24,7 +24,7 @@ class _LoadingViewState extends State<LoadingView> {
             width: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
             height: widget.isSmall != null && widget.isSmall == true ? 25 : 50,
             child: CircularProgressIndicator(
-              strokeWidth: widget.isSmall != null && widget.isSmall == true ? 2 : 4,
+              strokeWidth: widget.isSmall != null && widget.isSmall == true ? 2.5 : 4,
               color:  widget.color != null ? widget.color : Theme.of(context).colorScheme.secondary,
             ),
           ),

@@ -27,6 +27,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSn
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import '../../Components/TopSnackBar/TopSnackBar.dart';
 
@@ -1030,27 +1031,25 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                   height: MediaQuery.of(context).size.height*0.09,
                   width: double.infinity,
                   color: Theme.of(context).primaryColor,
-                  child: isLoading
-                      ? Center(
-                          child: Container(
-                            padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                            height: MediaQuery.of(context).size.width * 0.08,
-                            width: MediaQuery.of(context).size.width * 0.06,
-                            child: CircularProgressIndicator(
-                              color: Theme.of(context).primaryColorDark,
-                              strokeWidth: 2.5,
-                            ),
-                          ),
-                        )
-                      : Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                            child: Text(
-                              AppLocalizations.of(context)!.confirm,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
-                            ),
-                          ),
-                        )
+                  child: isLoading ? Center(
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+                        child: LoadingView(
+                          isSmall: true,
+                          hasLogo: false,
+                          color: Theme.of(context).primaryColorDark,
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+                        child: Text(
+                          AppLocalizations.of(context)!.confirm,
+                          style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
+                        ),
+                      ),
+                    )
               ),
             ) :
             Container(
@@ -1058,19 +1057,15 @@ class _OtorgarBonoState extends State<OtorgarBono> {
               width: double.infinity,
               color: Theme.of(context).primaryColor,
               child: isLoading ? Center(
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width *
-                            0.06,
-                        height:
-                            MediaQuery.of(context).size.height *
-                                0.03,
-                        child: CircularProgressIndicator(
-                          color:
-                              Theme.of(context).primaryColorDark,
-                          strokeWidth: 2.5,
-                        ),
-                      ),
-                    ) : Center(
+                child: Container(
+                  padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+                  child: LoadingView(
+                    isSmall: true,
+                    hasLogo: false,
+                    color: Theme.of(context).primaryColorDark,
+                  ),
+                ),
+              ) : Center(
                       child: Padding(
                         padding: EdgeInsets.only(
                             bottom: MediaQuery.of(context)
