@@ -119,7 +119,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                   onTap: () async {
                     print('Error on locations');
                     // Generate a new token here
-                    final sessionToken = Uuid().v4();
+                    final sessionToken = const Uuid().v4();
                     final language = currentUser.idioma;
                     final Suggestion? result = await showSearch(
                       context: context,
@@ -165,6 +165,41 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
               color: AppColors.grey,
             ),
             SizedBox(height: MediaQuery.of(context).size.height*0.01),
+            StreamBuilder<QuerySnapshot>(
+                stream: _locationDataService.getAllLocationsBrand(currentBrand.id!),
+                builder: (context, snapshot) {
+                  if (snapshot == null || snapshot.data == null || snapshot.data!.docs == null ) {
+                    return SizedBox(
+                        height: MediaQuery.of(context).size.height*0.65,
+                        child: Center(
+                            child: LoadingView()
+                        )
+                    );
+                  } else {
+                    locationList = documentsToLocations(snapshot.data!.docs);
+                    return ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: locationList.length,
+                        itemBuilder: (context, index) {
+                          Location location = locationList[index];
+                          return ListTile(
+                            leading: Icon(location.isBaseLocation! ? Icons.home_filled : Icons.location_on_outlined, color: location.isBaseLocation! ?  Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06,),
+                            title: Text(
+                                location.description!,
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: location.isBaseLocation! ?  Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor,)
+                            ),
+                            onTap: () {
+                              Navigator.of(context).pop(location.id);
+                            },
+                          );
+                        }
+                    );
+                  }
+                }
+            ),
+            /*
             StreamBuilder<QuerySnapshot>(
                 stream: _locationDataService.getAllLocationsBrand(currentBrand.id!),
                 builder: (context, snapshot) {
@@ -272,6 +307,8 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                   }
                 }
             ),
+
+             */
           ],
         ),
       ),

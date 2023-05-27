@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,6 +11,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
@@ -262,14 +264,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
   Future<void> getLocation(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
+    final Uint8List markerIcon = await ImageUtils().getBytesFromAsset('assets/images/fitnessMapIcon.png', 100);
     _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
     Marker marker = Marker(
       markerId: const MarkerId('1'),
       position: LatLng(location.latitude!,location.longitude!),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+      //anchor: const Offset(0.5, 0.5),
+      icon: BitmapDescriptor.fromBytes(markerIcon),
       onTap: () {},
     );
-    markers.add(marker);
+    //markers.add(marker);
     setState(() {
       isLoading = false;
     });
