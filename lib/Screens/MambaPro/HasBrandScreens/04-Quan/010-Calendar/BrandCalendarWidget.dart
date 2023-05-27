@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
@@ -131,8 +133,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     _startHour = double.parse(_brand.workShift[0].toStringAsFixed(2).split(".")[0]);
     _endHour = double.parse(_brand.workShift[1].toStringAsFixed(2).split(".")[0]);
     // Calcula el TimeSlotView per cadascuna
-    double difference = _endHour!-_startHour!;
-    _baseTimeSlotViewZoom = ((MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom)-MediaQuery.of(context).size.height*0.25)/difference;
+    _baseTimeSlotViewZoom = getScreenHeightDifference(context);
     _timeSlotViewScale = await _userDataService.getUserZoomScale(widget.brandId, currentUser.id!);
     _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
     // Get The Events Needed
@@ -140,6 +141,36 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     setState(() {
       isLoading = false;
     });
+  }
+
+  double getScreenHeightDifference(BuildContext context) {
+    // The goal of this function is to calculate the height of each HOUR in the calendar. This is calculated depending on the numbers of avaiable hours (HORARI).
+    // Final result
+    double adjustedHeight;
+    // Full screen height
+    double screenHeight = MediaQuery.of(context).size.height;
+    // Expanded Height of AppBar
+    double expandedHeight = MediaQuery.of(context).size.height*0.15 + MediaQuery.of(context).padding.top;
+    // View Header Height Calendar
+    double viewHeaderHeight = 50;
+    // We're using TargetPlatform to determine the type of device
+    switch (Theme.of(context).platform) {
+      case TargetPlatform.android:
+        //adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight - bottomNavigationBarHeight;
+        adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
+        break;
+      case TargetPlatform.iOS:
+        adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
+        break;
+      default:
+        adjustedHeight = screenHeight - expandedHeight - viewHeaderHeight;
+        break;
+    }
+    // Diferencia de Hores
+    double difference = _endHour!-_startHour!;
+    difference = _startHour! != 0 ? difference+1 : difference;
+    difference = _endHour! != 24 ? difference+1 : difference;
+    return adjustedHeight / difference;
   }
 
   void getUserBrandDetails() async {
@@ -1487,10 +1518,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                 child: SfCalendar(
                                   // Controller
                                   controller: _controller,
-                                  blackoutDates: [dateJoined.subtract(const Duration(days: 1))],
-                                  blackoutDatesTextStyle: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600),
+                                  blackoutDates: [dateJoined],
+                                  blackoutDatesTextStyle: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600),
                                   // Data
-                                  minDate: dateJoined.subtract(const Duration(days: 1)),
+                                  minDate: dateJoined,
                                   dataSource: _getCalendarDataSource(loadedState.brandEventsList),
                                   specialRegions: _getTimeRegions(),
                                   // Config
@@ -1600,15 +1631,17 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                       });
                                     });
                                     List<Event> eventsList = loadedState.brandEventsList;
-                                    var startDateLastEvent =  DateTime(
-                                      int.parse(eventsList.first.year!),
-                                      int.parse(eventsList.first.month!),
-                                      int.parse(eventsList.first.day!),
-                                      int.parse(eventsList.first.hour!),
-                                      int.parse(eventsList.first.minute!),
-                                    );
-                                    if (viewChangedDetails.visibleDates[0].difference(startDateLastEvent).inDays < 60) {
-                                      context.read<BrandEventsCubit>().getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
+                                    if (eventsList.isNotEmpty) {
+                                      var startDateLastEvent =  DateTime(
+                                        int.parse(eventsList.first.year!),
+                                        int.parse(eventsList.first.month!),
+                                        int.parse(eventsList.first.day!),
+                                        int.parse(eventsList.first.hour!),
+                                        int.parse(eventsList.first.minute!),
+                                      );
+                                      if (viewChangedDetails.visibleDates[0].difference(startDateLastEvent).inDays < 60) {
+                                        context.read<BrandEventsCubit>().getMoreBrandEvents(eventsList.first.id!, _brandTrainers);
+                                      }
                                     }
                                   },
                                   onTap: onTapCalendar,
@@ -1619,13 +1652,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                 ),
                               ),
                               _controller.view == CalendarView.week || _controller.view == CalendarView.day ? Padding(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.06, horizontal: MediaQuery.of(context).size.width*0.05),
+                                padding: Platform.isAndroid ? EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.045)
+                                : EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.06, horizontal: MediaQuery.of(context).size.width*0.04),
                                 child: Material(
                                   elevation: 4,
                                   borderRadius: BorderRadius.circular(10),
                                   child: Container(
                                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0115),
-                                    width: MediaQuery.of(context).size.width*0.19,
+                                    width: MediaQuery.of(context).size.width*0.2,
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).backgroundColor,
                                       borderRadius: const BorderRadius.all(
@@ -1666,7 +1700,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
 
   Widget whichFloatingActionButton() {
     return canEdit ? Padding(
-      padding: const EdgeInsets.all(10),
+      padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
       child: SizedBox(
         height: MediaQuery.of(context).size.width*0.15,
         width: MediaQuery.of(context).size.width*0.15,
@@ -1946,60 +1980,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       //
     }
     return AppointmentDataSource(tempAllAppointments);
-  }
-
-  List<Event> documentsToEvents(List<DocumentSnapshot> documents, int filterSelection, List<Usuario> selectedTrainers) {
-    List<Event> events = [];
-    List<Usuario> eventTrainers = [];
-    List<Event> groupEvents = [];
-    List<Event> privateEvents = [];
-    for(int i = 0; i < documents.length; i++) {
-      Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
-      // Check Trainers in Event
-      for (Usuario trainer in _brandTrainers) {
-        int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
-        if (index != -1) {
-          eventTrainers.add(trainer);
-        }
-      }
-      evt.setUserList = eventTrainers;
-      eventTrainers = [];
-      /* How to Fetch Trainer before
-      if (evt.usersList.isEmpty) {
-        evt.setUserList = await _eventDataService.getEventUsers(evt.id!);
-      }*/
-      // Type of Events
-      if (evt.isPrivate! == false) {
-        groupEvents.add(evt);
-      } else {
-        privateEvents.add(evt);
-      }
-    }
-    // Order By
-    groupEvents.sort((a,b) {
-      var aDate =  a.doneAt!.toDate();
-      var bDate =  b.doneAt!.toDate();
-      return aDate.compareTo(bDate);
-    });
-    privateEvents.sort((a,b) {
-      var aDate =  a.doneAt!.toDate();
-      var bDate =  b.doneAt!.toDate();
-      return aDate.compareTo(bDate);
-    });
-    // Filter By
-    if (filterSelection == 0) {
-      // Active/Inactive Selected
-      events.addAll(groupEvents);
-      events.addAll(privateEvents);
-    } else if(filterSelection == 1) {
-      // Group Events Selected
-      events.addAll(groupEvents);
-    } else if(filterSelection == 2) {
-      // Group Events Selected
-      events.addAll(privateEvents);
-    }
-    // Return List of Events
-    return events;
   }
 
   void onTapCalendar(CalendarTapDetails details) async {
