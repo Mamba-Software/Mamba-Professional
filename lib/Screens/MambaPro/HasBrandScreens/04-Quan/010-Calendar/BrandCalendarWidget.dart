@@ -1652,14 +1652,14 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                 ),
                               ),
                               _controller.view == CalendarView.week || _controller.view == CalendarView.day ? Padding(
-                                padding: Platform.isAndroid ? EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.05)
-                                : EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.06, horizontal: MediaQuery.of(context).size.width*0.05),
+                                padding: Platform.isAndroid ? EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.045)
+                                : EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.06, horizontal: MediaQuery.of(context).size.width*0.04),
                                 child: Material(
                                   elevation: 4,
                                   borderRadius: BorderRadius.circular(10),
                                   child: Container(
                                     padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.0115),
-                                    width: MediaQuery.of(context).size.width*0.19,
+                                    width: MediaQuery.of(context).size.width*0.2,
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).backgroundColor,
                                       borderRadius: const BorderRadius.all(
