@@ -857,7 +857,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                   text: event.title!+"\n"
                               ),
                               TextSpan(
-                                text: event.isPrivate! ? appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : appointment.subject,
+                                text: event.isPrivate! ? appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase().substring(0,4)+"." : appointment.subject,
                                 style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
                               ),
                             ],
@@ -882,7 +882,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                                   text: event.title!+"\n"
                               ),
                               TextSpan(
-                                text: event.isPrivate! ? appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : appointment.subject,
+                                //text: event.isPrivate! ? appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase() : appointment.subject,
+                                text: event.isPrivate! ? appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase().substring(0,4)+"." : appointment.subject,
                                 style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontSize: 11),
                               ),
                             ],

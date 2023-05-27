@@ -273,7 +273,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
     );
-    //markers.add(marker);
+    markers.add(marker);
     setState(() {
       isLoading = false;
     });

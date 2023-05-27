@@ -264,16 +264,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
   Future<void> getLocation(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
-    final Uint8List markerIcon = await ImageUtils().getBytesFromAsset('assets/images/fitnessMapIcon.png', 100);
     _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
     Marker marker = Marker(
       markerId: const MarkerId('1'),
       position: LatLng(location.latitude!,location.longitude!),
-      //anchor: const Offset(0.5, 0.5),
-      icon: BitmapDescriptor.fromBytes(markerIcon),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
     );
-    //markers.add(marker);
+    markers.add(marker);
     setState(() {
       isLoading = false;
     });
