@@ -117,6 +117,7 @@ class _MyLocationsSelectState extends State<MyLocationsSelect> {
                 padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02),
                 child: ListTile(
                   onTap: () async {
+                    print('Error on locations');
                     // Generate a new token here
                     final sessionToken = Uuid().v4();
                     final language = currentUser.idioma;

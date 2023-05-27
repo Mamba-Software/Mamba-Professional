@@ -23,6 +23,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
@@ -77,6 +78,8 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   FocusNode focusNodeWeeklyController = FocusNode();
   var monthlyController = TextEditingController();
   var daysSelectorController = TextEditingController();
+
+  final _topSnackBar = TopSnackBarDef();
 
   // Booleans
   bool isLoading = false;
@@ -1094,7 +1097,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   }
 
   bool checkIfAllBonoConditionsAreCorrect() {
-    if (formKeyInfo.currentState!.validate()) {
+    if (seeConditions && formKeyInfo.currentState!.validate()) {
       return true;
     } else {
       if (weekSessions && !cancelTimeSessions) {
@@ -1106,6 +1109,14 @@ class _OtorgarBonoState extends State<OtorgarBono> {
         if (freeCancellController.text.isNotEmpty) {
           return true;
         }
+      }
+      if (weekSessions && cancelTimeSessions) {
+        if (freeCancellController.text.isNotEmpty && weeklyController.text.isNotEmpty) {
+          return true;
+        }
+      }
+      if (!weekSessions && !cancelTimeSessions) {
+          return true;
       }
       return false;
     }
@@ -1572,12 +1583,13 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   void setSeeSessions(bool? seeSes) {
     noSessions = seeSes!;
     if (noSessions) {
+      cancelTimeSessions = false;
       sessionsController.text = '';
       freeCancellController.text = '0';
       bonoSelected.condition?.cancelTime = 0;
       if (isSelectedDays[0]) {
         isSelectedDays[0] = false;
-        isSelectedDays[1] = true;
+        isSelectedDays[4] = true;
       }
     } else {
       sessionsController.text = '';

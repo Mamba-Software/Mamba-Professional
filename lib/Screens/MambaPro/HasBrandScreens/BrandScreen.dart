@@ -128,7 +128,6 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Navigate to Notifications Screen
   Future<void> navigateToNotificationsScreen() async {
-    if(brandIsActive) {
       Navigator.push(
           context,
           CupertinoPageRoute<void>(
@@ -141,15 +140,10 @@ class _BrandScreenState extends State<BrandScreen> {
           unreadNotifications = temp;
         });
       });
-    }
-    else {
-      await navigateToPayWall(context);
-    }
   }
 
   // Navigate to Notifications Screen
   Future<void> navigateToChatScreen() async {
-    if(brandIsActive) {
       Navigator.push(
           context,
           CupertinoPageRoute<void>(
@@ -163,10 +157,6 @@ class _BrandScreenState extends State<BrandScreen> {
           unreadChats = temp;
         });
       });
-    }
-    else {
-      await navigateToPayWall(context);
-    }
   }
 
   // Navigate to Notifications Screen
@@ -325,7 +315,7 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadNotifications,
                           child: IconButton(
-                            icon: Icon(Icons.notifications, color: brandIsActive? AppColors.white : Theme.of(context).disabledColor, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.notifications, color: AppColors.white , size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToNotificationsScreen,
                           ),
@@ -334,7 +324,7 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadChats,
                           child: IconButton(
-                            icon: Icon(Icons.chat, color: brandIsActive? AppColors.white : Theme.of(context).disabledColor, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.chat, color:  AppColors.white, size: safeAreaWidth*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToChatScreen,
                           ),

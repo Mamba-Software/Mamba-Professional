@@ -2526,7 +2526,7 @@
   "@esgotat":{
     "description": "expiresAt Text"
   },
-  "expiresAt": "Expira en",
+  "expiresAt": "Expira el",
   "@expiresAt":{
     "description": "expiresAt Text"
   },
