@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -79,6 +80,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 setState(() {
                   isLoadingApple = true;
                 });
+                signInWithApple();
               },
               child: Material(
                 elevation: 4,
@@ -736,7 +738,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           }
         } else {
           // Create an account and a user for this new person from google
-          bool result = await _userDataService.addUserGoogle(authResult, Localizations.localeOf(context).languageCode);
+          bool result = await _userDataService.addUserGoogleOrApple(authResult, Localizations.localeOf(context).languageCode);
           if (result) {
             mixpanel!.track('mamba_google_register_completed');
             Navigator.pushReplacement(
@@ -757,6 +759,76 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     } catch (e) {
       setState(() {
         isLoadingGoogle = false;
+      });
+      print(e.toString());
+      showInSnackBar(AppLocalizations.of(context)!.registerError);
+    }
+  }
+
+  void signInWithApple() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final oAuthProvider = OAuthProvider('apple.com');
+      final oAuthCredential = oAuthProvider.credential(
+        idToken: credential.identityToken,
+        accessToken: credential.authorizationCode,
+      );
+      UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+      bool userExists = await _userDataService.checkIfUserExists(authResult.user!.uid);
+      if (userExists) {
+        // Check it is no Trainer
+        bool? isTrainer;
+        try {
+          isTrainer = await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
+          if (isTrainer != null && isTrainer == false) {
+            await _userDataService.signOut();
+            setState(() {
+              isLoadingApple = false;
+            });
+            showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
+          } else {
+            mixpanel!.track('mamba_apple_login_completed');
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<void>(
+                  builder: (context) => const SplashScreen(),
+                  settings: const RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          }
+        } catch (e) {
+          setState(() {
+            isLoadingApple = false;
+          });
+          showInSnackBar(AppLocalizations.of(context)!.loginError);
+        }
+      } else {
+        // Create an account and a user for this new person from Apple
+        bool result = await _userDataService.addUserGoogleOrApple(authResult, Localizations.localeOf(context).languageCode);
+        if (result) {
+          mixpanel!.track('mamba_apple_register_completed');
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => const SplashScreen(),
+                settings: const RouteSettings(name: 'SplashScreen'),
+              )
+          );
+        } else {
+          setState(() {
+            isLoadingApple = false;
+          });
+          showInSnackBar(AppLocalizations.of(context)!.loginError);
+        }
+      }
+    } catch (e) {
+      setState(() {
+        isLoadingApple = false;
       });
       print(e.toString());
       showInSnackBar(AppLocalizations.of(context)!.registerError);

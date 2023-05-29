@@ -638,7 +638,7 @@ class UserFirebaseCalls {
   }
 
   // Register User
-  Future<bool> addUserGoogle(UserCredential authResult, String idioma) async {
+  Future<bool> addUserGoogleOrApple(UserCredential authResult, String idioma) async {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
