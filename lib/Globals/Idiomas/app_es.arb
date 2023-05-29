@@ -127,6 +127,10 @@
   "@login":{
     "description": "LogIn Text "
   },
+  "continueWithApple": "Continuar con Apple",
+  "@continueWithApple":{
+    "description": "LogIn Text "
+  },
   "continueWithGoogle": "Continuar con Google",
   "@continueWithGoogle":{
     "description": "LogIn Text "

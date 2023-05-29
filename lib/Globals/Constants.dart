@@ -17,6 +17,7 @@ class Constants {
   static String emptyCalendar = "assets/images/emptyCalendar.png";
   static String emptyPeople = "assets/images/emptyPeople.png";
   static String google = "assets/images/google.png";
+  static String apple = "assets/images/apple.png";
 
   // Onboarding Images
   static String onboardingApp = "assets/images/OnboardingApp.png";
