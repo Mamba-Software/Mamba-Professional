@@ -180,104 +180,77 @@ exports.scheduledDailyFunction = functions
 // Monthly Product Updates
 exports.sendMonthlyProductUpdates = functions
 .region("europe-west1")
-.firestore
-.document("/Settings/ProductUpdates")
-.onUpdate( async (change, context) => {
-  const userEmails = ['joel.bolwijn@gmail.com', 'mambastylecastelldefels@gmail.com'];
-  const productUpdates = await db.collection('Settings').doc('ProductUpdates').get();
-  const updatesData = productUpdates.data();
-  for (let i = 0; i < userEmails.length; i++) {
-      const userQuery = await db.collection('Users').where('email', '==', userEmails[i]).get();
-      userQuery.forEach((doc) => {
-          // Get User Data
-          const user = doc.data();
-          // Build the email from FireStore Data.
-          let content = `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.greeting} ${user.firstName},</span></p>`;
-          content += `<br>`;
-          content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.introduction}</span></p>`;
-          content += `<br>`;
-          if (user.isTrainer) {
-            content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.contentTrainers}</span></p>`;
-            content += `<br>`;
-          }
-          content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.contentClients}</span></p>`;                 
-          content += `<br>`;
-          content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.appReview}</span></p>`;                 
-          content += `<br>`;
-          if (user.isTrainer) {
-            content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.appReviewTrainer}</span></p>`;            
-          } else {
-            content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.appReviewClient}</span></p>`;
-          }
-          content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>¡El mes que viene más y mejor!</span></p>`; 
-          content += `<br>`;
-          content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>Atentamente,</span></p>`; 
-          content += `<br>`;
-          if (user.isTrainer) {
-            content += `${updatesData.signatureTrainer}`;
-          } else {
-            content += `${updatesData.signatureClient}`;
-          }    
-          const msg = {
-              to: user.email,
-              from: 'info@mambaapp.app',
-              from: 'Joel de Mamba <info@mambaapp.app>',
-              subject: updatesData.emailTitle,
-              html: content,
-          };
-          sgMail.send(msg);
-      });
-  }
-
-  /*
+.pubsub
+.schedule('0 10 1 * *')
+.onRun(async (context) => {
   // Variables
-  let lastDocumentFetched = null;
-  functions.logger.log("Started Function");
+  let lastDocumentFetched = null;  
+  // Get Product Upate Data From Firestore
+  const productUpdates = await db.collection('Settings').doc('ProductUpdates').get();
+  const updatesData = productUpdates.data();  
   // Fetch users in batches of 1000
-  async function fetchUsersBatch() {
-    functions.logger.log("Inside Recursive Function");
+  async function fetchUsersBatch() {    
     // Get the first 1000
     let usersQuery = db.collection("Users").orderBy('email').limit(1000);
     // Start after Last Document Fetched if Any
     if (lastDocumentFetched) {
-        usersQuery = usersQuery.startAfter(lastDocumentFetched);
+      usersQuery = usersQuery.startAfter(lastDocumentFetched);
     }
     // Get The Query
-    const usersSnapshot = await usersQuery.get();
-    functions.logger.log("Inside Recursive Function");
+    const usersSnapshot = await usersQuery.get();    
     if (!usersSnapshot.empty) {
-        // Remember the last document for the next batch
-        lastDocumentFetched = usersSnapshot.docs[usersSnapshot.docs.length - 1];
-        usersSnapshot.forEach((doc) => {
-            // Define the User Doc
-            const user = doc.data();
-            functions.logger.log(
-              "User:",
-              user,
-              );
-            // Send email only to these addresses
-            if (user.email === 'joel.bolwijn@gmail.com' || user.email === 'mambastylecastelldefels@gmail.com') {
-                const msg = {
-                    to: user.email,
-                    from: 'info@mambaapp.app',
-                    subject: 'Monthly Product Updates',
-                };
-                // Determine the content based on whether the user is a trainer
-                if (user.isTrainer) {
-                    msg.text = 'This is the content of the monthly update for trainers.'; // Replace with your email content for trainers
-                } else {
-                    msg.text = 'This is the content of the monthly update for non-trainers.'; // Replace with your email content for non-trainers
-                }
-                sgMail.send(msg);
-            }
-        });
-        // fetch the next batch
-        fetchUsersBatch();
+      // Remember the last document for the next batch
+      lastDocumentFetched = usersSnapshot.docs[usersSnapshot.docs.length - 1];
+      usersSnapshot.forEach((doc) => {
+        // Get User Data
+        const user = doc.data();
+        // Build the email from FireStore Data.
+        let content = `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.greeting} ${user.firstName},</span></p>`;
+        content += `<br>`;
+        content += updatesData.introduction;          
+        content += `<br>`;
+        if (user.isTrainer) {
+          content += updatesData.contentTrainers;
+          content += `<br>`;
+        }
+        content += updatesData.contentClients;      
+        content += `<br>`;
+        content += updatesData.appReview;                    
+        if (user.isTrainer) {
+          content += updatesData.appReviewTrainer;                    
+        } else {
+          content += updatesData.appReviewClient;       
+        }
+        content += `<br>`;
+        content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>¡El mes que viene más y mejor!</span></p>`;
+        content += `<br>`;
+        content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>Atentamente,</span></p>`; 
+        content += `<br>`;
+        if (user.isTrainer) {
+          content += `${updatesData.signatureTrainer}`;
+        } else {
+          content += `${updatesData.signatureClient}`;
+        }    
+        const msg = {
+          to: user.email,            
+          from: 'Joel de Mamba <info@mambaapp.app>',
+          subject: updatesData.emailTitle,
+          html: content,
+        };
+        sgMail.send(msg)
+        .then(() => {
+          console.log('Email sent to ', user.email)
+        })
+        .catch((error) => {
+          console.error('Error sending email to', user.email, error);
+        });    
+      });
+      // fetch the next batch
+      setTimeout(fetchUsersBatch, 1000);
     }
   }
-
+  // Call Recursive Function
   fetchUsersBatch();
-  */
 });
 
 // New User Situate in Test Group
