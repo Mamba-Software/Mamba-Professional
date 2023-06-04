@@ -176,12 +176,40 @@ exports.scheduledDailyFunction = functions
       }
       // Check If Product Update Email Should be sent
       const productUpdates = await db.collection('Settings').doc('ProductUpdates').get();
-      const updatesData = productUpdates.data();  
+      const updatesData = productUpdates.data();
       if (updatesData.sendProductUpdates == true) {
         // Variables
         let lastDocumentFetched = null;
+
+        async function sendEmail(user, updatesData, retryCount = 0) {
+          // Determine the base email content
+          let baseContent = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;
+          // Replace macros with actual data
+          let content = baseContent.replace(/{{firstName}}/g, user.firstName);
+          content = content.replace(/{{email}}/g, user.email);
+          const msg = {
+            to: user.email,
+            from: 'Joel de Mamba <info@mambaapp.app>',
+            subject: updatesData.emailTitle,
+            html: content,
+          };
+          // Send Email
+          try {
+            await sgMail.send(msg);
+            console.log('Email sent to ', user.email);
+          } catch (error) {
+            console.error('Error sending email to', user.email, error);
+            if (retryCount < 3) {
+              console.log('Retrying in 5 seconds...');
+              setTimeout(() => sendEmail(user, updatesData, retryCount + 1), 5000);
+            } else {
+              console.log('Failed to send email after 3 attempts, giving up.');
+            }
+          }
+        }
+
         // Create Recursive Function we will use
-        async function fetchUsersBatch() {    
+        async function fetchUsersBatch() {
           // Fetch users in batches of 1000
           let usersQuery = db.collection("Users").orderBy('email').limit(1000);
           // Start after Last Document Fetched if Any
@@ -189,44 +217,30 @@ exports.scheduledDailyFunction = functions
             usersQuery = usersQuery.startAfter(lastDocumentFetched);
           }
           // Get The Query
-          const usersSnapshot = await usersQuery.get();    
+          const usersSnapshot = await usersQuery.get();
           if (!usersSnapshot.empty) {
             // Remember the last document for the next batch
             lastDocumentFetched = usersSnapshot.docs[usersSnapshot.docs.length - 1];
-            usersSnapshot.forEach((doc) => {
+            for (let i = 0; i < usersSnapshot.docs.length; i++) {
+              const doc = usersSnapshot.docs[i];
               // Get User Data
               const user = doc.data();
-              // Determine the base email content
-              let baseContent = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;
-              // Replace macros with actual data
-              let content = baseContent.replace(/{{firstName}}/g, user.firstName);
-              content = content.replace(/{{email}}/g, user.email);               
-              const msg = {
-                to: user.email,            
-                from: 'Joel de Mamba <info@mambaapp.app>',
-                subject: updatesData.emailTitle,
-                html: content,
-              };
-              // Test Emails
-              sgMail.send(msg)
-              .then(() => {
-                console.log('Email sent to ', user.email)
-              })
-              .catch((error) => {
-                console.error('Error sending email to', user.email, error);
-              });
-            });
+              // Build & Send Email
+              await sendEmail(user, updatesData);
+            }
             // Fetch the next batch
             setTimeout(fetchUsersBatch, 1000);
+          } else {
+            // If no more users to send email, set sendProductUpdates to false
+            await db.collection('Settings').doc('ProductUpdates').update({ sendProductUpdates: false });
+            functions.logger.log('All emails have been sent and sendProductUpdates is set to false');
           }
         }
         // Call The Recursive Function
-        functions.logger.log(
-          "Sending Product Updates Via Recursive Function",
-        );
+        functions.logger.log("Entering Send Email Recursive Function");
         fetchUsersBatch();
       }
-      return null;    
+      return null;
     });
 
 // New User Situate in Test Group
