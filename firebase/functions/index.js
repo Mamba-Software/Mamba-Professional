@@ -31,227 +31,203 @@ exports.scheduledDailyFunction = functions
           userId,
           "and Name:",
           userDoc.name,
+        );
+        // Get the Users events today
+        const userEventsSnapshot = await db
+        .collection("Users")
+        .doc(userId)
+        .collection("Events")
+        .where('year', '==', today.getFullYear().toString())
+        .where('month', '==', (today.getMonth()+1).toString())
+        .where('day', '==', today.getDate().toString())
+        .get();
+        functions.logger.log(
+          "User Events Num =",
+          userEventsSnapshot.size,
           );
-          // Get the Users events today
-          const userEventsSnapshot = await db
-          .collection("Users")
-          .doc(userId)
-          .collection("Events")
-          .where('year', '==', today.getFullYear().toString())
-          .where('month', '==', (today.getMonth()+1).toString())
-          .where('day', '==', today.getDate().toString())
-          .get();
-          functions.logger.log(
-            "User Events Num =",
-            userEventsSnapshot.size,
-            );
-          // Get The Time of the First Event
-          let firstHour = 100;
-          let firstMinute = 100;
-          let firstEventDoc;
-          for (var i in userEventsSnapshot.docs) {
-            const eventDoc = userEventsSnapshot.docs[i].data();
-            if (eventDoc.hour < firstHour) {
+        // Get The Time of the First Event
+        let firstHour = 100;
+        let firstMinute = 100;
+        let firstEventDoc;
+        for (var i in userEventsSnapshot.docs) {
+          const eventDoc = userEventsSnapshot.docs[i].data();
+          if (eventDoc.hour < firstHour) {
+            firstEventDoc = eventDoc;
+          } else if (eventDoc.hour == firstHour) {
+            if (eventDoc.minute < firstMinute) {
               firstEventDoc = eventDoc;
-            } else if (eventDoc.hour == firstHour) {
-              if (eventDoc.minute < firstMinute) {
-                firstEventDoc = eventDoc;
-              }
             }
           }
-          // Send Notification if there is an Event Today
-          if (userEventsSnapshot.size > 0) {
-            if (userEventsSnapshot.size == 1) {
-              functions.logger.log(
-                "One Event this User"
-                );
-                  // Send Good Morning Notification
-                  var payload = 0;
-                  if (userDoc.isTrainer == true) {
-                    functions.logger.log(
-                      "isTrainer"
-                      );
-                    let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                    if (userDoc.idioma == "es") {
-                      payload = {
-                        notification: {
-                          title: "Buenos días "+userDoc.firstName + " ☀️",
-                          body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
-                        },
-                        data: {
-                          route: "SplashScreen",
-                        },
-                      };
-                    } else {
-                      payload = {
-                        notification: {
-                          title: "Bon dia "+userDoc.firstName + " ☀️",
-                          body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
-                        },
-                        data: {
-                          route: "SplashScreen",
-                        },
-                      };
-                    }
-                  } else {
-                    functions.logger.log(
-                      "isClient"
-                      );
-                    let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                    if (userDoc.idioma == "es") {
-                      payload = {
-                        notification: {
-                          title: "Buenos días "+userDoc.firstName+ " ☀️",
-                          body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
-                        },
-                        data: {
-                          route: "SplashScreen",
-                        },
-                      };
-                    } else {
-                      payload = {
-                        notification: {
-                          title: "Bon dia "+userDoc.firstName+ " ☀️",
-                          body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
-                        },
-                        data: {
-                          route: "SplashScreen",
-                        },
-                      };
-                    }
-                  }
+        }
+        // Send Notification if there is an Event Today
+        if (userEventsSnapshot.size > 0) {
+          if (userEventsSnapshot.size == 1) {
+            functions.logger.log(
+              "One Event this User"
+              );
+                // Send Good Morning Notification
+                var payload = 0;
+                if (userDoc.isTrainer == true) {
                   functions.logger.log(
-                    "Payload",
-                    payload
-                    );
-                  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                  functions.logger.log(
-                    "Response",
-                    response
-                    );
-                } else {
-                  functions.logger.log(
-                    "More Than Event this User"
-                    );
-                  // Send Good Morning Notification
-                  var payload = 0;
-                  if (userDoc.isTrainer == true) {
-                   functions.logger.log(
                     "isTrainer"
                     );
-                   let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
-                   if (userDoc.idioma == "es") {
+                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                  if (userDoc.idioma == "es") {
+                    payload = {
+                      notification: {
+                        title: "Buenos días "+userDoc.firstName + " ☀️",
+                        body: "⏰ Hoy tienes 1 sesión prevista. Empiezas a las "+firstEventDoc.hour+":"+minutes,
+                      },
+                      data: {
+                        route: "SplashScreen",
+                      },
+                    };
+                  } else {
+                    payload = {
+                      notification: {
+                        title: "Bon dia "+userDoc.firstName + " ☀️",
+                        body: "⏰ Avui tens 1 sessió prevista. Comences a les "+firstEventDoc.hour+":"+minutes,
+                      },
+                      data: {
+                        route: "SplashScreen",
+                      },
+                    };
+                  }
+                } else {
+                  functions.logger.log(
+                    "isClient"
+                    );
+                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                  if (userDoc.idioma == "es") {
                     payload = {
                       notification: {
                         title: "Buenos días "+userDoc.firstName+ " ☀️",
-                        body: "⏰ Hoy tienes "+userEventsSnapshot.size+" sesiones previstas. Empiezas a las "+firstEventDoc.hour+":"+minutes,
+                        body: "⚠️ ¡Recuerda! Hoy a las "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
                       },
                       data: {
-                        route: "SplashScreen0",
+                        route: "SplashScreen",
                       },
                     };
                   } else {
                     payload = {
                       notification: {
                         title: "Bon dia "+userDoc.firstName+ " ☀️",
-                        body: "⏰ Avui tens "+userEventsSnapshot.size+" sessions previstes. Comences a les "+firstEventDoc.hour+":"+minutes,
+                        body: "⚠️ Recorda! Avui a les "+firstEventDoc.hour+":"+minutes+" - "+firstEventDoc.title,
                       },
                       data: {
-                        route: "SplashScreen0",
+                        route: "SplashScreen",
                       },
                     };
                   }
-                  functions.logger.log(
-                    "Payload",
-                    payload
-                    );
-                  var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-                  functions.logger.log(
-                    "Response",
-                    response
-                    );
                 }
+                functions.logger.log(
+                  "Payload",
+                  payload
+                  );
+                var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+                functions.logger.log(
+                  "Response",
+                  response
+                  );
+              } else {
+                functions.logger.log(
+                  "More Than Event this User"
+                  );
+                // Send Good Morning Notification
+                var payload = 0;
+                if (userDoc.isTrainer == true) {
+                  functions.logger.log(
+                  "isTrainer"
+                  );
+                  let minutes = firstEventDoc.minute == "0" ? "00" : firstEventDoc.minute;
+                  if (userDoc.idioma == "es") {
+                  payload = {
+                    notification: {
+                      title: "Buenos días "+userDoc.firstName+ " ☀️",
+                      body: "⏰ Hoy tienes "+userEventsSnapshot.size+" sesiones previstas. Empiezas a las "+firstEventDoc.hour+":"+minutes,
+                    },
+                    data: {
+                      route: "SplashScreen0",
+                    },
+                  };
+                } else {
+                  payload = {
+                    notification: {
+                      title: "Bon dia "+userDoc.firstName+ " ☀️",
+                      body: "⏰ Avui tens "+userEventsSnapshot.size+" sessions previstes. Comences a les "+firstEventDoc.hour+":"+minutes,
+                    },
+                    data: {
+                      route: "SplashScreen0",
+                    },
+                  };
+                }
+                functions.logger.log(
+                  "Payload",
+                  payload
+                  );
+                var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
+                functions.logger.log(
+                  "Response",
+                  response
+                  );
               }
             }
+        }
+      }
+      // Check If Product Update Email Should be sent
+      const productUpdates = await db.collection('Settings').doc('ProductUpdates').get();
+      const updatesData = productUpdates.data();  
+      if (updatesData.sendProductUpdates == true) {
+        // Variables
+        let lastDocumentFetched = null;
+        // Create Recursive Function we will use
+        async function fetchUsersBatch() {    
+          // Fetch users in batches of 1000
+          let usersQuery = db.collection("Users").orderBy('email').limit(1000);
+          // Start after Last Document Fetched if Any
+          if (lastDocumentFetched) {
+            usersQuery = usersQuery.startAfter(lastDocumentFetched);
           }
-          return null;
-        });
-
-// Monthly Product Updates
-exports.sendMonthlyProductUpdates = functions
-.region("europe-west1")
-.pubsub
-.schedule('0 10 1 * *')
-.onRun(async (context) => {
-  // Variables
-  let lastDocumentFetched = null;  
-  // Get Product Upate Data From Firestore
-  const productUpdates = await db.collection('Settings').doc('ProductUpdates').get();
-  const updatesData = productUpdates.data();  
-  // Fetch users in batches of 1000
-  async function fetchUsersBatch() {    
-    // Get the first 1000
-    let usersQuery = db.collection("Users").orderBy('email').limit(1000);
-    // Start after Last Document Fetched if Any
-    if (lastDocumentFetched) {
-      usersQuery = usersQuery.startAfter(lastDocumentFetched);
-    }
-    // Get The Query
-    const usersSnapshot = await usersQuery.get();    
-    if (!usersSnapshot.empty) {
-      // Remember the last document for the next batch
-      lastDocumentFetched = usersSnapshot.docs[usersSnapshot.docs.length - 1];
-      usersSnapshot.forEach((doc) => {
-        // Get User Data
-        const user = doc.data();
-        // Build the email from FireStore Data.
-        let content = `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>${updatesData.greeting} ${user.firstName},</span></p>`;
-        content += `<br>`;
-        content += updatesData.introduction;          
-        content += `<br>`;
-        if (user.isTrainer) {
-          content += updatesData.contentTrainers;
-          content += `<br>`;
+          // Get The Query
+          const usersSnapshot = await usersQuery.get();    
+          if (!usersSnapshot.empty) {
+            // Remember the last document for the next batch
+            lastDocumentFetched = usersSnapshot.docs[usersSnapshot.docs.length - 1];
+            usersSnapshot.forEach((doc) => {
+              // Get User Data
+              const user = doc.data();
+              // Determine the base email content
+              let baseContent = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;
+              // Replace macros with actual data
+              let content = baseContent.replace(/{{firstName}}/g, user.firstName);
+              content = content.replace(/{{email}}/g, user.email);               
+              const msg = {
+                to: user.email,            
+                from: 'Joel de Mamba <info@mambaapp.app>',
+                subject: updatesData.emailTitle,
+                html: content,
+              };
+              // Test Emails
+              sgMail.send(msg)
+              .then(() => {
+                console.log('Email sent to ', user.email)
+              })
+              .catch((error) => {
+                console.error('Error sending email to', user.email, error);
+              });
+            });
+            // Fetch the next batch
+            setTimeout(fetchUsersBatch, 1000);
+          }
         }
-        content += updatesData.contentClients;      
-        content += `<br>`;
-        content += updatesData.appReview;                    
-        if (user.isTrainer) {
-          content += updatesData.appReviewTrainer;                    
-        } else {
-          content += updatesData.appReviewClient;       
-        }
-        content += `<br>`;
-        content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>¡El mes que viene más y mejor!</span></p>`;
-        content += `<br>`;
-        content += `<p color="#000000" font-size="medium" style="margin: 0px; color: rgb(0, 0, 0); font-size: 14px; line-height: 22px;"><span>Atentamente,</span></p>`; 
-        content += `<br>`;
-        if (user.isTrainer) {
-          content += `${updatesData.signatureTrainer}`;
-        } else {
-          content += `${updatesData.signatureClient}`;
-        }    
-        const msg = {
-          to: user.email,            
-          from: 'Joel de Mamba <info@mambaapp.app>',
-          subject: updatesData.emailTitle,
-          html: content,
-        };
-        sgMail.send(msg)
-        .then(() => {
-          console.log('Email sent to ', user.email)
-        })
-        .catch((error) => {
-          console.error('Error sending email to', user.email, error);
-        });    
-      });
-      // fetch the next batch
-      setTimeout(fetchUsersBatch, 1000);
-    }
-  }
-  // Call Recursive Function
-  fetchUsersBatch();
-});
+        // Call The Recursive Function
+        functions.logger.log(
+          "Sending Product Updates Via Recursive Function",
+        );
+        fetchUsersBatch();
+      }
+      return null;    
+    });
 
 // New User Situate in Test Group
 exports.newUserAddsTestGroup = functions
