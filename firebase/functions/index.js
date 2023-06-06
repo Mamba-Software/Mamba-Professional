@@ -174,74 +174,97 @@ exports.scheduledDailyFunction = functions
             }
         }
       }
-      // Check If Product Update Email Should be sent
-      const productUpdates = await db.collection('Settings').doc('ProductUpdates').get();
-      const updatesData = productUpdates.data();
-      if (updatesData.sendProductUpdates == true) {
-        // Variables
-        let lastDocumentFetched = null;
-
-        async function sendEmail(user, updatesData, retryCount = 0) {
-          // Determine the base email content
-          let baseContent = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;
-          // Replace macros with actual data
-          let content = baseContent.replace(/{{firstName}}/g, user.firstName);
-          content = content.replace(/{{email}}/g, user.email);
-          const msg = {
-            to: user.email,
-            from: 'Joel de Mamba <info@mambaapp.app>',
-            subject: updatesData.emailTitle,
-            html: content,
-          };
-          // Send Email
-          try {
-            await sgMail.send(msg);
-            console.log('Email sent to ', user.email);
-          } catch (error) {
-            console.error('Error sending email to', user.email, error);
-            if (retryCount < 3) {
-              console.log('Retrying in 5 seconds...');
-              setTimeout(() => sendEmail(user, updatesData, retryCount + 1), 5000);
-            } else {
-              console.log('Failed to send email after 3 attempts, giving up.');
-            }
-          }
-        }
-
-        // Create Recursive Function we will use
-        async function fetchUsersBatch() {
-          // Fetch users in batches of 1000
-          let usersQuery = db.collection("Users").orderBy('email').limit(1000);
-          // Start after Last Document Fetched if Any
-          if (lastDocumentFetched) {
-            usersQuery = usersQuery.startAfter(lastDocumentFetched);
-          }
-          // Get The Query
-          const usersSnapshot = await usersQuery.get();
-          if (!usersSnapshot.empty) {
-            // Remember the last document for the next batch
-            lastDocumentFetched = usersSnapshot.docs[usersSnapshot.docs.length - 1];
-            for (let i = 0; i < usersSnapshot.docs.length; i++) {
-              const doc = usersSnapshot.docs[i];
-              // Get User Data
-              const user = doc.data();
-              // Build & Send Email
-              await sendEmail(user, updatesData);
-            }
-            // Fetch the next batch
-            setTimeout(fetchUsersBatch, 1000);
-          } else {
-            // If no more users to send email, set sendProductUpdates to false
-            await db.collection('Settings').doc('ProductUpdates').update({ sendProductUpdates: false });
-            functions.logger.log('All emails have been sent and sendProductUpdates is set to false');
-          }
-        }
-        // Call The Recursive Function
-        functions.logger.log("Entering Send Email Recursive Function");
-        fetchUsersBatch();
-      }
-      return null;
     });
+
+// Daily Notification For Events
+exports.monthlyProductUpdates = functions
+.region("europe-west1")
+.firestore
+.document("/Settings/ProductUpdates")
+.onUpdate( async (change, context) => {
+    // Variables
+    let lastDocumentFetched = null;
+    // Get Value of the Change      
+    const updatesData = change.after.data();                        
+    // Enter only if SendProduct Updates == true
+    if (updatesData.sendProductUpdates == true) {        
+        console.log("Product Updates Email Batch is starting...");
+        // Get the Last Email Fetched From Previous Cloud Function if Any
+        if (updatesData.lastEmailFetched) {
+            let lastDocumentFetchedQuery  = await db.collection("Users").where("email", "=", updatesData.lastEmailFetched).get();
+            lastDocumentFetched = lastDocumentFetchedQuery.docs[0];     
+            console.log("Picking up from ..."+lastDocumentFetched.data().email);         
+        }
+        // Send Email Function  
+        function sendEmail(user, updatesData, retryCount = 0) {
+            // Determine the base email content
+            let baseContent = user.isTrainer ? updatesData.emailContentPro : updatesData.emailContent;
+            // Replace macros with actual data
+            let content = baseContent.replace(/{{firstName}}/g, user.firstName);
+            content = content.replace(/{{email}}/g, user.email);
+            const msg = {
+                to: user.email,
+                from: 'Joel de Mamba <info@mambaapp.app>',
+                subject: updatesData.emailTitle,
+                html: content,
+            };
+            // Send Email
+            try {
+                sgMail.send(msg);
+                console.log('Email sent to ', user.email);
+                // delay between email sends
+                new Promise(resolve => setTimeout(resolve, 100));
+            } catch (error) {
+                console.error('Error sending email to', user.email, error);
+                if (retryCount < 3) {
+                    console.log('Retrying in 5 seconds...');
+                    setTimeout(() => sendEmail(user, updatesData, retryCount + 1), 5000);
+                } else {
+                    console.log('Failed to send email after 3 attempts, giving up.');
+                }
+            }
+        }      
+        // Fetch All Users
+        let usersQuery = db.collection("Users").orderBy('email');
+        // Start after Last Document Fetched if Any
+        if (lastDocumentFetched) {
+            usersQuery = usersQuery.startAfter(lastDocumentFetched);
+        }
+        // Get The Query Of All The Users after lastDocumentFetched if any
+        const limitPerCloudFunction = 100;
+        const usersSnapshot = await usersQuery.limit(limitPerCloudFunction).get();        
+        // Check if this will be the last Cloud Function
+        if (usersSnapshot.docs.length === limitPerCloudFunction) {
+            // This means we have at least the number of limitPerCloudFunction users left
+            for (let i = 0; i < limitPerCloudFunction; i++) {
+                const doc = usersSnapshot.docs[i];
+                // Get User Data
+                const user = doc.data();
+                // Build & Send Email
+                sendEmail(user, updatesData);
+            }
+            // There are more users lefts so, we save the new last email sent
+            await db.collection('Settings').doc('ProductUpdates').update({ lastEmailFetched: user.email});                    
+        } else {
+            // This means we have less than 300 users left and this will be the last Cloud Function
+            for (let i = 0; i < usersSnapshot.docs.length; i++) {
+                const doc = usersSnapshot.docs[i];
+                // Get User Data
+                const user = doc.data();
+                // Build & Send Email
+                await sendEmail(user, updatesData);
+            }
+            // Reset lastEmailFetched to null since we've sent to all users
+            await db.collection('Settings').doc('ProductUpdates').update({
+                sendProductUpdates: false,
+                lastEmailFetched: null
+            });
+        }
+    } else {
+        console.log("Product updates email not sent because 'sendProductUpdates' is false.");
+    }
+});
+
 
 // New User Situate in Test Group
 exports.newUserAddsTestGroup = functions
