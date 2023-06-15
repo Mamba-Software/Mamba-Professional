@@ -777,9 +777,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ],
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.10,
+                                height: MediaQuery.of(context).size.height*0.12,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
                                   child: Row(
                                     children: [
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -940,9 +940,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ),
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.10,
+                                height: MediaQuery.of(context).size.height*0.12,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
                                   child: Row(
                                     children: [
                                       SizedBox(width: MediaQuery.of(context).size.width*0.02),
@@ -1319,9 +1319,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ],
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.10,
+                                height: MediaQuery.of(context).size.height*0.12,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
                                   child: Row(
                                     children: [
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
@@ -1547,9 +1547,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               ),
                             ),
                             SizedBox(
-                                height: MediaQuery.of(context).size.height*0.10,
+                                height: MediaQuery.of(context).size.height*0.12,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.03),
+                                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.04),
                                   child: Row(
                                     children: [
                                       SizedBox(width: MediaQuery.of(context).size.width*0.01),
