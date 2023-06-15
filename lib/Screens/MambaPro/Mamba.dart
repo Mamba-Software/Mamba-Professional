@@ -155,8 +155,8 @@ class _MambaState extends State<Mamba> {
   // Check version and Update App Dialog
   void checkMinimumAppVersion() async {
     // Check version
-    List<bool> result = await _settingsDataService.checkIfMinimumAppVersion(appVersion);
-    if (result[0] == false) {
+    List<bool> result = await _settingsDataService.checkAppVersion();
+    if (result[0] == true) {
       mixpanel!.track('minimum_app_version_open', properties: {'isMandatory': result[1]});
       if (result[1]) {
         Future.delayed(Duration.zero, () async {

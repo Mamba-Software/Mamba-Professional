@@ -24,6 +24,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:uuid/uuid.dart';
 
@@ -164,6 +165,32 @@ class FirebaseDatabaseService {
       return true;
     else
       return false;
+  }
+
+  Future<List<bool>> checkAppVersion() async {
+    // Get Current Build Number
+    PackageInfo _packageInfo = await PackageInfo.fromPlatform();
+    final int buildNumber = int.parse(_packageInfo.buildNumber);
+    // Get Minimum and Max Version from Settings Collection
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
+    int minBuildNumPro = _documentSnapshot.get("minBuildNumPro");
+    int maxBuildNumPro = _documentSnapshot.get("maxBuildNumPro");
+    if (buildNumber < minBuildNumPro) {
+      // Can Update && isMandatory
+      print("Can Update == TRUE && isMandatory == TRUE");
+      List<bool> result = [true, true];
+      return result;
+    } else if (buildNumber < maxBuildNumPro) {
+      // Can Update && isMandatory
+      print("Can Update == TRUE && isMandatory == FALSE");
+      List<bool> result = [true, false];
+      return result;
+    } else {
+      print("Can Update == FALSE && isMandatory == FALSE");
+      // Can Update && isMandatory
+      List<bool> result = [false, false];
+      return result;
+    }
   }
 
   Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) async {
