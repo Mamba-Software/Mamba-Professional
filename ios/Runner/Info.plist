@@ -69,7 +69,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Need to access your camera to capture a photo add and update profile picture.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open to be able to recommend the closest fitness brand to the user.</string>
+	<string>This app needs access to location when open to set the location of the fitness brand. The fitness brand location is used so that Client can find them near by.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Need to access your photo library to select a photo add and update profile picture</string>
 	<key>UIBackgroundModes</key>

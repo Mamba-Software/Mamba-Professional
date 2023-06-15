@@ -50,7 +50,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   final googleSignIn = GoogleSignIn();
   bool isLoadingGoogle = false;
   // Apple Sign In
-  final appleSignIn = GoogleSignIn();
   bool isLoadingApple = false;
 
   @override
@@ -779,6 +778,14 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         accessToken: credential.authorizationCode,
       );
       UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+      String? fullName;
+      if (credential.givenName != null && credential.familyName != null) {
+        fullName = '${credential.givenName} ${credential.familyName}';
+      }
+      if (fullName != null) {
+        await authResult.user!.updateDisplayName(fullName);
+        await authResult.user!.reload();
+      }
       bool userExists = await _userDataService.checkIfUserExists(authResult.user!.uid);
       if (userExists) {
         // Check it is no Trainer

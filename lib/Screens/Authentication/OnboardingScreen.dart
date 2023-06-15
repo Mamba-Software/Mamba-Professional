@@ -63,6 +63,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int? gender;
   // GoogleLogIn
   bool isGoogle = false;
+  // AppleLogIn
+  bool isApple = false;
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
@@ -172,9 +174,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         if (firebaseUser.photoURL != null ) {
           imageUrl = firebaseUser.photoURL;
         }
+      } else if (firebaseUser.providerData[0].providerId == "apple.com") {
+        isApple = true;
+        if (firebaseUser.displayName != null ) {
+          firstNameController.text = firebaseUser.displayName!.split(" ")[0];
+          int length = firebaseUser.displayName!.split(" ")[0].length;
+          lastNameController.text = firebaseUser.displayName!.substring(length+1);
+          canGoNextName = true;
+        }
       }
     } catch (e) {
       isGoogle = false;
+      isApple = false;
     }
   }
 
@@ -504,7 +515,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: null,
+                        onPressed: () {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.ease,
+                          );
+                        },
                         child: Text(
                           AppLocalizations.of(context)!.next,
                           style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
@@ -608,6 +624,36 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               Flexible(
                                                 child: Text(
                                                   AppLocalizations.of(context)!.googleInfo,
+                                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ) : Container(),
+                                      isApple ? FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.width*0.1,
+                                          padding: const EdgeInsets.all(8),
+                                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02),
+                                          decoration: BoxDecoration(
+                                              color: AppColors.darkGrey, borderRadius: BorderRadius.circular(30)
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              SizedBox(
+                                                width: MediaQuery.of(context).size.width*0.04,
+                                                child: Image(
+                                                    image: AssetImage(Constants.apple)
+                                                ),
+                                              ),
+                                              SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.googleInfo.split("Google")[0]+" Apple",
                                                   style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                                                   textAlign: TextAlign.left,
                                                 ),
