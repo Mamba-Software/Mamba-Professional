@@ -867,6 +867,46 @@ exports.locationUpdatesCoverData = functions
       return null;
     });
 
+// User Adds Brand
+exports.userAddsBrand = functions
+.region("europe-west1")
+.firestore
+.document("/Brands/{brandId}")
+.onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const brandId = context.params.brandId;
+      // Get Data of the Brand
+      const brandSnapshot = await db.collection("Brands").doc(brandId).get();
+      const brandDoc = brandSnapshot.data();
+      // Get Data of the Brand Admin Id
+      const userSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
+      const userDoc = userSnapshot.data();  
+      // Get Email Template
+      const templateSnapshot = await db.collection("Settings").doc("EmailTemplate").get();
+      const templateDoc = templateSnapshot.data();          
+      // Determine the base email content
+      let baseContent = templateDoc.templatePro;
+      let text = "Hola,<br><br>Se ha registrado un nuevo profesional. Aquí sus detalles:<br><br>Nombre: "+brandDoc.name+"<br>Descripción: "+brandDoc.description+"<br>Localización: "+brandDoc.city+", "+brandDoc.zipCode+"<br>Creador: "+userDoc.name+"<br>Email: "+userDoc.email+"<br><br>";    
+      // Replace macros with actual data
+      let content = baseContent.replace(/{{title}}/g, "Nuevo Profesional Registrado");
+      content = content.replace(/{{text}}/g, text);
+      const msg = {
+          to: 'mambastylecastelldefels@gmail.com',
+          from: 'Equipo de Mamba <info@mambaapp.app>',
+          subject: 'Nuevo Profesional Registrado',
+          html: content,
+      };
+      // Send Email
+      try {
+          sgMail.send(msg);
+          console.log('Email sent to ', user.email);
+      } catch (error) {
+          console.error('Error sending email to', user.email, error);
+      }
+      return null;
+   });
+
+
 // User Joins Brand
 exports.userJoinsBrand = functions
 .region("europe-west1")
