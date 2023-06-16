@@ -608,7 +608,7 @@
   "desactiveTrainers": "Staff inactiva",
   "bonosNecesarios": "Vals necessaris",
   "seeMap": "Veure mapa",
-  "personalizeBonoUser": "Personalitzar aquest val només per {user}",
+  "personalizeBonoUser": "Personalitzar només per {user}",
   "editBonoClientDesc": "Verifica la información abans d'editar el val del client",
   "average": "de mitja",
   "purchaseHistory": "Historial de compres",

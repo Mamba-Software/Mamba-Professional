@@ -5083,16 +5083,27 @@ exports.zzzzUserPurchasesBono = functions
       "expirationTime": purchaseDoc.expirationTime,
    });
 
+   await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
+    "purchasedAt": purchaseDoc.purchasedAt,
+    "bonoId": purchaseDoc.bonoId,
+    "price": purchaseDoc.price,
+    "paymentMethod": purchaseDoc.paymentMethod,
+    "sessions": purchaseDoc.sessions,
+     "weeklySessions": purchaseDoc.weeklySessions,
+     "cancelTime": purchaseDoc.cancelTime,
+     "expirationTime": purchaseDoc.expirationTime,
+  });
+
    await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
      "purchasedAt": purchaseDoc.purchasedAt,
      "bonoId": purchaseDoc.bonoId,
      "price": purchaseDoc.price,
      "paymentMethod": purchaseDoc.paymentMethod,
      "brandId": purchaseDoc.brandId,
-    "sessions": purchaseDoc.sessions,
-   "weeklySessions": purchaseDoc.weeklySessions,
-   "cancelTime": purchaseDoc.cancelTime,
-   "expirationTime": purchaseDoc.expirationTime,
+      "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -5105,13 +5116,14 @@ exports.zzzzUserPurchasesBono = functions
      "cancelTime": purchaseDoc.cancelTime,
      "weeklySessions": purchaseDoc.weeklySessions,
    });
-    let stringSessions = "";
-    if(purchaseDoc.sessions != 10000)
-    {
-        stringSessions = purchaseDoc.sessions + " ";
-    }
-   // Send Notification to User
-   if (userDoc.idioma == "es") {
+
+  let stringSessions = "";
+  if(purchaseDoc.sessions != 10000)
+  {
+      stringSessions = purchaseDoc.sessions + " ";
+  }
+  // Send Notification to User
+  if (userDoc.idioma == "es") {
     payload = {
       notification: {
         title: "Bono "+bonoDoc.title.toUpperCase()+" otorgado 🤙",
@@ -5281,6 +5293,24 @@ exports.zzzzUserPurchasesEvent = functions
           "numClients": eventDoc.numClients,
           "maxMembers": eventDoc.maxMembers,
        });
+
+       await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({        
+          "isPrivate": eventDoc.isPrivate,
+          "title": eventDoc.title,
+          "imageUrl": eventDoc.imageUrl,
+          "doneAt": eventDoc.doneAt,
+          "year": eventDoc.year,
+          "month": eventDoc.month,
+          "day": eventDoc.day,
+          "hour": eventDoc.hour,
+          "minute": eventDoc.minute,
+          "duration": eventDoc.duration,
+          "numTrainers": eventDoc.numTrainers,
+          "numClients": eventDoc.numClients,
+          "maxMembers": eventDoc.maxMembers,
+        });
+
+
        await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({        
           "isPrivate": eventDoc.isPrivate,
           "title": eventDoc.title,
@@ -5346,6 +5376,8 @@ exports.zzzzUserCancelsPurchaseEvent = functions
    // Delete Event from Purchases
 
    await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("7777 Brands").collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 

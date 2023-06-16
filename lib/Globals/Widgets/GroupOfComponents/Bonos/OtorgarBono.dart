@@ -507,25 +507,30 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  TextButton(
-                    child: Row(
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.personalizeBonoUser(widget.user.firstName!),
-                          //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
-                          style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal),
-                        ),
-                        Icon(seeConditions ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: MediaQuery.of(context).size.width*0.08, color: Theme.of(context).primaryColor),
-                      ],
+                  Expanded(
+                    child: TextButton(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.personalizeBonoUser(widget.user.firstName!),
+                              //style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline, height: 1.5),
+                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Icon(seeConditions ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, size: MediaQuery.of(context).size.width*0.08, color: Theme.of(context).primaryColor),
+                        ],
+                      ),
+                      style: TextButton.styleFrom(
+                        primary: Theme.of(context).primaryColor,
+                      ),
+                      onPressed: editBono? null : () async {
+                        setState(() {
+                          seeConditions = !seeConditions;
+                        });
+                      },
                     ),
-                    style: TextButton.styleFrom(
-                      primary: Theme.of(context).primaryColor,
-                    ),
-                    onPressed: editBono? null : () async {
-                      setState(() {
-                        seeConditions = !seeConditions;
-                      });
-                    },
                   ),
                 ],
               ),

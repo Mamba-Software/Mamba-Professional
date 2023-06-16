@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,6 +10,8 @@ import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lImage.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
@@ -33,6 +36,7 @@ class ScriptsDatabaseService {
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
   final _libraryDataService = LibraryDataService();
+  final _purchaseDataService = PurchaseDataService();
 
   // Firebase collections
   String users = isProduction ? 'Users' : '7777 Users';
@@ -50,6 +54,7 @@ class ScriptsDatabaseService {
   String notifications = isProduction ? 'Notifications' : '7777 Notifications';
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
   String library = isProduction ? 'Library' : 'Library';
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
 
   Future<bool> migrateUserDataFebruary6th() async {
     try {
@@ -2738,6 +2743,148 @@ class ScriptsDatabaseService {
       return true;
     } catch (e) {
       print(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> JBmigratePurchaseDataJune16th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 16TH JUNE 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+purchases+' collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL OF THIS FUNCTION Eliminar Payments/Purchases/Purchases → Passar Purchases/{purchaseId}
+      String brandsCollection = "7777 Brands";
+      String paymentsCollection = "7777 Payments";
+      String purchasesCollection = "7777 Purchases";
+      QuerySnapshot querySnapshotPurchases = await _firestore.collection(paymentsCollection).doc("Purchases").collection("Purchases").get();
+      for (int i = 0; i < querySnapshotPurchases.size; i++) {
+        String purchaseId = querySnapshotPurchases.docs[i].id;
+        Purchase purchase = Purchase.fromObjectAllData(purchaseId, querySnapshotPurchases.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('PURCHASE WITH ID: ' + purchase.id! + " AND USER: " + purchase.userId!);
+        print('\n');
+        // Build Bono From Purchase
+        Bono bono = Bono();
+        bono.setBonoSessions = querySnapshotPurchases.docs[i].get("sessions");
+        bono.setConditionsData = Condition(
+          expirationTime: querySnapshotPurchases.docs[i].get("expirationTime"),
+          cancelTime: querySnapshotPurchases.docs[i].get("cancelTime"),
+          weeklySessions: querySnapshotPurchases.docs[i].get("weeklySessions"),
+        );
+        // Add Pruchase to new Collection
+        await _firestore
+        .collection(purchasesCollection)
+        .doc(purchase.id!)
+        .set({
+          "purchasedAt": purchase.purchasedAt!,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId!,
+          "bonoId": purchase.bonoId,
+          "price": purchase.price, //bonoSelected.price
+          "sessions": bono.sessions,
+          "weeklySessions": bono.condition?.weeklySessions,
+          "cancelTime": bono.condition?.cancelTime,
+          "expirationTime": bono.condition?.expirationTime,
+          "paymentMethod": purchase.paymentMethod,
+        }).catchError((err) {
+          print(err);
+        });
+        // Add Pruchase to Brands Collection
+        await _firestore
+        .collection(brandsCollection)
+        .doc(purchase.brandId!)
+        .collection("Purchases")
+        .doc(purchase.id!)
+        .set({
+          "purchasedAt": purchase.purchasedAt!,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId!,
+          "bonoId": purchase.bonoId,
+          "price": purchase.price, //bonoSelected.price
+          "sessions": bono.sessions,
+          "weeklySessions": bono.condition?.weeklySessions,
+          "cancelTime": bono.condition?.cancelTime,
+          "expirationTime": bono.condition?.expirationTime,
+          "paymentMethod": purchase.paymentMethod,
+        }).catchError((err) {
+          print(err);
+        });
+        // Check Purchase Has Events
+        QuerySnapshot querySnapshotEvents = await _firestore.collection(paymentsCollection).doc("Purchases").collection("Purchases").doc(purchase.id!).collection("Events").get();
+        if (querySnapshotEvents.size > 0) {
+          print('THIS PURCHASE HAS EVENTS');
+          // WE NEED TO ADD THIS TO THE EVENTS SUB COLLECTION
+          for (int i = 0; i < querySnapshotEvents.size; i++) {
+            String eventId = querySnapshotEvents.docs[i].id;
+            Event event = Event.fromObjectOnlyCoverData(eventId, querySnapshotEvents.docs[i]);
+            // Add This to Purchases Collection
+            await _firestore
+            .collection(purchasesCollection)
+            .doc(purchaseId)
+            .collection("Events")
+            .doc(eventId)
+            .set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "imageUrl": event.imageUrl,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            });
+            // Add Pruchase to Brands Collection
+            await _firestore
+            .collection(brandsCollection)
+            .doc(purchase.brandId!)
+            .collection("Purchases")
+            .doc(purchase.id!)
+            .collection("Events")
+            .doc(eventId)
+            .set({
+              "isPrivate": event.isPrivate,
+              "title": event.title,
+              "imageUrl": event.imageUrl,
+              "doneAt": event.doneAt,
+              "year": event.year,
+              "month": event.month,
+              "day": event.day,
+              "hour": event.hour,
+              "minute": event.minute,
+              "duration": event.duration,
+              "numTrainers": event.numTrainers,
+              "numClients": event.numClients,
+              "maxMembers": event.maxMembers,
+            }).catchError((err) {
+              print(err);
+            });
+          }
+          print('All ${querySnapshotEvents.size} Events Moved');
+        } else {
+          print('THIS PURCHASE HAS NO EVENTS');
+        }
+        print('\n');
+      }
+      print('All Purchases Moved');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
       return false;
     }
   }

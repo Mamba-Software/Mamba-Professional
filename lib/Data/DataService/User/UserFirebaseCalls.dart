@@ -96,7 +96,7 @@ class UserFirebaseCalls {
       if (error) return false;
       if (currentUser.imageUrl !=
           "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53") {
-        await this.deleteUserPhoto(user.uid);
+        await deleteUserPhoto(user.uid);
       }
       // Delete Notifications
       await _firestore.collection(users).doc(user.uid).collection(
@@ -947,7 +947,7 @@ class UserFirebaseCalls {
         .where("isRead", isEqualTo: false)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      await this.markNotificationAsRead(userId, querySnapshot.docs[i].id,);
+      await markNotificationAsRead(userId, querySnapshot.docs[i].id,);
     }
   }
 
@@ -970,6 +970,14 @@ class UserFirebaseCalls {
     });
     // Update the User/Purchase Collection
     await _firestore.collection(users).doc(userId).collection("Purchases").doc(bono.purchaseId).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+    });
+    // Update the Brand/Bonos/Purchase Collection
+    await _firestore.collection(brands).doc(brandId).collection("Purchases").doc(bono.purchaseId).update({
       "sessions": bono.sessions,
       "price": bono.price,
       "expirationTime": bono.condition?.expirationTime,

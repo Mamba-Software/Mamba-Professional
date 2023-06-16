@@ -2699,7 +2699,7 @@
   "@seeMap": {
     "description": "seeMap message"
   },
-  "personalizeBonoUser": "Personalizar este bono solo para {user}",
+  "personalizeBonoUser": "Personalizar solo para {user}",
   "@personalizeBonoUser": {
     "description": "Member Since message",
     "placeholders": {
