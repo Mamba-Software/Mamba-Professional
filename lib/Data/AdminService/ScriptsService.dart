@@ -2889,4 +2889,70 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> JBupdatePurchaseDataJune16th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 16TH JUNE 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying '+purchases+' collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL IS TO ADD isActive = true or false on the purchase on not use Users/Bonos anymore
+      String usersCollection = "7777 Users";
+      String brandsCollection = "7777 Brands";
+      String purchasesCollection = "7777 Purchases";
+      QuerySnapshot querySnapshotPurchases = await _firestore.collection(purchasesCollection).get();
+      for (int i = 0; i < querySnapshotPurchases.size; i++) {
+        String purchaseId = querySnapshotPurchases.docs[i].id;
+        Purchase purchase = Purchase.fromObjectAllData(purchaseId, querySnapshotPurchases.docs[i]);
+        print('=================================================================================');
+        print('=================================================================================');
+        print('PURCHASE WITH ID: ' + purchase.id! + ' AND USER IS: ' + purchase.userId! + ' FROM BRAND: ' + purchase.brandId!);
+        print('\n');
+        /// Check if Purchase is active by checking if Users/{userId}/Bonos/{bonoId} exists
+        DocumentSnapshot doc = await _firestore
+        .collection(usersCollection)
+        .doc(purchase.userId)
+        .collection("Bonos")
+        .doc(purchase.bonoId)
+        .get();
+        /// Update with IsActive the following:
+        /// Purchases/{purchaseId}
+        await _firestore.collection(purchasesCollection).doc(purchase.id!).update({
+          "isActive": doc.exists,
+        });
+        /// Users/{userId}/Purchases/{purchaseId}
+        await _firestore.collection(usersCollection).doc(purchase.userId!).collection("Purchases").doc(purchase.id!).update({
+          "isActive": doc.exists,
+        });
+        /// Brands/{brandId}/Purchases/{purchaseId}
+        await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Purchases").doc(purchase.id!).update({
+          "isActive": doc.exists,
+        });
+        /// Brands/{brandId}/Bonos/{bonoId}/Purchases/{purchaseId}
+        await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Bonos").doc(purchase.bonoId!).collection("Purchases").doc(purchase.id!).update({
+          "isActive": doc.exists,
+        });
+        /// Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}
+        await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Users").doc(purchase.userId!).collection("Purchases").doc(purchase.id!).update({
+          "isActive": doc.exists,
+        });
+        print('IsActive already added');
+        print('\n');
+      }
+      print('All Purchases Moved');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
 }

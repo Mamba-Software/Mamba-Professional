@@ -120,10 +120,9 @@ class EachList extends StatelessWidget{
         break;
       case 3:
        // var result = await _script.getStatisticsSpecific();
-        var result = await _script.JBmigratePurchaseDataJune16th();
+        var result = await _script.JBupdatePurchaseDataJune16th();
         print("RESULT: "+result.toString());
         break;
-
     }
 
   }

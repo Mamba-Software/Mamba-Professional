@@ -4662,7 +4662,7 @@ exports.UserSendsBonoRequest = functions
 exports.UserPurchasesBono = functions
 .region("europe-west1")
 .firestore
-.document("/Payments/Purchases/Purchases/{purchaseId}")
+.document("/Purchases/{purchaseId}")
 .onCreate( async (snap, context) => {
 
   const purchaseId = context.params.purchaseId;
@@ -4683,37 +4683,59 @@ exports.UserPurchasesBono = functions
   //Add purchases
 
    await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "userId": purchaseDoc.userId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "sessions": purchaseDoc.sessions,
-     "weeklySessions": purchaseDoc.weeklySessions,
-     "cancelTime": purchaseDoc.cancelTime,
-     "expirationTime": purchaseDoc.expirationTime,
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
    });
 
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime, 
+  });
+
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "bonoId": purchaseDoc.bonoId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "sessions": purchaseDoc.sessions,
-     "weeklySessions": purchaseDoc.weeklySessions,
-     "cancelTime": purchaseDoc.cancelTime,
-     "expirationTime": purchaseDoc.expirationTime,
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
+      "weeklySessions": purchaseDoc.weeklySessions,
+      "cancelTime": purchaseDoc.cancelTime,
+      "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "bonoId": purchaseDoc.bonoId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "brandId": purchaseDoc.brandId,
-     "sessions": purchaseDoc.sessions,
-     "weeklySessions": purchaseDoc.weeklySessions,
-     "cancelTime": purchaseDoc.cancelTime,
-     "expirationTime": purchaseDoc.expirationTime,
+    "userId": purchaseDoc.userId,
+    "brandId": brandId,
+    "bonoId": bonoId,
+    "isActive": true,
+    "purchasedAt": purchaseDoc.purchasedAt,
+    "price": purchaseDoc.price,
+    "paymentMethod": purchaseDoc.paymentMethod,
+    "sessions": purchaseDoc.sessions,
+    "weeklySessions": purchaseDoc.weeklySessions,
+    "cancelTime": purchaseDoc.cancelTime,
+    "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -4857,7 +4879,7 @@ exports.DeleteUserBono = functions
 exports.UserPurchasesEvent = functions
 .region("europe-west1")
 .firestore
-.document("/Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.document("/Purchases/{purchaseId}/Events/{eventId}")
 .onCreate( async (snap, context) => {
 
   const purchaseId = context.params.purchaseId;
@@ -4867,7 +4889,7 @@ exports.UserPurchasesEvent = functions
 
    //Get data of the purchase
 
-   const purchaseSnapShot = await db.collection("Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseSnapShot = await db.collection("Purchases").doc(purchaseId).get();
    const purchaseDoc = purchaseSnapShot.data();
 
    const userId = purchaseDoc.userId;
@@ -4902,6 +4924,23 @@ exports.UserPurchasesEvent = functions
      "numClients": eventDoc.numClients,
      "maxMembers": eventDoc.maxMembers,
    });
+
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
+    "isPrivate": eventDoc.isPrivate,
+    "imageUrl": eventDoc.imageUrl,
+    "title": eventDoc.title,
+    "doneAt": eventDoc.doneAt,
+    "year": eventDoc.year,
+    "month": eventDoc.month,
+    "day": eventDoc.day,
+    "hour": eventDoc.hour,
+    "minute": eventDoc.minute,
+    "duration": eventDoc.duration,
+    "numTrainers": eventDoc.numTrainers,
+    "numClients": eventDoc.numClients,
+    "maxMembers": eventDoc.maxMembers,
+  });
+
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).set({
     "isPrivate": eventDoc.isPrivate,
     "imageUrl": eventDoc.imageUrl,
@@ -4947,7 +4986,7 @@ exports.UserPurchasesEvent = functions
 exports.UserCancelsPurchaseEvent = functions
 .region("europe-west1")
 .firestore
-.document("/Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.document("/Purchases/{purchaseId}/Events/{eventId}")
 .onDelete( async (snap, context) => {
 
    const purchaseId = context.params.purchaseId;
@@ -4955,7 +4994,7 @@ exports.UserCancelsPurchaseEvent = functions
 
    // Get data of the purchase
 
-   const purchaseSnapShot = await db.collection("Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseSnapShot = await db.collection("Purchases").doc(purchaseId).get();
    const purchaseDoc = purchaseSnapShot.data();
 
    const userId = purchaseDoc.userId;
@@ -4963,6 +5002,8 @@ exports.UserCancelsPurchaseEvent = functions
    const brandId =  purchaseDoc.brandId;
 
    // Delete Event from Purchases
+
+   await db.collection("Brands").doc(brandId).doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
@@ -5061,9 +5102,12 @@ exports.zzzzUserPurchasesBono = functions
 
   //Add purchases
 
-   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
+   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).set({     
      "userId": purchaseDoc.userId,
+     "brandId": brandId,
+     "bonoId": bonoId,
+     "isActive": true,
+     "purchasedAt": purchaseDoc.purchasedAt,
      "price": purchaseDoc.price,
      "paymentMethod": purchaseDoc.paymentMethod,
      "sessions": purchaseDoc.sessions,
@@ -5073,33 +5117,41 @@ exports.zzzzUserPurchasesBono = functions
    });
 
    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "bonoId": purchaseDoc.bonoId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "sessions": purchaseDoc.sessions,
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
+      "sessions": purchaseDoc.sessions,
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
    });
 
    await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
+    "userId": purchaseDoc.userId,
+    "brandId": brandId,
+    "bonoId": bonoId,
+    "isActive": true,
     "purchasedAt": purchaseDoc.purchasedAt,
-    "bonoId": purchaseDoc.bonoId,
     "price": purchaseDoc.price,
     "paymentMethod": purchaseDoc.paymentMethod,
     "sessions": purchaseDoc.sessions,
-     "weeklySessions": purchaseDoc.weeklySessions,
-     "cancelTime": purchaseDoc.cancelTime,
-     "expirationTime": purchaseDoc.expirationTime,
+    "weeklySessions": purchaseDoc.weeklySessions,
+    "cancelTime": purchaseDoc.cancelTime,
+    "expirationTime": purchaseDoc.expirationTime,
   });
 
    await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
-     "purchasedAt": purchaseDoc.purchasedAt,
-     "bonoId": purchaseDoc.bonoId,
-     "price": purchaseDoc.price,
-     "paymentMethod": purchaseDoc.paymentMethod,
-     "brandId": purchaseDoc.brandId,
+      "userId": purchaseDoc.userId,
+      "brandId": brandId,
+      "bonoId": bonoId,
+      "isActive": true,
+      "purchasedAt": purchaseDoc.purchasedAt,
+      "price": purchaseDoc.price,
+      "paymentMethod": purchaseDoc.paymentMethod,
       "sessions": purchaseDoc.sessions,
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
