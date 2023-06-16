@@ -3938,32 +3938,6 @@ exports.zzzzUserJoinsEvent = functions
         "brandID": eventDoc.brandID,
       });
 
-      //TODO AFEGIT JOAN MANEL INTEGRACIÓ BONOS
-      /* Add event to purchase collection
-      await db
-        .collection("7777 Payments")
-        .doc("Purchases")
-        .collection("Purchases")
-        .doc(eventUserDoc.purchaseId)
-        .collection("Events")
-        .doc(eventId)
-        .set({
-          "isPrivate": eventDoc.isPrivate,
-          "title": eventDoc.title,
-          "imageUrl": eventDoc.imageUrl,
-          "doneAt": eventDoc.doneAt,
-          "year": eventDoc.year,
-          "month": eventDoc.month,
-          "day": eventDoc.day,
-          "hour": eventDoc.hour,
-          "minute": eventDoc.minute,
-          "duration": eventDoc.duration,
-          "numTrainers": numTrainers,
-          "numClients": numClients,
-          "maxMembers": eventDoc.maxMembers,
-      });
-      */
-
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
       if (eventDoc.isPrivate == true) {
@@ -5067,7 +5041,7 @@ exports.zzzzUserSendsBonoRequest = functions
 exports.zzzzUserPurchasesBono = functions
 .region("europe-west1")
 .firestore
-.document("/7777 Payments/Purchases/Purchases/{purchaseId}")
+.document("/7777 Purchases/{purchaseId}")
 .onCreate( async (snap, context) => {
 
   const purchaseId = context.params.purchaseId;
@@ -5263,7 +5237,7 @@ exports.zzzzDeleteUserBono = functions
 exports.zzzzUserPurchasesEvent = functions
 .region("europe-west1")
 .firestore
-.document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.document("/7777 Purchases/{purchaseId}/Events/{eventId}")
 .onCreate( async (snap, context) => {
 
   const purchaseId = context.params.purchaseId;
@@ -5273,7 +5247,7 @@ exports.zzzzUserPurchasesEvent = functions
 
        //Get data of the purchase
 
-       const purchaseSnapShot = await db.collection("7777 Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+       const purchaseSnapShot = await db.collection("7777 Purchases").doc(purchaseId).get();
        const purchaseDoc = purchaseSnapShot.data();
 
        const userId = purchaseDoc.userId;
@@ -5354,7 +5328,7 @@ exports.zzzzUserPurchasesEvent = functions
 exports.zzzzUserCancelsPurchaseEvent = functions
 .region("europe-west1")
 .firestore
-.document("/7777 Payments/Purchases/Purchases/{purchaseId}/Events/{eventId}")
+.document("/7777 Purchases/{purchaseId}/Events/{eventId}")
 .onDelete( async (snap, context) => {
 
    const purchaseId = context.params.purchaseId;
@@ -5362,7 +5336,7 @@ exports.zzzzUserCancelsPurchaseEvent = functions
 
    // Get data of the purchase
 
-   const purchaseSnapShot = await db.collection("7777 Payments").doc("Purchases").collection("Purchases").doc(purchaseId).get();
+   const purchaseSnapShot = await db.collection("7777 Purchases").doc(purchaseId).get();
    const purchaseDoc = purchaseSnapShot.data();
 
    const userId = purchaseDoc.userId;

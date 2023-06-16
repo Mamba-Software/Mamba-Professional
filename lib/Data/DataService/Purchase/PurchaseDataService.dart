@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseFirebaseCalls.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseFirebaseCalls.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
@@ -15,6 +16,7 @@ class PurchaseDataService {
   Future<List<Purchase>> getAllUserPurchases(String userId) => _firebase.getAllUserPurchases(userId);
 
   // Add Data
+  Future<String> addPurchase(Purchase purchase, Bono bonoSelected) => _firebase.addPurchase(purchase, bonoSelected);
   Future<void> addEventToPurchase(String purchaseId, String eventId) => _firebase.addEventToPurchase(purchaseId, eventId);
 
   // Update Data

@@ -56,6 +56,7 @@ class FirebaseDatabaseService {
   String rooms = isProduction ? 'Rooms' : '7777 Rooms';
   String promotions = isProduction ? 'Promotions' : '7777 Promotions';
   String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
 
 
   Map<String, dynamic> toMapisMessageRead(String? id, bool? isMessageRead) {
@@ -2269,9 +2270,7 @@ class FirebaseDatabaseService {
   Future<void> addEventToPurchase(String purchaseId, Event eventDoc) async {
     try {
       await _firestore
-        .collection("7777 Payments")
-        .doc("Purchases")
-        .collection("Purchases")
+        .collection(purchases)
         .doc(purchaseId)
         .collection("Events")
         .doc(eventDoc.id)

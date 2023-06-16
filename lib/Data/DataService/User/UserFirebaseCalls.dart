@@ -28,9 +28,7 @@ class UserFirebaseCalls {
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
-  String payments = isProduction ? 'Payments' : '7777 Payments';
-
-
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
 
   // Authentication Services
 
@@ -963,7 +961,7 @@ class UserFirebaseCalls {
       "weeklySessions": bono.condition?.weeklySessions,
     });
     // Update the Purchase Collection
-    await _firestore.collection(payments).doc("Purchases").collection("Purchases").doc(bono.purchaseId).update({
+    await _firestore.collection(purchases).doc(bono.purchaseId).update({
       "sessions": bono.sessions,
       "price": bono.price,
       "expirationTime": bono.condition?.expirationTime,

@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:uuid/uuid.dart';
 
 // Firebase Purchase Service Class. All calls to Firebase are in this class.
 class PurchaseFirebaseCalls {
@@ -23,16 +24,14 @@ class PurchaseFirebaseCalls {
   String nicknames = isProduction ? 'Nicknames' : '7777 Nicknames';
   String brands = isProduction ? 'Brands' : '7777 Brands';
   String conversations = isProduction ? 'Conversations' : '7777 Conversations';
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
   String library = isProduction ? 'Library' : 'Library';
-  String payments = isProduction ? 'Payments' : '7777 Payments';
 
   // Check Data
   Future<bool> checkIfEventInPurchase(String purchaseId, String eventId) async {
     try {
       DocumentSnapshot event = await _firestore
-          .collection(payments)
-          .doc("Purchases")
-          .collection("Purchases")
+          .collection(purchases)
           .doc(purchaseId)
           .collection("Events")
           .doc(eventId)
@@ -48,9 +47,7 @@ class PurchaseFirebaseCalls {
     Purchase purchase;
     // Get Main Purchase Info
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
-        .collection(payments)
-        .doc("Purchases")
-        .collection("Purchases")
+        .collection(purchases)
         .doc(purchaseId)
         .get();
     purchase = Purchase.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
@@ -76,9 +73,7 @@ class PurchaseFirebaseCalls {
     // Get Purchase Events
     List<Event> events = [];
     QuerySnapshot querySnapshot = await _firestore
-        .collection(payments)
-        .doc("Purchases")
-        .collection("Purchases")
+        .collection(purchases)
         .doc(purchaseId)
         .collection("Events")
         .get();
@@ -158,14 +153,35 @@ class PurchaseFirebaseCalls {
   }
 
   // Add Data
+
+  Future<String> addPurchase(Purchase purchase, Bono bonoSelected) async {
+    var uid = const Uuid().v4();
+    await _firestore
+        .collection(purchases)
+        .doc(uid)
+        .set({
+      "purchasedAt": purchase.purchasedAt!,
+      "userId": purchase.userId,
+      "brandId": purchase.brandId!,
+      "bonoId": purchase.bonoId,
+      "price": purchase.price, //bonoSelected.price
+      "sessions": bonoSelected.sessions,
+      "weeklySessions": bonoSelected.condition?.weeklySessions,
+      "cancelTime": bonoSelected.condition?.cancelTime,
+      "expirationTime": bonoSelected.condition?.expirationTime,
+      "paymentMethod": purchase.paymentMethod,
+    }).catchError((err) {
+      print(err);
+    });
+    return uid;
+  }
+
   Future<void> addEventToPurchase(String purchaseId, String eventId) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(events).doc(eventId).get();
     Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     // Add This to Payments
     await _firestore
-      .collection(payments)
-      .doc("Purchases")
-      .collection("Purchases")
+      .collection(purchases)
       .doc(purchaseId)
       .collection("Events")
       .doc(eventId)
@@ -189,9 +205,7 @@ class PurchaseFirebaseCalls {
   // Delete Data
   Future<void> deleteEventFromPurchase(String purchaseId, String eventId) async {
     await _firestore
-    .collection(payments)
-    .doc("Purchases")
-    .collection("Purchases")
+    .collection(purchases)
     .doc(purchaseId)
     .collection("Events")
     .doc(eventId)
@@ -204,9 +218,7 @@ class PurchaseFirebaseCalls {
   //Get bonos from brand
   Stream<DocumentSnapshot> getPurchaseInfoStream(String purchaseId) {
     return _firestore
-        .collection(payments)
-        .doc("Purchases")
-        .collection("Purchases")
+        .collection(purchases)
         .doc(purchaseId)
         .snapshots();
   }

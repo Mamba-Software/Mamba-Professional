@@ -36,7 +36,7 @@ class BrandFirebaseCalls {
   String users = isProduction ? 'Users' : '7777 Users';
   String events = isProduction ? 'Events' : '7777 Events';
   String locations = isProduction ? 'Locations' : '7777 Locations';
-  String payments = isProduction ? 'Payments' : '7777 Payments';
+  String purchases = isProduction ? 'Purchases' : '7777 Purchases';
   String subscriptions = isProduction ? 'Subscriptions' : '7777 Subscriptions';
 
   //Utils
@@ -468,11 +468,12 @@ class BrandFirebaseCalls {
   }
 
   Future<List<Purchase>> getBrandPurchases(String brandId) async {
-    List<Purchase> purchases = [];
+    List<Purchase> purchasesList = [];
     Purchase purchase;
     try {
-      await _firestore.collection(payments).doc('Purchases')
-          .collection("Purchases").where("brandId", isEqualTo: brandId)
+      await _firestore
+          .collection(purchases)
+          .where("brandId", isEqualTo: brandId)
           .get()
           .then((snapshot) async {
         for (DocumentSnapshot doc in snapshot.docs) {
@@ -480,13 +481,13 @@ class BrandFirebaseCalls {
           //user = await getUserDetails(doc.id);
           //brandList = await getAllBrandsFromUser(doc.id);
           //brand = brandList.firstWhere((element) => element.id == brandId);
-          purchases.add(purchase);
+          purchasesList.add(purchase);
         }
       });
-      return purchases;
+      return purchasesList;
     } catch (e) {
       print(e.toString());
-      return purchases;
+      return purchasesList;
     }
   }
 

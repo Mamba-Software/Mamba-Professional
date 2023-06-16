@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Payments/PaymentDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Payments/Purchase/PurchaseDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
@@ -50,7 +49,6 @@ class OtorgarBono extends StatefulWidget {
 class _OtorgarBonoState extends State<OtorgarBono> {
   // Brand Service
   final _brandDataService = BrandDataService();
-  final _paymentDataService = PaymentDataService();
   final _userDataService = UserDataService();
   final _purchaseDataService = PurchaseDataService();
 
@@ -998,7 +996,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     // Notifications Service
                     _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
                     // Build Purchase Object
-                    String purchaseId = await _paymentDataService.addPurchaseToPayments(purchase, bonoSelected);
+                    String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
                     await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
                     await _brandDataService.updateBonoCompras(widget.brand.id!, purchase.bonoId!);
                     // Local Notifications Service
@@ -1017,7 +1015,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     // Build Purchase Object
                     _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
                     // Save Purchase Object
-                    String purchaseId = await _paymentDataService.addPurchaseToPayments(purchase, bonoSelected);
+                    String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
                     await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
                     await Future.delayed(const Duration(seconds: 2));
                     // Local Notifications Service
