@@ -164,6 +164,10 @@ class ClientBonoCardState extends State<ClientBonoCard> {
         isNotActive = true;
       }
     }
+    // Check If Not Active
+    if (purchase.isActive == false) {
+      isNotActive = true;
+    }
   }
 
   @override
@@ -469,7 +473,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                                           color: AppColors.red,
                                         ),
                                         child: Text(
-                                          isFinished ? AppLocalizations.of(context)!.esgotat.toUpperCase() : isExpired ? AppLocalizations.of(context)!.expired.toUpperCase() : AppLocalizations.of(context)!.expired.toUpperCase(),
+                                          isFinished ? AppLocalizations.of(context)!.esgotat.toUpperCase() : isExpired ? AppLocalizations.of(context)!.expired.toUpperCase() : AppLocalizations.of(context)!.desactive.toUpperCase(),
                                           style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                                           textAlign: TextAlign.left,
                                           maxLines: 4,

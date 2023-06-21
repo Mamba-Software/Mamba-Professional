@@ -10,7 +10,6 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -23,9 +22,10 @@ import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
 
 class UserBonosHistoryPage extends StatefulWidget {
   String userId;
+  String brandId;
   String? purchaseId;
 
-  UserBonosHistoryPage({Key? key, required this.userId, this.purchaseId}) : super(key: key);
+  UserBonosHistoryPage({Key? key, required this.userId, required this.brandId, this.purchaseId}) : super(key: key);
 
   @override
   _UserBonosHistoryPageState createState() => _UserBonosHistoryPageState();
@@ -85,14 +85,12 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
 
   // Gets the Events Done by the User
   Future<void> getUserPurchases() async {
-    final List<Purchase> listPurchases = await _purchaseDataService.getAllUserPurchases(widget.userId);
+    final List<Purchase> listPurchases = await _purchaseDataService.getAllUserPurchasesFromBrand(widget.userId, widget.brandId);
     listPurchases.sort((a,b) {
       var aDate =  a.purchasedAt!.toDate();
       var bDate =  b.purchasedAt!.toDate();
       return bDate.compareTo(aDate);
     });
-    // Remove Purchases not from the current Brand
-    listPurchases.removeWhere((element) => element.brandId != currentBrand.id!);
     // Create PageView List
     for (Purchase purchase in listPurchases) {
       var result = [];

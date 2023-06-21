@@ -16,10 +16,11 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 
 class UserBonosWidget extends StatefulWidget {
   String userId;
+  String brandId;
   double height = 0;
   double width = 0;
 
-  UserBonosWidget({Key? key, required this.userId, required this.height, required this.width}) : super(key: key);
+  UserBonosWidget({Key? key, required this.userId, required this.brandId, required this.height, required this.width}) : super(key: key);
 
   @override
   _UserBonosWidgetState createState() => _UserBonosWidgetState();
@@ -49,6 +50,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
         CupertinoPageRoute<void>(
             builder: (context) => UserBonosHistoryPage(
               userId: widget.userId,
+              brandId: widget.brandId,
             )
         )
     );

@@ -1233,6 +1233,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             user.isTrainer == true || hasStreak == false ? Container() : buildUserTrainingStreak(),
             user.isTrainer == false ? UserBonosWidget(
               userId: widget.userID,
+              brandId: currentBrand.id!,
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
             ) : Container(),

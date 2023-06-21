@@ -13,7 +13,7 @@ class PurchaseDataService {
 
   // Get Data
   Future<Purchase> getPurchaseInfo(String purchaseId) => _firebase.getPurchaseInfo(purchaseId);
-  Future<List<Purchase>> getAllUserPurchases(String userId) => _firebase.getAllUserPurchases(userId);
+  Future<List<Purchase>> getAllUserPurchasesFromBrand(String userId, String brandId) => _firebase.getAllUserPurchasesFromBrand(userId, brandId);
 
   // Add Data
   Future<String> addPurchase(Purchase purchase, Bono bonoSelected) => _firebase.addPurchase(purchase, bonoSelected);

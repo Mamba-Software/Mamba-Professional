@@ -86,33 +86,31 @@ class PurchaseFirebaseCalls {
     return purchase;
   }
 
-  Future<List<Purchase>> getAllUserPurchases(String userId) async {
-    List<Purchase> purchases = [];
+  Future<List<Purchase>> getAllUserPurchasesFromBrand(String userId, String brandId) async {
+    List<Purchase> purchasesList = [];
     // Get All User Purchases
     QuerySnapshot querySnapshot = await _firestore
-        .collection(users)
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
         .doc(userId)
         .collection("Purchases")
         .get();
     // Build Each Purchase
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      String purchaseId = querySnapshot.docs[i].id;
       // Get Main Purchase Info
-      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
-          .collection(users)
-          .doc(userId)
-          .collection("Purchases")
-          .doc(purchaseId)
-          .get();
+      String purchaseId = querySnapshot.docs[i].id;
+      DocumentSnapshot _documentSnapshot = querySnapshot.docs[i];
       Purchase purchase = Purchase.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
       purchase.setBasicData = Purchase(
         id: purchase.id,
         userId: userId,
-        brandId: purchase.brandId,
+        brandId: brandId,
         bonoId: purchase.bonoId,
         price: purchase.price,
         paymentMethod: purchase.paymentMethod,
         purchasedAt: purchase.purchasedAt,
+        isActive: purchase.isActive,
       );
       // Get Brand From Purchase
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot2 = await _firestore.collection(brands).doc(purchase.brandId).get();
@@ -135,9 +133,7 @@ class PurchaseFirebaseCalls {
       // Get Purchase Events
       List<Event> events = [];
       QuerySnapshot querySnapshot2 = await _firestore
-          .collection(users)
-          .doc(userId)
-          .collection("Purchases")
+          .collection(purchases)
           .doc(purchaseId)
           .collection("Events")
           .get();
@@ -147,9 +143,9 @@ class PurchaseFirebaseCalls {
       // Set Purchase Events
       purchase.setPurchasedEventsData = events;
       // Add To Purchases List
-      purchases.add(purchase);
+      purchasesList.add(purchase);
     }
-    return purchases;
+    return purchasesList;
   }
 
   // Add Data

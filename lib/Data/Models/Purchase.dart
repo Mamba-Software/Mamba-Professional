@@ -17,6 +17,7 @@ class Purchase {
   int? paymentMethod;
   int? sesions;
   Timestamp? purchasedAt;
+  bool? isActive;
   // List of Events Done with this purchase
   Bono? bono;
   Brand? brand;
@@ -32,6 +33,7 @@ class Purchase {
     this.paymentMethod,
     this.sesions,
     this.purchasedAt,
+    this.isActive,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +61,9 @@ class Purchase {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchasedAt')) {
       purchasedAt = documentSnapshot.get("purchasedAt");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
+      isActive = documentSnapshot.get("isActive");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +78,7 @@ class Purchase {
     paymentMethod = purchase.paymentMethod;
     sesions = purchase.sesions;
     purchasedAt = purchase.purchasedAt;
+    isActive = purchase.isActive;
   }
 
   // Set Basic Data
