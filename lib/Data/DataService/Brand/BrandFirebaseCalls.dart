@@ -1026,35 +1026,38 @@ class BrandFirebaseCalls {
 
   // Delete Brand Bono Request
   Future<void> deleteUserBrandBonos(String brandId, String userId) async {
-    // Get Active Bonos From Brand
-    QuerySnapshot querySnapshot = await _firestore.collection(users)
+    /// Get Active Purhcases
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
         .doc(userId)
-        .collection("Bonos")
-        .where("brandId", isEqualTo: brandId)
+        .collection("Purchases")
+        .where("isActive", isEqualTo: true)
         .get();
+    /// Update the IsActive Field
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      // Delete in Users/Bonos from Brand Id
-      await _firestore.collection(users)
-          .doc(userId)
-          .collection("Bonos")
-          .doc(querySnapshot.docs[i].id)
-          .delete();
-      // Borrar a la Brand/Users/Bonos
-      await _firestore.collection(brands)
-          .doc(brandId)
-          .collection("Users")
-          .doc(userId)
-          .collection("Bonos")
-          .doc(querySnapshot.docs[i].id)
-          .delete();
-      // Delete in Brand/Bonos/Users
-      await _firestore.collection(brands)
-          .doc(brandId)
-          .collection("Bonos")
-          .doc(querySnapshot.docs[i].id)
-          .collection("Users")
-          .doc(userId)
-          .delete();
+      Purchase purchase = Purchase.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      /// Purchases/{purchaseId}
+      await _firestore.collection(purchases).doc(purchase.id!).update({
+        "isActive": false,
+      });
+      /// Users/{userId}/Purchases/{purchaseId}
+      await _firestore.collection(users).doc(userId).collection("Purchases").doc(purchase.id!).update({
+        "isActive": false,
+      });
+      /// Brands/{brandId}/Purchases/{purchaseId}
+      await _firestore.collection(brands).doc(brandId).collection("Purchases").doc(purchase.id!).update({
+        "isActive": false,
+      });
+      /// Brands/{brandId}/Bonos/{bonoId}/Purchases/{purchaseId}
+      await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(purchase.bonoId!).collection("Purchases").doc(purchase.id!).update({
+        "isActive": false,
+      });
+      /// Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}
+      await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchase.id!).update({
+        "isActive": false,
+      });
     }
   }
 

@@ -1,18 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lColor.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
-import 'package:mamba_castelldefels/Data/Models/Brand.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import '../../../Data/LibraryModels/lDegradate.dart';
-import '../../../Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
-import '../../Widgets/Components/Images/CircularImage.dart';
 
 //BonosUtils Class is used to administrate all the bonos
 class BonosUtils {
@@ -79,21 +73,27 @@ class BonosUtils {
   }
 
   //Function to transform documents to bonos
-  List<Bono> documentsToBonosUser(List<DocumentSnapshot> documents, bool userBonos, bool seeActives) {
-    List<Bono> bonos = [];
+  List<Purchase> documentsToPurchasesUser(List<DocumentSnapshot> documents, String brandId) {
+    List<Purchase> userPurchases = [];
     for(int i = 0; i < documents.length; i++) {
-      Bono bono = Bono.fromObjectAllData(documents[i].id, documents[i]);
-      if (userBonos == false) {
-        if (bono.isActive == seeActives) {
-          bonos.add(bono);
-        }
-      } else {
-        bonos.add(bono);
-      }
+      Purchase purchase = Purchase.fromObjectAllData(documents[i].id, documents[i]);
+      Bono bono = Bono(
+        id: purchase.bonoId
+      );
+      // Add Conditions of This purchase
+      bono.setBrandId = brandId;
+      bono.setPurchaseId = documents[i].id;
+      bono.setBonoPrice = purchase.price!.toDouble();
+      bono.setBonoSessions = purchase.sesions!;
+      bono.setConditionsData = Condition(
+        expirationTime: documents[i].get("expirationTime"),
+        cancelTime: documents[i].get("cancelTime"),
+        weeklySessions: documents[i].get("weeklySessions"),
+      );
+      purchase.setPurchasedBono = bono;
+      userPurchases.add(purchase);
     }
-    // Remove Bonos that aren't from the Current Brand
-    bonos.removeWhere((element) => element.brandId != currentBrand.id!);
-    return bonos;
+    return userPurchases;
   }
 
   //Function to transform documents to bonos

@@ -2732,11 +2732,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
 
   void assignBonoUsers(var eventMembers, Event event) async{
     List<Bono> userBonos = [];
-    Bono bono = new Bono();
+    Bono bono = Bono();
     if(selectedBonos.isNotEmpty) {
       for (int i = 0; i < eventMembers.length; i++) {
         var user = eventMembers[i];
-        userBonos =  await _userDataService.getUserBonos(user.id!);
+        userBonos = await _userDataService.getUserActiveBonosFromBrand(user.id!, currentBrand.id!);
         for (int j = 0; j < selectedBonos.length; j++) {
           bono = userBonos.singleWhere((bon) => bon.id == selectedBonos[j]);
             _eventDataService.addEventToPurchase(bono.purchaseId!,event);

@@ -2920,26 +2920,30 @@ class ScriptsDatabaseService {
         .collection("Bonos")
         .doc(purchase.bonoId)
         .get();
+        // Get Purhcase Id
+        bool bonoIsActive = false;
+        String purchaseIdFromBono = doc.get("purchaseId");
+        if (purchaseId == purchaseIdFromBono) bonoIsActive = true;
         /// Update with IsActive the following:
         /// Purchases/{purchaseId}
         await _firestore.collection(purchasesCollection).doc(purchase.id!).update({
-          "isActive": doc.exists,
+          "isActive": bonoIsActive,
         });
         /// Users/{userId}/Purchases/{purchaseId}
         await _firestore.collection(usersCollection).doc(purchase.userId!).collection("Purchases").doc(purchase.id!).update({
-          "isActive": doc.exists,
+          "isActive": bonoIsActive,
         });
         /// Brands/{brandId}/Purchases/{purchaseId}
         await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Purchases").doc(purchase.id!).update({
-          "isActive": doc.exists,
+          "isActive": bonoIsActive,
         });
         /// Brands/{brandId}/Bonos/{bonoId}/Purchases/{purchaseId}
         await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Bonos").doc(purchase.bonoId!).collection("Purchases").doc(purchase.id!).update({
-          "isActive": doc.exists,
+          "isActive": bonoIsActive,
         });
         /// Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}
         await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Users").doc(purchase.userId!).collection("Purchases").doc(purchase.id!).update({
-          "isActive": doc.exists,
+          "isActive": bonoIsActive,
         });
         print('IsActive already added');
         print('\n');

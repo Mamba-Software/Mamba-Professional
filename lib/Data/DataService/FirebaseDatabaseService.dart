@@ -2585,22 +2585,6 @@ class FirebaseDatabaseService {
         .get();
     if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
     else return '';
-
-
-  }
-
-  //Get bono by user
-  Future<String> getBonoUser(String userId, String brandId) async {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection(users)
-        .doc(userId)
-        .collection("Brands")
-        .doc(brandId)
-        .collection("Bonos")
-        .get();
-    if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
-    else return '';
-
   }
 
   //Add bono to brand

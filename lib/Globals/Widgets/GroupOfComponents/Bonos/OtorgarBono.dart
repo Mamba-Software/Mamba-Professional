@@ -173,7 +173,7 @@ class _OtorgarBonoState extends State<OtorgarBono> {
     // Otorgar Bono
     if (!editBono && !isBonoRequest) {
       bonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
-      userBonos = await _userDataService.getUserBonos(user.id!);
+      userBonos = await _userDataService.getUserActiveBonosFromBrand(user.id!, currentBrand.id!);
       // Remove the ones that the user already has
       Bono bonoDelete;
       for (int i = 0; i < userBonos.length; ++i) {

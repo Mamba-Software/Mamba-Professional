@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -43,7 +44,7 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
   // Gets the user info from firebase.
   void getUser() async {
     user = await _userDataService.getUserDetails(widget.userId);
-    brand = await _userDataService.getUserBrands(widget.userId);
+    brand = currentBrand;
     setState(() {
       isLoading = false;
     });
@@ -72,7 +73,10 @@ class _DeleteFromBrandConfirmationDialogState extends State<DeleteFromBrandConfi
           child: Stack(
             alignment: Alignment.center,
             children: [
-              LoadingView(),
+              LoadingView(
+                hasLogo: false,
+                isSmall: true,
+              ),
             ],
           ),
         ),

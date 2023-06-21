@@ -49,7 +49,6 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   final _eventDataService = EventDataService();
   final _roomDataService = RoomDataService();
   final _brandDataService = BrandDataService();
-  final _purchaseDataService = PurchaseDataService();
 
   // Boolean Loading
   bool isLoading = false;
@@ -125,7 +124,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
   Future<void> checkIfHasAllBrandBonos() async {
     listBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
     listBonos.removeWhere((element) => element.isActive == false);
-    userBonos = await _userDataService.getUserBonos(user.id!);
+    userBonos = await _userDataService.getUserActiveBonosFromBrand(user.id!, currentBrand.id!);
     for (int i = 0; i < userBonos.length; ++i) {
       int index = listBonos.indexWhere((element) => element.id == userBonos[i].id);
       if (index != -1) {
@@ -995,7 +994,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: user.isTrainer! == false ? Platform.isAndroid ? 0.46 : 0.41 : Platform.isAndroid ? 0.4 : 0.35,
+                        heightFactor: user.isTrainer! == false ? Platform.isAndroid ? 0.46 : 0.43 : Platform.isAndroid ? 0.4 : 0.35,
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height*0.5,
                           width: MediaQuery.of(context).size.width,

@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
@@ -32,10 +32,8 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
-  final _purchaseDataService = PurchaseDataService();
   // AlL Events From User
   final _bonosUtils = BonosUtils();
-  List<Bono> userBonos = [];
   List<Purchase> userBonosPurchases = [];
 
   @override
@@ -83,9 +81,9 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
           ),
         ),
         StreamBuilder<QuerySnapshot>(
-          stream: _userDataService.getAllBonosFromUser(widget.userId),
+          stream: _userDataService.getUserActivePurchasesFromBrandStream(widget.userId, currentBrand.id!),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+            if (snapshot.hasData == false) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: SizedBox(
@@ -98,24 +96,24 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                 ),
               );
             } else {
-              userBonos = _bonosUtils.documentsToBonosUser(snapshot.data!.docs, true, true);
-              if (userBonos.isNotEmpty) {
+              userBonosPurchases = _bonosUtils.documentsToPurchasesUser(snapshot.data!.docs, currentBrand.id!);
+              if (userBonosPurchases.isNotEmpty) {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
-                    itemCount: userBonos.length,
-                    itemBuilder: (context,int index) {
-                      Bono bono = userBonos[index];
+                    itemCount: userBonosPurchases.length,
+                    itemBuilder: (context, int index) {
+                      Purchase bonoPurchase = userBonosPurchases[index];
+                      Bono bono = userBonosPurchases[index].bono!;
                       int sessions = bono.sessions!;
                       double price = bono.price!;
                       Condition bonoUserConditions = bono.condition!;
-                      String purchaseId = bono.purchaseId!;
                       return StreamBuilder<DocumentSnapshot>(
                           stream: _brandDataService.getBonoInfoStream(bono.brandId!, bono.id!),
-                          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                            if (!snapshot.hasData) {
+                          builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot2) {
+                            if (!snapshot2.hasData) {
                               return Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                                 child: SizedBox(
@@ -128,41 +126,22 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                                 ),
                               );
                             } else {
-                              bono = Bono.fromObjectAllData(snapshot.data!.id, snapshot.data!);
+                              bono = Bono.fromObjectAllData(snapshot2.data!.id, snapshot2.data!);
+                              // Setting Personalized Information From Above
                               bono.setBonoSessions = sessions;
                               bono.setConditionsData = bonoUserConditions;
                               bono.setBonoPrice = price;
-                              return FutureBuilder<Purchase>(
-                                  future: _purchaseDataService.getPurchaseInfo(purchaseId),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.data == null) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                        child: SizedBox(
-                                          height: widget.height*0.22,
-                                          width: widget.width*0.9,
-                                          child: LoadingView(
-                                            hasLogo: false,
-                                            isSmall: true,
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      Purchase bonoPurchase = snapshot.data!;
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                        child: ClientBonoCard(
-                                          height: widget.height*0.22,
-                                          width: widget.width*0.9,
-                                          bono: bono,
-                                          brand: currentBrand,
-                                          purchase: bonoPurchase,
-                                          canExpand: true,
-                                          onlyView: false,
-                                        ),
-                                      );
-                                    }
-                                  }
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: ClientBonoCard(
+                                  height: widget.height*0.22,
+                                  width: widget.width*0.9,
+                                  bono: bono,
+                                  brand: currentBrand,
+                                  purchase: bonoPurchase,
+                                  canExpand: true,
+                                  onlyView: false,
+                                ),
                               );
                             }
                           }

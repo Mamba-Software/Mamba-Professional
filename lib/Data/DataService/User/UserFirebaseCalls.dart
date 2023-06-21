@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
@@ -13,6 +14,8 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../Models/Purchase.dart';
 
 
 // Firebase User Service Class. All calls to Firebase are in this class.
@@ -355,18 +358,6 @@ class UserFirebaseCalls {
 
   }
 
-  Future<String> getBonoUser(String userId, String brandId) async {
-    QuerySnapshot querySnapshot = await _firestore
-        .collection(users)
-        .doc(userId)
-        .collection("Brands")
-        .doc(brandId)
-        .collection("Bonos")
-        .get();
-    if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
-    else return '';
-
-  }
 
   Future<List<int>> getUserFavourites(String brandId, String userId) async {
     var favourites;
@@ -455,15 +446,34 @@ class UserFirebaseCalls {
     return notis;
   }
 
-  Future<List<Bono>> getUserBonos(String? userId) async {
+  Future<List<Bono>> getUserActiveBonosFromBrand(String userId, String brandId) async {
     List<Bono> userBonos = [];
-    QuerySnapshot querySnapshot = await _firestore.collection(users)
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
         .doc(userId)
-        .collection("Bonos")
+        .collection("Purchases")
+        .where("isActive", isEqualTo: true)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
-      if (querySnapshot.docs[i].id != "Bono Requests") {
-        userBonos.add(Bono.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+      Purchase purchase = Purchase.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      int index = userBonos.indexWhere((element) => element.id == purchase.id);
+      if (index == -1) {
+        // Get Bono From Purchase
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot3 = await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(purchase.bonoId).get();
+        Bono bono = Bono.fromObjectAllData(_documentSnapshot3.id, _documentSnapshot3);
+        // Add Conditions of This purchase
+        bono.setBrandId = brandId;
+        bono.setBonoPrice = purchase.price!.toDouble();
+        bono.setBonoSessions = purchase.sesions!;
+        bono.setConditionsData = Condition(
+          expirationTime: querySnapshot.docs[i].get("expirationTime"),
+          cancelTime: querySnapshot.docs[i].get("cancelTime"),
+          weeklySessions: querySnapshot.docs[i].get("weeklySessions"),
+        );
+        // Bono Object Build
+        userBonos.add(bono);
       }
     }
     return userBonos;
@@ -992,6 +1002,14 @@ class UserFirebaseCalls {
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
     });
+    // Update the Brand/Bonos/Purchase Collection
+    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(bono.purchaseId).update({
+      "sessions": bono.sessions,
+      "price": bono.price,
+      "expirationTime": bono.condition?.expirationTime,
+      "cancelTime": bono.condition?.cancelTime,
+      "weeklySessions": bono.condition?.weeklySessions,
+    });
   }
 
   //Delete
@@ -1080,11 +1098,14 @@ class UserFirebaseCalls {
 
 
   //Get bono Requests from brand
-  Stream<QuerySnapshot> getAllBonosFromUser(String userId) {
+  Stream<QuerySnapshot> getUserActivePurchasesFromBrandStream(String userId, String brandId) {
     return _firestore
-        .collection(users)
+        .collection(brands)
+        .doc(brandId)
+        .collection("Users")
         .doc(userId)
-        .collection("Bonos")
+        .collection("Purchases")
+        .where("isActive", isEqualTo: true)
         .snapshots();
   }
 
