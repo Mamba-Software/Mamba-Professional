@@ -73,7 +73,7 @@ class BonosUtils {
   }
 
   //Function to transform documents to bonos
-  List<Purchase> documentsToPurchasesUser(List<DocumentSnapshot> documents, String brandId) {
+  List<Purchase> documentsToPurchasesUser(List<DocumentSnapshot> documents) {
     List<Purchase> userPurchases = [];
     for(int i = 0; i < documents.length; i++) {
       Purchase purchase = Purchase.fromObjectAllData(documents[i].id, documents[i]);
@@ -81,10 +81,10 @@ class BonosUtils {
         id: purchase.bonoId
       );
       // Add Conditions of This purchase
-      bono.setBrandId = brandId;
+      bono.setBrandId = purchase.brandId!;
       bono.setPurchaseId = documents[i].id;
       bono.setBonoPrice = purchase.price!.toDouble();
-      bono.setBonoSessions = purchase.sesions!;
+      bono.setBonoSessions = purchase.sessions!;
       bono.setConditionsData = Condition(
         expirationTime: documents[i].get("expirationTime"),
         cancelTime: documents[i].get("cancelTime"),

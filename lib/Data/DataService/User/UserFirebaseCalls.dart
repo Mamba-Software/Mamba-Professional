@@ -466,7 +466,7 @@ class UserFirebaseCalls {
         // Add Conditions of This purchase
         bono.setBrandId = brandId;
         bono.setBonoPrice = purchase.price!.toDouble();
-        bono.setBonoSessions = purchase.sesions!;
+        bono.setBonoSessions = purchase.sessions!;
         bono.setConditionsData = Condition(
           expirationTime: querySnapshot.docs[i].get("expirationTime"),
           cancelTime: querySnapshot.docs[i].get("cancelTime"),

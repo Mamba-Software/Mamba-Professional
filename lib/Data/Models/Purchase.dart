@@ -15,7 +15,7 @@ class Purchase {
   String? bonoId;
   double? price;
   int? paymentMethod;
-  int? sesions;
+  int? sessions;
   Timestamp? purchasedAt;
   bool? isActive;
   // List of Events Done with this purchase
@@ -31,7 +31,7 @@ class Purchase {
     this.bonoId,
     this.price,
     this.paymentMethod,
-    this.sesions,
+    this.sessions,
     this.purchasedAt,
     this.isActive,
   });
@@ -56,7 +56,7 @@ class Purchase {
       paymentMethod = documentSnapshot.get("paymentMethod");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
-      sesions = documentSnapshot.get("sessions");
+      sessions = documentSnapshot.get("sessions");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchasedAt')) {
       purchasedAt = documentSnapshot.get("purchasedAt");
@@ -76,7 +76,7 @@ class Purchase {
     bonoId = purchase.bonoId;
     price = purchase.price;
     paymentMethod = purchase.paymentMethod;
-    sesions = purchase.sesions;
+    sessions = purchase.sessions;
     purchasedAt = purchase.purchasedAt;
     isActive = purchase.isActive;
   }

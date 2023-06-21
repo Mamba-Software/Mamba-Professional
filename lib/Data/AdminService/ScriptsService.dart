@@ -2902,6 +2902,7 @@ class ScriptsDatabaseService {
       print('\n');
 
       /// THE GOAL IS TO ADD isActive = true or false on the purchase on not use Users/Bonos anymore
+      /// Aslo we wan to populate all /Purchases/{purchaseId} documents with bonoId, brandId and userId
       String usersCollection = "7777 Users";
       String brandsCollection = "7777 Brands";
       String purchasesCollection = "7777 Purchases";
@@ -2928,24 +2929,40 @@ class ScriptsDatabaseService {
         /// Purchases/{purchaseId}
         await _firestore.collection(purchasesCollection).doc(purchase.id!).update({
           "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
         });
         /// Users/{userId}/Purchases/{purchaseId}
         await _firestore.collection(usersCollection).doc(purchase.userId!).collection("Purchases").doc(purchase.id!).update({
           "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
         });
         /// Brands/{brandId}/Purchases/{purchaseId}
         await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Purchases").doc(purchase.id!).update({
           "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
         });
         /// Brands/{brandId}/Bonos/{bonoId}/Purchases/{purchaseId}
         await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Bonos").doc(purchase.bonoId!).collection("Purchases").doc(purchase.id!).update({
           "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
         });
         /// Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}
         await _firestore.collection(brandsCollection).doc(purchase.brandId!).collection("Users").doc(purchase.userId!).collection("Purchases").doc(purchase.id!).update({
           "isActive": bonoIsActive,
+          "userId": purchase.userId,
+          "brandId": purchase.brandId,
+          "bonoId": purchase.bonoId,
         });
         print('IsActive already added');
+        print('bonoId, brandId and userId populated on all');
         print('\n');
       }
       print('All Purchases Moved');

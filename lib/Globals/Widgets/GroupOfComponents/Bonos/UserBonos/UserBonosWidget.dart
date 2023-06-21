@@ -98,7 +98,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                 ),
               );
             } else {
-              userBonosPurchases = _bonosUtils.documentsToPurchasesUser(snapshot.data!.docs, currentBrand.id!);
+              userBonosPurchases = _bonosUtils.documentsToPurchasesUser(snapshot.data!.docs);
               if (userBonosPurchases.isNotEmpty) {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: widget.width*0.05),
