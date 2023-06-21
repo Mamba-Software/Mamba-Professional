@@ -194,6 +194,13 @@ class FirebaseDatabaseService {
     }
   }
 
+  Future<bool> checkIfIsMaintenance() async {
+    // Get Minimum and Max Version from Settings Collection
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();
+    bool isMaintenance = _documentSnapshot.get("isMaintenance");
+    return isMaintenance;
+  }
+
   Future<List<bool>> checkIfMinimumAppVersion(String clientAppVersion) async {
     // Get Minimum Version from Settings Collection
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection("Settings").doc("MinimumAppVersion").get();

@@ -3315,7 +3315,11 @@
     "description": "beforeEventBodyNotification message"
   },
   "notSubNotAdmin": "Su marca no dispone de un plan, solo el administrador de la marca puede subscribirse a uno",
-    "@notSubNotAdmin": {
-      "description": "notSubNotAdmin message"
+  "@notSubNotAdmin": {
+    "description": "notSubNotAdmin message"
+  },
+  "isMaintenanceText": "Estamos afinando los detalles para llevarte una experiencia aún mejor. Solo nos tomará unos minutos regresar con fuerza...",
+  "@isMaintenanceText": {
+    "description": "notSubNotAdmin message"
   }
 }

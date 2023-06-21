@@ -745,5 +745,6 @@
   "bonoExpirationDaysTitleNotification": "⏰ \uD83D\uDCC6 El teu val {bono} caduca en 3 dies! \uD83D\uDCC6 ⏰",
   "bonoExpirationDaysBodyNotification": "Aquest és un recordatori amistós que el teu val caduca en tan sols 3 dies. No et quedis sense gaudir de les teves sessions restants!",
   "bonoExpirationTomorrowTitleNotification": "\uD83D\uDEA8 ❗️ El teu Bono {bono} caduca demà! ❗️ \uD83D\uDEA8",
-  "bonoExpirationTomorrowBodyNotification": "Aquest és un recordatori urgent que el teu val caduca demà. No et perdis l'oportunitat d'utilitzar les teves sessions restants! Reserva ara!"
+  "bonoExpirationTomorrowBodyNotification": "Aquest és un recordatori urgent que el teu val caduca demà. No et perdis l'oportunitat d'utilitzar les teves sessions restants! Reserva ara!",
+  "isMaintenanceText": "Estem afinant els detalls per portar-te una experiència encara millor. Només tardarem uns minuts per tornar amb força..."
 }
