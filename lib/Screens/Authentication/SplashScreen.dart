@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -86,7 +85,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // 2. Check if we have a user logged in.
     if (firebaseUser != null) {
       mixpanel?.identify(firebaseUser.uid);
-      // CHECK IF MAINTAINANCE
+      // Check If Maintenance
       var result = await _settingsDataService.checkIfIsMaintenance();
       if (result) {
         await Future.delayed(const Duration(milliseconds: 1500));
