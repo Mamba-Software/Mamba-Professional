@@ -3321,5 +3321,9 @@
   "isMaintenanceText": "Estamos afinando los detalles para llevarte una experiencia aún mejor. Solo nos tomará unos minutos regresar con fuerza...",
   "@isMaintenanceText": {
     "description": "notSubNotAdmin message"
+  },
+  "cantEditText": "No se pueden editar estos valores en un evento terminado",
+  "@cantEditText": {
+    "description": "cantEditText message"
   }
 }

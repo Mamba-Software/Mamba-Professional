@@ -17,6 +17,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
@@ -38,8 +39,9 @@ class AddOrEditPrivateEvent extends StatefulWidget {
   Locale locale;
   String? eventId;
   DateTime? dateTime;
+  bool isBeforeEdit;
 
-  AddOrEditPrivateEvent({Key? key, required this.locale, this.eventId, this.dateTime}) : super(key: key);
+  AddOrEditPrivateEvent({Key? key, required this.locale, this.eventId, this.dateTime, required this.isBeforeEdit}) : super(key: key);
 
   @override
   _AddOrEditPrivateEventState createState() => _AddOrEditPrivateEventState();
@@ -51,7 +53,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   final _locationDataService = LocationDataService();
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
-  var _topSnackBar = TopSnackBar();
   // Notification Services
   final NotificationService _notificationService = NotificationService();
   final LocalNotificationService _localNotificationService = LocalNotificationService();
@@ -527,12 +528,14 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         actions: [
           widget.eventId != null ? IconButton(
               onPressed: () async {
+              if(isLoading == false) {
                 if (event.eventGroupId == null) {
                   // DeleteDialog
                   var result = await showDialog(
                       context: context,
                       builder: (_) {
-                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
+                        return DeleteConfirmationDialog(text: AppLocalizations
+                            .of(context)!.deleteEventConfirmation);
                       }
                   );
                   if (result) {
@@ -555,6 +558,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                     }
                   }
                 }
+              }
               },
               icon: SizedBox(
                 width: MediaQuery.of(context).size.width*0.15,
@@ -622,7 +626,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           },
         ),
         actions: [
-          widget.eventId != null ? IconButton(
+          widget.eventId != null ? (event.numClients == 0 || widget.isBeforeEdit)?  IconButton(
               onPressed: () async {
                 if (event.eventGroupId == null) {
                   // DeleteDialog
@@ -678,6 +682,29 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                     fit: BoxFit.contain,
                     child: Text(
                         AppLocalizations.of(context)!.private,
+                        style: Theme.of(context).textTheme.bodyText2,
+                        textAlign: TextAlign.center
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ) : SizedBox(
+            width: MediaQuery.of(context).size.width*0.15,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.groups,
+                  color: Theme.of(context).primaryColor,
+                  size: MediaQuery.of(context).size.width*0.06,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width*0.1,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                        AppLocalizations.of(context)!.group,
                         style: Theme.of(context).textTheme.bodyText2,
                         textAlign: TextAlign.center
                     ),
@@ -1240,7 +1267,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 Flexible(
                                                   child: GestureDetector(
                                                       onTap: () {
-                                                        selectDate();
+                                                        if(widget.isBeforeEdit) {
+                                                          selectDate();
+                                                        }
                                                       },
                                                       child: TextFormField(
                                                         controller: startDateController,
@@ -1268,7 +1297,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 Flexible(
                                                   child: GestureDetector(
                                                       onTap: () {
-                                                        selectTime();
+                                                        if(widget.isBeforeEdit) {
+                                                          selectTime();
+                                                        }
                                                       },
                                                       child: TextFormField(
                                                         controller: startTimeController,
@@ -1298,7 +1329,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 Flexible(
                                                   child: GestureDetector(
                                                       onTap: () {
-                                                        selectDuration();
+                                                        if(widget.isBeforeEdit) {
+                                                          selectDuration();
+                                                        }
                                                       },
                                                       child: TextFormField(
                                                         controller: durationController,
@@ -1321,11 +1354,21 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ],
                                         ),
                                       ),
-                                      errorDate ? Padding(
+                                      errorDate && widget.isBeforeEdit ? Padding(
                                         padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
                                         child: Center(
                                           child: Text(
                                             AppLocalizations.of(context)!.errorDate,
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ) : Container(),
+                                      !widget.isBeforeEdit ? Padding(
+                                        padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                        child: Center(
+                                          child: Text(
+                                            AppLocalizations.of(context)!.cantEditText,
                                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                             textAlign: TextAlign.center,
                                           ),
@@ -1350,14 +1393,27 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     child: CupertinoSwitch(
                                                       value: isRecurrent,
                                                       onChanged: (bool newVal) {
-                                                        setState(() {
-                                                          if (isRecurrent) {
-                                                            values = [false, false, false, false, false, false, false];
-                                                          } else {
-                                                            values[startDate.weekday-1] = true;
-                                                          }
-                                                          isRecurrent = newVal;
-                                                        });
+                                                        if(widget.isBeforeEdit) {
+                                                          setState(() {
+                                                            if (isRecurrent) {
+                                                              values = [
+                                                                false,
+                                                                false,
+                                                                false,
+                                                                false,
+                                                                false,
+                                                                false,
+                                                                false
+                                                              ];
+                                                            } else {
+                                                              values[startDate
+                                                                  .weekday -
+                                                                  1] = true;
+                                                            }
+                                                            isRecurrent =
+                                                                newVal;
+                                                          });
+                                                        }
                                                       },
                                                       trackColor: Colors.green.withOpacity(0.4),
                                                       thumbColor: AppColors.white,
@@ -1400,9 +1456,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         ],
                                                         // Working Days disabledFillColor: Colors.red,
                                                         onChanged: (v) {
-                                                          setState(() {
-                                                            values[v % 7] = !values[v % 7]!;
-                                                          });
+                                                          if(widget.isBeforeEdit) {
+                                                            setState(() {
+                                                              values[v % 7] = !values[v % 7]!;
+                                                            });
+                                                          }
                                                         },
                                                         selectedElevation: 8,
                                                         elevation: 4,
@@ -1446,9 +1504,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                               activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
+                                                                if(widget.isBeforeEdit) {
+                                                                  setState(() {
+                                                                    _value = int.parse(value.toString());
+                                                                  });
+                                                                }
+
                                                               },
                                                             ),
                                                           ),
@@ -1494,9 +1555,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                               activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
+                                                                if(widget.isBeforeEdit) {
+                                                                  setState(() {
+                                                                    _value = int.parse(value.toString());
+                                                                  });
+                                                                }
+
                                                               },
                                                             ),
                                                           ),
@@ -1922,6 +1986,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
 
   bool validateDateAndTime(DateTime startTime, double duration) {
     // Calculating the Time to check
+    if(!widget.isBeforeEdit) return true;
     var hour = duration.toString().split(".")[0];
     var min = duration.toStringAsFixed(2).split(".")[1];
     var endTime =  startTime.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));

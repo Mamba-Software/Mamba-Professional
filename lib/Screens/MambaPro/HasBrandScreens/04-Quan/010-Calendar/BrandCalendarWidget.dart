@@ -245,6 +245,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   child: AddOrEditEvent(
                     locale: Localizations.localeOf(context),
                     dateTime: eventDate,
+                    isBeforeEdit: true
                   ),
                 ),
           )
@@ -284,6 +285,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   child: AddOrEditPrivateEvent(
                     locale: Localizations.localeOf(context),
                     dateTime: eventDate,
+                    isBeforeEdit: true
                   ),
                 ),
           )

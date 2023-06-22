@@ -65,6 +65,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   bool isLoadingBody = false;
   // Boolean isUpdated
   bool canEdit = true;
+  bool isBeforeEdit = true;
   // Title Controller
   var titleController = TextEditingController();
   String? titleString;
@@ -150,7 +151,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
       int.parse(event!.minute!),
     );
     if (startDate.isBefore(DateTime.now())) {
-      canEdit = false;
+      isBeforeEdit = false;
     }
     if (currentUser.brandRole > 2) {
       canEdit = false;
@@ -1507,7 +1508,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width*0.37,
-                child: FloatingActionButton.extended(
+                child: isBeforeEdit? FloatingActionButton.extended(
                   heroTag: "9",
                   onPressed: () async {
                     // Create Dynamic Link
@@ -1519,7 +1520,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   icon: Icon(Icons.person_add, color: Theme.of(context).primaryColorDark, size: MediaQuery.of(context).size.width*0.05,),
                   label: Text(AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.clients.toLowerCase(),
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColorDark),),
-                ),
+                ) : Container(),
               ),
               SizedBox(height: MediaQuery.of(context).size.width*0.03),
               SizedBox(
@@ -1553,6 +1554,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     child: AddOrEditPrivateEvent(
                                       locale: Localizations.localeOf(context),
                                       eventId: event!.id!,
+                                      isBeforeEdit: isBeforeEdit
                                     ),
                                   ),
                             )
@@ -1576,6 +1578,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                                     child: AddOrEditEvent(
                                       locale: Localizations.localeOf(context),
                                       eventId: event!.id!,
+                                      isBeforeEdit: isBeforeEdit
                                     ),
                                   ),
                             )

@@ -45,6 +45,7 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
                   },
                   child: AddOrEditEvent(
                     locale: Localizations.localeOf(context),
+                    isBeforeEdit: true
                   ),
                 ),
           )
@@ -72,6 +73,7 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
                   },
                   child: AddOrEditPrivateEvent(
                     locale: Localizations.localeOf(context),
+                    isBeforeEdit: true
                   ),
                 ),
           )
