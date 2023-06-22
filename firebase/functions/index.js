@@ -9,6 +9,13 @@ admin.initializeApp();
 const uuidv4 = require("uuid")
 // Firebase DataBase
 const db = admin.firestore();
+// Firebase Storage
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage();
+// Firebase Firestore
+// You need to require Google Cloud Firestore library
+const {FirestoreAdminClient} = require('@google-cloud/firestore').v1;
+const client = new FirestoreAdminClient();
 // Send Grid Integration
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey("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");
@@ -174,6 +181,32 @@ exports.scheduledDailyFunction = functions
             }
         }
       }
+      
+      // Check if today is Monday, then backup the Firebase data       
+      let date = new Date();    
+      if (date.getDay() === 5) {
+          console.log("It's Monday, it's time for ... AUTOMATIC BACKUP");
+          const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT; 
+          console.log("Project ID: "+projectId);
+          const databaseName = client.databasePath(projectId, '(default)');
+          console.log("Database Name: "+databaseName);    
+          return client.exportDocuments({
+              name: databaseName,
+              outputUriPrefix: 'gs://mamba_app_backup',
+              // Leave collectionIds empty to export all collections
+              // or specify the collections you want to export
+              collectionIds: []
+          })
+          .then(responses => {
+              const response = responses[0];
+              console.log(`Operation Finished with Name: ${response['name']}`);
+          })
+          .catch(err => {
+              console.error(err);
+              throw new Error('Export operation failed');
+          });
+      }
+
     });
 
 // Daily Notification For Events
