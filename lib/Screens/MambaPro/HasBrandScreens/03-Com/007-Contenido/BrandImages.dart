@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/FavouriteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class BrandImages extends StatefulWidget {
   String brandId;
@@ -28,7 +29,7 @@ class BrandImages extends StatefulWidget {
   _BrandImagesState createState() => _BrandImagesState();
 }
 
-class _BrandImagesState extends State<BrandImages> {
+class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
 
   // App Bar and Scroll View
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
@@ -58,9 +59,13 @@ class _BrandImagesState extends State<BrandImages> {
 
   bool canClickFav = true;
 
+  // Settings when permission not given
+  bool isSettingsOpened = false;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _scrollController = ScrollController()
       ..addListener(() => _isAppBarExpanded ?
       setState(() {
@@ -80,6 +85,27 @@ class _BrandImagesState extends State<BrandImages> {
     getBrandContentImages();
   }
 
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    // If user resumed to this app, check permission
+    if(state == AppLifecycleState.resumed && isSettingsOpened) {
+      setState(() {
+        isSettingsOpened = false;
+      });
+      var status = await Permission.photos.status;
+      print("Status After Settings: "+status.toString());
+      if (status.isLimited || status.isGranted) {
+        getImage();
+      }
+    }
+  }
+
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     if(!brandIsActive) {
@@ -87,30 +113,44 @@ class _BrandImagesState extends State<BrandImages> {
     }
     else {
       mixpanel!.timeEvent('brand_images_added');
-      List<File>? temp = await ImageUtils().pickMultipleImage();
-      if ((temp!.length) > (_maxImages-_imagesUploaded.length)) {
-        mixpanel!.track('brand_images_max_images_error');
-        setState(() {
-          maxImagesAdded = true;
-        });
-      } else {
-        int currentImage = 1;
-        setState(() {
-          isLoading = true;
-          isLoadingText = AppLocalizations.of(context)!.adding+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
-          maxImagesAdded = false;
-        });
-        for (File f in temp) {
-          // Updating Loading Text
+      try {
+        List<File>? temp = await ImageUtils().pickMultipleImage();
+        if ((temp!.length) > (_maxImages-_imagesUploaded.length)) {
+          mixpanel!.track('brand_images_max_images_error');
           setState(() {
-            isLoadingTextExtra =  " (" + currentImage.toString()+"/"+temp.length.toString()+")";
+            maxImagesAdded = true;
           });
-          currentImage += 1;
-          await _brandDataService.addBrandContentPictureIndividual(widget.brandId, f);
+        } else {
+          int currentImage = 1;
+          setState(() {
+            isLoading = true;
+            isLoadingText = AppLocalizations.of(context)!.adding+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+            maxImagesAdded = false;
+          });
+          for (File f in temp) {
+            // Updating Loading Text
+            setState(() {
+              isLoadingTextExtra =  " (" + currentImage.toString()+"/"+temp.length.toString()+")";
+            });
+            currentImage += 1;
+            await _brandDataService.addBrandContentPictureIndividual(widget.brandId, f);
+          }
+          getBrandContentImages();
+          mixpanel!.track('brand_images_added');
         }
-        getBrandContentImages();
-        mixpanel!.track('brand_images_added');
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        var status = await Permission.photos.status;
+        if (Platform.isIOS && (status.isDenied || status.isPermanentlyDenied)) {
+          bool temp = await openAppSettings();
+          setState(() {
+            isSettingsOpened = temp;
+          });
+        }
       }
+
     }
   }
 
