@@ -184,7 +184,7 @@ exports.scheduledDailyFunction = functions
       
       // Check if today is Monday, then backup the Firebase data       
       let date = new Date();    
-      if (date.getDay() === 5) {
+      if (date.getDay() === 1) {
           console.log("It's Monday, it's time for ... AUTOMATIC BACKUP");
           const projectId = process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT; 
           console.log("Project ID: "+projectId);
