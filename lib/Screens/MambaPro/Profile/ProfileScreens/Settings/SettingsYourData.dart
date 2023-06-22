@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -38,10 +40,14 @@ class _SettingsYourDataState extends State<SettingsYourData> {
   TextEditingController startDateController = TextEditingController();
   // Boolean isUpdated
   bool isUpdated = false;
+  // Provider
+  bool isGoogle = false;
+  bool isApple = false;
 
   @override
   void initState() {
     mixpanel!.track('user_profile_settings_edit_info');
+    initGoogleLogIn();
     super.initState();
   }
 
@@ -56,6 +62,22 @@ class _SettingsYourDataState extends State<SettingsYourData> {
       setState(() {
         isLoading = false;
       });
+    });
+  }
+
+  Future<void> initGoogleLogIn() async {
+    User? firebaseUser = await _userDataService.getCurrentUser();
+    try {
+      if (firebaseUser!.providerData[0].providerId == "google.com") {
+        isGoogle = true;
+      } else if (firebaseUser.providerData[0].providerId == "apple.com") {
+        isApple = true;
+      }
+    } catch (e) {
+      isGoogle = false;
+      isApple = false;
+    }
+    setState(() {
     });
   }
 
@@ -551,6 +573,88 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                         ],
                       ),
                        */
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(
+                            AppLocalizations.of(context)!.email,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Flexible(
+                                child: TextFormField(
+                                  initialValue: currentUser.email,
+                                  readOnly: true,
+                                  enabled: false,
+                                  style: Theme.of(context).textTheme.caption,
+                                  decoration: InputDecoration(
+                                    suffixIcon: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: SizedBox(
+                                        height: MediaQuery.of(context).size.width*0.05,
+                                        width: MediaQuery.of(context).size.width*0.07,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Icon(
+                                              Icons.lock_outlined,
+                                              color: AppColors.grey,
+                                              size: MediaQuery.of(context).size.width*0.025,
+                                            ),
+                                            isGoogle || isApple ? SizedBox(
+                                              width: isGoogle ? MediaQuery.of(context).size.width*0.023 : MediaQuery.of(context).size.width*0.018,
+                                              child: Image(
+                                                  image: isGoogle ? AssetImage(Constants.google) : AssetImage(Constants.apple)
+                                              ),
+                                            ) : Container(),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    border: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Theme.of(context).primaryColor,
+                                            width: 1.0
+                                        )
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Theme.of(context).primaryColor,
+                                            width: 1.0
+                                        )
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Theme.of(context).primaryColor,
+                                            width: 1.0
+                                        )
+                                    ),
+                                    errorBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.red,
+                                            width: 1.0
+                                        )
+                                    ),
+                                    disabledBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: AppColors.grey,
+                                            width: 1.0
+                                        )
+                                    ),
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                        ],
+                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,

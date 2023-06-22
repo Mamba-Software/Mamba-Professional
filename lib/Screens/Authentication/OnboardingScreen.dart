@@ -65,15 +65,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   bool isGoogle = false;
   // AppleLogIn
   bool isApple = false;
+  bool isLoadingBody = false;
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
     mixpanel!.timeEvent("onboarding_userdata_image");
-    File? temp = await ImageUtils().pickImage();
     setState(() {
-      _image = temp;
+      isLoadingBody = true;
     });
-    mixpanel!.track('onboarding_userdata_image');
+    try {
+      File? temp = await ImageUtils().pickImage();
+      setState(() {
+        _image = temp;
+        isLoadingBody = false;
+      });
+      mixpanel!.track('onboarding_userdata_image');
+    } catch (e) {
+      setState(() {
+        isLoadingBody = false;
+      });
+    }
   }
 
   DateTime? convertToDate(String input, String format, BuildContext context) {
@@ -883,10 +894,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           child: _image == null && imageUrl == null ? Center(
                                             child: OutlinedButton(
                                               onPressed: getImage,
-                                              child: Icon(
+                                              child: !isLoadingBody ? Icon(
                                                 Icons.add,
                                                 color: AppColors.grey,
                                                 size: MediaQuery.of(context).size.width * 0.1,
+                                              ) : SizedBox(
+                                                height: MediaQuery.of(context).size.width * 0.1,
+                                                width: MediaQuery.of(context).size.width * 0.1,
+                                                child: Center(
+                                                  child: SizedBox(
+                                                    height: MediaQuery.of(context).size.width * 0.05,
+                                                    width: MediaQuery.of(context).size.width * 0.05,
+                                                    child: const CircularProgressIndicator(
+                                                      color: AppColors.grey,
+                                                      strokeWidth: 2,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                               style: OutlinedButton.styleFrom(
                                                 backgroundColor: AppColors.white,
