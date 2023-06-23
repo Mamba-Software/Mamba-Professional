@@ -187,7 +187,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
   void showInSnackBar(String value, int duration) {
     final snackbar = SnackBar(
       behavior: SnackBarBehavior.floating,
-      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.05, horizontal: MediaQuery.of(context).size.width * 0.05),
+      margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.0, horizontal: MediaQuery.of(context).size.width * 0.05),
       elevation: 8,
       content: Row(
         children: [

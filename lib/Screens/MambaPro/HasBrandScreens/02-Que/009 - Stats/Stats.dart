@@ -547,6 +547,46 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
+      floatingActionButton: Padding(
+        padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height*0.07,
+          width: MediaQuery.of(context).size.width*0.42,
+          child: FloatingActionButton.extended(
+            heroTag: "102",
+            onPressed: _show,
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            icon: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height*0.07,
+                  width: MediaQuery.of(context).size.width*0.22,
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '${DateFormat('d MMM, yy\'').format(startDate)}\n''${DateFormat('d MMM, yy\'').format(endDate)}',
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.date_range_outlined,
+                  color: AppColors.white,
+                  size: MediaQuery.of(context).size.width * 0.07,
+                ),
+              ],
+            ),
+            label: Container()
+          ),
+        ),
+      ),
+      /*
       bottomSheet: GestureDetector(
         onTap: _show,
         child: Container(
@@ -597,6 +637,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
+      */
     );
   }
 
