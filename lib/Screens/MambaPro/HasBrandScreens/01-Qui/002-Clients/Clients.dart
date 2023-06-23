@@ -1,28 +1,27 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
-import 'package:mamba_castelldefels/Globals/Utils/OrderFilter/OrderFilter.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../015-AddMembers/MembershipRequestsPro.dart';
@@ -54,6 +53,7 @@ class _Clients extends State<Clients> {
   final _dynamicLinkUtils = DynamicLinkUtils();
   // Boolean Loading
   bool isLoading = false;
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   // Search Controller
   bool searchClicked = false;
   var searchController = TextEditingController();
@@ -204,6 +204,7 @@ class _Clients extends State<Clients> {
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
+
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height*0.15,
@@ -598,80 +599,7 @@ class _Clients extends State<Clients> {
               ),
             ],
           ),
-          //const SliverToBoxAdapter(child: SizedBox(height: 10,)),
-          currentUser.brandRole < 3? SliverToBoxAdapter(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet<void>(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20),
-                        ),
-                      ),
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      builder: (BuildContext context) {
-                        return const FractionallySizedBox(
-                          heightFactor: 0.8,
-                          child: ShareBrandLink(addStaff: false,),
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                    height: MediaQuery.of(context).size.height*0.1,
-                    width: MediaQuery.of(context).size.width*0.9,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.group_add_outlined,
-                          color: Theme.of(context).colorScheme.secondary,
-                          size: MediaQuery.of(context).size.width*0.10,
-                        ),
-                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                        Flexible(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.addClient,
-                                style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                AppLocalizations.of(context)!.shareInvitationText,
-                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
-                              ),
-                            ],
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-              ],
-            ),
-          ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
+          const SliverToBoxAdapter(child: SizedBox(height: 10)),
           isLoading ? SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
               return Padding(
@@ -822,9 +750,6 @@ class _Clients extends State<Clients> {
                       )
                   );
                   if (result == true) {
-                    setState(() {
-                      isLoading = true;
-                    });
                     await getAllUsers();
                   }
                 },
@@ -851,23 +776,148 @@ class _Clients extends State<Clients> {
           const SliverToBoxAdapter(child: SizedBox(height: 8,)),
         ],
       ),
+      floatingActionButton: whichFloatingActionButton(),
     );
   }
-  Future<void> navigateToRequestsScreen() async {
-    mixpanel!.track('brand_membership_requests_view');
-    await Navigator.push(
+
+  Widget whichFloatingActionButton() {
+    return currentUser.brandRole < 3 ? Padding(
+      padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.width*0.15,
+        width: MediaQuery.of(context).size.width*0.15,
+        child: SpeedDial(
+          heroTag: "96",
+          child: const Icon(Icons.add),
+          activeChild: const Icon(Icons.group_add_outlined),
+          animationDuration: const Duration(milliseconds: 100),
+          foregroundColor: AppColors.white,
+          overlayColor: Theme.of(context).primaryColorDark,
+          overlayOpacity: 0.95,
+          spacing: MediaQuery.of(context).size.height*0.02,
+          spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
+          openCloseDial: isDialOpen,
+          children: [
+            SpeedDialChild(
+                child: const Icon(
+                  Icons.edit_note_outlined,
+                  size: 30,
+                ),
+                elevation: 10,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                labelWidget: Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.1,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.client,
+                          style: Theme.of(context).textTheme.headline3,
+                          textAlign: TextAlign.right
+                      ),
+                      Text(
+                          AppLocalizations.of(context)!.addClientsManually,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.right
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  navigateToAddMember();
+                }
+            ),
+            SpeedDialChild(
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 5.0),
+                  child: Icon(
+                    Icons.share,
+                  ),
+                ),
+                elevation: 10,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                labelWidget: Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.1,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.client,
+                          style: Theme.of(context).textTheme.headline3,
+                          textAlign: TextAlign.right
+                      ),
+                      Text(
+                          AppLocalizations.of(context)!.copyCodeMessage,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.right
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  navigateShareBrandLink();
+                }
+            ),
+          ],
+        ),
+      ),
+    ) : Container();
+  }
+
+  Future<void> navigateToAddMember() async {
+    var result = await Navigator.push(
         context,
         CupertinoPageRoute<bool?>(
-          builder: (context) => MembershipRequestsPro(
-            brandId: widget.brandId,
-          ),
+          builder: (context) =>
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus &&
+                      currentFocus.focusedChild != null) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
+                },
+                child: const RegisterBrandMember(
+                  isTrainer: false,
+                ),
+              ),
         )
     );
-    setState(() {
-      isLoading = true;
-    });
-    getAllUsers();
+    if (result == true) {
+      await getAllUsers();
+    }
   }
+
+  Future<void> navigateShareBrandLink() async {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+          heightFactor: 0.8,
+          child: ShareBrandLink(
+            addStaff: false,
+          ),
+        );
+      },
+    );
+  }
+
   
   @override
   void dispose() {

@@ -11,7 +11,6 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 
 class RegisterBrandMember extends StatefulWidget {
@@ -104,7 +103,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
           isLoading = true;
           loadingEmail = false;
           emailExistsError = false;
-          isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.client.toLowerCase()+" ...";
+          isRecurrentLoadingText = AppLocalizations.of(context)!.creatingProfile;
         });
         /// Get the User
         await _userDataService.signIn(emailController.text.trim(), password);
@@ -117,21 +116,25 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
         await _userDataService.updateUser(user!.uid, name, firstNameController.text.trim(), lastNameController.text.trim(), dateString, gender!, null, null, widget.isTrainer);
         /// Add User To Brand
         setState(() {
-          isRecurrentLoadingText = AppLocalizations.of(context)!.adding +" "+AppLocalizations.of(context)!.client.toLowerCase()+" ...";
+          isRecurrentLoadingText = AppLocalizations.of(context)!.adding +" "+AppLocalizations.of(context)!.client.toLowerCase()+" a "+currentBrand.name!+" ...";
         });
+        await Future.delayed(const Duration(milliseconds: 500));
         int role = 0;
         if (widget.isTrainer) {
           role = 3;
         }
         await _brandDataService.addUserToBrand(user.uid, currentBrand.id!, role);
         NotificationService _notificationService = NotificationService();
-        _notificationService.userJoinsBrand(user.uid, currentBrand.id!);
+        await _notificationService.userJoinsBrand(user.uid, currentBrand.id!);
         /// User Has Been Created
-        Navigator.pop(context);
+        setState(() {
+          isRecurrentLoadingText = AppLocalizations.of(context)!.updating+" "+AppLocalizations.of(context)!.creatingProfile.split(" ")[1]+" ...";
+        });
+        await Future.delayed(const Duration(milliseconds: 500));
+        Navigator.pop(context, true);
       } catch (e) {
         print(e.toString());
       }
-
     } else if (result == -1) {
       await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
@@ -152,7 +155,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height*0.08,
         title: Text(
-          AppLocalizations.of(context)!.addClientsManually.split(" ")[0]+" "+(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff),
+          AppLocalizations.of(context)!.add+" "+(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff),
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -185,7 +188,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
       appBar: AppBar(
         toolbarHeight: MediaQuery.of(context).size.height*0.08,
         title: Text(
-          AppLocalizations.of(context)!.addClientsManually.split(" ")[0]+" "+(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff).toLowerCase(),
+          AppLocalizations.of(context)!.add+" "+(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff).toLowerCase(),
           style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         centerTitle: true,
@@ -224,7 +227,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.04),
+            SizedBox(height: MediaQuery.of(context).size.height*0.03),
             Expanded(
               child: TabBarView(
                 controller: _tabController,
@@ -250,7 +253,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   autofocus: firstNameController.text.isEmpty,
                                   controller: firstNameController,
                                   keyboardType: TextInputType.name,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError3rd : null,
                                   onFieldSubmitted: (val) {
                                     if (lastNameController.text.isEmpty) {
                                       focusNodeName.requestFocus();
@@ -263,7 +266,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   decoration: InputDecoration(
                                     hintStyle: Theme.of(context).textTheme.caption,
                                     errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
-                                    hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                    hintText: AppLocalizations.of(context)!.nameCompletoError3rd,
                                     errorBorder: const UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.red),
                                     ),
@@ -293,14 +296,14 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                 child: TextFormField(
                                   focusNode: focusNodeName,
                                   controller: lastNameController,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError3rd : null,
                                   keyboardType: TextInputType.name,
                                   style: Theme.of(context).textTheme.bodyText2,
                                   textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
                                     hintStyle: Theme.of(context).textTheme.caption,
                                     errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
-                                    hintText: AppLocalizations.of(context)!.lastNameError,
+                                    hintText: AppLocalizations.of(context)!.lastNameError3rd,
                                     errorBorder: const UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.red),
                                     ),
@@ -749,7 +752,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   focusNode: focusNodeEmail,
                                   controller: emailController,
                                   keyboardType: TextInputType.emailAddress,
-                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError3rd : null,
                                   onChanged: (val) {
                                     if (emailController.text.isNotEmpty) {
                                       if(emailValidator(emailController.text)){
@@ -772,7 +775,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   decoration: InputDecoration(
                                     hintStyle: Theme.of(context).textTheme.caption,
                                     errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
-                                    hintText: AppLocalizations.of(context)!.emailError,
+                                    hintText: AppLocalizations.of(context)!.emailError3rd,
                                     errorBorder: const UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.red),
                                     ),
@@ -838,7 +841,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                 ),
                                 Flexible(
                                   child: Text(
-                                    "Comprobando email ...",
+                                    AppLocalizations.of(context)!.checking+" "+AppLocalizations.of(context)!.email+" ...",
                                     style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
@@ -979,7 +982,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                   } else if (_selectedIndex == 3) {
                     if (formKeyEmail.currentState!.validate()) {
                       if (invalidEmail == false) {
-                        addUser();
+                        await addUser();
                       }
                     }
                   }
@@ -987,7 +990,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                 backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).colorScheme.secondary,
                 icon: Container(),
                 label: Text(
-                  _selectedIndex == 3 ? AppLocalizations.of(context)!.addClientsManually.split(" ")[0]+" "+(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff).toLowerCase() : AppLocalizations.of(context)!.next,
+                  _selectedIndex == 3 ? AppLocalizations.of(context)!.add+" "+(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff).toLowerCase() : AppLocalizations.of(context)!.next,
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),)
               ),
             ),

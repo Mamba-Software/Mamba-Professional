@@ -33,4 +33,8 @@ class DateTimeUtils {
     return StringUtils().toCapitalized(result);
   }
 
+  String formatDateTimeToStringDDMMYY(DateTime date) {
+    return StringUtils().toCapitalized(DateFormat("dd-MM-yy").format(date));
+  }
+
 }

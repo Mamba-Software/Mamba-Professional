@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/GeoFlutterFire/GeoFlutterUtils.dart';
 import 'package:uuid/uuid.dart';
 
@@ -565,6 +566,7 @@ class BrandFirebaseCalls {
   }
 
   Future<void> addUserToBrand(String userId, String brandId, int role) async {
+    DateTime now = DateTime.now();
     Usuario user = await getUserDetails(userId);
     await _firestore
         .collection(brands)
@@ -582,6 +584,7 @@ class BrandFirebaseCalls {
       "isPrivate": user.isPrivate,
       "notificationToken": user.notificationToken,
       "role": role,
+      "dateJoined": DateTimeUtils().formatDateTimeToStringDDMMYY(now),
     }).catchError((err) {
       print(err);
     });

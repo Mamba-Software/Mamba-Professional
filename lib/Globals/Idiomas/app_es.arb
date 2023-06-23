@@ -79,6 +79,10 @@
   "@emailError":{
     "description": "Email Error Text"
   },
+  "emailError3rd": "Escribe su email por favor",
+  "@emailError3rd":{
+    "description": "Email Error Text"
+  },
   "password": "Contraseña",
   "@password":{
     "description": "Contraseña Text "
@@ -215,6 +219,10 @@
   "@lastNameError":{
     "description": "Nombre"
   },
+  "lastNameError3rd": "Escribe sus apellidos por favor",
+  "@lastNameError3rd":{
+    "description": "Nombre"
+  },
   "nickname": "Nombre de usuario",
   "@nickname":{
     "description": "Nombre"
@@ -237,6 +245,10 @@
   },
   "nameCompletoError": "Escribe tu nombre",
   "@nameCompletoError":{
+    "description": "LogIn Text "
+  },
+  "nameCompletoError3rd": "Escribe su nombre por favor",
+  "@nameCompletoError3rd":{
     "description": "LogIn Text "
   },
   "nameBrand": "Nombre de tu marca",
@@ -1126,6 +1138,10 @@
   "@creating":{
     "description": "addEvent text"
   },
+  "checking": "Comprobando",
+  "@checking":{
+    "description": "addEvent text"
+  },
   "editing": "Editando",
   "@editing":{
     "description": "addEvent text"
@@ -1174,7 +1190,7 @@
   "@designatedTrainers":{
     "description": "addEvent text"
   },
-  "addClientsManually": "Registrar nuevo cliente",
+  "addClientsManually": "Registrar nuevo cliente manualmente",
   "@addClientsManually":{
     "description": "addEvent text"
   },
