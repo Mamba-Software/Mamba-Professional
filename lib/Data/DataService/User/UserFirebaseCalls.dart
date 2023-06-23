@@ -50,13 +50,15 @@ class UserFirebaseCalls {
       error = true;
     }
     if (error) return -1;
-    if (authResult == null)
+    if (authResult == null) {
       return -1;
+    }
     if (authResult.user != null && isProduction) {
-      if (authResult.user!.emailVerified)
+      if (authResult.user!.emailVerified) {
         return 0;
-      else
+      } else {
         return -2;
+      }
     } else {
       return 0;
     }
@@ -154,6 +156,18 @@ class UserFirebaseCalls {
     var userDocRef = _firestore.collection(users).doc(uid);
     var doc = await userDocRef.get();
     if (!doc.exists) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  // Check If User Exists
+  Future<bool> checkIfEmailExists(String email) async {
+    // Query Firestore for the email
+    QuerySnapshot querySnapshot = await _firestore.collection(users).where('email', isEqualTo: email).get();
+    // Check if we got any matches
+    if (querySnapshot.docs.isEmpty) {
       return false;
     } else {
       return true;
@@ -352,8 +366,11 @@ class UserFirebaseCalls {
         .doc(brandId)
         .collection("Bonos Requests")
         .get();
-    if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
-    else return '';
+    if(querySnapshot.docs.length != 0) {
+      return querySnapshot.docs[0].get("bonoId").toString();
+    } else {
+      return '';
+    }
 
 
   }
@@ -371,7 +388,9 @@ class UserFirebaseCalls {
       }
       return favouritesList;
     }
-    else return [];
+    else {
+      return [];
+    }
   }
 
   Future<double> getUserZoomScale(String brandId, String userId) async {
@@ -636,10 +655,11 @@ class UserFirebaseCalls {
     if (authResult != null && authResult.user != null) {
       if (authError) {
         return -1;
-      } else if (firestoreError)
+      } else if (firestoreError) {
         return -2;
-      else
+      } else {
         return 0;
+      }
     } else {
       return -1;
     }

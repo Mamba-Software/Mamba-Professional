@@ -1,9 +1,13 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -23,6 +27,9 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
   // Booleans
   bool isLoading = false;
   String? isRecurrentLoadingText;
+  // Data Serviceç
+  final _userDataService = UserDataService();
+  final _brandDataService = BrandDataService();
   // Tab Controller
   double addEventTabValue = 0.2499;
   TabController? _tabController;
@@ -39,19 +46,19 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
   var yearController = TextEditingController();
   FocusNode focusNodeMonth = FocusNode();
   FocusNode focusNodeYear = FocusNode();
-  bool canGoNextDate = false;
   bool confirmAge = false;
-  bool loadingAge = false;
   bool errorAge = false;
   // Gender Widget value
   int? gender;
+  bool errorGender = false;
   // Email
+  final formKeyEmail = GlobalKey<FormState>();
   var emailController = TextEditingController();
+  FocusNode focusNodeEmail = FocusNode();
   bool invalidEmail = false;
   bool loadingEmail = false;
-  FocusNode focusNodeFirstName = FocusNode();
-  FocusNode focusNodeEmail = FocusNode();
-  bool canGoNextEmail = false;
+  bool emailExistsError = false;
+
 
   @override
   void initState() {
@@ -76,6 +83,66 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
       return false;
     } else {
       return true;
+    }
+  }
+
+  Future<void> addUser() async {
+    setState(() {
+      emailExistsError = false;
+      loadingEmail = true;
+    });
+    // We First Create the User
+    String password = "123456";
+    var result =  await _userDataService.addUser(emailController.text.trim(), password, Localizations.localeOf(context).languageCode);
+    if (result == 0) {
+      try {
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+        setState(() {
+          isLoading = true;
+          loadingEmail = false;
+          emailExistsError = false;
+          isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.client.toLowerCase()+" ...";
+        });
+        /// Get the User
+        await _userDataService.signIn(emailController.text.trim(), password);
+        User? user = await _userDataService.getCurrentUser();
+        /// Reset Password Email
+        await _userDataService.resetPassword(emailController.text.trim());
+        /// Update Data of User
+        String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
+        String dateString = DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDate, Localizations.localeOf(context).languageCode);
+        await _userDataService.updateUser(user!.uid, name, firstNameController.text.trim(), lastNameController.text.trim(), dateString, gender!, null, null, widget.isTrainer);
+        /// Add User To Brand
+        setState(() {
+          isRecurrentLoadingText = AppLocalizations.of(context)!.adding +" "+AppLocalizations.of(context)!.client.toLowerCase()+" ...";
+        });
+        int role = 0;
+        if (widget.isTrainer) {
+          role = 3;
+        }
+        await _brandDataService.addUserToBrand(user.uid, currentBrand.id!, role);
+        NotificationService _notificationService = NotificationService();
+        _notificationService.userJoinsBrand(user.uid, currentBrand.id!);
+        /// User Has Been Created
+        Navigator.pop(context);
+      } catch (e) {
+        print(e.toString());
+      }
+
+    } else if (result == -1) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {
+        loadingEmail = false;
+        emailExistsError = true;
+      });
+    } else {
+      setState(() {
+        loadingEmail = false;
+        emailExistsError = true;
+      });
     }
   }
 
@@ -112,7 +179,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
         ),
       ),
       body: LoadingView(
-          text: isRecurrentLoadingText
+        text: isRecurrentLoadingText
       ),
     ) : Scaffold(
       appBar: AppBar(
@@ -180,7 +247,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                             children: [
                               Expanded(
                                 child: TextFormField(
-                                  autofocus: true,
+                                  autofocus: firstNameController.text.isEmpty,
                                   controller: firstNameController,
                                   keyboardType: TextInputType.name,
                                   validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
@@ -271,10 +338,10 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                             SizedBox(
                               width: MediaQuery.of(context).size.width*0.15,
                               child: Material(
-                                elevation: 8,
+                                elevation: 4,
                                 borderRadius: BorderRadius.circular(15.0),
                                 child: TextFormField(
-                                  autofocus: true,
+                                  autofocus: !confirmAge,
                                   controller: dayController,
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) {
@@ -289,15 +356,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                     if (confirmAge) {
                                       setState(() {
                                         confirmAge = false;
-                                      });
-                                    }
-                                    if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
-                                      setState(() {
-                                        canGoNextDate = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        canGoNextDate = false;
                                       });
                                     }
                                   },
@@ -338,7 +396,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                             SizedBox(
                               width: MediaQuery.of(context).size.width*0.15,
                               child: Material(
-                                elevation: 8,
+                                elevation: 4,
                                 borderRadius: BorderRadius.circular(15.0),
                                 child: TextFormField(
                                   focusNode: focusNodeMonth,
@@ -356,15 +414,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                     if (confirmAge) {
                                       setState(() {
                                         confirmAge = false;
-                                      });
-                                    }
-                                    if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
-                                      setState(() {
-                                        canGoNextDate = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        canGoNextDate = false;
                                       });
                                     }
                                   },
@@ -405,7 +454,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                             SizedBox(
                               width: MediaQuery.of(context).size.width*0.18,
                               child: Material(
-                                elevation: 8,
+                                elevation: 4,
                                 borderRadius: BorderRadius.circular(15.0),
                                 child: TextFormField(
                                   focusNode: focusNodeYear,
@@ -420,15 +469,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                     if (confirmAge) {
                                       setState(() {
                                         confirmAge = false;
-                                      });
-                                    }
-                                    if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
-                                      setState(() {
-                                        canGoNextDate = true;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        canGoNextDate = false;
                                       });
                                     }
                                   },
@@ -468,10 +508,8 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                           ],
                         ),
                         errorAge ? Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.symmetric(vertical: 12),
+                          margin: const EdgeInsets.symmetric(vertical: 16),
                           decoration: const BoxDecoration(
-                            color: AppColors.red,
                             borderRadius: BorderRadius.all(
                               Radius.circular(10.0),
                             ),
@@ -482,7 +520,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                               Flexible(
                                 child: Text(
                                   AppLocalizations.of(context)!.errorDate,
-                                  style: Theme.of(context).textTheme.bodyText2,
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                   textAlign: TextAlign.left,
                                 ),
                               ),
@@ -502,12 +540,12 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   children: [
                                     Text(
                                       AppLocalizations.of(context)!.dateOfBirth+": ",
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.left,
                                     ),
                                     Text(
-                                      DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDate, Localizations.localeOf(context).languageCode),
-                                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal),
+                                      DateTimeUtils().formatDateTimeToStringDDMMMMYYYY(startDate, Localizations.localeOf(context).languageCode),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -517,12 +555,12 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   children: [
                                     Text(
                                       AppLocalizations.of(context)!.age+": ",
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                      style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),
                                       textAlign: TextAlign.left,
                                     ),
                                     Text(
                                       (DateTime.now().difference(startDate).inDays/365).toStringAsFixed(0),
-                                      style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.normal),
+                                      style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
                                   ],
@@ -546,7 +584,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         Material(
-                          elevation: 8,
+                          elevation: 4,
                           borderRadius: BorderRadius.circular(15.0),
                           child: Container(
                             height: MediaQuery.of(context).size.height*0.06,
@@ -587,7 +625,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         Material(
-                          elevation: 8,
+                          elevation: 4,
                           borderRadius: BorderRadius.circular(15.0),
                           child: Container(
                             height: MediaQuery.of(context).size.height*0.06,
@@ -628,7 +666,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                         Material(
-                          elevation: 8,
+                          elevation: 4,
                           borderRadius: BorderRadius.circular(15.0),
                           child: Container(
                             height: MediaQuery.of(context).size.height*0.06,
@@ -667,121 +705,169 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                             ),
                           ),
                         ),
+                        errorGender ? Container(
+                          margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.025),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  AppLocalizations.of(context)!.registerGenderError,
+                                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) : Container(),
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.email,
-                          style: Theme.of(context).textTheme.headline1,
-                          textAlign: TextAlign.left,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                autofocus: true,
-                                focusNode: focusNodeEmail,
-                                controller: emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
-                                onChanged: (val) {
-                                  if (emailController.text.isNotEmpty) {
-                                    if(emailValidator(emailController.text)){
-                                      setState(() {
-                                        invalidEmail = false;
-                                      });
+                  Form(
+                    key: formKeyEmail,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.email,
+                            style: Theme.of(context).textTheme.headline1,
+                            textAlign: TextAlign.left,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  autofocus: emailController.text.isEmpty || invalidEmail,
+                                  focusNode: focusNodeEmail,
+                                  controller: emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                                  onChanged: (val) {
+                                    if (emailController.text.isNotEmpty) {
+                                      if(emailValidator(emailController.text)){
+                                        setState(() {
+                                          invalidEmail = false;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          invalidEmail = true;
+                                        });
+                                      }
                                     } else {
                                       setState(() {
                                         invalidEmail = true;
                                       });
                                     }
-                                  } else {
-                                    setState(() {
-                                      invalidEmail = true;
-                                    });
-                                  }
-                                },
-                                style: Theme.of(context).textTheme.bodyText2,
-                                textCapitalization: TextCapitalization.none,
-                                decoration: InputDecoration(
-                                  hintStyle: Theme.of(context).textTheme.caption,
-                                  errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
-                                  hintText: AppLocalizations.of(context)!.emailError,
-                                  errorBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red),
+                                  },
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  textCapitalization: TextCapitalization.none,
+                                  decoration: InputDecoration(
+                                    hintStyle: Theme.of(context).textTheme.caption,
+                                    errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
+                                    hintText: AppLocalizations.of(context)!.emailError,
+                                    errorBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    disabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
                                   ),
-                                  disabledBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  enabledBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  focusedBorder: const UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        invalidEmail ? Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.only(top: 12),
-                          decoration: const BoxDecoration(
-                            color: AppColors.red,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  AppLocalizations.of(context)!.validateEmail,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      ?.copyWith(
-                                      color: AppColors.white),
-                                  textAlign: TextAlign.left,
                                 ),
                               ),
                             ],
                           ),
-                        ) : emailController.text.isNotEmpty ? Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.only(top: 12),
-                          decoration: const BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "Email válido",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      ?.copyWith(
-                                      color: AppColors.white),
-                                  textAlign: TextAlign.left,
-                                ),
+                          invalidEmail ? Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
                               ),
-                            ],
-                          ),
-                        ) :  Container(),
-                      ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.validateEmail,
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ) : Container(),
+                          loadingEmail ? Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width*0.06,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 15,
+                                        height: 15,
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          strokeWidth: 1.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    "Comprobando email ...",
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ) : Container(),
+                          emailExistsError ? Container(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.sameEmail,
+                                    style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ) : Container(),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -841,17 +927,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                       });
                     }
                   } else if (_selectedIndex == 1) {
-                    if (invalidEmail == false) {
-                      _tabController!.animateTo(_selectedIndex += 1);
-                      FocusScopeNode currentFocus = FocusScope.of(context);
-                      if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                      }
-                      setState(() {
-                        addEventTabValue += 0.25;
-                      });
-                    }
-                  } else if (_selectedIndex == 2) {
                     if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
                       if (confirmAge == false) {
                         // Check if Date is Valid
@@ -865,12 +940,8 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                           setState(() {
                             startDate = date;
                             confirmAge = true;
-                            canGoNextDate = false;
                           });
                           await Future.delayed(const Duration(seconds: 1));
-                          setState(() {
-                            canGoNextDate = true;
-                          });
                         }
                       } else {
                         _tabController!.animateTo(_selectedIndex += 1);
@@ -882,9 +953,16 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                           addEventTabValue += 0.25;
                         });
                       }
+                    } else {
+                      setState(() {
+                        errorAge = true;
+                      });
                     }
-                  } else if (_selectedIndex == 3) {
+                  } else if (_selectedIndex == 2) {
                     if (gender != null) {
+                      setState(() {
+                        errorGender = false;
+                      });
                       _tabController!.animateTo(_selectedIndex += 1);
                       FocusScopeNode currentFocus = FocusScope.of(context);
                       if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
@@ -893,6 +971,16 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                       setState(() {
                         addEventTabValue += 0.25;
                       });
+                    } else {
+                      setState(() {
+                        errorGender = true;
+                      });
+                    }
+                  } else if (_selectedIndex == 3) {
+                    if (formKeyEmail.currentState!.validate()) {
+                      if (invalidEmail == false) {
+                        addUser();
+                      }
                     }
                   }
                 },
