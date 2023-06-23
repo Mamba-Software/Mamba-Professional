@@ -210,7 +210,7 @@ class _HomePro extends State<HomePro> {
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         builder: (BuildContext context) {
                           return const FractionallySizedBox(
-                            heightFactor: 0.75,
+                            heightFactor: 0.8,
                             child: ShareBrandLink(),
                           );
                         },

@@ -616,7 +616,7 @@ class _Clients extends State<Clients> {
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       builder: (BuildContext context) {
                         return const FractionallySizedBox(
-                          heightFactor: 0.75,
+                          heightFactor: 0.8,
                           child: ShareBrandLink(addStaff: false,),
                         );
                       },

@@ -275,6 +275,7 @@
   "numberClients": "Número de clients:",
   "noClientJoining": "Sense assistents",
   "designatedTrainers": "Selecciona els entrenadors",
+  "addClientsManually": "Registrar nou client",
   "addDesignatedClients": "Convidar clients",
   "noTrainerSelectedError": "No hi ha cap entrenador assignat",
   "noClientSelectedError": "No hi ha cap client assignat",

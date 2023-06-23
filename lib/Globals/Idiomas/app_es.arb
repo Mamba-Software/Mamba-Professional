@@ -1174,6 +1174,10 @@
   "@designatedTrainers":{
     "description": "addEvent text"
   },
+  "addClientsManually": "Registrar nuevo cliente",
+  "@addClientsManually":{
+    "description": "addEvent text"
+  },
   "addDesignatedClients": "Invitar clientes",
   "@addDesignatedClients":{
     "description": "addEvent text"

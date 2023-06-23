@@ -277,7 +277,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         builder: (BuildContext context) {
                           return const FractionallySizedBox(
-                            heightFactor: 0.75,
+                            heightFactor: 0.8,
                             child: ShareBrandLink(
                               onlyStaff: true,
                             ),
