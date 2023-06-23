@@ -679,8 +679,10 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
               height: MediaQuery.of(context).size.width*0.15,
               width: MediaQuery.of(context).size.width*0.15,
               child: FloatingActionButton(
-                onPressed: () {
-                  if (_imagesUploaded.length < _maxImages) getImage;
+                onPressed: () async {
+                  if (_imagesUploaded.length < _maxImages) {
+                    await getImage();
+                  }
                 },
                 backgroundColor: _imagesUploaded.length < _maxImages ? Theme.of(context).colorScheme.secondary : Theme.of(context).disabledColor,
                 child: const Icon(Icons.add, color: AppColors.white),
