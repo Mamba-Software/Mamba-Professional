@@ -551,7 +551,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
         child: SizedBox(
           height: MediaQuery.of(context).size.height*0.07,
-          width: MediaQuery.of(context).size.width*0.42,
+          width: MediaQuery.of(context).size.width*0.4,
           child: FloatingActionButton.extended(
             heroTag: "102",
             onPressed: _show,
@@ -562,7 +562,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 SizedBox(width: MediaQuery.of(context).size.width*0.05),
                 SizedBox(
                   height: MediaQuery.of(context).size.height*0.07,
-                  width: MediaQuery.of(context).size.width*0.22,
+                  width: MediaQuery.of(context).size.width*0.21,
                   child: Row(
                     children: [
                       Flexible(
@@ -576,9 +576,9 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                   ),
                 ),
                 Icon(
-                  Icons.date_range_outlined,
+                  Icons.search_outlined,
                   color: AppColors.white,
-                  size: MediaQuery.of(context).size.width * 0.07,
+                  size: MediaQuery.of(context).size.width * 0.08,
                 ),
               ],
             ),
