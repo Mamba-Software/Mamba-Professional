@@ -116,7 +116,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
         await _userDataService.updateUser(user!.uid, name, firstNameController.text.trim(), lastNameController.text.trim(), dateString, gender!, null, null, widget.isTrainer);
         /// Add User To Brand
         setState(() {
-          isRecurrentLoadingText = AppLocalizations.of(context)!.adding +" "+AppLocalizations.of(context)!.client.toLowerCase()+" a "+currentBrand.name!+" ...";
+          isRecurrentLoadingText = AppLocalizations.of(context)!.adding +" "+(widget.isTrainer ? AppLocalizations.of(context)!.staff.toLowerCase() : AppLocalizations.of(context)!.client.toLowerCase())+" a "+currentBrand.name!+" ...";
         });
         await Future.delayed(const Duration(milliseconds: 500));
         int role = 0;
@@ -841,7 +841,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                 ),
                                 Flexible(
                                   child: Text(
-                                    AppLocalizations.of(context)!.checking+" "+AppLocalizations.of(context)!.email+" ...",
+                                    AppLocalizations.of(context)!.checking+" "+AppLocalizations.of(context)!.email.toLowerCase()+" ...",
                                     style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),

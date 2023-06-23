@@ -994,7 +994,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     builder: (BuildContext context) {
                       return FractionallySizedBox(
-                        heightFactor: user.isTrainer! == false ? Platform.isAndroid ? 0.46 : 0.43 : Platform.isAndroid ? 0.4 : 0.35,
+                        heightFactor: user.isTrainer! == false ? 0.46 : 0.4,
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height*0.5,
                           width: MediaQuery.of(context).size.width,
