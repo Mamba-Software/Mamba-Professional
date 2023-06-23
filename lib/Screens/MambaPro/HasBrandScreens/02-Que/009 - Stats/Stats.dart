@@ -1,4 +1,6 @@
 // ignore_for_file: avoid_print
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
@@ -550,7 +552,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         child: Container(
           height: MediaQuery.of(context).size.height * 0.1,
           width: double.infinity,
-          // color: Theme.of(context).backgroundColor,
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             border: Border(
@@ -564,17 +565,18 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
             children: [
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: MediaQuery.of(context).size.height * 0.02,
-                      horizontal: MediaQuery.of(context).size.height * 0.02),
-                  child: Text(
-                    '${DateFormat('d MMM, yy\'').format(startDate)}  - '
-                    ' ${DateFormat('d MMM, yy\'').format(endDate)}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3!
-                        .copyWith(color: Theme.of(context).primaryColor),
-                    textAlign: TextAlign.center,
+                  padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02, horizontal: MediaQuery.of(context).size.height * 0.02),
+                    child: Text(
+                      '${DateFormat('d MMM, yy\'').format(startDate)}  - '
+                      ' ${DateFormat('d MMM, yy\'').format(endDate)}',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline3!
+                          .copyWith(color: Theme.of(context).primaryColor),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ),
@@ -582,10 +584,13 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 height: MediaQuery.of(context).size.height * 0.12,
                 width: MediaQuery.of(context).size.height * 0.12,
                 color: Styles.mainColorTrans,
-                child: Icon(
-                  Icons.event,
-                  color: Styles.mainColor,
-                  size: MediaQuery.of(context).size.width * 0.07,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+                  child: Icon(
+                    Icons.event,
+                    color: Styles.mainColor,
+                    size: MediaQuery.of(context).size.width * 0.07,
+                  ),
                 ),
               ),
             ],
