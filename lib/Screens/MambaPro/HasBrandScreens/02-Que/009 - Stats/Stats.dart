@@ -547,6 +547,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
+      /*
       floatingActionButton: Padding(
         padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
         child: SizedBox(
@@ -586,7 +587,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
-      /*
+      */
       bottomSheet: GestureDetector(
         onTap: _show,
         child: Container(
@@ -637,7 +638,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
-      */
     );
   }
 
