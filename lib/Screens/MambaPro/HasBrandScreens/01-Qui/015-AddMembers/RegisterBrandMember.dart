@@ -28,17 +28,10 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
   TabController? _tabController;
   int _selectedIndex = 0;
   // Name Controller
+  final formKeyInfo = GlobalKey<FormState>();
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
   FocusNode focusNodeName = FocusNode();
-  bool errorName = false;
-  // Email
-  var emailController = TextEditingController();
-  bool invalidEmail = false;
-  bool loadingEmail = false;
-  FocusNode focusNodeFirstName = FocusNode();
-  FocusNode focusNodeEmail = FocusNode();
-  bool canGoNextEmail = false;
   // Date Of Birth
   DateTime startDate = DateTime.now();
   var dayController = TextEditingController();
@@ -52,6 +45,13 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
   bool errorAge = false;
   // Gender Widget value
   int? gender;
+  // Email
+  var emailController = TextEditingController();
+  bool invalidEmail = false;
+  bool loadingEmail = false;
+  FocusNode focusNodeFirstName = FocusNode();
+  FocusNode focusNodeEmail = FocusNode();
+  bool canGoNextEmail = false;
 
   @override
   void initState() {
@@ -163,283 +163,96 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                 controller: _tabController,
                 physics: const NeverScrollableScrollPhysics(),
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.nameCompleto,
-                          style: Theme.of(context).textTheme.headline1,
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        Material(
-                          elevation: 8,
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Row(
+                  Form(
+                    key: formKeyInfo,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.firstName,
+                            style: Theme.of(context).textTheme.headline1,
+                            textAlign: TextAlign.left,
+                          ),
+                          Row(
                             children: [
                               Expanded(
                                 child: TextFormField(
                                   autofocus: true,
                                   controller: firstNameController,
                                   keyboardType: TextInputType.name,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
                                   onFieldSubmitted: (val) {
-                                    focusNodeName.requestFocus();
+                                    if (lastNameController.text.isEmpty) {
+                                      focusNodeName.requestFocus();
+                                    } else {
+                                      focusNodeName.unfocus();
+                                    }
                                   },
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                  style: Theme.of(context).textTheme.bodyText2,
                                   textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: AppColors.white,
-                                      hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                      hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                      errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                      border: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                    hintStyle: Theme.of(context).textTheme.caption,
+                                    errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
+                                    hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                    errorBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    disabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                        Material(
-                          elevation: 8,
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Row(
+                          SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                          Text(
+                            AppLocalizations.of(context)!.lastName,
+                            style: Theme.of(context).textTheme.headline1,
+                            textAlign: TextAlign.left,
+                          ),
+                          Row(
                             children: [
                               Expanded(
                                 child: TextFormField(
                                   focusNode: focusNodeName,
                                   controller: lastNameController,
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
                                   keyboardType: TextInputType.name,
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                  style: Theme.of(context).textTheme.bodyText2,
                                   textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: AppColors.white,
-                                      hintText: AppLocalizations.of(context)!.lastNameError,
-                                      hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
-                                      errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                      border: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                    hintStyle: Theme.of(context).textTheme.caption,
+                                    errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
+                                    hintText: AppLocalizations.of(context)!.lastNameError,
+                                    errorBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    disabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    enabledBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    focusedBorder: const UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        errorName ? Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: const BoxDecoration(
-                            color: AppColors.red,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  AppLocalizations.of(context)!.errorDate,
-                                  style: Theme.of(context).textTheme.bodyText2,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ) : Container(),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.email,
-                          style: Theme.of(context).textTheme.headline1,
-                          textAlign: TextAlign.left,
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        Material(
-                          elevation: 8,
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: TextFormField(
-                                  autofocus: true,
-                                  focusNode: focusNodeEmail,
-                                  controller: emailController,
-                                  keyboardType: TextInputType.emailAddress,
-                                  onChanged: (val) {
-                                    if (emailController.text.isNotEmpty) {
-                                      if(emailValidator(emailController.text)){
-                                        setState(() {
-                                          invalidEmail = false;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          invalidEmail = true;
-                                        });
-                                      }
-                                    } else {
-                                      setState(() {
-                                        invalidEmail = true;
-                                      });
-                                    }
-                                  },
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline3
-                                      ?.copyWith(
-                                      fontWeight: FontWeight.normal,
-                                      color: AppColors.black),
-                                  textCapitalization:
-                                  TextCapitalization.words,
-                                  decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: AppColors.white,
-                                      hintText:
-                                      AppLocalizations.of(context)!
-                                          .emailError,
-                                      hintStyle: Theme.of(context)
-                                          .textTheme
-                                          .headline3
-                                          ?.copyWith(
-                                          color: AppColors.grey,
-                                          fontWeight:
-                                          FontWeight.normal),
-                                      errorStyle: Theme.of(context)
-                                          .textTheme
-                                          .bodyText2
-                                          ?.copyWith(
-                                          color: AppColors.red),
-                                      border: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.transparent,
-                                            width: 1.5),
-                                        borderRadius:
-                                        BorderRadius.circular(15.0),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.transparent,
-                                            width: 1.5),
-                                        borderRadius:
-                                        BorderRadius.circular(15.0),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.transparent,
-                                            width: 1.5),
-                                        borderRadius:
-                                        BorderRadius.circular(15.0),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.transparent,
-                                            width: 1.5),
-                                        borderRadius:
-                                        BorderRadius.circular(15.0),
-                                      ),
-                                      contentPadding:
-                                      const EdgeInsets.fromLTRB(
-                                          12, 8, 12, 8)),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        invalidEmail ? Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.only(top: 12),
-                          decoration: const BoxDecoration(
-                            color: AppColors.red,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  AppLocalizations.of(context)!.validateEmail,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      ?.copyWith(
-                                      color: AppColors.white),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ) : emailController.text.isNotEmpty ? Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.only(top: 12),
-                          decoration: const BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  "Email válido",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText2
-                                      ?.copyWith(
-                                      color: AppColors.white),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ) :  Container(),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                   Padding(
@@ -491,13 +304,13 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(2),// for mobile
                                   ],
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                  style: Theme.of(context).textTheme.bodyText2,
                                   textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
                                       filled: true,
-                                      fillColor: AppColors.white,
+                                      fillColor: Theme.of(context).backgroundColor,
                                       hintText: "DD",
-                                      hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                      hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
                                       errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                       border: OutlineInputBorder(
                                         borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
@@ -558,13 +371,13 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(2),// for mobile
                                   ],
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                  style: Theme.of(context).textTheme.bodyText2,
                                   textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
                                       filled: true,
-                                      fillColor: AppColors.white,
+                                      fillColor: Theme.of(context).backgroundColor,
                                       hintText: "MM",
-                                      hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                      hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
                                       errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                       border: OutlineInputBorder(
                                         borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
@@ -622,13 +435,13 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(4),// for mobile
                                   ],
-                                  style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                  style: Theme.of(context).textTheme.bodyText2,
                                   textCapitalization: TextCapitalization.words,
                                   decoration: InputDecoration(
                                       filled: true,
-                                      fillColor: AppColors.white,
+                                      fillColor: Theme.of(context).backgroundColor,
                                       hintText: "YYYY",
-                                      hintStyle: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
+                                      hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.grey, fontWeight: FontWeight.normal),
                                       errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                       border: OutlineInputBorder(
                                         borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
@@ -736,23 +549,23 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                           elevation: 8,
                           borderRadius: BorderRadius.circular(15.0),
                           child: Container(
-                            height: MediaQuery.of(context).size.height*0.07,
+                            height: MediaQuery.of(context).size.height*0.06,
                             padding: const EdgeInsets.fromLTRB(18, 8, 6, 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: AppColors.white,
+                              color: Theme.of(context).backgroundColor,
                             ),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.female,
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
                                 Transform.scale(
-                                  scale: 1.5,
+                                  scale: 1.3,
                                   child: Checkbox(
                                     value: gender == 1,
                                     onChanged: (boolean) {
@@ -760,8 +573,8 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                         gender = 1;
                                       });
                                     },
-                                    checkColor: AppColors.white,
-                                    activeColor: AppColors.black,
+                                    checkColor: Theme.of(context).primaryColorDark,
+                                    activeColor: Theme.of(context).primaryColor,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10)
                                     ),
@@ -777,23 +590,23 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                           elevation: 8,
                           borderRadius: BorderRadius.circular(15.0),
                           child: Container(
-                            height: MediaQuery.of(context).size.height*0.07,
+                            height: MediaQuery.of(context).size.height*0.06,
                             padding: const EdgeInsets.fromLTRB(18, 8, 6, 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: AppColors.white,
+                              color: Theme.of(context).backgroundColor,
                             ),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.male,
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
                                 Transform.scale(
-                                  scale: 1.5,
+                                  scale: 1.3,
                                   child: Checkbox(
                                     value: gender == 0,
                                     onChanged: (boolean) {
@@ -801,8 +614,8 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                         gender = 0;
                                       });
                                     },
-                                    checkColor: AppColors.white,
-                                    activeColor: AppColors.black,
+                                    checkColor: Theme.of(context).primaryColorDark,
+                                    activeColor: Theme.of(context).primaryColor,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10)
                                     ),
@@ -818,23 +631,23 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                           elevation: 8,
                           borderRadius: BorderRadius.circular(15.0),
                           child: Container(
-                            height: MediaQuery.of(context).size.height*0.07,
+                            height: MediaQuery.of(context).size.height*0.06,
                             padding: const EdgeInsets.fromLTRB(18, 8, 6, 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: AppColors.white,
+                              color: Theme.of(context).backgroundColor,
                             ),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: Text(
                                     AppLocalizations.of(context)!.transgender,
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black, fontWeight: FontWeight.normal),
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     textAlign: TextAlign.left,
                                   ),
                                 ),
                                 Transform.scale(
-                                  scale: 1.5,
+                                  scale: 1.3,
                                   child: Checkbox(
                                     value: gender == 2,
                                     onChanged: (boolean) {
@@ -842,8 +655,8 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                         gender = 2;
                                       });
                                     },
-                                    checkColor: AppColors.white,
-                                    activeColor: AppColors.black,
+                                    checkColor: Theme.of(context).primaryColorDark,
+                                    activeColor: Theme.of(context).primaryColor,
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10)
                                     ),
@@ -854,6 +667,120 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.06),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.email,
+                          style: Theme.of(context).textTheme.headline1,
+                          textAlign: TextAlign.left,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                autofocus: true,
+                                focusNode: focusNodeEmail,
+                                controller: emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                                onChanged: (val) {
+                                  if (emailController.text.isNotEmpty) {
+                                    if(emailValidator(emailController.text)){
+                                      setState(() {
+                                        invalidEmail = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        invalidEmail = true;
+                                      });
+                                    }
+                                  } else {
+                                    setState(() {
+                                      invalidEmail = true;
+                                    });
+                                  }
+                                },
+                                style: Theme.of(context).textTheme.bodyText2,
+                                textCapitalization: TextCapitalization.none,
+                                decoration: InputDecoration(
+                                  hintStyle: Theme.of(context).textTheme.caption,
+                                  errorStyle: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
+                                  hintText: AppLocalizations.of(context)!.emailError,
+                                  errorBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.red),
+                                  ),
+                                  disabledBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  enabledBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                  focusedBorder: const UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.grey),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        invalidEmail ? Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.only(top: 12),
+                          decoration: const BoxDecoration(
+                            color: AppColors.red,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  AppLocalizations.of(context)!.validateEmail,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2
+                                      ?.copyWith(
+                                      color: AppColors.white),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) : emailController.text.isNotEmpty ? Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.only(top: 12),
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  "Email válido",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2
+                                      ?.copyWith(
+                                      color: AppColors.white),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) :  Container(),
                       ],
                     ),
                   ),
@@ -880,7 +807,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                     FocusManager.instance.primaryFocus?.unfocus();
                   }
                   setState(() {
-                    addEventTabValue -= 0.33;
+                    addEventTabValue -= 0.25;
                   });
                 },
                 backgroundColor: Theme.of(context).primaryColor,
@@ -902,19 +829,15 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                 heroTag: "98",
                 onPressed: () async {
                   if (_selectedIndex == 0) {
-                    if (firstNameController.text.isNotEmpty && lastNameController.text.isNotEmpty) {
+                    if (formKeyInfo.currentState!.validate()) {
                       _tabController!.animateTo(_selectedIndex += 1);
                       FocusScopeNode currentFocus = FocusScope.of(context);
-                      if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                      if (!currentFocus.hasPrimaryFocus &&
+                          currentFocus.focusedChild != null) {
                         FocusManager.instance.primaryFocus?.unfocus();
                       }
                       setState(() {
                         addEventTabValue += 0.25;
-                        errorName = false;
-                      });
-                    } else {
-                      setState(() {
-                        errorName = true;
                       });
                     }
                   } else if (_selectedIndex == 1) {
@@ -926,7 +849,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                       }
                       setState(() {
                         addEventTabValue += 0.25;
-                        errorName = false;
                       });
                     }
                   } else if (_selectedIndex == 2) {
@@ -958,7 +880,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                         }
                         setState(() {
                           addEventTabValue += 0.25;
-                          errorName = false;
                         });
                       }
                     }
@@ -978,7 +899,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                 backgroundColor: _selectedIndex == 3 ? Colors.green : Theme.of(context).colorScheme.secondary,
                 icon: Container(),
                 label: Text(
-                  _selectedIndex == 3 ? AppLocalizations.of(context)!.createEvent.split(" ")[0]+" "+(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff).toLowerCase() : AppLocalizations.of(context)!.next,
+                  _selectedIndex == 3 ? AppLocalizations.of(context)!.addClientsManually.split(" ")[0]+" "+(!widget.isTrainer ? AppLocalizations.of(context)!.client : AppLocalizations.of(context)!.staff).toLowerCase() : AppLocalizations.of(context)!.next,
                   style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),)
               ),
             ),
