@@ -1411,7 +1411,7 @@
   "@randomImageDescription": {
     "description": "Wellcome message"
   },
-  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los miembros de tu marca. Puedes añadir un máximo de 10 imágenes. \n\nEn caso de no añadir ninguna imagen, se utilizarán imágenes de librería.",
+  "yourImagesDescription": "Escoge tus imágenes preferidas para mostrarlas a todos los usuarios. Recomendamos orientación horizontal (16:9) y puedes añadir un máximo de 10 imágenes. \n\nSe utilizarán imágenes de librería.",
   "@yourImagesDescription": {
     "description": "Wellcome message"
   },
@@ -1443,7 +1443,7 @@
   "@photos": {
     "description": "Wellcome message"
   },
-  "photosDimensions": "Recomendamos orientación Horizontal (16:9)",
+  "photosDimensions": "Recomendamos Orientación Horizontal (16:9)",
   "@photosDimensions": {
     "description": "Wellcome message"
   },
