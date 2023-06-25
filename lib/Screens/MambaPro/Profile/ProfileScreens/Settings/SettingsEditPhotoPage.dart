@@ -15,7 +15,7 @@ class SettingsEditPhotoPage extends StatefulWidget {
   _SettingsEditPhotoPageState createState() => _SettingsEditPhotoPageState();
 }
 
-class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
+class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> with WidgetsBindingObserver {
 
   // Acceso a Base de Datos
   var _userDataService = new UserDataService();
@@ -35,13 +35,28 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
     isLoading = true;
     getUser();
     super.initState();
-    //WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    //WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    // If user resumed to this app, check permission
+    if(state == AppLifecycleState.resumed && isSettingsOpened) {
+      setState(() {
+        isSettingsOpened = false;
+      });
+      var status = await Permission.photos.status;
+      print("Status After Settings: "+status.toString());
+      if (status.isLimited || status.isGranted) {
+        getImage();
+      }
+    }
   }
 
   // Selects image from Gallery and updates in firebase.
@@ -62,29 +77,11 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> {
         isLoadingBody = false;
       });
       var status = await Permission.photos.status;
-      if (status.isDenied) {
-        print('Access Denied');
-        showCupertinoDialog<void>(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) => CupertinoAlertDialog(
-            title: const Text('Permission Denied'),
-            content: const Text('Allow access to gallery and photos'),
-            actions: <CupertinoDialogAction>[
-              CupertinoDialogAction(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
-              ),
-              CupertinoDialogAction(
-                isDefaultAction: true,
-                onPressed: () => openAppSettings(),
-                child: const Text('Settings'),
-              ),
-            ],
-          ),
-        );
-      } else {
-        print('Exception occured!');
+      if (Platform.isIOS && (status.isDenied || status.isPermanentlyDenied)) {
+        bool temp = await openAppSettings();
+        setState(() {
+          isSettingsOpened = temp;
+        });
       }
     }
   }
