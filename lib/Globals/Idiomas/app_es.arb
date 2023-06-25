@@ -3325,5 +3325,13 @@
   "cantEditText": "No se pueden editar estos valores en un evento terminado",
   "@cantEditText": {
     "description": "cantEditText message"
+  },
+  "directPurchaseDescription": "Permite que las compras de tus bonos se aprueben sin solicitud, el cliente obtendrá el bono al momento de hacer su compra",
+  "@directPurchaseDescription": {
+    "description": "directPurchase message"
+  },
+  "directPurchasetext": "Permitir compra directa",
+  "@directPurchasetext": {
+    "description": "directPurchasetext message"
   }
 }

@@ -82,6 +82,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   // Booking Window
   int bookingWindow = 3;
   int difference = 0;
+  bool directPurchase = false;
 
   bool ShowTextExpired = true;
 
@@ -156,6 +157,12 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     */
     // Booking Window
     bookingWindow = currentBrand.bookingWindow!;
+    if(currentBrand.directPurchase != null) {
+      directPurchase = currentBrand.directPurchase!;
+    }
+    else {
+      currentBrand.directPurchase = false;
+    }
   }
 
   // Gets the user info from firebase.
@@ -210,7 +217,13 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
         print(4);
         isUpdated = true;
         mixpanel!.track('brand_info_booking_window_change');
-      } else {
+      }
+      else if (currentBrand.directPurchase! != directPurchase) {
+        print(5);
+        isUpdated = true;
+        mixpanel!.track('brand_info_direct_purchase_change');
+      }
+      else {
         isUpdated = false;
       }
     }
@@ -773,6 +786,50 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                               ),
                             ),
                           ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.directPurchaseDescription,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                          Padding(
+                              padding: EdgeInsets.only(right: MediaQuery.of(context).size.height * 0.01),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.directPurchasetext,
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height * 0.035,
+                                    width: MediaQuery.of(context).size.width * 0.1,
+                                    child: CupertinoSwitch(
+                                      value: directPurchase,
+                                      onChanged: canEdit ? (bool newVal) {
+                                        setState(() {
+                                          directPurchase = newVal;
+                                        });
+                                      } : null,
+                                      trackColor: Colors.green.withOpacity(0.4),
+                                      thumbColor: AppColors.white,
+                                      activeColor: Colors.green,
+                                    ),
+                                  ),
+                                ],
+                              )
+                          ),
+
+
                           /*
                         SizedBox(height: MediaQuery.of(context).size.height*0.04),
                         Row(
@@ -1051,7 +1108,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                 }
               }
                */
-              await _brandDataService.updateBrandInfo(widget.brandId, nameBrandController.text, descriptionController.text, members, _workShift, bookingWindow);
+              await _brandDataService.updateBrandInfo(widget.brandId, nameBrandController.text, descriptionController.text, members, _workShift, bookingWindow, directPurchase);
               await getBrand();
               mixpanel!.track('brand_info_changes_done');
             }

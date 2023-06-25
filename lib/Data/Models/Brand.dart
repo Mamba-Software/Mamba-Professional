@@ -24,6 +24,7 @@ class Brand {
   Timestamp? endDatePay;
   String? subscriptionId;
   Map<String, dynamic>? subscription;
+  bool? directPurchase;
 
   List<String> promotions = [];
   List<ImageObject> imagesList = [];
@@ -48,6 +49,7 @@ class Brand {
     this.endDatePay,
     this.subscriptionId,
     this.subscription,
+    this.directPurchase
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -99,6 +101,9 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('subscription')) {
       subscription = documentSnapshot.get("subscription");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('directPurchase')) {
+      directPurchase = documentSnapshot.get("directPurchase");
+    }
   }
 
   Brand.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -133,6 +138,7 @@ class Brand {
     endDatePay = brand.endDatePay;
     subscriptionId = brand.subscriptionId;
     subscription = brand.subscription;
+    directPurchase = brand.directPurchase;
 
   }
 

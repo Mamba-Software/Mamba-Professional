@@ -747,5 +747,7 @@
   "bonoExpirationTomorrowTitleNotification": "\uD83D\uDEA8 ❗️ El teu Bono {bono} caduca demà! ❗️ \uD83D\uDEA8",
   "bonoExpirationTomorrowBodyNotification": "Aquest és un recordatori urgent que el teu val caduca demà. No et perdis l'oportunitat d'utilitzar les teves sessions restants! Reserva ara!",
   "isMaintenanceText": "Estem afinant els detalls per portar-te una experiència encara millor. Només tardarem uns minuts per tornar amb força...",
-  "cantEditText": "No es poden editar aquests valors en un event finalitzat"
+  "cantEditText": "No es poden editar aquests valors en un event finalitzat",
+  "directPurchaseDescription": "Permet que les compres dels teus vals s'aprovin sense sol·licitud, el client obtindrà el val al moment de fer la compra",
+  "directPurchasetext": "Permetre compra directa"
 }

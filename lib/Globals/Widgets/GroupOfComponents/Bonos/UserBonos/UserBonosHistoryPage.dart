@@ -10,10 +10,12 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -497,7 +499,51 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        ClientBonoCard(
+                                        SizedBox(
+                                          height: MediaQuery.of(context).size.height*0.08,
+                                          width: MediaQuery.of(context).size.width*0.27,
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: IconButton(
+                                                    icon: Icon(
+                                                        Icons.visibility_outlined,
+                                                        size: MediaQuery.of(context).size.width*0.08,
+                                                        color: Theme.of(context).primaryColor
+                                                    ),
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        isList = !isList;
+                                                        _scrollController = ScrollController(initialScrollOffset: _currentPage*MediaQuery.of(context).size.height*0.2);
+                                                        isExpanded = false;
+                                                      });
+                                                    }
+                                                ),
+                                              ),
+                                              IconButton(
+                                                  icon: Icon(
+                                                      Icons.delete_outlined,
+                                                      size: MediaQuery.of(context).size.width*0.08,
+                                                      color: Theme.of(context).primaryColor
+                                                  ),
+                                                  onPressed: () async {
+                                                    var result = await showDialog(
+                                                        context: context,
+                                                        builder: (_) {
+                                                          return DeleteConfirmationDialog(text: 'Estas seguro que quieres eliminar esta compra? Todos los eventos realizados con esta compra desapareceran del cliente.');
+                                                        }
+                                                    );
+                                                    if (result) {
+                                                      _deletePurchaseFunction();
+                                                    }
+                                                  }
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        /*ClientBonoCard(
                                           height: MediaQuery.of(context).size.height*0.08,
                                           width: MediaQuery.of(context).size.width*0.27,
                                           bono: bono,
@@ -505,7 +551,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                           purchase: purchase,
                                           canExpand: false,
                                           onlyView: true,
-                                        ),
+                                        ),*/
                                         FittedBox(
                                           fit: BoxFit.fitHeight,
                                           child: Container(
@@ -634,5 +680,17 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
         ],
       )
     );
+  }
+
+  Future<void> _deletePurchaseFunction() async {
+    mixpanel!.timeEvent("delete_purchase_completed");
+    setState(() {
+      isLoading = true;
+    });
+    // Delete Event Call
+    //await _purchaseDataService.deletePurchase(widget.eventId!);
+    mixpanel!.track('delete_purchase_completed');
+    // Pop to Last Page
+    Navigator.pop(context, false);
   }
 }

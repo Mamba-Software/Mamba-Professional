@@ -550,7 +550,8 @@ class BrandFirebaseCalls {
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
       "isActive": false,
-      "baseImage": ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!
+      "baseImage": ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!,
+      "directPurchase": false,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -695,13 +696,14 @@ class BrandFirebaseCalls {
   //Update
 
   Future<void> updateBrandInfo(String brandID, String name, String description,
-      int maxMembers, List<double> workShift, int bookingWindow) async {
+      int maxMembers, List<double> workShift, int bookingWindow, bool? directPurchase) async {
     await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
       "workShift": workShift,
+      "directPurchase": directPurchase,
     });
   }
 
