@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -21,6 +22,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Eve
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:page_view_dot_indicator/page_view_dot_indicator.dart';
+
+import '../../../../../Data/DataService/Purchase/cubit_purchase_events/PurchaseEventsCubit.dart';
 
 class UserBonosHistoryPage extends StatefulWidget {
   String userId;
@@ -365,44 +368,69 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                 ),
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              events.isNotEmpty ? Container(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: events.length,
-                                    itemBuilder: (context, index) {
-                                      Event event = events[index];
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            navigateToEventScreen(event.id!);
-                                          },
-                                          child: UserEventCard(
-                                            event: event,
-                                            height: MediaQuery.of(context).size.height*0.15,
-                                            width: MediaQuery.of(context).size.width*0.9,
-                                            isMyEvent: true,
-                                            showEmoji: false,
-                                          ),
+                                BlocProvider<PurchaseEventsCubit>(
+                                  create: (_) => PurchaseEventsCubit(purchase),
+                                  lazy: false,
+                                  child: BlocBuilder<PurchaseEventsCubit, PurchaseEventsState>(
+                                  builder: (context, state) {
+                                    if(state is PurchaseEventsLoaded) {
+                                      return Container(
+                                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            itemCount: events.length,
+                                            itemBuilder: (context, index) {
+                                              Event event = events[index];
+                                              return Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                child: GestureDetector(
+                                                  onTap: () {
+                                                    navigateToEventScreen(event.id!);
+                                                  },
+                                                  child: UserEventCard(
+                                                    event: event,
+                                                    height: MediaQuery.of(context).size.height*0.15,
+                                                    width: MediaQuery.of(context).size.width*0.9,
+                                                    isMyEvent: true,
+                                                    showEmoji: false,
+                                                  ),
+                                                ),
+                                              );
+                                            }
                                         ),
                                       );
                                     }
-                                ),
-                              ) : Padding(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.05),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        AppLocalizations.of(context)!.noData,
-                                        style: Theme.of(context).textTheme.bodyText2,
-                                        textAlign: TextAlign.center
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                    else {
+                                      return Padding(
+                                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.05),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                AppLocalizations.of(context)!.noData,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                textAlign: TextAlign.center
+                                            ),
+                                            IconButton(
+                                                icon: Icon(
+                                                    Icons.view_array_outlined,
+                                                    size: MediaQuery.of(context).size.width*0.08,
+                                                    color: Theme.of(context).primaryColor
+                                                ),
+                                                onPressed: () async{
+                                                  purchase = await _purchaseDataService.getPurchaseEvents(purchase);
+                                                  setState(() {
+                                                  });
+                                                }
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  ),
+                                  ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.1),
                             ],
                           ),
@@ -499,59 +527,21 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        SizedBox(
-                                          height: MediaQuery.of(context).size.height*0.08,
-                                          width: MediaQuery.of(context).size.width*0.27,
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: IconButton(
-                                                    icon: Icon(
-                                                        Icons.visibility_outlined,
-                                                        size: MediaQuery.of(context).size.width*0.08,
-                                                        color: Theme.of(context).primaryColor
-                                                    ),
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        isList = !isList;
-                                                        _scrollController = ScrollController(initialScrollOffset: _currentPage*MediaQuery.of(context).size.height*0.2);
-                                                        isExpanded = false;
-                                                      });
-                                                    }
-                                                ),
-                                              ),
-                                              IconButton(
-                                                  icon: Icon(
-                                                      Icons.delete_outlined,
-                                                      size: MediaQuery.of(context).size.width*0.08,
-                                                      color: Theme.of(context).primaryColor
-                                                  ),
-                                                  onPressed: () async {
-                                                    var result = await showDialog(
-                                                        context: context,
-                                                        builder: (_) {
-                                                          return DeleteConfirmationDialog(text: 'Estas seguro que quieres eliminar esta compra? Todos los eventos realizados con esta compra desapareceran del cliente.');
-                                                        }
-                                                    );
-                                                    if (result) {
-                                                      _deletePurchaseFunction();
-                                                    }
-                                                  }
-                                              ),
-                                            ],
-                                          ),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ClientBonoCard(
+                                              height: MediaQuery.of(context).size.height*0.08,
+                                              width: MediaQuery.of(context).size.width*0.27,
+                                              bono: bono,
+                                              brand: brand,
+                                              purchase: purchase,
+                                              canExpand: false,
+                                              onlyView: true,
+                                            ),
+
+                                          ],
                                         ),
-                                        /*ClientBonoCard(
-                                          height: MediaQuery.of(context).size.height*0.08,
-                                          width: MediaQuery.of(context).size.width*0.27,
-                                          bono: bono,
-                                          brand: brand,
-                                          purchase: purchase,
-                                          canExpand: false,
-                                          onlyView: true,
-                                        ),*/
                                         FittedBox(
                                           fit: BoxFit.fitHeight,
                                           child: Container(
@@ -669,7 +659,35 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                           height: MediaQuery.of(context).size.height*0.2,
                           width: MediaQuery.of(context).size.width,
                           color: Colors.transparent,
-                        )
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return DeleteConfirmationDialog(text: 'Estas seguro que quieres eliminar esta compra? Todos los eventos realizados con esta compra desapareceran del cliente.');
+                                }
+                            );
+                            if (result) {
+                              await _deletePurchaseFunction(purchase.id!, widget.userId, widget.brandId);
+                              setState(() {
+                                isLoading = false;
+                                pageViewList.removeAt(index);
+                              });
+                            }
+                          },
+                          child: Padding(
+                          padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, top: MediaQuery.of(context).size.width*0.03),
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: Icon(
+                                  Icons.delete_outlined,
+                                  size: MediaQuery.of(context).size.width*0.1,
+                                  color: Theme.of(context).primaryColor
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   );
@@ -682,15 +700,14 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
     );
   }
 
-  Future<void> _deletePurchaseFunction() async {
+  Future<void> _deletePurchaseFunction(String purchaseId, String userId, String brandId) async {
     mixpanel!.timeEvent("delete_purchase_completed");
     setState(() {
       isLoading = true;
     });
     // Delete Event Call
-    //await _purchaseDataService.deletePurchase(widget.eventId!);
+    await _purchaseDataService.deletePurchase(purchaseId, userId, brandId);
     mixpanel!.track('delete_purchase_completed');
     // Pop to Last Page
-    Navigator.pop(context, false);
   }
 }
