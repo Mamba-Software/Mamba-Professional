@@ -16,6 +16,8 @@ class PurchaseEventsCubit extends Cubit<PurchaseEventsState> {
   }
 
   void loadList(Purchase purchase) async {
+    emit(PurchaseEventsLoading());
+    //await _purchaseDataService.getPurchasesByEventId('77e13600-112e-11ee-917b-c9ed12e14bc9');
     emit(PurchaseEventsLoaded(await _purchaseDataService.getPurchaseEvents(purchase)));
   }
 

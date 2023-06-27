@@ -15,12 +15,14 @@ class PurchaseDataService {
   Future<Purchase> getPurchaseInfo(String purchaseId) => _firebase.getPurchaseInfo(purchaseId);
   Future<List<Purchase>> getAllUserPurchasesFromBrand(String userId, String brandId) => _firebase.getAllUserPurchasesFromBrand(userId, brandId);
   Future<Purchase> getPurchaseEvents(Purchase purchase) => _firebase.getPurchaseEvents(purchase);
+  Future<List<Purchase>> getPurchasesByEventId(String eventId) => _firebase.getPurchasesByEventId(eventId);
 
   // Add Data
   Future<String> addPurchase(Purchase purchase, Bono bonoSelected) => _firebase.addPurchase(purchase, bonoSelected);
   Future<void> addEventToPurchase(String purchaseId, String eventId) => _firebase.addEventToPurchase(purchaseId, eventId);
 
   // Update Data
+  Future<void> updateUserPurchaseSessions(String userId, String brandId, String purchaseId, int sessions, String bonoId) => _firebase.updateUserPurchaseSessions(userId, brandId, purchaseId, sessions, bonoId);
 
   // Delete Data
   Future<void> deletePurchase(String purchaseId, String userId, String brandId) => _firebase.detelePurchase(purchaseId, userId, brandId);

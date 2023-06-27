@@ -2479,78 +2479,32 @@ exports.changeMessageStatus = functions
     }
   })
 
-   // User Deletes Purchase Event
-    exports.UserDeletesPurcchaseEvent = functions
-        .region("europe-west1")
-        .firestore
-        .document("/Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}/Events/{eventId}")
-        .onDelete( async (snap, context) => {
-            // Get the value of the context triggers.
-            const purchaseId = context.params.purchaseId;
-            const brandId = context.params.brandId;
-            const eventId = context.params.eventId;
-            const userId = context.params.userId;
+  // User Deletes Purchase
+  exports.UserDeletesPurchase = functions
+    .region("europe-west1")
+    .firestore
+    .document("/Purchases/{purchaseId}")
+    .onDelete( async (snap, context) => {
+        // Get the value of the context triggers.
+         const purchaseId = context.params.purchaseId;
 
-            functions.logger.log(
-                    "Deleting event from purchase with ID:",
-                    purchaseId,
-                    "to Brand with ID",
-                    brandId
-              );
-            // Delete Event to Users Collection
-            await db
-            .collection("Purchases")
-            .doc(purchaseId)
-            .collection("Events")
-            .doc(eventId)
-            .delete();
+         const purchaseSnapShot = await db.collection("Purchases").doc(purchaseId).get();
+         const purchaseDoc = purchaseSnapShot.data();
 
-            // Delete Event to Users Collection
-              await db
-                 .collection("Users")
-                 .doc(userId)
-                 .collection("Purchases")
-                 .doc(purchaseId)
-                 .collection("Events")
-                 .doc(eventId)
-                 .delete();
+           const userId = purchaseDoc.userId;
+           const bonoId = purchaseDoc.bonoId;
+           const brandId =  purchaseDoc.brandId;
 
-            return null;
-        });
+           await db.collection("Brands").doc(brandId).doc(purchaseId).delete();
 
-      // User Deletes Purchase
-        exports.UserDeletesPurcchase = functions
-            .region("europe-west1")
-            .firestore
-            .document("/Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}")
-            .onDelete( async (snap, context) => {
-                // Get the value of the context triggers.
-                const purchaseId = context.params.purchaseId;
-                const brandId = context.params.brandId;
-                const userId = context.params.userId;
+           await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
 
-                functions.logger.log(
-                        "Deleting purchase with ID:",
-                        purchaseId,
-                        "to Brand with ID",
-                        brandId
-                  );
-                // Delete Event to Users Collection
-                await db
-                .collection("Purchases")
-                .doc(purchaseId)
-                .delete();
+           await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
 
-                // Delete Event to Users Collection
-                  await db
-                     .collection("Users")
-                     .doc(userId)
-                     .collection("Purchases")
-                     .doc(purchaseId)
-                     .delete();
+           await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).delete();
 
-                return null;
-            });
+        return null;
+    });
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -5656,78 +5610,32 @@ exports.updateBrandSubscription = functions
     return null
 })
 
-  // User Deletes Purchase Event
-    exports.zzzzUserDeletesPurcchaseEvent = functions
-        .region("europe-west1")
-        .firestore
-        .document("/7777 Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}/Events/{eventId}")
-        .onDelete( async (snap, context) => {
-            // Get the value of the context triggers.
-            const purchaseId = context.params.purchaseId;
-            const brandId = context.params.brandId;
-            const eventId = context.params.eventId;
-            const userId = context.params.userId;
+// User Deletes Purchase
+exports.zzzzUserDeletesPurchase = functions
+  .region("europe-west1")
+  .firestore
+  .document("/7777 Purchases/{purchaseId}")
+  .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+       const purchaseId = context.params.purchaseId;
 
-            functions.logger.log(
-                    "Deleting event from purchase with ID:",
-                    purchaseId,
-                    "to Brand with ID",
-                    brandId
-              );
-            // Delete Event to Users Collection
-            await db
-            .collection("7777 Purchases")
-            .doc(purchaseId)
-            .collection("Events")
-            .doc(eventId)
-            .delete();
+       const purchaseSnapShot = await db.collection("7777 Purchases").doc(purchaseId).get();
+       const purchaseDoc = purchaseSnapShot.data();
 
-            // Delete Event to Users Collection
-              await db
-                 .collection("7777 Users")
-                 .doc(userId)
-                 .collection("Purchases")
-                 .doc(purchaseId)
-                 .collection("Events")
-                 .doc(eventId)
-                 .delete();
+         const userId = purchaseDoc.userId;
+         const bonoId = purchaseDoc.bonoId;
+         const brandId =  purchaseDoc.brandId;
 
-            return null;
-        });
+         await db.collection("7777 Brands").doc(brandId).doc(purchaseId).delete();
 
-        // User Deletes Purchase
-        exports.zzzzUserDeletesPurcchase = functions
-                  .region("europe-west1")
-                  .firestore
-                  .document("/7777 Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}")
-                  .onDelete( async (snap, context) => {
-                      // Get the value of the context triggers.
-                      const purchaseId = context.params.purchaseId;
-                      const brandId = context.params.brandId;
-                      const userId = context.params.userId;
+         await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
 
-                      functions.logger.log(
-                              "Deleting purchase with ID:",
-                              purchaseId,
-                              "to Brand with ID",
-                              brandId
-                        );
-                      // Delete Event to Users Collection
-                      await db
-                      .collection("7777 Purchases")
-                      .doc(purchaseId)
-                      .delete();
+         await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
 
-                      // Delete Event to Users Collection
-                        await db
-                           .collection("7777 Users")
-                           .doc(userId)
-                           .collection("Purchases")
-                           .doc(purchaseId)
-                           .delete();
+         await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).delete();
 
-                      return null;
-                  });
+      return null;
+  });
 
 
 

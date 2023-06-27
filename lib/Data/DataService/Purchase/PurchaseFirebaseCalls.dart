@@ -161,20 +161,34 @@ class PurchaseFirebaseCalls {
     return purchasesList;
   }
 
-  Future<Purchase> getPurchaseEvents(Purchase purchase) async {
-      // Get Purchase Events
-      List<Event> events = [];
-      QuerySnapshot querySnapshot2 = await _firestore
-          .collection(purchases)
-          .doc(purchase.id)
-          .collection("Events")
-          .get();
-      for (int i = 0; i < querySnapshot2.docs.length; i++) {
-        events.add(Event.fromObjectOnlyCoverData(querySnapshot2.docs[i].id, querySnapshot2.docs[i]));
-      }
-      // Set Purchase Events
-      purchase.setPurchasedEventsData = events;
+  Future<List<Purchase>> getPurchasesByEventId(String eventId) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection(purchases)
+        .where('Events', arrayContains: {'id': eventId})
+        .get();
+    List<Purchase> listpurchases = [];
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      Purchase purchase = Purchase.fromObjectAllData(documentSnapshot.id, documentSnapshot);
+      print(purchase);
+      listpurchases.add(purchase);
+    }
 
+    return listpurchases;
+  }
+
+  Future<Purchase> getPurchaseEvents(Purchase purchase) async {
+    // Get Purchase Events
+    List<Event> events = [];
+    QuerySnapshot querySnapshot2 = await _firestore
+        .collection(purchases)
+        .doc(purchase.id)
+        .collection("Events")
+        .get();
+    for (int i = 0; i < querySnapshot2.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(querySnapshot2.docs[i].id, querySnapshot2.docs[i]));
+    }
+    // Set Purchase Events
+    purchase.setPurchasedEventsData = events;
 
     return purchase;
   }
@@ -229,16 +243,34 @@ class PurchaseFirebaseCalls {
     });
   }
 
+  //Update Data
+
+  Future<void> updateUserPurchaseSessions(String userId, String brandId, String purchaseId, int sessions, String bonoId) async {
+    // Update the Purchase Collection
+    await _firestore.collection(purchases).doc(purchaseId).update({
+      "sessions": sessions,
+    });
+    // Update the User/Purchase Collection
+    await _firestore.collection(users).doc(userId).collection("Purchases").doc(purchaseId).update({
+      "sessions": sessions,
+    });
+    // Update the Brand/Bonos/Purchase Collection
+    await _firestore.collection(brands).doc(brandId).collection("Purchases").doc(purchaseId).update({
+      "sessions": sessions
+    });
+    // Update the Brand/Bonos/Purchase Collection
+    //ENS INTERESSA? TODO
+    await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).update({
+      "sessions": sessions
+    });
+  }
+
   // Delete Data
 
   Future<void> detelePurchase(String purchaseId, String userId, String brandId) async {
 
     await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Users")
-        .doc(userId)
-        .collection("Purchases")
+        .collection(purchases)
         .doc(purchaseId)
         .collection("Events")
         .get()
@@ -249,11 +281,7 @@ class PurchaseFirebaseCalls {
     });
 
     await _firestore
-        .collection(brands)
-        .doc(brandId)
-        .collection("Users")
-        .doc(userId)
-        .collection("Purchases")
+        .collection(purchases)
         .doc(purchaseId).delete();
 
   }

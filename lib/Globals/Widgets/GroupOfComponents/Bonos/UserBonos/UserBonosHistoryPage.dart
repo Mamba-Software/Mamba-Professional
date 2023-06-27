@@ -104,8 +104,8 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
       result.add(purchase.bono);
       result.add(purchase.brand);
       // Add Event List
-      List<Event> events = List.from(purchase.events);
-      result.add(events);
+      //List<Event> events = List.from(purchase.events);
+      //result.add(events);
       // Add to Final pageview
       pageViewList.add(result);
     }
@@ -233,7 +233,6 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                         Purchase purchase = pageViewList[index][0];
                         Bono bono = pageViewList[index][1];
                         Brand brand = pageViewList[index][2];
-                        List<Event> events = pageViewList[index][3];
                         return SingleChildScrollView(
                           physics: const ClampingScrollPhysics(),
                           child: Column(
@@ -340,26 +339,26 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.02),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                        AppLocalizations.of(context)!.sessions,
-                                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-                                        textAlign: TextAlign.center
+                                      AppLocalizations.of(context)!.sessions,
+                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+                                      textAlign: TextAlign.center,
                                     ),
                                     Row(
                                       children: [
                                         Text(
-                                            AppLocalizations.of(context)!.newerFirst,
-                                            style: Theme.of(context).textTheme.caption,
-                                            textAlign: TextAlign.center
+                                          AppLocalizations.of(context)!.newerFirst,
+                                          style: Theme.of(context).textTheme.caption,
+                                          textAlign: TextAlign.center,
                                         ),
                                         const SizedBox(width: 2),
                                         Icon(
                                           Icons.arrow_downward,
-                                          size: MediaQuery.of(context).size.width*0.04,
+                                          size: MediaQuery.of(context).size.width * 0.04,
                                           color: AppColors.grey,
                                         ),
                                       ],
@@ -368,13 +367,15 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                 ),
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                BlocProvider<PurchaseEventsCubit>(
-                                  create: (_) => PurchaseEventsCubit(purchase),
-                                  lazy: false,
-                                  child: BlocBuilder<PurchaseEventsCubit, PurchaseEventsState>(
+                              BlocProvider<PurchaseEventsCubit>(
+                                create: (_) => PurchaseEventsCubit(purchase),
+                                lazy: true,
+                                child: BlocBuilder<PurchaseEventsCubit, PurchaseEventsState>(
                                   builder: (context, state) {
-                                    if(state is PurchaseEventsLoaded) {
-                                      return Container(
+                                    List<Event> events = [];
+                                    if (state is PurchaseEventsLoaded) {
+                                      events = state.purchase.events;
+                                      return state.purchase.events.isNotEmpty ? Container(
                                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                                         child: ListView.builder(
                                             shrinkWrap: true,
@@ -388,21 +389,53 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                   onTap: () {
                                                     navigateToEventScreen(event.id!);
                                                   },
-                                                  child: UserEventCard(
-                                                    event: event,
-                                                    height: MediaQuery.of(context).size.height*0.15,
-                                                    width: MediaQuery.of(context).size.width*0.9,
-                                                    isMyEvent: true,
-                                                    showEmoji: false,
+                                                  child: Stack(
+                                                      children: [
+                                                        UserEventCard(
+                                                          event: event,
+                                                          height: MediaQuery.of(context).size.height*0.15,
+                                                          width: MediaQuery.of(context).size.width*0.9,
+                                                          isMyEvent: true,
+                                                          showEmoji: false,
+                                                        ),
+                                                        Padding(
+                                                          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            children: [
+                                                              FloatingActionButton(
+                                                              mini: true,
+                                                              elevation: 0, // Remove the elevation
+                                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                              onPressed: () async {
+                                                                var result = await showDialog(
+                                                                    context: context,
+                                                                    builder: (_) {
+                                                                      return DeleteConfirmationDialog(text: 'Estas seguro que quieres eliminar este evento de la compra?');
+                                                                    }
+                                                                );
+
+                                                                if (result) {
+                                                                  await _purchaseDataService.deleteEventFromPurchase(purchase.id!, event.id!);
+                                                                  //_purchaseDataService.updateUserPurchaseSessions(purchase.userId!, purchase.brandId!, purchase.id!, purchase.sessions! - 1, purchase.bonoId!)
+                                                                  context.read<PurchaseEventsCubit>().loadList(purchase);
+                                                                }
+                                                              },
+                                                              backgroundColor: AppColors.black,
+                                                              child: Icon(
+                                                                Icons.delete,
+                                                              ),
+                                                            ),
+                                                          ]
+                                                          ),
+                                                        ),
+                                                      ]
                                                   ),
                                                 ),
                                               );
                                             }
                                         ),
-                                      );
-                                    }
-                                    else {
-                                      return Padding(
+                                      ) : Padding(
                                         padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.05),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
@@ -412,25 +445,23 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                                 style: Theme.of(context).textTheme.bodyText2,
                                                 textAlign: TextAlign.center
                                             ),
-                                            IconButton(
-                                                icon: Icon(
-                                                    Icons.view_array_outlined,
-                                                    size: MediaQuery.of(context).size.width*0.08,
-                                                    color: Theme.of(context).primaryColor
-                                                ),
-                                                onPressed: () async{
-                                                  purchase = await _purchaseDataService.getPurchaseEvents(purchase);
-                                                  setState(() {
-                                                  });
-                                                }
-                                            ),
                                           ],
                                         ),
                                       );
                                     }
-                                  }
-                                  ),
-                                  ),
+                                    else {
+                                      return Padding(
+                                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.30),
+                                        child: LoadingView(
+                                          color: Theme.of(context).primaryColor,
+                                          hasLogo: false,
+                                          isSmall: true,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.1),
                             ],
                           ),

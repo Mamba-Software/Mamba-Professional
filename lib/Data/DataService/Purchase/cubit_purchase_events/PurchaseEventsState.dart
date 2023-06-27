@@ -11,6 +11,13 @@ class PurchaseEventsInitial extends PurchaseEventsState {
   List<Object?> get props => [];
 }
 
+class PurchaseEventsLoading extends PurchaseEventsState {
+  const PurchaseEventsLoading();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class PurchaseEventsLoaded extends PurchaseEventsState {
   final Purchase purchase;
 
