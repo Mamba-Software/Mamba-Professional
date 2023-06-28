@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -29,6 +30,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
   // Data Serviceç
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
+  final _libraryDataService = LibraryDataService();
   // Tab Controller
   double addEventTabValue = 0.2499;
   TabController? _tabController;
@@ -120,12 +122,14 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
         });
         await Future.delayed(const Duration(milliseconds: 500));
         int role = 0;
-        if (widget.isTrainer) {
-          role = 3;
-        }
+        if (widget.isTrainer) role = 3;
         await _brandDataService.addUserToBrand(user.uid, currentBrand.id!, role);
         NotificationService _notificationService = NotificationService();
         await _notificationService.userJoinsBrand(user.uid, currentBrand.id!);
+        /// Add Document to Email Templates/Emails/{userId} so that email is sent
+        String templateId = "joinBrandMessage";
+        if (widget.isTrainer) templateId += "Pro";
+        await _libraryDataService.sendEmailToUser(templateId, user.uid, currentBrand.id!);
         /// User Has Been Created
         setState(() {
           isRecurrentLoadingText = AppLocalizations.of(context)!.updating+" "+AppLocalizations.of(context)!.creatingProfile.split(" ")[1]+" ...";

@@ -18,6 +18,7 @@ const {FirestoreAdminClient} = require('@google-cloud/firestore').v1;
 const client = new FirestoreAdminClient();
 // Send Grid Integration
 const sgMail = require('@sendgrid/mail');
+const { user } = require("firebase-functions/v1/auth");
 sgMail.setApiKey("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");
 
 // Daily Notification For Events
@@ -915,10 +916,10 @@ exports.userAddsBrand = functions
       const userSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
       const userDoc = userSnapshot.data();  
       // Get Email Template
-      const templateSnapshot = await db.collection("Settings").doc("EmailTemplate").get();
+      const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
       const templateDoc = templateSnapshot.data();          
       // Determine the base email content
-      let baseContent = templateDoc.templatePro;
+      let baseContent = templateDoc.basicMessagePro;
       let text = "Hola,<br><br>Se ha registrado un nuevo profesional. Aquí sus detalles:<br><br>Nombre: "+brandDoc.name+"<br>Descripción: "+brandDoc.description+"<br>Localización: "+brandDoc.city+", "+brandDoc.zipCode+"<br>Creador: "+userDoc.name+"<br>Email: "+userDoc.email+"<br><br>";    
       // Replace macros with actual data
       let content = baseContent.replace(/{{title}}/g, "Nuevo Profesional Registrado");
@@ -1210,6 +1211,56 @@ exports.userJoinsBrand = functions
       });
       return null;
     });
+
+// User Manually Registers Member to Brand
+exports.userRegistersMemberToBrand = functions
+.region("europe-west1")
+.firestore
+.document("/Library/Email Templates/Emails To Send/{userId}")
+.onCreate( async (snap, context) => {
+      // Get the value of the context triggers.
+      const userId = context.params.userId;
+      // Get Data of the Email
+      const emailToSendSnapshot = await db.collection("Library").doc("Email Templates").collection("Emails To Send").doc(userId).get();
+      const emailToSendDoc = emailToSendSnapshot.data();  
+      // Get Data of the User
+      const userSnapshot = await db.collection("7777 Users").doc(userId).get();
+      const userDoc = userSnapshot.data();  
+      // Get Data of the Brand
+      const brandSnapshot = await db.collection("7777 Brands").doc(emailToSendDoc.brandId).get();
+      const brandDoc = brandSnapshot.data();      
+      // Get Email Template
+      const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+      const templateDoc = templateSnapshot.data();          
+      // Determine the base email content      
+      let baseContent = templateDoc.joinBrandMessage; 
+      if (userDoc.isTrainer == true) {
+        baseContent = templateDoc.joinBrandMessagePro;
+      }          
+      // Replace macros with actual data
+      const emailTitleString = "Te damos la bienvenida a "+brandDoc.name;
+      const firstNameString = userDoc.firstName.charAt(0).toUpperCase() + userDoc.firstName.slice(1);
+      let content = baseContent.replace(/{{firstName}}/g, firstNameString);
+      content = content.replace(/{{email}}/g, userDoc.email);
+      content = content.replace(/{{logoUrl}}/g, brandDoc.logoUrl);
+      content = content.replace(/{{brandName}}/g, brandDoc.name);    
+      content = content.replace(/{{description}}/g, brandDoc.description);
+      const msg = {
+          to: userDoc.email,
+          from: 'Equipo de Mamba <info@mambaapp.app>',
+          subject: emailTitleString,
+          html: content,
+      };
+      // Send Email
+      try {
+          sgMail.send(msg);
+          console.log('Email sent to ', user.email);
+      } catch (error) {
+          console.error('Error sending email to', user.email, error);
+      }
+      return null;
+   });
+
 
 // User Leaves Brand
 exports.userLeavesBrand = functions
