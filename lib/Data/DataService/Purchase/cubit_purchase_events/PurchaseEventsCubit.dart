@@ -12,13 +12,22 @@ class PurchaseEventsCubit extends Cubit<PurchaseEventsState> {
   final _purchaseDataService = PurchaseDataService();
 
   PurchaseEventsCubit(Purchase purchase) : super(PurchaseEventsInitial()) {
-    loadList(purchase);
   }
 
   void loadList(Purchase purchase) async {
-    emit(PurchaseEventsLoading());
-    //await _purchaseDataService.getPurchasesByEventId('77e13600-112e-11ee-917b-c9ed12e14bc9');
-    emit(PurchaseEventsLoaded(await _purchaseDataService.getPurchaseEvents(purchase)));
+    if(purchase.id != null) {
+      emit(PurchaseEventsLoading());
+      Purchase purchaseNew = await _purchaseDataService.getPurchaseEvents(purchase);
+      purchaseNew.setInitialEventsData = purchaseNew.events;
+      emit(PurchaseEventsLoaded(purchaseNew));
+    }
+  }
+
+  void updateEvents(Purchase purchase) async {
+    if(purchase.id != null) {
+      emit(PurchaseEventsLoading());
+      emit(PurchaseEventsLoaded(purchase));
+    }
   }
 
 

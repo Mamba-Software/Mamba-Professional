@@ -749,5 +749,9 @@
   "isMaintenanceText": "Estem afinant els detalls per portar-te una experiència encara millor. Només tardarem uns minuts per tornar amb força...",
   "cantEditText": "No es poden editar aquests valors en un event finalitzat",
   "directPurchaseDescription": "Permet que les compres dels teus vals s'aprovin sense sol·licitud, el client obtindrà el val al moment de fer la compra",
-  "directPurchasetext": "Permetre compra directa"
+  "directPurchasetext": "Permetre compra directa",
+  "deletePurchase": "Estàs segur que vols eliminar aquesta compra? Tots els esdeveniments realitzats amb aquesta compra desapareixeran del client.",
+  "cancelEventPurchase": "Estàs segur que vols desvincular aquest esdeveniment de la compra?",
+  "addEventsToPurchaseText": "Afegeix o desvincula esdeveniments a la compra",
+  "addEventsToPurchaseSubText": "Afectaran al número de sessiones per aquest val"
 }

@@ -473,7 +473,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           widget.eventId != null ? IconButton(
               onPressed: () async {
                 if(isLoading == false) {
-                  if (event.eventGroupId == null) {
+                  if (event.eventGroupId == null || !widget.isBeforeEdit) {
                     // DeleteDialog
                     var result = await showDialog(
                         context: context,
@@ -574,7 +574,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         actions: [
           widget.eventId != null ? (event.numClients == 0 || widget.isBeforeEdit)? IconButton(
               onPressed: () async {
-                if (event.eventGroupId == null) {
+                if (event.eventGroupId == null || !widget.isBeforeEdit) {
                   // DeleteDialog
                   var result = await showDialog(
                       context: context,
@@ -1872,7 +1872,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                         if (widget.eventId == null) {
                           _addEventFunction();
                         } else {
-                          if (event.eventGroupId == null) {
+                          if (event.eventGroupId == null || !widget.isBeforeEdit) {
                             _updateEventFunction();
                           } else {
                             var result = await showDialog(

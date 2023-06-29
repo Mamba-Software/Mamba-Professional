@@ -22,6 +22,7 @@ class Purchase {
   Bono? bono;
   Brand? brand;
   List<Event> events = [];
+  List<Event> initalEvents = [];
   int numberOfEvents = 0;
 
   Purchase({
@@ -85,6 +86,9 @@ class Purchase {
   set setPurchasedEventsData(List<Event> events) {
     this.events = events;
     numberOfEvents = events.length;
+  }
+  set setInitialEventsData(List<Event> events) {
+    this.initalEvents = events;
   }
 
   // Set Basic Data

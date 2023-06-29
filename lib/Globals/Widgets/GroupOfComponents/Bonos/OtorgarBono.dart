@@ -7,10 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseEvents/PurchaseEvents.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -116,6 +118,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
   int _numPages = 0;
   int? _currentPage;
   PageController? _pageController;
+
+  bool eventsUpdated = false;
+  Purchase newPurchase = Purchase();
 
   @override
   void initState() {
@@ -670,7 +675,9 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 ),
               )
             ) : Container(),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+            editBono?SizedBox(height: MediaQuery.of(context).size.height * 0.04): Container(),
+            editBono? PurchaseEvents(purchase: purchase,context: context, executeFunction: executeFunctionWithPurchase) : Container(),
+            editBono? SizedBox(height: MediaQuery.of(context).size.height * 0.01): Container(),
             /// PAYMENT METHOD
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
@@ -973,6 +980,12 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                     /// EDIT BONO REQUEST
                     mixpanel!.track('edit_bono_confirmed');
                     await _userDataService.updateUserBono(user.id!, currentBrand.id!, bonoSelected);
+                    if(eventsUpdated) {
+                      print('We update the events');
+                      print(purchase.events.length);
+                      await _purchaseDataService.updatePurchaseEvents(
+                          purchase.id!, newPurchase.events, newPurchase.initalEvents);
+                    }
                     /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
                     if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
                       // Delete Local Notifications if Expiration Time has change in Update
@@ -1759,5 +1772,13 @@ class _OtorgarBonoState extends State<OtorgarBono> {
       }
       setState(() {});
     }
+  }
+
+  void executeFunctionWithPurchase(Purchase _purchase) {
+    eventsUpdated = true;
+    List<Event> deleteEvents = _purchase.initalEvents.where((b) => !_purchase.events.any((a) => a.id == b.id)).toList();
+    List<Event> newEvents = _purchase.events.where((b) => !_purchase.initalEvents.any((a) => a.id == b.id)).toList();
+    newPurchase.setInitialEventsData = deleteEvents;
+    newPurchase.setPurchasedEventsData = newEvents;
   }
 }

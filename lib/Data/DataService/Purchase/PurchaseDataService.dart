@@ -3,6 +3,8 @@ import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseFirebaseCa
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 
+import '../../Models/Event.dart';
+
 // This class gives access to all of the Firebase Backend. This is the Data provider for the UI.
 class PurchaseDataService {
 
@@ -23,6 +25,7 @@ class PurchaseDataService {
 
   // Update Data
   Future<void> updateUserPurchaseSessions(String userId, String brandId, String purchaseId, int sessions, String bonoId) => _firebase.updateUserPurchaseSessions(userId, brandId, purchaseId, sessions, bonoId);
+  Future<void> updatePurchaseEvents(String purchaseId, List<Event> eventsToAdd, List<Event> eventsToDelete) => _firebase.updatePurchaseEvents( purchaseId, eventsToAdd, eventsToDelete);
 
   // Delete Data
   Future<void> deletePurchase(String purchaseId, String userId, String brandId) => _firebase.detelePurchase(purchaseId, userId, brandId);

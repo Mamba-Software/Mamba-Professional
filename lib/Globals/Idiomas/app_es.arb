@@ -3333,5 +3333,21 @@
   "directPurchasetext": "Permitir compra directa",
   "@directPurchasetext": {
     "description": "directPurchasetext message"
+  },
+  "deletePurchase": "¿Estás seguro qué quieres eliminar esta compra? Todos los eventos realizados con esta compra desapareceran del cliente.",
+  "@deletePurchase": {
+    "description": "deletePurchase message"
+  },
+  "cancelEventPurchase": "¿Estás seguro que quieres desvincular este evento de la compra?",
+  "@cancelEventPurchase": {
+    "description": "cancelEventPurchase message"
+  },
+  "addEventsToPurchaseText": "Añade o desvincula eventos a la compra",
+  "@addEventsToPurchaseText": {
+    "description": "addEventsToPurchaseText message"
+  },
+  "addEventsToPurchaseSubText": "Afectaran al número de sesiones para este bono",
+  "@addEventsToPurchaseSubText": {
+    "description": "addEventsToPurchaseSubText message"
   }
 }

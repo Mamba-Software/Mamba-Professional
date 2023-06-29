@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseEvents/PurchaseEvents.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -338,130 +339,7 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                                 ),
                               ),
                               SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      AppLocalizations.of(context)!.sessions,
-                                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          AppLocalizations.of(context)!.newerFirst,
-                                          style: Theme.of(context).textTheme.caption,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        const SizedBox(width: 2),
-                                        Icon(
-                                          Icons.arrow_downward,
-                                          size: MediaQuery.of(context).size.width * 0.04,
-                                          color: AppColors.grey,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                              BlocProvider<PurchaseEventsCubit>(
-                                create: (_) => PurchaseEventsCubit(purchase),
-                                lazy: true,
-                                child: BlocBuilder<PurchaseEventsCubit, PurchaseEventsState>(
-                                  builder: (context, state) {
-                                    List<Event> events = [];
-                                    if (state is PurchaseEventsLoaded) {
-                                      events = state.purchase.events;
-                                      return state.purchase.events.isNotEmpty ? Container(
-                                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                                        child: ListView.builder(
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount: events.length,
-                                            itemBuilder: (context, index) {
-                                              Event event = events[index];
-                                              return Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                                child: GestureDetector(
-                                                  onTap: () {
-                                                    navigateToEventScreen(event.id!);
-                                                  },
-                                                  child: Stack(
-                                                      children: [
-                                                        UserEventCard(
-                                                          event: event,
-                                                          height: MediaQuery.of(context).size.height*0.15,
-                                                          width: MediaQuery.of(context).size.width*0.9,
-                                                          isMyEvent: true,
-                                                          showEmoji: false,
-                                                        ),
-                                                        Padding(
-                                                          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
-                                                          child: Row(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                            children: [
-                                                              FloatingActionButton(
-                                                              mini: true,
-                                                              elevation: 0, // Remove the elevation
-                                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                              onPressed: () async {
-                                                                var result = await showDialog(
-                                                                    context: context,
-                                                                    builder: (_) {
-                                                                      return DeleteConfirmationDialog(text: 'Estas seguro que quieres eliminar este evento de la compra?');
-                                                                    }
-                                                                );
-
-                                                                if (result) {
-                                                                  await _purchaseDataService.deleteEventFromPurchase(purchase.id!, event.id!);
-                                                                  //_purchaseDataService.updateUserPurchaseSessions(purchase.userId!, purchase.brandId!, purchase.id!, purchase.sessions! - 1, purchase.bonoId!)
-                                                                  context.read<PurchaseEventsCubit>().loadList(purchase);
-                                                                }
-                                                              },
-                                                              backgroundColor: AppColors.black,
-                                                              child: Icon(
-                                                                Icons.delete,
-                                                              ),
-                                                            ),
-                                                          ]
-                                                          ),
-                                                        ),
-                                                      ]
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                        ),
-                                      ) : Padding(
-                                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.02, horizontal: MediaQuery.of(context).size.width*0.05),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                AppLocalizations.of(context)!.noData,
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                textAlign: TextAlign.center
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    }
-                                    else {
-                                      return Padding(
-                                        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.30),
-                                        child: LoadingView(
-                                          color: Theme.of(context).primaryColor,
-                                          hasLogo: false,
-                                          isSmall: true,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                              ),
+                              //PurchaseEvents(purchase: purchase,context: context),
                               SizedBox(height: MediaQuery.of(context).size.height*0.1),
                             ],
                           ),
@@ -696,10 +574,11 @@ class _UserBonosHistoryPageState extends State<UserBonosHistoryPage> {
                             var result = await showDialog(
                                 context: context,
                                 builder: (_) {
-                                  return DeleteConfirmationDialog(text: 'Estas seguro que quieres eliminar esta compra? Todos los eventos realizados con esta compra desapareceran del cliente.');
+                                  return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchase);
                                 }
                             );
                             if (result) {
+                              print(purchase.id!);
                               await _deletePurchaseFunction(purchase.id!, widget.userId, widget.brandId);
                               setState(() {
                                 isLoading = false;
