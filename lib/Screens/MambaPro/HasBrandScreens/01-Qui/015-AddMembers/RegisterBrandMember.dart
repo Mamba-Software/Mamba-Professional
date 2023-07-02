@@ -5,7 +5,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
@@ -30,7 +29,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
   // Data Serviceç
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
-  final _libraryDataService = LibraryDataService();
   // Tab Controller
   double addEventTabValue = 0.2499;
   TabController? _tabController;
@@ -94,8 +92,8 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
     });
     // We First Create the User
     String password = "123456";
-    var result =  await _userDataService.addUser(emailController.text.trim(), password, Localizations.localeOf(context).languageCode);
-    if (result == 0) {
+    var result = await _userDataService.createUserOtherEmail(emailController.text.trim(), password, Localizations.localeOf(context).languageCode, widget.isTrainer);
+    if (result) {
       try {
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
@@ -107,15 +105,13 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
           emailExistsError = false;
           isRecurrentLoadingText = AppLocalizations.of(context)!.creatingProfile;
         });
-        /// Get the User
-        await _userDataService.signIn(emailController.text.trim(), password);
-        User? user = await _userDataService.getCurrentUser();
-        /// Reset Password Email
-        await _userDataService.resetPassword(emailController.text.trim());
+        /// Get the User UID
+        String? userUID = await _userDataService.getUserUIDWithEmail(emailController.text.trim());
+        print("userId: "+userUID!);
         /// Update Data of User
         String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
         String dateString = DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDate, Localizations.localeOf(context).languageCode);
-        await _userDataService.updateUser(user!.uid, name, firstNameController.text.trim(), lastNameController.text.trim(), dateString, gender!, null, null, widget.isTrainer);
+        await _userDataService.updateUser(userUID!, name, firstNameController.text.trim(), lastNameController.text.trim(), dateString, gender!, null, null, widget.isTrainer);
         /// Add User To Brand
         setState(() {
           isRecurrentLoadingText = AppLocalizations.of(context)!.adding +" "+(widget.isTrainer ? AppLocalizations.of(context)!.staff.toLowerCase() : AppLocalizations.of(context)!.client.toLowerCase())+" a "+currentBrand.name!+" ...";
@@ -123,9 +119,9 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
         await Future.delayed(const Duration(milliseconds: 500));
         int role = 0;
         if (widget.isTrainer) role = 3;
-        await _brandDataService.addUserToBrand(user.uid, currentBrand.id!, role, true);
+        await _brandDataService.addUserToBrand(userUID, currentBrand.id!, role, true);
         NotificationService _notificationService = NotificationService();
-        await _notificationService.userJoinsBrand(user.uid, currentBrand.id!);
+        await _notificationService.userJoinsBrand(userUID, currentBrand.id!);
         /// User Has Been Created
         setState(() {
           isRecurrentLoadingText = AppLocalizations.of(context)!.updating+" "+AppLocalizations.of(context)!.creatingProfile.split(" ")[1]+" ...";
@@ -135,12 +131,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
       } catch (e) {
         print(e.toString());
       }
-    } else if (result == -1) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      setState(() {
-        loadingEmail = false;
-        emailExistsError = true;
-      });
     } else {
       setState(() {
         loadingEmail = false;

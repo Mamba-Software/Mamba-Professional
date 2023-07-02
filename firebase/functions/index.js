@@ -299,6 +299,41 @@ exports.monthlyProductUpdates = functions
     }
 });
 
+// Create User Via Server Side Cloud Function
+exports.createUserOtherEmail = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+  // Get the Variables
+  const { email, password, definePassword } = data;  
+  // Create the user using Firebase Admin SDK
+  const userRecord = await admin.auth().createUser({ email, password });
+  const verificationLink = await admin.auth().generateEmailVerificationLink(email);
+  // Send Verification Email
+  const msg = {
+      to: email,
+      from: 'Equipo de Mamba <info@mambaapp.app>',
+      subject: 'Welcome to our App!',
+      text: `Please confirm your email using the following link: ${verificationLink}`,
+      html: `<strong>Please define your password using the following link: <a href="${verificationLink}">Reset Password</a></strong>`,      
+  };
+  // Send the welcome email via SendGrid
+  await sgMail.send(msg);
+  // If the user needs to define their password, send them a password reset email
+  if (definePassword) {
+    const passwordResetLink = await admin.auth().generatePasswordResetLink(email);
+    const passwordMsg = {
+        to: email,
+        from: 'Equipo de Mamba <info@mambaapp.app>',        
+        subject: 'Define Your Password',
+        text: `Please define your password using the following link: ${passwordResetLink}`,
+        html: `<strong>Please define your password using the following link: <a href="${passwordResetLink}">Reset Password</a></strong>`,
+    };
+    // Send the password reset email via SendGrid
+    await sgMail.send(passwordMsg);
+  }
+  return { userId: userRecord.uid };
+});
 
 // New User Situate in Test Group
 exports.newUserAddsTestGroup = functions

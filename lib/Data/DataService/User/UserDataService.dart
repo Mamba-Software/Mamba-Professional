@@ -17,6 +17,7 @@ class UserDataService {
 
   // Authentication
   Future<User?> getCurrentUser() => _firebase.getCurrentUser();
+  Future<String?> getUserUIDWithEmail(String email) => _firebase.getUserUIDWithEmail(email);
   Future<int> signIn(String email, String password) => _firebase.signIn(email, password);
   Future<void> signOut() => _firebase.signOut();
   Future<int> resetPassword(String email) => _firebase.resetPassword(email);
@@ -55,6 +56,7 @@ class UserDataService {
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
   Future<bool> addUserGoogleOrApple(UserCredential authResult, String idioma) => _firebase.addUserGoogleOrApple(authResult, idioma);
+  Future<bool> createUserOtherEmail(String email, String password, String idioma, bool isTrainer) => _firebase.createUserOtherEmail(email, password, idioma, bool isTrainer);
   Future<void> addUserNickname(String userId, String nickname) => _firebase.addUserNickname(userId, nickname);
   Future<void> addLocalNotification(String userId, ReceivedNotification notification) => _firebase.addLocalNotification(userId, notification);
   Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);

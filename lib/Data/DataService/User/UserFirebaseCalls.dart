@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
@@ -41,6 +42,17 @@ class UserFirebaseCalls {
     return currentUser;
   }
 
+  Future<String?> getUserUIDWithEmail(String email) async {
+    // Query Firestore for the email
+    QuerySnapshot querySnapshot = await _firestore.collection(users).where('email', isEqualTo: email).get();
+    // Check if we got any matches
+    if (querySnapshot.docs.isNotEmpty) {
+      return querySnapshot.docs.first.id;
+    } else {
+      return null;
+    }
+  }
+
   Future<int> signIn(String email, String password) async {
     bool error = false;
     UserCredential? authResult;
@@ -75,6 +87,55 @@ class UserFirebaseCalls {
     } catch (e) {
       print(e.toString());
       return -1;
+    }
+  }
+
+  Future<bool> createUserOtherEmail(String email, String password, String idioma, bool isTrainer) async {
+    final DateTime now = DateTime.now();
+    final DateFormat formatter = DateFormat('dd-MM-yyyy');
+    final String formatted = formatter.format(now);
+    try {
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('createUserOtherEmail');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'email': email,
+          'password': password,
+          'definePassword': true,
+        },
+      );
+      print("User correctly created server side"); // Process result.data
+      print(result.data);
+      print("Creating document in user collection..."); // Process result.data
+      await _firestore
+      .collection(users)
+      .doc(result.data['userId'])
+      .set({
+        "name": null,
+        "firstName": null,
+        "lastName": null,
+        "nick": null,
+        "notificationToken": null,
+        "email": email,
+        "imageUrl": null,
+        "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+        "isFirst": true,
+        "isTrainer": true,
+        "isPrivate": true,
+        "gender": null,
+        "dateJoined": formatted,
+        "dateOfBirth": null,
+        "idioma": idioma,
+        "brandID": null,
+        "isAdmin": false,
+      });
+      print("All Correctly Created");
+      return true;
+    } on FirebaseFunctionsException catch (e) {
+      print('Error code: ${e.code}\nError message: ${e.message}\nDetails: ${e.details}');
+      return false;
+    } catch (e) {
+      print('Error: $e');
+      return false;
     }
   }
 
@@ -581,12 +642,11 @@ class UserFirebaseCalls {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
     UserCredential? authResult;
-
     try {
       authResult = await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((userCredential) async {
-        if (userCredential != null && userCredential.user != null) {
+        if (userCredential.user != null) {
           await _firestore.collection(users).doc(userCredential.user!.uid).set({
             "name": null,
             "firstName": null,
