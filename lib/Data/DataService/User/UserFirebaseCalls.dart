@@ -95,7 +95,7 @@ class UserFirebaseCalls {
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
     try {
-      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('createUserOtherEmail');
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('createAuthUser');
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
           'email': email,

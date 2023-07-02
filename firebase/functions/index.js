@@ -300,40 +300,70 @@ exports.monthlyProductUpdates = functions
 });
 
 // Create User Via Server Side Cloud Function
-exports.createUserOtherEmail = functions
+exports.createAuthUser = functions
 .region("europe-west1")
 .https
 .onCall(async (data, context) => {
   // Get the Variables
-  const { email, password, definePassword } = data;  
+  const { email, password, definePassword, isTrainer} = data;  
   // Create the user using Firebase Admin SDK
   const userRecord = await admin.auth().createUser({ email, password });
   const verificationLink = await admin.auth().generateEmailVerificationLink(email);
   // Send Verification Email
+  // Get Email Template
+  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+  const templateDoc = templateSnapshot.data();          
+  // Determine the base email content      
+  let baseContent = templateDoc.wellcomeVerify; 
+  if (isTrainer == true) {
+    baseContent = templateDoc.wellcomeVerifyPro;
+  }          
+  // Replace macros with actual data
+  const emailTitleString = "📧 Verifica tu cuenta 📧";  
+  let content = baseContent.replace(/{{link}}/g, verificationLink);
+  content = content.replace(/{{email}}/g, email); 
   const msg = {
       to: email,
       from: 'Equipo de Mamba <info@mambaapp.app>',
-      subject: 'Welcome to our App!',
-      text: `Please confirm your email using the following link: ${verificationLink}`,
-      html: `<strong>Please define your password using the following link: <a href="${verificationLink}">Reset Password</a></strong>`,      
-  };
-  // Send the welcome email via SendGrid
-  await sgMail.send(msg);
+      subject: emailTitleString,
+      html: content,        
+  };  
+  // Send Email
+  try {
+    await sgMail.send(msg);
+    console.log('Email sent to ', email);
+  } catch (error) {
+      console.error('Error sending email to', email, error);
+  }
   // If the user needs to define their password, send them a password reset email
   if (definePassword) {
+    // Determine the base email content      
+    let baseContent = templateDoc.resetPassword; 
+    if (isTrainer == true) {
+      baseContent = templateDoc.resetPasswordPro;
+    }          
     const passwordResetLink = await admin.auth().generatePasswordResetLink(email);
+    // Replace macros with actual data
+    const emailTitleString = "🔐 Restablece tu contraseña 🔐";  
+    let content = baseContent.replace(/{{link}}/g, passwordResetLink);
+    content = content.replace(/{{email}}/g, email);     
     const passwordMsg = {
         to: email,
         from: 'Equipo de Mamba <info@mambaapp.app>',        
-        subject: 'Define Your Password',
-        text: `Please define your password using the following link: ${passwordResetLink}`,
-        html: `<strong>Please define your password using the following link: <a href="${passwordResetLink}">Reset Password</a></strong>`,
+        subject: emailTitleString,
+        html: content,
     };
-    // Send the password reset email via SendGrid
-    await sgMail.send(passwordMsg);
+    // Send Email
+    try {
+      await sgMail.send(passwordMsg);
+      console.log('Email sent to ', email);
+    } catch (error) {
+        console.error('Error sending email to', email, error);
+    }
   }
   return { userId: userRecord.uid };
 });
+
 
 // New User Situate in Test Group
 exports.newUserAddsTestGroup = functions

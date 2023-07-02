@@ -107,7 +107,6 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
         });
         /// Get the User UID
         String? userUID = await _userDataService.getUserUIDWithEmail(emailController.text.trim());
-        print("userId: "+userUID!);
         /// Update Data of User
         String name = firstNameController.text.trim()+" "+lastNameController.text.trim();
         String dateString = DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDate, Localizations.localeOf(context).languageCode);
