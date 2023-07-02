@@ -565,7 +565,7 @@ class BrandFirebaseCalls {
     }
   }
 
-  Future<void> addUserToBrand(String userId, String brandId, int role) async {
+  Future<void> addUserToBrand(String userId, String brandId, int role, [bool invitedDirectly = false]) async {
     DateTime now = DateTime.now();
     Usuario user = await getUserDetails(userId);
     await _firestore
@@ -583,6 +583,7 @@ class BrandFirebaseCalls {
       "isTrainer": user.isTrainer,
       "isPrivate": user.isPrivate,
       "notificationToken": user.notificationToken,
+      "invitedDirectly": invitedDirectly,
       "role": role,
       "dateJoined": DateTimeUtils().formatDateTimeToStringDDMMYY(now),
     }).catchError((err) {

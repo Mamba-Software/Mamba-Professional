@@ -123,13 +123,9 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
         await Future.delayed(const Duration(milliseconds: 500));
         int role = 0;
         if (widget.isTrainer) role = 3;
-        await _brandDataService.addUserToBrand(user.uid, currentBrand.id!, role);
+        await _brandDataService.addUserToBrand(user.uid, currentBrand.id!, role, true);
         NotificationService _notificationService = NotificationService();
         await _notificationService.userJoinsBrand(user.uid, currentBrand.id!);
-        /// Add Document to Email Templates/Emails/{userId} so that email is sent
-        String templateId = "joinBrandMessage";
-        if (widget.isTrainer) templateId += "Pro";
-        await _libraryDataService.sendEmailToUser(templateId, user.uid, currentBrand.id!);
         /// User Has Been Created
         setState(() {
           isRecurrentLoadingText = AppLocalizations.of(context)!.updating+" "+AppLocalizations.of(context)!.creatingProfile.split(" ")[1]+" ...";
