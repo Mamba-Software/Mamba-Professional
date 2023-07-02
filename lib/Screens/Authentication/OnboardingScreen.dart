@@ -164,6 +164,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     mixpanel!.getPeople().set("isProduction", isProduction);
   }
 
+  int calculateAge(DateTime birthDate, DateTime currentDate) {
+    int age = currentDate.year - birthDate.year;
+    int month1 = birthDate.month;
+    int month2 = currentDate.month;
+    int day1 = birthDate.day;
+    int day2 = currentDate.day;
+    // If the current year's month is less than the birth year's month, then decrease year by 1
+    if (month2 < month1) {
+      age--;
+    }
+    // If the birth month is this month, but the day is later than the current day, decrease year by 1
+    else if (month2 == month1 && day2 < day1) {
+      age--;
+    }
+    return age;
+  }
+
   @override
   void initState() {
     mixpanel!.track('onboarding_find_trainers');
@@ -1327,7 +1344,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     textAlign: TextAlign.left,
                                                   ),
                                                   Text(
-                                                    (DateTime.now().difference(startDate).inDays/365).toStringAsFixed(0),
+                                                    calculateAge(startDate, DateTime.now()).toStringAsFixed(0),
                                                     style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),

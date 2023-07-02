@@ -74,6 +74,23 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
     }
   }
 
+  int calculateAge(DateTime birthDate, DateTime currentDate) {
+    int age = currentDate.year - birthDate.year;
+    int month1 = birthDate.month;
+    int month2 = currentDate.month;
+    int day1 = birthDate.day;
+    int day2 = currentDate.day;
+    // If the current year's month is less than the birth year's month, then decrease year by 1
+    if (month2 < month1) {
+      age--;
+    }
+    // If the birth month is this month, but the day is later than the current day, decrease year by 1
+    else if (month2 == month1 && day2 < day1) {
+      age--;
+    }
+    return age;
+  }
+
   // Validate email and pwd format
   bool emailValidator(String value) {
     Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
@@ -551,7 +568,7 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
                                       textAlign: TextAlign.left,
                                     ),
                                     Text(
-                                      (DateTime.now().difference(startDate).inDays/365).toStringAsFixed(0),
+                                      calculateAge(startDate, DateTime.now()).toStringAsFixed(0),
                                       style: Theme.of(context).textTheme.bodyText2,
                                       textAlign: TextAlign.left,
                                     ),
