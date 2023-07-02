@@ -16,8 +16,6 @@ import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Login Page. This allow the User to get Logged In or to Register a new account.

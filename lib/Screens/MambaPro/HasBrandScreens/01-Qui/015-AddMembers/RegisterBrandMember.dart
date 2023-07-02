@@ -109,8 +109,8 @@ class _RegisterBrandMemberState extends State<RegisterBrandMember> with SingleTi
     });
     // We First Create the User
     String password = "123456";
-    var result = await _userDataService.createUserOtherEmail(emailController.text.trim(), password, Localizations.localeOf(context).languageCode, widget.isTrainer);
-    if (result) {
+    var result = await _userDataService.addUser(emailController.text.trim(), password, Localizations.localeOf(context).languageCode, widget.isTrainer, true);
+    if (result == 0) {
       try {
         FocusScopeNode currentFocus = FocusScope.of(context);
         if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
