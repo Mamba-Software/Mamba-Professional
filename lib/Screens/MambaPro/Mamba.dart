@@ -216,7 +216,6 @@ class _MambaState extends State<Mamba> {
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
-
     // Get User Main Data
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
     // Get User Brand

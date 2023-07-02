@@ -111,5 +111,40 @@ class LibraryFirebaseCalls {
     }
   }
 
+  Future<void> sendEmailToUser(String templateId, String userId, [String? brandId]) async {
+    switch (templateId) {
+      case "joinBrandMessage":
+        await _firestore
+        .collection(library)
+        .doc("Email Templates")
+        .collection("Emails To Send")
+        .doc(userId)
+        .set({
+          "templateId": templateId,
+          "userId": userId,
+          "brandId": brandId,
+        }).catchError((err) {
+          print(err);
+        });
+        break;
+      case "joinBrandMessagePro":
+        await _firestore
+        .collection(library)
+        .doc("Email Templates")
+        .collection("Emails To Send")
+        .doc(userId)
+        .set({
+          "templateId": templateId,
+          "userId": userId,
+          "brandId": brandId,
+        }).catchError((err) {
+          print(err);
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
 
 }
