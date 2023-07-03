@@ -261,7 +261,7 @@ class _BrandRolesState extends State<BrandRoles> {
           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05, vertical: MediaQuery.of(context).size.width * 0.05),
           child: Column(
             children: [
-              // Add Staff
+              /* Add Staff
               Column(
                 children: [
                   GestureDetector(
@@ -277,7 +277,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         builder: (BuildContext context) {
                           return const FractionallySizedBox(
-                            heightFactor: 0.75,
+                            heightFactor: 0.8,
                             child: ShareBrandLink(
                               onlyStaff: true,
                             ),
@@ -334,6 +334,7 @@ class _BrandRolesState extends State<BrandRoles> {
                   SizedBox(height: MediaQuery.of(context).size.height*0.01)
                 ],
               ),
+              */
               // Owners
               Container(
                 decoration: BoxDecoration(

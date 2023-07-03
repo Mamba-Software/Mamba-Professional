@@ -18,4 +18,8 @@ class LibraryDataService {
   // Event Photos
   Future<String> getRandomEventPhoto() => _firebase.getRandomEventPhoto();
 
+  // Add Data
+  // Email template
+  Future<void> sendEmailToUser(String templateId, String userId, [String? brandId]) => _firebase.sendEmailToUser(templateId, userId, brandId);
+
 }

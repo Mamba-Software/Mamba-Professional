@@ -282,14 +282,14 @@ class _RegisterState extends State<Register> {
   }
 
   void signUp() async{
-      var result =  await _userDataService.addUser(email.trim(), password1, Localizations.localeOf(context).languageCode);
+      var result =  await _userDataService.addUser(email.trim(), password1, Localizations.localeOf(context).languageCode, true);
       if (result == 0) {
         setState(() {
           isLoading = false;
         });
         showInSnackBar(AppLocalizations.of(context)!.validate);
         mixpanel!.track('mamba_register_completed');
-        Future.delayed(Duration(seconds: 5), () async {
+        Future.delayed(const Duration(seconds: 5), () async {
           Navigator.pop(context, email.trim());
         });
       } else if (result == -1) {

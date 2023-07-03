@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -16,6 +19,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/BrandRoles.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -47,6 +51,7 @@ class _Trainers extends State<Trainers> {
 
   // Boolean Loading
   bool isLoading = false;
+  ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   // Boolean isUpdated
   bool isUpdated = false;
   // Search Controller
@@ -231,26 +236,6 @@ class _Trainers extends State<Trainers> {
       return activeStaff.split(", ")[0];
     }
     return activeStaff;
-  }
-
-  // Navigate to Bonos Request Screen
-  Future<void> navigateToRolesScreen() async {
-    mixpanel!.track('brand_trainers_roles_view');
-    var result = await Navigator.push(
-      context,
-      CupertinoPageRoute<bool?>(
-        builder: (context) => BrandRoles(
-          brandId: widget.brandId,
-          trainers: allMembers,
-        ),
-      )
-    );
-    if (result == null || result == true) {
-      setState(() {
-        isLoading = true;
-      });
-      getAllUsers();
-    }
   }
 
   @override
@@ -770,7 +755,7 @@ class _Trainers extends State<Trainers> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
+                                AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.staff.toLowerCase(),
                                 style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
                               ),
                               Text(
@@ -941,10 +926,7 @@ class _Trainers extends State<Trainers> {
                       )
                   );
                   if (result == true) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    getAllUsers();
+                    await getAllUsers();
                   }
                 },
               );
@@ -970,6 +952,165 @@ class _Trainers extends State<Trainers> {
           const SliverToBoxAdapter(child: SizedBox(height: 10,)),
         ],
       ),
+      floatingActionButton: whichFloatingActionButton(),
+    );
+  }
+
+  Widget whichFloatingActionButton() {
+    return currentUser.brandRole < 2 ? Padding(
+      padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.width*0.15,
+        width: MediaQuery.of(context).size.width*0.15,
+        child: SpeedDial(
+          heroTag: "106",
+          child: const Icon(Icons.add),
+          activeChild: const Icon(Icons.group_add_outlined),
+          animationDuration: const Duration(milliseconds: 100),
+          foregroundColor: AppColors.white,
+          overlayColor: Theme.of(context).primaryColorDark,
+          overlayOpacity: 0.95,
+          spacing: MediaQuery.of(context).size.height*0.02,
+          spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
+          openCloseDial: isDialOpen,
+          children: [
+            SpeedDialChild(
+                child: const Icon(
+                  Icons.edit_note_outlined,
+                  size: 30,
+                ),
+                elevation: 10,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                labelWidget: Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.1,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.add+" "+AppLocalizations.of(context)!.staff,
+                          style: Theme.of(context).textTheme.headline3,
+                          textAlign: TextAlign.right
+                      ),
+                      Text(
+                          AppLocalizations.of(context)!.addClientsManually.split(AppLocalizations.of(context)!.client.toLowerCase())[0]+AppLocalizations.of(context)!.staff.toLowerCase()+AppLocalizations.of(context)!.addClientsManually.split(AppLocalizations.of(context)!.client.toLowerCase())[1],
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.right
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  navigateToAddMember();
+                }
+            ),
+            SpeedDialChild(
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 5.0),
+                  child: Icon(
+                    Icons.share,
+                  ),
+                ),
+                elevation: 10,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                labelWidget: Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                  height: MediaQuery.of(context).size.height*0.1,
+                  width: MediaQuery.of(context).size.width*0.7,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                          AppLocalizations.of(context)!.invite+" "+AppLocalizations.of(context)!.staff,
+                          style: Theme.of(context).textTheme.headline3,
+                          textAlign: TextAlign.right
+                      ),
+                      Text(
+                          AppLocalizations.of(context)!.copyCodeMessage,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.right
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  navigateShareBrandLink();
+                }
+            ),
+          ],
+        ),
+      ),
+    ) : Container();
+  }
+
+  // Navigate to Roles Screen
+  Future<void> navigateToRolesScreen() async {
+    mixpanel!.track('brand_trainers_roles_view');
+    var result = await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) => BrandRoles(
+            brandId: widget.brandId,
+            trainers: allMembers,
+          ),
+        )
+    );
+    if (result == null || result == true) {
+      setState(() {
+        isLoading = true;
+      });
+      getAllUsers();
+    }
+  }
+
+  Future<void> navigateToAddMember() async {
+    var result = await Navigator.push(
+        context,
+        CupertinoPageRoute<bool?>(
+          builder: (context) =>
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus &&
+                      currentFocus.focusedChild != null) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
+                },
+                child: const RegisterBrandMember(
+                  isTrainer: true,
+                ),
+              ),
+        )
+    );
+    if (result == true) {
+      await getAllUsers();
+    }
+  }
+
+  Future<void> navigateShareBrandLink() async {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+          heightFactor: 0.8,
+          child: ShareBrandLink(
+            onlyStaff: true,
+          ),
+        );
+      },
     );
   }
 

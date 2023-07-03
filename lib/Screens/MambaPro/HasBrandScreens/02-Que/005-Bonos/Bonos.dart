@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -648,7 +650,7 @@ class _BonosProState extends State<BonosPro> {
         ],
       ),
       floatingActionButton: canEdit ? Padding(
-        padding: const EdgeInsets.all(20),
+        padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
         child: SizedBox(
           height: MediaQuery.of(context).size.width*0.15,
           width: MediaQuery.of(context).size.width*0.15,

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
@@ -41,6 +42,17 @@ class UserFirebaseCalls {
     return currentUser;
   }
 
+  Future<String?> getUserUIDWithEmail(String email) async {
+    // Query Firestore for the email
+    QuerySnapshot querySnapshot = await _firestore.collection(users).where('email', isEqualTo: email).get();
+    // Check if we got any matches
+    if (querySnapshot.docs.isNotEmpty) {
+      return querySnapshot.docs.first.id;
+    } else {
+      return null;
+    }
+  }
+
   Future<int> signIn(String email, String password) async {
     bool error = false;
     UserCredential? authResult;
@@ -50,13 +62,15 @@ class UserFirebaseCalls {
       error = true;
     }
     if (error) return -1;
-    if (authResult == null)
+    if (authResult == null) {
       return -1;
+    }
     if (authResult.user != null && isProduction) {
-      if (authResult.user!.emailVerified)
+      if (authResult.user!.emailVerified) {
         return 0;
-      else
+      } else {
         return -2;
+      }
     } else {
       return 0;
     }
@@ -66,21 +80,36 @@ class UserFirebaseCalls {
     return await _auth.signOut();
   }
 
-  Future<int> resetPassword(String email) async {
+  Future<int> resendEmail(String email) async {
     try {
-      await _auth.sendPasswordResetEmail(email: email);
-      return 1;
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('sendVerificationEmail');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'email': email,
+          'isTrainer': true,
+        },
+      );
+      bool success = result.data['isSuccessful'];
+      if (success) return 1;
+      return -1;
     } catch (e) {
       print(e.toString());
       return -1;
     }
   }
 
-  Future<int> resendEmail(String email) async {
+  Future<int> resetPassword(String email) async {
     try {
-      User? currentUser = await getCurrentUser();
-      currentUser!.sendEmailVerification();
-      return 1;
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('sendResetPasswordEmail');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'email': email,
+          'isTrainer': true,
+        },
+      );
+      bool success = result.data['isSuccessful'];
+      if (success) return 1;
+      return -1;
     } catch (e) {
       print(e.toString());
       return -1;
@@ -154,6 +183,18 @@ class UserFirebaseCalls {
     var userDocRef = _firestore.collection(users).doc(uid);
     var doc = await userDocRef.get();
     if (!doc.exists) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  // Check If User Exists
+  Future<bool> checkIfEmailExists(String email) async {
+    // Query Firestore for the email
+    QuerySnapshot querySnapshot = await _firestore.collection(users).where('email', isEqualTo: email).get();
+    // Check if we got any matches
+    if (querySnapshot.docs.isEmpty) {
       return false;
     } else {
       return true;
@@ -352,8 +393,11 @@ class UserFirebaseCalls {
         .doc(brandId)
         .collection("Bonos Requests")
         .get();
-    if(querySnapshot.docs.length != 0) return querySnapshot.docs[0].get("bonoId").toString();
-    else return '';
+    if(querySnapshot.docs.length != 0) {
+      return querySnapshot.docs[0].get("bonoId").toString();
+    } else {
+      return '';
+    }
 
 
   }
@@ -371,7 +415,9 @@ class UserFirebaseCalls {
       }
       return favouritesList;
     }
-    else return [];
+    else {
+      return [];
+    }
   }
 
   Future<double> getUserZoomScale(String brandId, String userId) async {
@@ -555,92 +601,51 @@ class UserFirebaseCalls {
 
   //Add
 
-  Future<int> addUser(String email, String password, String idioma) async {
-    bool authError = false;
-    bool firestoreError = false;
+  Future<int> addUser(String email, String password, String idioma, bool isTrainer, [bool definePassword = false]) async {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
-    UserCredential? authResult;
-
     try {
-      authResult = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((userCredential) async {
-        if (userCredential != null && userCredential.user != null) {
-          await _firestore.collection(users).doc(userCredential.user!.uid).set({
-            "name": null,
-            "firstName": null,
-            "lastName": null,
-            "nick": null,
-            "notificationToken": null,
-            "email": email,
-            "imageUrl": null,
-            "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
-            "isFirst": true,
-            "isTrainer": true,
-            "isPrivate": true,
-            "gender": null,
-            "dateJoined": formatted,
-            "dateOfBirth": null,
-            "idioma": idioma,
-            "brandID": null,
-            "isAdmin": false,
-          }).catchError((err) {
-            print(err);
-            firestoreError = true;
-          });
-          await userCredential.user!.sendEmailVerification();
-        }
-        return userCredential;
+      final HttpsCallable callable = FirebaseFunctions.instanceFor(region: 'europe-west1').httpsCallable('createAuthUser');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'email': email,
+          'password': password,
+          'definePassword': definePassword,
+          'isTrainer': isTrainer,
+        },
+      );
+      await _firestore
+      .collection(users)
+      .doc(result.data['userId'])
+      .set({
+        "name": null,
+        "firstName": null,
+        "lastName": null,
+        "nick": null,
+        "notificationToken": null,
+        "email": email,
+        "imageUrl": null,
+        "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
+        "isFirst": true,
+        "isTrainer": isTrainer,
+        "isPrivate": true,
+        "gender": null,
+        "dateJoined": formatted,
+        "dateOfBirth": null,
+        "idioma": idioma,
+        "brandID": null,
+        "isAdmin": false,
       });
+      print("All Correctly Created");
+      return 0;
+    } on FirebaseFunctionsException catch (e) {
+      print('Error code: ${e.code}\nError message: ${e.message}\nDetails: ${e.details}');
+      return -1;
     } catch (e) {
-      authError = true;
-    }
-
-    /*
-    UserCredential? authResult = await _auth
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then((userCredential) async {
-      if (userCredential != null && userCredential.user != null) {
-        await _firestore.collection(users).doc(userCredential.user!.uid).set({
-          "name": null,
-          "firstName": null,
-          "lastName": null,
-          "nick": null,
-          "notificationToken": null,
-          "email": email,
-          "imageUrl": null,
-          "noImageUrl": "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/emptyProfileImage.png?alt=media&token=a1b2a183-fc5e-4225-a839-3330ba60bd53",
-          "isFirst": true,
-          "isTrainer": null,
-          "isPrivate": true,
-          "gender": null,
-          "dateJoined": formatted,
-          "dateOfBirth": null,
-          "idioma": idioma,
-          "brandID": null,
-          "isAdmin": false,
-        }).catchError((err) {
-          print(err);
-          firestoreError = true;
-        });
-        await userCredential.user!.sendEmailVerification();
-      }
-      return userCredential;
-    }).catchError((err) {
-      authError = true;
-    });
-     */
-
-    if (authResult != null && authResult.user != null) {
-      if (authError) {
-        return -1;
-      } else if (firestoreError)
-        return -2;
-      else
-        return 0;
-    } else {
+      print('Error: $e');
+      bool emailExists = await checkIfEmailExists(email);
+      if (emailExists) return -2;
       return -1;
     }
   }

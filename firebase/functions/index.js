@@ -18,6 +18,7 @@ const {FirestoreAdminClient} = require('@google-cloud/firestore').v1;
 const client = new FirestoreAdminClient();
 // Send Grid Integration
 const sgMail = require('@sendgrid/mail');
+const { user } = require("firebase-functions/v1/auth");
 sgMail.setApiKey("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");
 
 // Daily Notification For Events
@@ -298,6 +299,148 @@ exports.monthlyProductUpdates = functions
     }
 });
 
+// Create User Via Server Side Cloud Function
+exports.sendVerificationEmail = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+  // Get the Variables
+  const { email, isTrainer} = data;  
+  // Create the user verifiaction email link Firebase Admin SDK  
+  const verificationLink = await admin.auth().generateEmailVerificationLink(email);  
+  // Get Email Template
+  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+  const templateDoc = templateSnapshot.data();          
+  // Determine the base email content      
+  let baseContent = templateDoc.wellcomeVerify; 
+  if (isTrainer == true) {
+    baseContent = templateDoc.wellcomeVerifyPro;
+  }          
+  // Replace macros with actual data
+  const emailTitleString = "📧 Verifica tu cuenta 📧";  
+  let content = baseContent.replace(/{{link}}/g, verificationLink);
+  content = content.replace(/{{email}}/g, email); 
+  const msg = {
+      to: email,
+      from: 'Equipo de Mamba <info@mambaapp.app>',
+      subject: emailTitleString,
+      html: content,        
+  };  
+  // Send Email
+  let success = true;
+  try {
+    await sgMail.send(msg);
+    console.log('Email sent to ', email);
+  } catch (error) {
+    console.error('Error sending email to', email, error);
+    success = false;
+  }
+  return { isSuccessful: success};
+});
+
+// Create User Via Server Side Cloud Function
+exports.sendResetPasswordEmail = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+  // Get the Variables
+  const { email, isTrainer} = data;  
+  // Create the user password reset link Firebase Admin SDK  
+  const passwordResetLink = await admin.auth().generatePasswordResetLink(email);
+  // Get Email Template
+  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+  const templateDoc = templateSnapshot.data();
+  // Determine the base email content      
+  let baseContent = templateDoc.resetPassword; 
+  if (isTrainer == true) {
+    baseContent = templateDoc.resetPasswordPro;
+  }          
+  // Replace macros with actual data
+  const emailTitleString = "🔐 Restablece tu contraseña 🔐";  
+  let content = baseContent.replace(/{{link}}/g, passwordResetLink);
+  content = content.replace(/{{email}}/g, email);     
+  const passwordMsg = {
+      to: email,
+      from: 'Equipo de Mamba <info@mambaapp.app>',        
+      subject: emailTitleString,
+      html: content,
+  };  
+  // Send Email
+  let success = true;
+  try {
+    await sgMail.send(passwordMsg);
+    console.log('Email sent to ', email);
+  } catch (error) {
+    console.error('Error sending email to', email, error);
+    success = false;
+  }
+  return { isSuccessful: success};
+});
+
+// Create User Via Server Side Cloud Function
+exports.createAuthUser = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+  // Get the Variables
+  const { email, password, definePassword, isTrainer} = data;  
+  // Create the user using Firebase Admin SDK
+  const userRecord = await admin.auth().createUser({ email, password });
+  const verificationLink = await admin.auth().generateEmailVerificationLink(email);
+  // Send Verification Email
+  // Get Email Template
+  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+  const templateDoc = templateSnapshot.data();          
+  // Determine the base email content      
+  let baseContent = templateDoc.wellcomeVerify; 
+  if (isTrainer == true) {
+    baseContent = templateDoc.wellcomeVerifyPro;
+  }          
+  // Replace macros with actual data
+  const emailTitleString = "📧 Verifica tu cuenta 📧";  
+  let content = baseContent.replace(/{{link}}/g, verificationLink);
+  content = content.replace(/{{email}}/g, email); 
+  const msg = {
+      to: email,
+      from: 'Equipo de Mamba <info@mambaapp.app>',
+      subject: emailTitleString,
+      html: content,        
+  };  
+  // Send Email
+  try {
+    await sgMail.send(msg);
+    console.log('Email sent to ', email);
+  } catch (error) {
+      console.error('Error sending email to', email, error);
+  }
+  // If the user needs to define their password, send them a password reset email
+  if (definePassword) {
+    // Determine the base email content      
+    let baseContent = templateDoc.resetPassword; 
+    if (isTrainer == true) {
+      baseContent = templateDoc.resetPasswordPro;
+    }          
+    const passwordResetLink = await admin.auth().generatePasswordResetLink(email);
+    // Replace macros with actual data
+    const emailTitleString = "🔐 Restablece tu contraseña 🔐";  
+    let content = baseContent.replace(/{{link}}/g, passwordResetLink);
+    content = content.replace(/{{email}}/g, email);     
+    const passwordMsg = {
+        to: email,
+        from: 'Equipo de Mamba <info@mambaapp.app>',        
+        subject: emailTitleString,
+        html: content,
+    };
+    // Send Email
+    try {
+      await sgMail.send(passwordMsg);
+      console.log('Email sent to ', email);
+    } catch (error) {
+        console.error('Error sending email to', email, error);
+    }
+  }
+  return { userId: userRecord.uid };
+});
 
 // New User Situate in Test Group
 exports.newUserAddsTestGroup = functions
@@ -915,10 +1058,10 @@ exports.userAddsBrand = functions
       const userSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
       const userDoc = userSnapshot.data();  
       // Get Email Template
-      const templateSnapshot = await db.collection("Settings").doc("EmailTemplate").get();
+      const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
       const templateDoc = templateSnapshot.data();          
       // Determine the base email content
-      let baseContent = templateDoc.templatePro;
+      let baseContent = templateDoc.basicMessagePro;
       let text = "Hola,<br><br>Se ha registrado un nuevo profesional. Aquí sus detalles:<br><br>Nombre: "+brandDoc.name+"<br>Descripción: "+brandDoc.description+"<br>Localización: "+brandDoc.city+", "+brandDoc.zipCode+"<br>Creador: "+userDoc.name+"<br>Email: "+userDoc.email+"<br><br>";    
       // Replace macros with actual data
       let content = baseContent.replace(/{{title}}/g, "Nuevo Profesional Registrado");
@@ -955,6 +1098,9 @@ exports.userJoinsBrand = functions
         "has joined Brand with ID:",
         brandId
         );
+      // Get the data from the created document
+      const data = snap.data();
+      let invitedDirectly = data.invitedDirectly;  
       // Get Data of the User
       const userSnapshot = await db.collection("Users").doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -1093,46 +1239,48 @@ exports.userJoinsBrand = functions
         functions.logger.log(
           "Payload",
           payload
-          );
+          );          
         response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
         functions.logger.log(
           "Response",
           response
           );
       } else {
-      // Someone just joined the Brand
-      // Send Notification To User Joining Brand
-      var payload = 0;
-      if (userDoc.idioma == "es") {
-        payload = {
-          notification: {
-            title: "Te has unido a "+brandDoc.name+" ✅",
-            body: "Consulta el calendario para participar en tu primera sesión",
-          },
-          data: {
-            route: "BrandPage",
-          },
-        };
-      } else {
-        payload = {
-          notification: {
-            title: "T'has unit a "+brandDoc.name+" ✅",
-            body: "Consulta el calendari per participar en la teva primera sessió",
-          },
-          data: {
-            route: "BrandPage",
-          },
-        };
-      }
-      functions.logger.log(
-        "Payload",
-        payload
-        );
-      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-      functions.logger.log(
-        "Response",
-        response
-        );
+        // Someone just joined the Brand
+        // Send Notification To User Joining Brand
+        var payload = 0;
+        if (userDoc.idioma == "es") {
+          payload = {
+            notification: {
+              title: "Te has unido a "+brandDoc.name+" ✅",
+              body: "Consulta el calendario para participar en tu primera sesión",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
+        } else {
+          payload = {
+            notification: {
+              title: "T'has unit a "+brandDoc.name+" ✅",
+              body: "Consulta el calendari per participar en la teva primera sessió",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
+        }
+        if (userDoc.notificationToken && userDoc.notificationToken !== "") {
+          functions.logger.log(
+            "Payload",
+            payload
+          );
+          var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);        
+          functions.logger.log(
+            "Response",
+            response
+          );
+        }
         // Send Notification To Brand Owner
         const adminSnapshot = await db.collection("Users").doc(brandDoc.adminID).get();
         const adminDoc = adminSnapshot.data();
@@ -1175,7 +1323,7 @@ exports.userJoinsBrand = functions
         functions.logger.log(
           "Payload",
           payload
-          );
+          );          
         response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
         functions.logger.log(
           "Response",
@@ -1208,6 +1356,40 @@ exports.userJoinsBrand = functions
         "numClients": numClients,
         "numTrainers": numTrainers,
       });
+
+      // Send Email if Needed      
+      if (invitedDirectly) {
+        // Get Email Template
+        const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+        const templateDoc = templateSnapshot.data();          
+        // Determine the base email content      
+        let baseContent = templateDoc.joinBrandMessage; 
+        if (userDoc.isTrainer == true) {
+          baseContent = templateDoc.joinBrandMessagePro;
+        }          
+        // Replace macros with actual data
+        const emailTitleString = "👋 Te damos la bienvenida a "+brandDoc.name+" 👋";
+        const firstNameString = userDoc.firstName.charAt(0).toUpperCase() + userDoc.firstName.slice(1);
+        let content = baseContent.replace(/{{firstName}}/g, firstNameString);
+        content = content.replace(/{{email}}/g, userDoc.email);
+        content = content.replace(/{{brandName}}/g, brandDoc.name);
+        content = content.replace(/{{logoUrl}}/g, brandDoc.logoUrl);
+        content = content.replace(/{{imageUrl}}/g, brandDoc.baseImage);                  
+        const msg = {
+            to: userDoc.email,
+            from: 'Equipo de Mamba <info@mambaapp.app>',
+            subject: emailTitleString,
+            html: content,
+        };
+        // Send Email
+        try {
+            sgMail.send(msg);
+            console.log('Email sent to ', userDoc.email);
+        } catch (error) {
+            console.error('Error sending email to', userDoc.email);
+        }
+      }
+
       return null;
     });
 
@@ -3159,7 +3341,11 @@ exports.zzzzUserJoinsBrand = functions
         userId,
         "has joined Brand with ID:",
         brandId
-        );
+      );
+      // Get the data from the created document
+      const data = snap.data();
+      let invitedDirectly = data.invitedDirectly;      
+      
       // Get Data of the User
       const userSnapshot = await db.collection("7777 Users").doc(userId).get();
       const userDoc = userSnapshot.data();
@@ -3170,39 +3356,34 @@ exports.zzzzUserJoinsBrand = functions
         userDoc.imageUrl,
         userDoc.isTrainer,
         userDoc.notificationToken,
-        );
-        if(userDoc.isTrainer == true)
-        {
-            await db
-                    .collection("7777 Users")
-                    .doc(userId)
-                    .collection("BlockedByUsers")
-                    .doc("test")
-                    .set({
-                  "userId": "test",
-                });
-        }
+      );
+      if(userDoc.isTrainer == true) {
+          await db
+          .collection("7777 Users")
+          .doc(userId)
+          .collection("BlockedByUsers")
+          .doc("test")
+          .set({
+            "userId": "test",
+          });
+      }
       // Get Data of the Brand
       const brandSnapshot = await db.collection("7777 Brands").doc(brandId).get();
       const brandDoc = brandSnapshot.data();
       functions.logger.log(
         "Brand Cover Data:",
         brandDoc,
-        );
-
+      );
       // Get Data of the Brand Room
       const roomSnapshot = await db.collection("7777 Rooms").doc(brandDoc.roomId).get();
       const roomDoc = roomSnapshot.data();
-
       var metadataMessage = {};
       var metadataRoom = {};
-
       functions.logger.log(
        "UserIds",
        roomDoc.userIds,
        );
       roomDoc.userIds.push(userId);
-
       if (roomDoc.lastMessages != undefined) {
         metadataMessage = roomDoc.lastMessages[0].metadata;
         metadataMessage[userId] = "delivered";
@@ -3212,7 +3393,6 @@ exports.zzzzUserJoinsBrand = functions
           status: "delivered",
         })
       }
-
       // Creates metadata for new user and adds it.
       metadataRoom = roomDoc.metadata;
       metadataRoom["trainer" + userId] = userDoc.isTrainer;
@@ -3221,7 +3401,6 @@ exports.zzzzUserJoinsBrand = functions
         metadata: metadataRoom,
         userIds: roomDoc.userIds,
       })
-
       // Add the Brand Cover Data to Users/Brands Collection
       let date = new Date();
       let day = date.getDate();
@@ -3232,11 +3411,9 @@ exports.zzzzUserJoinsBrand = functions
       let year = date.getFullYear().toString();
       let result = year.slice(2, 4);
       var formatted = day+"-"+month+"-"+result;
-
       //JMF 05052023 POR SI VIENEN DE LA WEB
-      if (brandDoc.adminID == userId)
-      {
-           // Update Date Joined Users/Brand
+      if (brandDoc.adminID == userId) {
+          // Update Date Joined Users/Brand
           await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
             "name": brandDoc.name,
             "logoUrl": brandDoc.logoUrl,
@@ -3244,24 +3421,22 @@ exports.zzzzUserJoinsBrand = functions
             "myMonthlySessions": 0,
             "myTotalSessions": 0,
           });
-      }
-      else
-      {
-            // Update Date Joined Users/Brand
-            await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
-              "name": brandDoc.name,
-              "logoUrl": brandDoc.logoUrl,
-              "dateJoined": formatted,
-              "myMonthlySessions": 0,
-              "myTotalSessions": 0,
-              //TODO INTEGRATION VERSION .12
-              "zipCode": brandDoc.zipCode,
-              "city": brandDoc.city,
-              "longitude": brandDoc.longitude,
-              "latitude": brandDoc.latitude,
-              "baseImage": brandDoc.baseImage,
-              "geoPosition": brandDoc.geoPosition,
-            });
+      } else {
+          // Update Date Joined Users/Brand
+          await db.doc("/7777 Users/"+userId+"/Brands/"+brandId+"").set({
+            "name": brandDoc.name,
+            "logoUrl": brandDoc.logoUrl,
+            "dateJoined": formatted,
+            "myMonthlySessions": 0,
+            "myTotalSessions": 0,
+            //TODO INTEGRATION VERSION .12
+            "zipCode": brandDoc.zipCode,
+            "city": brandDoc.city,
+            "longitude": brandDoc.longitude,
+            "latitude": brandDoc.latitude,
+            "baseImage": brandDoc.baseImage,
+            "geoPosition": brandDoc.geoPosition,
+          });
       }
       // Update Date Joined Users/Brand
       await db.doc("/7777 Brands/"+brandId+"/Users/"+userId+"").update({
@@ -3272,7 +3447,7 @@ exports.zzzzUserJoinsBrand = functions
       functions.logger.log(
         "userId",
         userId,
-        );
+      );
       // Brand Was Just Created By Admin
       if (brandDoc.adminID == userId) {
         if (userDoc.idioma == "es") {
@@ -3306,39 +3481,43 @@ exports.zzzzUserJoinsBrand = functions
           response
           );
       } else {
-      // Someone just joined the Brand
-      // Send Notification To User Joining Brand
-      var payload = 0;
-      if (userDoc.idioma == "es") {
-        payload = {
-          notification: {
-            title: "Te has unido a "+brandDoc.name+" ✅",
-            body: "Consulta el calendario para participar en tu primera sesión",
-          },
-          data: {
-            route: "BrandPage",
-          },
-        };
-      } else {
-        payload = {
-          notification: {
-            title: "T'has unit a "+brandDoc.name+" ✅",
-            body: "Consulta el calendari per participar en la teva primera sessió",
-          },
-          data: {
-            route: "BrandPage",
-          },
-        };
-      }
-      functions.logger.log(
-        "Payload",
-        payload
-        );
-      var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);
-      functions.logger.log(
-        "Response",
-        response
-        );
+        // Someone just joined the Brand 
+        // Send Notification To User Joining Brand
+        var payload = 0;
+        if (userDoc.idioma == "es") {
+          payload = {
+            notification: {
+              title: "Te has unido a "+brandDoc.name+" ✅",
+              body: "Consulta el calendario para participar en tu primera sesión",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
+        } else {
+          payload = {
+            notification: {
+              title: "T'has unit a "+brandDoc.name+" ✅",
+              body: "Consulta el calendari per participar en la teva primera sessió",
+            },
+            data: {
+              route: "BrandPage",
+            },
+          };
+        }
+        
+        if (userDoc.notificationToken && userDoc.notificationToken !== "") {
+          functions.logger.log(
+            "Payload",
+            payload
+          );
+          var response = await admin.messaging().sendToDevice(userDoc.notificationToken, payload);        
+          functions.logger.log(
+            "Response",
+            response
+          );
+        }
+        
         // Send Notification To Brand Owner
         const adminSnapshot = await db.collection("7777 Users").doc(brandDoc.adminID).get();
         const adminDoc = adminSnapshot.data();
@@ -3356,38 +3535,38 @@ exports.zzzzUserJoinsBrand = functions
         functions.logger.log(
           "Number Members",
           numberMembers,
-          );
+        );
         if (adminDoc.idioma == "es") {
-         payload = {
-          notification: {
-            title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
-            body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
-          },
-          data: {
-            route: "Notifications",
-          },
-        };
-      } else {
-        payload = {
-          notification: {
-            title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
-            body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
-          },
-          data: {
-            route: "Notifications",
-          },
+          payload = {
+            notification: {
+              title: "Nuevo miembro en "+brandDoc.name+" ➕1️⃣ ",
+              body: userDoc.name+" se ha unido. Ya sois un total de "+numberMembers.toString()+" miembros",
+            },
+            data: {
+              route: "Notifications",
+            },
+          };
+        } else {
+          payload = {
+            notification: {
+              title: "Nou membre a "+brandDoc.name+" ➕1️⃣ ",
+              body: userDoc.name+" s'ha unit. Ja sou un total de "+numberMembers.toString()+" membres",
+            },
+            data: {
+              route: "Notifications",
+            },
+          }
         }
+        functions.logger.log(
+          "Payload",
+          payload
+        );
+        response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
+        functions.logger.log(
+          "Response",
+          response
+        );
       }
-      functions.logger.log(
-        "Payload",
-        payload
-        );
-      response = await admin.messaging().sendToDevice(adminDoc.notificationToken, payload);
-      functions.logger.log(
-        "Response",
-        response
-        );
-    }
       // Count Brand Members
       brandUsersSnapshot = await db.collection("7777 Brands").doc(brandId).collection("Users").get();
       let numClients = 0;
@@ -3400,12 +3579,6 @@ exports.zzzzUserJoinsBrand = functions
           numClients += 1;
         }
       }
-      functions.logger.log(
-        "numClients",
-        numClients,
-        "numTrainers",
-        numTrainers,
-        );
       // Update Brand Members
       await db
       .collection("7777 Brands")
@@ -3413,7 +3586,40 @@ exports.zzzzUserJoinsBrand = functions
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });
+      }); 
+      
+      // Send Email if Needed      
+      if (invitedDirectly) {
+        // Get Email Template
+        const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+        const templateDoc = templateSnapshot.data();          
+        // Determine the base email content      
+        let baseContent = templateDoc.joinBrandMessage; 
+        if (userDoc.isTrainer == true) {
+          baseContent = templateDoc.joinBrandMessagePro;
+        }          
+        // Replace macros with actual data
+        const emailTitleString = "👋 Te damos la bienvenida a "+brandDoc.name+" 👋";
+        const firstNameString = userDoc.firstName.charAt(0).toUpperCase() + userDoc.firstName.slice(1);
+        let content = baseContent.replace(/{{firstName}}/g, firstNameString);
+        content = content.replace(/{{email}}/g, userDoc.email);
+        content = content.replace(/{{brandName}}/g, brandDoc.name);
+        content = content.replace(/{{logoUrl}}/g, brandDoc.logoUrl);
+        content = content.replace(/{{imageUrl}}/g, brandDoc.baseImage);                  
+        const msg = {
+            to: userDoc.email,
+            from: 'Equipo de Mamba <info@mambaapp.app>',
+            subject: emailTitleString,
+            html: content,
+        };
+        // Send Email
+        try {
+            sgMail.send(msg);
+            console.log('Email sent to ', userDoc.email);
+        } catch (error) {
+            console.error('Error sending email to', userDoc.email);
+        }
+      }
       return null;
     });
 

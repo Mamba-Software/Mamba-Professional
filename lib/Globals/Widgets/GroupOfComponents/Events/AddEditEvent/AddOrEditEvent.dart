@@ -48,7 +48,7 @@ class AddOrEditEvent extends StatefulWidget {
   _AddOrEditEventState createState() => _AddOrEditEventState();
 }
 
-class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProviderStateMixin{
+class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
