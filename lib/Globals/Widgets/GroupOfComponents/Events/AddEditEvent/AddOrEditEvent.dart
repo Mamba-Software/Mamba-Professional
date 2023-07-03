@@ -1111,7 +1111,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                         children: [
                                           Row(
                                             children: [
-                                              Icon(Icons.calendar_today_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.07,),
+                                              Icon(Icons.calendar_today_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
                                               SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                                               Flexible(
                                                 child: GestureDetector(
@@ -1141,8 +1141,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                           SizedBox(height: MediaQuery.of(context).size.width * 0.01),
                                           Row(
                                             children: [
-                                              Icon(Icons.schedule, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
-                                              SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                              Icon(Icons.schedule, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
+                                              SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                                               Flexible(
                                                 child: GestureDetector(
                                                     onTap: () {
@@ -1173,8 +1173,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             mainAxisSize: MainAxisSize.max,
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: <Widget>[
-                                              Icon(Icons.timer_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
-                                              SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                              Icon(Icons.timer_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
+                                              SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                                               Flexible(
                                                 child: GestureDetector(
                                                     onTap: () {
