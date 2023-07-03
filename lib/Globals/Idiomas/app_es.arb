@@ -645,7 +645,7 @@
   "@createBrandDesc":{
     "description": "createBrand Text"
   },
-  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. Transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
+  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. Transmite tus valores fundamentales y beneficios de trabajar de tu mano",
   "@createBrandDescDescription":{
     "description": "createBrand Text"
   },
@@ -653,7 +653,7 @@
   "@createBrandBaseLocation":{
     "description": "createBrand Text"
   },
-  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frecuentemente.",
+  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor",
   "@createBrandLocationDescription":{
     "description": "createBrand Text"
   },
@@ -661,11 +661,11 @@
   "@createBrandWorkshift":{
     "description": "createBrand Text"
   },
-  "createBrandWorkshiftDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
+  "createBrandWorkshiftDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando estás disponible. Solo podrán reservar plaza en tus eventos dentro de este horario",
   "@createBrandWorkshiftDescription":{
     "description": "createBrand Text"
   },
-  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario.",
+  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario",
   "@createBrandBreakDescription":{
     "description": "createBrand Text"
   },

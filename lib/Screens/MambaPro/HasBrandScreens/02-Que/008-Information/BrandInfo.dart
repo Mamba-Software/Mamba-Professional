@@ -791,10 +791,14 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                             AppLocalizations.of(context)!.workingHours,
                             style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           ),
-                          timeZoneName != null ? Text(
-                            "TZ: "+timeZoneName!,
-                            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
-                            textAlign: TextAlign.left,
+                          timeZoneName != null ? Flexible(
+                            child: Text(
+                              timeZoneName!,
+                              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                              textAlign: TextAlign.right,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
                           ) : Container(),
                         ],
                       ),
@@ -1300,7 +1304,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           ),
                         ],
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.025),
                     ],
                   ),
                 ),
