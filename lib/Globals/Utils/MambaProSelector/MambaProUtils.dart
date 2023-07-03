@@ -35,7 +35,7 @@ class MambaProUtils {
     if(pageIndex == 14)return Text(AppLocalizations.of(context)!.eventHistory, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 15) return Text(AppLocalizations.of(context)!.myRequests, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 16) return Text(AppLocalizations.of(context)!.howTheySeeMe, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
-    if(pageIndex == 17) return Text(AppLocalizations.of(context)!.yourPlan, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
+    if(pageIndex == 17) return Text(StringUtils().toCapitalized(AppLocalizations.of(context)!.yourPlan.split(" ")[1]), style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     return Container();
   }
 
