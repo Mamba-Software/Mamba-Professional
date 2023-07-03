@@ -784,9 +784,19 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       /// WORKING HOURS
-                      Text(
-                        AppLocalizations.of(context)!.workingHours,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.workingHours,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          timeZoneName != null ? Text(
+                            "TZ: "+timeZoneName!,
+                            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                            textAlign: TextAlign.left,
+                          ) : Container(),
+                        ],
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.015),
                       Row(
@@ -1252,7 +1262,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                             ],
                           )
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -1353,7 +1363,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                 ],
                               )
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.015),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -1421,7 +1430,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                 ],
                               )
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.015),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
