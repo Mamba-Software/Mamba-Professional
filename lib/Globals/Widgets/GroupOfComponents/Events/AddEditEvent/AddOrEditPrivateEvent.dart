@@ -526,50 +526,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           },
         ),
         actions: [
-          widget.eventId != null ? IconButton(
-              onPressed: () async {
-              if(isLoading == false) {
-                if (event.eventGroupId == null) {
-                  // DeleteDialog
-                  var result = await showDialog(
-                      context: context,
-                      builder: (_) {
-                        return DeleteConfirmationDialog(text: AppLocalizations
-                            .of(context)!.deleteEventConfirmation);
-                      }
-                  );
-                  if (result) {
-                    _deleteEventFunction();
-                  }
-                } else {
-                  var result = await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const DeleteRecurrentEventDialog();
-                    },
-                  );
-                  if (result != null) {
-                    if (result == 1) {
-                      print("Deleting Only This Event..");
-                      _deleteEventFunction();
-                    } else {
-                      print("Delete This Event and the Rest Forward ...");
-                      _deleteRecurrentEventFunction();
-                    }
-                  }
-                }
-              }
-              },
-              icon: SizedBox(
-                width: MediaQuery.of(context).size.width*0.15,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
-                  ],
-                ),
-              )
-          ) : SizedBox(
+          SizedBox(
             width: MediaQuery.of(context).size.width*0.15,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -626,7 +583,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           },
         ),
         actions: [
-          widget.eventId != null ? (event.numClients == 0 || widget.isBeforeEdit)?  IconButton(
+          widget.eventId != null ? IconButton(
               onPressed: () async {
                 if (event.eventGroupId == null) {
                   // DeleteDialog
@@ -643,7 +600,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                   var result = await showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return const DeleteRecurrentEventDialog();
+                      return DeleteRecurrentEventDialog(
+                        isCompleted: !widget.isBeforeEdit,
+                      );
                     },
                   );
                   if (result != null) {
@@ -682,29 +641,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                     fit: BoxFit.contain,
                     child: Text(
                         AppLocalizations.of(context)!.private,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ) : SizedBox(
-            width: MediaQuery.of(context).size.width*0.15,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.groups,
-                  color: Theme.of(context).primaryColor,
-                  size: MediaQuery.of(context).size.width*0.06,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.1,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                        AppLocalizations.of(context)!.group,
                         style: Theme.of(context).textTheme.bodyText2,
                         textAlign: TextAlign.center
                     ),
@@ -1275,7 +1211,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         controller: startDateController,
                                                         readOnly: true,
                                                         enabled: false,
-                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
                                                         decoration: const InputDecoration(
                                                           border: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
@@ -1305,7 +1241,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         controller: startTimeController,
                                                         readOnly: true,
                                                         enabled: false,
-                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
                                                         decoration: const InputDecoration(
                                                           border: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
@@ -1337,7 +1273,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         controller: durationController,
                                                         readOnly: true,
                                                         enabled: false,
-                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
                                                         decoration: const InputDecoration(
                                                           border: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
@@ -1531,9 +1467,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                               activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
+                                                                if(widget.isBeforeEdit) {
+                                                                  setState(() {
+                                                                    _value = int.parse(value.toString());
+                                                                  });
+                                                                }
                                                               },
                                                             ),
                                                           ),
@@ -1591,7 +1529,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   onChanged: null,
                                                   trackColor: Colors.green.withOpacity(0.4),
                                                   thumbColor: AppColors.white,
-                                                  activeColor: Colors.green,
+                                                  activeColor: Colors.grey,
                                                 ),
                                               ),
                                             ],
@@ -1614,7 +1552,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   onChanged: null,
                                                   trackColor: Colors.green.withOpacity(0.4),
                                                   thumbColor: AppColors.white,
-                                                  activeColor: Colors.green,
+                                                  activeColor: Colors.grey,
                                                 ),
                                               ),
                                             ],
@@ -1951,7 +1889,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                               var result = await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return const EditRecurrentEventDialog();
+                                  return EditRecurrentEventDialog(
+                                    isCompleted: !widget.isBeforeEdit,
+                                  );
                                 },
                               );
                               if (result != null) {

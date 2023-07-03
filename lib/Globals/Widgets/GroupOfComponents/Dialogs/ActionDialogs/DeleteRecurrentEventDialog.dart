@@ -4,7 +4,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class DeleteRecurrentEventDialog extends StatefulWidget {
-  const DeleteRecurrentEventDialog({Key? key}) : super(key: key);
+  bool isCompleted;
+  DeleteRecurrentEventDialog({Key? key, required this.isCompleted}) : super(key: key);
 
   @override
   _DeleteRecurrentEventDialogState createState() => _DeleteRecurrentEventDialogState();
@@ -19,20 +20,27 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
       MaterialState.pressed,
       MaterialState.hovered,
       MaterialState.focused,
+      MaterialState.disabled,
     };
     if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
+      return AppColors.grey;
     }
     return Theme.of(context).primaryColor;
+  }
+
+  @override
+  void initState() {
+    if (widget.isCompleted) _value = 1;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
+      insetPadding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
+        padding: const EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -58,7 +66,7 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                     children: [
                       ListTile(
                         dense: true,
-                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                        contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
                           AppLocalizations.of(context)!.thisEvent,
                           style: Theme.of(context).textTheme.bodyText2,
@@ -80,19 +88,23 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                       ),
                       ListTile(
                         dense: true,
-                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                        contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
                           AppLocalizations.of(context)!.thisEventAndRest,
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: widget.isCompleted ? Theme.of(context).textTheme.caption : Theme.of(context).textTheme.bodyText2,
                         ),
+                        subtitle: widget.isCompleted ? Text(
+                          AppLocalizations.of(context)!.notAvailableFinishedEvents,
+                          style:  Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                        ) : null,
                         leading: Transform.scale(
                           scale: 1.2,
                           child: Radio(
                             value: 2,
                             groupValue: _value,
-                            activeColor: Theme.of(context).primaryColor,
+                            activeColor: widget.isCompleted ? AppColors.grey : Theme.of(context).primaryColor,
                             fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                            onChanged: (value) {
+                            onChanged: widget.isCompleted ? null : (value) {
                               setState(() {
                                 _value = int.parse(value.toString());
                               });
@@ -160,14 +172,14 @@ class _DeleteRecurrentEventDialogState extends State<DeleteRecurrentEventDialog>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(70, 70), // button width and height
+                      size: const Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Colors.red, // button color
                           child: InkWell(
                             onTap: () async {
                             },
-                            child: Icon(Icons.priority_high, color: Colors.white, size: 45,), // icon
+                            child: const Icon(Icons.priority_high, color: Colors.white, size: 45,), // icon
                           ),
                         ),
                       ),

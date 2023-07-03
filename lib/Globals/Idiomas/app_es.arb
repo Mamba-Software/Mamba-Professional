@@ -3342,8 +3342,12 @@
   "@isMaintenanceText": {
     "description": "notSubNotAdmin message"
   },
-  "cantEditText": "No se pueden editar estos valores en un evento terminado",
+  "cantEditText": "La fecha, hora y duración de un evento finalizado no se pueden modificar",
   "@cantEditText": {
+    "description": "cantEditText message"
+  },
+  "notAvailableFinishedEvents": "No disponible para eventos finalizados",
+  "@notAvailableFinishedEvents": {
     "description": "cantEditText message"
   },
   "directPurchaseDescription": "Permite que las compras de tus bonos se aprueben sin solicitud, el cliente obtendrá el bono al momento de hacer su compra",
