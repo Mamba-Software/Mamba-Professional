@@ -7,18 +7,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
 
 import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
@@ -40,6 +47,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   DateFormat formatter = DateFormat('dd/MM/yy');
   // DataBase Access
   final _brandDataService = BrandDataService();
+  final _eventDataService = EventDataService();
+  final _roomDataService = RoomDataService();
   final _promotionDataService = PromotionsDataService();
   // Boolean isLoading
   bool isLoading = false;
@@ -244,7 +253,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
                 child: Text(
-                    AppLocalizations.of(context)!.information,
+                    AppLocalizations.of(context)!.settings,
                     style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
                 )
             ),
@@ -262,7 +271,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            AppLocalizations.of(context)!.information,
+                            AppLocalizations.of(context)!.settings,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                           ),
                           FittedBox(
@@ -332,7 +341,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               ),
             ],
           ),
-          isLoading ? SliverFillRemaining(
+          if (isLoading) SliverFillRemaining(
             hasScrollBody: false,
             child: Column(
               children: [
@@ -346,9 +355,10 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                 ),
               ],
             ),
-          ) : SliverToBoxAdapter(
+          ) else SliverToBoxAdapter(
             child: Column(
               children: [
+                /*
                 currentUser.id == currentBrand.adminID ? BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
                     builder: (context, state) {
                       switch (state.runtimeType) {
@@ -370,7 +380,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                   style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                                suscriptionState.subscription.subscriptionId  == '7DAYSTRIAL'? freeTrialMamba() : GestureDetector(
+                                suscriptionState.subscription.subscriptionId  == '7DAYSTRIAL' ? freeTrialMamba() : GestureDetector(
                                   onTap: () async {
                                     mixpanel!.track('brand_see_active_subscription');
                                     await Navigator.push(
@@ -486,233 +496,500 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                       }
                     }
                 ) : const SizedBox(height: 10),
+                 */
+                /// INFO
                 Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
-                    child: Form(
-                      key: formKeyInfo,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      Row(
                         children: [
+                          Icon(
+                            Icons.info_outlined,
+                            color: AppColors.grey,
+                            size: MediaQuery.of(context).size.width*0.05,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
                           Text(
-                            AppLocalizations.of(context)!.logo,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                            AppLocalizations.of(context)!.information,
+                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.28,
-                            width: MediaQuery.of(context).size.width,
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: navigateToEditLogoScreen,
-                                child: CircularImage(
-                                  size: MediaQuery.of(context).size.height * 0.25,
-                                  image: currentBrand.logoUrl!,
-                                  borderWidth: 1,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Text(
-                            AppLocalizations.of(context)!.nameBrand,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Flexible(
-                            child: TextFormField(
-                              keyboardType: TextInputType.text,
-                              controller: nameBrandController,
-                              onChanged: (value) {
-                                setState(() {
-                                  nameBrandControllerTemp = value;
-                                });
-                              },
-                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(fontWeight: FontWeight.normal),
-                              textAlign: TextAlign.center,
-                              textCapitalization: TextCapitalization.words,
-                              enabled: canEdit,
-                              decoration: InputDecoration(
-                                hintStyle: Theme.of(context).textTheme.caption,
-                                hintText: AppLocalizations.of(context)!.nameBrandError,
-                                enabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Row(
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Form(
+                    key: formKeyInfo,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        /// LOGO
+                        Text(
+                          AppLocalizations.of(context)!.logo,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.16,
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  AppLocalizations.of(context)!.createBrandDescDescription,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.left,
+                              GestureDetector(
+                                onTap: navigateToEditLogoScreen,
+                                child: Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: [
+                                    SizedBox(
+                                      height: canEdit ? MediaQuery.of(context).size.height * 0.16 : MediaQuery.of(context).size.height * 0.15,
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          CircularImage(
+                                            size: MediaQuery.of(context).size.height * 0.15,
+                                            image: currentBrand.logoUrl!,
+                                            borderWidth: 1,
+                                            color: Theme.of(context).primaryColor,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    canEdit ? Material(
+                                      elevation: 4,
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: MediaQuery.of(context).size.height * 0.1,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).backgroundColor,
+                                          borderRadius: BorderRadius.circular(15),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                        child: Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context).size.width*0.06,
+                                              child: Icon(Icons.edit, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.035,),
+                                            ),
+                                            Text(
+                                                AppLocalizations.of(context)!.edit,
+                                                style: Theme.of(context).textTheme.bodyText2,
+                                                maxLines: 1,
+                                                softWrap: true,
+                                                textAlign: TextAlign.center
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ) : Container(),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Text(
-                            AppLocalizations.of(context)!.description,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Flexible(
-                            child: TextFormField(
-                              keyboardType: TextInputType.text,
-                              controller: descriptionController,
-                              onChanged: (value) {
-                                setState(() {
-                                  descriptionControllerTemp = value;
-                                });
-                              },
-                              //validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
-                              minLines: 1,
-                              maxLines: 5,
-                              maxLength: 250,
-                              enabled: canEdit,
-                              style: Theme.of(context).textTheme.bodyText2,
-                              decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.descriptionHint,
-                                hintStyle: Theme.of(context).textTheme.caption,
-                                enabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                        /// NAME
+                        Text(
+                          AppLocalizations.of(context)!.firstName,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                        Material(
+                          elevation: 4,
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  keyboardType: TextInputType.text,
+                                  controller: nameBrandController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      nameBrandControllerTemp = value;
+                                    });
+                                  },
+                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameBrandError : null,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                  textAlign: TextAlign.start,
+                                  textCapitalization: TextCapitalization.words,
+                                  enabled: canEdit,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Theme.of(context).backgroundColor,
+                                    hintStyle: Theme.of(context).textTheme.caption,
+                                    hintText: AppLocalizations.of(context)!.nameBrandError,
+                                    border: OutlineInputBorder(
+                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                          /*
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.015),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!.maxNumberClientsError,
+                                AppLocalizations.of(context)!.createBrandCoverDescription,
                                 style: Theme.of(context).textTheme.caption,
                                 textAlign: TextAlign.left,
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                        /// DESCRIPTION
                         Text(
-                          AppLocalizations.of(context)!.maxNumberClients,
+                          AppLocalizations.of(context)!.description,
                           style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                        GestureDetector(
-                            onTap: () {
-                              selectSlot(context, 2, null);
-                            },
+                        SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                        Material(
+                          elevation: 4,
+                          borderRadius: BorderRadius.circular(15.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).backgroundColor,
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                            ),
                             child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                new Flexible(
+                              children: [
+                                Expanded(
                                   child: TextFormField(
-                                    controller: membersController,
+                                    keyboardType: TextInputType.text,
+                                    controller: descriptionController,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        descriptionControllerTemp = value;
+                                      });
+                                    },
+                                    //validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
                                     minLines: 1,
-                                    readOnly: true,
-                                    enabled: false,
-                                    style: Styles.purpleTextStyle,
+                                    maxLines: 5,
+                                    maxLength: 250,
+                                    enabled: canEdit,
+                                    style: Theme.of(context).textTheme.bodyText2,
                                     decoration: InputDecoration(
-                                      hintStyle: Styles.purpleTextStyle.copyWith(fontSize: 16, color: Colors.grey),
-                                      hintText: AppLocalizations.of(context)!.maxNumberClientsError,
-                                      labelStyle: Styles.purpleTextStyle,
-                                      border: InputBorder.none,
-                                      focusedBorder: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      errorBorder: InputBorder.none,
-                                      disabledBorder: InputBorder.none,
+                                      filled: true,
+                                      fillColor: Theme.of(context).backgroundColor,
+                                      hintText: AppLocalizations.of(context)!.descriptionHint,
+                                      counter: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 5.0), // adjust as needed
+                                        child: Text(
+                                          "${descriptionController.text.length}/250", // replace 250 with your max length
+                                          style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                                        ),
+                                      ),
+                                      hintStyle: Theme.of(context).textTheme.caption,
+                                        border: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
                                     ),
-                                    textAlign: TextAlign.start,
                                   ),
                                 ),
                               ],
-                            )
+                            ),
+                          ),
                         ),
-                        errorMembers ? Text(
-                          AppLocalizations.of(context)!.maxNumberClientsError,
-                          style: Styles.redTextStyle.copyWith(fontSize: 12),
-                        ) : new Container(),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!.createBrandDescDescription,
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                        */
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
+                      ],
+                    ),
+                  ),
+                ),
+                /// CALENDAR
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    children: [
+                      Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.calendar_month_outlined,
+                            color: AppColors.grey,
+                            size: MediaQuery.of(context).size.width*0.05,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                          Text(
+                            AppLocalizations.of(context)!.calendar,
+                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /// WORKING HOURS
+                      Text(
+                        AppLocalizations.of(context)!.workingHours,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          TextButton(
+                            onPressed: canEdit ? () async {
+                              DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                                  context: context,
+                                  builder: (_) => SelectTimeDialog(
+                                    title: AppLocalizations.of(context)!.selectTime,
+                                    startDate: startTime,
+                                    onlyFuture: false,
+                                  )
+                              );
+                              if (pickedTimeTemp != null) {
+                                setState(() {
+                                  startTime = pickedTimeTemp;
+                                  startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute,));
+                                });
+                              }
+                            } : null,
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: const Size(50, 30),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                alignment: Alignment.centerLeft
+                            ),
+                            child: Material(
+                              elevation: 4,
+                              borderRadius: const BorderRadius.all(Radius.circular(15)),
+                              child: Container(
+                                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                                  color: Theme.of(context).backgroundColor,
+                                ),
                                 child: Text(
-                                  AppLocalizations.of(context)!.createBrandWorkshiftDescription,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.left,
+                                  startTimeController.text,
+                                  style: Theme.of(context).textTheme.bodyText2,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Text(
-                            AppLocalizations.of(context)!.workingHours,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text("-", style: Theme.of(context).textTheme.headline3),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          Row(
+                          TextButton(
+                            onPressed: canEdit ? () async {
+                              DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+                                  context: context,
+                                  builder: (_) => SelectTimeDialog(
+                                    title: AppLocalizations.of(context)!.selectTime,
+                                    startDate: endTime,
+                                    onlyFuture: false,
+                                  )
+                              );
+                              if (pickedTimeTemp != null ) {
+                                setState(() {
+                                  endTime = pickedTimeTemp;
+                                  endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
+                                });
+                              }
+                            } : null,
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: const Size(50, 30),
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                alignment: Alignment.centerLeft
+                            ),
+                            child: Material(
+                              elevation: 4,
+                              borderRadius: const BorderRadius.all(Radius.circular(15)),
+                              child: Container(
+                                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                                  color: Theme.of(context).backgroundColor,
+                                ),
+                                child: Text(
+                                  endTimeController.text,
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      errorTime != null ? Padding(
+                        padding: const EdgeInsets.only(left: 0, right: 0, top: 10.0, bottom: 0),
+                        child: Text(
+                          errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
+                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                          textAlign: TextAlign.left,
+                        ),
+                      ) : Container(),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.createBrandWorkshiftDescription,
+                              style: Theme.of(context).textTheme.caption,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      /// BOOKING WINDOW
+                      Text(
+                        AppLocalizations.of(context)!.bookingWindow,
+                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                      GestureDetector(
+                        onTap: canEdit ? () {
+                          selectNumberOfDays();
+                        } : null,
+                        child: Material(
+                          elevation: 4,
+                          borderRadius: const BorderRadius.all(Radius.circular(15)),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(Radius.circular(15)),
+                              color: Theme.of(context).backgroundColor,
+                            ),
+                            height: MediaQuery.of(context).size.width*0.1,
+                            width: MediaQuery.of(context).size.width*0.2,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  bookingWindow.toString()+" "+AppLocalizations.of(context)!.days.toLowerCase(),
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.bookingWindowDescription,
+                              style: Theme.of(context).textTheme.caption,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      /// BRAND BREAK
+                      /*
+                    SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(context)!.createBrandBreakDescription,
+                            style: Theme.of(context).textTheme.caption,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                    Text(
+                      AppLocalizations.of(context)!.lunchBreak,
+                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.43,
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
                               TextButton(
-                                onPressed: canEdit ? () async {
+                                onPressed: _breakList.length < breakLimit ? () async {
                                   DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
                                       context: context,
                                       builder: (_) => SelectTimeDialog(
                                         title: AppLocalizations.of(context)!.selectTime,
-                                        startDate: startTime,
+                                        startDate: breakStartTime,
                                         onlyFuture: false,
                                       )
                                   );
                                   if (pickedTimeTemp != null) {
                                     setState(() {
-                                      startTime = pickedTimeTemp;
-                                      startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startTime.hour, startTime.minute,));
-                                    });
-                                  }
-                                } : null,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                                    border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Text(
-                                    startTimeController.text,
-                                    style: Theme.of(context).textTheme.headline3,
-                                  ),
-                                ),
-                              ),
-                              Text("-",
-                                  style: Theme.of(context).textTheme.headline3),
-                              TextButton(
-                                onPressed: canEdit ? () async {
-                                  DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
-                                      context: context,
-                                      builder: (_) => SelectTimeDialog(
-                                        title: AppLocalizations.of(context)!.selectTime,
-                                        startDate: endTime,
-                                        onlyFuture: false,
-                                      )
-                                  );
-                                  if (pickedTimeTemp != null ) {
-                                    setState(() {
-                                      endTime = pickedTimeTemp;
-                                      endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
+                                      breakStartTime = pickedTimeTemp;
+                                      breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakStartTime.hour, breakStartTime.minute,));
                                     });
                                   }
                                 } : null,
@@ -720,86 +997,313 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                    border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
+                                    border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
                                     color: Colors.transparent,
                                   ),
                                   child: Text(
-                                      endTimeController.text,
-                                      style: Theme.of(context).textTheme.headline3
+                                    breakStartTimeController.text,
+                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
+                                  ),
+                                ),
+                              ),
+                              Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
+                              TextButton(
+                                onPressed: _breakList.length < breakLimit ? () async {
+                                  DateTime? pickedTimeTemp = await showCupertinoModalPopup(
+                                      context: context,
+                                      builder: (_) => SelectTimeDialog(
+                                        title: AppLocalizations.of(context)!.selectTime,
+                                        startDate: breakEndTime,
+                                        onlyFuture: false,
+                                      )
+                                  );
+                                  if (pickedTimeTemp != null) {
+                                    setState(() {
+                                      breakEndTime = pickedTimeTemp;
+                                      breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakEndTime.hour, breakEndTime.minute,));
+                                    });
+                                  }
+                                } : null,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                                    border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
+                                    color: Colors.transparent,
+                                  ),
+                                  child: Text(
+                                    breakEndTimeController.text,
+                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          errorTime != null ? Padding(
-                            padding: const EdgeInsets.only(left: 0, right: 0, top: 10.0, bottom: 0),
-                            child: Text(
-                              errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                              textAlign: TextAlign.left,
+                        ),
+                        _breakList.length < breakLimit ? Padding(
+                          padding: const EdgeInsets.only(left: 0.0),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100.0;
+                              if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
+                                setState(() {
+                                  errorBreakTime = true;
+                                });
+                              } else {
+                                DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
+                                DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
+                                _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
+                                _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
+                                setState(() {
+                                  errorBreakTime = false ;
+                                  _breakList.clear();
+                                  _breakList.add(_breakStartTime);
+                                  _breakList.add(_breakEndTime);
+                                });
+                              }
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon( Icons.add, color: Colors.white, size: 30,),
+                              ],
                             ),
-                          ) : Container(),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  AppLocalizations.of(context)!.bookingWindowDescription,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),
-                            ],
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              elevation: 3,
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(5),
+                            ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Text(
-                            AppLocalizations.of(context)!.bookingWindow,
-                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: GestureDetector(
-                              onTap: canEdit ? () {
-                                selectNumberOfDays();
-                              } : null,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 4),
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(Radius.circular(5)),
-                                  border: Border.all(color: Theme.of(context).primaryColor, width: 1.0),
-                                  color: Colors.transparent,
-                                ),
-                                height: MediaQuery.of(context).size.width*0.1,
-                                width: MediaQuery.of(context).size.width*0.2,
+                        ) : Container(),
+                      ],
+                    ),
+                    errorBreakTime ? Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                      child: Text(
+                        AppLocalizations.of(context)!.workingHoursError1,
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                        textAlign: TextAlign.center,
+                      ),
+                    ) : Container(),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _breakList.length,
+                      itemBuilder: (context, int index) {
+                        if(index.isEven && !removedIndex.contains(index)) {
+                          return Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.43,
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      bookingWindow.toString()+" "+AppLocalizations.of(context)!.days.toLowerCase(),
-                                      style: Theme.of(context).textTheme.headline3,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    TextButton(
+                                      onPressed: false ? () {
+                                      } : null,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                                          border: Border.all(color: Colors.green, width: 1.0),
+                                          color: Colors.transparent,
+                                        ),
+                                        child: Text(
+                                          '${_breakList[index].format(context)}',
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
+                                        ),
+                                      ),
+                                    ),
+                                    Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
+                                    TextButton(
+                                      onPressed: false ? () {
+                                      } : null,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(const Radius.circular(5)),
+                                          border: Border.all(color: Colors.green, width: 1.0),
+                                          color: Colors.transparent,
+                                        ),
+                                        child: Text(
+                                          '${_breakList[index+1].format(context)}',
+                                          style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
+                                        ),
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 0.0),
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      removedIndex.add(index);
+                                      removedIndex.add(index+1);
+                                      breakLimit += 2;
+                                    });
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon( Icons.remove, color: Colors.white, size: 30,),
+                                    ],
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    elevation: 3,
+                                    shape: const CircleBorder(),
+                                    padding: const EdgeInsets.all(5),
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                      shrinkWrap: true,
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                    _breakList.length < breakLimit ? Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(context)!.createBrandAddDescription,
+                            style: Theme.of(context).textTheme.bodyText2,
+                            textAlign: TextAlign.left,
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                        ),
+                      ],
+                    ) : Container(),
+                     */
+                    ],
+                  ),
+                ),
+                /// PURCHASES
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    children: [
+                      Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.confirmation_number_outlined,
+                            color: AppColors.grey,
+                            size: MediaQuery.of(context).size.width*0.05,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                          Text(
+                            StringUtils().toCapitalized(AppLocalizations.of(context)!.purchaseHistory.split(" ")[2]),
+                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /// DIRECT PURCHASE
+                      Padding(
+                          padding: EdgeInsets.only(right: MediaQuery.of(context).size.height * 0.01),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,
                             children: [
-                              Expanded(
-                                child: Text(
-                                  AppLocalizations.of(context)!.directPurchaseDescription,
-                                  style: Theme.of(context).textTheme.caption,
-                                  textAlign: TextAlign.left,
+                              Text(
+                                AppLocalizations.of(context)!.directPurchasetext,
+                                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.035,
+                                width: MediaQuery.of(context).size.width * 0.1,
+                                child: CupertinoSwitch(
+                                  value: directPurchase,
+                                  onChanged: canEdit ? (bool newVal) {
+                                    setState(() {
+                                      directPurchase = newVal;
+                                    });
+                                  } : null,
+                                  trackColor: Colors.green.withOpacity(0.4),
+                                  thumbColor: AppColors.white,
+                                  activeColor: Colors.green,
                                 ),
                               ),
                             ],
+                          )
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.directPurchaseDescription,
+                              style: Theme.of(context).textTheme.caption,
+                              textAlign: TextAlign.left,
+                            ),
                           ),
-                          SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    ],
+                  ),
+                ),
+                /// DELETE BRAND
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    children: [
+                      Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.settings_outlined,
+                            color: AppColors.grey,
+                            size: MediaQuery.of(context).size.width*0.05,
+                          ),
+                          SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                          Text(
+                            AppLocalizations.of(context)!.others,
+                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.grey),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /// LEAVE BRAND
+                      !canEdit ? Column(
+                        children: [
                           Padding(
                               padding: EdgeInsets.only(right: MediaQuery.of(context).size.height * 0.01),
                               child: Row(
@@ -807,275 +1311,136 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Text(
-                                    AppLocalizations.of(context)!.directPurchasetext,
-                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                    AppLocalizations.of(context)!.exitBrand,
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.red),
                                   ),
-                                  SizedBox(
-                                    height: MediaQuery.of(context).size.height * 0.035,
-                                    width: MediaQuery.of(context).size.width * 0.1,
-                                    child: CupertinoSwitch(
-                                      value: directPurchase,
-                                      onChanged: canEdit ? (bool newVal) {
-                                        setState(() {
-                                          directPurchase = newVal;
-                                        });
-                                      } : null,
-                                      trackColor: Colors.green.withOpacity(0.4),
-                                      thumbColor: AppColors.white,
-                                      activeColor: Colors.green,
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.logout,
+                                      color: AppColors.red,
+                                      size: MediaQuery.of(context).size.width*0.07,
                                     ),
+                                    alignment: Alignment.centerRight,
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () async {
+                                      mixpanel!.track('exit_brand_dialog_open');
+                                      // Leaves Brand
+                                      var result = await showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return ConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
+                                          }
+                                      );
+                                      if (result) {
+                                        mixpanel!.track('exit_brand_confirmed');
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        pageIndex = 0;
+                                        NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
+                                        await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
+                                        await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
+                                        Navigator.pushReplacement(
+                                            context,
+                                            CupertinoPageRoute<void>(
+                                              builder: (context) => const SplashScreen(),
+                                              settings: const RouteSettings(name: 'SplashScreen'),
+                                            )
+                                        );
+                                      }
+                                    },
                                   ),
                                 ],
                               )
                           ),
-
-
-                          /*
-                        SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                AppLocalizations.of(context)!.createBrandBreakDescription,
-                                style: Theme.of(context).textTheme.caption,
-                                textAlign: TextAlign.left,
+                          SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.exitBrandDesc,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.left,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                        Text(
-                          AppLocalizations.of(context)!.lunchBreak,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.43,
+                            ],
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                        ],
+                      ) : Column(
+                        children: [
+                          Padding(
+                              padding: EdgeInsets.only(right: MediaQuery.of(context).size.height * 0.01),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  TextButton(
-                                    onPressed: _breakList.length < breakLimit ? () async {
-                                      DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
-                                          context: context,
-                                          builder: (_) => SelectTimeDialog(
-                                            title: AppLocalizations.of(context)!.selectTime,
-                                            startDate: breakStartTime,
-                                            onlyFuture: false,
-                                          )
-                                      );
-                                      if (pickedTimeTemp != null) {
-                                        setState(() {
-                                          breakStartTime = pickedTimeTemp;
-                                          breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakStartTime.hour, breakStartTime.minute,));
-                                        });
-                                      }
-                                    } : null,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                        border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
-                                        color: Colors.transparent,
-                                      ),
-                                      child: Text(
-                                        breakStartTimeController.text,
-                                        style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
-                                      ),
-                                    ),
+                                  Text(
+                                    AppLocalizations.of(context)!.deleteBrand,
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: AppColors.red),
                                   ),
-                                  Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
-                                  TextButton(
-                                    onPressed: _breakList.length < breakLimit ? () async {
-                                      DateTime? pickedTimeTemp = await showCupertinoModalPopup(
-                                          context: context,
-                                          builder: (_) => SelectTimeDialog(
-                                            title: AppLocalizations.of(context)!.selectTime,
-                                            startDate: breakEndTime,
-                                            onlyFuture: false,
-                                          )
-                                      );
-                                      if (pickedTimeTemp != null) {
-                                        setState(() {
-                                          breakEndTime = pickedTimeTemp;
-                                          breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakEndTime.hour, breakEndTime.minute,));
-                                        });
-                                      }
-                                    } : null,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                        border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
-                                        color: Colors.transparent,
-                                      ),
-                                      child: Text(
-                                        breakEndTimeController.text,
-                                        style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
-                                      ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete_outlined,
+                                      color: AppColors.red,
+                                      size: MediaQuery.of(context).size.width*0.07,
                                     ),
+                                    alignment: Alignment.centerRight,
+                                    padding: EdgeInsets.zero,
+                                    onPressed: () async {
+                                      mixpanel!.track('delete_brand_dialog_open');
+                                      var result = await showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return const DeleteBrandDialog();
+                                          }
+                                      );
+                                      if (result) {
+                                        mixpanel!.track('delete_brand_confirmed');
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        // New DataBase
+                                        await _brandDataService.deleteBrand(currentBrand.id!);
+                                        await _roomDataService.deleteRoom(currentBrand.roomId!);
+                                        currentUser.setBrandList = [];
+                                        await Future.delayed(const Duration(seconds: 4));
+                                        Navigator.pushReplacement(
+                                            context,
+                                            CupertinoPageRoute<void>(
+                                              builder: (context) =>
+                                              const SplashScreen(),
+                                              settings: const RouteSettings(
+                                                  name: 'SplashScreen'),
+                                            )
+                                        );
+                                      }
+                                    },
                                   ),
                                 ],
-                              ),
-                            ),
-                            _breakList.length < breakLimit ? Padding(
-                              padding: const EdgeInsets.only(left: 0.0),
-                              child: OutlinedButton(
-                                onPressed: () {
-                                  double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100.0;
-                                  if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
-                                    setState(() {
-                                      errorBreakTime = true;
-                                    });
-                                  } else {
-                                    DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
-                                    DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
-                                    _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
-                                    _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
-                                    setState(() {
-                                      errorBreakTime = false ;
-                                      _breakList.clear();
-                                      _breakList.add(_breakStartTime);
-                                      _breakList.add(_breakEndTime);
-                                    });
-                                  }
-                                },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon( Icons.add, color: Colors.white, size: 30,),
-                                  ],
-                                ),
-                                style: OutlinedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  elevation: 3,
-                                  shape: const CircleBorder(),
-                                  padding: const EdgeInsets.all(5),
-                                ),
-                              ),
-                            ) : Container(),
-                          ],
-                        ),
-                        errorBreakTime ? Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
-                          child: Text(
-                            AppLocalizations.of(context)!.workingHoursError1,
-                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                            textAlign: TextAlign.center,
+                              )
                           ),
-                        ) : Container(),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                        ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _breakList.length,
-                          itemBuilder: (context, int index) {
-                            if(index.isEven && !removedIndex.contains(index)) {
-                              return Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Container(
-                                    width: MediaQuery.of(context).size.width * 0.43,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        TextButton(
-                                          onPressed: false ? () {
-                                          } : null,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                              border: Border.all(color: Colors.green, width: 1.0),
-                                              color: Colors.transparent,
-                                            ),
-                                            child: Text(
-                                              '${_breakList[index].format(context)}',
-                                              style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
-                                            ),
-                                          ),
-                                        ),
-                                        Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
-                                        TextButton(
-                                          onPressed: false ? () {
-                                          } : null,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(8),
-                                            decoration: BoxDecoration(
-                                              borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                              border: Border.all(color: Colors.green, width: 1.0),
-                                              color: Colors.transparent,
-                                            ),
-                                            child: Text(
-                                              '${_breakList[index+1].format(context)}',
-                                              style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 0.0),
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          removedIndex.add(index);
-                                          removedIndex.add(index+1);
-                                          breakLimit += 2;
-                                        });
-                                      },
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          const Icon( Icons.remove, color: Colors.white, size: 30,),
-                                        ],
-                                      ),
-                                      style: OutlinedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        elevation: 3,
-                                        shape: const CircleBorder(),
-                                        padding: const EdgeInsets.all(5),
-                                      ),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return Container();
-                            }
-                          },
-                          shrinkWrap: true,
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                        _breakList.length < breakLimit ? Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                AppLocalizations.of(context)!.createBrandAddDescription,
-                                style: Theme.of(context).textTheme.bodyText2,
-                                textAlign: TextAlign.left,
+                          SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  AppLocalizations.of(context)!.deleteBrandDesc,
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.left,
+                                ),
                               ),
-                            ),
-                          ],
-                        ) : Container(),
-                         */
-                          SizedBox(height: MediaQuery.of(context).size.height*0.10),
+                            ],
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height*0.03),
                         ],
                       ),
-                    )
+                    ],
+                  ),
                 ),
+                SizedBox(height: MediaQuery.of(context).size.height*0.10),
               ],
             ),
           ),

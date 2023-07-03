@@ -411,6 +411,7 @@ class _BrandScreenState extends State<BrandScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        /*
         listTilePro(0),
         ListView.builder(
             padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.003),
@@ -425,7 +426,7 @@ class _BrandScreenState extends State<BrandScreen> {
         SizedBox(height: safeAreaHeight * 0.01),
         Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 2),
         SizedBox(height: safeAreaHeight * 0.01),
-
+         */
         SizedBox(height: safeAreaHeight * 0.01),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
@@ -465,9 +466,10 @@ class _BrandScreenState extends State<BrandScreen> {
           ),
         ),
         SizedBox(height: safeAreaHeight * 0.01),
-        listTilePro(8),
+        listTilePro(17),
         listTilePro(7),
         listTilePro(11),
+        listTilePro(8),
         //listTilePro(14),
 
 
@@ -856,6 +858,15 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
+      case 17:
+        mixpanel!.track('brand_locations_view');
+        return Locations(
+          brandId: currentBrand.id!,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
+        );
       default:
         mixpanel!.track('brand_homepage_view');
         return HomePro(
@@ -917,12 +928,14 @@ class _BrandScreenState extends State<BrandScreen> {
               // Brand Options
               // TODO: Passer Rol en aquesta funció
               buildBrandListOptions(),
-              SizedBox(height: safeAreaHeight * 0.015),
-              Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
+              //SizedBox(height: safeAreaHeight * 0.03),
+              //Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
+              /*
               // Leave/Delete Brand
               SizedBox(height: safeAreaHeight * 0.015),
               buildBrandLeaveOption(),
               SizedBox(height: safeAreaHeight * 0.05),
+              */
             ],
           ),
         ),

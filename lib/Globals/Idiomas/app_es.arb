@@ -645,7 +645,7 @@
   "@createBrandDesc":{
     "description": "createBrand Text"
   },
-  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción.\n\nEn 250 caracteres, transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
+  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. Transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
   "@createBrandDescDescription":{
     "description": "createBrand Text"
   },
@@ -769,7 +769,7 @@
   "@brandDescription":{
     "description": "zipCode text"
   },
-  "workingHours": "Horario de Trabajo",
+  "workingHours": "Horario de trabajo",
   "@workingHours":{
     "description": "workingHours text"
   },
@@ -1512,12 +1512,20 @@
   "@exitBrand": {
     "description": "Wellcome message"
   },
+  "exitBrandDesc": "Dejarás de participar en los eventos previstos y perderás los beneficios y accesos actuales. Para reincorporarte, necesitarás una nueva aprobación de los administradores",
+  "@exitBrandDesc": {
+    "description": "Wellcome message"
+  },
   "exitBrandConfirm": "¿Seguro que quieres abandonar esta marca?",
   "@exitBrandConfirm": {
     "description": "Wellcome message"
   },
   "deleteBrand": "Eliminar marca",
   "@deleteBrand": {
+    "description": "Wellcome message"
+  },
+  "deleteBrandDesc": "Se eliminará completamente toda su información, incluyendo la relación con sus clientes y todos los datos relacionados. Esta acción es irreversible y hará que la marca desaparezca como si nunca hubiera existido",
+  "@deleteBrandDesc": {
     "description": "Wellcome message"
   },
   "deleteBrandConfirmation": "¿Seguro que quieres eliminar tu marca?",
@@ -3354,7 +3362,7 @@
   "@directPurchaseDescription": {
     "description": "directPurchase message"
   },
-  "directPurchasetext": "Permitir compra directa",
+  "directPurchasetext": "Compra directa",
   "@directPurchasetext": {
     "description": "directPurchasetext message"
   },
