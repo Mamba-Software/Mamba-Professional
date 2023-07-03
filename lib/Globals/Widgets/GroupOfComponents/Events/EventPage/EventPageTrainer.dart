@@ -761,7 +761,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                   ),
                 ),
                 actions: [
-                  isLoadingBody == false && canEdit && event!.isPrivate! == false ? Padding(
+                  isLoadingBody == false && isBeforeEdit && event!.isPrivate! == false ? Padding(
                     padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                     child: Container(
                       height: MediaQuery.of(context).size.width*0.06,
@@ -772,7 +772,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                       ),
                       child: buildPlacesLeftWidget(placesLeft),
                     ),
-                  ) : !canEdit ? Padding(
+                  ) : !isBeforeEdit ? Padding(
                     padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                     child: Container(
                       height: MediaQuery.of(context).size.width*0.06,
@@ -1508,7 +1508,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
             children: [
               SizedBox(
                 width: MediaQuery.of(context).size.width*0.37,
-                child: isBeforeEdit? FloatingActionButton.extended(
+                child: isBeforeEdit ? FloatingActionButton.extended(
                   heroTag: "9",
                   onPressed: () async {
                     // Create Dynamic Link

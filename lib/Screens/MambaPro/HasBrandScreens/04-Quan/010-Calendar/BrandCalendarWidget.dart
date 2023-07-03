@@ -1877,7 +1877,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       var color;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
-        color = Colors.black;
+        if (endDate.isAfter(DateTime.now())) {
+          color = Colors.black;
+        } else {
+          color = Colors.black.withOpacity(0.25);
+        }
       } else {
         subject = "${event.numClients}/${event.maxMembers}";
         // Colors
@@ -1885,17 +1889,41 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         double maxMembers = double.parse(event.maxMembers.toString());
         double bookedCapacity = numClients/maxMembers;
         if(bookedCapacity <= 0.20) {
-          color = Colors.green;
+          if (endDate.isAfter(DateTime.now())) {
+            color = Colors.green;
+          } else {
+            color = Colors.green.withOpacity(0.5);
+          }
         } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
-          color = const Color(0xFFA8C76C);
+          if (endDate.isAfter(DateTime.now())) {
+            color = const Color(0xFFA8C76C);
+          } else {
+            color = const Color(0xFFA8C76C).withOpacity(0.5);
+          }
         } else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
-          color = const Color(0xFFECE014);
+          if (endDate.isAfter(DateTime.now())) {
+            color = const Color(0xFFECE014);
+          } else {
+            color = const Color(0xFFECE014).withOpacity(0.5);
+          }
         } else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
-          color = Colors.orangeAccent;
+          if (endDate.isAfter(DateTime.now())) {
+            color = Colors.orangeAccent;
+          } else {
+            color = Colors.orangeAccent.withOpacity(0.5);
+          }
         } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
-          color = Colors.deepOrangeAccent;
+          if (endDate.isAfter(DateTime.now())) {
+            color = Colors.deepOrangeAccent;
+          } else {
+            color = Colors.deepOrangeAccent.withOpacity(0.6);
+          }
         } else if(bookedCapacity == 1) {
-          color = Colors.red;
+          if (endDate.isAfter(DateTime.now())) {
+            color = Colors.red;
+          } else {
+            color = Colors.red.withOpacity(0.6);
+          }
         }
       }
       // Only If Selected Trainers
