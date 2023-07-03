@@ -472,7 +472,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         actions: [
           widget.eventId != null ? IconButton(
               onPressed: () async {
-                if(isLoading == false) {
+                if (isLoading == false) {
                   if (event.eventGroupId == null || !widget.isBeforeEdit) {
                     // DeleteDialog
                     var result = await showDialog(

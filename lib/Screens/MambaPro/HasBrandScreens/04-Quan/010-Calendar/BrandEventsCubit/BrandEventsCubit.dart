@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -119,6 +118,83 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       emit(BrandEventsLoaded(finalList));
     } catch(e) {
       print("More Brand Events Error"+e.toString());
+      emit(BrandEventsError(e.toString()));
+    }
+  }
+
+  Future<void> updateBrandEvent(String eventId, List<Usuario> _brandTrainers) async {
+    try {
+      print("Update Brand Event");
+      // Set the State to Loading
+      String brandId = currentBrand.id!;
+      // Get Last 100 Finished Events
+      Event event = await _eventDataService.getSingleEvent(eventId);
+      // Add The Trainers to the Event
+      List<Usuario> eventTrainers = [];
+      for (Usuario trainer in _brandTrainers) {
+        int index = trainer.eventsList.indexWhere((element) => element.id == event.id);
+        if (index != -1) {
+          eventTrainers.add(trainer);
+        }
+      }
+      event.setUserList = eventTrainers;
+      // Remove From Finished List First and Add Again
+      finishedEventsList.removeWhere((element) => element.id == eventId);
+      finishedEventsList.add(event);
+      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
+      // Order Notification List Descending Time
+      finalList.sort((a,b) {
+        var aDate =  DateTime(
+          int.parse(a.year!),
+          int.parse(a.month!),
+          int.parse(a.day!),
+          int.parse(a.hour!),
+          int.parse(a.minute!),
+        );
+        var bDate =  DateTime(
+          int.parse(b.year!),
+          int.parse(b.month!),
+          int.parse(b.day!),
+          int.parse(b.hour!),
+          int.parse(b.minute!),
+        );
+        return aDate.compareTo(bDate);
+      });
+      emit(BrandEventsLoaded(finalList));
+      print("Event $eventId Successfully Updated");
+    } catch(e) {
+      print("Delete Brand Event Error"+e.toString());
+      emit(BrandEventsError(e.toString()));
+    }
+  }
+
+  Future<void> deleteBrandEvent(String eventId) async {
+    try {
+      print("Delete More Brand Events");
+      finishedEventsList.removeWhere((element) => element.id == eventId);
+      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
+      // Order Notification List Descending Time
+      finalList.sort((a,b) {
+        var aDate =  DateTime(
+          int.parse(a.year!),
+          int.parse(a.month!),
+          int.parse(a.day!),
+          int.parse(a.hour!),
+          int.parse(a.minute!),
+        );
+        var bDate =  DateTime(
+          int.parse(b.year!),
+          int.parse(b.month!),
+          int.parse(b.day!),
+          int.parse(b.hour!),
+          int.parse(b.minute!),
+        );
+        return aDate.compareTo(bDate);
+      });
+      emit(BrandEventsLoaded(finalList));
+      print("Event $eventId Successfully Deleted");
+    } catch(e) {
+      print("Delete Brand Event Error"+e.toString());
       emit(BrandEventsError(e.toString()));
     }
   }

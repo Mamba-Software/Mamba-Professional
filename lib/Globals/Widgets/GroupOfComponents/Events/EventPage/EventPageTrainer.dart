@@ -10,6 +10,7 @@ import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -62,6 +63,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
   // Boolean Loading
   bool isFirstBuild = true;
   bool isLoading = true;
+  bool? isUpdated;
   bool isLoadingBody = false;
   // Boolean isUpdated
   bool canEdit = true;
@@ -755,7 +757,7 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                           padding: const EdgeInsets.all(13),
                           child : Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
                         ),
-                        onTap: () => Navigator.pop(context),
+                        onTap: () => Navigator.pop(context, isUpdated),
                       ),
                     ),
                   ),
@@ -1587,12 +1589,13 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
                       if (result != null && result) {
                         setState(() {
                           isLoading = true;
+                          isUpdated = true;
                         });
                         getEventInfo();
                         print("Updating Event ...");
                       } else if (result != null && !result) {
                         print("Deleting Event ...");
-                        Navigator.pop(context);
+                        Navigator.pop(context, false);
                       }
                     }
                   },

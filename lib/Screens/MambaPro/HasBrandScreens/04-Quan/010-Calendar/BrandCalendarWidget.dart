@@ -293,18 +293,29 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     }
   }
 
-  void navigateToEventScreen(String eventId, bool isCompleted) {
+  Future<void> navigateToEventScreen(String eventId, bool isCompleted) async {
     mixpanel!.track('brand_calendar_event_view', properties: {'Calendar View': _controller.view.toString(), 'isCompleted': isCompleted});
     // Navigate to Event Screen
-    Navigator.push(
+    var result = await Navigator.push(
         context,
-        CupertinoPageRoute<void>(
+        CupertinoPageRoute<bool?>(
           builder: (context) => EventPage(
             eventId: eventId,
             onlyView: widget.onlyView,
           ),
         )
     );
+    if (result != null) {
+      if (result) {
+        if (isCompleted) {
+          // Event Has Been Updated
+          context.read<BrandEventsCubit>().updateBrandEvent(eventId, _brandTrainers);
+        }
+      } else {
+        // Event Has Been Deleted
+        context.read<BrandEventsCubit>().deleteBrandEvent(eventId);
+      }
+    }
   }
 
   Widget _buildTitleText(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
