@@ -64,6 +64,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.015),
                     ListView.builder(
                         physics: const AlwaysScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -91,6 +92,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
+                    SizedBox(height: MediaQuery.of(context).size.height*0.015),
                     ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -99,7 +101,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return Container(
                             color: Theme.of(context).scaffoldBackgroundColor,
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.05),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
                             child: Row(
                               children: [
                                 Shimmer.fromColors(
@@ -207,7 +209,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                           );
                         }
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                    SizedBox(height: MediaQuery.of(context).size.height*0.03),
                   ],
                 ),
               );
