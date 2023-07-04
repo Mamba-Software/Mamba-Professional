@@ -92,7 +92,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   int bookingWindow = 3;
   int difference = 0;
   bool directPurchase = false;
-
   bool ShowTextExpired = true;
 
   // App Bar and Scroll View
