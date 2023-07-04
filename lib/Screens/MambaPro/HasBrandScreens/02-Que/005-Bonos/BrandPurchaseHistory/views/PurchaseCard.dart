@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
@@ -34,7 +35,8 @@ class PurchaseCard extends StatelessWidget {
         onTapPurchase(context);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+        color: bonoRequest != null ? Theme.of(context).backgroundColor : Theme.of(context).scaffoldBackgroundColor,
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.04),
         child: Row(
           children: [
             CircularImage(
@@ -46,7 +48,7 @@ class PurchaseCard extends StatelessWidget {
             SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
             Expanded(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   /// USER
@@ -78,7 +80,10 @@ class PurchaseCard extends StatelessWidget {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                   /// DETAILS
-                  buildBonoRequestDetails(context, bonoRequest!.paymentMethod!),
+                  bonoRequest != null ? buildBonoRequestDetails(context) : buildPurchaseDetails(context),
+                  /// STATUS
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                  buildStatusLabel(context),
                   /// DATE
                   SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                   buildDateDetails(context),
@@ -91,16 +96,15 @@ class PurchaseCard extends StatelessWidget {
     );
   }
 
-  Widget buildBonoRequestDetails(BuildContext context, int paymentMethod) {
+  Widget buildBonoRequestDetails(BuildContext context) {
     IconData paymentIcon;
     String paymentText;
     TextStyle? priceStyle = Theme.of(context).textTheme.caption;
-    TextStyle? sessionsStyle = Theme.of(context).textTheme.caption;
 
-    if (paymentMethod == 0) {
+    if (bonoRequest!.paymentMethod! == 0) {
       paymentIcon = Icons.paid_outlined;
       paymentText = AppLocalizations.of(context)!.cashPaymentMethod;
-    } else if (paymentMethod == 1) {
+    } else if (bonoRequest!.paymentMethod! == 1) {
       paymentIcon = Icons.payment_outlined;
       paymentText = AppLocalizations.of(context)!.transferPaymentMethod;
     } else {
@@ -120,7 +124,7 @@ class PurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            bono.sessions.toString() + " ses.",
+            bono.sessions! < 5000 ? bono.sessions.toString() + " ses." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -163,6 +167,77 @@ class PurchaseCard extends StatelessWidget {
     );
   }
 
+  Widget buildPurchaseDetails(BuildContext context) {
+    IconData paymentIcon;
+    String paymentText;
+    TextStyle? priceStyle = Theme.of(context).textTheme.caption;
+
+    if (purchase!.paymentMethod! == 0) {
+      paymentIcon = Icons.paid_outlined;
+      paymentText = AppLocalizations.of(context)!.cashPaymentMethod;
+    } else if (purchase!.paymentMethod! == 1) {
+      paymentIcon = Icons.payment_outlined;
+      paymentText = AppLocalizations.of(context)!.transferPaymentMethod;
+    } else {
+      paymentIcon = Icons.card_giftcard_outlined;
+      paymentText = AppLocalizations.of(context)!.giftPaymentMethod;
+      priceStyle = priceStyle?.copyWith(decoration: TextDecoration.lineThrough);
+    }
+
+    return Row(
+      children: [
+        // SESSIONS
+        Icon(
+          Icons.calendar_month_outlined,
+          color: AppColors.grey,
+          size: MediaQuery.of(context).size.width * 0.04,
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+        Flexible(
+          child: Text(
+            purchase!.sessions! < 5000 ? purchase!.sessions.toString() + " ses." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        // PRICE
+        Icon(
+          Icons.attach_money_outlined,
+          color: AppColors.grey,
+          size: MediaQuery.of(context).size.width * 0.04,
+        ),
+        Flexible(
+          child: Text(
+            purchase!.price!.toStringAsFixed(2) + " €",
+            style: priceStyle,
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+        // PAYMENT METHOD
+        Icon(
+          paymentIcon,
+          color: AppColors.grey,
+          size: MediaQuery.of(context).size.width * 0.04,
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+        Text(
+          paymentText,
+          style: Theme.of(context).textTheme.caption,
+          textAlign: TextAlign.left,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+        ),
+
+      ],
+    );
+  }
+
   Widget buildDateDetails(BuildContext context) {
     if (bonoRequest != null) {
       return Row(
@@ -170,7 +245,7 @@ class PurchaseCard extends StatelessWidget {
           Flexible(
             child: Text(
               AppLocalizations.of(context)!.requestSent(DateTimeUtils().formatDateTimeToStringDDMMYYYY(bonoRequest!.timeRequested!.toDate(), Localizations.localeOf(context).languageCode)),
-              style: Theme.of(context).textTheme.caption,
+              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -183,7 +258,33 @@ class PurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              AppLocalizations.of(context)!.requestSent(DateTimeUtils().formatDateTimeToStringDDMMYYYY(bonoRequest!.timeRequested!.toDate(), Localizations.localeOf(context).languageCode)),
+              AppLocalizations.of(context)!.purchasedAt(DateTimeUtils().formatDateTimeToStringDDMMYYYY(purchase!.purchasedAt!.toDate(), Localizations.localeOf(context).languageCode)),
+              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      );
+    }
+
+  }
+
+  Widget buildStatusLabel(BuildContext context) {
+    if (bonoRequest != null) {
+      return Row(
+        children: [
+          // SESSIONS
+          Icon(
+            Icons.help_outline_outlined,
+            color: AppColors.grey,
+            size: MediaQuery.of(context).size.width * 0.04,
+          ),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+          Flexible(
+            child: Text(
+              AppLocalizations.of(context)!.bonoRequestDescription,
               style: Theme.of(context).textTheme.caption,
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
@@ -192,6 +293,48 @@ class PurchaseCard extends StatelessWidget {
           ),
         ],
       );
+    } else {
+      if (purchase!.directPurchase != null && purchase!.directPurchase!) {
+        return Row(
+          children: [
+            Icon(
+              Icons.new_releases_outlined,
+              color: AppColors.grey,
+              size: MediaQuery.of(context).size.width * 0.04,
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+            Flexible(
+              child: Text(
+                AppLocalizations.of(context)!.unverfied,
+                style: Theme.of(context).textTheme.caption,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ],
+        );
+      } else {
+        return Row(
+          children: [
+            Icon(
+              Icons.verified_outlined,
+              color: AppColors.grey,
+              size: MediaQuery.of(context).size.width * 0.04,
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+            Flexible(
+              child: Text(
+                AppLocalizations.of(context)!.verfied,
+                style: Theme.of(context).textTheme.caption,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ],
+        );
+      }
     }
 
   }

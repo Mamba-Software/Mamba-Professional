@@ -19,16 +19,14 @@ class BrandPurchasesLoading extends BrandPurchasesState {
 }
 
 class BrandPurchasesLoaded extends BrandPurchasesState {
-  final List<BonoRequest> brandBonoRequests;
-  final List<Purchase> brandPurchasesList;
+  final List<PurchaseHistoryModel> purchasesHistoryObjects;
 
   const BrandPurchasesLoaded(
-    this.brandBonoRequests,
-    this.brandPurchasesList,
+    this.purchasesHistoryObjects,
   );
 
   @override
-  List<Object?> get props => [brandPurchasesList];
+  List<Object?> get props => [purchasesHistoryObjects];
 }
 
 class BrandPurchasesError extends BrandPurchasesState {

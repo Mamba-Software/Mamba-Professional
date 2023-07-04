@@ -1330,6 +1330,15 @@
       }
     }
   },
+  "purchasedAt": "Comprado el {dateJoined}",
+  "@purchasedAt": {
+    "description": "Member Since message",
+    "placeholders": {
+      "dateJoined": {
+        "type": "String"
+      }
+    }
+  },
   "myLocations": "Mis ubicaciones",
   "@myLocations": {
     "description": "Wellcome message"
@@ -2496,6 +2505,14 @@
   },
   "ilimitadas": "ilimitadas",
   "@ilimitadas": {
+    "description": "ilimitadas message"
+  },
+  "verfied": "Verificada",
+  "@verfied": {
+    "description": "ilimitadas message"
+  },
+  "unverfied": "Sin verificar",
+  "@unverfied": {
     "description": "ilimitadas message"
   },
   "numberSessions": "Nº sesiones",

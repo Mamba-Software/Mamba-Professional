@@ -18,6 +18,7 @@ class Purchase {
   int? sessions;
   Timestamp? purchasedAt;
   bool? isActive;
+  bool? directPurchase;
   // List of Events Done with this purchase
   Bono? bono;
   Brand? brand;
@@ -64,6 +65,9 @@ class Purchase {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
       isActive = documentSnapshot.get("isActive");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('directPurchase')) {
+      directPurchase = documentSnapshot.get("directPurchase");
     }
   }
 
