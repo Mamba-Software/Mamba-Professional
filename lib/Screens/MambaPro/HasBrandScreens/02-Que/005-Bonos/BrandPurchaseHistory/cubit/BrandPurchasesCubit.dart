@@ -119,6 +119,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           var bDate =  b.purchasedAt.toDate();
           return bDate.compareTo(aDate);
         });
+
         print("Brand Purchases New Data Finished");
         emit(BrandPurchasesLoaded(purchasesHistoryObjects));
       },

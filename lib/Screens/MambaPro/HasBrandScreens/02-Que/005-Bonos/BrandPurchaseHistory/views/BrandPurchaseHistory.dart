@@ -59,6 +59,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
             case BrandPurchasesLoaded:
               // Handles Loaded State
               BrandPurchasesLoaded loadedState = state as BrandPurchasesLoaded;
+
               return SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
                 child: Column(
@@ -90,7 +91,6 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 child: Column(
                   children: [
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
                     ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
@@ -99,15 +99,15 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return Container(
                             color: Theme.of(context).scaffoldBackgroundColor,
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.04),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.05),
                             child: Row(
                               children: [
                                 Shimmer.fromColors(
                                   baseColor: AppColors.grey,
                                   highlightColor: AppColors.grey.withOpacity(0.5),
                                   child: Container(
-                                    height: MediaQuery.of(context).size.height*0.08,
-                                    width: MediaQuery.of(context).size.height*0.08,
+                                    height: MediaQuery.of(context).size.width*0.15,
+                                    width: MediaQuery.of(context).size.width*0.15,
                                     decoration: const BoxDecoration(
                                       color: AppColors.grey,
                                       shape: BoxShape.circle,
@@ -135,7 +135,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                                       /// BONO
                                       Shimmer.fromColors(
                                         baseColor: AppColors.grey,
@@ -151,7 +151,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                                       /// DETAILS
                                       Shimmer.fromColors(
                                         baseColor: AppColors.grey,
@@ -167,7 +167,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                                       /// STATUS
                                       Shimmer.fromColors(
                                         baseColor: AppColors.grey,
@@ -183,7 +183,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                                       /// DATE
                                       Shimmer.fromColors(
                                         baseColor: AppColors.grey,
