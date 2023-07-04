@@ -385,7 +385,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                           ),
                           style: TextButton.styleFrom(
                             primary: Theme.of(context).primaryColor,
-                            backgroundColor: AppColors.darkerGrey,
+                            backgroundColor: AppColors.lightGrey.withOpacity(0.1),
                             shape: RoundedRectangleBorder(  // add this
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -550,6 +550,47 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 ],
               ),
               SliverPersistentHeader(
+                delegate: _SliverAppBarDelegateSecond(
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                returnCorrectText(),
+                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                              ),
+                              const Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.white)
+                            ],
+                          ),
+                          style: TextButton.styleFrom(
+                            primary: Theme.of(context).primaryColor,
+                            backgroundColor: AppColors.lightGrey.withOpacity(0.1),
+                            shape: RoundedRectangleBorder(  // add this
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                          ),
+                          onPressed: _show,
+                        ),
+                        Text(
+                          '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  MediaQuery.of(context).size.height * 0.06,
+                ),
+                pinned: true,
+              ),
+              SliverPersistentHeader(
                 delegate: _SliverAppBarDelegate(
                   TabBar(
                     indicatorWeight: 3,
@@ -590,99 +631,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
-      /*
-      floatingActionButton: Padding(
-        padding: Platform.isAndroid ? const EdgeInsets.symmetric(vertical: 20, horizontal: 10) : const EdgeInsets.all(10),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height*0.07,
-          width: MediaQuery.of(context).size.width*0.4,
-          child: FloatingActionButton.extended(
-            heroTag: "102",
-            onPressed: _show,
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            icon: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height*0.07,
-                  width: MediaQuery.of(context).size.width*0.21,
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          '${DateFormat('d MMM, yy\'').format(startDate)}\n''${DateFormat('d MMM, yy\'').format(endDate)}',
-                          style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.search_outlined,
-                  color: AppColors.white,
-                  size: MediaQuery.of(context).size.width * 0.08,
-                ),
-              ],
-            ),
-            label: Container()
-          ),
-        ),
-      ),
-      */
-      /*
-      bottomSheet: GestureDetector(
-        onTap: _show,
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.1,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            border: Border(
-              top: BorderSide(width: 1, color: Theme.of(context).primaryColor),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            //change here don't //worked
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02, horizontal: MediaQuery.of(context).size.height * 0.02),
-                    child: Text(
-                      '${DateFormat('d MMM, yy\'').format(startDate)}  - '
-                      ' ${DateFormat('d MMM, yy\'').format(endDate)}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline3!
-                          .copyWith(color: Theme.of(context).primaryColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.12,
-                width: MediaQuery.of(context).size.height * 0.12,
-                color: Styles.mainColorTrans,
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                  child: Icon(
-                    Icons.event,
-                    color: Styles.mainColor,
-                    size: MediaQuery.of(context).size.width * 0.07,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      */
     );
   }
 
