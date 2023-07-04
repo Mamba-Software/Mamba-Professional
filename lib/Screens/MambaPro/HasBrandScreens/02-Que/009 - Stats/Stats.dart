@@ -384,7 +384,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                             ],
                           ),
                           style: TextButton.styleFrom(
-                            primary: Theme.of(context).primaryColor,
                             backgroundColor: AppColors.lightGrey.withOpacity(0.1),
                             shape: RoundedRectangleBorder(  // add this
                               borderRadius: BorderRadius.circular(10),
