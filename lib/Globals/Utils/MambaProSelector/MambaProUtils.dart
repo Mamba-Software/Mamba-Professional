@@ -51,7 +51,7 @@ class MambaProUtils {
     if(pageIndexView == 12) return Icon(Icons.run_circle_outlined, color: returnColor(context));
     if(pageIndexView == 7) return Icon(Icons.collections_outlined, color: returnColor(context));
     if(pageIndexView == 10) return Icon(Icons.calendar_month_outlined, color: returnColor(context));
-    if(pageIndexView == 11) return Icon(Icons.pin_drop_outlined, color: returnColor(context));
+    if(pageIndexView == 11) return Icon(Icons.room_outlined, color: returnColor(context));
     if(pageIndexView == 6) return Icon(Icons.chat_bubble_outline, color: returnColor(context));
     if(pageIndexView == 9) return Icon(Icons.leaderboard_outlined, color: returnColor(context));
     if(pageIndexView == 14) return Icon(Icons.history_outlined, color: returnColor(context));

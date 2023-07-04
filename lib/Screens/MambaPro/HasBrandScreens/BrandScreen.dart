@@ -39,6 +39,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../../../Globals/Widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
 import '../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -397,7 +398,11 @@ class _BrandScreenState extends State<BrandScreen> {
   String returnBrandRoleString() {
     switch (currentUser.brandRole) {
       case 1:
-        return AppLocalizations.of(context)!.owner;
+        if (currentBrand.adminID == currentUser.id) {
+          return AppLocalizations.of(context)!.owner + " + Creator";
+        } else {
+          return AppLocalizations.of(context)!.owner;
+        }
       case 2:
         return AppLocalizations.of(context)!.administrador;
       case 3:
@@ -471,9 +476,6 @@ class _BrandScreenState extends State<BrandScreen> {
         listTilePro(11),
         listTilePro(8),
         //listTilePro(14),
-
-
-
         /*
         ListTile(
           title: Row(
@@ -859,14 +861,16 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
       case 17:
-        mixpanel!.track('brand_locations_view');
-        return Locations(
+        mixpanel!.track('brand_subscription_view');
+        return BrandSubscription(
+          locale: Localizations.localeOf(context),
           brandId: currentBrand.id!,
           pinned: iconStar,
           pinnedChanged: (boolean) {
             handleChangedFavourites();
           },
         );
+
       default:
         mixpanel!.track('brand_homepage_view');
         return HomePro(

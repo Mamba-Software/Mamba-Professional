@@ -979,9 +979,7 @@ class _PayWallState extends State<PayWall> {
 
   Widget buildContactUsContainer() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.height *
-          0.005, vertical: MediaQuery.of(context).size.height *
-          0.02),
+      padding: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.height * 0.005, vertical: MediaQuery.of(context).size.height * 0.02),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -1004,14 +1002,13 @@ class _PayWallState extends State<PayWall> {
               onPressed: () => launchEmail(),
               child: Text(
                 AppLocalizations.of(context)!.getInTouch,
-                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.w600, color: Theme.of(context).primaryColorDark),
                 textAlign: TextAlign.center,
               ),
               style: OutlinedButton.styleFrom(
-                elevation: 4,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                elevation: 8,
+                backgroundColor: Theme.of(context).primaryColor,
                 fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
-                side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(30),

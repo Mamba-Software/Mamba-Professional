@@ -3048,6 +3048,10 @@
   "@noSubscription": {
     "description": "noSubscription message"
   },
+  "adminSubscriptionDesc": "Solo el creador de la marca puede suscribirte a los planes. El pago estará vinculado a su cuenta y todas las transacciones se gestionarán a través de esta para garantizar seguridad y transparencia.",
+  "@adminSubscriptionDesc": {
+    "description": "noSubscription message"
+  },
   "expiresAt": "Expira el",
   "@expiresAt": {
     "description": "expiresAt message"
@@ -3270,6 +3274,10 @@
         "type": "String"
       }
     }
+  },
+  "upgradeToPremium":  "Escoge tu plan",
+  "@chooseYourPlan": {
+    "description": "chooseYourPlan message"
   },
   "chooseYourPlan":  "Escoge tu plan",
   "@chooseYourPlan": {

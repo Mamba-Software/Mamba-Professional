@@ -686,6 +686,7 @@
   "statsMinimumSessionBrand": "Necessites un mínim de sessiones per veure aquesta estadística",
   "subscriptionExpired": "El teu pla ha caducat, clica per a renovar",
   "noSubscription": "No tens pla, clica per a adquirir una",
+  "adminSubscriptionDesc": "Només el creador de la marca pot subscriure't als plans. El pagament estarà vinculat al seu compte i totes les transaccions es gestionaran a través d'aquest per garantir seguretat i transparència.",
   "expiresAt": "Expira el",
   "seeyourSub": "Clica per veure el teu pla",
   "moreSubInfo": "El pla expira el {endDate}",
