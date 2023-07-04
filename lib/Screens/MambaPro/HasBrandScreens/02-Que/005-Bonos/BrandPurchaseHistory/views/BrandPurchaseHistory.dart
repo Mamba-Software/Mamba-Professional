@@ -96,68 +96,114 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         itemCount: 10,
-                        itemExtent: MediaQuery.of(context).size.height*0.09,
                         itemBuilder: (context, index) {
-                          return ListTile(
-                            contentPadding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
-                            leading: Shimmer.fromColors(
-                              baseColor: AppColors.grey,
-                              highlightColor: AppColors.grey.withOpacity(0.5),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height*0.08,
-                                width: MediaQuery.of(context).size.height*0.08,
-                                decoration: const BoxDecoration(
-                                  color: AppColors.grey,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                            title: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          return Container(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.04),
+                            child: Row(
                               children: [
                                 Shimmer.fromColors(
                                   baseColor: AppColors.grey,
                                   highlightColor: AppColors.grey.withOpacity(0.5),
                                   child: Container(
-                                    height: MediaQuery.of(context).size.height*0.02,
-                                    width: MediaQuery.of(context).size.width*0.2,
+                                    height: MediaQuery.of(context).size.height*0.08,
+                                    width: MediaQuery.of(context).size.height*0.08,
                                     decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(5.0),
-                                      ),
                                       color: AppColors.grey,
+                                      shape: BoxShape.circle,
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                                Shimmer.fromColors(
-                                  baseColor: AppColors.grey,
-                                  highlightColor: AppColors.grey.withOpacity(0.5),
-                                  child: Container(
-                                    height: MediaQuery.of(context).size.height*0.02,
-                                    width: MediaQuery.of(context).size.width*0.4,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.grey,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(5.0),
+                                SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      /// USER
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.02,
+                                          width: MediaQuery.of(context).size.width*0.25,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0),
+                                            ),
+                                            color: AppColors.grey,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                                      /// BONO
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.015,
+                                          width: MediaQuery.of(context).size.width*0.45,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0),
+                                            ),
+                                            color: AppColors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                                      /// DETAILS
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.015,
+                                          width: MediaQuery.of(context).size.width*0.55,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0),
+                                            ),
+                                            color: AppColors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                                      /// STATUS
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.015,
+                                          width: MediaQuery.of(context).size.width*0.3,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0),
+                                            ),
+                                            color: AppColors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                                      /// DATE
+                                      Shimmer.fromColors(
+                                        baseColor: AppColors.grey,
+                                        highlightColor: AppColors.grey.withOpacity(0.5),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height*0.013,
+                                          width: MediaQuery.of(context).size.width*0.25,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(5.0),
+                                            ),
+                                            color: AppColors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                            trailing: Shimmer.fromColors(
-                              baseColor: AppColors.grey,
-                              highlightColor: AppColors.grey.withOpacity(0.5),
-                              child: IconButton(
-                                icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.all(0),
-                                onPressed: null,
-                              ),
-                            ),
-                            onTap: null,
                           );
                         }
                     ),
