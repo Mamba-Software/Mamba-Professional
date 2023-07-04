@@ -112,7 +112,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
             Divider(color: Theme.of(context).backgroundColor, thickness: 1),
             widget.isFuture ?
             SizedBox(
-              height: MediaQuery.of(context).size.height*0.04,
+              height: MediaQuery.of(context).size.height*0.05,
               width: MediaQuery.of(context).size.width,
               child: ListView(
                 controller: _controller,
@@ -129,7 +129,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         _dateRangePickerController.displayDate = startDate;
                       },
                       style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(12),
+                          elevation: MaterialStateProperty.all(6),
                           backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
@@ -152,7 +152,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         //_dateRangePickerController.displayDate = startDate.add(const Duration(days: 14));
                       },
                       style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(12),
+                          elevation: MaterialStateProperty.all(6),
                           backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
@@ -176,7 +176,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         _dateRangePickerController.displayDate = startDate;
                       },
                       style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(12),
+                          elevation: MaterialStateProperty.all(6),
                           backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
@@ -199,7 +199,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         _dateRangePickerController.displayDate = startDate;
                       },
                       style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(12),
+                          elevation: MaterialStateProperty.all(6),
                           backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
@@ -222,7 +222,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         _dateRangePickerController.displayDate = startDate;
                       },
                       style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(12),
+                          elevation: MaterialStateProperty.all(6),
                           backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
@@ -245,7 +245,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         _dateRangePickerController.displayDate = startDate;
                       },
                       style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(12),
+                          elevation: MaterialStateProperty.all(6),
                           backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
@@ -279,7 +279,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                         _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 8));
                       },
                       style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(12),
+                          elevation: MaterialStateProperty.all(6),
                           backgroundColor: MaterialStateProperty.all(Colors.black),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(

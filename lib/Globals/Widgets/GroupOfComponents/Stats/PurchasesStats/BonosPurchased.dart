@@ -165,7 +165,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
   @override
   Widget build(BuildContext context) {
     _tooltipBehavior =  TooltipBehavior(enable: true, header: '');
-    return isLoading? LoadingView() :  bonos.isNotEmpty? Column(
+    return isLoading? LoadingView() :  bonos.isNotEmpty ? Column(
       children: [
         bonos.length > 1 ? Column(
           children: [
@@ -232,7 +232,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02,bottom: MediaQuery.of(context).size.height*0.10, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02,bottom: MediaQuery.of(context).size.height*0.0, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
           child: Column(
             children: [
               bonos.isNotEmpty ? Padding(
@@ -245,7 +245,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
                         color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -261,7 +261,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
                         color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -285,7 +285,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
                         color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -301,7 +301,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
                         color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -342,15 +342,15 @@ class BonosPurchasedState extends State<BonosPurchased> {
                             plotAreaBorderWidth: 1,
                             primaryXAxis: CategoryAxis(
                               //Hide the gridlines of x-axis
-                              majorGridLines: MajorGridLines(width: 0),
+                              majorGridLines: const MajorGridLines(width: 0),
                               isVisible: false,
                               //Hide the axis line of x-axis
-                              axisLine: AxisLine(width: 0),
+                              axisLine: const AxisLine(width: 0),
                             ),
                             primaryYAxis: NumericAxis(
                               decimalPlaces: 2,
                               labelFormat: '{value}€',
-                              majorTickLines: MajorTickLines(
+                              majorTickLines: const MajorTickLines(
                                 width: 0,
                               ),
                               enableAutoIntervalOnZooming: false,
@@ -359,9 +359,9 @@ class BonosPurchasedState extends State<BonosPurchased> {
                               //maximum: double.parse(maxNumber.toString()),
                               //isVisible: false,
                               //Hide the gridlines of x-axis
-                              majorGridLines: MajorGridLines(width: 0),
+                              majorGridLines: const MajorGridLines(width: 0),
                               //Hide the axis line of x-axis
-                              axisLine: AxisLine(width: 0),
+                              axisLine: const AxisLine(width: 0),
                             ),
                             axes: [],
                             indicators: [],
@@ -373,7 +373,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                               SplineAreaSeries<TotalBenefit, String>(
                                 borderColor: Styles.mainColor,
                                 borderWidth: 2,
-                                markerSettings: MarkerSettings(
+                                markerSettings: const MarkerSettings(
                                     borderColor: AppColors.mainColor,
                                     //isVisible: bonos.isEmpty || bonoStats[index].totalBenefits.length == 1 ? true : false,
                                     isVisible: false,
@@ -414,7 +414,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02,bottom: MediaQuery.of(context).size.height*0.10, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
+          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02,bottom: MediaQuery.of(context).size.height*0.0, left:  MediaQuery.of(context).size.width*0.08, right: MediaQuery.of(context).size.width*0.08),
           child: Column(
             children: [
               bonos.isNotEmpty ? Padding(
@@ -427,7 +427,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
                         color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -443,7 +443,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
                         color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -467,7 +467,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
                         color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -483,7 +483,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                       height: MediaQuery.of(context).size.width*0.25,
                       decoration: BoxDecoration(
                         color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderRadius: const BorderRadius.all(const Radius.circular(10)),
                       ),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,

@@ -323,6 +323,10 @@
   "@personlize":{
     "description": "Información Text"
   },
+  "personlized": "Personalizado",
+  "@personlized":{
+    "description": "Información Text"
+  },
   "content": "Contenido",
   "@content":{
     "description": "Información Text"

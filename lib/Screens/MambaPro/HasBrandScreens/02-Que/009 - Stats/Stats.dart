@@ -188,15 +188,17 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   }
 
   void applyFilteredEvents() {
+    /*
     print(startDate.toString());
     print(endDate.toString());
+     */
     filteredEvents = events
         .where((element) =>
             element.doneAt!.compareTo(Timestamp.fromDate(startDate)) >= 0 &&
             element.doneAt!.compareTo(Timestamp.fromDate(endDate)) <= 0)
         .toList();
 
-    print(filteredEvents.length);
+    /*print(filteredEvents.length);*/
     int days = daysBetween(startDate, endDate);
     DateTime backEndDate = endDate.subtract(Duration(days: days));
     DateTime backStartDate = startDate.subtract(Duration(days: days));
@@ -273,7 +275,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         initialIndex: _selectedIndex,
         child: ExtendedNestedScrollView(
           pinnedHeaderSliverHeightBuilder: () {
-            return MediaQuery.of(context).size.height * 0.17;
+            return MediaQuery.of(context).size.height * 0.12;
           },
           controller: _scrollController,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -361,6 +363,47 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     ),
                   ),
                 ],
+              ),
+              SliverPersistentHeader(
+                delegate: _SliverAppBarDelegateSecond(
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.06,
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                returnCorrectText(),
+                                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                              ),
+                              const Icon(Icons.keyboard_arrow_down_outlined, color: AppColors.white)
+                            ],
+                          ),
+                          style: TextButton.styleFrom(
+                            primary: Theme.of(context).primaryColor,
+                            backgroundColor: AppColors.darkerGrey,
+                            shape: RoundedRectangleBorder(  // add this
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                          ),
+                          onPressed: _show,
+                        ),
+                        Text(
+                          '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  MediaQuery.of(context).size.height * 0.06,
+                ),
+                pinned: true,
               ),
               SliverPersistentHeader(
                 delegate: _SliverAppBarDelegate(
@@ -588,6 +631,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
         ),
       ),
       */
+      /*
       bottomSheet: GestureDetector(
         onTap: _show,
         child: Container(
@@ -638,6 +682,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
+      */
     );
   }
 
@@ -760,7 +805,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     }
     return Padding(
       padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height * 0.15,
+          bottom: MediaQuery.of(context).size.height * 0.05,
           right: MediaQuery.of(context).size.width * 0.06),
       child: Column(
         children: [
@@ -813,7 +858,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     }
     return Padding(
       padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).size.height * 0.15,
+          bottom: MediaQuery.of(context).size.height * 0.05,
           right: MediaQuery.of(context).size.width * 0.06),
       child: Column(
         children: [
@@ -914,8 +959,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: MediaQuery.of(context).size.height * 0.02),
+          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.02),
           child: BonosPurchased(
             purchases: filteredPurchases,
             bonos: bonos,
@@ -960,6 +1004,23 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     }
   }
 
+  String returnCorrectText() {
+    int daysDifference = endDate.difference(startDate).inDays;
+    switch (daysDifference) {
+      case 7:
+        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+      case 14:
+        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+      case 30:
+        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+      case 90:
+        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+      default:
+        return AppLocalizations.of(context)!.personlized;
+    }
+
+  }
+
   int daysBetween(DateTime from, DateTime to) {
     from = DateTime(from.year, from.month, from.day);
     to = DateTime(to.year, to.month, to.day);
@@ -997,6 +1058,37 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
+    return true;
+  }
+}
+
+class _SliverAppBarDelegateSecond extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegateSecond(this._widget, this._height);
+
+  final Widget _widget;
+  final double _height;
+
+  @override
+  double get minExtent => _height;
+  @override
+  double get maxExtent => _height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Material(
+      elevation: 0,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: AppColors.darkGrey,
+        ),
+        child: _widget,
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegateSecond oldDelegate) {
+    return true;
   }
 }
