@@ -86,6 +86,51 @@ class PurchaseFirebaseCalls {
     return purchase;
   }
 
+  // Get First Purchases Brand
+  Future <List<Purchase>> getBrandFirstPurchasesLimit(String brandId, int limit) async {
+    Timestamp now = Timestamp.fromDate(DateTime.now());
+    List<Purchase> purchases = [];
+    QuerySnapshot querySnapshot = await _firestore
+    .collection(brands)
+    .doc(brandId)
+    .collection("Purchases")
+    .where("purchasedAt", isLessThan: now)
+    .orderBy("purchasedAt", descending: true)
+    .limit(limit)
+    .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      purchases.add(Purchase.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return purchases;
+  }
+
+  // Get More Purchases Brand
+  Future <List<Purchase>> getBrandMorePurchasesLimit(String userId, String purchaseId, int limit) async {
+    Timestamp now = Timestamp.fromDate(DateTime.now());
+    // Get Last Notification document
+    DocumentSnapshot docu = await _firestore
+        .collection(brands)
+        .doc(userId)
+        .collection("Purchases")
+        .doc(purchaseId)
+        .get();
+    // Get More Events
+    List<Purchase> purchases = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Purchases")
+        .where("purchasedAt", isLessThan: now)
+        .orderBy("purchasedAt", descending: true)
+        .startAfterDocument(docu)
+        .limit(limit)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      purchases.add(Purchase.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return purchases;
+  }
+
   Future<List<Purchase>> getAllUserPurchasesFromBrand(String userId, String brandId) async {
     List<Purchase> purchasesList = [];
     Map<String, Bono> bonoKey =  Map();

@@ -137,7 +137,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     _timeSlotViewScale = await _userDataService.getUserZoomScale(widget.brandId, currentUser.id!);
     _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
     // Get The Events Needed
-    await context.read<BrandEventsCubit>().updateInitialBrandEvents(_brandTrainers);
+    await context.read<BrandEventsCubit>().getInitialBrandEvents(_brandTrainers);
     setState(() {
       isLoading = false;
     });

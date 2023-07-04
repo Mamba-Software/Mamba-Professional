@@ -16,7 +16,6 @@ import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BonosRequests.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -33,6 +32,7 @@ import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'Globals/store_config.dart';
 import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
+import 'Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
@@ -221,7 +221,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                         });
                         return CupertinoPageRoute(
                           builder: (_) =>
-                              BonosRequests(
+                              BrandPurchaseHistory(
                                 brandId: brandId,
                               ),
                           settings: const RouteSettings(name: 'BonosRequests'),

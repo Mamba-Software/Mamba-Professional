@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -13,11 +14,11 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../../Globals/GlobalVars.dart';
 import '../../../../../../Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'BonosRequests.dart';
 
 class BonosPro extends StatefulWidget {
   String brandId;
@@ -96,12 +97,12 @@ class _BonosProState extends State<BonosPro> {
   }
 
   // Navigate to Bonos Request Screen
-  void navigateToBonosRequestScreen() {
+  void navigateToPurchaseHistoryScreen() {
     mixpanel!.track('brand_bonos_confirmation_requests');
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => BonosRequests(
+          builder: (context) => BrandPurchaseHistory(
             brandId: widget.brandId,
           ),
         )
@@ -487,7 +488,7 @@ class _BonosProState extends State<BonosPro> {
                 children: [
                   SizedBox(height: MediaQuery.of(context).size.height*0.03),
                   GestureDetector(
-                    onTap: navigateToBonosRequestScreen,
+                    onTap: navigateToPurchaseHistoryScreen,
                     child: Container(
                       padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
                       height: MediaQuery.of(context).size.height*0.1,
