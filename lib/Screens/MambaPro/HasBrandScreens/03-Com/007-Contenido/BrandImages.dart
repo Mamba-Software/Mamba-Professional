@@ -109,10 +109,9 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
-    if(!brandIsActive) {
+    if (!brandIsActive) {
       await navigateToPayWall(context);
-    }
-    else {
+    } else {
       mixpanel!.timeEvent('brand_images_added');
       try {
         List<File>? temp = await ImageUtils().pickMultipleImage();
@@ -143,6 +142,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
         setState(() {
           isLoading = false;
         });
+        print(e.toString());
         var status = await Permission.photos.status;
         if (Platform.isIOS && (status.isDenied || status.isPermanentlyDenied)) {
           bool temp = await openAppSettings();
@@ -383,7 +383,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                           children: [
                             Flexible(
                               child: Text(
-                                AppLocalizations.of(context)!.noData+" "+AppLocalizations.of(context)!.photos.toLowerCase()+". "+AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2],
+                                AppLocalizations.of(context)!.noData.split(" ")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+". "+AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2],
                                 style: Theme.of(context).textTheme.caption,
                                 textAlign: TextAlign.center,
                               ),
@@ -430,7 +430,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                               image: image.url,
                             ),
                           ),
-                          // Favorite Image
+                          /// Set Favorite Image
                           canEdit && image.isBaseImage != true ? Positioned(
                             top: MediaQuery.of(context).size.width*0.03,
                             right: MediaQuery.of(context).size.width*0.14,
@@ -456,8 +456,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                         await navigateToPayWall(context);
                                       }
                                       else {
-                                        if (image.isBaseImage != null &&
-                                            image.isBaseImage!) {
+                                        if (image.isBaseImage != null && image.isBaseImage!) {
                                           //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
                                         } else if (canClickFav) {
                                           var result = await showDialog(
@@ -472,17 +471,10 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                           if (result) {
                                             setState(() {
                                               canClickFav = false;
-                                              _imagesUploaded[_imagesUploaded
-                                                  .indexWhere((element) =>
-                                              element.isBaseImage != null &&
-                                                  element.isBaseImage == true)]
-                                                  .isBaseImage = false;
+                                              _imagesUploaded[_imagesUploaded.indexWhere((element) => element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
                                               image.isBaseImage = true;
                                             });
-                                            await _brandDataService
-                                                .updateBrandBaseImage(
-                                                widget.brandId, image,
-                                                baseImage.id!);
+                                            await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
                                             await getBrandContentImages();
                                             setState(() {
                                               canClickFav = true;
@@ -506,7 +498,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                               ),
                             ),
                           ) : Container(),
-                          // Delete Image
+                          /// Delete Image
                           canEdit && image.isBaseImage != true ? Positioned(
                             top: MediaQuery.of(context).size.width*0.03,
                             right: MediaQuery.of(context).size.width*0.02,
@@ -528,20 +520,17 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                 child: Center(
                                   child: IconButton(
                                     onPressed: () async {
-                                      if(!brandIsActive) {
+                                      if (!brandIsActive) {
                                         await navigateToPayWall(context);
-                                      }
-                                      else {
-                                        if ((image.isBaseImage == null ||
-                                            !image.isBaseImage!) && canClickFav) {
+                                      } else {
+                                        if ((image.isBaseImage == null || !image.isBaseImage!) && canClickFav) {
                                           var result = await showDialog(
-                                              context: context,
-                                              builder: (_) {
-                                                return DeleteConfirmationDialog(
-                                                    text: AppLocalizations.of(
-                                                        context)!
-                                                        .myImagesDeleteDescription);
-                                              }
+                                            context: context,
+                                            builder: (_) {
+                                              return DeleteConfirmationDialog(
+                                                  text: AppLocalizations.of(context)!.myImagesDeleteDescription
+                                              );
+                                            }
                                           );
                                           if (result) {
                                             mixpanel!.track('brand_images_delete');
@@ -550,14 +539,10 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                               isLoadingText = AppLocalizations.of(context)!.deleting+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
                                               isLoadingTextExtra =  " (" + 1.toString()+"/"+1.toString()+")";
                                             });
-                                            await _brandDataService
-                                                .deleteBrandContentPictures(
-                                                widget.brandId, image.id!,
-                                                image.url!);
+                                            await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
                                             getBrandContentImages();
                                           }
-                                        }
-                                        else {
+                                        } else {
                                           //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
                                         }
                                       }
@@ -573,10 +558,67 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                               ),
                             ),
                           ) : Container(),
-                          // Delete Image
-                          image.isBaseImage == true ? Positioned(
+                          /// Delete Last Cover Image
+                          canEdit && image.isBaseImage == true && _imagesUploaded.length == 1 ? Positioned(
                             top: MediaQuery.of(context).size.width*0.03,
-                            right: MediaQuery.of(context).size.width*0.03,
+                            right: MediaQuery.of(context).size.width*0.02,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width*0.1,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Theme.of(context).backgroundColor, //New
+                                        blurRadius: 1.0,
+                                        offset: const Offset(0, 0)
+                                    )
+                                  ],
+                                ),
+                                child: Center(
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      if (!brandIsActive) {
+                                        await navigateToPayWall(context);
+                                      } else {
+                                        if (canClickFav) {
+                                          var result = await showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return DeleteConfirmationDialog(
+                                                text: AppLocalizations.of(context)!.myImagesDeleteDescription+"\n\n"+AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2]);
+                                            }
+                                          );
+                                          if (result) {
+                                            mixpanel!.track('brand_images_delete');
+                                            setState(() {
+                                              isLoading = true;
+                                              isLoadingText = AppLocalizations.of(context)!.deleting+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+                                              isLoadingTextExtra =  " (" + 1.toString()+"/"+1.toString()+")";
+                                            });
+                                            await _brandDataService.deleteBrandCoverPicture(widget.brandId, image.id!, image.url!);
+                                            getBrandContentImages();
+                                          }
+                                        }
+                                      }
+                                    },
+                                    icon: Icon(
+                                        Icons.delete_outline,
+                                        color: AppColors.red,
+                                        size: MediaQuery.of(context).size.width*0.06
+                                    ),
+                                    alignment: Alignment.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ) : Container(),
+                          /// Cover Image
+                          image.isBaseImage == true ? Positioned(
+                            top: MediaQuery.of(context).size.width*0.038,
+                            right: _imagesUploaded.length == 1 ? MediaQuery.of(context).size.width*0.16 : MediaQuery.of(context).size.width*0.03,
                             child: GestureDetector(
                               onTap: () {
                                 showInSnackBar(AppLocalizations.of(context)!.myImagesFavouriteDelete, 5);
