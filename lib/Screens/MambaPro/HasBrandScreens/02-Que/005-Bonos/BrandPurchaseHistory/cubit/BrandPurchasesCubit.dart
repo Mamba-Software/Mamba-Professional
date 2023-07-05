@@ -43,19 +43,19 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     try {
       // Set the State to Loading
       emit(const BrandPurchasesLoading());
-      // Vars
-      List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
-      List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
       // Define Starting Dates
-      DateTime startDate = DateTime.now();
-      DateTime endDate = DateTime.now().subtract(const Duration(days: 30));
-      DateTime dateJoinedBrand = DateTime(
+      startDate = DateTime.now().subtract(const Duration(days: 30));
+      endDate = DateTime.now();
+      dateJoinedBrand = DateTime(
           int.parse(currentBrand.dateJoined!.split("-")[2]),
           int.parse(currentBrand.dateJoined!.split("-")[1]),
           int.parse(currentBrand.dateJoined!.split("-")[0]),
           0,
           0
       );
+      // Vars
+      List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
+      List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
       // Get Last 50 Purchases
       purchasesList = await _purchaseDataService.getBrandFirstPurchasesLimit(brandId, limit);
       for (Purchase p in purchasesList) {
@@ -133,13 +133,19 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           var bDate =  b.purchasedAt.toDate();
           return bDate.compareTo(aDate);
         });
+        // Check the Last Purchase
+        List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
+        filteredDateList.removeWhere((element) {
+          // Remove the ones before the start date or after the end date
+          return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
+        });
         print("Brand Purchases New Data Finished");
         emit(
           BrandPurchasesLoaded(
             startDate,
             endDate,
             dateJoinedBrand,
-            purchasesHistoryObjects
+            filteredDateList
           )
         );
       },
@@ -208,12 +214,18 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     try {
       this.startDate = startDate;
       this.endDate = endDate;
+      // Check the Last Purchase
+      List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
+      filteredDateList.removeWhere((element) {
+        // Remove the ones before the start date or after the end date
+        return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
+      });
       emit(
         BrandPurchasesLoaded(
           this.startDate,
           this.endDate,
           dateJoinedBrand,
-          purchasesHistoryObjects
+          filteredDateList,
         )
       );
       print("Date Range Successfully Updated");

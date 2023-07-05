@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/models/PurchaseHistoryModel.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/PurchaseCard.dart';
@@ -16,6 +17,7 @@ import '../../../../../../../../Data/Models/Usuario.dart';
 import '../../../../../../../Data/DataService/Brand/BrandDataService.dart';
 import '../../../../../../../Data/DataService/User/UserDataService.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
+import '../../../../../../../Globals/Constants.dart';
 import '../cubit/BrandPurchasesCubit.dart';
 
 class BrandPurchaseHistory extends StatelessWidget {
@@ -65,17 +67,41 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
     }
   }
 
-  String returnCorrectText(BuildContext context, DateTime startDate, DateTime endDate) {
+  String returnCorrectText(BuildContext context, DateTime startDate, DateTime endDate, DateTime dateJoinedBrand, bool acceptToday) {
+    DateTime now = DateTime.now();
+    DateTime maxEndDate = acceptToday ? now : now.subtract(const Duration(days: 1));
+
     int daysDifference = endDate.difference(startDate).inDays;
+    print(daysDifference);
+
+    // Check for "this month" selection
+    if (startDate.day == 1 && startDate.month == now.month && startDate.year == now.year
+        && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
+      return AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]+" "+StringUtils().toCapitalized(AppLocalizations.of(context)!.month);
+    }
+
+    // Check for "previous month" selection
+    if (startDate.day == 1 && startDate.month == now.month - 1 && startDate.year == now.year
+        && endDate.day == DateTime(now.year, now.month, 0).day && endDate.month == now.month - 1 && endDate.year == now.year) {
+      return AppLocalizations.of(context)!.previousMonth;
+    }
+
+    // Check for "Historic" selection
+    if (startDate.day == dateJoinedBrand.day && startDate.month == dateJoinedBrand.month && startDate.year == dateJoinedBrand.year
+        && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
+      return AppLocalizations.of(context)!.historic;
+    }
+
     switch (daysDifference) {
       case 7:
-        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
       case 14:
-        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
       case 30:
-        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
       case 90:
-        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        if (maxEndDate.day == endDate.day && maxEndDate.month == endDate.month && maxEndDate.year == endDate.year) {
+          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        } else {
+          return AppLocalizations.of(context)!.personlized;
+        }
       default:
         return AppLocalizations.of(context)!.personlized;
     }
@@ -124,7 +150,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  returnCorrectText(context, startDate, endDate),
+                                  returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
                                   style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
@@ -150,183 +176,51 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                   ),
                 ),
               ),
-              body: Stack(
+              body: loadedState.purchasesHistoryObjects.isNotEmpty ? Column(
                 children: [
-                  ListView.builder(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: loadedState.purchasesHistoryObjects.length,
-                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.07, bottom: MediaQuery.of(context).size.height*0.03),
-                      itemBuilder: (context, index) {
-                        PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[index];
-                        return PurchaseCard(
-                          bono: obj.bono,
-                          user: obj.user,
-                          brand: obj.brand,
-                          bonoRequest: obj.bonoReq,
-                          purchase: obj.purchase,
-                        );
-                      }
+                  Expanded(
+                    child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: loadedState.purchasesHistoryObjects.length,
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
+                        itemBuilder: (context, index) {
+                          PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[index];
+                          return PurchaseCard(
+                            bono: obj.bono,
+                            user: obj.user,
+                            brand: obj.brand,
+                            bonoRequest: obj.bonoReq,
+                            purchase: obj.purchase,
+                          );
+                        }
+                    ),
                   ),
-                  Container(
-                    height: MediaQuery.of(context).size.height*0.08,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.8),
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.7),
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.6),
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.5),
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.4),
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.2),
-                          Theme.of(context).scaffoldBackgroundColor.withOpacity(0.1),
-                        ],
+                ],
+              ) : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width*0.30,
+                          child: Image.asset(Constants.emptyCalendar)
                       ),
-                    ),
-                    child: ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04, vertical: MediaQuery.of(context).size.width*0.045),
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 4.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-
-                            },
-                            style: ButtonStyle(
-                                elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    )
-                                )
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.lastNDays(7.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-
-                            },
-                            style: ButtonStyle(
-                                elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    )
-                                )
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.lastNDays(14.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-
-                            },
-                            style: ButtonStyle(
-                                elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    )
-                                )
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.lastNDays(30.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-                            },
-                            style: ButtonStyle(
-                                elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    )
-                                )
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.previousMonth,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-
-                            },
-                            style: ButtonStyle(
-                                elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    )
-                                )
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.lastNDays(90.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4.0),
-                          child: ElevatedButton(
-                            onPressed: () {
-
-                            },
-                            style: ButtonStyle(
-                                elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    )
-                                )
-                            ),
-                            child: Text(
-                              AppLocalizations.of(context)!.historic,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.015),
+                      Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.1),
+                    ],
                   ),
                 ],
               ),
             );
           default:
             // Handle all other states aka Loading or Initial
-            DateTime startDate = DateTime.now();
-            DateTime endDate = DateTime.now().subtract(const Duration(days: 30));
+            DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
+            DateTime endDate = DateTime.now();
             DateTime dateJoinedBrand = DateTime(
               int.parse(currentBrand.dateJoined!.split("-")[2]),
               int.parse(currentBrand.dateJoined!.split("-")[1]),
@@ -366,7 +260,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  returnCorrectText(context, startDate, endDate),
+                                  returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
                                   style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)

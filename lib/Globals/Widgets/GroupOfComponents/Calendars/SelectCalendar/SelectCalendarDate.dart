@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class SelectCalendarDate extends StatefulWidget {
@@ -30,19 +31,19 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
 
   @override
   void initState() {
+    // Dates
+    DateTime today = DateTime.now();
+    DateTime yesterday = today.subtract(const Duration(days: 1));
+    DateTime tomorrow = today.add(const Duration(days: 1));
     // Define the Initial and Max Dates for the calendar
-    /// SELECT PAST DATES
     if (widget.isFuture) {
-      startDate = widget.dateRange.first;
-      endDate = DateTime.now().add(const Duration(days: 30*3));
-      endDate = endDate.add(const Duration(days: 1));
+      // If acceptToday is true, we can start from today, otherwise from tomorrow
+      startDate = widget.acceptToday ? today : tomorrow;
+      endDate = today.add(const Duration(days: 90)); // 3 months from today or tomorrow
     } else {
       startDate = DateTime(widget.dateJoined.year, 1, 1, 0, 0);
-      if (widget.acceptToday == false) {
-        endDate = DateTime.now().subtract(const Duration(days: 1));
-      } else {
-        endDate = DateTime.now();
-      }
+      // If acceptToday is true, we can go until today, otherwise until yesterday
+      endDate = widget.acceptToday ? today : yesterday;
     }
     // Define the Initial Range
     _range = '${DateFormat('d MMM, yy\'').format(widget.dateRange.first)}  - '' ${DateFormat('d MMM, yy\'').format(widget.dateRange.last)}';
@@ -117,7 +118,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
             Divider(color: Theme.of(context).backgroundColor, thickness: 1),
             widget.isFuture ?
             SizedBox(
-              height: MediaQuery.of(context).size.height*0.05,
+              height: MediaQuery.of(context).size.height*0.04,
               width: MediaQuery.of(context).size.width,
               child: ListView(
                 controller: _controller,
@@ -129,9 +130,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(startDate, startDate.add(const Duration(days: 7)));
-                        //_dateRangePickerController.displayDate = startDate.add(const Duration(days: 7));
-                        _dateRangePickerController.displayDate = startDate;
+                        DateTime startDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().add(const Duration(days: 1));
+                        DateTime endDateButton = startDateButton.add(const Duration(days: 6)); // For next 7 days from today/tomorrow
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(6),
@@ -152,9 +154,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(startDate, startDate.add(const Duration(days: 14)));
-                        _dateRangePickerController.displayDate = startDate;
-                        //_dateRangePickerController.displayDate = startDate.add(const Duration(days: 14));
+                        DateTime startDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().add(const Duration(days: 1));
+                        DateTime endDateButton = startDateButton.add(const Duration(days: 13)); // For next 7 days from today/tomorrow
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(6),
@@ -199,9 +202,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(startDate, startDate.add(const Duration(days: 30)));
-                        //_dateRangePickerController.displayDate = startDate.add(const Duration(days: 30));
-                        _dateRangePickerController.displayDate = startDate;
+                        DateTime startDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().add(const Duration(days: 1));
+                        DateTime endDateButton = startDateButton.add(const Duration(days: 29)); // For next 7 days from today/tomorrow
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(6),
@@ -222,9 +226,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(startDate, startDate.add(const Duration(days: 60)));
-                        //_dateRangePickerController.displayDate = startDate.add(const Duration(days: 60));
-                        _dateRangePickerController.displayDate = startDate;
+                        DateTime startDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().add(const Duration(days: 1));
+                        DateTime endDateButton = startDateButton.add(const Duration(days: 59)); // For next 7 days from today/tomorrow
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(6),
@@ -245,9 +250,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(startDate, startDate.add(const Duration(days: 90)));
-                        //_dateRangePickerController.displayDate = startDate.add(const Duration(days: 90));
-                        _dateRangePickerController.displayDate = startDate;
+                        DateTime startDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().add(const Duration(days: 1));
+                        DateTime endDateButton = startDateButton.add(const Duration(days: 89)); // For next 7 days from today/tomorrow
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(6),
@@ -280,8 +286,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(DateTime.now().subtract(const Duration(days: 8)), DateTime.now().subtract(Duration(days: widget.acceptToday ? 0 : 1)));
-                        _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 8));
+                        DateTime endDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().subtract(const Duration(days: 1));
+                        DateTime startDateButton = endDateButton.subtract(const Duration(days: 7)); // For last 7 days including today/yesterday
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(6),
@@ -302,8 +310,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(DateTime.now().subtract(const Duration(days: 15)), DateTime.now().subtract(Duration(days: widget.acceptToday ? 0 : 1)));
-                        _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 15));
+                        DateTime endDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().subtract(const Duration(days: 1));
+                        DateTime startDateButton = endDateButton.subtract(const Duration(days: 14)); // For last 7 days including today/yesterday
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),
@@ -324,8 +334,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(DateTime.now().subtract(const Duration(days: 31)), DateTime.now().subtract(Duration(days: widget.acceptToday ? 0 : 1)));
-                        _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 31));
+                        DateTime endDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().subtract(const Duration(days: 1));
+                        DateTime startDateButton = endDateButton.subtract(const Duration(days: 30)); // For last 7 days including today/yesterday
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),
@@ -343,14 +355,39 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
                         DateTime now = DateTime.now();
-                        DateTime firstDayOfMonth = DateTime(now.year, now.month-1, 1);
-                        DateTime lastDayOfMonth = DateTime(now.year, now.month, 1).subtract(const Duration(days: 1));
-                        _dateRangePickerController.selectedRange = PickerDateRange(firstDayOfMonth, lastDayOfMonth);
-                        _dateRangePickerController.displayDate = firstDayOfMonth;
+                        DateTime startDateButton = DateTime(now.year, now.month, 1); // First day of current month
+                        DateTime endDateButton = widget.acceptToday ? now : now.subtract(const Duration(days: 1)); // Today or yesterday
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
+                      },
+                      style: ButtonStyle(
+                          elevation: MaterialStateProperty.all( 12),
+                          backgroundColor: MaterialStateProperty.all(Colors.black),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                              )
+                          )
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]+" "+StringUtils().toCapitalized(AppLocalizations.of(context)!.month),
+                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        DateTime now = DateTime.now();
+                        DateTime startDateButton = DateTime(now.year, now.month - 1, 1); // First day of previous month
+                        DateTime endDateButton = DateTime(now.year, now.month, 0); // Last day of previous month
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),
@@ -371,8 +408,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        _dateRangePickerController.selectedRange = PickerDateRange(DateTime.now().subtract(const Duration(days: 91)), DateTime.now().subtract(Duration(days: widget.acceptToday ? 0 : 1)));
-                        _dateRangePickerController.displayDate = DateTime.now().subtract(const Duration(days: 91));
+                        DateTime endDateButton = widget.acceptToday ? DateTime.now() : DateTime.now().subtract(const Duration(days: 1));
+                        DateTime startDateButton = endDateButton.subtract(const Duration(days: 90)); // For last 7 days including today/yesterday
+                        _dateRangePickerController.selectedRange = PickerDateRange(startDateButton, endDateButton);
+                        _dateRangePickerController.displayDate = startDateButton;
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all( 12),

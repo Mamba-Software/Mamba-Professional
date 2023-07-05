@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -11,6 +12,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
 import '../../../../../../../Globals/Styles/AppColors/AppColors.dart';
+import '../../../../../../../Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 
 class PurchaseCard extends StatelessWidget {
   final Usuario user;
@@ -61,10 +63,13 @@ class PurchaseCard extends StatelessWidget {
                   /// BONO
                   Row(
                     children: [
-                      Icon(
-                        Icons.confirmation_number_outlined,
-                        color: AppColors.grey,
-                        size: MediaQuery.of(context).size.width * 0.04,
+                      BonoCard(
+                          height: MediaQuery.of(context).size.width * 0.025,
+                          width: MediaQuery.of(context).size.width * 0.04,
+                          bono: bono,
+                          brand: brand,
+                          canExpand: false,
+                          onlyView: true
                       ),
                       SizedBox(width: MediaQuery.of(context).size.width * 0.01),
                       Flexible(
@@ -244,7 +249,7 @@ class PurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              AppLocalizations.of(context)!.requestSent(DateTimeUtils().formatDateTimeToStringDDMMYYYY(bonoRequest!.timeRequested!.toDate(), Localizations.localeOf(context).languageCode)),
+              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(bonoRequest!.timeRequested!.toDate()).toUpperCase(),
               style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
@@ -258,8 +263,8 @@ class PurchaseCard extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              AppLocalizations.of(context)!.purchasedAt(DateTimeUtils().formatDateTimeToStringDDMMYYYY(purchase!.purchasedAt!.toDate(), Localizations.localeOf(context).languageCode)),
-              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase!.purchasedAt!.toDate()).toUpperCase(),
+              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,

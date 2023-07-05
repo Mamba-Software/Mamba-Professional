@@ -24,6 +24,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/Sess
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import '../../../../../../../Data/Models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../../../../Globals/Utils/Strings/StringUtils.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/ClientNumber.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/SessionsStats/SessionsMade.dart';
@@ -85,6 +86,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
 
   // Brand
   Brand brand = Brand();
+  bool acceptToday = false;
   DateTime dateJoinedBrand = DateTime.now();
 
   double addStatsValue = 0.25;
@@ -144,6 +146,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
     var dateJoinedSplit = brand.dateJoined!.split("-");
     dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]), int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
+    print(dateJoinedBrand);
   }
 
   Future<void> getCollections() async {
@@ -951,30 +954,36 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   }
 
   String returnCorrectText() {
-    DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
+    DateTime now = DateTime.now();
+    DateTime maxEndDate = acceptToday ? now : now.subtract(const Duration(days: 1));
+
     int daysDifference = endDate.difference(startDate).inDays;
     print(daysDifference);
+
+    // Check for "this month" selection
+    if (startDate.day == 1 && startDate.month == now.month && startDate.year == now.year
+        && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
+      return AppLocalizations.of(context)!.thisEventAndRest.split(" ")[0]+" "+StringUtils().toCapitalized(AppLocalizations.of(context)!.month);
+    }
+
+    // Check for "previous month" selection
+    if (startDate.day == 1 && startDate.month == now.month - 1 && startDate.year == now.year
+        && endDate.day == DateTime(now.year, now.month, 0).day && endDate.month == now.month - 1 && endDate.year == now.year) {
+      return AppLocalizations.of(context)!.previousMonth;
+    }
+
+    // Check for "Historic" selection
+    if (startDate.day == dateJoinedBrand.day && startDate.month == dateJoinedBrand.month && startDate.year == dateJoinedBrand.year
+        && endDate.day == maxEndDate.day && endDate.month == maxEndDate.month && endDate.year == maxEndDate.year) {
+      return AppLocalizations.of(context)!.historic;
+    }
+
     switch (daysDifference) {
       case 7:
-        if (yesterday.day == endDate.day && yesterday.month == endDate.month && yesterday.year == endDate.year) {
-          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
-        } else {
-          return AppLocalizations.of(context)!.personlized;
-        }
       case 14:
-        if (yesterday.day == endDate.day && yesterday.month == endDate.month && yesterday.year == endDate.year) {
-          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
-        } else {
-          return AppLocalizations.of(context)!.personlized;
-        }
       case 30:
-        if (yesterday.day == endDate.day && yesterday.month == endDate.month && yesterday.year == endDate.year) {
-          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
-        } else {
-          return AppLocalizations.of(context)!.personlized;
-        }
       case 90:
-        if (yesterday.day == endDate.day && yesterday.month == endDate.month && yesterday.year == endDate.year) {
+        if (maxEndDate.day == endDate.day && maxEndDate.month == endDate.month && maxEndDate.year == endDate.year) {
           return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
           return AppLocalizations.of(context)!.personlized;
@@ -982,7 +991,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
       default:
         return AppLocalizations.of(context)!.personlized;
     }
-
   }
 
   int daysBetween(DateTime from, DateTime to) {
