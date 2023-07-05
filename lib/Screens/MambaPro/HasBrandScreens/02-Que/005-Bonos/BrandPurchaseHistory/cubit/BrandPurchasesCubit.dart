@@ -324,10 +324,12 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         await fetchMoreBrandPurchases(lastFetchedPurchaseId);
       } else {
         // If the new endDate is before the date of the last fetched purchase, just emit the new state
-        loadedState.copyWith(
-          startDate: this.startDate,
-          endDate: this.endDate,
-          purchasesHistoryObjects: filteredDateList,
+        emit(
+          loadedState.copyWith(
+            startDate: this.startDate,
+            endDate: this.endDate,
+            purchasesHistoryObjects: filteredDateList,
+          ),
         );
         print("Date Range Successfully Updated");
       }

@@ -293,9 +293,14 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                 children: [
                                                   ListTile(
                                                     onTap: () {
-                                                      filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
-                                                      brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
-                                                      Navigator.pop(context);
+                                                      // Check if the Only True
+                                                      var filterActive = List.from(filterByPurchaseStatus);
+                                                      filterActive.retainWhere((element) => element == true);
+                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[0])) {
+                                                        filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
+                                                        brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                        Navigator.pop(context);
+                                                      }
                                                     },
                                                     title: Text(
                                                         AppLocalizations.of(context)!.verfied,
@@ -309,9 +314,14 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                   ),
                                                   ListTile(
                                                     onTap: () {
-                                                      filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
-                                                      brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
-                                                      Navigator.pop(context);
+                                                      // Check if the Only True
+                                                      var filterActive = List.from(filterByPurchaseStatus);
+                                                      filterActive.retainWhere((element) => element == true);
+                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[1])) {
+                                                        filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
+                                                        brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                        Navigator.pop(context);
+                                                      }
                                                     },
                                                     title: Text(
                                                         AppLocalizations.of(context)!.unverfied,
@@ -325,9 +335,14 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                   ),
                                                   ListTile(
                                                     onTap: () {
-                                                      filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
-                                                      brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
-                                                      Navigator.pop(context);
+                                                      // Check if the Only True
+                                                      var filterActive = List.from(filterByPurchaseStatus);
+                                                      filterActive.retainWhere((element) => element == true);
+                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[2])) {
+                                                        filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
+                                                        brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                        Navigator.pop(context);
+                                                      }
                                                     },
                                                     title: Text(
                                                         AppLocalizations.of(context)!.toConfirm,
