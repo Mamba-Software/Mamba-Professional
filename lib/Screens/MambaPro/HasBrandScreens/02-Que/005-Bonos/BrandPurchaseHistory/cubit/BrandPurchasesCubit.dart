@@ -47,22 +47,15 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     try {
       // Set the State to Loading
       emit(const BrandPurchasesLoading());
-      // Define Starting Dates
-      startDate = DateTime.now().subtract(const Duration(days: 1));
-      endDate = DateTime.now();
-      dateJoinedBrand = DateTime(
-          int.parse(currentBrand.dateJoined!.split("-")[2]),
-          int.parse(currentBrand.dateJoined!.split("-")[1]),
-          int.parse(currentBrand.dateJoined!.split("-")[0]),
-          0,
-          0
-      );
       // Vars
       List<BonoRequest> bonoRequestsList = [];
       List<Purchase> purchasesList = [];
       List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
       List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
-      // Get Last 50 Purchases
+      int requiredPurchases = 6; // This is the number of purchases you want to ensure
+      List<int> predefinedDays = [7, 14, 30, 90]; // List of predefined date ranges
+      int currentDaysIndex = 0; // Starting index for predefinedDays list
+      // Fetch initial purchases
       purchasesList = await _purchaseDataService.getBrandFirstPurchasesLimit(brandId, limit);
       if (purchasesList.isNotEmpty) {
         lastFetchedPurchaseId = purchasesList.last.id!;
@@ -72,6 +65,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           print("allPurchasesFetched");
         }
       }
+      // Process the purchases list and build PurchaseHistoryModel objects.
       for (Purchase p in purchasesList) {
         // Get User
         Usuario user = usersList.firstWhere((element) => element.id == p.userId, orElse: () => Usuario());
@@ -93,16 +87,47 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         bonosList.add(bono);
         // Build Purchase Object
         PurchaseHistoryModel obj = PurchaseHistoryModel(
-            user: user,
-            brand: brand,
-            bono: bono,
-            bonoReq: null,
-            purchase: p,
-            purchasedAt: p.purchasedAt!,
-            purchaseStatus: p.directPurchase != null && p.directPurchase! ? PurchaseStatus.DIRECT : PurchaseStatus.CONFIRMED,
+          user: user,
+          brand: brand,
+          bono: bono,
+          bonoReq: null,
+          purchase: p,
+          purchasedAt: p.purchasedAt!,
+          purchaseStatus: p.directPurchase != null && p.directPurchase! ? PurchaseStatus.DIRECT : PurchaseStatus.CONFIRMED,
         );
+        // After processing the list, add the new purchases to the existing list of purchases.
         purchasesHistoryListsPurchases.add(obj);
       }
+
+      dateJoinedBrand = DateTime(
+        int.parse(currentBrand.dateJoined!.split("-")[2]),
+        int.parse(currentBrand.dateJoined!.split("-")[1]),
+        int.parse(currentBrand.dateJoined!.split("-")[0]),
+        0,
+        0,
+      );
+      // Initialize startDate to the date of the oldest purchase in the list
+      if (purchasesHistoryListsPurchases.isNotEmpty) {
+        startDate = purchasesHistoryListsPurchases.last.purchasedAt.toDate();
+      }
+      // Try to find a smaller date range that includes at least `requiredPurchases` number of purchases
+      for (int days in predefinedDays) {
+        // Find the date `days` days ago
+        DateTime dateDaysAgo = DateTime.now().subtract(Duration(days: days));
+        // Count the purchases within this date range
+        int countInRange = purchasesHistoryListsPurchases.takeWhile((purchase) => purchase.purchasedAt.toDate().isAfter(dateDaysAgo)).length;
+        // If we have enough purchases in this date range, update `startDate` and break the loop
+        if (countInRange >= requiredPurchases) {
+          startDate = dateDaysAgo;
+          break;
+        }
+      }
+
+      // If we didn't find a suitable date range and there's no more data to fetch, set `startDate` to `dateJoinedBrand`
+      if (startDate == purchasesHistoryListsPurchases.last.purchasedAt.toDate() && allPurchasesFetched) {
+        startDate = dateJoinedBrand;
+      }
+
       // Open the Stream to Get Brand Upcoming Events
       _subscription = _brandDataService.getBonosRequestsFromBrand(brandId).listen((querySnapshot) async {
         List<DocumentSnapshot> documents = querySnapshot.docs;

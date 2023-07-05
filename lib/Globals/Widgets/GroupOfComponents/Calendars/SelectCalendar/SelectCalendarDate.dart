@@ -489,6 +489,12 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     border: Border.all(color: Colors.transparent, width: 1),
                     shape: BoxShape.circle
                   ),
+                  specialDatesTextStyle: Theme.of(context).textTheme.bodyText2,
+                  specialDatesDecoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor.withOpacity(0.08),
+                    border: Border.all(width: 1, color: Theme.of(context).primaryColor),
+                    shape: BoxShape.circle,
+                  ),
                   disabledDatesTextStyle: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).backgroundColor.withOpacity(0.89)),
                 ),
                 monthViewSettings: DateRangePickerMonthViewSettings(
@@ -499,6 +505,10 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                   viewHeaderStyle: DateRangePickerViewHeaderStyle(
                     textStyle: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
                   ),
+                  specialDates: <DateTime>[
+                    widget.dateJoined
+                  ],
+
                 ),
                 allowViewNavigation: false,
                 initialSelectedRange: PickerDateRange(widget.dateRange.first, widget.dateRange.last),

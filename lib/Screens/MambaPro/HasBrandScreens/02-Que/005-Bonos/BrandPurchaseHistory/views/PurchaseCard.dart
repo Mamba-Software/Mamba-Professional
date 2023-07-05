@@ -38,7 +38,7 @@ class PurchaseCard extends StatelessWidget {
       },
       child: Container(
         color: bonoRequest != null ? Theme.of(context).backgroundColor : Theme.of(context).scaffoldBackgroundColor,
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.03),
         child: Row(
           children: [
             CircularImage(

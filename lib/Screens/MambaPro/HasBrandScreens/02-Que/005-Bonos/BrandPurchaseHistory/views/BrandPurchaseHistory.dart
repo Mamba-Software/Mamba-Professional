@@ -203,7 +203,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         itemCount: state.purchasesHistoryObjects.length,
-                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
                         itemBuilder: (context, index) {
                           PurchaseHistoryModel obj = state.purchasesHistoryObjects[index];
                           return PurchaseCard(
@@ -319,7 +318,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                           itemBuilder: (context, index) {
                             return Container(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
+                              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.03),
                               child: Row(
                                 children: [
                                   Shimmer.fromColors(
