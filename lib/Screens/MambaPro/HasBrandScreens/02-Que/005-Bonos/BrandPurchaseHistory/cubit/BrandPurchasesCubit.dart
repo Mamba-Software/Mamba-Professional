@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/models/PurchaseHistoryModel.dart';
 import '../../../../../../../Data/DataService/Brand/BrandDataService.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
@@ -26,15 +27,18 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   final _brandDataService = BrandDataService();
   final _purchaseDataService = PurchaseDataService();
   late StreamSubscription<QuerySnapshot> _subscription;
+  // Utils
+  final _bonosUtils = BonosUtils();
   // Lists
   List<PurchaseHistoryModel> purchasesHistoryObjects = [];
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
   List<Bono> bonosList = [];
-  List<BonoRequest> bonoRequestsList = [];
-  List<Purchase> purchasesList = [];
   // Variables
   final limit = 50;
+  bool allPurchasesFetched = false;
+  DateTime lastFetchedPurchaseDate = DateTime.now();
+  String lastFetchedPurchaseId = "";
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
   DateTime dateJoinedBrand = DateTime.now();
@@ -44,7 +48,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       // Set the State to Loading
       emit(const BrandPurchasesLoading());
       // Define Starting Dates
-      startDate = DateTime.now().subtract(const Duration(days: 30));
+      startDate = DateTime.now().subtract(const Duration(days: 1));
       endDate = DateTime.now();
       dateJoinedBrand = DateTime(
           int.parse(currentBrand.dateJoined!.split("-")[2]),
@@ -54,10 +58,20 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           0
       );
       // Vars
+      List<BonoRequest> bonoRequestsList = [];
+      List<Purchase> purchasesList = [];
       List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
       List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
       // Get Last 50 Purchases
       purchasesList = await _purchaseDataService.getBrandFirstPurchasesLimit(brandId, limit);
+      if (purchasesList.isNotEmpty) {
+        lastFetchedPurchaseId = purchasesList.last.id!;
+        lastFetchedPurchaseDate = purchasesList.last.purchasedAt!.toDate();
+        if (purchasesList.length != limit) {
+          allPurchasesFetched = true;
+          print("allPurchasesFetched");
+        }
+      }
       for (Purchase p in purchasesList) {
         // Get User
         Usuario user = usersList.firstWhere((element) => element.id == p.userId, orElse: () => Usuario());
@@ -93,7 +107,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       _subscription = _brandDataService.getBonosRequestsFromBrand(brandId).listen((querySnapshot) async {
         List<DocumentSnapshot> documents = querySnapshot.docs;
         purchasesHistoryListsRequests = [];
-        bonoRequestsList = documentsToBonosRequests(documents);
+        bonoRequestsList = _bonosUtils.documentsToBonosRequests(documents);
         for (BonoRequest req in bonoRequestsList) {
           // Get User
           Usuario user = usersList.firstWhere((element) => element.id == req.userId, orElse: () => Usuario());
@@ -160,155 +174,135 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     }
   }
 
-  /*
-  Future<void> getMoreBrandEvents(String eventId, List<Usuario> _brandTrainers) async {
+  Future<void> loadMoreBrandPurchases(String lastPurchaseId) async {
     try {
-      print("Getting More Brand Events");
-      // Set the State to Loading
-      String brandId = currentBrand.id!;
-      // Get Last 100 Finished Events
-      List<Event> moreFinishedEvents = await _eventDataService.getBrandMoreCompletedEventsLimit(brandId, eventId, limit*2);
-      // Add The Trainers to the Event
-      List<Usuario> eventTrainers = [];
-      for (Event evt in moreFinishedEvents) {
-        for (Usuario trainer in _brandTrainers) {
-          int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
-          if (index != -1) {
-            eventTrainers.add(trainer);
-          }
+      print("Getting More Brand Purchases");
+      // Vars
+      List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
+      // Fetch more purchases ...
+      // Get more purchases from the service.
+      List<Purchase> morePurchases = await _purchaseDataService.getBrandMorePurchasesLimit(brandId, lastPurchaseId, limit);
+      // Update the date of the last fetched purchase
+      if (morePurchases.isNotEmpty) {
+        lastFetchedPurchaseId = morePurchases.last.id!;
+        lastFetchedPurchaseDate = morePurchases.last.purchasedAt!.toDate();
+        if (morePurchases.length != limit) {
+          allPurchasesFetched = true;
         }
-        evt.setUserList = eventTrainers;
-        eventTrainers = [];
       }
-      finishedEventsList = List.from(moreFinishedEvents+finishedEventsList);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
+      // Handle The Object Creation Efficiently
+      for (Purchase p in morePurchases) {
+        // Get User
+        Usuario user = usersList.firstWhere((element) => element.id == p.userId, orElse: () => Usuario());
+        if (user.id == null) {
+          user = await _userDataService.getUserCoverDetails(p.userId!);
+        }
+        usersList.add(user);
+        // Get User
+        Brand brand = brandsList.firstWhere((element) => element.id == p.brandId, orElse: () => Brand());
+        if (brand.id == null) {
+          brand = await _brandDataService.getBrandCoverDetails(p.brandId!);
+        }
+        brandsList.add(brand);
+        // Get Bono
+        Bono bono = bonosList.firstWhere((element) => element.id == p.bonoId, orElse: () => Bono());
+        if (bono.id == null) {
+          bono = await _brandDataService.getBonoInfo(p.brandId!, p.bonoId!);
+        }
+        bonosList.add(bono);
+        // Build Purchase Object
+        PurchaseHistoryModel obj = PurchaseHistoryModel(
+          user: user,
+          brand: brand,
+          bono: bono,
+          bonoReq: null,
+          purchase: p,
+          purchasedAt: p.purchasedAt!,
+          purchaseStatus: p.directPurchase != null && p.directPurchase! ? PurchaseStatus.DIRECT : PurchaseStatus.CONFIRMED,
+        );
+        purchasesHistoryListsPurchases.add(obj);
+      }
+      // Emit a new state with the list of `Events`.
+      purchasesHistoryObjects = List.from(purchasesHistoryObjects+purchasesHistoryListsPurchases);
       // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
-          int.parse(a.year!),
-          int.parse(a.month!),
-          int.parse(a.day!),
-          int.parse(a.hour!),
-          int.parse(a.minute!),
-        );
-        var bDate =  DateTime(
-          int.parse(b.year!),
-          int.parse(b.month!),
-          int.parse(b.day!),
-          int.parse(b.hour!),
-          int.parse(b.minute!),
-        );
-        return aDate.compareTo(bDate);
+      purchasesHistoryObjects.sort((a,b) {
+        var aDate =  a.purchasedAt.toDate();
+        var bDate =  b.purchasedAt.toDate();
+        return bDate.compareTo(aDate);
       });
-      emit(BrandPurchasesLoaded(finalList));
+      // Filter the results by the current date range
+      List<PurchaseHistoryModel> filteredDateList = purchasesHistoryObjects.where((element) {
+        // Keep only the purchases within the date range
+        DateTime purchasedAtDate = element.purchasedAt.toDate();
+        return purchasedAtDate.isAfter(startDate) && purchasedAtDate.isBefore(endDate);
+      }).toList();
+      print("More Purchases Successfully Loaded");
+      emit(
+        BrandPurchasesLoaded(
+          startDate,
+          endDate,
+          dateJoinedBrand,
+          filteredDateList,
+        )
+      );
+
     } catch(e) {
-      print("More Brand Events Error"+e.toString());
+      print("Get More Brand Purchases Error: "+e.toString());
       emit(BrandPurchasesError(e.toString()));
     }
   }
 
-   */
-
-
   Future<void> updateDateRange(DateTime startDate, DateTime endDate) async {
     try {
+      print("updateDateRange $startDate $endDate");
       this.startDate = startDate;
       this.endDate = endDate;
-      // Check the Last Purchase
+      // Filter purchasesHistoryObjects by the new date range ...
       List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
       filteredDateList.removeWhere((element) {
         // Remove the ones before the start date or after the end date
         return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
       });
-      emit(
-        BrandPurchasesLoaded(
-          this.startDate,
-          this.endDate,
-          dateJoinedBrand,
-          filteredDateList,
-        )
-      );
-      print("Date Range Successfully Updated");
+      // If the new endDate is after the date of the last fetched purchase, fetch more purchases
+      if (startDate.isBefore(lastFetchedPurchaseDate) && allPurchasesFetched == false) {
+        print("startDate isBefore lastFetchedPurchaseDate");
+        await loadMoreBrandPurchases(lastFetchedPurchaseId);
+      } else {
+        // If the new endDate is before the date of the last fetched purchase, just emit the new state
+        emit(
+          BrandPurchasesLoaded(
+            this.startDate,
+            this.endDate,
+            dateJoinedBrand,
+            filteredDateList,
+          )
+        );
+        print("Date Range Successfully Updated");
+      }
     } catch(e) {
-      print("Delete Brand Event Error"+e.toString());
+      print("Update Date Range Error"+e.toString());
       emit(BrandPurchasesError(e.toString()));
     }
   }
 
-  /*
-  Future<void> deleteBrandEvent(String eventId) async {
+  Future<void> onScrollMoreBrandPurchases() async {
     try {
-      print("Delete More Brand Events");
-      finishedEventsList.removeWhere((element) => element.id == eventId);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
-      // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
-          int.parse(a.year!),
-          int.parse(a.month!),
-          int.parse(a.day!),
-          int.parse(a.hour!),
-          int.parse(a.minute!),
-        );
-        var bDate =  DateTime(
-          int.parse(b.year!),
-          int.parse(b.month!),
-          int.parse(b.day!),
-          int.parse(b.hour!),
-          int.parse(b.minute!),
-        );
-        return aDate.compareTo(bDate);
-      });
-      emit(BrandPurchasesLoaded(finalList));
-      print("Event $eventId Successfully Deleted");
+      print("onScrollMoreBrandPurchases");
+      // If the new endDate is after the date of the last fetched purchase, fetch more purchases
+      if (allPurchasesFetched == false) {
+        await loadMoreBrandPurchases(lastFetchedPurchaseId);
+      }
     } catch(e) {
-      print("Delete Brand Event Error"+e.toString());
+      print("Update Date Range Error"+e.toString());
       emit(BrandPurchasesError(e.toString()));
     }
   }
-
-   */
 
   @override
   Future<void> close() {
-    //print('LO CIERRO');
     _subscription.cancel();
     return super.close();
   }
 
-  /*
-  TODO: FUTURE FILTER FERLO PER AQUI
-  Future<void> filterEvents(int filterSelection, List<Usuario> _selectedTrainers) async {
-    try {
-      print("Filtering Events ...");
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
-      /// Check Filter Selection for Type of Event
-      if (filterSelection == 0) {
-        // Show Both Private and Group Events
-      } else if(filterSelection == 1) {
-        // Show Only Group Events
-        finalList.removeWhere((element) => element.isPrivate == true);
-      } else if(filterSelection == 2) {
-        // Show Only Private Events
-        finalList.removeWhere((element) => element.isPrivate == false);
-      }
-      emit(BrandEventsLoaded(finalList));
-    } catch(e) {
-      print("Filter Brand Events Error"+e.toString());
-      emit(BrandEventsError(e.toString()));
-    }
-  }
-   */
-
 }
 
-
-//Function to transform documents to bonos request
-List<BonoRequest> documentsToBonosRequests(List<DocumentSnapshot> documents) {
-  List<BonoRequest> bonosRequests = [];
-  for (int i = 0; i < documents.length; i++) {
-    BonoRequest bonoRequest = BonoRequest.fromObjectAllData(documents[i].id, documents[i]);
-    bonosRequests.add(bonoRequest);
-  }
-  return bonosRequests;
-}

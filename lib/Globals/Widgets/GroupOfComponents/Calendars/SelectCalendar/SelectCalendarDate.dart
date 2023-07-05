@@ -500,6 +500,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     textStyle: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
                   ),
                 ),
+                allowViewNavigation: false,
                 initialSelectedRange: PickerDateRange(widget.dateRange.first, widget.dateRange.last),
                 selectionColor: Theme.of(context).primaryColor,
                 selectionTextStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),

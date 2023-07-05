@@ -1,10 +1,9 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -12,11 +11,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/models/PurchaseHistoryModel.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/PurchaseCard.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../../../../../../../Data/Models/Bono.dart';
-import '../../../../../../../../Data/Models/Usuario.dart';
-import '../../../../../../../Data/DataService/Brand/BrandDataService.dart';
-import '../../../../../../../Data/DataService/User/UserDataService.dart';
-import '../../../../../../../Data/Models/Purchase.dart';
 import '../../../../../../../Globals/Constants.dart';
 import '../cubit/BrandPurchasesCubit.dart';
 
@@ -34,12 +28,39 @@ class BrandPurchaseHistory extends StatelessWidget {
   }
 }
 
-class BrandPurchaseHistoryBody extends StatelessWidget {
-
+class BrandPurchaseHistoryBody extends StatefulWidget {
   final String brandId;
 
-  BrandPurchaseHistoryBody({Key? key, required this.brandId}) : super(key: key) ;
+  BrandPurchaseHistoryBody({Key? key, required this.brandId}) : super(key: key);
 
+  @override
+  _BrandPurchaseHistoryBodyState createState() => _BrandPurchaseHistoryBodyState();
+}
+
+class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
+
+  String brandId = "";
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset >= _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {
+      context.read<BrandPurchasesCubit>().onScrollMoreBrandPurchases();
+    }
+  }
+  
   void _show(BuildContext context, DateTime startDate, DateTime endDate, DateTime dateJoinedBrand) async {
     List<DateTime>? result = await showModalBottomSheet<List<DateTime>>(
       context: context,
@@ -70,9 +91,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
   String returnCorrectText(BuildContext context, DateTime startDate, DateTime endDate, DateTime dateJoinedBrand, bool acceptToday) {
     DateTime now = DateTime.now();
     DateTime maxEndDate = acceptToday ? now : now.subtract(const Duration(days: 1));
-
     int daysDifference = endDate.difference(startDate).inDays;
-    print(daysDifference);
 
     // Check for "this month" selection
     if (startDate.day == 1 && startDate.month == now.month && startDate.year == now.year
@@ -113,7 +132,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
       builder: (context, state) {
         switch (state.runtimeType) {
           case BrandPurchasesLoaded:
-            // Handles Loaded State
+          // Handles Loaded State
             BrandPurchasesLoaded loadedState = state as BrandPurchasesLoaded;
             DateTime startDate = state.startDate;
             DateTime endDate = state.endDate;
@@ -176,17 +195,17 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                   ),
                 ),
               ),
-              body: loadedState.purchasesHistoryObjects.isNotEmpty ? Column(
+              body: state.purchasesHistoryObjects.isNotEmpty ? Column(
                 children: [
                   Expanded(
                     child: ListView.builder(
                         physics: const AlwaysScrollableScrollPhysics(),
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
-                        itemCount: loadedState.purchasesHistoryObjects.length,
+                        itemCount: state.purchasesHistoryObjects.length,
                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, bottom: MediaQuery.of(context).size.height*0.01),
                         itemBuilder: (context, index) {
-                          PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[index];
+                          PurchaseHistoryModel obj = state.purchasesHistoryObjects[index];
                           return PurchaseCard(
                             bono: obj.bono,
                             user: obj.user,
@@ -218,15 +237,15 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
               ),
             );
           default:
-            // Handle all other states aka Loading or Initial
+          // Handle all other states aka Loading or Initial
             DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
             DateTime endDate = DateTime.now();
             DateTime dateJoinedBrand = DateTime(
-              int.parse(currentBrand.dateJoined!.split("-")[2]),
-              int.parse(currentBrand.dateJoined!.split("-")[1]),
-              int.parse(currentBrand.dateJoined!.split("-")[0]),
-              0,
-              0
+                int.parse(currentBrand.dateJoined!.split("-")[2]),
+                int.parse(currentBrand.dateJoined!.split("-")[1]),
+                int.parse(currentBrand.dateJoined!.split("-")[0]),
+                0,
+                0
             );
             return Scaffold(
               appBar: AppBar(
@@ -336,7 +355,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                                        SizedBox(height: MediaQuery.of(context).size.height * 0.007),
                                         /// BONO
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
@@ -352,7 +371,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                                        SizedBox(height: MediaQuery.of(context).size.height * 0.007),
                                         /// DETAILS
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
@@ -368,7 +387,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                                        SizedBox(height: MediaQuery.of(context).size.height * 0.007),
                                         /// STATUS
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
@@ -384,7 +403,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                                        SizedBox(height: MediaQuery.of(context).size.height * 0.007),
                                         /// DATE
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
@@ -418,5 +437,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
       },
     );
   }
+
 }
+
 
