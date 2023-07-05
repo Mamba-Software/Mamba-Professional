@@ -453,7 +453,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
               ),
             );
           default:
-          // Handle all other states aka Loading or Initial
+            // Handle all other states aka Loading or Initial
             DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
             DateTime endDate = DateTime.now();
             DateTime dateJoinedBrand = DateTime(
@@ -566,21 +566,40 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         /// USER
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor: AppColors.grey.withOpacity(0.5),
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.height*0.02,
-                                            width: MediaQuery.of(context).size.width*0.25,
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(5.0),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Shimmer.fromColors(
+                                              baseColor: AppColors.grey,
+                                              highlightColor: AppColors.grey.withOpacity(0.5),
+                                              child: Container(
+                                                height: MediaQuery.of(context).size.height*0.02,
+                                                width: MediaQuery.of(context).size.width*0.25,
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(5.0),
+                                                  ),
+                                                  color: AppColors.grey,
+                                                ),
                                               ),
-                                              color: AppColors.grey,
                                             ),
-                                          ),
+                                            Shimmer.fromColors(
+                                              baseColor: AppColors.grey,
+                                              highlightColor: AppColors.grey.withOpacity(0.5),
+                                              child: Container(
+                                                height: MediaQuery.of(context).size.height*0.02,
+                                                width: MediaQuery.of(context).size.width*0.15,
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.all(
+                                                    Radius.circular(5.0),
+                                                  ),
+                                                  color: AppColors.grey,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                                        SizedBox(height: MediaQuery.of(context).size.height * 0.012),
                                         /// BONO
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
@@ -596,7 +615,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                                        SizedBox(height: MediaQuery.of(context).size.height * 0.012),
                                         /// DETAILS
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
@@ -612,23 +631,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.007),
-                                        /// STATUS
-                                        Shimmer.fromColors(
-                                          baseColor: AppColors.grey,
-                                          highlightColor: AppColors.grey.withOpacity(0.5),
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.height*0.015,
-                                            width: MediaQuery.of(context).size.width*0.3,
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(5.0),
-                                              ),
-                                              color: AppColors.grey,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                                        SizedBox(height: MediaQuery.of(context).size.height * 0.012),
                                         /// DATE
                                         Shimmer.fromColors(
                                           baseColor: AppColors.grey,
