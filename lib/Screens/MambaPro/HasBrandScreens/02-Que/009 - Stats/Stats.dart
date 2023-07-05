@@ -465,7 +465,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 backgroundColor: AppColors.darkGrey,
                 expandedHeight: MediaQuery.of(context).size.height * 0.13,
                 systemOverlayStyle: SystemUiOverlayStyle.light,
-                elevation: 0,
                 floating: false,
                 pinned: true,
                 forceElevated: innerBoxIsScrolled,
@@ -954,27 +953,28 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   String returnCorrectText() {
     DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
     int daysDifference = endDate.difference(startDate).inDays;
+    print(daysDifference);
     switch (daysDifference) {
       case 7:
-        if (yesterday.day == startDate.day && yesterday.month == startDate.month && yesterday.year == startDate.year) {
+        if (yesterday.day == endDate.day && yesterday.month == endDate.month && yesterday.year == endDate.year) {
           return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
           return AppLocalizations.of(context)!.personlized;
         }
       case 14:
-        if (yesterday.day == startDate.day && yesterday.month == startDate.month && yesterday.year == startDate.year) {
+        if (yesterday.day == endDate.day && yesterday.month == endDate.month && yesterday.year == endDate.year) {
           return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
           return AppLocalizations.of(context)!.personlized;
         }
       case 30:
-        if (yesterday.day == startDate.day && yesterday.month == startDate.month && yesterday.year == startDate.year) {
+        if (yesterday.day == endDate.day && yesterday.month == endDate.month && yesterday.year == endDate.year) {
           return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
           return AppLocalizations.of(context)!.personlized;
         }
       case 90:
-        if (yesterday.day == startDate.day && yesterday.month == startDate.month && yesterday.year == startDate.year) {
+        if (yesterday.day == endDate.day && yesterday.month == endDate.month && yesterday.year == endDate.year) {
           return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
         } else {
           return AppLocalizations.of(context)!.personlized;
@@ -1006,17 +1006,15 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Material(
-      elevation: 0,
-      child: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.darkGrey,
-          border: Border(
-            bottom: BorderSide(width: 1.0, color: AppColors.grey),
-          ),
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.darkGrey,
+        border: Border(
+          top: BorderSide(width: 0.5, color: AppColors.darkGrey),
+          bottom: BorderSide(width: 1.0, color: AppColors.grey),
         ),
-        child: _tabBar,
       ),
+      child: _tabBar,
     );
   }
 
@@ -1040,14 +1038,11 @@ class _SliverAppBarDelegateSecond extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Material(
-      elevation: 0,
-      child: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.darkGrey,
-        ),
-        child: _widget,
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.darkGrey,
       ),
+      child: _widget,
     );
   }
 
