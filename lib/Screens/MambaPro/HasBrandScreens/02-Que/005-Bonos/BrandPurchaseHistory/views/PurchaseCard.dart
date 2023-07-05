@@ -53,19 +53,30 @@ class PurchaseCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// USER
-                  Text(
-                    user.name!,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.left,
+                  /// USER && STATUS
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          user.name!+user.name!+user.name!,
+                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                      buildStatusLabel(context),
+                    ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   /// BONO
                   Row(
                     children: [
                       BonoCard(
-                          height: MediaQuery.of(context).size.width * 0.025,
-                          width: MediaQuery.of(context).size.width * 0.04,
+                          height: MediaQuery.of(context).size.width * 0.03,
+                          width: MediaQuery.of(context).size.width * 0.05,
                           bono: bono,
                           brand: brand,
                           canExpand: false,
@@ -83,14 +94,11 @@ class PurchaseCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   /// DETAILS
                   bonoRequest != null ? buildBonoRequestDetails(context) : buildPurchaseDetails(context),
-                  /// STATUS
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.005),
-                  buildStatusLabel(context),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   /// DATE
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                   buildDateDetails(context),
                 ],
               ),
@@ -136,7 +144,7 @@ class PurchaseCard extends StatelessWidget {
             maxLines: 1,
           ),
         ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         // PRICE
         Icon(
           Icons.attach_money_outlined,
@@ -152,7 +160,7 @@ class PurchaseCard extends StatelessWidget {
             maxLines: 1,
           ),
         ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
         // PAYMENT METHOD
         Icon(
           paymentIcon,
@@ -191,7 +199,7 @@ class PurchaseCard extends StatelessWidget {
 
     return Row(
       children: [
-        // SESSIONS
+        //SESSIONS
         Icon(
           Icons.calendar_month_outlined,
           color: AppColors.grey,
@@ -207,7 +215,7 @@ class PurchaseCard extends StatelessWidget {
             maxLines: 1,
           ),
         ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         // PRICE
         Icon(
           Icons.attach_money_outlined,
@@ -223,7 +231,7 @@ class PurchaseCard extends StatelessWidget {
             maxLines: 1,
           ),
         ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
         // PAYMENT METHOD
         Icon(
           paymentIcon,
@@ -250,7 +258,7 @@ class PurchaseCard extends StatelessWidget {
           Flexible(
             child: Text(
               DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(bonoRequest!.timeRequested!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -264,7 +272,7 @@ class PurchaseCard extends StatelessWidget {
           Flexible(
             child: Text(
               DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase!.purchasedAt!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
+              style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
@@ -281,20 +289,17 @@ class PurchaseCard extends StatelessWidget {
       return Row(
         children: [
           // SESSIONS
+          SizedBox(width: MediaQuery.of(context).size.width * 0.01),
           Icon(
             Icons.help_outline_outlined,
-            color: AppColors.grey,
+            color: AppColors.red,
             size: MediaQuery.of(context).size.width * 0.04,
           ),
           SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-          Flexible(
-            child: Text(
-              AppLocalizations.of(context)!.bonoRequestDescription,
-              style: Theme.of(context).textTheme.caption,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
+          Text(
+            AppLocalizations.of(context)!.toConfirm,
+            style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
+            textAlign: TextAlign.right,
           ),
         ],
       );
@@ -302,40 +307,34 @@ class PurchaseCard extends StatelessWidget {
       if (purchase!.directPurchase != null && purchase!.directPurchase!) {
         return Row(
           children: [
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Icon(
               Icons.new_releases_outlined,
-              color: AppColors.grey,
+              color: AppColors.mainColor,
               size: MediaQuery.of(context).size.width * 0.04,
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-            Flexible(
-              child: Text(
-                AppLocalizations.of(context)!.unverfied,
-                style: Theme.of(context).textTheme.caption,
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
+            Text(
+              AppLocalizations.of(context)!.unverfied,
+              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.mainColor),
+              textAlign: TextAlign.right,
             ),
           ],
         );
       } else {
         return Row(
           children: [
+            SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Icon(
               Icons.verified_outlined,
-              color: AppColors.grey,
+              color: Theme.of(context).primaryColor,
               size: MediaQuery.of(context).size.width * 0.04,
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
-            Flexible(
-              child: Text(
-                AppLocalizations.of(context)!.verfied,
-                style: Theme.of(context).textTheme.caption,
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
+            Text(
+              AppLocalizations.of(context)!.verfied,
+              style: Theme.of(context).textTheme.bodyText2,
+              textAlign: TextAlign.right,
             ),
           ],
         );

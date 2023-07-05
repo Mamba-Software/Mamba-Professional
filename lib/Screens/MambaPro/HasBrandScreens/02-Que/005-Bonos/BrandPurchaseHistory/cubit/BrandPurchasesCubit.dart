@@ -19,7 +19,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   final String brandId;
 
   BrandPurchasesCubit(this.brandId) : super(const BrandPurchasesInitial()) {
-    getInitialBrandPurchases();
+    fetchInitialBrandPurchases();
   }
 
   // Cubit State
@@ -47,7 +47,10 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   // Filters
   List<bool> filterByPurchaseStatus = [true, true, true];
 
-  Future<void> getInitialBrandPurchases() async {
+  ///////////////////// DATA FETCHING
+
+  /// FETCH INITIAL BRAND + OPEN BONO REQUEST STREAM
+  Future<void> fetchInitialBrandPurchases() async {
     try {
       /// Set the State to Loading
       emit(const BrandPurchasesLoading());
@@ -65,7 +68,6 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         lastFetchedPurchaseDate = purchasesList.last.purchasedAt!.toDate();
         if (purchasesList.length != limit) {
           allPurchasesFetched = true;
-          print("allPurchasesFetched");
         }
       }
       /// Process the purchases list and build PurchaseHistoryModel objects.
@@ -101,7 +103,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         // After processing the list, add the new purchases to the existing list of purchases.
         purchasesHistoryListsPurchases.add(obj);
       }
-      /// Choose Correct Iniital Date Range
+      /// Choose Correct Initial Date Range
       dateJoinedBrand = DateTime(
         int.parse(currentBrand.dateJoined!.split("-")[2]),
         int.parse(currentBrand.dateJoined!.split("-")[1]),
@@ -167,6 +169,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         }
         // Emit a new state with the list of `Events`.
         purchasesHistoryObjects = List.from(purchasesHistoryListsPurchases+purchasesHistoryListsRequests);
+
         // Order Notification List Descending Time
         purchasesHistoryObjects.sort((a,b) {
           var aDate =  a.purchasedAt.toDate();
@@ -177,6 +180,12 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
         filteredDateList.removeWhere((element) {
           // Remove the ones before the start date or after the end date
+          print(element.user.name);
+          print(element.purchasedAt.toDate());
+          if (endDate.day == element.purchasedAt.toDate().day && endDate.month == element.purchasedAt.toDate().month && endDate.year == element.purchasedAt.toDate().year) {
+            endDate = DateTime.now();
+            return false;
+          }
           return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
         });
         /// Emit New Status
@@ -201,7 +210,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     }
   }
 
-  Future<void> loadMoreBrandPurchases(String lastPurchaseId) async {
+  /// FETCH MORE BRAND
+  Future<void> fetchMoreBrandPurchases(String lastPurchaseId) async {
     try {
       print("Getting More Brand Purchases");
       // Vars
@@ -276,7 +286,28 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     }
   }
 
-  Future<void> updateDateRange(DateTime startDate, DateTime endDate) async {
+  /// FETCH MORE BRAND ON DEMAND
+  Future<void> onScrollMoreBrandPurchases() async {
+    try {
+      print("onScrollMoreBrandPurchases");
+      // If the new endDate is after the date of the last fetched purchase, fetch more purchases
+      if (allPurchasesFetched == false) {
+        await fetchMoreBrandPurchases(lastFetchedPurchaseId);
+      }
+    } catch(e) {
+      print("Update Date Range Error"+e.toString());
+      emit(BrandPurchasesError(e.toString()));
+    }
+  }
+
+  ///////////////////// MODIFYING EXISTENT DATA
+
+
+
+  ///////////////////// FILTERING EXISTENT DATA
+
+  /// FILTER BY DATE RANGE
+  Future<void> filterByDateRange(DateTime startDate, DateTime endDate) async {
     try {
       print("updateDateRange $startDate $endDate");
       this.startDate = startDate;
@@ -290,7 +321,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       // If the new endDate is after the date of the last fetched purchase, fetch more purchases
       if (startDate.isBefore(lastFetchedPurchaseDate) && allPurchasesFetched == false) {
         print("startDate isBefore lastFetchedPurchaseDate");
-        await loadMoreBrandPurchases(lastFetchedPurchaseId);
+        await fetchMoreBrandPurchases(lastFetchedPurchaseId);
       } else {
         // If the new endDate is before the date of the last fetched purchase, just emit the new state
         loadedState.copyWith(
@@ -306,20 +337,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     }
   }
 
-  Future<void> onScrollMoreBrandPurchases() async {
-    try {
-      print("onScrollMoreBrandPurchases");
-      // If the new endDate is after the date of the last fetched purchase, fetch more purchases
-      if (allPurchasesFetched == false) {
-        await loadMoreBrandPurchases(lastFetchedPurchaseId);
-      }
-    } catch(e) {
-      print("Update Date Range Error"+e.toString());
-      emit(BrandPurchasesError(e.toString()));
-    }
-  }
-
-  Future<void> filterByPurchases(List<bool> filterByPurchaseStatus) async {
+  /// FILTER BY STAUS
+  Future<void> filterByStatus(List<bool> filterByPurchaseStatus) async {
     try {
       print("filterByPurchaseStatus $filterByPurchaseStatus");
       this.filterByPurchaseStatus = filterByPurchaseStatus;

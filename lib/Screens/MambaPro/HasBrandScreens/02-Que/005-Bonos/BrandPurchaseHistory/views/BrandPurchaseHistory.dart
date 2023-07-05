@@ -83,7 +83,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
       },
     );
     if (result != null) {
-      context.read<BrandPurchasesCubit>().updateDateRange(result.first, result.last);
+      context.read<BrandPurchasesCubit>().filterByDateRange(result.first, result.last);
     }
   }
 
@@ -137,7 +137,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
       cnt += 1;
     }
     if (filterByPurchaseStatus[2]) {
-      filteredRoles += AppLocalizations.of(context)!.bonoRequestDescription;
+      filteredRoles += AppLocalizations.of(context)!.toConfirm;
       cnt += 1;
     }
     if (cnt == 1) {
@@ -235,7 +235,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                               ),
                                               onPressed: () {
                                                 filterByPurchaseStatus = [true, true, true];
-                                                brandPurchasesCubit.filterByPurchases(filterByPurchaseStatus);
+                                                brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
                                                 Navigator.pop(context);
                                               }
                                           ),
@@ -294,7 +294,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                   ListTile(
                                                     onTap: () {
                                                       filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
-                                                      brandPurchasesCubit.filterByPurchases(filterByPurchaseStatus);
+                                                      brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
                                                       Navigator.pop(context);
                                                     },
                                                     title: Text(
@@ -310,7 +310,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                   ListTile(
                                                     onTap: () {
                                                       filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
-                                                      brandPurchasesCubit.filterByPurchases(filterByPurchaseStatus);
+                                                      brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
                                                       Navigator.pop(context);
                                                     },
                                                     title: Text(
@@ -326,11 +326,11 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                   ListTile(
                                                     onTap: () {
                                                       filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
-                                                      brandPurchasesCubit.filterByPurchases(filterByPurchaseStatus);
+                                                      brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
                                                       Navigator.pop(context);
                                                     },
                                                     title: Text(
-                                                        AppLocalizations.of(context)!.bonoRequestDescription,
+                                                        AppLocalizations.of(context)!.toConfirm,
                                                         style: Theme.of(context).textTheme.bodyText1,
                                                         textAlign: TextAlign.left
                                                     ),
