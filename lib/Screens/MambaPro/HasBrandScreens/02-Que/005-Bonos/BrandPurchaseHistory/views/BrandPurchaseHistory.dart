@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -126,6 +125,30 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
     }
   }
 
+  String returnFilteredStatusString(List<bool> filterByPurchaseStatus) {
+    String filteredRoles = "";
+    int cnt = 0;
+    if (filterByPurchaseStatus[0]) {
+      filteredRoles += AppLocalizations.of(context)!.verfied+", ";
+      cnt += 1;
+    }
+    if (filterByPurchaseStatus[1]) {
+      filteredRoles += AppLocalizations.of(context)!.unverfied+", ";
+      cnt += 1;
+    }
+    if (filterByPurchaseStatus[2]) {
+      filteredRoles += AppLocalizations.of(context)!.bonoRequestDescription;
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return filteredRoles.split(", ")[0];
+    }
+    if (cnt == 2 && filterByPurchaseStatus[2] == false) {
+      return filteredRoles.split(", ")[0]+", "+filteredRoles.split(", ")[1];
+    }
+    return filteredRoles;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BrandPurchasesCubit, BrandPurchasesState>(
@@ -156,298 +179,179 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                 ),
                 actions: [
                   Padding(
-                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04),
-                    child: InkWell(
-                      splashColor: Theme.of(context).backgroundColor, // Splash color
-                      onTap: () async {
-                        await showModalBottomSheet<int?>(
-                          context: context,
-                          isScrollControlled: true,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20),
+                    padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.03),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.08,
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      decoration: BoxDecoration(
+                        color: state.filterByPurchaseStatus.contains(false) ? Theme.of(context).primaryColor : Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        splashRadius: 20,
+                        splashColor: Theme.of(context).backgroundColor, // Splash color
+                        padding: EdgeInsets.zero,
+                        alignment: Alignment.center,
+                        icon: Icon(
+                          Icons.filter_list,
+                          color: state.filterByPurchaseStatus.contains(false) ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor,
+                          size: MediaQuery.of(context).size.width*0.06,
+                        ),
+                        onPressed: () async {
+                          final brandPurchasesCubit = context.read<BrandPurchasesCubit>();
+                          final PageController _pageController = PageController(initialPage: 0);
+                          int _currentPage = 0;
+                          List<bool> filterByPurchaseStatus = state.filterByPurchaseStatus;
+                          await showModalBottomSheet<int?>(
+                            context: context,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(20),
+                              ),
                             ),
-                          ),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          builder: (BuildContext context) {
-                            /*
-                            // Page View Controller
-                            final PageController _pageController = PageController(initialPage: 0);
-                            int _currentPage = 0;
-                            bool isTypeEvent = true;
-                            List<Usuario> selectedTrainersBottom = List.from(selectedTrainers);
-                            // Widget
-                            return StatefulBuilder(
-                              builder: (BuildContext context, StateSetter setStateBottom) {
-                                return FractionallySizedBox(
-                                  heightFactor: 0.33,
-                                  child: SizedBox(
-                                    height: MediaQuery.of(context).size.height * 0.5,
-                                    width: MediaQuery.of(context).size.width,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                        children: [
-                                          ListTile(
-                                            title: Text(
-                                                AppLocalizations.of(context)!.filterBy,
-                                                style: Theme.of(context).textTheme.caption,
-                                                textAlign: TextAlign.left
-                                            ),
-                                            trailing: TextButton(
-                                                child: Text(
-                                                    AppLocalizations.of(context)!.clear,
-                                                    style: Theme.of(context).textTheme.caption
-                                                ),
-                                                onPressed: () {
-                                                  setStateBottom(() {
-                                                    filterByCalendar = [true, true];
-                                                    selectedTrainers = List.from(_brandTrainers);
-                                                  });
-                                                  // Navigator Pop
-                                                  Navigator.pop(context);
-                                                }
-                                            ),
-                                            dense: true,
-                                            onTap: _currentPage == 0 ? null : () {
-                                              _pageController.previousPage(
-                                                duration: const Duration(milliseconds: 500),
-                                                curve: Curves.ease,
-                                              );
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            builder: (BuildContext context) {
+                              return FractionallySizedBox(
+                                heightFactor: 0.33,
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.height * 0.5,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        ListTile(
+                                          title: Text(
+                                              AppLocalizations.of(context)!.filterBy,
+                                              style: Theme.of(context).textTheme.caption,
+                                              textAlign: TextAlign.left
+                                          ),
+                                          trailing: TextButton(
+                                              child: Text(
+                                                  AppLocalizations.of(context)!.clear,
+                                                  style: Theme.of(context).textTheme.caption
+                                              ),
+                                              onPressed: () {
+                                                filterByPurchaseStatus = [true, true, true];
+                                                brandPurchasesCubit.filterByPurchases(filterByPurchaseStatus);
+                                                Navigator.pop(context);
+                                              }
+                                          ),
+                                          dense: true,
+                                          onTap: _currentPage == 0 ? null : () {
+                                            _pageController.previousPage(
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.ease,
+                                            );
+                                          },
+                                        ),
+                                        SizedBox(
+                                          height: MediaQuery.of(context).size.height * 0.21,
+                                          width: MediaQuery.of(context).size.width,
+                                          child: PageView(
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            controller: _pageController,
+                                            onPageChanged: (int page) {
+                                              setState(() {
+                                                _currentPage = page;
+                                              });
                                             },
-                                          ),
-                                          SizedBox(
-                                            height: MediaQuery.of(context).size.height * 0.21,
-                                            width: MediaQuery.of(context).size.width,
-                                            child: PageView(
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              controller: _pageController,
-                                              onPageChanged: (int page) {
-                                                setStateBottom(() {
-                                                  _currentPage = page;
-                                                });
-                                              },
-                                              children: <Widget>[
-                                                Column(
-                                                  children: [
-                                                    ListTile(
-                                                      onTap: () {
-                                                        setStateBottom(() {
-                                                          isTypeEvent = true;
-                                                        });
-                                                        _pageController.nextPage(
-                                                          duration: const Duration(milliseconds: 500),
-                                                          curve: Curves.ease,
-                                                        );
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.typeProfile.split(" ")[0]+" "+AppLocalizations.of(context)!.typeProfile.split(" ")[1]+" "+AppLocalizations.of(context)!.events.toLowerCase(),
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      subtitle: Text(
-                                                          returnFilteredRolesString(),
-                                                          style: Theme.of(context).textTheme.caption,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(
-                                                            child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                        ),
-                                                      ),
+                                            children: <Widget>[
+                                              Column(
+                                                children: [
+                                                  ListTile(
+                                                    onTap: () {
+                                                      _pageController.nextPage(
+                                                        duration: const Duration(milliseconds: 500),
+                                                        curve: Curves.ease,
+                                                      );
+                                                    },
+                                                    title: Text(
+                                                        AppLocalizations.of(context)!.typeProfile.split(" ")[0]+" "+AppLocalizations.of(context)!.typeProfile.split(" ")[1]+" "+AppLocalizations.of(context)!.events.toLowerCase(),
+                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                        textAlign: TextAlign.left
                                                     ),
-                                                    ListTile(
-                                                      onTap: () {
-                                                        setStateBottom(() {
-                                                          isTypeEvent = false;
-                                                        });
-                                                        _pageController.nextPage(
-                                                          duration: const Duration(milliseconds: 500),
-                                                          curve: Curves.ease,
-                                                        );
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.trainers,
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      subtitle: Text(
-                                                        returnFilteredStaffMembersString(),
+                                                    subtitle: Text(
+                                                        returnFilteredStatusString(filterByPurchaseStatus),
                                                         style: Theme.of(context).textTheme.caption,
-                                                        textAlign: TextAlign.left,
                                                         maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis
-                                                        ,
-                                                      ),
-                                                      trailing: SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(
-                                                            child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                        ),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        textAlign: TextAlign.left
+                                                    ),
+                                                    trailing: SizedBox(
+                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                      child: Center(
+                                                          child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
                                                       ),
                                                     ),
-                                                  ],
-                                                ),
-                                                isTypeEvent ? Column(
-                                                  children: [
-                                                    ListTile(
-                                                      onTap: () {
-                                                        // Check if the Only True
-                                                        var filterActive = List.from(filterByCalendar);
-                                                        filterActive.retainWhere((element) => element == true);
-                                                        if (!(filterActive.length == 1 && filterByCalendar[0])) {
-                                                          filterByCalendar[0] = !filterByCalendar[0];
-                                                          // Navigator Pop
-                                                          Navigator.pop(context);
-                                                        }
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.groupEvent,
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: filterByCalendar[0] ? SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                  ),
+                                                ],
+                                              ),
+                                              Column(
+                                                children: [
+                                                  ListTile(
+                                                    onTap: () {
+                                                      filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
+                                                      brandPurchasesCubit.filterByPurchases(filterByPurchaseStatus);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    title: Text(
+                                                        AppLocalizations.of(context)!.verfied,
+                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                        textAlign: TextAlign.left
                                                     ),
-                                                    ListTile(
-                                                      onTap: () {
-                                                        // Check if the Only True
-                                                        var filterActive = List.from(filterByCalendar);
-                                                        filterActive.retainWhere((element) => element == true);
-                                                        if (!(filterActive.length == 1 && filterByCalendar[1])) {
-                                                          filterByCalendar[1] = !filterByCalendar[1];
-                                                          // Navigator Pop
-                                                          Navigator.pop(context);
-                                                        }
-                                                      },
-                                                      title: Text(
-                                                          AppLocalizations.of(context)!.privateEvent,
-                                                          style: Theme.of(context).textTheme.bodyText1,
-                                                          textAlign: TextAlign.left
-                                                      ),
-                                                      trailing: filterByCalendar[1] ? SizedBox(
-                                                        width: MediaQuery.of(context).size.width * 0.15,
-                                                        child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                      ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                    trailing: filterByPurchaseStatus[0] ? SizedBox(
+                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                  ),
+                                                  ListTile(
+                                                    onTap: () {
+                                                      filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
+                                                      brandPurchasesCubit.filterByPurchases(filterByPurchaseStatus);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    title: Text(
+                                                        AppLocalizations.of(context)!.unverfied,
+                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                        textAlign: TextAlign.left
                                                     ),
-                                                  ],
-                                                ) :
-                                                Container(
-                                                  height: MediaQuery.of(context).size.height * 0.21,
-                                                  padding: EdgeInsets.symmetric(horizontal:MediaQuery.of(context).size.width * 0.04),
-                                                  child: GridView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const ClampingScrollPhysics(),
-                                                      scrollDirection: Axis.vertical,
-                                                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                        crossAxisCount: 2,
-                                                        childAspectRatio: 3.5,
-                                                        crossAxisSpacing: 15,
-                                                        mainAxisSpacing: 15.0,
-                                                      ),
-                                                      itemCount: _brandTrainers.length,
-                                                      itemBuilder: (context, int index) {
-                                                        var trainer = _brandTrainers[index];
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            setStateBottom(() {
-                                                              if (selectedTrainersBottom.contains(trainer)) {
-                                                                if (selectedTrainersBottom.length > 1) {
-                                                                  selectedTrainersBottom.remove(trainer);
-                                                                  selectedTrainers.remove(trainer);
-                                                                  // Navigator Pop
-                                                                  Navigator.pop(context);
-                                                                }
-                                                              } else {
-                                                                selectedTrainersBottom.add(trainer);
-                                                                selectedTrainers.add(trainer);
-                                                                // Navigator Pop
-                                                                Navigator.pop(context);
-                                                              }
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            margin: const EdgeInsets.only(right: 5),
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.start,
-                                                              children: [
-                                                                CircularImage(
-                                                                  size: MediaQuery.of(context).size.width*0.1,
-                                                                  image: trainer.imageUrl,
-                                                                  color: Theme.of(context).primaryColor,
-                                                                  borderWidth: 1.0,
-                                                                ),
-                                                                const SizedBox(width: 8),
-                                                                Flexible(
-                                                                  child: Text(
-                                                                    trainer.firstName!+" "+trainer.lastName![0]+".",
-                                                                    style: Theme.of(context).textTheme.bodyText1,
-                                                                    overflow: TextOverflow.fade,
-                                                                    maxLines: 1,
-                                                                    softWrap: false,
-                                                                  ),
-                                                                ),
-                                                                const SizedBox(width: 8),
-                                                                SizedBox(
-                                                                  height: MediaQuery.of(context).size.width * 0.06,
-                                                                  width: MediaQuery.of(context).size.width * 0.06,
-                                                                  child: MaterialButton(
-                                                                    elevation: 4,
-                                                                    color: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
-                                                                    textColor: selectedTrainersBottom.contains(trainer) ? AppColors.mainColor : Theme.of(context).scaffoldBackgroundColor,
-                                                                    child: selectedTrainersBottom.contains(trainer) ? Icon(Icons.check, color: AppColors.white, size: MediaQuery.of(context).size.width*0.04) : SizedBox(height: MediaQuery.of(context).size.width*0.03, width: MediaQuery.of(context).size.width*0.03,),
-                                                                    padding: EdgeInsets.zero,
-                                                                    shape: const CircleBorder(),
-                                                                    onPressed: () {
-                                                                      setStateBottom(() {
-                                                                        if (selectedTrainersBottom.contains(trainer)) {
-                                                                          if (selectedTrainersBottom.length > 1) {
-                                                                            selectedTrainersBottom.remove(trainer);
-                                                                            selectedTrainers.remove(trainer);
-                                                                            // Navigator Pop
-                                                                            Navigator.pop(context);
-                                                                          }
-                                                                        } else {
-                                                                          selectedTrainersBottom.add(trainer);
-                                                                          selectedTrainers.add(trainer);
-                                                                          // Navigator Pop
-                                                                          Navigator.pop(context);
-                                                                        }
-                                                                      });
-                                                                    },
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }),
-                                                ),
-                                              ],
-                                            ),
+                                                    trailing: filterByPurchaseStatus[1] ? SizedBox(
+                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                  ),
+                                                  ListTile(
+                                                    onTap: () {
+                                                      filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
+                                                      brandPurchasesCubit.filterByPurchases(filterByPurchaseStatus);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    title: Text(
+                                                        AppLocalizations.of(context)!.bonoRequestDescription,
+                                                        style: Theme.of(context).textTheme.bodyText1,
+                                                        textAlign: TextAlign.left
+                                                    ),
+                                                    trailing: filterByPurchaseStatus[2] ? SizedBox(
+                                                      width: MediaQuery.of(context).size.width * 0.15,
+                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                );
-                              } ,
-                            );
-
-                             */
-                            return Container();
-                          },
-                        );
-                      },
-                      child: Icon(
-                        Icons.filter_list,
-                        color: true ? AppColors.darkGrey :  AppColors.white,
-                        size: MediaQuery.of(context).size.width*0.06,
+                                ),
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                   ),

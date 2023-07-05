@@ -23,16 +23,34 @@ class BrandPurchasesLoaded extends BrandPurchasesState {
   DateTime endDate;
   DateTime dateJoinedBrand;
   final List<PurchaseHistoryModel> purchasesHistoryObjects;
+  List<bool> filterByPurchaseStatus;
 
-  BrandPurchasesLoaded(
-    this.startDate,
-    this.endDate,
-    this.dateJoinedBrand,
-    this.purchasesHistoryObjects,
-  );
+  BrandPurchasesLoaded({
+    required this.startDate,
+    required this.endDate,
+    required this.dateJoinedBrand,
+    required this.purchasesHistoryObjects,
+    required this.filterByPurchaseStatus,
+  });
+
+  BrandPurchasesLoaded copyWith({
+    DateTime? startDate,
+    DateTime? endDate,
+    DateTime? dateJoinedBrand,
+    List<PurchaseHistoryModel>? purchasesHistoryObjects,
+    List<bool>? filterByPurchaseStatus,
+  }) {
+    return BrandPurchasesLoaded(
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      dateJoinedBrand: dateJoinedBrand ?? this.dateJoinedBrand,
+      purchasesHistoryObjects: purchasesHistoryObjects ?? this.purchasesHistoryObjects,
+      filterByPurchaseStatus: filterByPurchaseStatus ?? this.filterByPurchaseStatus,
+    );
+  }
 
   @override
-  List<Object?> get props => [startDate, endDate, dateJoinedBrand, purchasesHistoryObjects];
+  List<Object?> get props => [startDate, endDate, dateJoinedBrand, purchasesHistoryObjects, filterByPurchaseStatus];
 }
 
 class BrandPurchasesError extends BrandPurchasesState {

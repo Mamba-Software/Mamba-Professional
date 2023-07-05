@@ -2407,7 +2407,7 @@
   "@buyDate": {
     "description": "Donde message"
   },
-  "bonoRequestDescription": "Pendientes de confirmación",
+  "bonoRequestDescription": "Pendiente de confirmación",
   "@bonoRequestDescription": {
     "description": "Create bono message"
   },
@@ -2515,8 +2515,16 @@
   "@verfied": {
     "description": "ilimitadas message"
   },
+  "verfiedDesc": "El cliente puede usar el bono, aunque se puede pedir verificación adicional en el futuro.",
+  "@verfiedDesc": {
+    "description": "ilimitadas message"
+  },
   "unverfied": "Sin verificar",
   "@unverfied": {
+    "description": "ilimitadas message"
+  },
+  "unverfiedDesc": "Puede usar el bono y  aunque se puede pedir verificación adicional",
+  "@unverfiedDesc": {
     "description": "ilimitadas message"
   },
   "numberSessions": "Nº sesiones",

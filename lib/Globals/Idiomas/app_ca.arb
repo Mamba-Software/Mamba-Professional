@@ -538,7 +538,7 @@
   "scanQRCode": "Escaneja codi QR",
   "staff": "Staff",
   "buyDate": "Data de compra",
-  "bonoRequestDescription": "Compres pendents de confirmació",
+  "bonoRequestDescription": "Pendent de confirmació",
   "createBono": "Crear val",
   "editBono": "Editar val",
   "nameBono": "Nom del teu val",

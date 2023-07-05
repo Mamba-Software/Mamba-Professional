@@ -1328,6 +1328,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               setState(() {
                 errorTime == null;
                 errorBreakTime == false;
+                appBarExpanded = false;
                 isLoading = true;
               });
               DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(startTimeController.text);

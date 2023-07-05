@@ -22,6 +22,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     getInitialBrandPurchases();
   }
 
+  // Cubit State
+  late BrandPurchasesLoaded loadedState;
   // Data Service
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
@@ -42,20 +44,21 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now();
   DateTime dateJoinedBrand = DateTime.now();
+  // Filters
+  List<bool> filterByPurchaseStatus = [true, true, true];
 
   Future<void> getInitialBrandPurchases() async {
     try {
-      // Set the State to Loading
+      /// Set the State to Loading
       emit(const BrandPurchasesLoading());
-      // Vars
+      /// Vars
       List<BonoRequest> bonoRequestsList = [];
       List<Purchase> purchasesList = [];
       List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
       List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
       int requiredPurchases = 10; // This is the number of purchases you want to ensure
       List<int> predefinedDays = [7, 14, 30, 90]; // List of predefined date ranges
-      int currentDaysIndex = 0; // Starting index for predefinedDays list
-      // Fetch initial purchases
+      /// Fetch initial purchases
       purchasesList = await _purchaseDataService.getBrandFirstPurchasesLimit(brandId, limit);
       if (purchasesList.isNotEmpty) {
         lastFetchedPurchaseId = purchasesList.last.id!;
@@ -65,7 +68,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           print("allPurchasesFetched");
         }
       }
-      // Process the purchases list and build PurchaseHistoryModel objects.
+      /// Process the purchases list and build PurchaseHistoryModel objects.
       for (Purchase p in purchasesList) {
         // Get User
         Usuario user = usersList.firstWhere((element) => element.id == p.userId, orElse: () => Usuario());
@@ -98,7 +101,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         // After processing the list, add the new purchases to the existing list of purchases.
         purchasesHistoryListsPurchases.add(obj);
       }
-
+      /// Choose Correct Iniital Date Range
       dateJoinedBrand = DateTime(
         int.parse(currentBrand.dateJoined!.split("-")[2]),
         int.parse(currentBrand.dateJoined!.split("-")[1]),
@@ -122,13 +125,11 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           break;
         }
       }
-
       // If we didn't find a suitable date range and there's no more data to fetch, set `startDate` to `dateJoinedBrand`
       if (startDate == purchasesHistoryListsPurchases.last.purchasedAt.toDate() && allPurchasesFetched) {
         startDate = dateJoinedBrand;
       }
-
-      // Open the Stream to Get Brand Upcoming Events
+      /// Open the Stream to Get Brand Requests
       _subscription = _brandDataService.getBonosRequestsFromBrand(brandId).listen((querySnapshot) async {
         List<DocumentSnapshot> documents = querySnapshot.docs;
         purchasesHistoryListsRequests = [];
@@ -178,15 +179,16 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           // Remove the ones before the start date or after the end date
           return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
         });
+        /// Emit New Status
         print("Brand Purchases New Data Finished");
-        emit(
-          BrandPurchasesLoaded(
-            startDate,
-            endDate,
-            dateJoinedBrand,
-            filteredDateList
-          )
+        loadedState = BrandPurchasesLoaded(
+          startDate: startDate,
+          endDate: endDate,
+          dateJoinedBrand: dateJoinedBrand,
+          purchasesHistoryObjects: filteredDateList,
+          filterByPurchaseStatus: filterByPurchaseStatus,
         );
+        emit(loadedState);
       },
       onError: (e) {
         print("Brand Purchases Error"+e.toString());
@@ -263,11 +265,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       }).toList();
       print("More Purchases Successfully Loaded");
       emit(
-        BrandPurchasesLoaded(
-          startDate,
-          endDate,
-          dateJoinedBrand,
-          filteredDateList,
+        loadedState.copyWith(
+          purchasesHistoryObjects: filteredDateList,
         )
       );
 
@@ -294,13 +293,10 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         await loadMoreBrandPurchases(lastFetchedPurchaseId);
       } else {
         // If the new endDate is before the date of the last fetched purchase, just emit the new state
-        emit(
-          BrandPurchasesLoaded(
-            this.startDate,
-            this.endDate,
-            dateJoinedBrand,
-            filteredDateList,
-          )
+        loadedState.copyWith(
+          startDate: this.startDate,
+          endDate: this.endDate,
+          purchasesHistoryObjects: filteredDateList,
         );
         print("Date Range Successfully Updated");
       }
@@ -317,6 +313,83 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       if (allPurchasesFetched == false) {
         await loadMoreBrandPurchases(lastFetchedPurchaseId);
       }
+    } catch(e) {
+      print("Update Date Range Error"+e.toString());
+      emit(BrandPurchasesError(e.toString()));
+    }
+  }
+
+  Future<void> filterByPurchases(List<bool> filterByPurchaseStatus) async {
+    try {
+      print("filterByPurchaseStatus $filterByPurchaseStatus");
+      this.filterByPurchaseStatus = filterByPurchaseStatus;
+      // Filter purchasesHistoryObjects by the current date range...
+      List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
+      filteredDateList.removeWhere((element) {
+          // Remove the ones before the start date or after the end date
+          return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
+      });
+      // Filter By Type Of Status
+      // PurchaseStatus.CONFIRMED PurchaseStatus.DIRECT PurchaseStatus.TO_CONFIRM
+      if (filterByPurchaseStatus[0] && filterByPurchaseStatus[1] && filterByPurchaseStatus[2]) {
+        // All three Selected
+        filteredDateList = filteredDateList;
+      } else if (filterByPurchaseStatus[0] && filterByPurchaseStatus[1]) {
+        filteredDateList.removeWhere((element) {
+          if (element.purchaseStatus == PurchaseStatus.CONFIRMED || element.purchaseStatus == PurchaseStatus.DIRECT) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      } else if(filterByPurchaseStatus[0] && filterByPurchaseStatus[2]) {
+        filteredDateList.removeWhere((element) {
+          if (element.purchaseStatus == PurchaseStatus.CONFIRMED || element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      } else if(filterByPurchaseStatus[1] && filterByPurchaseStatus[2]) {
+        filteredDateList.removeWhere((element) {
+          if (element.purchaseStatus == PurchaseStatus.DIRECT || element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      } else if(filterByPurchaseStatus[0]) {
+        filteredDateList.removeWhere((element) {
+          if (element.purchaseStatus == PurchaseStatus.CONFIRMED) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      } else if(filterByPurchaseStatus[1]) {
+        filteredDateList.removeWhere((element) {
+          if (element.purchaseStatus == PurchaseStatus.DIRECT) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      } else if(filterByPurchaseStatus[2]) {
+        filteredDateList.removeWhere((element) {
+          if (element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      }
+      emit(
+        loadedState.copyWith(
+          purchasesHistoryObjects: filteredDateList,
+          filterByPurchaseStatus: this.filterByPurchaseStatus,
+        ),
+      );
+      print("Status Filter Successfully Applied");
     } catch(e) {
       print("Update Date Range Error"+e.toString());
       emit(BrandPurchasesError(e.toString()));
