@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/models/PurchaseHistoryModel.dart';
 import '../../../../../../../Data/DataService/Brand/BrandDataService.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
+import '../../../../../../../Globals/GlobalVars.dart';
 part 'BrandPurchasesState.dart';
 
 class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
@@ -32,8 +33,11 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   List<Bono> bonosList = [];
   List<BonoRequest> bonoRequestsList = [];
   List<Purchase> purchasesList = [];
-
+  // Variables
   final limit = 50;
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
+  DateTime dateJoinedBrand = DateTime.now();
 
   Future<void> getInitialBrandPurchases() async {
     try {
@@ -42,6 +46,16 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       // Vars
       List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
       List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
+      // Define Starting Dates
+      DateTime startDate = DateTime.now();
+      DateTime endDate = DateTime.now().subtract(const Duration(days: 30));
+      DateTime dateJoinedBrand = DateTime(
+          int.parse(currentBrand.dateJoined!.split("-")[2]),
+          int.parse(currentBrand.dateJoined!.split("-")[1]),
+          int.parse(currentBrand.dateJoined!.split("-")[0]),
+          0,
+          0
+      );
       // Get Last 50 Purchases
       purchasesList = await _purchaseDataService.getBrandFirstPurchasesLimit(brandId, limit);
       for (Purchase p in purchasesList) {
@@ -119,9 +133,15 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           var bDate =  b.purchasedAt.toDate();
           return bDate.compareTo(aDate);
         });
-
         print("Brand Purchases New Data Finished");
-        emit(BrandPurchasesLoaded(purchasesHistoryObjects));
+        emit(
+          BrandPurchasesLoaded(
+            startDate,
+            endDate,
+            dateJoinedBrand,
+            purchasesHistoryObjects
+          )
+        );
       },
       onError: (e) {
         print("Brand Purchases Error"+e.toString());
@@ -135,7 +155,6 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   }
 
   /*
-
   Future<void> getMoreBrandEvents(String eventId, List<Usuario> _brandTrainers) async {
     try {
       print("Getting More Brand Events");
@@ -184,54 +203,27 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
 
    */
 
-  /*
 
-  Future<void> updateBrandEvent(String eventId, List<Usuario> _brandTrainers) async {
+  Future<void> updateDateRange(DateTime startDate, DateTime endDate) async {
     try {
-      print("Update Brand Event");
-      // Set the State to Loading
-      String brandId = currentBrand.id!;
-      // Get Last 100 Finished Events
-      Event event = await _eventDataService.getSingleEvent(eventId);
-      // Add The Trainers to the Event
-      List<Usuario> eventTrainers = [];
-      for (Usuario trainer in _brandTrainers) {
-        int index = trainer.eventsList.indexWhere((element) => element.id == event.id);
-        if (index != -1) {
-          eventTrainers.add(trainer);
-        }
-      }
-      event.setUserList = eventTrainers;
-      // Remove From Finished List First and Add Again
-      finishedEventsList.removeWhere((element) => element.id == eventId);
-      finishedEventsList.add(event);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
-      // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
-          int.parse(a.year!),
-          int.parse(a.month!),
-          int.parse(a.day!),
-          int.parse(a.hour!),
-          int.parse(a.minute!),
-        );
-        var bDate =  DateTime(
-          int.parse(b.year!),
-          int.parse(b.month!),
-          int.parse(b.day!),
-          int.parse(b.hour!),
-          int.parse(b.minute!),
-        );
-        return aDate.compareTo(bDate);
-      });
-      emit(BrandPurchasesLoaded(finalList));
-      print("Event $eventId Successfully Updated");
+      this.startDate = startDate;
+      this.endDate = endDate;
+      emit(
+        BrandPurchasesLoaded(
+          this.startDate,
+          this.endDate,
+          dateJoinedBrand,
+          purchasesHistoryObjects
+        )
+      );
+      print("Date Range Successfully Updated");
     } catch(e) {
       print("Delete Brand Event Error"+e.toString());
       emit(BrandPurchasesError(e.toString()));
     }
   }
 
+  /*
   Future<void> deleteBrandEvent(String eventId) async {
     try {
       print("Delete More Brand Events");

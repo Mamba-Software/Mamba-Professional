@@ -952,16 +952,33 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   }
 
   String returnCorrectText() {
+    DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
     int daysDifference = endDate.difference(startDate).inDays;
     switch (daysDifference) {
       case 7:
-        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        if (yesterday.day == startDate.day && yesterday.month == startDate.month && yesterday.year == startDate.year) {
+          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        } else {
+          return AppLocalizations.of(context)!.personlized;
+        }
       case 14:
-        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        if (yesterday.day == startDate.day && yesterday.month == startDate.month && yesterday.year == startDate.year) {
+          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        } else {
+          return AppLocalizations.of(context)!.personlized;
+        }
       case 30:
-        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        if (yesterday.day == startDate.day && yesterday.month == startDate.month && yesterday.year == startDate.year) {
+          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        } else {
+          return AppLocalizations.of(context)!.personlized;
+        }
       case 90:
-        return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        if (yesterday.day == startDate.day && yesterday.month == startDate.month && yesterday.year == startDate.year) {
+          return AppLocalizations.of(context)!.lastNDays(endDate.difference(startDate).inDays.toString());
+        } else {
+          return AppLocalizations.of(context)!.personlized;
+        }
       default:
         return AppLocalizations.of(context)!.personlized;
     }

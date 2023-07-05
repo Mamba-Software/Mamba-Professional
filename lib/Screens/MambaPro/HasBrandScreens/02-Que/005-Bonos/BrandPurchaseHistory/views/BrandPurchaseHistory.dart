@@ -38,17 +38,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
 
   BrandPurchaseHistoryBody({Key? key, required this.brandId}) : super(key: key) ;
 
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
-  DateTime dateJoinedBrand = DateTime(
-    int.parse(currentBrand.dateJoined!.split("-")[2]),
-    int.parse(currentBrand.dateJoined!.split("-")[1]),
-    int.parse(currentBrand.dateJoined!.split("-")[0]),
-    0,
-    0
-  );
-
-  void _show(BuildContext context) async {
+  void _show(BuildContext context, DateTime startDate, DateTime endDate, DateTime dateJoinedBrand) async {
     List<DateTime>? result = await showModalBottomSheet<List<DateTime>>(
       context: context,
       isScrollControlled: true,
@@ -65,16 +55,17 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
             dateRange: [startDate, endDate],
             dateJoined: dateJoinedBrand,
             isFuture: false,
+            acceptToday: true,
           ),
         );
       },
     );
     if (result != null) {
-
+      context.read<BrandPurchasesCubit>().updateDateRange(result.first, result.last);
     }
   }
 
-  String returnCorrectText(BuildContext context) {
+  String returnCorrectText(BuildContext context, DateTime startDate, DateTime endDate) {
     int daysDifference = endDate.difference(startDate).inDays;
     switch (daysDifference) {
       case 7:
@@ -92,13 +83,15 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return BlocBuilder<BrandPurchasesCubit, BrandPurchasesState>(
       builder: (context, state) {
         switch (state.runtimeType) {
           case BrandPurchasesLoaded:
             // Handles Loaded State
             BrandPurchasesLoaded loadedState = state as BrandPurchasesLoaded;
+            DateTime startDate = state.startDate;
+            DateTime endDate = state.endDate;
+            DateTime dateJoinedBrand = state.dateJoinedBrand;
             return Scaffold(
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.14,
@@ -131,7 +124,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  returnCorrectText(context),
+                                  returnCorrectText(context, startDate, endDate),
                                   style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
@@ -144,10 +137,10 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                               ),
                               padding: const EdgeInsets.only(left: 16.0, right: 10.0),
                             ),
-                            onPressed: () => _show(context),
+                            onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
                           ),
                           Text(
-                            '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
+                            '${DateFormat('d MMM, yy\'').format(startDate)} - ${DateFormat('d MMM, yy\'').format(endDate)}',
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),
@@ -163,10 +156,10 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                       physics: const AlwaysScrollableScrollPhysics(),
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
-                      itemCount: 10,
-                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.08, bottom: MediaQuery.of(context).size.height*0.03),
+                      itemCount: loadedState.purchasesHistoryObjects.length,
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.07, bottom: MediaQuery.of(context).size.height*0.03),
                       itemBuilder: (context, index) {
-                        PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[0];
+                        PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[index];
                         return PurchaseCard(
                           bono: obj.bono,
                           user: obj.user,
@@ -207,7 +200,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Colors.black),
+                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -216,7 +209,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             ),
                             child: Text(
                               AppLocalizations.of(context)!.lastNDays(7.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ),
                         ),
@@ -228,7 +221,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Colors.black),
+                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -237,7 +230,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             ),
                             child: Text(
                               AppLocalizations.of(context)!.lastNDays(14.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ),
                         ),
@@ -249,7 +242,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Colors.black),
+                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -258,7 +251,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             ),
                             child: Text(
                               AppLocalizations.of(context)!.lastNDays(30.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ),
                         ),
@@ -269,7 +262,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Colors.black),
+                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -278,7 +271,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             ),
                             child: Text(
                               AppLocalizations.of(context)!.previousMonth,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ),
                         ),
@@ -290,7 +283,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Colors.black),
+                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -299,7 +292,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             ),
                             child: Text(
                               AppLocalizations.of(context)!.lastNDays(90.toString()),
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ),
                         ),
@@ -311,7 +304,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             },
                             style: ButtonStyle(
                                 elevation: MaterialStateProperty.all(4),
-                                backgroundColor: MaterialStateProperty.all(Colors.black),
+                                backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor),
                                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
@@ -320,7 +313,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                             ),
                             child: Text(
                               AppLocalizations.of(context)!.historic,
-                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Theme.of(context).primaryColorDark),
                             ),
                           ),
                         ),
@@ -332,6 +325,15 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
             );
           default:
             // Handle all other states aka Loading or Initial
+            DateTime startDate = DateTime.now();
+            DateTime endDate = DateTime.now().subtract(const Duration(days: 30));
+            DateTime dateJoinedBrand = DateTime(
+              int.parse(currentBrand.dateJoined!.split("-")[2]),
+              int.parse(currentBrand.dateJoined!.split("-")[1]),
+              int.parse(currentBrand.dateJoined!.split("-")[0]),
+              0,
+              0
+            );
             return Scaffold(
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.14,
@@ -364,7 +366,7 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  returnCorrectText(context),
+                                  returnCorrectText(context, startDate, endDate),
                                   style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
@@ -377,10 +379,10 @@ class BrandPurchaseHistoryBody extends StatelessWidget {
                               ),
                               padding: const EdgeInsets.only(left: 16.0, right: 10.0),
                             ),
-                            onPressed: () => _show(context),
+                            onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
                           ),
                           Text(
-                            '${DateFormat('d MMM, yy\'').format(startDate)}  - ${DateFormat('d MMM, yy\'').format(endDate)}',
+                            '${DateFormat('d MMM, yy\'').format(DateTime.now().subtract(const Duration(days: 30)))} - ${DateFormat('d MMM, yy\'').format(DateTime.now())}',
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),

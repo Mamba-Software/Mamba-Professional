@@ -19,14 +19,20 @@ class BrandPurchasesLoading extends BrandPurchasesState {
 }
 
 class BrandPurchasesLoaded extends BrandPurchasesState {
+  DateTime startDate;
+  DateTime endDate;
+  DateTime dateJoinedBrand;
   final List<PurchaseHistoryModel> purchasesHistoryObjects;
 
-  const BrandPurchasesLoaded(
+  BrandPurchasesLoaded(
+    this.startDate,
+    this.endDate,
+    this.dateJoinedBrand,
     this.purchasesHistoryObjects,
   );
 
   @override
-  List<Object?> get props => [purchasesHistoryObjects];
+  List<Object?> get props => [startDate, endDate, dateJoinedBrand, purchasesHistoryObjects];
 }
 
 class BrandPurchasesError extends BrandPurchasesState {
