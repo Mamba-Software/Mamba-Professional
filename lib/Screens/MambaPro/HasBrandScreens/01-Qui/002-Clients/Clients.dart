@@ -601,71 +601,72 @@ class _Clients extends State<Clients> {
           const SliverToBoxAdapter(child: SizedBox(height: 10)),
           isLoading ? SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: ListTile(
-                  dense: true,
-                  leading: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.08,
-                      width: MediaQuery.of(context).size.height*0.08,
-                      decoration: const BoxDecoration(
-                        color: AppColors.grey,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                  title: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.03,
-                      width: MediaQuery.of(context).size.width*0.02,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
+              return Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
+                child: Row(
+                  children: [
+                    Shimmer.fromColors(
+                      baseColor: AppColors.grey,
+                      highlightColor: AppColors.grey.withOpacity(0.5),
+                      child: Container(
+                        height: MediaQuery.of(context).size.width*0.14,
+                        width: MediaQuery.of(context).size.width*0.14,
+                        decoration: const BoxDecoration(
+                          color: AppColors.grey,
+                          shape: BoxShape.circle,
                         ),
-                        color: AppColors.grey,
                       ),
                     ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Shimmer.fromColors(
-                        baseColor: AppColors.grey,
-                        highlightColor: AppColors.grey.withOpacity(0.5),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height*0.02,
-                          width: MediaQuery.of(context).size.width*0.2,
-                          decoration: const BoxDecoration(
-                            color: AppColors.grey,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// USER
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.02,
+                              width: MediaQuery.of(context).size.width*0.25,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                                color: AppColors.grey,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.04,
-                      width: MediaQuery.of(context).size.height*0.04,
-                      decoration: const BoxDecoration(
-                        color: AppColors.grey,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                          /// BONO
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.015,
+                              width: MediaQuery.of(context).size.width*0.45,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                                color: AppColors.grey,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                        ],
                       ),
                     ),
-                  ),
-                  onTap: null,
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                    Shimmer.fromColors(
+                      baseColor: AppColors.grey,
+                      highlightColor: AppColors.grey.withOpacity(0.5),
+                      child: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                    ),
+
+                  ],
                 ),
               );
             },
