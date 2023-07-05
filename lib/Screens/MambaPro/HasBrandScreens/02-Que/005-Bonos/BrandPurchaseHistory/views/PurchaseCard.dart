@@ -137,7 +137,7 @@ class PurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            bono.sessions! < 5000 ? bono.sessions.toString() + " ses." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
+            bono.sessions! < 5000 ? bono.sessions.toString() + " ses..." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -208,7 +208,7 @@ class PurchaseCard extends StatelessWidget {
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
           child: Text(
-            purchase!.sessions! < 5000 ? purchase!.sessions.toString() + " ses." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
+            purchase!.sessions! < 5000 ? purchase!.sessions.toString() + " ses..." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
