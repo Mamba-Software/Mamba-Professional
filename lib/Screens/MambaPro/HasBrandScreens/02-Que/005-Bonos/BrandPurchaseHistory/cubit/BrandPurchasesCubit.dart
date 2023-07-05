@@ -52,7 +52,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       List<Purchase> purchasesList = [];
       List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
       List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
-      int requiredPurchases = 6; // This is the number of purchases you want to ensure
+      int requiredPurchases = 10; // This is the number of purchases you want to ensure
       List<int> predefinedDays = [7, 14, 30, 90]; // List of predefined date ranges
       int currentDaysIndex = 0; // Starting index for predefinedDays list
       // Fetch initial purchases

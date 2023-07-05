@@ -374,7 +374,7 @@ class PurchaseCard extends StatelessWidget {
                 user: user,
                 brand: brand,
                 bonoRequest: bonoRequest,
-                edit: false,
+                edit: bonoRequest != null ? false : true,
               ),
             ),
           );

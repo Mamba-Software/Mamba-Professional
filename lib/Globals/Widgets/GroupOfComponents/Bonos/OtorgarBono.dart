@@ -41,8 +41,14 @@ class OtorgarBono extends StatefulWidget {
   BonoRequest? bonoRequest;
 
 
-  OtorgarBono({Key? key, required this.user, required this.brand, this.edit, this.bono, this.bonoRequest})
-      : super(key: key);
+  OtorgarBono({
+    Key? key,
+    this.edit,
+    required this.user,
+    required this.brand,
+    this.bono,
+    this.bonoRequest
+  }) : super(key: key);
 
   @override
   _OtorgarBonoState createState() => _OtorgarBonoState();
