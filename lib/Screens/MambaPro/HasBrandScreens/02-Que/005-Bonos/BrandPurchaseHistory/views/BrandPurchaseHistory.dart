@@ -45,19 +45,13 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
+    //_scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.offset >= _scrollController.position.maxScrollExtent && !_scrollController.position.outOfRange) {
-      context.read<BrandPurchasesCubit>().onScrollMoreBrandPurchases();
-    }
   }
   
   void _show(BuildContext context, DateTime startDate, DateTime endDate, DateTime dateJoinedBrand) async {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -37,7 +38,6 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   List<Brand> brandsList = [];
   List<Bono> bonosList = [];
   // Variables
-  final limit = 50;
   bool allPurchasesFetched = false;
   DateTime lastFetchedPurchaseDate = DateTime.now();
   String lastFetchedPurchaseId = "";
@@ -54,21 +54,26 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     try {
       /// Set the State to Loading
       emit(const BrandPurchasesLoading());
-      /// Vars
+      /// Date Time Definition
+      endDate = DateTime.now();
+      startDate = endDate.subtract(const Duration(days: 1));
+      dateJoinedBrand = DateTime(
+        int.parse(currentBrand.dateJoined!.split("-")[2]),
+        int.parse(currentBrand.dateJoined!.split("-")[1]),
+        int.parse(currentBrand.dateJoined!.split("-")[0]),
+        0,
+        0,
+      );
+      /// Lists
       List<BonoRequest> bonoRequestsList = [];
       List<Purchase> purchasesList = [];
       List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
       List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
-      int requiredPurchases = 10; // This is the number of purchases you want to ensure
-      List<int> predefinedDays = [7, 14, 30, 90]; // List of predefined date ranges
       /// Fetch initial purchases
-      purchasesList = await _purchaseDataService.getBrandFirstPurchasesLimit(brandId, limit);
+      purchasesList = await _purchaseDataService.getBrandPurchases(brandId, startDate, endDate, true);
       if (purchasesList.isNotEmpty) {
         lastFetchedPurchaseId = purchasesList.last.id!;
         lastFetchedPurchaseDate = purchasesList.last.purchasedAt!.toDate();
-        if (purchasesList.length != limit) {
-          allPurchasesFetched = true;
-        }
       }
       /// Process the purchases list and build PurchaseHistoryModel objects.
       for (Purchase p in purchasesList) {
@@ -102,34 +107,6 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         );
         // After processing the list, add the new purchases to the existing list of purchases.
         purchasesHistoryListsPurchases.add(obj);
-      }
-      /// Choose Correct Initial Date Range
-      dateJoinedBrand = DateTime(
-        int.parse(currentBrand.dateJoined!.split("-")[2]),
-        int.parse(currentBrand.dateJoined!.split("-")[1]),
-        int.parse(currentBrand.dateJoined!.split("-")[0]),
-        0,
-        0,
-      );
-      // Initialize startDate to the date of the oldest purchase in the list
-      if (purchasesHistoryListsPurchases.isNotEmpty) {
-        startDate = purchasesHistoryListsPurchases.last.purchasedAt.toDate();
-      }
-      // Try to find a smaller date range that includes at least `requiredPurchases` number of purchases
-      for (int days in predefinedDays) {
-        // Find the date `days` days ago
-        DateTime dateDaysAgo = DateTime.now().subtract(Duration(days: days));
-        // Count the purchases within this date range
-        int countInRange = purchasesHistoryListsPurchases.takeWhile((purchase) => purchase.purchasedAt.toDate().isAfter(dateDaysAgo)).length;
-        // If we have enough purchases in this date range, update `startDate` and break the loop
-        if (countInRange >= requiredPurchases) {
-          startDate = dateDaysAgo;
-          break;
-        }
-      }
-      // If we didn't find a suitable date range and there's no more data to fetch, set `startDate` to `dateJoinedBrand`
-      if (startDate == purchasesHistoryListsPurchases.last.purchasedAt.toDate() && allPurchasesFetched) {
-        startDate = dateJoinedBrand;
       }
       /// Open the Stream to Get Brand Requests
       _subscription = _brandDataService.getBonosRequestsFromBrand(brandId).listen((querySnapshot) async {
@@ -216,16 +193,14 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       print("Getting More Brand Purchases");
       // Vars
       List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
-      // Fetch more purchases ...
-      // Get more purchases from the service.
-      List<Purchase> morePurchases = await _purchaseDataService.getBrandMorePurchasesLimit(brandId, lastPurchaseId, limit);
+      // Fetch more purchases with the new dates
+      List<Purchase> morePurchases = await _purchaseDataService.getBrandPurchases(brandId, startDate, lastFetchedPurchaseDate);
       // Update the date of the last fetched purchase
       if (morePurchases.isNotEmpty) {
         lastFetchedPurchaseId = morePurchases.last.id!;
         lastFetchedPurchaseDate = morePurchases.last.purchasedAt!.toDate();
-        if (morePurchases.length != limit) {
-          allPurchasesFetched = true;
-        }
+      } else {
+        allPurchasesFetched = true;
       }
       // Handle The Object Creation Efficiently
       for (Purchase p in morePurchases) {
@@ -286,22 +261,9 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     }
   }
 
-  /// FETCH MORE BRAND ON DEMAND
-  Future<void> onScrollMoreBrandPurchases() async {
-    try {
-      print("onScrollMoreBrandPurchases");
-      // If the new endDate is after the date of the last fetched purchase, fetch more purchases
-      if (allPurchasesFetched == false) {
-        await fetchMoreBrandPurchases(lastFetchedPurchaseId);
-      }
-    } catch(e) {
-      print("Update Date Range Error"+e.toString());
-      emit(BrandPurchasesError(e.toString()));
-    }
-  }
+  /// FETCH MORE BRAND
 
   ///////////////////// MODIFYING EXISTENT DATA
-
 
 
 

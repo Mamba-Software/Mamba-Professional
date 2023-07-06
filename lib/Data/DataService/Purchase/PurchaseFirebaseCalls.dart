@@ -86,6 +86,42 @@ class PurchaseFirebaseCalls {
     return purchase;
   }
 
+  Future<List<Purchase>> getBrandPurchases(String brandId, DateTime startDate, DateTime endDate, [bool applyThreshold = false]) async {
+    List<Purchase> purchases = [];
+    int threshold = 100;
+    Query query;
+    if (applyThreshold) {
+      // Get Collection Size
+      int collectionSize = await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Purchases")
+          .get()
+          .then((snapshot) => snapshot.size);
+      // Hybrid Approach: if size < 100 ? All at once : 100 by 100 based on the date
+      if (collectionSize <= threshold) {
+        query = _firestore.collection(brands).doc(brandId).collection("Purchases");
+      } else {
+        query = _firestore.collection(brands).doc(brandId).collection("Purchases")
+        .where("purchasedAt", isLessThan: endDate)
+        .where("purchasedAt", isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
+      }
+    } else {
+      query = _firestore.collection(brands).doc(brandId).collection("Purchases")
+      .where("purchasedAt", isLessThan: endDate)
+      .where("purchasedAt", isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
+    }
+    // Make Query
+    QuerySnapshot querySnapshot = await query
+    .orderBy("purchasedAt", descending: true)
+    .get();
+    // Return Query
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      purchases.add(Purchase.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i]));
+    }
+    return purchases;
+  }
+
   // Get First Purchases Brand
   Future <List<Purchase>> getBrandFirstPurchasesLimit(String brandId, int limit) async {
     Timestamp now = Timestamp.fromDate(DateTime.now());
