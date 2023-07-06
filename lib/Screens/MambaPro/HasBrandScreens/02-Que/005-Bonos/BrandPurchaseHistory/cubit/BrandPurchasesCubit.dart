@@ -285,7 +285,6 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
             Purchase p = Purchase.fromObjectAllData(change.doc.id, change.doc);
             // If the new purchase is inside current date that should have been fetched
             if (p.purchasedAt!.toDate().isAfter(lastFetchedPurchaseDate)) {
-              print("NEW PURCHASE");
               // Get User
               Usuario user = usersList.firstWhere((element) => element.id == p.userId, orElse: () => Usuario());
               if (user.id == null) {
