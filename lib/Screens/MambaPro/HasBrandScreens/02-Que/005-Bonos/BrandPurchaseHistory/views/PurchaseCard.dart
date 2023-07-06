@@ -150,7 +150,7 @@ class PurchaseCard extends StatelessWidget {
         Icon(
           Icons.circle,
           color: AppColors.red,
-          size: MediaQuery.of(context).size.width * 0.04,
+          size: MediaQuery.of(context).size.width * 0.03,
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
@@ -240,7 +240,7 @@ class PurchaseCard extends StatelessWidget {
         Icon(
           Icons.circle,
           color: purchase!.isActive! ? Colors.green : AppColors.red,
-          size: MediaQuery.of(context).size.width * 0.04,
+          size: MediaQuery.of(context).size.width * 0.03,
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         Flexible(
@@ -252,6 +252,7 @@ class PurchaseCard extends StatelessWidget {
             maxLines: 1,
           ),
         ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
         // PRICE
         Icon(
           Icons.attach_money_outlined,

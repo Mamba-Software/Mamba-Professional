@@ -149,7 +149,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
       builder: (context, state) {
         switch (state.runtimeType) {
           case BrandPurchasesLoaded:
-          // Handles Loaded State
+            // Handles Loaded State
             BrandPurchasesLoaded loadedState = state as BrandPurchasesLoaded;
             DateTime startDate = state.startDate;
             DateTime endDate = state.endDate;
@@ -188,7 +188,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                         alignment: Alignment.center,
                         icon: Icon(
                           Icons.filter_list,
-                          color: state.filterByPurchaseStatus.contains(false) ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor,
+                          color: Theme.of(context).primaryColor,
                           size: MediaQuery.of(context).size.width*0.06,
                         ),
                         onPressed: () async {
@@ -375,25 +375,53 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
-                                  style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
+                          Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.08,
+                                height: MediaQuery.of(context).size.width * 0.08,
+                                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.015),
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey.withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                  //borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
                                 ),
-                                Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
-                              ],
-                            ),
-                            style: TextButton.styleFrom(
-                              backgroundColor: AppColors.grey.withOpacity(0.1),
-                              shape: RoundedRectangleBorder(  // add this
-                                borderRadius: BorderRadius.circular(10),
+                                child: IconButton(
+                                  splashRadius: 20,
+                                  splashColor: Theme.of(context).backgroundColor, // Splash color
+                                  padding: EdgeInsets.zero,
+                                  alignment: Alignment.center,
+                                  icon: Icon(
+                                    true ? Icons.arrow_upward : Icons.arrow_downward,
+                                    color: state.filterByPurchaseStatus.contains(false) ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor,
+                                    size: MediaQuery.of(context).size.width*0.04,
+                                  ),
+                                  onPressed: () async {
+
+                                  },
+                                ),
                               ),
-                              padding: const EdgeInsets.only(left: 16.0, right: 10.0),
-                            ),
-                            onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
+                              TextButton(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
+                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                    Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
+                                  ],
+                                ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: AppColors.grey.withOpacity(0.1),
+                                  shape: RoundedRectangleBorder(  // add this
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                                ),
+                                onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
+                              ),
+                            ],
                           ),
                           Text(
                             '${DateFormat('d MMM, yy\'').format(startDate)} - ${DateFormat('d MMM, yy\'').format(endDate)}',
@@ -448,7 +476,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
             );
           default:
             // Handle all other states aka Loading or Initial
-            DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
+            DateTime startDate = DateTime.now().subtract(const Duration(days: 7));
             DateTime endDate = DateTime.now();
             DateTime dateJoinedBrand = DateTime(
                 int.parse(currentBrand.dateJoined!.split("-")[2]),
@@ -479,7 +507,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                     padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04),
                     child: Icon(
                       Icons.filter_list,
-                      color: true ? AppColors.darkGrey :  AppColors.white,
+                      color: Theme.of(context).primaryColor,
                       size: MediaQuery.of(context).size.width*0.06,
                     ),
                   ),
@@ -494,28 +522,54 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
-                                  style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
+                          Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.08,
+                                height: MediaQuery.of(context).size.width * 0.08,
+                                margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.015),
+                                decoration: BoxDecoration(
+                                  color: AppColors.grey.withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                  //borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
                                 ),
-                                Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
-                              ],
-                            ),
-                            style: TextButton.styleFrom(
-                              backgroundColor: AppColors.grey.withOpacity(0.1),
-                              shape: RoundedRectangleBorder(  // add this
-                                borderRadius: BorderRadius.circular(10),
+                                child: IconButton(
+                                  splashRadius: 20,
+                                  splashColor: Theme.of(context).backgroundColor, // Splash color
+                                  padding: EdgeInsets.zero,
+                                  alignment: Alignment.center,
+                                  icon: Icon(
+                                    Icons.arrow_upward,
+                                    color: Theme.of(context).primaryColor,
+                                    size: MediaQuery.of(context).size.width*0.04,
+                                  ),
+                                  onPressed: null,
+                                ),
                               ),
-                              padding: const EdgeInsets.only(left: 16.0, right: 10.0),
-                            ),
-                            onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
+                              TextButton(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      returnCorrectText(context, startDate, endDate, dateJoinedBrand, true),
+                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
+                                    ),
+                                    Icon(Icons.keyboard_arrow_down_outlined, color: Theme.of(context).primaryColor)
+                                  ],
+                                ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: AppColors.grey.withOpacity(0.1),
+                                  shape: RoundedRectangleBorder(  // add this
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                                ),
+                                onPressed: () => _show(context, startDate, endDate, dateJoinedBrand),
+                              ),
+                            ],
                           ),
                           Text(
-                            '${DateFormat('d MMM, yy\'').format(DateTime.now().subtract(const Duration(days: 30)))} - ${DateFormat('d MMM, yy\'').format(DateTime.now())}',
+                            '${DateFormat('d MMM, yy\'').format(startDate)} - ${DateFormat('d MMM, yy\'').format(endDate)}',
                             style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           ),

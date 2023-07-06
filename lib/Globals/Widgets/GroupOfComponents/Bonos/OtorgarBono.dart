@@ -681,9 +681,10 @@ class _OtorgarBonoState extends State<OtorgarBono> {
                 ),
               )
             ) : Container(),
-            editBono?SizedBox(height: MediaQuery.of(context).size.height * 0.04): Container(),
-            editBono? PurchaseEvents(purchase: purchase,context: context, executeFunction: executeFunctionWithPurchase) : Container(),
-            editBono? SizedBox(height: MediaQuery.of(context).size.height * 0.01): Container(),
+            editBono ? SizedBox(height: MediaQuery.of(context).size.height * 0.04): Container(),
+            /// EVENTS
+            editBono ? PurchaseEvents(purchase: purchase,context: context, executeFunction: executeFunctionWithPurchase) : Container(),
+            editBono ? SizedBox(height: MediaQuery.of(context).size.height * 0.01): Container(),
             /// PAYMENT METHOD
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
