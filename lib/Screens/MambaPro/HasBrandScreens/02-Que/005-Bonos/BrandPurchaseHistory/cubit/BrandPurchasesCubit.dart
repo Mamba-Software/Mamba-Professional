@@ -430,7 +430,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   /// FILTER BY STAUS
   Future<void> filterByStatus(List<bool> filterBy) async {
     try {
-      print("filterByPurchaseStatus $filterByPurchaseStatus");
+      print("filterByPurchaseStatus $filterBy");
       filterByPurchaseStatus = List.from(filterBy);
       /// Filter purchasesHistoryObjects by the current date range...
       List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
@@ -477,8 +477,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   /// FILTER BY ACTIVE
   Future<void> filterByActive(List<bool> filterBy) async {
     try {
-      print("filterByActivePurchases $filterByActivePurchases");
-      filterByPurchaseStatus = List.from(filterBy);
+      print("filterByActivePurchases $filterBy");
+      filterByActivePurchases = List.from(filterBy);
       /// Filter purchasesHistoryObjects by the current date range...
       List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
       filteredDateList.removeWhere((element) {
