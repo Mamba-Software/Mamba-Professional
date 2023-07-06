@@ -277,7 +277,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   /// OPEN NEW PURCHASE REQUESTS
   Future<void> openPurchasesStream() async {
     try {
-      _subscriptionPurchases = _brandDataService.getBrandPurchasesStream(brandId).listen((querySnapshot) async {
+      _subscriptionPurchases = _brandDataService.getBrandPurchasesStream(brandId).skip(1).listen((querySnapshot) async {
         //print("Stream PURCHASES New Data");
         for (var change in querySnapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
