@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -30,7 +31,7 @@ class BrandPurchaseHistory extends StatelessWidget {
 class BrandPurchaseHistoryBody extends StatefulWidget {
   final String brandId;
 
-  BrandPurchaseHistoryBody({Key? key, required this.brandId}) : super(key: key);
+  const BrandPurchaseHistoryBody({Key? key, required this.brandId}) : super(key: key);
 
   @override
   _BrandPurchaseHistoryBodyState createState() => _BrandPurchaseHistoryBodyState();
@@ -39,18 +40,14 @@ class BrandPurchaseHistoryBody extends StatefulWidget {
 class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
 
   String brandId = "";
-  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
-    //_scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     super.dispose();
   }
   
@@ -143,6 +140,23 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
     return filteredRoles;
   }
 
+  String returnFilteredActiveBonosString(List<bool> filterByActivePurchases) {
+    String activeStaff = "";
+    int cnt = 0;
+    if (filterByActivePurchases[0]) {
+      activeStaff += AppLocalizations.of(context)!.yes+", ";
+      cnt += 1;
+    }
+    if (filterByActivePurchases[1]) {
+      activeStaff += AppLocalizations.of(context)!.no;
+      cnt += 1;
+    }
+    if (cnt == 1) {
+      return activeStaff.split(", ")[0];
+    }
+    return activeStaff;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BrandPurchasesCubit, BrandPurchasesState>(
@@ -150,10 +164,14 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
         switch (state.runtimeType) {
           case BrandPurchasesLoaded:
             // Handles Loaded State
+            final brandPurchasesCubit = context.watch<BrandPurchasesCubit>();
             BrandPurchasesLoaded loadedState = state as BrandPurchasesLoaded;
-            DateTime startDate = state.startDate;
-            DateTime endDate = state.endDate;
-            DateTime dateJoinedBrand = state.dateJoinedBrand;
+            DateTime startDate = loadedState.startDate;
+            DateTime endDate = loadedState.endDate;
+            DateTime dateJoinedBrand = loadedState.dateJoinedBrand;
+            List<bool> filterByPurchaseStatus = loadedState.filterByPurchaseStatus;
+            List<bool> filterByActivePurchases = loadedState.filterByActivePurchases;
+            List<bool> allFilters = filterByPurchaseStatus + filterByActivePurchases;
             return Scaffold(
               appBar: AppBar(
                 toolbarHeight: MediaQuery.of(context).size.height * 0.14,
@@ -178,7 +196,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                       width: MediaQuery.of(context).size.width * 0.08,
                       height: MediaQuery.of(context).size.width * 0.08,
                       decoration: BoxDecoration(
-                        color: state.filterByPurchaseStatus.contains(false) ? Theme.of(context).primaryColor : Colors.transparent,
+                        color: allFilters.contains(false) ? Theme.of(context).primaryColor : Colors.transparent,
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
@@ -188,14 +206,10 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                         alignment: Alignment.center,
                         icon: Icon(
                           Icons.filter_list,
-                          color: Theme.of(context).primaryColor,
+                          color: allFilters.contains(false) ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor,
                           size: MediaQuery.of(context).size.width*0.06,
                         ),
                         onPressed: () async {
-                          final brandPurchasesCubit = context.read<BrandPurchasesCubit>();
-                          final PageController _pageController = PageController(initialPage: 0);
-                          int _currentPage = 0;
-                          List<bool> filterByPurchaseStatus = state.filterByPurchaseStatus;
                           await showModalBottomSheet<int?>(
                             context: context,
                             isScrollControlled: true,
@@ -206,157 +220,247 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                             ),
                             clipBehavior: Clip.antiAliasWithSaveLayer,
                             builder: (BuildContext context) {
-                              return FractionallySizedBox(
-                                heightFactor: 0.33,
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.5,
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Padding(
-                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        ListTile(
-                                          title: Text(
-                                              AppLocalizations.of(context)!.filterBy,
-                                              style: Theme.of(context).textTheme.caption,
-                                              textAlign: TextAlign.left
-                                          ),
-                                          trailing: TextButton(
-                                              child: Text(
-                                                  AppLocalizations.of(context)!.clear,
-                                                  style: Theme.of(context).textTheme.caption
-                                              ),
-                                              onPressed: () {
-                                                filterByPurchaseStatus = [true, true, true];
-                                                brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
-                                                Navigator.pop(context);
-                                              }
-                                          ),
-                                          dense: true,
-                                          onTap: _currentPage == 0 ? null : () {
-                                            _pageController.previousPage(
-                                              duration: const Duration(milliseconds: 500),
-                                              curve: Curves.ease,
-                                            );
-                                          },
-                                        ),
-                                        SizedBox(
-                                          height: MediaQuery.of(context).size.height * 0.21,
-                                          width: MediaQuery.of(context).size.width,
-                                          child: PageView(
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            controller: _pageController,
-                                            onPageChanged: (int page) {
-                                              setState(() {
-                                                _currentPage = page;
-                                              });
-                                            },
-                                            children: <Widget>[
-                                              Column(
-                                                children: [
-                                                  ListTile(
-                                                    onTap: () {
-                                                      _pageController.nextPage(
-                                                        duration: const Duration(milliseconds: 500),
-                                                        curve: Curves.ease,
+                              return StatefulBuilder(
+                                builder: (BuildContext context, StateSetter setState) {
+                                  final PageController _pageController = PageController(initialPage: 0);
+                                  ValueNotifier<int> _currentPage = ValueNotifier(0);
+                                  ValueNotifier<bool> isTypePurchase = ValueNotifier(true);
+                                  return FractionallySizedBox(
+                                    heightFactor: 0.33,
+                                    child: SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.5,
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            ValueListenableBuilder<int>(
+                                              valueListenable: _currentPage,
+                                              builder: (context, value, child) {
+                                                return ListTile(
+                                                  title: Text(
+                                                      AppLocalizations.of(context)!.filterBy,
+                                                      style: Theme.of(context).textTheme.caption,
+                                                      textAlign: TextAlign.left
+                                                  ),
+                                                  trailing: TextButton(
+                                                      child: Text(
+                                                          AppLocalizations.of(context)!.clear,
+                                                          style: Theme.of(context).textTheme.caption
+                                                      ),
+                                                      onPressed: () {
+                                                        filterByPurchaseStatus = [true, true, true];
+                                                        filterByActivePurchases = [true, true];
+                                                        brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                        brandPurchasesCubit.filterByActive(filterByActivePurchases);
+                                                        Navigator.pop(context);
+                                                      }
+                                                  ),
+                                                  dense: true,
+                                                  onTap: value == 0 ? null : () {
+                                                    _pageController.previousPage(
+                                                      duration: const Duration(milliseconds: 500),
+                                                      curve: Curves.ease,
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                            SizedBox(
+                                              height: MediaQuery.of(context).size.height * 0.21,
+                                              width: MediaQuery.of(context).size.width,
+                                              child: PageView(
+                                                physics: const NeverScrollableScrollPhysics(),
+                                                controller: _pageController,
+                                                onPageChanged: (int page) {
+                                                  _currentPage.value = page;
+                                                },
+                                                children: <Widget>[
+                                                  Column(
+                                                    children: [
+                                                      ListTile(
+                                                        onTap: () {
+                                                          isTypePurchase.value = true;
+                                                          _pageController.nextPage(
+                                                            duration: const Duration(milliseconds: 500),
+                                                            curve: Curves.ease,
+                                                          );
+                                                        },
+                                                        title: Text(
+                                                            AppLocalizations.of(context)!.state,
+                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                            textAlign: TextAlign.left
+                                                        ),
+                                                        subtitle: Text(
+                                                            returnFilteredStatusString(filterByPurchaseStatus),
+                                                            style: Theme.of(context).textTheme.caption,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.left
+                                                        ),
+                                                        trailing: SizedBox(
+                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                          child: Center(
+                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      ListTile(
+                                                        onTap: () {
+                                                          isTypePurchase.value = false;
+                                                          _pageController.nextPage(
+                                                            duration: const Duration(milliseconds: 500),
+                                                            curve: Curves.ease,
+                                                          );
+                                                        },
+                                                        title: Text(
+                                                            AppLocalizations.of(context)!.bono+" "+AppLocalizations.of(context)!.active+"s",
+                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                            textAlign: TextAlign.left
+                                                        ),
+                                                        subtitle: Text(
+                                                            returnFilteredActiveBonosString(filterByActivePurchases),
+                                                            style: Theme.of(context).textTheme.caption,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                            textAlign: TextAlign.left
+                                                        ),
+                                                        trailing: SizedBox(
+                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                          child: Center(
+                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  ValueListenableBuilder<bool>(
+                                                    valueListenable: isTypePurchase,
+                                                    builder: (context, value, child) {
+                                                      return value ? Column(
+                                                        children: [
+                                                          ListTile(
+                                                            onTap: () {
+                                                              // Check if the Only True
+                                                              var filterActive = List.from(filterByPurchaseStatus);
+                                                              filterActive.retainWhere((element) => element == true);
+                                                              if (!(filterActive.length == 1 && filterByPurchaseStatus[0])) {
+                                                                filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
+                                                                brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                                Navigator.pop(context);
+                                                              }
+                                                            },
+                                                            title: Text(
+                                                                AppLocalizations.of(context)!.verfied,
+                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                textAlign: TextAlign.left
+                                                            ),
+                                                            trailing: filterByPurchaseStatus[0] ? SizedBox(
+                                                              width: MediaQuery.of(context).size.width * 0.15,
+                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                          ),
+                                                          ListTile(
+                                                            onTap: () {
+                                                              // Check if the Only True
+                                                              var filterActive = List.from(filterByPurchaseStatus);
+                                                              filterActive.retainWhere((element) => element == true);
+                                                              if (!(filterActive.length == 1 && filterByPurchaseStatus[1])) {
+                                                                filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
+                                                                brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                                Navigator.pop(context);
+                                                              }
+                                                            },
+                                                            title: Text(
+                                                                AppLocalizations.of(context)!.unverfied,
+                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                textAlign: TextAlign.left
+                                                            ),
+                                                            trailing: filterByPurchaseStatus[1] ? SizedBox(
+                                                              width: MediaQuery.of(context).size.width * 0.15,
+                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                          ),
+                                                          ListTile(
+                                                            onTap: () {
+                                                              // Check if the Only True
+                                                              var filterActive = List.from(filterByPurchaseStatus);
+                                                              filterActive.retainWhere((element) => element == true);
+                                                              if (!(filterActive.length == 1 && filterByPurchaseStatus[2])) {
+                                                                filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
+                                                                brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                                Navigator.pop(context);
+                                                              }
+                                                            },
+                                                            title: Text(
+                                                                AppLocalizations.of(context)!.toConfirm,
+                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                textAlign: TextAlign.left
+                                                            ),
+                                                            trailing: filterByPurchaseStatus[2] ? SizedBox(
+                                                              width: MediaQuery.of(context).size.width * 0.15,
+                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                          ),
+                                                        ],
+                                                      ) : Column(
+                                                        children: [
+                                                          ListTile(
+                                                            onTap: () {
+                                                              // Check if the Only True
+                                                              var filterActive = List.from(filterByActivePurchases);
+                                                              filterActive.retainWhere((element) => element == true);
+                                                              if (!(filterActive.length == 1 && filterByActivePurchases[0])) {
+                                                                filterByActivePurchases[0] = !filterByActivePurchases[0];
+                                                                brandPurchasesCubit.filterByActive(filterByActivePurchases);
+                                                                Navigator.pop(context);
+                                                              }
+                                                            },
+                                                            title: Text(
+                                                                AppLocalizations.of(context)!.active,
+                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                textAlign: TextAlign.left
+                                                            ),
+                                                            trailing: filterByActivePurchases[0] ? SizedBox(
+                                                              width: MediaQuery.of(context).size.width * 0.15,
+                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                          ),
+                                                          ListTile(
+                                                            onTap: () {
+                                                              // Check if the Only True
+                                                              var filterActive = List.from(filterByActivePurchases);
+                                                              filterActive.retainWhere((element) => element == true);
+                                                              if (!(filterActive.length == 1 && filterByActivePurchases[1])) {
+                                                                filterByActivePurchases[1] = !filterByActivePurchases[1];
+                                                                brandPurchasesCubit.filterByActive(filterByActivePurchases);
+                                                                Navigator.pop(context);
+                                                              }
+                                                            },
+                                                            title: Text(
+                                                                AppLocalizations.of(context)!.desactive,
+                                                                style: Theme.of(context).textTheme.bodyText1,
+                                                                textAlign: TextAlign.left
+                                                            ),
+                                                            trailing: filterByActivePurchases[1] ? SizedBox(
+                                                              width: MediaQuery.of(context).size.width * 0.15,
+                                                              child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                            ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                          ),
+                                                        ],
                                                       );
                                                     },
-                                                    title: Text(
-                                                        AppLocalizations.of(context)!.typeProfile.split(" ")[0]+" "+AppLocalizations.of(context)!.typeProfile.split(" ")[1]+" "+AppLocalizations.of(context)!.events.toLowerCase(),
-                                                        style: Theme.of(context).textTheme.bodyText1,
-                                                        textAlign: TextAlign.left
-                                                    ),
-                                                    subtitle: Text(
-                                                        returnFilteredStatusString(filterByPurchaseStatus),
-                                                        style: Theme.of(context).textTheme.caption,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        textAlign: TextAlign.left
-                                                    ),
-                                                    trailing: SizedBox(
-                                                      width: MediaQuery.of(context).size.width * 0.15,
-                                                      child: Center(
-                                                          child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
-                                                      ),
-                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                              Column(
-                                                children: [
-                                                  ListTile(
-                                                    onTap: () {
-                                                      // Check if the Only True
-                                                      var filterActive = List.from(filterByPurchaseStatus);
-                                                      filterActive.retainWhere((element) => element == true);
-                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[0])) {
-                                                        filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
-                                                        brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
-                                                        Navigator.pop(context);
-                                                      }
-                                                    },
-                                                    title: Text(
-                                                        AppLocalizations.of(context)!.verfied,
-                                                        style: Theme.of(context).textTheme.bodyText1,
-                                                        textAlign: TextAlign.left
-                                                    ),
-                                                    trailing: filterByPurchaseStatus[0] ? SizedBox(
-                                                      width: MediaQuery.of(context).size.width * 0.15,
-                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                  ),
-                                                  ListTile(
-                                                    onTap: () {
-                                                      // Check if the Only True
-                                                      var filterActive = List.from(filterByPurchaseStatus);
-                                                      filterActive.retainWhere((element) => element == true);
-                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[1])) {
-                                                        filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
-                                                        brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
-                                                        Navigator.pop(context);
-                                                      }
-                                                    },
-                                                    title: Text(
-                                                        AppLocalizations.of(context)!.unverfied,
-                                                        style: Theme.of(context).textTheme.bodyText1,
-                                                        textAlign: TextAlign.left
-                                                    ),
-                                                    trailing: filterByPurchaseStatus[1] ? SizedBox(
-                                                      width: MediaQuery.of(context).size.width * 0.15,
-                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                  ),
-                                                  ListTile(
-                                                    onTap: () {
-                                                      // Check if the Only True
-                                                      var filterActive = List.from(filterByPurchaseStatus);
-                                                      filterActive.retainWhere((element) => element == true);
-                                                      if (!(filterActive.length == 1 && filterByPurchaseStatus[2])) {
-                                                        filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
-                                                        brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
-                                                        Navigator.pop(context);
-                                                      }
-                                                    },
-                                                    title: Text(
-                                                        AppLocalizations.of(context)!.toConfirm,
-                                                        style: Theme.of(context).textTheme.bodyText1,
-                                                        textAlign: TextAlign.left
-                                                    ),
-                                                    trailing: filterByPurchaseStatus[2] ? SizedBox(
-                                                      width: MediaQuery.of(context).size.width * 0.15,
-                                                      child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
-                                                    ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
                               );
                             },
                           );
@@ -384,20 +488,19 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                 decoration: BoxDecoration(
                                   color: AppColors.grey.withOpacity(0.1),
                                   shape: BoxShape.circle,
-                                  //borderRadius: const BorderRadius.all(Radius.circular(15.0)),// BorderRadius
                                 ),
                                 child: IconButton(
                                   splashRadius: 20,
                                   splashColor: Theme.of(context).backgroundColor, // Splash color
-                                  padding: EdgeInsets.zero,
+                                  padding: const EdgeInsets.only(right: 2),
                                   alignment: Alignment.center,
                                   icon: Icon(
-                                    true ? Icons.arrow_upward : Icons.arrow_downward,
-                                    color: state.filterByPurchaseStatus.contains(false) ? Theme.of(context).primaryColorDark : Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.width*0.04,
+                                    loadedState.orderByDescending ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpShortWide,
+                                    color: Theme.of(context).primaryColor,
+                                    size: MediaQuery.of(context).size.width*0.035,
                                   ),
                                   onPressed: () async {
-
+                                    context.read<BrandPurchasesCubit>().orderByDate(!loadedState.orderByDescending);
                                   },
                                 ),
                               ),
@@ -434,7 +537,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                   ),
                 ),
               ),
-              body: state.purchasesHistoryObjects.isNotEmpty ? Column(
+              body: loadedState.purchasesHistoryObjects.isNotEmpty ? Column(
                 children: [
                   Expanded(
                     child: ListView.builder(
@@ -443,7 +546,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                         scrollDirection: Axis.vertical,
                         itemCount: state.purchasesHistoryObjects.length,
                         itemBuilder: (context, index) {
-                          PurchaseHistoryModel obj = state.purchasesHistoryObjects[index];
+                          PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[index];
                           return PurchaseCard(
                             bono: obj.bono,
                             user: obj.user,
@@ -536,12 +639,12 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                 child: IconButton(
                                   splashRadius: 20,
                                   splashColor: Theme.of(context).backgroundColor, // Splash color
-                                  padding: EdgeInsets.zero,
+                                  padding: const EdgeInsets.only(right: 2),
                                   alignment: Alignment.center,
                                   icon: Icon(
-                                    Icons.arrow_upward,
+                                    FontAwesomeIcons.arrowDownWideShort,
                                     color: Theme.of(context).primaryColor,
-                                    size: MediaQuery.of(context).size.width*0.04,
+                                    size: MediaQuery.of(context).size.width*0.035,
                                   ),
                                   onPressed: null,
                                 ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
@@ -47,7 +48,10 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   DateTime endDate = DateTime.now();
   DateTime dateJoinedBrand = DateTime.now();
   // Filters
+  bool orderByDescending = true;
+  // Filters
   List<bool> filterByPurchaseStatus = [true, true, true];
+  List<bool> filterByActivePurchases = [true, true];
 
   ///////////////////// DATA FETCHING
 
@@ -121,7 +125,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           purchasesListTemp.removeWhere((element) {
             return element.purchasedAt!.toDate().isBefore(startDate) || element.purchasedAt!.toDate().isAfter(endDate);
           });
-          if (purchasesListTemp.length > threshold) break;
+          if (purchasesListTemp.length >= threshold) break;
         }
       }
       // Define the Past Purchases to the Global Object
@@ -136,7 +140,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   }
 
   /// FETCH MORE BRAND
-  Future<void> fetchMoreBrandPurchases(String lastPurchaseId) async {
+  Future<List<PurchaseHistoryModel>> fetchMoreBrandPurchases(String lastPurchaseId) async {
     try {
       print("Getting More Brand Purchases");
       // Vars
@@ -149,6 +153,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         lastFetchedPurchaseDate = morePurchases.last.purchasedAt!.toDate();
       } else {
         allPurchasesFetched = true;
+        print("allPurchasesFetched");
+
       }
       // Handle The Object Creation Efficiently
       for (Purchase p in morePurchases) {
@@ -184,30 +190,31 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       }
       // Emit a new state with the list of `Events`.
       purchasesHistoryObjects = List.from(purchasesHistoryObjects+purchasesHistoryListsPurchases);
-      // Order Notification List Descending Time
-      purchasesHistoryObjects.sort((a,b) {
-        var aDate =  a.purchasedAt.toDate();
-        var bDate =  b.purchasedAt.toDate();
-        return bDate.compareTo(aDate);
-      });
+      // Change the order of the List
+      if (orderByDescending) {
+        purchasesHistoryObjects.sort((a,b) {
+          var aDate =  a.purchasedAt.toDate();
+          var bDate =  b.purchasedAt.toDate();
+          return bDate.compareTo(aDate);
+        });
+      } else {
+        purchasesHistoryObjects.sort((a,b) {
+          var aDate =  a.purchasedAt.toDate();
+          var bDate =  b.purchasedAt.toDate();
+          return aDate.compareTo(bDate);
+        });
+      }
       // Filter the results by the current date range
-      List<PurchaseHistoryModel> filteredDateList = purchasesHistoryObjects.where((element) {
-        // Keep only the purchases within the date range
-        DateTime purchasedAtDate = element.purchasedAt.toDate();
-        return purchasedAtDate.isAfter(startDate) && purchasedAtDate.isBefore(endDate);
-      }).toList();
-      print("More Purchases Successfully Loaded");
-      emit(
-          loadedState.copyWith(
-            startDate: startDate,
-            endDate: endDate,
-            purchasesHistoryObjects: filteredDateList,
-          )
-      );
-
+      List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
+      filteredDateList.removeWhere((element) {
+        // Remove the ones before the start date or after the end date
+        return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
+      });
+      return filteredDateList;
     } catch(e) {
       print("Get More Brand Purchases Error: "+e.toString());
       emit(BrandPurchasesError(e.toString()));
+      return [];
     }
   }
 
@@ -253,12 +260,20 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         }
         // Emit a new state with the list of `Events`.
         purchasesHistoryObjects = List.from(purchasesHistoryObjectsPurchases+purchasesHistoryListsRequests);
-        // Order Notification List Descending Time
-        purchasesHistoryObjects.sort((a,b) {
-          var aDate =  a.purchasedAt.toDate();
-          var bDate =  b.purchasedAt.toDate();
-          return bDate.compareTo(aDate);
-        });
+        // Change the order of the List
+        if (orderByDescending) {
+          purchasesHistoryObjects.sort((a,b) {
+            var aDate =  a.purchasedAt.toDate();
+            var bDate =  b.purchasedAt.toDate();
+            return bDate.compareTo(aDate);
+          });
+        } else {
+          purchasesHistoryObjects.sort((a,b) {
+            var aDate =  a.purchasedAt.toDate();
+            var bDate =  b.purchasedAt.toDate();
+            return aDate.compareTo(bDate);
+          });
+        }
         // Check the Last Purchase
         List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
         filteredDateList.removeWhere((element) {
@@ -275,7 +290,9 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           endDate: endDate,
           dateJoinedBrand: dateJoinedBrand,
           purchasesHistoryObjects: filteredDateList,
+          orderByDescending: orderByDescending,
           filterByPurchaseStatus: filterByPurchaseStatus,
+          filterByActivePurchases: filterByActivePurchases,
         );
         emit(loadedState);
       },
@@ -333,22 +350,27 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
               // Emit a new state with the list of `Events`.
               purchasesHistoryObjectsPurchases.add(obj);
               purchasesHistoryObjects = List.from(purchasesHistoryObjectsPurchases);
-              // Order Notification List Descending Time
-              purchasesHistoryObjects.sort((a,b) {
-                var aDate =  a.purchasedAt.toDate();
-                var bDate =  b.purchasedAt.toDate();
-                return bDate.compareTo(aDate);
-              });
+              // Change the order of the List
+              if (orderByDescending) {
+                purchasesHistoryObjects.sort((a,b) {
+                  var aDate =  a.purchasedAt.toDate();
+                  var bDate =  b.purchasedAt.toDate();
+                  return bDate.compareTo(aDate);
+                });
+              } else {
+                purchasesHistoryObjects.sort((a,b) {
+                  var aDate =  a.purchasedAt.toDate();
+                  var bDate =  b.purchasedAt.toDate();
+                  return aDate.compareTo(bDate);
+                });
+              }
               /// Emit New Status
               print("Stream PURCHASES Finished");
-              loadedState = BrandPurchasesLoaded(
-                startDate: startDate,
-                endDate: endDate,
-                dateJoinedBrand: dateJoinedBrand,
-                purchasesHistoryObjects: purchasesHistoryObjects,
-                filterByPurchaseStatus: filterByPurchaseStatus,
+              emit(
+                loadedState = loadedState.copyWith(
+                  purchasesHistoryObjects: purchasesHistoryObjects,
+                )
               );
-              emit(loadedState);
             }
           }
         }
@@ -367,90 +389,15 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
 
   ///////////////////// FILTERING/ORDERING EXISTENT DATA
 
-  /// ORDERING BY DATE
-  Future<void> orderByDate(List<bool> filterByPurchaseStatus) async {
-    try {
-      print("filterByPurchaseStatus $filterByPurchaseStatus");
-      this.filterByPurchaseStatus = filterByPurchaseStatus;
-      // Filter purchasesHistoryObjects by the current date range...
-      List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
-      filteredDateList.removeWhere((element) {
-        // Remove the ones before the start date or after the end date
-        return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
-      });
-      // Filter By Type Of Status
-      // PurchaseStatus.CONFIRMED PurchaseStatus.DIRECT PurchaseStatus.TO_CONFIRM
-      if (filterByPurchaseStatus[0] && filterByPurchaseStatus[1] && filterByPurchaseStatus[2]) {
-        // All three Selected
-        filteredDateList = filteredDateList;
-      } else if (filterByPurchaseStatus[0] && filterByPurchaseStatus[1]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.CONFIRMED || element.purchaseStatus == PurchaseStatus.DIRECT) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      } else if(filterByPurchaseStatus[0] && filterByPurchaseStatus[2]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.CONFIRMED || element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      } else if(filterByPurchaseStatus[1] && filterByPurchaseStatus[2]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.DIRECT || element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      } else if(filterByPurchaseStatus[0]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.CONFIRMED) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      } else if(filterByPurchaseStatus[1]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.DIRECT) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      } else if(filterByPurchaseStatus[2]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      }
-      emit(
-        loadedState.copyWith(
-          purchasesHistoryObjects: filteredDateList,
-          filterByPurchaseStatus: this.filterByPurchaseStatus,
-        ),
-      );
-      print("Status Filter Successfully Applied");
-    } catch(e) {
-      print("Update Date Range Error"+e.toString());
-      emit(BrandPurchasesError(e.toString()));
-    }
-  }
-
   /// FILTER BY DATE RANGE
-  Future<void> filterByDateRange(DateTime startDate, DateTime endDate) async {
+  Future<void> filterByDateRange(DateTime start, DateTime end) async {
     try {
       print("updateDateRange $startDate $endDate");
-      this.startDate = startDate;
-      this.endDate = endDate;
+      startDate = start;
+      endDate = end;
+      // Remove Any Filters
+      filterByPurchaseStatus = [true, true, true];
+      filterByActivePurchases = [true, true];
       // Filter purchasesHistoryObjects by the new date range ...
       List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
       filteredDateList.removeWhere((element) {
@@ -460,18 +407,20 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       // If the new endDate is after the date of the last fetched purchase, fetch more purchases
       if (startDate.isBefore(lastFetchedPurchaseDate) && allPurchasesFetched == false) {
         print("startDate isBefore lastFetchedPurchaseDate");
-        await fetchMoreBrandPurchases(lastFetchedPurchaseId);
-      } else {
-        // If the new endDate is before the date of the last fetched purchase, just emit the new state
-        emit(
-          loadedState.copyWith(
-            startDate: this.startDate,
-            endDate: this.endDate,
-            purchasesHistoryObjects: filteredDateList,
-          ),
-        );
-        print("Date Range Successfully Updated");
+        filteredDateList = await fetchMoreBrandPurchases(lastFetchedPurchaseId);
+        print("More Purchases Successfully Loaded");
       }
+      // If the new endDate is before the date of the last fetched purchase, just emit the new state
+      emit(
+        loadedState = loadedState.copyWith(
+          startDate: startDate,
+          endDate: endDate,
+          purchasesHistoryObjects: filteredDateList,
+          filterByPurchaseStatus: filterByPurchaseStatus,
+          filterByActivePurchases: filterByActivePurchases,
+        ),
+      );
+      print("Date Range Successfully Updated");
     } catch(e) {
       print("Update Date Range Error"+e.toString());
       emit(BrandPurchasesError(e.toString()));
@@ -479,79 +428,113 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   }
 
   /// FILTER BY STAUS
-  Future<void> filterByStatus(List<bool> filterByPurchaseStatus) async {
+  Future<void> filterByStatus(List<bool> filterBy) async {
     try {
       print("filterByPurchaseStatus $filterByPurchaseStatus");
-      this.filterByPurchaseStatus = filterByPurchaseStatus;
-      // Filter purchasesHistoryObjects by the current date range...
+      filterByPurchaseStatus = List.from(filterBy);
+      /// Filter purchasesHistoryObjects by the current date range...
       List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
       filteredDateList.removeWhere((element) {
           // Remove the ones before the start date or after the end date
           return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
       });
-      // Filter By Type Of Status
-      // PurchaseStatus.CONFIRMED PurchaseStatus.DIRECT PurchaseStatus.TO_CONFIRM
-      if (filterByPurchaseStatus[0] && filterByPurchaseStatus[1] && filterByPurchaseStatus[2]) {
-        // All three Selected
-        filteredDateList = filteredDateList;
-      } else if (filterByPurchaseStatus[0] && filterByPurchaseStatus[1]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.CONFIRMED || element.purchaseStatus == PurchaseStatus.DIRECT) {
-            return false;
-          } else {
-            return true;
+      /// Filter By Type Of Status
+      filteredDateList.removeWhere((element) {
+        // Aux Function
+        bool _matchesPurchaseStatusAux(PurchaseHistoryModel element, int index) {
+          switch (index) {
+            case 0:
+              return element.purchaseStatus == PurchaseStatus.CONFIRMED;
+            case 1:
+              return element.purchaseStatus == PurchaseStatus.DIRECT;
+            case 2:
+              return element.purchaseStatus == PurchaseStatus.TO_CONFIRM;
+            default:
+              return false;
           }
-        });
-      } else if(filterByPurchaseStatus[0] && filterByPurchaseStatus[2]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.CONFIRMED || element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
+        }
+        // For Loop
+        for (int i = 0; i < filterByPurchaseStatus.length; i++) {
+          if (filterByPurchaseStatus[i] && _matchesPurchaseStatusAux(element, i)) {
             return false;
-          } else {
-            return true;
           }
-        });
-      } else if(filterByPurchaseStatus[1] && filterByPurchaseStatus[2]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.DIRECT || element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      } else if(filterByPurchaseStatus[0]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.CONFIRMED) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      } else if(filterByPurchaseStatus[1]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.DIRECT) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      } else if(filterByPurchaseStatus[2]) {
-        filteredDateList.removeWhere((element) {
-          if (element.purchaseStatus == PurchaseStatus.TO_CONFIRM) {
-            return false;
-          } else {
-            return true;
-          }
-        });
-      }
+        }
+        return true;
+      });
       emit(
-        loadedState.copyWith(
+        loadedState = loadedState.copyWith(
+          orderByDescending: orderByDescending,
+          filterByPurchaseStatus: filterByPurchaseStatus,
           purchasesHistoryObjects: filteredDateList,
-          filterByPurchaseStatus: this.filterByPurchaseStatus,
-        ),
+        )
       );
-      print("Status Filter Successfully Applied");
     } catch(e) {
       print("Update Date Range Error"+e.toString());
+      emit(BrandPurchasesError(e.toString()));
+    }
+  }
+
+  /// FILTER BY ACTIVE
+  Future<void> filterByActive(List<bool> filterBy) async {
+    try {
+      print("filterByActivePurchases $filterByActivePurchases");
+      filterByPurchaseStatus = List.from(filterBy);
+      /// Filter purchasesHistoryObjects by the current date range...
+      List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
+      filteredDateList.removeWhere((element) {
+        // Remove the ones before the start date or after the end date
+        return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
+      });
+      /// Filter By Type Of Active or InActive
+      filteredDateList.removeWhere((element) {
+        if (filterByActivePurchases[0] && (element.purchase!.isActive!)) {
+          return false;
+        }
+        if (filterByActivePurchases[1] && (element.purchase!.isActive == false)) {
+          return false;
+        }
+        return true;
+      });
+      emit(
+        loadedState = loadedState.copyWith(
+          orderByDescending: orderByDescending,
+          filterByActivePurchases: filterByActivePurchases,
+          purchasesHistoryObjects: filteredDateList,
+        )
+      );
+    } catch(e) {
+      print("Update Date Range Error"+e.toString());
+      emit(BrandPurchasesError(e.toString()));
+    }
+  }
+
+  /// ORDERING BY DATE
+  Future<void> orderByDate(bool orderByDescending) async {
+    try {
+      print("orderByDate orderByDescending is $orderByDescending");
+      this.orderByDescending = orderByDescending;
+      purchasesHistoryObjects = List.from(purchasesHistoryObjects);
+      // Change the order of the List
+      if (this.orderByDescending) {
+        purchasesHistoryObjects.sort((a,b) {
+          var aDate =  a.purchasedAt.toDate();
+          var bDate =  b.purchasedAt.toDate();
+          return bDate.compareTo(aDate);
+        });
+      } else {
+        purchasesHistoryObjects.sort((a,b) {
+          var aDate =  a.purchasedAt.toDate();
+          var bDate =  b.purchasedAt.toDate();
+          return aDate.compareTo(bDate);
+        });
+      }
+      filterByStatus(filterByPurchaseStatus);
+      if (filterByActivePurchases.contains(false)){
+        filterByActive(filterByActivePurchases);
+      }
+      print("orderByDate Successfully Applied");
+    } catch(e) {
+      print("Order By Error"+e.toString());
       emit(BrandPurchasesError(e.toString()));
     }
   }

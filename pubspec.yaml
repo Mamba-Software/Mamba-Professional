@@ -105,6 +105,7 @@ dependencies:
   geoflutterfire2: ^2.3.12
   purchases_flutter: ^4.11.1
   equatable: ^2.0.5
+  collection: ^1.15.0
 
 flutter_icons:
   # Platforms
