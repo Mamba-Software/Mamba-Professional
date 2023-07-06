@@ -59,7 +59,7 @@ class PurchaseCard extends StatelessWidget {
                     children: [
                       Flexible(
                         child: Text(
-                          user.name!+user.name!+user.name!,
+                          user.name!,
                           style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.ellipsis,
