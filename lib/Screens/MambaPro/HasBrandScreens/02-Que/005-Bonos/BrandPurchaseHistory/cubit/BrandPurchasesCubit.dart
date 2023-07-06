@@ -34,6 +34,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   final _bonosUtils = BonosUtils();
   // Lists
   List<PurchaseHistoryModel> purchasesHistoryObjects = [];
+  List<PurchaseHistoryModel> purchasesHistoryObjectsPurchases = [];
+  List<PurchaseHistoryModel> purchasesHistoryObjectsRequests = [];
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
   List<Bono> bonosList = [];
@@ -108,6 +110,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         purchasesHistoryListsPurchases.add(obj);
       }
       // Define the Past Purchases to the Global Object
+      purchasesHistoryObjectsPurchases = List.from(purchasesHistoryListsPurchases);
       purchasesHistoryObjects = List.from(purchasesHistoryListsPurchases);
       openBrandRequestsStream();
       openPurchasesStream();
@@ -232,7 +235,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           purchasesHistoryListsRequests.add(obj);
         }
         // Emit a new state with the list of `Events`.
-        purchasesHistoryObjects = List.from(purchasesHistoryObjects+purchasesHistoryListsRequests);
+        purchasesHistoryObjects = List.from(purchasesHistoryObjectsPurchases+purchasesHistoryListsRequests);
         // Order Notification List Descending Time
         purchasesHistoryObjects.sort((a,b) {
           var aDate =  a.purchasedAt.toDate();
@@ -281,7 +284,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
             // Fetch the Purchase
             Purchase p = Purchase.fromObjectAllData(change.doc.id, change.doc);
             // If the new purchase is inside current date that should have been fetched
-            if (p.purchasedAt!.toDate().isBefore(lastFetchedPurchaseDate)) {
+            if (p.purchasedAt!.toDate().isAfter(lastFetchedPurchaseDate)) {
+              print("NEW PURCHASE");
               // Get User
               Usuario user = usersList.firstWhere((element) => element.id == p.userId, orElse: () => Usuario());
               if (user.id == null) {
@@ -311,7 +315,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
                 purchaseStatus: p.directPurchase != null && p.directPurchase! ? PurchaseStatus.DIRECT : PurchaseStatus.CONFIRMED,
               );
               // Emit a new state with the list of `Events`.
-              purchasesHistoryObjects.add(obj);
+              purchasesHistoryObjectsPurchases.add(obj);
+              purchasesHistoryObjects = List.from(purchasesHistoryObjectsPurchases);
               // Order Notification List Descending Time
               purchasesHistoryObjects.sort((a,b) {
                 var aDate =  a.purchasedAt.toDate();
