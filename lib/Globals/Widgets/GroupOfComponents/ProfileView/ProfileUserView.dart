@@ -1108,8 +1108,8 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                             },
                                             child: OtorgarBono(
                                               user: user,
-                                              edit: false,
                                               brand: currentBrand,
+
                                             ),
                                           ),
                                         );
