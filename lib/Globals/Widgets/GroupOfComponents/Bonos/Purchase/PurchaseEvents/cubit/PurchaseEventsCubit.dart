@@ -9,23 +9,26 @@ import 'package:equatable/equatable.dart';
 part 'PurchaseEventsState.dart';
 
 class PurchaseEventsCubit extends Cubit<PurchaseEventsState> {
+  final Purchase purchase;
   final _purchaseDataService = PurchaseDataService();
 
-  PurchaseEventsCubit(Purchase purchase) : super(PurchaseEventsInitial()) {
+  PurchaseEventsCubit(this.purchase) : super(const PurchaseEventsInitial()) {
+    loadList(purchase);
   }
 
   void loadList(Purchase purchase) async {
     if(purchase.id != null) {
-      emit(PurchaseEventsLoading());
+      emit(const PurchaseEventsLoading());
       Purchase purchaseNew = await _purchaseDataService.getPurchaseEvents(purchase);
       purchaseNew.setInitialEventsData = purchaseNew.events;
+      await Future.delayed(const Duration(milliseconds: 500));
       emit(PurchaseEventsLoaded(purchaseNew));
     }
   }
 
   void updateEvents(Purchase purchase) async {
     if(purchase.id != null) {
-      emit(PurchaseEventsLoading());
+      emit(const PurchaseEventsLoading());
       emit(PurchaseEventsLoaded(purchase));
     }
   }

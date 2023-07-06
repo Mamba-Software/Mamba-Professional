@@ -944,93 +944,119 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           navigateToEventScreen(appointment.id.toString(), isCompleted);
         },
         child: Container(
-          height: details.bounds.height,
-          width: details.bounds.width,
-          margin: const EdgeInsets.symmetric(vertical: 2),
-          padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.04, vertical: details.bounds.width*0.02),
-          decoration: BoxDecoration(
-            color: appointment.color,
-            borderRadius: BorderRadius.all(
-              Radius.circular(details.bounds.width*0.04),
+          margin: EdgeInsets.only(top: details.bounds.width*0.0, bottom: details.bounds.width*0.02, right: MediaQuery.of(context).size.width*0.02),
+          child: Material(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(details.bounds.width*0.04),),
             ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                child: Text(
-                  event.title!,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.fade,
-                  textAlign: TextAlign.start,
-                  maxLines: 1,
-                  softWrap: false,
-                ),
-              ),
-              Flexible(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
+            child: SizedBox(
+              height: details.bounds.height,
+              width: details.bounds.width,
+              child: Row(
+                children: [
+                  Container(
+                    width: details.bounds.width*0.1,
+                    decoration: BoxDecoration(
+                      color: appointment.color,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(details.bounds.width*0.04),
+                        bottomLeft: Radius.circular(details.bounds.width*0.04),
                       ),
-                      Text(
-                        DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              Flexible(
-                child: ListView.builder(
-                    shrinkWrap: false,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: event.usersList.length,
-                    clipBehavior: Clip.none,
-                    itemBuilder: (context, int index) {
-                      var trainer = event.usersList[index];
-                      if (trainer.isTrainer == true) {
-                        return Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CircularImage(
-                                size: MediaQuery.of(context).size.width*0.05,
-                                image: trainer.imageUrl,
-                                color: AppColors.white,
-                                borderWidth: 0.5,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                trainer.lastName != null && trainer.lastName!.isNotEmpty ? trainer.firstName!+" "+trainer.lastName![0]+"." : trainer.firstName!,
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                                softWrap: false,
-                              ),
-                            ],
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.04, vertical: details.bounds.width*0.02),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(details.bounds.width*0.04),
+                          bottomRight: Radius.circular(details.bounds.width*0.04),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              event.title!,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
+                              overflow: TextOverflow.fade,
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                              softWrap: false,
+                            ),
                           ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }
-                ),
+                          Flexible(
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                  ),
+                                  Text(
+                                    DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            child: ListView.builder(
+                                shrinkWrap: false,
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: event.usersList.length,
+                                clipBehavior: Clip.none,
+                                itemBuilder: (context, int index) {
+                                  var trainer = event.usersList[index];
+                                  if (trainer.isTrainer == true) {
+                                    return Container(
+                                      margin: const EdgeInsets.only(right: 5),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          CircularImage(
+                                            size: MediaQuery.of(context).size.width*0.05,
+                                            image: trainer.imageUrl,
+                                            color: AppColors.white,
+                                            borderWidth: 0.5,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            trainer.lastName != null && trainer.lastName!.isNotEmpty ? trainer.firstName!+" "+trainer.lastName![0]+"." : trainer.firstName!,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            softWrap: false,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                }
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       );

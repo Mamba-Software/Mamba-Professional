@@ -25,7 +25,7 @@ class SelectAllEvents extends StatefulWidget {
 class _SelectAllEventsState extends State<SelectAllEvents> {
 
   // Brand Data Service
-  var _brandDataService = BrandDataService();
+  final _brandDataService = BrandDataService();
   // Boolean Loading
   bool isLoading = false;
   // Search Controller

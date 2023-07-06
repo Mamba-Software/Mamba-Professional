@@ -3053,11 +3053,11 @@
   "@last30Days":{
     "description": "last30Days text"
   },
-  "olderFirst": "Antiguos primero",
+  "olderFirst": "Antiguos",
   "@olderFirst": {
     "description": "Donde message"
   },
-  "newerFirst": "Recientes primero",
+  "newerFirst": "Recientes",
   "@newerFirst": {
     "description": "Donde message"
   },

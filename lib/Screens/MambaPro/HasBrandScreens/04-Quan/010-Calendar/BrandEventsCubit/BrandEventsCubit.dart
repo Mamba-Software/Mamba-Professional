@@ -40,8 +40,24 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       }
       // Open the Stream to Get Brand Upcoming Events
       _subscription = _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
-        List<DocumentSnapshot> documents = querySnapshot.docs;
-        upcomingEventsList = documentsToEvents(documents, _brandTrainers);
+        for (var change in querySnapshot.docChanges) {
+          if (change.type == DocumentChangeType.added) {
+            print("new one");
+            DocumentSnapshot document = change.doc;
+            Event evt = documentToEvent(document, _brandTrainers);
+            upcomingEventsList.add(evt);
+          }
+          if (change.type == DocumentChangeType.modified) {
+            print("modified one");
+            DocumentSnapshot document = change.doc;
+            Event evt = documentToEvent(document, _brandTrainers);
+            upcomingEventsList.removeWhere((element) => element.id == evt.id!);
+            upcomingEventsList.add(evt);
+          }
+          if (change.type == DocumentChangeType.modified) {
+            print("deleted one");
+          }
+        }
         List<Event> finalList = finishedEventsList+upcomingEventsList;
         // Order Notification List Descending Time
         finalList.sort((a,b) {
@@ -256,4 +272,18 @@ List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _b
   });
   // Return List of Events
   return events;
+}
+
+Event documentToEvent(DocumentSnapshot document, List<Usuario> _brandTrainers) {
+  List<Usuario> eventTrainers = [];
+  Event evt = Event.fromObjectOnlyCoverData(document.id, document);
+  // Check Trainers in Event
+  for (Usuario trainer in _brandTrainers) {
+    int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
+    if (index != -1) {
+      eventTrainers.add(trainer);
+    }
+  }
+  evt.setUserList = eventTrainers;
+  return evt;
 }
