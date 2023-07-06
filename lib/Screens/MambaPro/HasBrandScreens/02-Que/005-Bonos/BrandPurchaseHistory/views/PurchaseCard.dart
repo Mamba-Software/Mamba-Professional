@@ -128,7 +128,7 @@ class PurchaseCard extends StatelessWidget {
 
     return Row(
       children: [
-        // SESSIONS
+        /* SESSIONS
         Icon(
           Icons.calendar_month_outlined,
           color: AppColors.grey,
@@ -138,6 +138,24 @@ class PurchaseCard extends StatelessWidget {
         Flexible(
           child: Text(
             bono.sessions! < 5000 ? bono.sessions.toString() + " ses..." : StringUtils().toCapitalized(AppLocalizations.of(context)!.ilimitadas),
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+         */
+        // IS ACTIVE
+        Icon(
+          Icons.circle,
+          color: AppColors.red,
+          size: MediaQuery.of(context).size.width * 0.04,
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+        Flexible(
+          child: Text(
+            StringUtils().toCapitalized(AppLocalizations.of(context)!.desactive),
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
             overflow: TextOverflow.ellipsis,
@@ -200,6 +218,7 @@ class PurchaseCard extends StatelessWidget {
     return Row(
       children: [
         //SESSIONS
+        /*
         Icon(
           Icons.calendar_month_outlined,
           color: AppColors.grey,
@@ -216,6 +235,23 @@ class PurchaseCard extends StatelessWidget {
           ),
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+        */
+        // IS ACTIVE
+        Icon(
+          Icons.circle,
+          color: purchase!.isActive! ? Colors.green : AppColors.red,
+          size: MediaQuery.of(context).size.width * 0.04,
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+        Flexible(
+          child: Text(
+            purchase!.isActive! ? AppLocalizations.of(context)!.active : AppLocalizations.of(context)!.desactive,
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+        ),
         // PRICE
         Icon(
           Icons.attach_money_outlined,
