@@ -26,6 +26,7 @@ class BrandPurchasesLoaded extends BrandPurchasesState {
   bool orderByDescending;
   List<bool> filterByPurchaseStatus;
   List<bool> filterByActivePurchases;
+  bool forceRebuild;
 
   BrandPurchasesLoaded({
     required this.startDate,
@@ -35,6 +36,7 @@ class BrandPurchasesLoaded extends BrandPurchasesState {
     required this.orderByDescending,
     required this.filterByPurchaseStatus,
     required this.filterByActivePurchases,
+    required this.forceRebuild,
   });
 
   BrandPurchasesLoaded copyWith({
@@ -45,6 +47,7 @@ class BrandPurchasesLoaded extends BrandPurchasesState {
     bool? orderByDescending,
     List<bool>? filterByPurchaseStatus,
     List<bool>? filterByActivePurchases,
+    bool? forceRebuild,
   }) {
     return BrandPurchasesLoaded(
       startDate: startDate ?? this.startDate,
@@ -52,8 +55,9 @@ class BrandPurchasesLoaded extends BrandPurchasesState {
       dateJoinedBrand: dateJoinedBrand ?? this.dateJoinedBrand,
       purchasesHistoryObjects: purchasesHistoryObjects ?? this.purchasesHistoryObjects,
       orderByDescending: orderByDescending ?? this.orderByDescending,
-      filterByPurchaseStatus: filterByPurchaseStatus != null ? List.from(filterByPurchaseStatus) : this.filterByPurchaseStatus,
-      filterByActivePurchases: filterByActivePurchases != null ? List.from(filterByActivePurchases) : this.filterByActivePurchases,
+      filterByPurchaseStatus: filterByPurchaseStatus ?? this.filterByPurchaseStatus,
+      filterByActivePurchases: filterByActivePurchases ?? this.filterByActivePurchases,
+      forceRebuild: forceRebuild ?? this.forceRebuild,
     );
   }
 
@@ -65,8 +69,13 @@ class BrandPurchasesLoaded extends BrandPurchasesState {
       dateJoinedBrand,
       purchasesHistoryObjects,
       orderByDescending,
+      filterByPurchaseStatus,
+      filterByActivePurchases,
+      forceRebuild
+      /*
       const IterableEquality().hash(filterByPurchaseStatus),
       const IterableEquality().hash(filterByActivePurchases),
+       */
     ];
   }
 

@@ -293,6 +293,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           orderByDescending: orderByDescending,
           filterByPurchaseStatus: filterByPurchaseStatus,
           filterByActivePurchases: filterByActivePurchases,
+          forceRebuild: false,
         );
         emit(loadedState);
       },
@@ -427,7 +428,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     }
   }
 
-  /// FILTER BY STAUS
+  /// FILTER BY STATUS
   Future<void> filterByStatus(List<bool> filterBy) async {
     try {
       print("filterByPurchaseStatus $filterBy");
@@ -466,6 +467,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           orderByDescending: orderByDescending,
           filterByPurchaseStatus: filterByPurchaseStatus,
           purchasesHistoryObjects: filteredDateList,
+          forceRebuild: !loadedState.forceRebuild
         )
       );
     } catch(e) {
@@ -500,6 +502,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           orderByDescending: orderByDescending,
           filterByActivePurchases: filterByActivePurchases,
           purchasesHistoryObjects: filteredDateList,
+          forceRebuild: !loadedState.forceRebuild
         )
       );
     } catch(e) {

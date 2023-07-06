@@ -171,8 +171,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
             DateTime dateJoinedBrand = loadedState.dateJoinedBrand;
             List<bool> filterByPurchaseStatus = loadedState.filterByPurchaseStatus;
             List<bool> filterByActivePurchases = loadedState.filterByActivePurchases;
-            print("filterByActivePurchases enwne nwe ");
-            print(filterByActivePurchases);
             List<bool> allFilters = filterByPurchaseStatus + filterByActivePurchases;
             return Scaffold(
               appBar: AppBar(
@@ -349,7 +347,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[0])) {
                                                                 filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
-                                                                print("sending ... "+filterByPurchaseStatus.toString());
                                                                 brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
                                                                 Navigator.pop(context);
                                                               }
@@ -371,7 +368,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[1])) {
                                                                 filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
-                                                                print("sending ... "+filterByPurchaseStatus.toString());
                                                                 brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
                                                                 Navigator.pop(context);
                                                               }
@@ -393,7 +389,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[2])) {
                                                                 filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
-                                                                print("sending ... "+filterByPurchaseStatus.toString());
                                                                 brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
                                                                 Navigator.pop(context);
                                                               }
@@ -418,7 +413,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByActivePurchases[0])) {
                                                                 filterByActivePurchases[0] = !filterByActivePurchases[0];
-                                                                print("sending ... "+filterByActivePurchases.toString());
                                                                 brandPurchasesCubit.filterByActive(filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
@@ -440,7 +434,6 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByActivePurchases[1])) {
                                                                 filterByActivePurchases[1] = !filterByActivePurchases[1];
-                                                                print("sending ... "+filterByActivePurchases.toString());
                                                                 brandPurchasesCubit.filterByActive(filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
