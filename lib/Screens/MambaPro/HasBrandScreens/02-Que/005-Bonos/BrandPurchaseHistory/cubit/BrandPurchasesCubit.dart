@@ -296,6 +296,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           forceRebuild: false,
         );
         emit(loadedState);
+        // Filter New Bono Request
+        filterBy(filterByPurchaseStatus, filterByActivePurchases);
       },
         onError: (e) {
           print("Brand Requests Error"+e.toString());
@@ -372,6 +374,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
                   purchasesHistoryObjects: purchasesHistoryObjects,
                 )
               );
+              // Filter New Purchase
+              filterBy(filterByPurchaseStatus, filterByActivePurchases);
             }
           }
         }
@@ -424,6 +428,80 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       print("Date Range Successfully Updated");
     } catch(e) {
       print("Update Date Range Error"+e.toString());
+      emit(BrandPurchasesError(e.toString()));
+    }
+  }
+
+  /// FILTER BY STATUS
+  Future<void> filterBy(List<bool> filterStatus, List<bool> filterActive) async {
+    try {
+      print("filterByPurchaseStatus $filterStatus");
+      print("filterByActivePurchases $filterActive");
+      filterByPurchaseStatus = List.from(filterStatus);
+      filterByActivePurchases = List.from(filterActive);
+
+      /// Filter purchasesHistoryObjects by the current date range...
+      List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
+      filteredDateList.removeWhere((element) {
+        // Remove the ones before the start date or after the end date
+        return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
+      });
+      /// Filter By Type Of Status
+      filteredDateList.removeWhere((element) {
+        // Aux Function
+        bool _matchesPurchaseStatusAux(PurchaseHistoryModel element, int index) {
+          switch (index) {
+            case 0:
+              return element.purchaseStatus == PurchaseStatus.CONFIRMED;
+            case 1:
+              return element.purchaseStatus == PurchaseStatus.DIRECT;
+            case 2:
+              return element.purchaseStatus == PurchaseStatus.TO_CONFIRM;
+            default:
+              return false;
+          }
+        }
+        // For Loop
+        for (int i = 0; i < filterByPurchaseStatus.length; i++) {
+          if (filterByPurchaseStatus[i] && _matchesPurchaseStatusAux(element, i)) {
+            return false;
+          }
+        }
+        return true;
+      });
+      /// Filter By Type Of Active or InActive
+      filteredDateList.removeWhere((element) {
+        // Is Bono Request
+        if (element.bonoReq != null) {
+          if (filterByActivePurchases[0]) {
+            return false;
+          }
+          if (filterByActivePurchases[1]) {
+            return false;
+          }
+          return true;
+        } else {
+          // Is Purchase
+          if (filterByActivePurchases[0] && (element.purchase!.isActive!)) {
+            return false;
+          }
+          if (filterByActivePurchases[1] && (element.purchase!.isActive == false)) {
+            return false;
+          }
+          return true;
+        }
+      });
+      emit(
+        loadedState = loadedState.copyWith(
+          forceRebuild: !loadedState.forceRebuild,
+          orderByDescending: orderByDescending,
+          filterByPurchaseStatus: filterByPurchaseStatus,
+          filterByActivePurchases: filterByActivePurchases,
+          purchasesHistoryObjects: filteredDateList,
+        )
+      );
+    } catch(e) {
+      print("Filter By Error"+e.toString());
       emit(BrandPurchasesError(e.toString()));
     }
   }
@@ -487,16 +565,6 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         // Remove the ones before the start date or after the end date
         return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
       });
-      /// Filter By Type Of Active or InActive
-      filteredDateList.removeWhere((element) {
-        if (filterByActivePurchases[0] && (element.purchase!.isActive!)) {
-          return false;
-        }
-        if (filterByActivePurchases[1] && (element.purchase!.isActive == false)) {
-          return false;
-        }
-        return true;
-      });
       emit(
         loadedState = loadedState.copyWith(
           orderByDescending: orderByDescending,
@@ -531,10 +599,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
           return aDate.compareTo(bDate);
         });
       }
-      filterByStatus(filterByPurchaseStatus);
-      if (filterByActivePurchases.contains(false)){
-        filterByActive(filterByActivePurchases);
-      }
+      filterBy(filterByPurchaseStatus, filterByActivePurchases);
       print("orderByDate Successfully Applied");
     } catch(e) {
       print("Order By Error"+e.toString());

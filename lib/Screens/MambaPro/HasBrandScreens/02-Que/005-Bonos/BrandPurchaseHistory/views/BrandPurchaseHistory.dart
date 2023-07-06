@@ -252,8 +252,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                       onPressed: () {
                                                         filterByPurchaseStatus = [true, true, true];
                                                         filterByActivePurchases = [true, true];
-                                                        brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
-                                                        brandPurchasesCubit.filterByActive(filterByActivePurchases);
+                                                        brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                         Navigator.pop(context);
                                                       }
                                                   ),
@@ -347,7 +346,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[0])) {
                                                                 filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
-                                                                brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -368,7 +367,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[1])) {
                                                                 filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
-                                                                brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -389,7 +388,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[2])) {
                                                                 filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
-                                                                brandPurchasesCubit.filterByStatus(filterByPurchaseStatus);
+                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -413,7 +412,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByActivePurchases[0])) {
                                                                 filterByActivePurchases[0] = !filterByActivePurchases[0];
-                                                                brandPurchasesCubit.filterByActive(filterByActivePurchases);
+                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -434,7 +433,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByActivePurchases[1])) {
                                                                 filterByActivePurchases[1] = !filterByActivePurchases[1];
-                                                                brandPurchasesCubit.filterByActive(filterByActivePurchases);
+                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
