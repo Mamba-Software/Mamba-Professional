@@ -1159,6 +1159,14 @@ class BrandFirebaseCalls {
         .snapshots();
   }
 
+  Stream<QuerySnapshot> getBrandPurchasesStream(String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Purchases")
+        .snapshots();
+  }
+
 
   //Get bonos from brand
   Stream<DocumentSnapshot> getBonoInfoStream(String brandId, String bonoId) {

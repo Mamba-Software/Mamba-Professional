@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -29,7 +28,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
   final _purchaseDataService = PurchaseDataService();
-  late StreamSubscription<QuerySnapshot> _subscription;
+  late StreamSubscription<QuerySnapshot> _subscriptionPurchases;
+  late StreamSubscription<QuerySnapshot> _subscriptionBonoRequests;
   // Utils
   final _bonosUtils = BonosUtils();
   // Lists
@@ -49,14 +49,15 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
 
   ///////////////////// DATA FETCHING
 
-  /// FETCH INITIAL BRAND + OPEN BONO REQUEST STREAM
+  /// FETCH INITIAL BRAND
   Future<void> fetchInitialBrandPurchases() async {
     try {
+      print("Brand Initial Fetch");
       /// Set the State to Loading
       emit(const BrandPurchasesLoading());
       /// Date Time Definition
       endDate = DateTime.now();
-      startDate = endDate.subtract(const Duration(days: 1));
+      startDate = endDate.subtract(const Duration(days: 14));
       dateJoinedBrand = DateTime(
         int.parse(currentBrand.dateJoined!.split("-")[2]),
         int.parse(currentBrand.dateJoined!.split("-")[1]),
@@ -65,10 +66,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         0,
       );
       /// Lists
-      List<BonoRequest> bonoRequestsList = [];
       List<Purchase> purchasesList = [];
       List<PurchaseHistoryModel> purchasesHistoryListsPurchases = [];
-      List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
       /// Fetch initial purchases
       purchasesList = await _purchaseDataService.getBrandPurchases(brandId, startDate, endDate, true);
       if (purchasesList.isNotEmpty) {
@@ -108,79 +107,10 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         // After processing the list, add the new purchases to the existing list of purchases.
         purchasesHistoryListsPurchases.add(obj);
       }
-      /// Open the Stream to Get Brand Requests
-      _subscription = _brandDataService.getBonosRequestsFromBrand(brandId).listen((querySnapshot) async {
-        List<DocumentSnapshot> documents = querySnapshot.docs;
-        purchasesHistoryListsRequests = [];
-        bonoRequestsList = _bonosUtils.documentsToBonosRequests(documents);
-        for (BonoRequest req in bonoRequestsList) {
-          // Get User
-          Usuario user = usersList.firstWhere((element) => element.id == req.userId, orElse: () => Usuario());
-          if (user.id == null) {
-            user = await _userDataService.getUserCoverDetails(req.userId!);
-          }
-          usersList.add(user);
-          // Get User
-          Brand brand = brandsList.firstWhere((element) => element.id == req.brandId, orElse: () => Brand());
-          if (brand.id == null) {
-            brand = await _brandDataService.getBrandCoverDetails(req.brandId!);
-          }
-          brandsList.add(brand);
-          // Get Bono
-          Bono bono = bonosList.firstWhere((element) => element.id == req.bonoId, orElse: () => Bono());
-          if (bono.id == null) {
-            bono = await _brandDataService.getBonoInfo(req.brandId!, req.bonoId!);
-          }
-          bonosList.add(bono);
-          // Build Purchase Object
-          PurchaseHistoryModel obj = PurchaseHistoryModel(
-              user: user,
-              brand: brand,
-              bono: bono,
-              bonoReq: req,
-              purchase: null,
-              purchasedAt: req.timeRequested!,
-              purchaseStatus: PurchaseStatus.TO_CONFIRM,
-          );
-          purchasesHistoryListsRequests.add(obj);
-        }
-        // Emit a new state with the list of `Events`.
-        purchasesHistoryObjects = List.from(purchasesHistoryListsPurchases+purchasesHistoryListsRequests);
-
-        // Order Notification List Descending Time
-        purchasesHistoryObjects.sort((a,b) {
-          var aDate =  a.purchasedAt.toDate();
-          var bDate =  b.purchasedAt.toDate();
-          return bDate.compareTo(aDate);
-        });
-        // Check the Last Purchase
-        List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
-        filteredDateList.removeWhere((element) {
-          // Remove the ones before the start date or after the end date
-          print(element.user.name);
-          print(element.purchasedAt.toDate());
-          if (endDate.day == element.purchasedAt.toDate().day && endDate.month == element.purchasedAt.toDate().month && endDate.year == element.purchasedAt.toDate().year) {
-            endDate = DateTime.now();
-            return false;
-          }
-          return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
-        });
-        /// Emit New Status
-        print("Brand Purchases New Data Finished");
-        loadedState = BrandPurchasesLoaded(
-          startDate: startDate,
-          endDate: endDate,
-          dateJoinedBrand: dateJoinedBrand,
-          purchasesHistoryObjects: filteredDateList,
-          filterByPurchaseStatus: filterByPurchaseStatus,
-        );
-        emit(loadedState);
-      },
-      onError: (e) {
-        print("Brand Purchases Error"+e.toString());
-        emit(BrandPurchasesError(e.toString()));
-      },
-      );
+      // Define the Past Purchases to the Global Object
+      purchasesHistoryObjects = List.from(purchasesHistoryListsPurchases);
+      openBrandRequestsStream();
+      openPurchasesStream();
     } catch(e) {
       print("Brand Purchases Error"+e.toString());
       emit(BrandPurchasesError(e.toString()));
@@ -250,9 +180,9 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       }).toList();
       print("More Purchases Successfully Loaded");
       emit(
-        loadedState.copyWith(
-          purchasesHistoryObjects: filteredDateList,
-        )
+          loadedState.copyWith(
+            purchasesHistoryObjects: filteredDateList,
+          )
       );
 
     } catch(e) {
@@ -261,11 +191,158 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
     }
   }
 
-  /// FETCH MORE BRAND
+  /// OPEN BONO REQUEST STREAM
+  Future<void> openBrandRequestsStream() async {
+    try {
+      /// Open the Stream to Get Brand Requests
+      _subscriptionBonoRequests = _brandDataService.getBonosRequestsFromBrand(brandId).listen((querySnapshot) async {
+        //print("Stream REQUESTS New Data");
+        List<DocumentSnapshot> documents = querySnapshot.docs;
+        List<PurchaseHistoryModel> purchasesHistoryListsRequests = [];
+        List bonoRequestsList = _bonosUtils.documentsToBonosRequests(documents);
+        for (BonoRequest req in bonoRequestsList) {
+          // Get User
+          Usuario user = usersList.firstWhere((element) => element.id == req.userId, orElse: () => Usuario());
+          if (user.id == null) {
+            user = await _userDataService.getUserCoverDetails(req.userId!);
+          }
+          usersList.add(user);
+          // Get User
+          Brand brand = brandsList.firstWhere((element) => element.id == req.brandId, orElse: () => Brand());
+          if (brand.id == null) {
+            brand = await _brandDataService.getBrandCoverDetails(req.brandId!);
+          }
+          brandsList.add(brand);
+          // Get Bono
+          Bono bono = bonosList.firstWhere((element) => element.id == req.bonoId, orElse: () => Bono());
+          if (bono.id == null) {
+            bono = await _brandDataService.getBonoInfo(req.brandId!, req.bonoId!);
+          }
+          bonosList.add(bono);
+          // Build Purchase Object
+          PurchaseHistoryModel obj = PurchaseHistoryModel(
+            user: user,
+            brand: brand,
+            bono: bono,
+            bonoReq: req,
+            purchase: null,
+            purchasedAt: req.timeRequested!,
+            purchaseStatus: PurchaseStatus.TO_CONFIRM,
+          );
+          purchasesHistoryListsRequests.add(obj);
+        }
+        // Emit a new state with the list of `Events`.
+        purchasesHistoryObjects = List.from(purchasesHistoryObjects+purchasesHistoryListsRequests);
+        // Order Notification List Descending Time
+        purchasesHistoryObjects.sort((a,b) {
+          var aDate =  a.purchasedAt.toDate();
+          var bDate =  b.purchasedAt.toDate();
+          return bDate.compareTo(aDate);
+        });
+        // Check the Last Purchase
+        List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
+        filteredDateList.removeWhere((element) {
+          // Remove the ones before the start date or after the end date
+          if (endDate.day == element.purchasedAt.toDate().day && endDate.month == element.purchasedAt.toDate().month && endDate.year == element.purchasedAt.toDate().year) {
+            endDate = DateTime.now();
+            return false;
+          }
+          return element.purchasedAt.toDate().isBefore(startDate) || element.purchasedAt.toDate().isAfter(endDate);
+        });
+        /// Emit New Status
+        loadedState = BrandPurchasesLoaded(
+          startDate: startDate,
+          endDate: endDate,
+          dateJoinedBrand: dateJoinedBrand,
+          purchasesHistoryObjects: filteredDateList,
+          filterByPurchaseStatus: filterByPurchaseStatus,
+        );
+        emit(loadedState);
+      },
+        onError: (e) {
+          print("Brand Requests Error"+e.toString());
+          emit(BrandPurchasesError(e.toString()));
+        },
+      );
 
-  ///////////////////// MODIFYING EXISTENT DATA
+    } catch(e) {
+      print("Brand Purchases Error"+e.toString());
+      emit(BrandPurchasesError(e.toString()));
+    }
+  }
 
+  /// OPEN NEW PURCHASE REQUESTS
+  Future<void> openPurchasesStream() async {
+    try {
+      _subscriptionPurchases = _brandDataService.getBrandPurchasesStream(brandId).listen((querySnapshot) async {
+        //print("Stream PURCHASES New Data");
+        for (var change in querySnapshot.docChanges) {
+          if (change.type == DocumentChangeType.added) {
+            // Fetch the Purchase
+            Purchase p = Purchase.fromObjectAllData(change.doc.id, change.doc);
+            // If the new purchase is inside current date that should have been fetched
+            if (p.purchasedAt!.toDate().isBefore(lastFetchedPurchaseDate)) {
+              // Get User
+              Usuario user = usersList.firstWhere((element) => element.id == p.userId, orElse: () => Usuario());
+              if (user.id == null) {
+                user = await _userDataService.getUserCoverDetails(p.userId!);
+              }
+              usersList.add(user);
+              // Get User
+              Brand brand = brandsList.firstWhere((element) => element.id == p.brandId, orElse: () => Brand());
+              if (brand.id == null) {
+                brand = await _brandDataService.getBrandCoverDetails(p.brandId!);
+              }
+              brandsList.add(brand);
+              // Get Bono
+              Bono bono = bonosList.firstWhere((element) => element.id == p.bonoId, orElse: () => Bono());
+              if (bono.id == null) {
+                bono = await _brandDataService.getBonoInfo(p.brandId!, p.bonoId!);
+              }
+              bonosList.add(bono);
+              // Build Purchase Object
+              PurchaseHistoryModel obj = PurchaseHistoryModel(
+                user: user,
+                brand: brand,
+                bono: bono,
+                bonoReq: null,
+                purchase: p,
+                purchasedAt: p.purchasedAt!,
+                purchaseStatus: p.directPurchase != null && p.directPurchase! ? PurchaseStatus.DIRECT : PurchaseStatus.CONFIRMED,
+              );
+              // Emit a new state with the list of `Events`.
+              purchasesHistoryObjects.add(obj);
+              // Order Notification List Descending Time
+              purchasesHistoryObjects.sort((a,b) {
+                var aDate =  a.purchasedAt.toDate();
+                var bDate =  b.purchasedAt.toDate();
+                return bDate.compareTo(aDate);
+              });
+              /// Emit New Status
+              print("Stream PURCHASES Finished");
+              loadedState = BrandPurchasesLoaded(
+                startDate: startDate,
+                endDate: endDate,
+                dateJoinedBrand: dateJoinedBrand,
+                purchasesHistoryObjects: purchasesHistoryObjects,
+                filterByPurchaseStatus: filterByPurchaseStatus,
+              );
+              emit(loadedState);
+            }
+          }
+        }
+      },
+        onError: (e) {
+          print("Brand Purchases Error"+e.toString());
+          emit(BrandPurchasesError(e.toString()));
+        },
+      );
 
+    } catch(e) {
+      print("Brand Purchases Error"+e.toString());
+      emit(BrandPurchasesError(e.toString()));
+    }
+  }
 
   ///////////////////// FILTERING EXISTENT DATA
 
@@ -382,7 +459,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
 
   @override
   Future<void> close() {
-    _subscription.cancel();
+    _subscriptionPurchases.cancel();
+    _subscriptionBonoRequests.cancel();
     return super.close();
   }
 
