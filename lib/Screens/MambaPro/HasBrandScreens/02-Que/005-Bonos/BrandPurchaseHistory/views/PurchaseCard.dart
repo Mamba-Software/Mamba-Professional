@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -8,7 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/OtorgarBono.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
 import '../../../../../../../Data/Models/Purchase.dart';
 import '../../../../../../../Globals/Styles/AppColors/AppColors.dart';
 import '../../../../../../../Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -317,7 +318,6 @@ class PurchaseCard extends StatelessWidget {
         ],
       );
     }
-
   }
 
   Widget buildStatusLabel(BuildContext context) {
@@ -383,37 +383,17 @@ class PurchaseCard extends StatelessWidget {
     if (!brandIsActive) {
       await navigateToPayWall(context);
     } else {
-      await showModalBottomSheet<bool?>(
-        context: context,
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20),
+      await Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => PurchasePage(
+            bono: bono,
+            user: user,
+            brand: brand,
+            bonoRequest: bonoRequest,
+            purchase: purchase,
           ),
-        ),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        builder: (BuildContext context) {
-          return FractionallySizedBox(
-            heightFactor: 0.935,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                FocusScopeNode currentFocus = FocusScope.of(context);
-                if (!currentFocus.hasPrimaryFocus &&
-                    currentFocus.focusedChild != null) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                }
-              },
-              child: OtorgarBono(
-                bono: bono,
-                user: user,
-                brand: brand,
-                bonoRequest: bonoRequest,
-                purchase: purchase,
-              ),
-            ),
-          );
-        },
+        )
       );
     }
   }

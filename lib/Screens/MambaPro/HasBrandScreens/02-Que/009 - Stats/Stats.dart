@@ -52,11 +52,8 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   // App Bar and Scroll View
   ScrollController? _scrollController;
   bool appBarExpanded = false;
-
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients &&
-        _scrollController!.offset >
-            (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
+    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
 
   final DateFormat formatter = DateFormat('dd-MM-yyyy');

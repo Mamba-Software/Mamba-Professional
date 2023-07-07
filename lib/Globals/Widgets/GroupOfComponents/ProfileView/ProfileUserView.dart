@@ -14,7 +14,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/OtorgarBono.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserBonosWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -1105,7 +1105,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                                 FocusManager.instance.primaryFocus?.unfocus();
                                               }
                                             },
-                                            child: OtorgarBono(
+                                            child: PurchasePage(
                                               user: user,
                                               brand: currentBrand,
                                               // TODO: GIFT BONO

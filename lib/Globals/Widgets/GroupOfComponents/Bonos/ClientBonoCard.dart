@@ -12,7 +12,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/OtorgarBono.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
 import '../../../../Data/LibraryModels/lColor.dart';
 import '../../../../Data/LibraryModels/lDegradate.dart';
 
@@ -914,7 +914,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                               FocusManager.instance.primaryFocus?.unfocus();
                             }
                           },
-                          child: OtorgarBono(
+                          child: PurchasePage(
                             user: user,
                             brand: brand,
                             bono: bono,
