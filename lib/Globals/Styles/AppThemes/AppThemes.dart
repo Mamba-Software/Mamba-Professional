@@ -16,8 +16,8 @@ class AppThemes {
       // Accent Color
       colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.mainColor, brightness: Brightness.light),
       // BackGround Colors
-      backgroundColor: AppColors.lightGrey,
-      scaffoldBackgroundColor: AppColors.white,
+      backgroundColor: AppColors.white,
+      scaffoldBackgroundColor: AppColors.lightGrey,
       // Brightness
       brightness: Brightness.light,
       // Texts
@@ -34,7 +34,7 @@ class AppThemes {
       ),
       appBarTheme: AppBarTheme(
         elevation: 4.0,
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.lightGrey,
         iconTheme: const IconThemeData(
             color: Colors.black
         ),

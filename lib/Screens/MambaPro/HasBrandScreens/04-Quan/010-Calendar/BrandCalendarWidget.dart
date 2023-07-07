@@ -1917,7 +1917,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         if (endDate.isAfter(DateTime.now())) {
           color = Colors.black;
         } else {
-          color = Colors.black.withOpacity(0.25);
+          color = Colors.black.withOpacity(0.7);
         }
       } else {
         subject = "${event.numClients}/${event.maxMembers}";
