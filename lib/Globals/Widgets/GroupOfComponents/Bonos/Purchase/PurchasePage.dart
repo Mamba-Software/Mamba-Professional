@@ -280,6 +280,38 @@ class _PurchasePageState extends State<PurchasePage> {
     newPurchase.setPurchasedEventsData = newEvents;
   }
 
+  Widget buildStatusDetails() {
+    if (widget.bonoRequest != null) {
+      return Row(
+        children: [
+          Flexible(
+            child: Text(
+              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(widget.bonoRequest!.timeRequested!.toDate()).toUpperCase(),
+              style: Theme.of(context).textTheme.caption,
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          Flexible(
+            child: Text(
+              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase(),
+              style: Theme.of(context).textTheme.caption,
+              textAlign: TextAlign.left,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
   Widget buildDateDetails() {
     if (widget.bonoRequest != null) {
       return Row(
@@ -367,59 +399,23 @@ class _PurchasePageState extends State<PurchasePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                editBono ? "+ "+purchase.price!.toStringAsFixed(2)+" €" :
-                                isBonoRequest ? AppLocalizations.of(context)!.confirm+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase() : AppLocalizations.of(context)!.acceptBono,
-                                style: Theme.of(context).textTheme.headline1,
-                                textAlign: TextAlign.left
+                              editBono ? AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase() :
+                              isBonoRequest ? AppLocalizations.of(context)!.confirm+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase()
+                                  : AppLocalizations.of(context)!.acceptBono,
+                              style: Theme.of(context).textTheme.headline1,
+                              textAlign: TextAlign.left
                             ),
                             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    widget.user.name!,
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            buildStatusDetails(),
                             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                             buildDateDetails(),
                           ],
                         ),
                       ),
-                      CircularImage(
-                        size: MediaQuery.of(context).size.width * 0.15,
-                        image: widget.user.imageUrl,
-                        color: Theme.of(context).primaryColor,
-                        borderWidth: 1.0,
-                      )
                     ],
                   ),
                 ),
-                /// OLD TITLE
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        editBono ? AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase() :
-                        isBonoRequest ? AppLocalizations.of(context)!.confirm+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase() : AppLocalizations.of(context)!.acceptBono,
-                        style: Theme.of(context).textTheme.headline1,
-                        textAlign: TextAlign.left
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                      Text(
-                          !editBono? AppLocalizations.of(context)!.acceptBonoDesc : "#${purchase.id.toString().toUpperCase()}",
-                          style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
-                          textAlign: TextAlign.left
-                      ),
-                    ],
-                  ),
-                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                 /// USER
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
@@ -1041,164 +1037,182 @@ class _PurchasePageState extends State<PurchasePage> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 /// DELETE BONO REQUEST
-                isBonoRequest ? Padding(
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                !isBonoRequest ? Padding(
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
-                  child: TextButton(
-                      child: Text(
-                        AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(),
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(decoration: TextDecoration.underline),
-                      ),
-                      onPressed: () async {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        setState(() {
-                          isLoading = true;
-                        });
-                        await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
-                        mixpanel!.track('bono_confirmation_deleted');
-                        Navigator.of(context).pop();
-                      }
-                  ),
-                ) : SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                /// CONFIRMATION BUTTON
-                isBonoSelected ? GestureDetector(
-                  onTap: isLoading ? null : () async {
-                    if (checkIfAllBonoConditionsAreCorrect()) {
+                  child: GestureDetector(
+                    onTap: () async {
                       FocusManager.instance.primaryFocus?.unfocus();
                       setState(() {
                         isLoading = true;
                       });
-                      if (noSessions) {
-                        bonoSelected.sessions = 10000;
-                      }
-                      if (editBono) {
-                        /// EDIT BONO REQUEST
-                        mixpanel!.track('edit_bono_confirmed');
-                        await _userDataService.updateUserBono(user.id!, currentBrand.id!, bonoSelected);
-                        if(eventsUpdated) {
-                          print('We update the events');
-                          print(purchase.events.length);
-                          await _purchaseDataService.updatePurchaseEvents(
-                              purchase.id!, newPurchase.events, newPurchase.initalEvents);
-                        }
-                        /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
-                        if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
-                          // Delete Local Notifications if Expiration Time has change in Update
-                          await _localNotificationService.deleteRemoteBonoExpirationLocalNotification(user.id!, currentBrand.id!, bonoSelected.purchaseId!);
-                          // Local Notifications Service
-                          await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
-                        }
-                        mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
-                        await Future.delayed(const Duration(seconds: 1));
-                      } else if (isBonoRequest) {
-                        /// CONFIRM BONO REQUEST
-                        // Build Purchase Object
-                        Purchase purchase = Purchase();
-                        purchase.purchasedAt = Timestamp.now();
-                        purchase.brandId = widget.brand.id!;
-                        purchase.bonoId = widget.bonoRequest?.bonoId;
-                        purchase.price = bonoSelected.price;
-                        purchase.userId = widget.bonoRequest?.userId!;
-                        purchase.paymentMethod = paymentMethod;
-                        //Add user to brand
-                        Brand? userBrand = await _userDataService.getUserBrandsToAdd( widget.user.id!, widget.brand.id!);
-                        if (userBrand == null) {
-                          NotificationService().userJoinsBrand(widget.user.id!, widget.brand.id!);
-                          _brandDataService.addUserToBrand(widget.user.id!, widget.brand.id!, 0);
-                        }
-                        // Notifications Service
-                        _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
-                        // Build Purchase Object
-                        String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
-                        await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
-                        await _brandDataService.updateBonoCompras(widget.brand.id!, purchase.bonoId!);
-                        // Local Notifications Service
-                        await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
-                        mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
-                      } else {
-                        /// OTORGAR BONO
-                        // Build Purchase Object
-                        Purchase purchase = Purchase();
-                        purchase.purchasedAt = Timestamp.now();
-                        purchase.brandId = widget.brand.id!;
-                        purchase.bonoId = bonoSelected.id!;
-                        purchase.price = bonoSelected.price!;
-                        purchase.userId = user.id!;
-                        purchase.paymentMethod = paymentMethod;
-                        // Build Purchase Object
-                        _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
-                        // Save Purchase Object
-                        String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
-                        await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
-                        await Future.delayed(const Duration(seconds: 2));
-                        // Local Notifications Service
-                        await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
-                        mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
-                      }
+                      await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
+                      mixpanel!.track('bono_confirmation_deleted');
                       Navigator.of(context).pop();
-                    }
-                  },
-                  child: Container(
-                      height: MediaQuery.of(context).size.height*0.09,
-                      width: double.infinity,
-                      color: Theme.of(context).primaryColor,
-                      child: isLoading ? Center(
-                        child: Container(
-                          padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                          child: LoadingView(
-                            isSmall: true,
-                            hasLogo: false,
-                            color: Theme.of(context).primaryColorDark,
-                          ),
-                        ),
-                      )
-                          : Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                          child: Text(
-                            AppLocalizations.of(context)!.confirm,
-                            style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
-                          ),
-                        ),
-                      )
-                  ),
-                ) :
-                Container(
-                    height: MediaQuery.of(context).size.height*0.09,
-                    width: double.infinity,
-                    color: Theme.of(context).primaryColor,
-                    child: isLoading ? Center(
+                    },
+                    child: Material(
+                      elevation: 4,
+                      shadowColor: Theme.of(context).primaryColor,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                      ),
                       child: Container(
-                        padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                        child: LoadingView(
-                          isSmall: true,
-                          hasLogo: false,
-                          color: Theme.of(context).primaryColorDark,
+                        decoration: BoxDecoration(
+                          color: AppColors.red.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        child: Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(),
+                              style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                            )
                         ),
                       ),
-                    ) : Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context)
-                                .size
-                                .height *
-                                0.00),
-                        child: Text(
-                          'No hay bonos para otorgar a este usuario',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline1
-                              ?.copyWith(
-                            color: Theme.of(context)
-                                .primaryColorDark,
-                          ),
-                        ),
-                      ),
-                    )
-                ),
+                    ),
+                  ),
+                ) : SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               ],
             ),
           ),
         ],
+      ),
+      bottomSheet: isBonoSelected ? GestureDetector(
+        onTap: isLoading ? null : () async {
+          if (checkIfAllBonoConditionsAreCorrect()) {
+            FocusManager.instance.primaryFocus?.unfocus();
+            setState(() {
+              isLoading = true;
+            });
+            if (noSessions) {
+              bonoSelected.sessions = 10000;
+            }
+            if (editBono) {
+              /// EDIT BONO REQUEST
+              mixpanel!.track('edit_bono_confirmed');
+              await _userDataService.updateUserBono(user.id!, currentBrand.id!, bonoSelected);
+              if(eventsUpdated) {
+                print('We update the events');
+                print(purchase.events.length);
+                await _purchaseDataService.updatePurchaseEvents(
+                    purchase.id!, newPurchase.events, newPurchase.initalEvents);
+              }
+              /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
+              if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
+                // Delete Local Notifications if Expiration Time has change in Update
+                await _localNotificationService.deleteRemoteBonoExpirationLocalNotification(user.id!, currentBrand.id!, bonoSelected.purchaseId!);
+                // Local Notifications Service
+                await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
+              }
+              mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
+              await Future.delayed(const Duration(seconds: 1));
+            } else if (isBonoRequest) {
+              /// CONFIRM BONO REQUEST
+              // Build Purchase Object
+              Purchase purchase = Purchase();
+              purchase.purchasedAt = Timestamp.now();
+              purchase.brandId = widget.brand.id!;
+              purchase.bonoId = widget.bonoRequest?.bonoId;
+              purchase.price = bonoSelected.price;
+              purchase.userId = widget.bonoRequest?.userId!;
+              purchase.paymentMethod = paymentMethod;
+              //Add user to brand
+              Brand? userBrand = await _userDataService.getUserBrandsToAdd( widget.user.id!, widget.brand.id!);
+              if (userBrand == null) {
+                NotificationService().userJoinsBrand(widget.user.id!, widget.brand.id!);
+                _brandDataService.addUserToBrand(widget.user.id!, widget.brand.id!, 0);
+              }
+              // Notifications Service
+              _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
+              // Build Purchase Object
+              String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
+              await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
+              await _brandDataService.updateBonoCompras(widget.brand.id!, purchase.bonoId!);
+              // Local Notifications Service
+              await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
+              mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
+            } else {
+              /// OTORGAR BONO
+              // Build Purchase Object
+              Purchase purchase = Purchase();
+              purchase.purchasedAt = Timestamp.now();
+              purchase.brandId = widget.brand.id!;
+              purchase.bonoId = bonoSelected.id!;
+              purchase.price = bonoSelected.price!;
+              purchase.userId = user.id!;
+              purchase.paymentMethod = paymentMethod;
+              // Build Purchase Object
+              _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
+              // Save Purchase Object
+              String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
+              await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
+              await Future.delayed(const Duration(seconds: 2));
+              // Local Notifications Service
+              await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
+              mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
+            }
+            Navigator.of(context).pop();
+          }
+        },
+        child: Container(
+            height: MediaQuery.of(context).size.height*0.09,
+            width: double.infinity,
+            color: Theme.of(context).primaryColor,
+            child: isLoading ? Center(
+              child: Container(
+                padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+                child: LoadingView(
+                  isSmall: true,
+                  hasLogo: false,
+                  color: Theme.of(context).primaryColorDark,
+                ),
+              ),
+            )
+                : Center(
+              child: Padding(
+                padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+                child: Text(
+                  AppLocalizations.of(context)!.confirm,
+                  style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
+                ),
+              ),
+            )
+        ),
+      ) :
+      Container(
+          height: MediaQuery.of(context).size.height*0.09,
+          width: double.infinity,
+          color: Theme.of(context).primaryColor,
+          child: isLoading ? Center(
+            child: Container(
+              padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
+              child: LoadingView(
+                isSmall: true,
+                hasLogo: false,
+                color: Theme.of(context).primaryColorDark,
+              ),
+            ),
+          ) : Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context)
+                      .size
+                      .height *
+                      0.00),
+              child: Text(
+                'No hay bonos para otorgar a este usuario',
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1
+                    ?.copyWith(
+                  color: Theme.of(context)
+                      .primaryColorDark,
+                ),
+              ),
+            ),
+          )
       ),
     );
   }
