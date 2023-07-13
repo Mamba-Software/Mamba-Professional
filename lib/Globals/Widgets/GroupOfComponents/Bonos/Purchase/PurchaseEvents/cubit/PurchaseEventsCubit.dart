@@ -29,6 +29,7 @@ class PurchaseEventsCubit extends Cubit<PurchaseEventsState> {
   void updateEvents(Purchase purchase) async {
     if(purchase.id != null) {
       emit(const PurchaseEventsLoading());
+      print(purchase.events.length);
       emit(PurchaseEventsLoaded(purchase));
     }
   }

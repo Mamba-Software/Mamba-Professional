@@ -2718,6 +2718,38 @@ exports.changeMessageStatus = functions
       return null;
       });
 
+// User Updates Purchase Data
+exports.purchaseUpdatesCoverData = functions
+.region("europe-west1")
+.firestore
+.document("/Purchases/{purchaseId}")
+.onUpdate( async (change, context) => {
+     const purchaseId = context.params.purchaseId;
+      const before = change.before.data();
+      const after = change.after.data();
+
+      const userId = after.userId;
+      const bonoId = after.bonoId;
+      const brandId =  after.brandId;
+
+      let coverDataChange = false;
+      if (before.directPurchase != after.directPurchase) {
+        coverDataChange = true;
+      }
+
+    await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+        });
+
+    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+        });
+
+        await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+        });
+      return null;
+    });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // 7777 TEST ENVIRONMENT CLOUD FUNCTIONS
@@ -4990,6 +5022,7 @@ exports.UserPurchasesBono = functions
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
@@ -5003,7 +5036,8 @@ exports.UserPurchasesBono = functions
       "sessions": purchaseDoc.sessions,
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime, 
+      "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
   });
 
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -5018,6 +5052,7 @@ exports.UserPurchasesBono = functions
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -5032,6 +5067,7 @@ exports.UserPurchasesBono = functions
     "weeklySessions": purchaseDoc.weeklySessions,
     "cancelTime": purchaseDoc.cancelTime,
     "expirationTime": purchaseDoc.expirationTime,
+    "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -5410,6 +5446,7 @@ exports.zzzzUserPurchasesBono = functions
      "weeklySessions": purchaseDoc.weeklySessions,
      "cancelTime": purchaseDoc.cancelTime,
      "expirationTime": purchaseDoc.expirationTime,
+     "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -5424,6 +5461,7 @@ exports.zzzzUserPurchasesBono = functions
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
@@ -5438,6 +5476,7 @@ exports.zzzzUserPurchasesBono = functions
     "weeklySessions": purchaseDoc.weeklySessions,
     "cancelTime": purchaseDoc.cancelTime,
     "expirationTime": purchaseDoc.expirationTime,
+    "directPurchase": purchaseDoc.directPurchase,
   });
 
    await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -5452,6 +5491,7 @@ exports.zzzzUserPurchasesBono = functions
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -5896,6 +5936,37 @@ exports.zzzzUserDeletesPurchase = functions
         return null;
         });
 
+    // 7777 User Updates Purchase Data
+    exports.zzzzpurchaseUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/7777 Purchases/{purchaseId}")
+    .onUpdate( async (change, context) => {
+         const purchaseId = context.params.purchaseId;
+           const before = change.before.data();
+           const after = change.after.data();
 
+           const userId = after.userId;
+           const bonoId = after.bonoId;
+           const brandId =  after.brandId;
+
+          let coverDataChange = false;
+          if (before.directPurchase != after.directPurchase) {
+            coverDataChange = true;
+          }
+
+            await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+            });
+
+            await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+            });
+
+            await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+            });
+          return null;
+        });
 
 

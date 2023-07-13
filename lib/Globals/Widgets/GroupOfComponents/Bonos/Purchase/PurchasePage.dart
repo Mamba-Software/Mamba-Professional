@@ -212,6 +212,7 @@ class _PurchasePageState extends State<PurchasePage> {
 
   Future<void> getPurchase() async {
     purchase = await _purchaseDataService.getPurchaseInfo(purchase.id!);
+    purchase.setInitialEventsData = purchase.events;
     startDate = purchase.purchasedAt!.toDate();
     paymentMethod = purchase.paymentMethod;
     originalExpirationTime = bonoSelected.condition!.expirationTime!;
@@ -1073,6 +1074,41 @@ class _PurchasePageState extends State<PurchasePage> {
                     ),
                   ),
                 ) : SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
+                  child: GestureDetector(
+                    onTap: () async {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await _purchaseDataService.deletePurchase(purchase.id!, widget.user.id!, widget.brand.id!);
+                      mixpanel!.track('purchase_deleted');
+                      Navigator.of(context).pop();
+                    },
+                    child: Material(
+                      elevation: 4,
+                      shadowColor: Theme.of(context).primaryColor,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.red,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        child: Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.purchase.toLowerCase(),
+                              style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                            )
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               ],
             ),
@@ -1090,6 +1126,11 @@ class _PurchasePageState extends State<PurchasePage> {
               bonoSelected.sessions = 10000;
             }
             if (editBono) {
+              if(purchase.directPurchase == true) {
+                mixpanel!.track('purchase_verified');
+                _purchaseDataService.updatePurchaseToVerified(
+                    purchase.id!);
+              }
               /// EDIT BONO REQUEST
               mixpanel!.track('edit_bono_confirmed');
               await _userDataService.updateUserBono(user.id!, currentBrand.id!, bonoSelected);
@@ -1097,7 +1138,7 @@ class _PurchasePageState extends State<PurchasePage> {
                 print('We update the events');
                 print(purchase.events.length);
                 await _purchaseDataService.updatePurchaseEvents(
-                    purchase.id!, newPurchase.events, newPurchase.initalEvents);
+                    purchase.id!, user.id!, newPurchase.events, newPurchase.initalEvents);
               }
               /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
               if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
@@ -1108,7 +1149,8 @@ class _PurchasePageState extends State<PurchasePage> {
               }
               mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
               await Future.delayed(const Duration(seconds: 1));
-            } else if (isBonoRequest) {
+            }
+            else if (isBonoRequest) {
               /// CONFIRM BONO REQUEST
               // Build Purchase Object
               Purchase purchase = Purchase();
@@ -1133,7 +1175,8 @@ class _PurchasePageState extends State<PurchasePage> {
               // Local Notifications Service
               await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
               mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
-            } else {
+            }
+            else {
               /// OTORGAR BONO
               // Build Purchase Object
               Purchase purchase = Purchase();

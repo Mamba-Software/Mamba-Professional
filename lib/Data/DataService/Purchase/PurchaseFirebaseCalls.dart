@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
@@ -295,6 +296,7 @@ class PurchaseFirebaseCalls {
       "cancelTime": bonoSelected.condition?.cancelTime,
       "expirationTime": bonoSelected.condition?.expirationTime,
       "paymentMethod": purchase.paymentMethod,
+      "directPurchase": false,
     }).catchError((err) {
       print(err);
     });
@@ -349,11 +351,13 @@ class PurchaseFirebaseCalls {
     });
   }
 
-  Future<void> updatePurchaseEvents(String purchaseId, List<Event> eventsToAdd, List<Event> eventsToDelete) async {
+  Future<void> updatePurchaseEvents(String purchaseId, String userId, List<Event> eventsToAdd, List<Event> eventsToDelete) async {
+    EventDataService _eventDataService = new EventDataService();
     for(int i = 0; i < eventsToDelete.length; ++i)
     {
       print("Delete event: " + eventsToDelete[i].id!);
       deleteEventFromPurchase(purchaseId, eventsToDelete[i].id!);
+      _eventDataService.deleteUserFromEvent(eventsToDelete[i].id!,userId);
     }
     print('Ading ev');
     print(eventsToAdd.length);
@@ -380,7 +384,17 @@ class PurchaseFirebaseCalls {
         "numClients": eventsToAdd[j].numClients,
         "maxMembers": eventsToAdd[j].maxMembers,
       });
+      _eventDataService.addUserToEvent(eventsToAdd[j].id!,userId, true);
     }
+  }
+
+  Future<void> updatePurchaseToVerified(String purchaseId) async {
+      await _firestore
+          .collection(purchases)
+          .doc(purchaseId)
+          .update({
+        "directPurchase": false,
+      });
   }
 
   // Delete Data

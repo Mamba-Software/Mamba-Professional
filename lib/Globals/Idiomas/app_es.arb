@@ -3422,5 +3422,9 @@
   "addEventsToPurchaseSubText": "Afectaran al número de sesiones para este bono",
   "@addEventsToPurchaseSubText": {
     "description": "addEventsToPurchaseSubText message"
+  },
+  "purchase": "Compra",
+  "@purchase": {
+    "description": "purchase message"
   }
 }

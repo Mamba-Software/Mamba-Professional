@@ -43,10 +43,12 @@ class PurchaseEventsBody extends StatelessWidget {
   const PurchaseEventsBody({Key? key, required this.context, required this.purchase, required this.executeFunction}) : super(key: key);
 
   Purchase getPurchase() {
-    List<Event> deleteEvents = purchase.initalEvents.where((b) => !purchase.events.any((a) => a.id == b.id)).toList();
+    /*List<Event> deleteEvents = purchase.initalEvents.where((b) => !purchase.events.any((a) => a.id == b.id)).toList();
     List<Event> newEvents = purchase.events.where((b) => !purchase.initalEvents.any((a) => a.id == b.id)).toList();
     purchase.setInitialEventsData = deleteEvents;
     purchase.setPurchasedEventsData = newEvents;
+    print(deleteEvents.length);
+    print(newEvents.length);*/
     return purchase;
   }
 

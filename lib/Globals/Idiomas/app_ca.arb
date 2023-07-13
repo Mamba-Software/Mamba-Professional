@@ -767,5 +767,6 @@
   "deletePurchase": "Estàs segur que vols eliminar aquesta compra? Tots els esdeveniments realitzats amb aquesta compra desapareixeran del client.",
   "cancelEventPurchase": "Estàs segur que vols desvincular aquest esdeveniment de la compra?",
   "addEventsToPurchaseText": "Afegeix o desvincula esdeveniments a la compra",
-  "addEventsToPurchaseSubText": "Afectaran al número de sessiones per aquest val"
+  "addEventsToPurchaseSubText": "Afectaran al número de sessiones per aquest val",
+  "purchase": "Compra"
 }
