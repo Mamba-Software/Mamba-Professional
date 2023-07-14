@@ -278,6 +278,28 @@ class PurchaseFirebaseCalls {
     return purchase;
   }
 
+  Future<List<Event>> getPurchaseEventsLast30Days(Purchase purchase, String brandId) async {
+    DateTime now = DateTime.now();
+    var temp = now.subtract(const Duration(days: 30));
+    Timestamp tmstp = Timestamp.fromDate(temp);
+
+    // Get Purchase Events
+    List<Event> eventList = [];
+    QuerySnapshot querySnapshot2 = await _firestore
+        .collection(purchases)
+        .doc(purchase.id)
+        .collection("Events")
+        .where("doneAt", isGreaterThanOrEqualTo: tmstp)
+        .get();
+
+    for (int i = 0; i < querySnapshot2.docs.length; i++) {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(events).doc(querySnapshot2.docs[i].id).get();
+      Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      eventList.add(event);
+    }
+    return eventList;
+  }
+
   // Add Data
 
   Future<String> addPurchase(Purchase purchase, Bono bonoSelected) async {

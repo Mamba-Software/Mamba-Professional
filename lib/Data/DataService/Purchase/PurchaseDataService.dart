@@ -20,6 +20,7 @@ class PurchaseDataService {
   Future<List<Purchase>> getBrandMorePurchasesLimit(String brandId, String purchaseId, int limit) => _firebase.getBrandMorePurchasesLimit(brandId, purchaseId, limit);
   Future<List<Purchase>> getAllUserPurchasesFromBrand(String userId, String brandId) => _firebase.getAllUserPurchasesFromBrand(userId, brandId);
   Future<Purchase> getPurchaseEvents(Purchase purchase) => _firebase.getPurchaseEvents(purchase);
+  Future<List<Event>> getPurchaseEventsLast30Days(Purchase purchase, String brandId) => _firebase.getPurchaseEventsLast30Days(purchase, brandId);
   Future<List<Purchase>> getPurchasesByEventId(String eventId) => _firebase.getPurchasesByEventId(eventId);
 
   // Add Data

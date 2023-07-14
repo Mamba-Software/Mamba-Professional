@@ -147,6 +147,7 @@ class PurchaseEventsBody extends StatelessWidget {
                                     builder: (context) =>
                                         SelectAllEvents(
                                           selectedEvents: purchase.events,
+                                          purchase: purchase,
                                         ),
                                   )
                               );
