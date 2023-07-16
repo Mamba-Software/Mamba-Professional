@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/cubit/BonoEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/views/SelectAllEvents.dart';
@@ -12,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchaseEvents/cubit/PurchaseEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/UserEventCard.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:shimmer/shimmer.dart';
 
 
@@ -53,127 +55,143 @@ class PurchaseEventsBody extends StatelessWidget {
             PurchaseEventsLoaded loadedState = state as PurchaseEventsLoaded;
             List<Event> events = loadedState.purchase.events;
             events.sort((a, b) => a.doneAt!.compareTo(b.doneAt!));
-            return  Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return  BlocProvider<BonoEventsCubit>(
+              lazy: false,
+              create: (context) => BonoEventsCubit(purchase, currentBrand.id!, events, [], true),
+              child: BlocBuilder<BonoEventsCubit, BonoEventsState>(
+                  builder: (context, state) {
+                  return Column(
                     children: [
-                      Text(
-                        AppLocalizations.of(context)!.sessions,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
-                        textAlign: TextAlign.center,
-                      ),
-                      Row(
-                        children: [
-                          TextButton(
-                            child: events.isNotEmpty ? Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.edit,
-                                  style: Theme.of(context).textTheme.bodyText1,
-                                ),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                Icon(
-                                  Icons.edit,
-                                  color: Theme.of(context).primaryColor,
-                                  size: MediaQuery.of(context).size.width*0.05,
-                                ),
-                              ],
-                            ) : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.add,
-                                  style: Theme.of(context).textTheme.bodyText1,
-                                ),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                Icon(
-                                  Icons.add,
-                                  color: Theme.of(context).primaryColor,
-                                  size: MediaQuery.of(context).size.width*0.05,
-                                ),
-                              ],
-                            ) ,
-                            style: TextButton.styleFrom(
-                              backgroundColor: Theme.of(context).backgroundColor,
-                              shape: RoundedRectangleBorder(  // add this
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              padding: const EdgeInsets.only(left: 16.0, right: 10.0),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              AppLocalizations.of(context)!.sessions,
+                              style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
+                              textAlign: TextAlign.center,
                             ),
-                            onPressed: () async {
-                              List<Event>? selectedEvents = await Navigator.push(
-                                  context,
-                                  CupertinoPageRoute<List<Event>>(
-                                    builder: (context) =>
-                                        SelectAllEvents(
-                                          parentContext: context,
-                                          purchase: purchase,
-                                          brandId: currentBrand.id!,
-                                          selectedEvents: events ,
-                                        ),
-                                  )
-                              );
-                              if (selectedEvents != null) {
-                                loadedState.purchase.setPurchasedEventsData = selectedEvents;
-                                context.read<PurchaseEventsCubit>().updateEvents(loadedState.purchase);
-                                executeFunction(loadedState.purchase);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.005),
-                events.isNotEmpty ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: EdgeInsets.zero,
-                      itemCount: events.length,
-                      itemBuilder: (context, index) {
-                        Event event = events[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: GestureDetector(
-                            onTap: () => navigateToEventScreen(event.id!),
-                            child: Stack(
-                                children: [
-                                  UserEventCard(
-                                    event: event,
-                                    height: MediaQuery.of(context).size.height * 0.15,
-                                    width: MediaQuery.of(context).size.width * 0.9,
-                                    isMyEvent: true,
-                                    showEmoji: false,
+                            Row(
+                              children: [
+                                TextButton(
+                                  child: events.isNotEmpty ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.edit,
+                                        style: Theme.of(context).textTheme.bodyText1,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                      state is BonoEventsLoaded? Icon(
+                                        Icons.edit,
+                                        color: Theme.of(context).primaryColor,
+                                        size: MediaQuery.of(context).size.width*0.05,
+                                      ) : LoadingView(hasLogo: false, isSmall: true, color: AppColors.black)
+                                    ],
+                                  ) : Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        AppLocalizations.of(context)!.add,
+                                        style: Theme.of(context).textTheme.bodyText1,
+                                      ),
+                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
+                                      state is BonoEventsLoaded?  Icon(
+                                        Icons.add,
+                                        color: Theme.of(context).primaryColor,
+                                        size: MediaQuery.of(context).size.width*0.05,
+                                      )  : LoadingView(hasLogo: false, isSmall: true, color: AppColors.black,)
+                                    ],
+                                  ) ,
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Theme.of(context).backgroundColor,
+                                    shape: RoundedRectangleBorder(  // add this
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    padding: const EdgeInsets.only(left: 16.0, right: 10.0),
                                   ),
-                                ]
+                                  onPressed: () async {
+                                    if(state is BonoEventsLoaded) {
+                                      List<
+                                          Event>? selectedEvents = await Navigator
+                                          .push(
+                                          context,
+                                          CupertinoPageRoute<List<Event>>(
+                                            builder: (context) =>
+                                                SelectAllEvents(
+                                                  parentContext: context,
+                                                  purchase: purchase,
+                                                  brandId: currentBrand.id!,
+                                                  selectedEvents: events,
+                                                  allEvents: state.allEvents,
+                                                ),
+                                          )
+                                      );
+                                      if (selectedEvents != null) {
+                                        loadedState.purchase
+                                            .setPurchasedEventsData =
+                                            selectedEvents;
+                                        context.read<PurchaseEventsCubit>()
+                                            .updateEvents(loadedState.purchase);
+                                        executeFunction(loadedState.purchase);
+                                      }
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
-                          ),
-                        );
-                      }
-                  ),
-                ) : Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                          AppLocalizations.of(context)!.noEvents,
-                          style: Theme.of(context).textTheme.bodyText2,
-                          textAlign: TextAlign.center
+                          ],
+                        ),
                       ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                      events.isNotEmpty ? Container(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemCount: events.length,
+                            itemBuilder: (context, index) {
+                              Event event = events[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                child: GestureDetector(
+                                  onTap: () => navigateToEventScreen(event.id!),
+                                  child: Stack(
+                                      children: [
+                                        UserEventCard(
+                                          event: event,
+                                          height: MediaQuery.of(context).size.height * 0.15,
+                                          width: MediaQuery.of(context).size.width * 0.9,
+                                          isMyEvent: true,
+                                          showEmoji: false,
+                                        ),
+                                      ]
+                                  ),
+                                ),
+                              );
+                            }
+                        ),
+                      ) : Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                                AppLocalizations.of(context)!.noEvents,
+                                style: Theme.of(context).textTheme.bodyText2,
+                                textAlign: TextAlign.center
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                     ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              ],
+                  );
+                }
+              ),
             );
           default:
           // Handle All other States aka Loading or Initial
@@ -199,11 +217,7 @@ class PurchaseEventsBody extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
                             ),
                             SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                            Icon(
-                              Icons.edit,
-                              color: AppColors.grey,
-                              size: MediaQuery.of(context).size.width*0.05,
-                            ),
+                            LoadingView(hasLogo: false, isSmall: true, color: AppColors.black,),
                           ],
                         ),
                         style: TextButton.styleFrom(

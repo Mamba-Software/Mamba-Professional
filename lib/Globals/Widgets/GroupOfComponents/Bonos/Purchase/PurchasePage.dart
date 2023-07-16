@@ -301,7 +301,7 @@ class _PurchasePageState extends State<PurchasePage> {
         children: [
           Flexible(
             child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase(),
+              purchase.id != null? DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase() : '',
               style: Theme.of(context).textTheme.caption,
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
@@ -333,7 +333,7 @@ class _PurchasePageState extends State<PurchasePage> {
         children: [
           Flexible(
             child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase(),
+              purchase.id != null? DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase() : '',
               style: Theme.of(context).textTheme.caption,
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
@@ -1133,7 +1133,13 @@ class _PurchasePageState extends State<PurchasePage> {
               }
               /// EDIT BONO REQUEST
               mixpanel!.track('edit_bono_confirmed');
-              await _userDataService.updateUserBono(user.id!, currentBrand.id!, bonoSelected);
+              try {
+                await _userDataService.updateUserBono(
+                    user.id!, currentBrand.id!, bonoSelected);
+              }
+              catch(e) {
+                print(e);
+              }
               if(eventsUpdated) {
                 print('We update the events');
                 print(purchase.events.length);

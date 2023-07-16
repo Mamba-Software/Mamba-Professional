@@ -91,6 +91,7 @@ class _HomePro extends State<HomePro> {
         CupertinoPageRoute<void>(
           builder: (context) => BrandPurchaseHistory(
             brandId: widget.brandId,
+            userId: "",
           ),
         )
     );

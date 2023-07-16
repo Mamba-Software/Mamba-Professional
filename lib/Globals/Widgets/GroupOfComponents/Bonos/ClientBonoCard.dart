@@ -893,36 +893,17 @@ class ClientBonoCardState extends State<ClientBonoCard> {
                     ) : Container(),
               isExpanded && widget.onlyView == false ? GestureDetector(
                 onTap: () async {
-                  await showModalBottomSheet<bool?>(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    builder: (BuildContext context) {
-                      bono.setPurchaseId = widget.purchase.id!;
-                      return FractionallySizedBox(
-                        heightFactor: 0.935,
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            FocusScopeNode currentFocus = FocusScope.of(context);
-                            if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            }
-                          },
-                          child: PurchasePage(
-                            user: user,
-                            brand: brand,
-                            bono: bono,
-                            // TODO: IMPLEMENTAR PURCHASE ARA MATEIX ES REGAL
-                          ),
+                  bono.setPurchaseId = widget.purchase.id!;
+                  await Navigator.push(
+                      context,
+                      CupertinoPageRoute<void>(
+                        builder: (context) => PurchasePage(
+                          bono: bono,
+                          user: user,
+                          brand: brand,
+                          purchase: purchase,
                         ),
-                      );
-                    },
+                      )
                   );
                 },
                 child: Container(

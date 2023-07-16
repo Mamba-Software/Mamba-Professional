@@ -1085,34 +1085,14 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     mixpanel!.track('profile_view_give_bono');
                                     Navigator.pop(context);
                                     // Cupertino Modal
-                                    showModalBottomSheet<bool?>(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20),
-                                        ),
-                                      ),
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      builder: (BuildContext context) {
-                                        return FractionallySizedBox(
-                                          heightFactor: 0.935,
-                                          child: GestureDetector(
-                                            behavior: HitTestBehavior.opaque,
-                                            onTap: () {
-                                              FocusScopeNode currentFocus = FocusScope.of(context);
-                                              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                                                FocusManager.instance.primaryFocus?.unfocus();
-                                              }
-                                            },
-                                            child: PurchasePage(
-                                              user: user,
-                                              brand: currentBrand,
-                                              // TODO: GIFT BONO
-                                            ),
+                                    await Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<void>(
+                                          builder: (context) => PurchasePage(
+                                            user: user,
+                                            brand: currentBrand,
                                           ),
-                                        );
-                                      }
+                                        )
                                     ).whenComplete( () async {
                                       await checkIfHasAllBrandBonos();
                                     });

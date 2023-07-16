@@ -16,22 +16,24 @@ import '../cubit/BrandPurchasesCubit.dart';
 
 class BrandPurchaseHistory extends StatelessWidget {
   final String brandId;
+  final String userId;
 
-  const BrandPurchaseHistory({Key? key, required this.brandId}) : super(key: key);
+  const BrandPurchaseHistory({Key? key, required this.brandId, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<BrandPurchasesCubit>(
       create: (context) => BrandPurchasesCubit(brandId),
-      child: BrandPurchaseHistoryBody(brandId: brandId),
+      child: BrandPurchaseHistoryBody(brandId: brandId, userId: userId),
     );
   }
 }
 
 class BrandPurchaseHistoryBody extends StatefulWidget {
   final String brandId;
+  final String userId;
 
-  const BrandPurchaseHistoryBody({Key? key, required this.brandId}) : super(key: key);
+  const BrandPurchaseHistoryBody({Key? key, required this.brandId, required this.userId}) : super(key: key);
 
   @override
   _BrandPurchaseHistoryBodyState createState() => _BrandPurchaseHistoryBodyState();
@@ -546,13 +548,18 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                         itemCount: state.purchasesHistoryObjects.length,
                         itemBuilder: (context, index) {
                           PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[index];
-                          return PurchaseCard(
-                            bono: obj.bono,
-                            user: obj.user,
-                            brand: obj.brand,
-                            bonoRequest: obj.bonoReq,
-                            purchase: obj.purchase,
-                          );
+                          if(widget.userId == "" || obj.user.id! == widget.userId) {
+                            return PurchaseCard(
+                              bono: obj.bono,
+                              user: obj.user,
+                              brand: obj.brand,
+                              bonoRequest: obj.bonoReq,
+                              purchase: obj.purchase,
+                            );
+                          }
+                          else {
+                            return Container();
+                          }
                         }
                     ),
                   ),

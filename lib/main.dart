@@ -223,6 +223,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                           builder: (_) =>
                               BrandPurchaseHistory(
                                 brandId: brandId,
+                                userId: "",
                               ),
                           settings: const RouteSettings(name: 'BonosRequests'),
                         );

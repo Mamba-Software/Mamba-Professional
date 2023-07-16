@@ -12,21 +12,41 @@ class BonoEventsCubit extends Cubit<BonoEventsState> {
   final Purchase purchase;
   final String brandId;
   final List<Event> selectedEvents;
+  final List<Event> allEventsInit;
+  final bool chargeAll;
   final _purchaseDataService = PurchaseDataService();
 
-    BonoEventsCubit(this.purchase, this.brandId, this.selectedEvents) : super(const BonoEventsInitial()) {
-    loadList(purchase, brandId, selectedEvents);
+    BonoEventsCubit(this.purchase, this.brandId, this.selectedEvents, this.allEventsInit, this.chargeAll) : super(const BonoEventsInitial()) {
+    loadList(purchase, brandId, selectedEvents, allEventsInit);
   }
 
-  void loadList(Purchase purchase, String brandId, List<Event> selectedEvents) async {
+  void loadList(Purchase purchase, String brandId, List<Event> selectedEvents, List<Event> allEventsInit) async {
       emit(const BonoEventsLoading());
-      List<Event> allEvents = await getAllEvents(purchase, brandId);
-      emit(BonoEventsLoaded(allEvents, selectedEvents, allEvents));
+      List<Event>  newSelectedEvents = [];
+      List<Event> allEvents = [];
+      if(allEventsInit.isNotEmpty) {
+        allEvents = allEventsInit;
+        if(allEvents.isNotEmpty) {
+          for (var event in selectedEvents) {
+            String id = event.id!;
+            var index = allEvents.indexWhere((element) => element.id! == id);
+            if(index != -1) {
+              newSelectedEvents.add(allEvents[index]);
+            }
+          }
+        }
+      }
+      else {
+        if(chargeAll) {
+          allEvents = await getAllEvents(purchase, brandId);
+        }
+      }
+      emit(BonoEventsLoaded(allEvents, newSelectedEvents, allEvents));
   }
 
   void updateSelected(Event event, List<Event> selectedEvents, List<Event> allEvents, List<Event> filteredEvents) async {
     emit(const BonoEventsLoading());
-    if (selectedEvents.contains(event)) {
+      if (selectedEvents.contains(event)) {
       selectedEvents.remove(event);
     } else {
       selectedEvents.add(event);
@@ -67,8 +87,6 @@ class BonoEventsCubit extends Cubit<BonoEventsState> {
           return 0; // both events don't have doneAt value, so no change in order
         }
       });
-      // Return Future Delayed
-      await Future.delayed(const Duration(milliseconds: 500));
     }
     return allEvents;
   }

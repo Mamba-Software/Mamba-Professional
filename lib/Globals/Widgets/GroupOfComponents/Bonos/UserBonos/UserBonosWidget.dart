@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserBonosHistoryPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
 class UserBonosWidget extends StatefulWidget {
   String userId;
@@ -48,10 +49,10 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-            builder: (context) => UserBonosHistoryPage(
-              userId: widget.userId,
-              brandId: widget.brandId,
-            )
+          builder: (context) => BrandPurchaseHistory(
+            brandId: widget.brandId,
+            userId: widget.userId,
+          ),
         )
     );
   }

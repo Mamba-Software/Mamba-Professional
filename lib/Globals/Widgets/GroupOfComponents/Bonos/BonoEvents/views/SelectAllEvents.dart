@@ -29,11 +29,12 @@ import '../../../../../../../../Data/Models/Event.dart';
 class SelectAllEvents extends StatelessWidget {
   final parentContext;
   List<Event> selectedEvents;
+  List<Event> allEvents;
   String brandId;
   Purchase purchase;
 
   SelectAllEvents(
-      {Key? key, required this.parentContext, required this.selectedEvents, required this.brandId, required this.purchase})
+      {Key? key, required this.parentContext, required this.selectedEvents, required this.allEvents, required this.brandId, required this.purchase})
       : super(key: key);
 
   // Search Controller
@@ -49,7 +50,6 @@ class SelectAllEvents extends StatelessWidget {
     final DateTime today = DateTime.now();
     bool isCompleted = appointment.endTime.isBefore(today);
     //final Event event = getEvent(appointment.id.toString(), loadedState);
-    print(selectedEvents.length);
     return Stack(
       children: [
         UserEventCard(
@@ -114,7 +114,7 @@ class SelectAllEvents extends StatelessWidget {
       appBar: null,
       body: BlocProvider<BonoEventsCubit>(
         lazy: false,
-        create: (context) => BonoEventsCubit(purchase, currentBrand.id!, selectedEvents),
+        create: (context) => BonoEventsCubit(purchase, currentBrand.id!, selectedEvents, allEvents, false),
         child: BlocBuilder<BonoEventsCubit, BonoEventsState>(
           builder: (context, state) {
             switch (state.runtimeType) {
@@ -474,7 +474,6 @@ class SelectAllEvents extends StatelessWidget {
                                   final DateTime today = DateTime.now();
                                   bool isCompleted = appointment.endTime.isBefore(today);
                                   final Event event = getEvent(appointment.id.toString(), loadedState);
-                                  print(event.id);
                                   return GestureDetector(
                                     onTap: () {
                                       context.read<BonoEventsCubit>().updateSelected(
