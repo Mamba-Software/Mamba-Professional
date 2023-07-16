@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/SelectAllEvents.dart';
+import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/cubit/BonoEventsCubit.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/views/SelectAllEvents.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -27,30 +29,19 @@ class PurchaseEvents extends StatelessWidget {
       create: (context) => PurchaseEventsCubit(purchase),
       child: PurchaseEventsBody(
         context: context,
+        executeFunction: executeFunction,
         purchase: purchase,
-        executeFunction: executeFunction
       ),
     );
   }
 }
 
 class PurchaseEventsBody extends StatelessWidget {
-
-  final context;
   final Purchase purchase;
+  final context;
   final void Function(Purchase) executeFunction;
 
-  const PurchaseEventsBody({Key? key, required this.context, required this.purchase, required this.executeFunction}) : super(key: key);
-
-  Purchase getPurchase() {
-    /*List<Event> deleteEvents = purchase.initalEvents.where((b) => !purchase.events.any((a) => a.id == b.id)).toList();
-    List<Event> newEvents = purchase.events.where((b) => !purchase.initalEvents.any((a) => a.id == b.id)).toList();
-    purchase.setInitialEventsData = deleteEvents;
-    purchase.setPurchasedEventsData = newEvents;
-    print(deleteEvents.length);
-    print(newEvents.length);*/
-    return purchase;
-  }
+  const PurchaseEventsBody({Key? key, required this.context, required this.executeFunction, required this.purchase}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +52,8 @@ class PurchaseEventsBody extends StatelessWidget {
           case PurchaseEventsLoaded:
             PurchaseEventsLoaded loadedState = state as PurchaseEventsLoaded;
             List<Event> events = loadedState.purchase.events;
-            return Column(
+            events.sort((a, b) => a.doneAt!.compareTo(b.doneAt!));
+            return  Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 Padding(
@@ -76,33 +68,6 @@ class PurchaseEventsBody extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          /*
-                          TextButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  true ? AppLocalizations.of(context)!.newerFirst : AppLocalizations.of(context)!.olderFirst,
-                                  style: Theme.of(context).textTheme.caption,
-                                ),
-                                SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                Icon(
-                                  true ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpShortWide,
-                                  color: AppColors.grey,
-                                  size: MediaQuery.of(context).size.width*0.05,
-                                ),
-                              ],
-                            ),
-                            style: TextButton.styleFrom(
-                              backgroundColor: Theme.of(context).backgroundColor,
-                              shape: RoundedRectangleBorder(  // add this
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              padding: const EdgeInsets.only(left: 16.0, right: 10.0),
-                            ),
-                            onPressed: () => null,
-                          ),
-                           */
                           TextButton(
                             child: events.isNotEmpty ? Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -146,15 +111,17 @@ class PurchaseEventsBody extends StatelessWidget {
                                   CupertinoPageRoute<List<Event>>(
                                     builder: (context) =>
                                         SelectAllEvents(
-                                          selectedEvents: purchase.events,
+                                          parentContext: context,
                                           purchase: purchase,
+                                          brandId: currentBrand.id!,
+                                          selectedEvents: events ,
                                         ),
                                   )
                               );
                               if (selectedEvents != null) {
-                                purchase.setPurchasedEventsData = selectedEvents;
-                                context.read<PurchaseEventsCubit>().updateEvents(purchase);
-                                executeFunction(purchase);
+                                loadedState.purchase.setPurchasedEventsData = selectedEvents;
+                                context.read<PurchaseEventsCubit>().updateEvents(loadedState.purchase);
+                                executeFunction(loadedState.purchase);
                               }
                             },
                           ),
@@ -178,15 +145,15 @@ class PurchaseEventsBody extends StatelessWidget {
                           child: GestureDetector(
                             onTap: () => navigateToEventScreen(event.id!),
                             child: Stack(
-                              children: [
-                                UserEventCard(
-                                  event: event,
-                                  height: MediaQuery.of(context).size.height * 0.15,
-                                  width: MediaQuery.of(context).size.width * 0.9,
-                                  isMyEvent: true,
-                                  showEmoji: false,
-                                ),
-                              ]
+                                children: [
+                                  UserEventCard(
+                                    event: event,
+                                    height: MediaQuery.of(context).size.height * 0.15,
+                                    width: MediaQuery.of(context).size.width * 0.9,
+                                    isMyEvent: true,
+                                    showEmoji: false,
+                                  ),
+                                ]
                             ),
                           ),
                         );
@@ -209,7 +176,7 @@ class PurchaseEventsBody extends StatelessWidget {
               ],
             );
           default:
-            // Handle All other States aka Loading or Initial
+          // Handle All other States aka Loading or Initial
             return Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
