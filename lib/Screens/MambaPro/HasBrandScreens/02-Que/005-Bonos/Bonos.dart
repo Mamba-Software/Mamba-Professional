@@ -583,7 +583,7 @@ class _BonosProState extends State<BonosPro> {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                  Divider(color: AppColors.grey, thickness: 1, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 ],
               ),
           ) : SliverToBoxAdapter(
@@ -610,9 +610,9 @@ class _BonosProState extends State<BonosPro> {
                           Bono bono = bonosList[index];
                           return Column(
                             children: [
-                              index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.04) : Container(),
+                              index == 0 ? SizedBox(height: MediaQuery.of(context).size.width * 0.02) : Container(),
                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04),
+                                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02),
                                 child: returnBono(bono),
                               ),
                               index == bonosList.length-1 ? SizedBox(height: MediaQuery.of(context).size.width * 0.1) : Container(),

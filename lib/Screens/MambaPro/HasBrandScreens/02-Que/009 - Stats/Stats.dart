@@ -736,7 +736,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   Widget dividerStats() {
     return Padding(
       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
-      child: Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+      child: const Divider(color: AppColors.grey, thickness: 1),
     );
   }
 

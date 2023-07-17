@@ -538,7 +538,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           child: Container(
                             decoration: BoxDecoration(
                               color: Theme.of(context).backgroundColor,
-                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              borderRadius: const BorderRadius.all(Radius.circular(15)),
                             ),
                             child: Row(
                               children: [
@@ -616,7 +616,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                   child: Column(
                     children: [
-                      Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+                      const Divider(color: AppColors.grey, thickness: 1),
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
                       Row(
                         children: [
@@ -653,7 +653,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           ),
                           timeZoneName != null ? Flexible(
                             child: Text(
-                              timeZoneName!,
+                              "GMT: "+timeZoneName!,
                               style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
                               textAlign: TextAlign.right,
                               overflow: TextOverflow.ellipsis,
@@ -1070,7 +1070,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                   child: Column(
                     children: [
-                      Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+                      const Divider(color: AppColors.grey, thickness: 1),
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
                       Row(
                         children: [
@@ -1148,7 +1148,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                   child: Column(
                     children: [
-                      Divider(color: Theme.of(context).backgroundColor, thickness: 2),
+                      const Divider(color: AppColors.grey, thickness: 1),
                       SizedBox(height: MediaQuery.of(context).size.height*0.03),
                       Row(
                         children: [

@@ -774,7 +774,7 @@ class _Trainers extends State<Trainers> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                Divider(color: AppColors.grey, thickness: 1, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01)
               ],
             ),

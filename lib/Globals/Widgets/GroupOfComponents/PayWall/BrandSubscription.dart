@@ -397,7 +397,7 @@ class _BrandInfoState extends State<BrandSubscription> with SingleTickerProvider
                                           onTap: navigateToPaywallScreen,
                                           child: Material(
                                             elevation: 4,
-                                            shadowColor: Theme.of(context).primaryColor,
+                                            shadowColor: Theme.of(context).primaryColor.withOpacity(0.5),
                                             shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.all(Radius.circular(30.0)),
                                             ),

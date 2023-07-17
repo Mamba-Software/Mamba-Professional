@@ -49,6 +49,7 @@ class _PayWallState extends State<PayWall> {
 
   //PayWall
   bool seePromotions = true;
+  bool isDark = true;
   bool loadingPromotions = false;
   int activeSubscription = -1;
   var promotionController = TextEditingController();
@@ -67,6 +68,7 @@ class _PayWallState extends State<PayWall> {
   initState() {
     super.initState();
     _scrollController = ScrollController();
+    isDark = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
   }
 
   Future<void> getSubscriptions()
@@ -222,7 +224,8 @@ class _PayWallState extends State<PayWall> {
             ),
           ),
         ),
-        persistentFooterButtons:   <Widget>[Container(
+        backgroundColor: isDark ? Theme.of(context).scaffoldBackgroundColor : Theme.of(context).backgroundColor,
+        persistentFooterButtons: <Widget>[Container(
           child:
           seePromotions
               ? Padding(

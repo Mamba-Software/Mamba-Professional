@@ -932,7 +932,7 @@ class _BrandScreenState extends State<BrandScreen> {
               // Brand Options
               // TODO: Passer Rol en aquesta funció
               buildBrandListOptions(),
-              SizedBox(height: safeAreaHeight * 0.1),
+              SizedBox(height: safeAreaHeight * 0.05),
               //Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
               /*
               // Leave/Delete Brand
