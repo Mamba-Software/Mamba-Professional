@@ -84,11 +84,19 @@ class PurchaseEventsBody extends StatelessWidget {
                                         style: Theme.of(context).textTheme.bodyText1,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                      state is BonoEventsLoaded? Icon(
+                                      state is BonoEventsLoaded ? Icon(
                                         Icons.edit,
                                         color: Theme.of(context).primaryColor,
                                         size: MediaQuery.of(context).size.width*0.05,
-                                      ) : LoadingView(hasLogo: false, isSmall: true, color: AppColors.black)
+                                      ) : Container(
+                                        width: MediaQuery.of(context).size.width * 0.04,
+                                        height: MediaQuery.of(context).size.width * 0.04,
+                                        margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          strokeWidth: 1.5,
+                                        ),
+                                      )
                                     ],
                                   ) : Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,12 +105,20 @@ class PurchaseEventsBody extends StatelessWidget {
                                         AppLocalizations.of(context)!.add,
                                         style: Theme.of(context).textTheme.bodyText1,
                                       ),
-                                      SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                      state is BonoEventsLoaded?  Icon(
+                                      SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                      state is BonoEventsLoaded ? Icon(
                                         Icons.add,
                                         color: Theme.of(context).primaryColor,
                                         size: MediaQuery.of(context).size.width*0.05,
-                                      )  : LoadingView(hasLogo: false, isSmall: true, color: AppColors.black,)
+                                      ) : Container(
+                                        width: MediaQuery.of(context).size.width * 0.04,
+                                        height: MediaQuery.of(context).size.width * 0.04,
+                                        margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
+                                        child: CircularProgressIndicator(
+                                          color: Theme.of(context).primaryColor,
+                                          strokeWidth: 1.5,
+                                        ),
+                                      )
                                     ],
                                   ) ,
                                   style: TextButton.styleFrom(
@@ -217,7 +233,15 @@ class PurchaseEventsBody extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
                             ),
                             SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                            LoadingView(hasLogo: false, isSmall: true, color: AppColors.black,),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.04,
+                              height: MediaQuery.of(context).size.width * 0.04,
+                              margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).primaryColor,
+                                strokeWidth: 1.5,
+                              ),
+                            )
                           ],
                         ),
                         style: TextButton.styleFrom(

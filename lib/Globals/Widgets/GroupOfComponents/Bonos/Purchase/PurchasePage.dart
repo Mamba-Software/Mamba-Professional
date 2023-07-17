@@ -1039,7 +1039,7 @@ class _PurchasePageState extends State<PurchasePage> {
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 /// DELETE BONO REQUEST
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                !isBonoRequest ? Padding(
+                isBonoRequest ? Padding(
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
                   child: GestureDetector(
                     onTap: () async {
@@ -1073,8 +1073,7 @@ class _PurchasePageState extends State<PurchasePage> {
                       ),
                     ),
                   ),
-                ) : SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                Padding(
+                ) : editBono ? Padding(
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
                   child: GestureDetector(
                     onTap: () async {
@@ -1108,7 +1107,7 @@ class _PurchasePageState extends State<PurchasePage> {
                       ),
                     ),
                   ),
-                ),
+                ) : Container(),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.1),
               ],
             ),
@@ -1229,8 +1228,7 @@ class _PurchasePageState extends State<PurchasePage> {
               ),
             )
         ),
-      ) :
-      Container(
+      ) : Container(
           height: MediaQuery.of(context).size.height*0.09,
           width: double.infinity,
           color: Theme.of(context).primaryColor,
@@ -1246,19 +1244,10 @@ class _PurchasePageState extends State<PurchasePage> {
           ) : Center(
             child: Padding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context)
-                      .size
-                      .height *
-                      0.00),
+                  bottom: MediaQuery.of(context).size.height * 0.00),
               child: Text(
                 'No hay bonos para otorgar a este usuario',
-                style: Theme.of(context)
-                    .textTheme
-                    .headline1
-                    ?.copyWith(
-                  color: Theme.of(context)
-                      .primaryColorDark,
-                ),
+                style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
               ),
             ),
           )

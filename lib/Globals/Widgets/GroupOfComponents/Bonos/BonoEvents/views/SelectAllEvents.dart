@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -44,13 +45,10 @@ class SelectAllEvents extends StatelessWidget {
   // Members Page
   List<Appointment> allAppointments = <Appointment>[];
 
-  Widget _buildEventContainer(CalendarAppointmentDetails details, List<Event> selectedEvents,
-      Event event, var context) {
-    final Appointment appointment = details.appointments.first;
-    final DateTime today = DateTime.now();
-    bool isCompleted = appointment.endTime.isBefore(today);
+  Widget _buildEventContainer(CalendarAppointmentDetails details, List<Event> selectedEvents, Event event, var context, var loadedState) {
     //final Event event = getEvent(appointment.id.toString(), loadedState);
     return Stack(
+      alignment: Alignment.topLeft,
       children: [
         UserEventCard(
           event: event,
@@ -63,13 +61,13 @@ class SelectAllEvents extends StatelessWidget {
           top: MediaQuery
               .of(parentContext)
               .size
-              .width * 0.03,
+              .width * 0.01,
           left: MediaQuery
               .of(parentContext)
               .size
-              .width * 0.02,
-          child: Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.transparent),
+              .width * 0.01,
+          child: Transform.scale(
+            scale: 1.5,
             child: Checkbox(
               checkColor: Colors.white,
               tristate: false,
@@ -79,7 +77,9 @@ class SelectAllEvents extends StatelessWidget {
               shape: const CircleBorder(
                   side: BorderSide.none
               ),
-              onChanged: (bool? value) {},
+              onChanged: (bool? boolean) {
+                context.read<BonoEventsCubit>().updateSelected(event, loadedState.selectedEvents, loadedState.allEvents, loadedState.filteredEvents);
+              },
             ),
           ),
         ),
@@ -99,12 +99,9 @@ class SelectAllEvents extends StatelessWidget {
 
   Color getColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.selected)) {
-      return Theme
-          .of(parentContext)
-          .colorScheme
-          .secondary;
+      return Theme.of(parentContext).colorScheme.secondary;
     } else {
-      return Colors.transparent;
+      return AppColors.white;
     }
   }
 
@@ -178,37 +175,26 @@ class SelectAllEvents extends StatelessWidget {
                       ],
                     ),
                     resizeToAvoidBottomInset: true,
-                    backgroundColor: Colors.transparent,
-                    body: Padding(
-                      padding: EdgeInsets.only(right: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.03, left: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.02),
-                      child: Column(
-                        children: [
-                          loadedState.selectedEvents.isNotEmpty ? Container(
+                    body: Column(
+                      children: [
+                        loadedState.selectedEvents.isNotEmpty ? Material(
+                          elevation: 8,
+                          child: Container(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery
                                 .of(context)
                                 .size
-                                .width * 0.03,),
+                                .width * 0.05,),
                             color: Theme
                                 .of(context)
                                 .backgroundColor,
                             height: MediaQuery
                                 .of(context)
                                 .size
-                                .height * 0.04,
+                                .height * 0.05,
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               children: <Widget>[
-                                Container(
-                                  width: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.80,
+                                Expanded(
                                   child: ListView.builder(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
@@ -231,7 +217,7 @@ class SelectAllEvents extends StatelessWidget {
                                       }
                                   ),
                                 ),
-                                Container(
+                                SizedBox(
                                   width: MediaQuery
                                       .of(context)
                                       .size
@@ -253,79 +239,107 @@ class SelectAllEvents extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ) : SizedBox(height: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.01,),
-                          Expanded(
-                            child: SfCalendarTheme(
-                              data: SfCalendarThemeData(
-                                brightness: Brightness.dark,
+                          ),
+                        ) : SizedBox(height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.01,),
+                        Expanded(
+                          child: SfCalendarTheme(
+                            data: SfCalendarThemeData(
+                              brightness: Brightness.dark,
+                              backgroundColor: Theme
+                                  .of(context)
+                                  .scaffoldBackgroundColor,
+                              todayHighlightColor: Theme
+                                  .of(context)
+                                  .primaryColor,
+                              todayBackgroundColor: Theme
+                                  .of(context)
+                                  .backgroundColor,
+                            ),
+                            child: SfCalendar(
+                              // Controller
+                              view: CalendarView.schedule,
+                              blackoutDatesTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .headline3
+                                  ?.copyWith(color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .secondary, fontWeight: FontWeight.w600),
+                              // Data
+                              initialDisplayDate: DateTime.now(),
+                              initialSelectedDate: DateTime.now(),
+                              dataSource: _getCalendarDataSource(loadedState),
+                              // Config
+                              cellEndPadding: 0,
+                              firstDayOfWeek: 1,
+                              showCurrentTimeIndicator: true,
+                              cellBorderColor: Colors.transparent,
+                              todayTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyText2
+                                  ?.copyWith(color: Theme
+                                  .of(context)
+                                  .primaryColorDark),
+                              // Style
+                              selectionDecoration: BoxDecoration(
+                                  color: Theme
+                                      .of(context)
+                                      .colorScheme
+                                      .secondary
+                                      .withOpacity(0.08),
+                                  border: Border.all(width: 1, color: Theme
+                                      .of(context)
+                                      .colorScheme
+                                      .secondary),
+                                  shape: BoxShape.circle
+                              ),
+                              headerHeight: 0,
+                              headerStyle: CalendarHeaderStyle(
+                                textAlign: TextAlign.center,
+                                backgroundColor: Colors.transparent,
+                                textStyle: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(color: Colors.transparent),
+                              ),
+                              viewHeaderHeight: 30,
+                              viewHeaderStyle: ViewHeaderStyle(
                                 backgroundColor: Theme
                                     .of(context)
                                     .backgroundColor,
-                                todayHighlightColor: Theme
-                                    .of(context)
-                                    .primaryColor,
-                                todayBackgroundColor: Theme
-                                    .of(context)
-                                    .backgroundColor,
-                              ),
-                              child: SfCalendar(
-                                // Controller
-                                view: CalendarView.schedule,
-                                blackoutDatesTextStyle: Theme
+                                dateTextStyle: Theme
                                     .of(context)
                                     .textTheme
-                                    .headline3
-                                    ?.copyWith(color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .secondary, fontWeight: FontWeight.w600),
-                                // Data
-                                initialDisplayDate: DateTime.now(),
-                                initialSelectedDate: DateTime.now(),
-                                dataSource: _getCalendarDataSource(loadedState),
-                                // Config
-                                cellEndPadding: 0,
-                                firstDayOfWeek: 1,
-                                showCurrentTimeIndicator: true,
-                                cellBorderColor: Colors.transparent,
-                                todayTextStyle: Theme
+                                    .bodyText2,
+                                dayTextStyle: Theme
                                     .of(context)
                                     .textTheme
                                     .bodyText2
-                                    ?.copyWith(color: Theme
+                                    ?.copyWith(fontSize: 10),
+                              ),
+                              // Monthly View
+                              monthViewSettings: MonthViewSettings(
+                                appointmentDisplayCount: 3,
+                                numberOfWeeksInView: 6,
+                                showTrailingAndLeadingDates: false,
+                                appointmentDisplayMode: MonthAppointmentDisplayMode
+                                    .indicator,
+                                showAgenda: true,
+                                agendaViewHeight: MediaQuery
                                     .of(context)
-                                    .primaryColorDark),
-                                // Style
-                                selectionDecoration: BoxDecoration(
-                                    color: Theme
-                                        .of(context)
-                                        .colorScheme
-                                        .secondary
-                                        .withOpacity(0.08),
-                                    border: Border.all(width: 1, color: Theme
-                                        .of(context)
-                                        .colorScheme
-                                        .secondary),
-                                    shape: BoxShape.circle
-                                ),
-                                headerHeight: 0,
-                                headerStyle: CalendarHeaderStyle(
-                                  textAlign: TextAlign.center,
-                                  backgroundColor: Colors.transparent,
-                                  textStyle: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(color: Colors.transparent),
-                                ),
-                                viewHeaderHeight: 30,
-                                viewHeaderStyle: ViewHeaderStyle(
-                                  backgroundColor: Theme
-                                      .of(context)
-                                      .backgroundColor,
+                                    .size
+                                    .height * 0.35,
+                                agendaItemHeight: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .height * 0.15,
+                                agendaStyle: AgendaStyle(
                                   dateTextStyle: Theme
                                       .of(context)
                                       .textTheme
@@ -335,24 +349,38 @@ class SelectAllEvents extends StatelessWidget {
                                       .textTheme
                                       .bodyText2
                                       ?.copyWith(fontSize: 10),
-                                ),
-                                // Monthly View
-                                monthViewSettings: MonthViewSettings(
-                                  appointmentDisplayCount: 3,
-                                  numberOfWeeksInView: 6,
-                                  showTrailingAndLeadingDates: false,
-                                  appointmentDisplayMode: MonthAppointmentDisplayMode
-                                      .indicator,
-                                  showAgenda: true,
-                                  agendaViewHeight: MediaQuery
+                                  appointmentTextStyle: Theme
                                       .of(context)
-                                      .size
-                                      .height * 0.35,
-                                  agendaItemHeight: MediaQuery
+                                      .textTheme
+                                      .bodyText2,
+                                ),
+                                monthCellStyle: MonthCellStyle(
+                                  textStyle: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyText1,
+                                  trailingDatesTextStyle: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .caption,
+                                  leadingDatesTextStyle: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .caption,
+                                ),
+                              ),
+                              // Schedule View
+                              scheduleViewSettings: ScheduleViewSettings(
+                                  hideEmptyScheduleWeek: true,
+                                  appointmentItemHeight: MediaQuery
                                       .of(context)
                                       .size
                                       .height * 0.15,
-                                  agendaStyle: AgendaStyle(
+                                  appointmentTextStyle: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyText2,
+                                  dayHeaderSettings: DayHeaderSettings(
                                     dateTextStyle: Theme
                                         .of(context)
                                         .textTheme
@@ -362,140 +390,98 @@ class SelectAllEvents extends StatelessWidget {
                                         .textTheme
                                         .bodyText2
                                         ?.copyWith(fontSize: 10),
-                                    appointmentTextStyle: Theme
-                                        .of(context)
-                                        .textTheme
-                                        .bodyText2,
                                   ),
-                                  monthCellStyle: MonthCellStyle(
-                                    textStyle: Theme
+                                  weekHeaderSettings: WeekHeaderSettings(
+                                    startDateFormat: 'dd/MM',
+                                    endDateFormat: 'dd/MM/yyyy',
+                                    textAlign: TextAlign.start,
+                                    backgroundColor: Theme
                                         .of(context)
-                                        .textTheme
-                                        .bodyText1,
-                                    trailingDatesTextStyle: Theme
-                                        .of(context)
-                                        .textTheme
-                                        .caption,
-                                    leadingDatesTextStyle: Theme
+                                        .scaffoldBackgroundColor,
+                                    weekTextStyle: Theme
                                         .of(context)
                                         .textTheme
                                         .caption,
                                   ),
-                                ),
-                                // Schedule View
-                                scheduleViewSettings: ScheduleViewSettings(
-                                    hideEmptyScheduleWeek: true,
-                                    appointmentItemHeight: MediaQuery
+                                  monthHeaderSettings: MonthHeaderSettings(
+                                    monthFormat: 'MMMM yyyy',
+                                    height: 70,
+                                    textAlign: TextAlign.start,
+                                    backgroundColor: Theme
                                         .of(context)
-                                        .size
-                                        .height * 0.15,
-                                    appointmentTextStyle: Theme
+                                        .scaffoldBackgroundColor,
+                                    monthTextStyle: Theme
                                         .of(context)
                                         .textTheme
-                                        .bodyText2,
-                                    dayHeaderSettings: DayHeaderSettings(
-                                      dateTextStyle: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .bodyText2,
-                                      dayTextStyle: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .bodyText2
-                                          ?.copyWith(fontSize: 10),
-                                    ),
-                                    weekHeaderSettings: WeekHeaderSettings(
-                                      startDateFormat: 'dd/MM',
-                                      endDateFormat: 'dd/MM/yyyy',
-                                      textAlign: TextAlign.start,
-                                      backgroundColor: Theme
-                                          .of(context)
-                                          .backgroundColor,
-                                      weekTextStyle: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .caption,
-                                    ),
-                                    monthHeaderSettings: MonthHeaderSettings(
-                                      monthFormat: 'MMMM yyyy',
-                                      height: 70,
-                                      textAlign: TextAlign.start,
-                                      backgroundColor: Theme
-                                          .of(context)
-                                          .backgroundColor,
-                                      monthTextStyle: Theme
-                                          .of(context)
-                                          .textTheme
-                                          .headline1,
-                                    )
-                                ),
-                                scheduleViewMonthHeaderBuilder: (
-                                    BuildContext buildContext,
-                                    ScheduleViewMonthHeaderDetails details) {
-                                  return Container(
-                                    color: Theme
-                                        .of(context)
-                                        .backgroundColor,
-                                    padding: EdgeInsets.all(MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.03),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children: [
-                                        Text(
-                                          StringUtils().toCapitalized(DateFormat(
-                                            'MMMM yyyy', Localizations
-                                              .localeOf(context)
-                                              .languageCode,).format(
-                                              details.date)),
-                                          style: Theme
-                                              .of(context)
-                                              .textTheme
-                                              .headline1
-                                              ?.copyWith(
-                                              fontWeight: FontWeight.normal,
-                                              color: AppColors.grey),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                appointmentTextStyle: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .bodyText2!,
-                                appointmentBuilder: (BuildContext context,
-                                    CalendarAppointmentDetails details) {
-                                  final Appointment appointment = details.appointments.first;
-                                  final DateTime today = DateTime.now();
-                                  bool isCompleted = appointment.endTime.isBefore(today);
-                                  final Event event = getEvent(appointment.id.toString(), loadedState);
-                                  return GestureDetector(
-                                    onTap: () {
-                                      context.read<BonoEventsCubit>().updateSelected(
-                                          event, loadedState.selectedEvents, loadedState.allEvents,
-                                          loadedState.filteredEvents);
-                                    },
-                                    child: _buildEventContainer(
-                                        details, loadedState.selectedEvents, event, context),
-                                  );
-                                },
+                                        .headline1,
+                                  )
                               ),
+                              scheduleViewMonthHeaderBuilder: (
+                                  BuildContext buildContext,
+                                  ScheduleViewMonthHeaderDetails details) {
+                                return Container(
+                                  color: Theme
+                                      .of(context)
+                                      .scaffoldBackgroundColor,
+                                  padding: EdgeInsets.all(MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width * 0.03),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
+                                    children: [
+                                      Text(
+                                        StringUtils().toCapitalized(DateFormat(
+                                          'MMMM yyyy', Localizations
+                                            .localeOf(context)
+                                            .languageCode,).format(
+                                            details.date)),
+                                        style: Theme
+                                            .of(context)
+                                            .textTheme
+                                            .headline1
+                                            ?.copyWith(
+                                            fontWeight: FontWeight.normal,
+                                            color: AppColors.grey),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              appointmentTextStyle: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyText2!,
+                              appointmentBuilder: (BuildContext context,
+                                  CalendarAppointmentDetails details) {
+                                final Appointment appointment = details.appointments.first;
+                                final DateTime today = DateTime.now();
+                                bool isCompleted = appointment.endTime.isBefore(today);
+                                final Event event = getEvent(appointment.id.toString(), loadedState);
+                                return GestureDetector(
+                                  onTap: () {
+                                    context.read<BonoEventsCubit>().updateSelected(
+                                        event, loadedState.selectedEvents, loadedState.allEvents,
+                                        loadedState.filteredEvents);
+                                  },
+                                  child: _buildEventContainer(
+                                      details, loadedState.selectedEvents, event, context, loadedState),
+                                );
+                              },
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     floatingActionButton: Padding(
                       padding: EdgeInsets.all(MediaQuery
                           .of(context)
                           .size
                           .width * 0.05),
-                      child: Container(
+                      child: SizedBox(
                         height: MediaQuery
                             .of(context)
                             .size
