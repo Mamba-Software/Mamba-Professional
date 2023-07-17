@@ -607,6 +607,20 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           ],
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                        /// CREATED AT
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!.createBrandCoverDescription,
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height*0.03),
                       ],
                     ),
                   ),
