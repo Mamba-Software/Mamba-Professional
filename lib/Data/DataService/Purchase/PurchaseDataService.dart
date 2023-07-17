@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseFirebaseCalls.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 import '../../Models/Event.dart';
 
@@ -12,6 +13,8 @@ class PurchaseDataService {
 
   // Check Data
   Future<bool> checkIfEventInPurchase(String purchaseId, String eventId) => _firebase.checkIfEventInPurchase(purchaseId, eventId);
+  Future<String> checkIfUserHasActivePurchase(String userId, String eventId, List<String> selectedBonos, String brandId)=> _firebase.checkIfUserHasActivePurchase(userId, eventId, selectedBonos, brandId);
+
 
   // Get Data
   Future<Purchase> getPurchaseInfo(String purchaseId) => _firebase.getPurchaseInfo(purchaseId);
@@ -23,6 +26,7 @@ class PurchaseDataService {
   Future<Purchase> getPurchaseEvents(Purchase purchase) => _firebase.getPurchaseEvents(purchase);
   Future<List<Event>> getPurchaseEventsLast30Days(Purchase purchase, String brandId) => _firebase.getPurchaseEventsLast30Days(purchase, brandId);
   Future<List<Purchase>> getPurchasesByEventId(String eventId) => _firebase.getPurchasesByEventId(eventId);
+  Future<List<Usuario>> getUsersByBonosAndActivePurchase(List<String> selectedBonos, String brandId) => _firebase.getUsersByBonosAndActivePurchase( selectedBonos,  brandId);
 
   // Add Data
   Future<String> addPurchase(Purchase purchase, Bono bonoSelected) => _firebase.addPurchase(purchase, bonoSelected);
@@ -36,6 +40,8 @@ class PurchaseDataService {
   // Delete Data
   Future<void> deletePurchase(String purchaseId, String userId, String brandId) => _firebase.detelePurchase(purchaseId, userId, brandId);
   Future<void> deleteEventFromPurchase(String purchaseId, String eventId) => _firebase.deleteEventFromPurchase(purchaseId, eventId);
+  Future<void> deletedPurchaseUserFromEvent(Usuario user, String eventId) => _firebase.deletedPurchaseUserFromEvent(user, eventId);
+
 
   /////////////////////////////////////////////////////////////////// STREAMS
 

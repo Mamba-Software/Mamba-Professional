@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
@@ -13,8 +14,9 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 class SelectClientsEvent extends StatefulWidget {
   List<Usuario> selectedUsers = [];
   int? maxClients;
+  List<String>? selectedBonos = [];
 
-  SelectClientsEvent({Key? key, required this.selectedUsers, this.maxClients}) : super(key: key);
+  SelectClientsEvent({Key? key, required this.selectedUsers, this.maxClients, this.selectedBonos}) : super(key: key);
 
   @override
   _SelectClientsEventState createState() => _SelectClientsEventState();
@@ -24,6 +26,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
 
   // Brand Data Service
   var _brandDataService = BrandDataService();
+  var _purchaseDataService = PurchaseDataService();
   // Boolean Loading
   bool isLoading = false;
   // Search Controller
@@ -35,7 +38,15 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
   List<Usuario> selectedClients = [];
 
   Future<void> getAllClients() async {
-    allClients = await _brandDataService.getBrandClients(currentBrand.id!);
+    if(widget.selectedBonos == null) {
+      allClients = await _brandDataService.getBrandClients(currentBrand.id!);
+    }
+    else if(widget.selectedBonos!.isEmpty) {
+      allClients = await _brandDataService.getBrandClients(currentBrand.id!);
+    }
+    else {
+      allClients = await _purchaseDataService.getUsersByBonosAndActivePurchase(widget.selectedBonos!, currentBrand.id!);
+    }
     // Sort Clients
     allClients.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
@@ -250,10 +261,18 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
-                                    AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                                    style: Theme.of(context).textTheme.caption,
+                                  Column(
+                                    children: [
+                                      Text(
+                                        user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
+                                        AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
+                                        style: Theme.of(context).textTheme.caption,
+                                      ),
+                                      widget.selectedBonos!.isNotEmpty? Text(
+                                        user.purchaseId!,
+                                        style: Theme.of(context).textTheme.caption,
+                                      ) : Container(),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -267,12 +286,18 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                 } else {
                                   if (widget.maxClients != null) {
                                     if (selectedClients.length < widget.maxClients!) {
+                                      if (selectedUsers.any((obj) => obj.id == user.id)) {
+                                        selectedUsers.removeWhere((obj) => obj.id == user.id);
+                                      }
                                       selectedUsers.add(user);
                                       setState(() {
                                         selectedClients = selectedUsers;
                                       });
                                     }
                                   } else {
+                                    if (selectedUsers.any((obj) => obj.id == user.id)) {
+                                      selectedUsers.removeWhere((obj) => obj.id == user.id);
+                                    }
                                     selectedUsers.add(user);
                                     setState(() {
                                       selectedClients = selectedUsers;

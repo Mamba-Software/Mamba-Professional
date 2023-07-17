@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:uuid/uuid.dart';
 
@@ -42,6 +43,30 @@ class PurchaseFirebaseCalls {
       return false;
     }
   }
+
+  Future<String> checkIfUserHasActivePurchase(String userId, String eventId, List<String> selectedBonos, String brandId) async {
+    for(int i = 0; i < selectedBonos.length; ++i) {
+      QuerySnapshot querySnapshot =  await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Users")
+          .doc(userId)
+          .collection("Purchases")
+          .where("bonoId", isEqualTo: selectedBonos[i])
+          .where("isActive", isEqualTo: true)
+          .get();
+      for (int j = 0; j < querySnapshot.docs.length; j++) {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(purchases)
+            .doc(querySnapshot.docs[j].id).collection("Events").doc(eventId).get();
+        if(_documentSnapshot.exists) {
+          return querySnapshot.docs[j].id;
+        }
+      }
+    }
+    return "";
+  }
+
+
 
   // Get Data
   Future<Purchase> getPurchaseInfo(String purchaseId) async {
@@ -296,6 +321,30 @@ class PurchaseFirebaseCalls {
     return listpurchases;
   }
 
+  Future<List<Usuario>> getUsersByBonosAndActivePurchase(List<String> selectedBonos, String brandId) async {
+    List<Usuario> userList = [];
+    for(int i = 0; i < selectedBonos.length; ++i) {
+      QuerySnapshot querySnapshot =  await _firestore
+          .collection(brands)
+          .doc(brandId)
+          .collection("Purchases")
+          .where("bonoId", isEqualTo: selectedBonos[i])
+          .where("isActive", isEqualTo: true)
+          .get();
+      for (int j = 0; j < querySnapshot.docs.length; j++) {
+        Purchase purchase = Purchase.fromObjectAllData(querySnapshot.docs[j].id, querySnapshot.docs[j]);
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users)
+            .doc(purchase.userId).get();
+        if(_documentSnapshot.exists) {
+          Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+          user.purchaseId = querySnapshot.docs[j].id;
+          userList.add(user);
+        }
+      }
+    }
+    return userList;
+  }
+
   Future<Purchase> getPurchaseEvents(Purchase purchase) async {
     // Get Purchase Events
     List<Event> eventList = [];
@@ -307,8 +356,11 @@ class PurchaseFirebaseCalls {
 
     for (int i = 0; i < querySnapshot2.docs.length; i++) {
       DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(events).doc(querySnapshot2.docs[i].id).get();
-      Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
-      eventList.add(event);
+      if(_documentSnapshot.exists) {
+        Event event = Event.fromObjectAllData(
+            _documentSnapshot.id, _documentSnapshot);
+        eventList.add(event);
+      }
     }
     // Set Purchase Events
     purchase.setPurchasedEventsData = eventList;
@@ -372,6 +424,7 @@ class PurchaseFirebaseCalls {
   }
 
   Future<void> addEventToPurchase(String purchaseId, String eventId) async {
+    print('NEW FUNCTION ADD USER TO');
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(events).doc(eventId).get();
     Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
     // Add This to Payments
@@ -478,7 +531,7 @@ class PurchaseFirebaseCalls {
   }
 
   Future<void> deleteEventsFromUserPurchase(String purchaseId, String userId, String brandId) async {
-
+    EventDataService _eventDataService = new EventDataService();
     await _firestore
         .collection(purchases)
         .doc(purchaseId)
@@ -486,6 +539,7 @@ class PurchaseFirebaseCalls {
         .get()
         .then((snapshot) {
       for (DocumentSnapshot ds in snapshot.docs) {
+        _eventDataService.deleteUserFromEvent(ds.id!,userId);
         ds.reference.delete();
       }
     });
@@ -514,6 +568,15 @@ class PurchaseFirebaseCalls {
     .doc(eventId)
     .delete();
   }
+
+  Future<void> deletedPurchaseUserFromEvent(Usuario user, String eventId) async {
+    print('NEW FUNCTION DELETE USER FROM EVENT');
+    if(user.purchaseId != "") {
+      print(user.purchaseId);
+      await deleteEventFromPurchase(user.purchaseId!, eventId);
+    }
+  }
+
 
 
   /////////////////////////////////////////////////////////////// STREAMS

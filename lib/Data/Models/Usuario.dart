@@ -32,6 +32,7 @@ class Usuario {
   String? sessions;
   bool? active;
   Timestamp? lastEventAt;
+  String? purchaseId = "";
 
   List<RequestToBrand> requestsList = [];
   List<Brand> brandsList = [];
@@ -61,6 +62,7 @@ class Usuario {
     this.brandID,
     this.sessions,
     this.active,
+    this.purchaseId,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
