@@ -107,28 +107,6 @@ class _BrandScreenState extends State<BrandScreen> {
     print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
-  // Function to get the favourites of the user
-  void getFavourites() async {
-    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
-    if (favourites.contains(pageIndex)) {
-      iconStar = true;
-    }
-    if (isLoading) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  //Function to set the favourites of the user
-  void setFavourites() {
-    if(favourites.isNotEmpty && favourites.contains(pageIndex)) {
-      iconStar = true;
-    } else {
-      iconStar = false;
-    }
-  }
-
   // Navigate to Notifications Screen
   Future<void> navigateToNotificationsScreen() async {
       Navigator.push(
@@ -171,21 +149,6 @@ class _BrandScreenState extends State<BrandScreen> {
           settings: const RouteSettings(name: 'Profile'),
         )
     );
-  }
-
-  // Function to Handle Favourites when User clicks on them
-  void handleChangedFavourites() {
-    setState(() {
-      iconStar = !iconStar;
-      if (iconStar == true) {
-        favourites.add(pageIndex);
-      }
-      else {
-        favourites.remove(pageIndex);
-      }
-      favourites.sort();
-      _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
-    });
   }
 
   //Return the ListTile of each screen of Mamba Pro
@@ -292,84 +255,53 @@ class _BrandScreenState extends State<BrandScreen> {
       decoration: const BoxDecoration(
         color: AppColors.darkGrey,
       ),
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: safeAreaHeight * 0.07),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(height: safeAreaHeight * 0.07),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: navigateToProfileScreen,
-                      child: CircularImage(
-                        size: safeAreaHeight * 0.1,
-                        image: currentUser.imageUrl,
-                        color: AppColors.white,
-                        borderWidth: 1,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        CounterBadgeIcon(
-                          counter: unreadNotifications,
-                          child: IconButton(
-                            icon: Icon(Icons.notifications, color: AppColors.white , size: safeAreaWidth*0.07),
-                            alignment: Alignment.centerRight,
-                            onPressed: navigateToNotificationsScreen,
-                          ),
-                        ),
-                        SizedBox(width: safeAreaWidth * 0.03),
-                        CounterBadgeIcon(
-                          counter: unreadChats,
-                          child: IconButton(
-                            icon: Icon(Icons.chat, color:  AppColors.white, size: safeAreaWidth*0.07),
-                            alignment: Alignment.centerRight,
-                            onPressed: navigateToChatScreen,
-                          ),
-                        ),
-                        /*
-                        IconButton(
-                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
-                          alignment: Alignment.centerRight,
-                          onPressed: navigateToSettingsScreen,
-                        ),
-                         */
-                      ],
-                    ),
-                  ],
+                GestureDetector(
+                  onTap: navigateToProfileScreen,
+                  child: CircularImage(
+                    size: safeAreaHeight * 0.1,
+                    image: currentUser.imageUrl,
+                    color: AppColors.white,
+                    borderWidth: 1,
+                  ),
                 ),
-                SizedBox(height: safeAreaHeight * 0.03),
-                Text(
-                    currentUser.firstName! + ' ' + currentUser.lastName!,
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                ),
-                SizedBox(height: safeAreaHeight * 0.02),
-                TextButton(
-                  onPressed: navigateToRolesInformationModal,
-                  style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: const Size(50, 30),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      alignment: Alignment.centerLeft),
-                  child: Text(
-                    returnBrandRoleString(),
-                    textAlign: TextAlign.left,
-                    //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
-                    style: Theme.of(context).textTheme.caption,
-                  )
-                ),
+
               ],
             ),
-          ),
-        ],
+            SizedBox(height: safeAreaHeight * 0.03),
+            Text(
+                currentUser.firstName! + ' ' + currentUser.lastName!,
+                textAlign: TextAlign.left,
+                style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+            ),
+            SizedBox(height: safeAreaHeight * 0.02),
+            TextButton(
+              onPressed: navigateToRolesInformationModal,
+              style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(50, 30),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  alignment: Alignment.centerLeft),
+              child: Text(
+                returnBrandRoleString(),
+                textAlign: TextAlign.left,
+                //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                style: Theme.of(context).textTheme.caption,
+              )
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -965,6 +897,78 @@ class _BrandScreenState extends State<BrandScreen> {
       });
     }
   }
+
+  /// DEPRECATED FAVOURITES
+
+  // Function to get the favourites of the user
+  void getFavourites() async {
+    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
+    if (favourites.contains(pageIndex)) {
+      iconStar = true;
+    }
+    if (isLoading) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  //Function to set the favourites of the user
+  void setFavourites() {
+    if(favourites.isNotEmpty && favourites.contains(pageIndex)) {
+      iconStar = true;
+    } else {
+      iconStar = false;
+    }
+  }
+
+  // Function to Handle Favourites when User clicks on them
+  void handleChangedFavourites() {
+    setState(() {
+      iconStar = !iconStar;
+      if (iconStar == true) {
+        favourites.add(pageIndex);
+      }
+      else {
+        favourites.remove(pageIndex);
+      }
+      favourites.sort();
+      _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
+    });
+  }
+
+  // ICON Notifications Chat
+  /*
+  Row(
+                      children: [
+                        CounterBadgeIcon(
+                          counter: unreadNotifications,
+                          child: IconButton(
+                            icon: Icon(Icons.notifications, color: AppColors.white , size: safeAreaWidth*0.07),
+                            alignment: Alignment.centerRight,
+                            onPressed: navigateToNotificationsScreen,
+                          ),
+                        ),
+                        SizedBox(width: safeAreaWidth * 0.03),
+                        CounterBadgeIcon(
+                          counter: unreadChats,
+                          child: IconButton(
+                            icon: Icon(Icons.chat, color:  AppColors.white, size: safeAreaWidth*0.07),
+                            alignment: Alignment.centerRight,
+                            onPressed: navigateToChatScreen,
+                          ),
+                        ),
+                        /*
+                        IconButton(
+                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                          alignment: Alignment.centerRight,
+                          onPressed: navigateToSettingsScreen,
+                        ),
+                         */
+                      ],
+                    ),
+   */
+
 }
 
 
