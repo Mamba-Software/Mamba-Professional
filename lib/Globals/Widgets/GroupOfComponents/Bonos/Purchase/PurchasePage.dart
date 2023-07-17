@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +27,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Bono
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientBonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchaseEvents/views/PurchaseEvents.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 
@@ -149,7 +149,7 @@ class _PurchasePageState extends State<PurchasePage> {
       paymentMethod = widget.bonoRequest?.paymentMethod;
     }
     /// GIFT PURCHASE
-    if (widget.bono != null) {
+    if (widget.bono == null) {
       mixpanel!.track('give_bono_view');
       paymentMethod = 2;
     }
@@ -281,35 +281,106 @@ class _PurchasePageState extends State<PurchasePage> {
     newPurchase.setPurchasedEventsData = newEvents;
   }
 
-  Widget buildStatusDetails() {
-    if (widget.bonoRequest != null) {
-      return Row(
+  Widget buildStatusLabel() {
+    if (isBonoRequest) {
+      return Column(
         children: [
-          Flexible(
-            child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(widget.bonoRequest!.timeRequested!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.caption,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
+          Row(
+            children: [
+              // SESSIONS
+              Icon(
+                Icons.help_outline_outlined,
+                color: AppColors.red,
+                size: MediaQuery.of(context).size.width * 0.04,
+              ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+              Text(
+                AppLocalizations.of(context)!.toConfirm,
+                style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.right,
+              ),
+            ],
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  AppLocalizations.of(context)!.toConfirmDesc,
+                  style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12, color: AppColors.red),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
           ),
         ],
       );
     } else {
-      return Row(
-        children: [
-          Flexible(
-            child: Text(
-              purchase.id != null? DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase() : '',
-              style: Theme.of(context).textTheme.caption,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
+      if (purchase.directPurchase != null && purchase.directPurchase!) {
+        return Column(
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.new_releases_outlined,
+                  color: Colors.orange,
+                  size: MediaQuery.of(context).size.width * 0.04,
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                Text(
+                  AppLocalizations.of(context)!.unverfied,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.orange, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.right,
+                ),
+              ],
             ),
-          ),
-        ],
-      );
+            SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.unverfiedDesc,
+                    style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12, color: Colors.orange),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      } else {
+        return Column(
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.verified_outlined,
+                  color: Theme.of(context).primaryColor,
+                  size: MediaQuery.of(context).size.width * 0.04,
+                ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.01),
+                Text(
+                  AppLocalizations.of(context)!.verfied,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.right,
+                ),
+              ],
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+            Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.verfiedDesc,
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 12),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      }
     }
   }
 
@@ -317,28 +388,24 @@ class _PurchasePageState extends State<PurchasePage> {
     if (widget.bonoRequest != null) {
       return Row(
         children: [
-          Flexible(
-            child: Text(
-              DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(widget.bonoRequest!.timeRequested!.toDate()).toUpperCase(),
-              style: Theme.of(context).textTheme.caption,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
+          Text(
+            DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(widget.bonoRequest!.timeRequested!.toDate()).toUpperCase(),
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ],
       );
     } else {
       return Row(
         children: [
-          Flexible(
-            child: Text(
-              purchase.id != null? DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase() : '',
-              style: Theme.of(context).textTheme.caption,
-              textAlign: TextAlign.left,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
+          Text(
+            purchase.id != null? DateFormat("E dd MMMM yy, HH:mm", Localizations.localeOf(context).languageCode).format(purchase.purchasedAt!.toDate()).toUpperCase() : '',
+            style: Theme.of(context).textTheme.caption,
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ],
       );
@@ -391,29 +458,32 @@ class _PurchasePageState extends State<PurchasePage> {
                 /// TITLE
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              editBono ? AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase() :
-                              isBonoRequest ? AppLocalizations.of(context)!.confirm+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase()
-                                  : AppLocalizations.of(context)!.acceptBono,
-                              style: Theme.of(context).textTheme.headline1,
-                              textAlign: TextAlign.left
-                            ),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                            buildStatusDetails(),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                            buildDateDetails(),
-                          ],
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          editBono ? AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase() :
+                          isBonoRequest ? AppLocalizations.of(context)!.confirm+" "+AppLocalizations.of(context)!.directPurchasetext.split(" ")[0].toLowerCase()
+                              : AppLocalizations.of(context)!.acceptBono,
+                          style: Theme.of(context).textTheme.headline1,
+                          textAlign: TextAlign.left
                         ),
-                      ),
-                    ],
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                        isBonoRequest || editBono ? Column(
+                          children: [
+                            buildDateDetails(),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                            buildStatusLabel(),
+                          ],
+                        ) : Text(
+                          AppLocalizations.of(context)!.acceptBonoDesc,
+                          style: Theme.of(context).textTheme.caption,
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -470,14 +540,14 @@ class _PurchasePageState extends State<PurchasePage> {
                       trailing: IconButton(
                         icon: Icon(
                           Icons.arrow_forward_ios,
-                          color: Theme.of(context).primaryColor,
+                          color: isBonoRequest || editBono ? Theme.of(context).primaryColor : Colors.transparent,
                           size: MediaQuery.of(context).size.height * 0.02,
                         ),
                         alignment: Alignment.center,
                         padding: const EdgeInsets.all(0),
                         onPressed: false ? () {} : null,
                       ),
-                      onTap: () async {
+                      onTap: isBonoRequest || editBono ? () async {
                         await Navigator.push(
                             context,
                             CupertinoPageRoute<bool?>(
@@ -488,7 +558,7 @@ class _PurchasePageState extends State<PurchasePage> {
                                     )
                             )
                         );
-                      },
+                      } : null,
                     ),
                   ),
                 ),
@@ -783,25 +853,25 @@ class _PurchasePageState extends State<PurchasePage> {
                     ],
                   ),
                 ),
-                !editBono ? Padding(
+                !(editBono || isBonoRequest) ? Padding(
                   padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                  child: RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyText2,
-                      children: [
-                        TextSpan(
-                            text: widget.user.firstName! + AppLocalizations.of(context)!.paymentIndication,
-                            style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)),
-                        TextSpan(
-                          text: originalPaymentString,
-                          style: Theme.of(context).textTheme.caption?.copyWith(fontWeight: FontWeight.bold, height: 1.5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      RichText(
+                        textAlign: TextAlign.left,
+                        text: TextSpan(
+                          style: Theme.of(context).textTheme.bodyText2,
+                          children: [
+                            TextSpan(
+                              text: AppLocalizations.of(context)!.paymentMethodConfirm,
+                              style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+
+                            ),
+                          ],
                         ),
-                        TextSpan(
-                            text: ". " + AppLocalizations.of(context)!.paymentMethodConfirm,
-                            style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5)
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ) :
                 Padding(
@@ -1044,12 +1114,20 @@ class _PurchasePageState extends State<PurchasePage> {
                   child: GestureDetector(
                     onTap: () async {
                       FocusManager.instance.primaryFocus?.unfocus();
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
-                      mixpanel!.track('bono_confirmation_deleted');
-                      Navigator.of(context).pop();
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchaseRequest);
+                          }
+                      );
+                      if (result) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
+                        mixpanel!.track('bono_confirmation_deleted');
+                        Navigator.of(context).pop();
+                      }
                     },
                     child: Material(
                       elevation: 4,
@@ -1059,7 +1137,7 @@ class _PurchasePageState extends State<PurchasePage> {
                       ),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.red.withOpacity(0.2),
+                          color: AppColors.red,
                           borderRadius: BorderRadius.circular(30),
                         ),
                         width: MediaQuery.of(context).size.width * 0.90,
@@ -1078,12 +1156,20 @@ class _PurchasePageState extends State<PurchasePage> {
                   child: GestureDetector(
                     onTap: () async {
                       FocusManager.instance.primaryFocus?.unfocus();
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await _purchaseDataService.deletePurchase(purchase.id!, widget.user.id!, widget.brand.id!);
-                      mixpanel!.track('purchase_deleted');
-                      Navigator.of(context).pop();
+                      var result = await showDialog(
+                          context: context,
+                          builder: (_) {
+                            return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchase);
+                          }
+                      );
+                      if (result) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        await _purchaseDataService.deletePurchase(purchase.id!, widget.user.id!, widget.brand.id!);
+                        mixpanel!.track('purchase_deleted');
+                        Navigator.of(context).pop();
+                      }
                     },
                     child: Material(
                       elevation: 4,
@@ -1114,6 +1200,7 @@ class _PurchasePageState extends State<PurchasePage> {
           ),
         ],
       ),
+      resizeToAvoidBottomInset: false,
       bottomSheet: isBonoSelected ? GestureDetector(
         onTap: isLoading ? null : () async {
           if (checkIfAllBonoConditionsAreCorrect()) {
@@ -1205,7 +1292,7 @@ class _PurchasePageState extends State<PurchasePage> {
           }
         },
         child: Container(
-            height: MediaQuery.of(context).size.height*0.09,
+            height: MediaQuery.of(context).size.height*0.08,
             width: double.infinity,
             color: Theme.of(context).primaryColor,
             child: isLoading ? Center(
@@ -1229,7 +1316,7 @@ class _PurchasePageState extends State<PurchasePage> {
             )
         ),
       ) : Container(
-          height: MediaQuery.of(context).size.height*0.09,
+          height: MediaQuery.of(context).size.height*0.08,
           width: double.infinity,
           color: Theme.of(context).primaryColor,
           child: isLoading ? Center(
@@ -1768,7 +1855,7 @@ class _PurchasePageState extends State<PurchasePage> {
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
       height: isActive ? 6.0 : 4.0,
       width: isActive ? 6.0 : 4.0,
       decoration: BoxDecoration(
@@ -1797,12 +1884,29 @@ class _PurchasePageState extends State<PurchasePage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Flexible(
-                        child: Text(
-                          AppLocalizations.of(context)!.from+" "+StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(startDate))
-                          +" "+AppLocalizations.of(context)!.to.toLowerCase()+" "+StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', Localizations.localeOf(context).languageCode).format(endDate)),
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
-                          textAlign: TextAlign.left,
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                AppLocalizations.of(context)!.expiresAt+" "+StringUtils().toCapitalized(DateFormat('EEEE - d MMM yyyy', Localizations.localeOf(context).languageCode).format(endDate)),
+                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: notShow == false ? Theme.of(context).primaryColor : Theme.of(context).disabledColor),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Flexible(
+                              child: Text(
+                                AppLocalizations.of(context)!.from+" "+StringUtils().toCapitalized(DateFormat('d/M/yy', Localizations.localeOf(context).languageCode).format(startDate))
+                                +" "+AppLocalizations.of(context)!.to.toLowerCase()+" "+StringUtils().toCapitalized(DateFormat('d/M/yy', Localizations.localeOf(context).languageCode).format(endDate)),
+                                style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 12),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],

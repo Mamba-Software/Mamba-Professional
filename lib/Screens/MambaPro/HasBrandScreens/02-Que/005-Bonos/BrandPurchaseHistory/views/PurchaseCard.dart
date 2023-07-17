@@ -37,7 +37,7 @@ class PurchaseCard extends StatelessWidget {
         onTapPurchase(context);
       },
       child: Container(
-        color: bonoRequest != null ? Theme.of(context).backgroundColor : Theme.of(context).scaffoldBackgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.03),
         child: Row(
           children: [
@@ -334,7 +334,7 @@ class PurchaseCard extends StatelessWidget {
           SizedBox(width: MediaQuery.of(context).size.width * 0.01),
           Text(
             AppLocalizations.of(context)!.toConfirm,
-            style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red),
+            style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
             textAlign: TextAlign.right,
           ),
         ],
@@ -346,13 +346,13 @@ class PurchaseCard extends StatelessWidget {
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Icon(
               Icons.new_releases_outlined,
-              color: AppColors.mainColor,
+              color: Colors.orange,
               size: MediaQuery.of(context).size.width * 0.04,
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Text(
               AppLocalizations.of(context)!.unverfied,
-              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.mainColor),
+              style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.orange, fontWeight: FontWeight.bold),
               textAlign: TextAlign.right,
             ),
           ],

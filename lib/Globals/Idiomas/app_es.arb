@@ -2515,7 +2515,7 @@
   "@verfied": {
     "description": "ilimitadas message"
   },
-  "verfiedDesc": "El cliente puede usar el bono, aunque se puede pedir verificación adicional en el futuro.",
+  "verfiedDesc": "Se ha confirmado que se realizó el pago de esta compra. El cliente ha completado el proceso y ahora tiene acceso al bono correspondiente según las condiciones establecidas.",
   "@verfiedDesc": {
     "description": "ilimitadas message"
   },
@@ -2523,12 +2523,16 @@
   "@unverfied": {
     "description": "ilimitadas message"
   },
-  "unverfiedDesc": "Puede usar el bono y  aunque se puede pedir verificación adicional",
+  "unverfiedDesc": "Aún no se ha confirmado el pago de la compra realizada por el cliente. El cliente adquirió el bono directamente, pero se espera la validación. A pesar de ello, el bono ya está disponible para su uso.",
   "@unverfiedDesc": {
     "description": "ilimitadas message"
   },
   "toConfirm": "Por confirmar",
   "@toConfirm": {
+    "description": "ilimitadas message"
+  },
+  "toConfirmDesc": "El cliente solicitó el bono, pero está la espera de confirmación del professional. Puede implicar una revisión adicional antes de otorgar el bono. Sin respuesta, no hay acceso al bono.",
+  "@toConfirmDesc": {
     "description": "ilimitadas message"
   },
   "numberSessions": "Nº sesiones",
@@ -3407,8 +3411,12 @@
   "@directPurchasetext": {
     "description": "directPurchasetext message"
   },
-  "deletePurchase": "¿Estás seguro qué quieres eliminar esta compra? Todos los eventos realizados con esta compra desapareceran del cliente.",
+  "deletePurchase": "¿Estás seguro qué quieres eliminar esta compra?\n\n El cliente será eliminado de todos los eventos realizados con este bono.",
   "@deletePurchase": {
+    "description": "deletePurchase message"
+  },
+  "deletePurchaseRequest": "¿Estás seguro de que quieres eliminar esta solicitud de compra?\n\nEl cliente será notificado de que has rechazado su solicitud y no se le otorgará el bono.",
+  "@deletePurchaseRequest": {
     "description": "deletePurchase message"
   },
   "cancelEventPurchase": "¿Estás seguro que quieres desvincular este evento de la compra?",
