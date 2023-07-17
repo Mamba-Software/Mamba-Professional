@@ -1210,7 +1210,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                         setState(() {
                                           isLoading = true;
                                         });
-                                        pageIndex = 0;
+                                        pageIndex = 10;
                                         NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
                                         await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
                                         await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);

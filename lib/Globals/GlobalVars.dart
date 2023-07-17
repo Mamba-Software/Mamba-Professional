@@ -55,7 +55,7 @@ String? currentAddress;
 String? timeZoneName;
 
 // Page Controller Mamba Professional
-int pageIndex = 0;
+int pageIndex = 10;
 
 // Analytics Mix Panel
 Mixpanel? mixpanel;

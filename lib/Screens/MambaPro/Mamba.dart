@@ -100,8 +100,8 @@ class _MambaState extends State<Mamba> {
     }).onError((error) {
       print(error.toString());
     });
-    // Setting default open to Homepage
-    pageIndex = 0;
+    // Setting default open to Brand Calendar
+    pageIndex = 10;
     // Getting User Information
     getUserAndBrand();
     // On StartUp Dialogs

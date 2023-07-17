@@ -57,7 +57,7 @@ class _BrandScreenState extends State<BrandScreen> {
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
 
-  bool isLoading = true;
+  bool isLoading = false;
 
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
@@ -94,7 +94,7 @@ class _BrandScreenState extends State<BrandScreen> {
   @override
   void initState() {
     super.initState();
-    getFavourites();
+    //getFavourites();
   }
 
   // Init Device Sizes
@@ -731,7 +731,7 @@ class _BrandScreenState extends State<BrandScreen> {
             setState(() {
               isLoading = true;
             });
-            pageIndex = 0;
+            pageIndex = 10;
             NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
             await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
             await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
@@ -930,7 +930,6 @@ class _BrandScreenState extends State<BrandScreen> {
               const Divider(color: AppColors.grey, thickness: 0, height: 1,),
               SizedBox(height: safeAreaHeight * 0.02),
               // Brand Options
-              // TODO: Passer Rol en aquesta funció
               buildBrandListOptions(),
               SizedBox(height: safeAreaHeight * 0.05),
               //Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
