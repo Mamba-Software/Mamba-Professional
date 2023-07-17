@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_print
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWidget.dart';
@@ -52,11 +54,7 @@ class BrandScreen extends StatefulWidget {
 }
 
 class _BrandScreenState extends State<BrandScreen> {
-
-  // Screen Dimensions
-  double safeAreaHeight = 0;
-  double safeAreaWidth = 0;
-
+  
   bool isLoading = false;
 
   // Acceso a Base de Datos
@@ -95,16 +93,6 @@ class _BrandScreenState extends State<BrandScreen> {
   void initState() {
     super.initState();
     //getFavourites();
-  }
-
-  // Init Device Sizes
-  initDeviceSizes() {
-    safeAreaHeight = MediaQuery.of(context).size.height - AppBar().preferredSize.height - MediaQuery.of(context).padding.bottom;
-    print("MediaQuery.of(context).padding.bottom");
-    print(MediaQuery.of(context).padding.bottom);
-    safeAreaWidth = MediaQuery.of(context).size.width;
-    print("Device H and W: "+MediaQuery.of(context).size.height.toString()+" "+MediaQuery.of(context).size.width.toString());
-    print("SafeArea H and W: "+safeAreaHeight.toString()+" "+safeAreaWidth.toString());
   }
 
   // Navigate to Notifications Screen
@@ -180,7 +168,7 @@ class _BrandScreenState extends State<BrandScreen> {
           leading: _mambaProUtils.iconSelectorListView(context, _pageIndex),
           title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
           trailing: isFavourite ? SizedBox(
-            width: safeAreaWidth*0.15,
+            width: MediaQuery.of(context).size.width*0.15,
             child: IconButton(
                 onPressed: () {
                   setState(() {
@@ -234,7 +222,7 @@ class _BrandScreenState extends State<BrandScreen> {
                 )
             ),
           ) : SizedBox(
-            width: safeAreaWidth*0.15,
+            width: MediaQuery.of(context).size.width*0.15,
           ),
           onTap: () =>  {
             Navigator.pop(context),
@@ -250,58 +238,143 @@ class _BrandScreenState extends State<BrandScreen> {
 
   Widget buildHeader() {
     return Container(
-      height: safeAreaHeight*0.32,
+      height: MediaQuery.of(context).size.height*0.25,
       width: double.infinity,
       decoration: const BoxDecoration(
         color: AppColors.darkGrey,
       ),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: safeAreaHeight * 0.07),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: navigateToProfileScreen,
-                  child: CircularImage(
-                    size: safeAreaHeight * 0.1,
-                    image: currentUser.imageUrl,
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Container(
+            decoration:
+            BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(currentBrand.baseImage!),
+                )
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height*0.25,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              gradient: LinearGradient(
+                begin: FractionalOffset.bottomCenter,
+                end: FractionalOffset.topCenter,
+                colors: [
+                  Colors.black.withOpacity(0.8),
+                  Colors.black.withOpacity(0.7),
+                  Colors.black.withOpacity(0.6),
+                  Colors.black.withOpacity(0.5),
+                  Colors.black.withOpacity(0.3),
+                ],
+                stops: const [
+                  0.3,
+                  0.4,
+                  0.5,
+                  0.75,
+                  1.0,
+                ],
+              ),
+            ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03, vertical: MediaQuery.of(context).size.width*0.05),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  CircularImage(
+                    size: MediaQuery.of(context).size.width*0.15,
+                    image: currentBrand.logoUrl,
+                    borderWidth: 0.5,
                     color: AppColors.white,
-                    borderWidth: 1,
                   ),
-                ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03,),
+                  Expanded(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width*0.15,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              currentBrand.name!,
+                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          GestureDetector(
+                            onTap: navigateToRolesInformationModal,
+                            child: Text(
+                              returnBrandRoleString(),
+                              textAlign: TextAlign.left,
+                              //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                              style: Theme.of(context).textTheme.caption,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          /*
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: navigateToProfileScreen,
+                      child: CircularImage(
+                        size: MediaQuery.of(context).size.height * 0.1,
+                        image: currentUser.imageUrl,
+                        color: AppColors.white,
+                        borderWidth: 1,
+                      ),
+                    ),
 
+                  ],
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                Text(
+                    currentUser.firstName! + ' ' + currentUser.lastName!,
+                    textAlign: TextAlign.left,
+                    style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                TextButton(
+                  onPressed: navigateToRolesInformationModal,
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerLeft),
+                  child: Text(
+                    returnBrandRoleString(),
+                    textAlign: TextAlign.left,
+                    //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
+                    style: Theme.of(context).textTheme.caption,
+                  )
+                ),
               ],
             ),
-            SizedBox(height: safeAreaHeight * 0.03),
-            Text(
-                currentUser.firstName! + ' ' + currentUser.lastName!,
-                textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.headline1?.copyWith(color:AppColors.white,fontWeight: FontWeight.normal),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-            ),
-            SizedBox(height: safeAreaHeight * 0.02),
-            TextButton(
-              onPressed: navigateToRolesInformationModal,
-              style: TextButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  minimumSize: const Size(50, 30),
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  alignment: Alignment.centerLeft),
-              child: Text(
-                returnBrandRoleString(),
-                textAlign: TextAlign.left,
-                //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
-                style: Theme.of(context).textTheme.caption,
-              )
-            ),
-          ],
-        ),
+          ),
+           */
+        ],
       ),
     );
   }
@@ -331,7 +404,7 @@ class _BrandScreenState extends State<BrandScreen> {
     switch (currentUser.brandRole) {
       case 1:
         if (currentBrand.adminID == currentUser.id) {
-          return AppLocalizations.of(context)!.owner + " + Creator";
+          return StringUtils().toCapitalized(AppLocalizations.of(context)!.paySubscriptionDesc.split(" ")[2]);
         } else {
           return AppLocalizations.of(context)!.owner;
         }
@@ -360,49 +433,49 @@ class _BrandScreenState extends State<BrandScreen> {
               return listTilePro(favourite, true);
             }
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 2),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
          */
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
           child: Text(
             AppLocalizations.of(context)!.management,
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
           ),
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         listTilePro(10),
         listTilePro(5),
         listTilePro(9),
 
 
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
           child: Text(
             AppLocalizations.of(context)!.members,
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
           ),
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         listTilePro(2),
         listTilePro(1),
         //currentUser.brandRole < 3 ? listTilePro(15) : Container(),
 
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: safeAreaWidth*0.04),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
           child: Text(
             AppLocalizations.of(context)!.yourBrand,
             style: Theme.of(context).textTheme.caption,
             textAlign: TextAlign.left,
           ),
         ),
-        SizedBox(height: safeAreaHeight * 0.01),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         listTilePro(17),
         listTilePro(7),
         listTilePro(11),
@@ -833,10 +906,6 @@ class _BrandScreenState extends State<BrandScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (isFirstBuild) {
-      initDeviceSizes();
-      isFirstBuild = false;
-    }
     return MultiBlocProvider(
       providers: [
         BlocProvider<BrandSuscriptionCubit>(
@@ -860,16 +929,16 @@ class _BrandScreenState extends State<BrandScreen> {
               // Header
               buildHeader(),
               const Divider(color: AppColors.grey, thickness: 0, height: 1,),
-              SizedBox(height: safeAreaHeight * 0.02),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               // Brand Options
               buildBrandListOptions(),
-              SizedBox(height: safeAreaHeight * 0.05),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               //Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
               /*
               // Leave/Delete Brand
-              SizedBox(height: safeAreaHeight * 0.015),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
               buildBrandLeaveOption(),
-              SizedBox(height: safeAreaHeight * 0.05),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               */
             ],
           ),
@@ -944,23 +1013,23 @@ class _BrandScreenState extends State<BrandScreen> {
                         CounterBadgeIcon(
                           counter: unreadNotifications,
                           child: IconButton(
-                            icon: Icon(Icons.notifications, color: AppColors.white , size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.notifications, color: AppColors.white , size: MediaQuery.of(context).size.width*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToNotificationsScreen,
                           ),
                         ),
-                        SizedBox(width: safeAreaWidth * 0.03),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                         CounterBadgeIcon(
                           counter: unreadChats,
                           child: IconButton(
-                            icon: Icon(Icons.chat, color:  AppColors.white, size: safeAreaWidth*0.07),
+                            icon: Icon(Icons.chat, color:  AppColors.white, size: MediaQuery.of(context).size.width*0.07),
                             alignment: Alignment.centerRight,
                             onPressed: navigateToChatScreen,
                           ),
                         ),
                         /*
                         IconButton(
-                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
+                          icon: Icon(Icons.settings, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.06),
                           alignment: Alignment.centerRight,
                           onPressed: navigateToSettingsScreen,
                         ),
