@@ -267,7 +267,12 @@ class _MambaState extends State<Mamba> {
   Widget build(BuildContext context) {
     return isLoading ?
       Scaffold(
-        body: LoadingView(),
+        backgroundColor: AppColors.black,
+        body: LoadingView(
+          hasLogo: false,
+          isSmall: true,
+          color: AppColors.white,
+        ),
       )
      :
       hasBrand ? !brandIsActive? currentUser.id == currentBrand.adminID? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
