@@ -1955,7 +1955,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           } else {
             color = Colors.deepOrangeAccent.withOpacity(0.6);
           }
-        } else if(bookedCapacity == 1) {
+        } else if(bookedCapacity >= 1) {
           if (endDate.isAfter(DateTime.now())) {
             color = Colors.red;
           } else {
