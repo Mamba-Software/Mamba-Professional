@@ -5,9 +5,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lDegradate.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
@@ -152,6 +155,37 @@ async {
   else {
     _topSnackBar.showSnackBarBottom(context,  AppLocalizations.of(context)!.notSubNotAdmin, 5);
   }
+}
+
+// Navigate to Notifications Screen
+void navigateToProfileScreen(BuildContext context) {
+  Navigator.push(
+      context,
+      CupertinoPageRoute<void>(
+        builder: (context) => const Profile(),
+        settings: const RouteSettings(name: 'Profile'),
+      )
+  );
+}
+
+// Navigate to Notifications Screen
+Future<void> navigateToNotificationsScreen(BuildContext context) async {
+  Navigator.push(
+      context,
+      CupertinoPageRoute<void>(
+        builder: (context) => const Notifications(),
+      )
+  );
+}
+
+// Navigate to Notifications Screen
+Future<void> navigateToChatScreen(BuildContext context) async {
+  Navigator.push(
+      context,
+      CupertinoPageRoute<void>(
+        builder: (context) => const ChatCore(),
+      )
+  );
 }
 
 

@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWidget.dart';
@@ -289,7 +290,7 @@ class _BrandScreenState extends State<BrandScreen> {
                     borderWidth: 0.5,
                     color: AppColors.white,
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.05,),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03,),
                   Expanded(
                     child: SizedBox(
                       height: MediaQuery.of(context).size.width*0.15,
@@ -403,7 +404,7 @@ class _BrandScreenState extends State<BrandScreen> {
     switch (currentUser.brandRole) {
       case 1:
         if (currentBrand.adminID == currentUser.id) {
-          return AppLocalizations.of(context)!.owner + " + Creator";
+          return StringUtils().toCapitalized(AppLocalizations.of(context)!.paySubscriptionDesc.split(" ")[2]);
         } else {
           return AppLocalizations.of(context)!.owner;
         }
