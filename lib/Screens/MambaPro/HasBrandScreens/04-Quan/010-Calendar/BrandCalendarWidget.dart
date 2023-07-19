@@ -1542,7 +1542,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 ],
               ),
               SizedBox(width: MediaQuery.of(context).size.width*0.03),
-
             ],
           ),
           BlocBuilder<BrandEventsCubit, BrandEventsState>(

@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -512,7 +513,7 @@ class _Clients extends State<Clients> {
                     style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
                 )
             ),
-            centerTitle: true,
+            centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -526,76 +527,51 @@ class _Clients extends State<Clients> {
                 ),
               ),
             ),
-            /*
-            bottom: PreferredSize(
-                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.1,),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height*0.08,
-                  child: Padding(
-                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05,left: MediaQuery.of(context).size.width*0.05),
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (value) {
-                          filterSearchResults(value);
-                        },
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          hintStyle: Theme.of(context).textTheme.caption,
-                          hintText: AppLocalizations.of(context)!.search,
-                          enabledBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide(color: AppColors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                            size: MediaQuery.of(context).size.width*0.06,
-                          ),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              searchController.clear();
-                              filterSearchResults("");
-                            },
-                            icon: const Icon(Icons.delete_outline, color: Colors.grey,),
-                          ),
-                          contentPadding: const EdgeInsets.all(0),
-                        ),
-                      )
-                  ),
-                )
-            ),
-             */
             actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CounterBadgeIcon(
+                    counter: unreadNotifications,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToNotificationsScreen(context),
+                    ),
                   ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_clients_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_clients_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                  CounterBadgeIcon(
+                    counter: unreadChats,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToChatScreen(context),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  GestureDetector(
+                    onTap: () => navigateToProfileScreen(context),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.08,
+                          image: currentUser.imageUrl,
+                          color: AppColors.grey,
+                          borderWidth: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 10)),

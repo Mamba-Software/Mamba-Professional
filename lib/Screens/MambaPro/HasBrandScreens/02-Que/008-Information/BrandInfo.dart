@@ -16,6 +16,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
@@ -279,7 +280,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            centerTitle: true,
+            centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -294,27 +295,50 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               ),
             ),
             actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CounterBadgeIcon(
+                    counter: unreadNotifications,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToNotificationsScreen(context),
+                    ),
                   ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_info_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_info_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                  CounterBadgeIcon(
+                    counter: unreadChats,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToChatScreen(context),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  GestureDetector(
+                    onTap: () => navigateToProfileScreen(context),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.08,
+                          image: currentUser.imageUrl,
+                          color: AppColors.grey,
+                          borderWidth: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
           if (isLoading) SliverFillRemaining(
