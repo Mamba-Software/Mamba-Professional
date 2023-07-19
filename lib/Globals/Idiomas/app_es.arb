@@ -3434,5 +3434,14 @@
   "purchase": "Compra",
   "@purchase": {
     "description": "purchase message"
+  },
+  "createdBy": "Creada por {name}",
+  "@createdBy": {
+    "description": "Member Since message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   }
 }

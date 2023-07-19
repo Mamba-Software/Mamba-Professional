@@ -143,7 +143,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
     var dateJoinedSplit = brand.dateJoined!.split("-");
     dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]), int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
-    print(dateJoinedBrand);
   }
 
   Future<void> getCollections() async {

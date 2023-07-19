@@ -105,8 +105,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           builder: (context) => const ChatCore(),
         )
     ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadConversations(
-          currentUser.id!);
+      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
       setState(() {
         unreadChats = temp;
       });

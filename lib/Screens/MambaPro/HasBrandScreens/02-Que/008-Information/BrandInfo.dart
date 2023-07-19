@@ -1,34 +1,30 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Promotions/PromotionsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
-import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDaysDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
-
-import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {
@@ -46,6 +42,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
 
   DateFormat formatter = DateFormat('dd/MM/yy');
   // DataBase Access
+  final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
   final _eventDataService = EventDataService();
   final _roomDataService = RoomDataService();
@@ -64,6 +61,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   // Description Controller
   var descriptionController = TextEditingController();
   String descriptionControllerTemp = "";
+  // Admin Usuario
+  Usuario admin = currentUser;
   // Max Members Brand
   TextEditingController membersController = TextEditingController();
   int members = 1;
@@ -72,6 +71,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   // Time Picker Horari de Trabajo
   DateTime startTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0);
   DateTime endTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 22, 0);
+  DateTime dateJoinedBrand = DateTime.now();
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
   final List<double> _workShift = [];
@@ -117,10 +117,17 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   }
 
   // Gets the user info from firebase.
-  void initBrand() {
+  Future<void> initBrand() async {
     // Name Description
     nameBrandController.text = currentBrand.name!;
     descriptionController.text = currentBrand.description!;
+    // Admin ID
+    if (admin.id != currentBrand.adminID) {
+      admin = await _userDataService.getUserCoverDetails(currentBrand.adminID!);
+    }
+    // Created at
+    var dateJoinedSplit = currentBrand.dateJoined!.split("-");
+    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]), int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
     // Members Deprecated
     members = currentBrand.maxMembers!;
     membersController.text = currentBrand.maxMembers.toString();
@@ -129,40 +136,11 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     var startMinWS = int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
     startTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS);
     startTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHourWS, startMinWS,));
-    //print(startHourWS);
-    //print(startMinWS);
-    //print(startTime.toString());
     // End Time
     var endHourWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
     var endMinWS = int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
     endTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS);
     endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHourWS, endMinWS,));
-    //print(endHourWS);
-    //print(endMinWS);
-    //print(endTime.toString());
-    /* Break Time
-    for (var i=2; i < currentBrand.workShift.length ; i+=2) {
-      var start = currentBrand.workShift[i];
-      int s = start.toInt();
-      startBreaks.add(s);
-      var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
-      var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
-      var end = currentBrand.workShift[i+1];
-      int e = end.toInt();
-      startBreaks.add(e);
-      var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
-      var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
-      breakStartTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, startHour, startMin);
-      _breakStartTime = TimeOfDay(hour: startHour, minute: startMin);
-      breakEndTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endHour, endMin);
-      _breakEndTime = TimeOfDay(hour: endHour, minute: endMin);
-      // Array of Breaks
-      _breakList.add(_breakStartTime);
-      _breakList.add(_breakEndTime);
-    }
-    breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0,));
-    breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0,));
-    */
     // Booking Window
     bookingWindow = currentBrand.bookingWindow!;
     if(currentBrand.directPurchase != null) {
@@ -183,7 +161,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       isLoading = false;
     });
     initBrand();
-    print("saved");
   }
 
   Future<void> navigateToEditLogoScreen() async {
@@ -613,7 +590,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                           children: [
                             Expanded(
                               child: Text(
-                                AppLocalizations.of(context)!.createBrandCoverDescription,
+                                AppLocalizations.of(context)!.createdBy(admin.name!)+" el "+DateTimeUtils().formatDateTimeToStringDDMMMMYYYY(dateJoinedBrand, Localizations.localeOf(context).languageCode),
                                 style: Theme.of(context).textTheme.caption,
                                 textAlign: TextAlign.left,
                               ),

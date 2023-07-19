@@ -18,6 +18,7 @@ import 'package:mamba_castelldefels/Globals/Utils/MambaProSelector/MambaProUtils
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -93,50 +94,6 @@ class _BrandScreenState extends State<BrandScreen> {
   void initState() {
     super.initState();
     //getFavourites();
-  }
-
-  // Navigate to Notifications Screen
-  Future<void> navigateToNotificationsScreen() async {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<void>(
-            builder: (context) => const Notifications(),
-            settings: const RouteSettings(name: 'Notifications'),
-          )
-      ).whenComplete(() async {
-        var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
-        setState(() {
-          unreadNotifications = temp;
-        });
-      });
-  }
-
-  // Navigate to Notifications Screen
-  Future<void> navigateToChatScreen() async {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<void>(
-            builder: (context) => const ChatCore(),
-            settings: const RouteSettings(name: 'ChatCore'),
-          )
-      ).whenComplete(() async {
-        var temp = await _userDataService.getUnreadConversations(
-            currentUser.id!);
-        setState(() {
-          unreadChats = temp;
-        });
-      });
-  }
-
-  // Navigate to Notifications Screen
-  void navigateToProfileScreen() {
-    Navigator.push(
-        context,
-        CupertinoPageRoute<void>(
-          builder: (context) => const Profile(),
-          settings: const RouteSettings(name: 'Profile'),
-        )
-    );
   }
 
   //Return the ListTile of each screen of Mamba Pro
@@ -307,15 +264,50 @@ class _BrandScreenState extends State<BrandScreen> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          GestureDetector(
-                            onTap: navigateToRolesInformationModal,
-                            child: Text(
-                              returnBrandRoleString(),
-                              textAlign: TextAlign.left,
-                              //style: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).colorScheme.secondary),
-                              style: Theme.of(context).textTheme.caption,
-                            ),
-                          )
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Flexible(
+                                child: GestureDetector(
+                                  onTap: navigateToRolesInformationModal,
+                                  child: Text(
+                                    returnBrandRoleString(),
+                                    textAlign: TextAlign.left,
+                                    style: Theme.of(context).textTheme.caption,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              TextButton(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.qr_code, color: AppColors.white, size: 14,),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      AppLocalizations.of(context)!.invite,
+                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
+                                    ),
+                                  ],
+                                ),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: AppColors.white.withOpacity(0.3),
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                  shape: RoundedRectangleBorder(  // add this
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  minimumSize: Size(30, 20),
+                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                onPressed: () => navigateShareBrandLink(),
+                              )
+                            ],
+                          ),
+
+
                         ],
                       ),
                     ),
@@ -376,27 +368,6 @@ class _BrandScreenState extends State<BrandScreen> {
            */
         ],
       ),
-    );
-  }
-
-  // Navigate to Bonos Request Screen
-  void navigateToRolesInformationModal() async {
-    mixpanel!.track('drawer_trainer_roles_info');
-    showModalBottomSheet<bool?>(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      builder: (BuildContext context) {
-        return const FractionallySizedBox(
-            heightFactor: 0.935,
-            child: RolesInfo()
-        );
-      },
     );
   }
 
@@ -756,6 +727,7 @@ class _BrandScreenState extends State<BrandScreen> {
     switch (pageIndex) {
       case 0:
         mixpanel!.track('brand_homepage_view');
+        updateChatsAndNotifications();
         return HomePro(
             brandId: currentBrand.id!,
             numTrainers: currentBrand.numTrainers!,
@@ -775,6 +747,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 9:
         mixpanel!.track('brand_stats_view');
+        updateChatsAndNotifications();
         return Stats(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -785,6 +758,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 2:
         mixpanel!.track('brand_clients_view');
+        updateChatsAndNotifications();
         return Clients(
           brandId: currentBrand.id!,
           numClients: currentBrand.numClients!,
@@ -795,6 +769,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 1:
         mixpanel!.track('brand_trainers_view');
+        updateChatsAndNotifications();
         return Trainers(
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
@@ -803,13 +778,9 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
-    //  case 15:
-        mixpanel!.track('brand_membership_requests_view');
-        return MembershipRequestsPro(
-          brandId: currentBrand.id!,
-        );
       case 8:
         mixpanel!.track('brand_info_view');
+        updateChatsAndNotifications();
         return BrandInfo(
           locale: Localizations.localeOf(context),
           brandId: currentBrand.id!,
@@ -820,6 +791,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 5:
         mixpanel!.track('brand_bonos_view');
+        updateChatsAndNotifications();
         return BonosPro(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -829,6 +801,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 10:
         mixpanel!.track('brand_calendar_view');
+        updateChatsAndNotifications();
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
           dateTime: calendarDateTime,
@@ -838,17 +811,9 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
-      //case 14:
-        mixpanel!.track('brand_event_history_view');
-        return BrandEventHistoryPage(
-          brandId: currentBrand.id!,
-          pinned: iconStar,
-          pinnedChanged: (boolean) {
-            handleChangedFavourites();
-          },
-        );
       case 7:
         mixpanel!.track('brand_images_view');
+        updateChatsAndNotifications();
         return BrandImages(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -858,6 +823,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 11:
         mixpanel!.track('brand_locations_view');
+        updateChatsAndNotifications();
         return Locations(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -867,6 +833,7 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 17:
         mixpanel!.track('brand_subscription_view');
+        updateChatsAndNotifications();
         return BrandSubscription(
           locale: Localizations.localeOf(context),
           brandId: currentBrand.id!,
@@ -875,9 +842,18 @@ class _BrandScreenState extends State<BrandScreen> {
             handleChangedFavourites();
           },
         );
-
       default:
         mixpanel!.track('brand_homepage_view');
+        updateChatsAndNotifications();
+        return BrandCalendarWidget(
+          brandId: currentBrand.id!,
+          dateTime: calendarDateTime,
+          calendarView: calendarView,
+          pinned: iconStar,
+          pinnedChanged: (boolean) {
+            handleChangedFavourites();
+          },
+        );
         return HomePro(
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
@@ -896,6 +872,55 @@ class _BrandScreenState extends State<BrandScreen> {
           },
         );
     }
+  }
+
+  // updateChatsAndNotifications
+  void updateChatsAndNotifications() async {
+    // Unread Chats
+    unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
+    // Unread Notifications
+    unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
+    setState(() {});
+  }
+
+  // Navigate to Bonos Request Screen
+  void navigateToRolesInformationModal() async {
+    mixpanel!.track('drawer_trainer_roles_info');
+    showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+            heightFactor: 0.935,
+            child: RolesInfo()
+        );
+      },
+    );
+  }
+
+  Future<void> navigateShareBrandLink() async {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      builder: (BuildContext context) {
+        return const FractionallySizedBox(
+          heightFactor: 0.8,
+          child: ShareBrandLink(),
+        );
+      },
+    );
   }
 
   @override

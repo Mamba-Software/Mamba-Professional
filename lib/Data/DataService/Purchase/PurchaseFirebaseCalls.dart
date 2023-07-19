@@ -473,7 +473,7 @@ class PurchaseFirebaseCalls {
   }
 
   Future<void> updatePurchaseEvents(String purchaseId, String userId, List<Event> eventsToAdd, List<Event> eventsToDelete) async {
-    EventDataService _eventDataService = new EventDataService();
+    EventDataService _eventDataService = EventDataService();
     for(int i = 0; i < eventsToDelete.length; ++i)
     {
       print("Delete event: " + eventsToDelete[i].id!);
@@ -531,7 +531,7 @@ class PurchaseFirebaseCalls {
   }
 
   Future<void> deleteEventsFromUserPurchase(String purchaseId, String userId, String brandId) async {
-    EventDataService _eventDataService = new EventDataService();
+    EventDataService _eventDataService = EventDataService();
     await _firestore
         .collection(purchases)
         .doc(purchaseId)
@@ -539,7 +539,7 @@ class PurchaseFirebaseCalls {
         .get()
         .then((snapshot) {
       for (DocumentSnapshot ds in snapshot.docs) {
-        _eventDataService.deleteUserFromEvent(ds.id!,userId);
+        _eventDataService.deleteUserFromEvent(ds.id,userId);
         ds.reference.delete();
       }
     });

@@ -44,7 +44,7 @@ class MambaProUtils {
   {
     if(pageIndexView == 1) return Icon(Icons.badge_outlined, color: returnColor(context));
     if(pageIndexView == 2) return Icon(Icons.group_outlined, color: returnColor(context));
-    if(pageIndexView == 8) return Icon(Icons.settings_outlined, color: returnColor(context));
+    if(pageIndexView == 8) return Icon(Icons.tune_outlined, color: returnColor(context));
     if(pageIndexView == 13) return Icon(Icons.question_mark_outlined, color: returnColor(context));
     if(pageIndexView == 4) return Icon(Icons.category, color: returnColor(context));
     if(pageIndexView == 5) return Icon(Icons.confirmation_number_outlined, color: returnColor(context),);

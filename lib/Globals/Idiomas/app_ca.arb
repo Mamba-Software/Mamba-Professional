@@ -772,5 +772,6 @@
   "cancelEventPurchase": "Estàs segur que vols desvincular aquest esdeveniment de la compra?",
   "addEventsToPurchaseText": "Afegeix o desvincula esdeveniments a la compra",
   "addEventsToPurchaseSubText": "Afectaran al número de sessiones per aquest val",
-  "purchase": "Compra"
+  "purchase": "Compra",
+  "createdBy": "Creada per {name}"
 }
