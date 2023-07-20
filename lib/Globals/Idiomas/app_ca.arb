@@ -773,5 +773,6 @@
   "addEventsToPurchaseText": "Afegeix o desvincula esdeveniments a la compra",
   "addEventsToPurchaseSubText": "Afectaran al número de sessiones per aquest val",
   "purchase": "Compra",
-  "createdBy": "Creada per {name}"
+  "createdBy": "Creada per {name}",
+  "whichBono": "Quin val vols utilitzar?"
 }

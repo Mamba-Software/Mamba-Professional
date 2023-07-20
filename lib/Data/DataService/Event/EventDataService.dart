@@ -49,7 +49,7 @@ class EventDataService {
   // Add Data
   Future<String> addEvent(Event event) => _firebase.addEvent(event);
   Future<void> addRecurrentEventGroup(String eventGroupId, List<String> eventIds) => _firebase.addRecurrentEventGroups(eventGroupId, eventIds);
-  Future<void> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, invitedDirectly);
+  Future<void> addUserToEvent(String eid, String uid, String purchaseId,[bool invitedDirectly = false]) => _firebase.addUserToEvent(eid, uid, purchaseId, invitedDirectly);
   Future<void> addEventFeedback(String eid, String uid, double intensityScore) => _firebase.addEventFeedback(eid, uid, intensityScore);
   Future<void> addEventToPurchase(String purchaseId, Event event) => _firebase.addEventToPurchase(purchaseId, event);
   Future<void> addEventBonos(String eventId, List<String> bonoIds) => _firebase.addEventBonos(eventId, bonoIds);
@@ -60,6 +60,7 @@ class EventDataService {
   Future<void> updateRecurrentEventGroup(String eventGroupId, var eventIds) => _firebase.updateRecurrentEventGroup(eventGroupId, eventIds);
   Future<void> updateEventLocation(String eid, String locationId, String previousLocation) => _firebase.updateEventLocation(eid, locationId, previousLocation);
   Future<void> updateEventBonos(String eventId, List<String> bonoIds) => _firebase.updateEventBonos(eventId, bonoIds);
+  Future<void> updateEventUserPurchase(String eventId, String userId, String purchaseId) => _firebase.updateEventUserPurchase(eventId, userId, purchaseId);
 
   // Delete Data
   Future<void> deleteEvent(String id, [bool isPrivate = false]) => _firebase.deleteEvent(id, isPrivate);

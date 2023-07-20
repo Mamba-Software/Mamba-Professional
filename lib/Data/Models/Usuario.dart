@@ -129,6 +129,9 @@ class Usuario {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('sessions')) {
       sessions = documentSnapshot.get("sessions").toString();
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+      purchaseId = documentSnapshot.get("purchaseId").toString();
+    }
   }
 
   Usuario.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -177,6 +180,9 @@ class Usuario {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('dateOfBirth')) {
       dateOfBirth = documentSnapshot.get("dateOfBirth").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+      purchaseId = documentSnapshot.get("purchaseId").toString();
     }
   }
 

@@ -3443,5 +3443,9 @@
         "type": "String"
       }
     }
+  },
+  "whichBono": "¿Que bono quieres usar?",
+  "@whichBono": {
+    "description": "userJoinsBrandUser message"
   }
 }

@@ -2976,4 +2976,89 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> JMFupdateEventUserPurchaseIdJuly20th() async {
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 20TH JULY 2023');
+      print('-----------------------------');
+      print('\n');
+
+      print('Modifying events/users collection:\n');
+      print('--------------');
+      print('\n');
+
+      /// THE GOAL IS TO ADD purchaseId on the Event/Users if it has, just to know which purchase the user has used
+      String usersCollection = "7777 Users";
+      String eventsCollection = "7777 Events";
+      bool found = false;
+      QuerySnapshot querySnapshotEvents = await _firestore.collection(eventsCollection).get();
+      for (int i = 0; i < querySnapshotEvents.size; i++) {
+        found = false;
+        String eventId = querySnapshotEvents.docs[i].id;
+        QuerySnapshot querySnapshotBonos = await _firestore.collection(eventsCollection).doc(eventId).collection('Bonos').get();
+        QuerySnapshot querySnapshotUsers = await _firestore.collection(eventsCollection).doc(eventId).collection('Users').where('isTrainer', isEqualTo: false).get();
+
+        for (int j = 0; j < querySnapshotUsers.size; j++) {
+          found = false;
+          String userId = querySnapshotUsers.docs[j].id;
+          if (querySnapshotBonos.size > 0) {
+            QuerySnapshot querySnapshotUsersPurchases = await _firestore
+                .collection(usersCollection).doc(userId).collection(
+                'Purchases').get();
+            for (int x = 0; x < querySnapshotUsersPurchases.size; x++) {
+              String purchaseId = querySnapshotUsersPurchases.docs[x].id;
+              DocumentSnapshot doc = await _firestore
+                  .collection(usersCollection)
+                  .doc(userId)
+                  .collection("Purchases")
+                  .doc(purchaseId)
+                  .collection("Events")
+                  .doc(eventId)
+                  .get();
+              if (doc.exists && !found) {
+                found = true;
+                print(
+                    '=================================================================================');
+                print(
+                    '=================================================================================');
+                print('PURCHASE WITH ID: ' + purchaseId + ' AND USER IS: ' +
+                    userId + ' HAS IT ON EVENT: ' + eventId);
+                print('\n');
+                await _firestore.collection(eventsCollection).doc(eventId)
+                    .collection('Users').doc(userId)
+                    .update({
+                  "purchaseId": purchaseId,
+                });
+                break;
+              }
+            }
+            if (!found) {
+              await _firestore.collection(eventsCollection).doc(eventId)
+                  .collection('Users').doc(userId)
+                  .update({
+                "purchaseId": "",
+              });
+            }
+          }
+          else {
+            await _firestore.collection(eventsCollection).doc(eventId)
+                .collection('Users').doc(userId)
+                .update({
+              "purchaseId": "",
+            });
+          }
+        }
+      }
+      print('All Purchases added to Users');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
 }

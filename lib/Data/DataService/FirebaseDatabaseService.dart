@@ -1903,7 +1903,7 @@ class FirebaseDatabaseService {
     }
 
     // User Joins Event
-    Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
+    Future<bool> addUserToEvent(String eid, String uid, String purchaseId, [bool invitedDirectly = false]) async {
       try {
         Usuario user = await getUserDetails(uid);
         Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
@@ -1925,6 +1925,7 @@ class FirebaseDatabaseService {
             "invitedDirectly": invitedDirectly,
             "joinedAt": joinedAt,
             "notificationToken": user.notificationToken,
+            "purchaseId": purchaseId,
           }).catchError((err) {
             print(err);
           });
@@ -1945,6 +1946,7 @@ class FirebaseDatabaseService {
             "isPrivate": user.isPrivate,
             "joinedAt": joinedAt,
             "notificationToken": user.notificationToken,
+            "purchaseId": purchaseId,
           }).catchError((err) {
             print(err);
           });
@@ -2239,6 +2241,17 @@ class FirebaseDatabaseService {
         print(e.toString());
       }
     }
+
+  // Update Event
+  Future<void> updateEventUserPurchase(String eventId, String userId, String purchaseId) async {
+    try {
+      await _firestore.collection(events).doc(eventId).collection("Users").doc(userId).update({
+        "purchaseId": purchaseId,
+      });
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
     // Update Event User Feedback
     Future<void> addEventFeedback(String eventId, String userId, double intensityScore) async {

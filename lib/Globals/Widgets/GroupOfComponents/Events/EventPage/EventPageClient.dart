@@ -1902,7 +1902,7 @@ class _EventPageClientState extends State<EventPageClient> with SingleTickerProv
                               // Schedule Local Notifications
                               localNotificationService.addEventLocalNotifications(context, event!.id!, false);
                               // Add To Data Base
-                              await _eventDataService.addUserToEvent(event!.id!, currentUser.id!);
+                              await _eventDataService.addUserToEvent(event!.id!, currentUser.id!, "");
                               // Update Events collection, so that Cloud Functions does not have to do it
                               await _eventDataService.updateEventNumberMembers(event!.id!,(eventClients.length+1), eventTrainers.length);
                               // Send Notification Service

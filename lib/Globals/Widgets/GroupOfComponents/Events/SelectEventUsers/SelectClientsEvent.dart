@@ -4,10 +4,15 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/JoinConfirmationDialogBonos.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialogBonos.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
@@ -15,8 +20,10 @@ class SelectClientsEvent extends StatefulWidget {
   List<Usuario> selectedUsers = [];
   int? maxClients;
   List<String>? selectedBonos = [];
+  Event event;
+  List<Bono> bonos = [];
 
-  SelectClientsEvent({Key? key, required this.selectedUsers, this.maxClients, this.selectedBonos}) : super(key: key);
+  SelectClientsEvent({Key? key, required this.selectedUsers, this.maxClients, this.selectedBonos, required this.event, required this.bonos}) : super(key: key);
 
   @override
   _SelectClientsEventState createState() => _SelectClientsEventState();
@@ -268,40 +275,87 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                         AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
                                         style: Theme.of(context).textTheme.caption,
                                       ),
-                                      widget.selectedBonos!.isNotEmpty? Text(
-                                        user.purchaseId!,
-                                        style: Theme.of(context).textTheme.caption,
-                                      ) : Container(),
                                     ],
                                   ),
                                 ],
                               ),
-                              onTap: () {
-                                var selectedUsers = selectedClients;
-                                if (selectedUsers.contains(user)) {
-                                  selectedUsers.remove(user);
-                                  setState(() {
-                                    selectedClients = selectedUsers;
-                                  });
-                                } else {
-                                  if (widget.maxClients != null) {
-                                    if (selectedClients.length < widget.maxClients!) {
-                                      if (selectedUsers.any((obj) => obj.id == user.id)) {
-                                        selectedUsers.removeWhere((obj) => obj.id == user.id);
+                              onTap: () async {
+                                if(widget.selectedBonos!.isEmpty) {
+                                  var selectedUsers = selectedClients;
+                                  if (selectedUsers.contains(user)) {
+                                    selectedUsers.remove(user);
+                                    setState(() {
+                                      selectedClients = selectedUsers;
+                                    });
+                                  } else {
+                                    if (widget.maxClients != null) {
+                                      if (selectedClients.length <
+                                          widget.maxClients!) {
+                                        if (selectedUsers.any((obj) =>
+                                        obj.id == user.id)) {
+                                          selectedUsers.removeWhere((obj) =>
+                                          obj.id == user.id);
+                                        }
+                                        selectedUsers.add(user);
+                                        setState(() {
+                                          selectedClients = selectedUsers;
+                                        });
+                                      }
+                                    } else {
+                                      if (selectedUsers.any((obj) =>
+                                      obj.id == user.id)) {
+                                        selectedUsers.removeWhere((obj) =>
+                                        obj.id == user.id);
                                       }
                                       selectedUsers.add(user);
                                       setState(() {
                                         selectedClients = selectedUsers;
                                       });
                                     }
-                                  } else {
-                                    if (selectedUsers.any((obj) => obj.id == user.id)) {
-                                      selectedUsers.removeWhere((obj) => obj.id == user.id);
+                                  }
+                                }
+                                else {
+                                  var selectedUsers = selectedClients;
+                                  if (selectedUsers.contains(user)) {
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return LeaveConfirmationDialogBonos(
+                                            text: AppLocalizations.of(context)!.joinEventConfirmation,
+                                            event: widget.event,
+                                            brand: currentBrand,
+                                            bonos: widget.bonos, purchaseId: user.purchaseId!, user: user,
+                                          );
+                                        }
+                                    );
+                                    if (result != null && result) {
+                                      selectedUsers.remove(user);
+                                      setState(() {
+                                        selectedClients = selectedUsers;
+                                      });
                                     }
-                                    selectedUsers.add(user);
-                                    setState(() {
-                                      selectedClients = selectedUsers;
-                                    });
+                                  }
+                                  else {
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return JoinConfirmationDialogBonos(
+                                            text: AppLocalizations.of(context)!.joinEventConfirmation,
+                                            event: widget.event,
+                                            brand: currentBrand,
+                                            bonos: widget.bonos, userId: user.id!,
+                                          );
+                                        }
+                                    );
+                                    if (result != null && result[0]) {
+                                        user.purchaseId = result[1];
+                                        selectedUsers.add(user);
+                                        setState(() {
+                                          selectedClients = selectedUsers;
+                                        });
+
+                                  }
+
                                   }
                                 }
                               },

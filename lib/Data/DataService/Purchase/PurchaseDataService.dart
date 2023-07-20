@@ -27,6 +27,7 @@ class PurchaseDataService {
   Future<List<Event>> getPurchaseEventsLast30Days(Purchase purchase, String brandId) => _firebase.getPurchaseEventsLast30Days(purchase, brandId);
   Future<List<Purchase>> getPurchasesByEventId(String eventId) => _firebase.getPurchasesByEventId(eventId);
   Future<List<Usuario>> getUsersByBonosAndActivePurchase(List<String> selectedBonos, String brandId) => _firebase.getUsersByBonosAndActivePurchase( selectedBonos,  brandId);
+  Future<List<Bono>> getBonosByBonosString(List<String> selectedBonos, String brandId) => _firebase.getBonosByBonosString( selectedBonos,  brandId);
 
   // Add Data
   Future<String> addPurchase(Purchase purchase, Bono bonoSelected) => _firebase.addPurchase(purchase, bonoSelected);

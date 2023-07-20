@@ -599,6 +599,76 @@ class UserFirebaseCalls {
 
   }
 
+  Future<List<Bono>> getUserActiveBonos(String userId, String purchaseId) async {
+    List<Bono> userBonos = [];
+    if(purchaseId != "") {
+      DocumentSnapshot<
+          Map<String, dynamic>> _documentSnapshotPurchase = await _firestore
+          .collection(purchases).doc(purchaseId).get();
+      Purchase purchase = Purchase.fromObjectAllData(
+          _documentSnapshotPurchase.id, _documentSnapshotPurchase);
+      int index = userBonos.indexWhere((element) =>
+      element.id == purchase.id);
+      if (index == -1) {
+        // Get Bono From Purchase
+        DocumentSnapshot<
+            Map<String, dynamic>> _documentSnapshot3 = await _firestore
+            .collection(brands).doc(purchase.brandId).collection("Bonos").doc(
+            purchase.bonoId).get();
+        Bono bono = Bono.fromObjectAllData(
+            _documentSnapshot3.id, _documentSnapshot3);
+        // Add Conditions of This purchase
+        bono.setPurchaseId = purchase.id!;
+        bono.setBrandId = purchase.brandId!;
+        bono.setBonoPrice = purchase.price!.toDouble();
+        bono.setBonoSessions = purchase.sessions!;
+        bono.setConditionsData = Condition(
+          expirationTime: _documentSnapshotPurchase.get("expirationTime"),
+          cancelTime: _documentSnapshotPurchase.get("cancelTime"),
+          weeklySessions: _documentSnapshotPurchase.get("weeklySessions"),
+        );
+        // Bono Object Build
+        userBonos.add(bono);
+      }
+    }
+    else {
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Purchases")
+          .where("isActive", isEqualTo: true)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        Purchase purchase = Purchase.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        int index = userBonos.indexWhere((element) =>
+        element.id == purchase.id);
+        if (index == -1) {
+          // Get Bono From Purchase
+          DocumentSnapshot<
+              Map<String, dynamic>> _documentSnapshot3 = await _firestore
+              .collection(brands).doc(purchase.brandId).collection("Bonos").doc(
+              purchase.bonoId).get();
+          Bono bono = Bono.fromObjectAllData(
+              _documentSnapshot3.id, _documentSnapshot3);
+          // Add Conditions of This purchase
+          bono.setPurchaseId = purchase.id!;
+          bono.setBrandId = purchase.brandId!;
+          bono.setBonoPrice = purchase.price!.toDouble();
+          bono.setBonoSessions = purchase.sessions!;
+          bono.setConditionsData = Condition(
+            expirationTime: querySnapshot.docs[i].get("expirationTime"),
+            cancelTime: querySnapshot.docs[i].get("cancelTime"),
+            weeklySessions: querySnapshot.docs[i].get("weeklySessions"),
+          );
+          // Bono Object Build
+          userBonos.add(bono);
+        }
+      }
+    }
+    return userBonos;
+  }
+
   //Add
 
   Future<int> addUser(String email, String password, String idioma, bool isTrainer, [bool definePassword = false]) async {
@@ -1111,6 +1181,16 @@ class UserFirebaseCalls {
         .doc(userId)
         .collection("Purchases")
         .where("isActive", isEqualTo: true)
+        .snapshots();
+  }
+
+  //Get bono Requests from brand
+  Stream<DocumentSnapshot> getBonoFromEventUser(String userId, String bonoId) {
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Bonos")
+        .doc(bonoId)
         .snapshots();
   }
 

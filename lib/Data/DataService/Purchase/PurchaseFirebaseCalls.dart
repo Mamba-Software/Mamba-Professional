@@ -337,12 +337,23 @@ class PurchaseFirebaseCalls {
             .doc(purchase.userId).get();
         if(_documentSnapshot.exists) {
           Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
-          user.purchaseId = querySnapshot.docs[j].id;
-          userList.add(user);
+          if(!userList.any((element) => element.id == user.id)) {
+            user.purchaseId = querySnapshot.docs[j].id;
+            userList.add(user);
+          }
         }
       }
     }
     return userList;
+  }
+  Future<List<Bono>> getBonosByBonosString(List<String> selectedBonos, String brandId) async {
+    List<Bono> bonoList = [];
+    for(int i = 0; i < selectedBonos.length; ++i) {
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands)
+          .doc(brandId).collection("Bonos").doc(selectedBonos[i]).get();
+      bonoList.add(Bono.fromObjectAllData(_documentSnapshot.id, _documentSnapshot));
+    }
+    return bonoList;
   }
 
   Future<Purchase> getPurchaseEvents(Purchase purchase) async {
@@ -505,7 +516,7 @@ class PurchaseFirebaseCalls {
         "numClients": eventsToAdd[j].numClients,
         "maxMembers": eventsToAdd[j].maxMembers,
       });
-      _eventDataService.addUserToEvent(eventsToAdd[j].id!,userId, true);
+      _eventDataService.addUserToEvent(eventsToAdd[j].id!,userId, purchaseId,true);
     }
   }
 

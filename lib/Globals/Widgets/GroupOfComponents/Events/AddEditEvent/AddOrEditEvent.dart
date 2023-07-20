@@ -24,6 +24,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Bono
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialogBonos.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectClientsEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectTrainersEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -55,8 +56,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   final _eventDataService = EventDataService();
   //JMF_AddUser_BEGIN
   final _purchaseDataService = PurchaseDataService();
-  // Boolean Loading
-  bool checkingIfDelete = false;
   TopSnackBarDef topSnackBarComp = TopSnackBarDef();
   //JMF_AddUser_END
   final _locationDataService = LocationDataService();
@@ -473,6 +472,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               builder: (context) => SelectClientsEvent(
                  selectedUsers: brandClientsSelected,
                   selectedBonos: selectedBonos,
+                  bonos: filterBonosByIds(), event: event,
               ),
             )
         );
@@ -1765,79 +1765,31 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                       scrollDirection: Axis.horizontal,
                                                       itemCount: brandClientsSelected.length,
                                                       itemBuilder: (context, int index) {
-                                                        var trainer = brandClientsSelected[index];
+                                                        var client = brandClientsSelected[index];
                                                         return GestureDetector(
                                                           onTap: () async {
                                                             //JMF_AddUser_BEGIN
-                                                            if(selectedBonos.isNotEmpty) {
-                                                              setState(() {
-                                                                checkingIfDelete = true;
-                                                              });
-                                                              if(brandClientsSelected[index]
-                                                                  .purchaseId == "") {
-                                                                String hole = await _purchaseDataService
-                                                                    .checkIfUserHasActivePurchase(
-                                                                    brandClientsSelected[index]
-                                                                        .id!,
-                                                                    event.id!,
-                                                                    selectedBonos,
-                                                                    currentBrand
-                                                                        .id!);
-                                                                brandClientsSelected[index]
-                                                                    .purchaseId =
-                                                                await _purchaseDataService
-                                                                    .checkIfUserHasActivePurchase(
-                                                                    brandClientsSelected[index]
-                                                                        .id!,
-                                                                    event.id!,
-                                                                    selectedBonos,
-                                                                    currentBrand
-                                                                        .id!);
-                                                                print(brandClientsSelected[index]
-                                                                    .purchaseId!);
-                                                                if (brandClientsSelected[index]
-                                                                    .purchaseId !=
-                                                                    "") {
-                                                                  _setValueToOriginal(brandClientsSelected[index]);
-                                                                  var temp = brandClientsSelected;
-                                                                  temp.remove(
-                                                                      trainer);
-                                                                  setState(() {
-                                                                    brandClientsSelected =
-                                                                        temp;
-                                                                    checkingIfDelete =
-                                                                    false;
-                                                                  });
+                                                            var result = await showDialog(
+                                                                context: context,
+                                                                builder: (_) {
+                                                                  return LeaveConfirmationDialogBonos(
+                                                                    text: AppLocalizations.of(context)!.joinEventConfirmation,
+                                                                    event: event,
+                                                                    brand: currentBrand,
+                                                                    bonos: filterBonosByIds(), purchaseId: client.purchaseId!, user: client,
+                                                                  );
                                                                 }
-                                                                else {
-                                                                  topSnackBarComp.showSnackBarBottom(context, 'El usuario no tiene compra activa para este evento, para eliminarlo hacerlo desde el historial de compras' , 10);
-                                                                  setState(() {
-                                                                    checkingIfDelete =
-                                                                    false;
-                                                                  });
-                                                                }
-                                                              }
-                                                              else {
-                                                                var temp = brandClientsSelected;
-                                                                temp.remove(
-                                                                    trainer);
-                                                                setState(() {
-                                                                  brandClientsSelected =
-                                                                      temp;
-                                                                  checkingIfDelete =
-                                                                  false;
-                                                                });
-                                                              }
-                                                            }
-                                                            else {
+                                                            );
+                                                            if (result != null && result) {
                                                               var temp = brandClientsSelected;
                                                               temp.remove(
-                                                                  trainer);
+                                                                  client);
                                                               setState(() {
                                                                 brandClientsSelected =
                                                                     temp;
                                                               });
                                                             }
+
                                                             //JMF_AddUser_END
                                                           },
                                                           child: Padding(
@@ -1850,11 +1802,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                                   children: [
                                                                     CircularImage(
                                                                       size: MediaQuery.of(context).size.width*0.17,
-                                                                      image: trainer.imageUrl,
+                                                                      image: client.imageUrl,
                                                                       color: Theme.of(context).primaryColor,
                                                                       borderWidth: 1,
                                                                     ),
-                                                                    checkingIfDelete? Container() : Positioned(
+                                                                    Positioned(
                                                                       top: 0,
                                                                       left: MediaQuery.of(context).size.width*0.12,
                                                                       child: CircleAvatar(
@@ -1874,7 +1826,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
                                                                       Text(
-                                                                        trainer.firstName!,
+                                                                        client.firstName!,
                                                                         style: Theme.of(context).textTheme.bodyText2,
                                                                         textAlign: TextAlign.center,
                                                                       ),
@@ -1893,19 +1845,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                           ),
                                         ),
                                       ),
-                                      checkingIfDelete? SizedBox(
-                                        width: MediaQuery.of(context).size.width*0.8,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            LoadingView(
-                                              text: 'Comprobando que tenga una compra activa',
-                                              hasLogo: false,
-                                              isSmall: true,
-                                            ),
-                                          ],
-                                        ),
-                                      ) : Container(),
                                       //JMF_AddUser_END
                                     ]
                                 )
@@ -2482,9 +2421,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     List<Usuario> eventTrainersAdded = List.from(eventTrainers);
     List<Usuario> eventClients = List.from(brandClientsSelected);
     List<Usuario> eventClientsAdded = List.from(eventClients);
-    //JMF_AddUser_BEGIN
-    List<Usuario> eventClientsChangedPurchase = List.from(eventClients);
-    //JMF_AddUser_END
     // Update Event
     await _eventDataService.updateEvent(event);
     // Update Event Bonos
@@ -2541,9 +2477,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       var user = eventTrainersAdded[i];
       // Add Trainer to Event
       if (user.id != currentUser.id!) {
-        await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+        await _eventDataService.addUserToEvent(event.id!, user.id!, "", true);
       } else {
-        await _eventDataService.addUserToEvent(event.id!, user.id!);
+        await _eventDataService.addUserToEvent(event.id!, user.id!, "");
       }
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
@@ -2588,12 +2524,18 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
       print("Client Removed "+user.id.toString());
     }
+
+    //JMF_AddUser_Begin
+    //Update purchase
+    await UpdateUserPurchase(event.id!);
+    //JMF_AddUser_End
+
     // Handle Clients Added
     // Clients Added Not Matched means that they have added to the Event
     for (int i = 0; i < eventClientsAdded.length; i++) {
       var user = eventClientsAdded[i];
       // Add Clients to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+      await _eventDataService.addUserToEvent(event.id!, user.id!, user.purchaseId!, true);
 
       //JMF_AddUser_BEGIN
       if(selectedBonos.isNotEmpty) {
@@ -2802,9 +2744,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         var user = eventTrainersAdded[i];
         // Add Trainer to Event
         if (user.id != currentUser.id!) {
-          await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+          await _eventDataService.addUserToEvent(event.id!, user.id!, "", true);
         } else {
-          await _eventDataService.addUserToEvent(event.id!, user.id!);
+          await _eventDataService.addUserToEvent(event.id!, user.id!, "");
         }
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
@@ -2847,7 +2789,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       for (int i = 0; i < eventClientsAdded.length; i++) {
         var user = eventClientsAdded[i];
         // Add Clients to Event
-        await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        await _eventDataService.addUserToEvent(eventId, user.id!, user.purchaseId!, true);
 
         //JMF_AddUser_BEGIN
         if(selectedBonos.isNotEmpty) {
@@ -2891,9 +2833,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       var user = eventMembers[i];
       // Firebase Call
       if (user.id != currentUser.id!) {
-        await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        await _eventDataService.addUserToEvent(eventId, user.id!, "",true);
       } else {
-        await _eventDataService.addUserToEvent(eventId, user.id!);
+        await _eventDataService.addUserToEvent(eventId, user.id!, "");
       }
       // Local Notifications
       await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
@@ -2925,6 +2867,24 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     } else {
       await _localNotificationService.deleteRemoteEventLocalNotifications(eventId, userId);
     }
+  }
+
+  List<Bono> filterBonosByIds() {
+    return allBonos.where((bono) => selectedBonos.contains(bono.id)).toList();
+  }
+
+  Future<void> UpdateUserPurchase(String eventId) async {
+    for(int i = 0; i < originalClients.length; ++i)
+      {
+        int index =  brandClientsSelected.indexWhere((element) => element.id == originalClients[i].id);
+        if(index != -1) {
+          if(brandClientsSelected[index].purchaseId != originalClients[i].purchaseId)
+            {
+              await _eventDataService.updateEventUserPurchase(eventId, originalClients[i].id!, brandClientsSelected[index].purchaseId!);
+            }
+        }
+
+      }
   }
 
 }

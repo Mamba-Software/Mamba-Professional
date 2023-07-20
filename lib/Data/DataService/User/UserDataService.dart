@@ -52,6 +52,7 @@ class UserDataService {
   Future<List<Bono>> getUserActiveBonosFromBrand(String userId, String brandId) => _firebase.getUserActiveBonosFromBrand(userId, brandId);
   Future<Event> getLastUserEvent(String? userId) => _firebase.getLastUserEvent(userId);
   Future<List<String>> getBlockedByUsers(String userId) => _firebase.getBlockedByUsers(userId);
+  Future<List<Bono>> getUserActiveBonos(String userId, String purchaseId) => _firebase.getUserActiveBonos(userId, purchaseId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma, bool isTrainer, [bool definePassword = false]) => _firebase.addUser(email, password, idioma, isTrainer, definePassword);
@@ -93,4 +94,5 @@ class UserDataService {
 
   Stream<QuerySnapshot> getUserActivePurchasesFromBrandStream(String userId, String brandId) => _firebase.getUserActivePurchasesFromBrandStream(userId, brandId);
 
+  Stream<DocumentSnapshot> getBonoFromEventUser(String userId, String bonoId) => _firebase.getBonoFromEventUser(userId, bonoId);
 }
