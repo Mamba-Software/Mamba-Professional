@@ -17,8 +17,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
@@ -57,7 +55,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   final _userDataService = UserDataService();
   //JMF_AddUser_BEGIN
   final _purchaseDataService = PurchaseDataService();
-  TopSnackBarDef topSnackBarComp = TopSnackBarDef();
   //JMF_AddUser_END
   // Notification Services
   final NotificationService _notificationService = NotificationService();
@@ -602,6 +599,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         actions: [
           widget.eventId != null ? IconButton(
               onPressed: () async {
+              if(!originalClients.any((client) => client.purchaseId != "")) {
                 if (event.eventGroupId == null) {
                   // DeleteDialog
                   var result = await showDialog(
@@ -632,6 +630,15 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                     }
                   }
                 }
+                }
+              else {
+                var result = await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteClientsWithPurchases, permitDelete: false);
+                    }
+                );
+              }
               },
               icon: SizedBox(
                 width: MediaQuery.of(context).size.width*0.15,
@@ -1089,6 +1096,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             ),
                                           ],
                                         ),
+                                        errorBonos? Padding(
+                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.01, right:  MediaQuery.of(context).size.width * 0.01),
+                                          child: Center(
+                                            child: Text(
+                                              AppLocalizations.of(context)!.deleteClientsWithPurchasesBonos,
+                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ) : Container(),
                                         ListView.builder(
                                             physics: const NeverScrollableScrollPhysics(),
                                             padding: EdgeInsets.zero,
@@ -2880,6 +2897,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         print("Notifications Client "+user.name!);
         // Firebase Call
         await _eventDataService.addUserToEvent(eventId, user.id!, user.purchaseId!, true);
+        await _purchaseDataService.addEventToPurchase(user.purchaseId!, eventId);
         // Notifications Service, this also send Notifications to Trainers
         _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
         // Local Notifications Service

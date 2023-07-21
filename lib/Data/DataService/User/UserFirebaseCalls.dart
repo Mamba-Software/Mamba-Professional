@@ -1038,7 +1038,7 @@ class UserFirebaseCalls {
     }
   }
 
-  Future<void> updateUserBono(String userId, String brandId, Bono bono) async {
+  Future<void> updateUserBono(String userId, String brandId, Bono bono, bool isActive) async {
     // Update User Bono
     await _firestore.collection(users).doc(userId).collection("Bonos").doc(bono.id).update({
       "sessions": bono.sessions,
@@ -1054,6 +1054,7 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "isActive": isActive,
     });
     // Update the User/Purchase Collection
     await _firestore.collection(users).doc(userId).collection("Purchases").doc(bono.purchaseId).update({

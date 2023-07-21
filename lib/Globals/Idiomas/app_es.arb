@@ -3451,5 +3451,25 @@
   "whichBono": "¿Con qué compra quieres reservar?",
   "@whichBono": {
     "description": "userJoinsBrandUser message"
+  },
+  "activarCompra": "Activar compra",
+  "@activarCompra": {
+    "description": "activarCompra message"
+  },
+  "desactivarCompra": "Desactivar compra",
+  "@desactivarCompra": {
+    "description": "desactivarCompra message"
+  },
+  "activePurchaseQuesDesc": "Tus clientes pueden usar la compra si está activa. Ésta se activa o desactiva automaticamente, pero se puede forzar su estado de manera manual.",
+  "@activePurchaseQuesDesc": {
+    "description": "activePurchaseQuesDesc message"
+  },
+  "deleteClientsWithPurchases": "Edite la sesión eliminando los clientes con compras, confirme la edición y posteriormente podrá borrar la sesión",
+  "@deleteClientsWithPurchases": {
+    "description": "deleteClientsWithPurchases message"
+  },
+  "deleteClientsWithPurchasesBonos": "Elimine los clientes con compras para poder quitar bonos de la sesión",
+  "@deleteClientsWithPurchasesBonos": {
+    "description": "deleteClientsWithPurchasesBonos message"
   }
 }

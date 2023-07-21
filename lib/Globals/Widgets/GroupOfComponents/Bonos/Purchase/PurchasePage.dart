@@ -487,6 +487,55 @@ class _PurchasePageState extends State<PurchasePage> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                /// ACTIVATE PURCHASE
+                editBono ? Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.05,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Flexible(
+                            child: Text(purchase.isActive! ? AppLocalizations.of(context)!.desactivarCompra : AppLocalizations.of(context)!.activarCompra,
+                                style: Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
+                                textAlign: TextAlign.center),
+                          ),
+
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              AppLocalizations.of(context)!.activePurchaseQuesDesc,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption,
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(left: 4.0),
+                            child: CupertinoSwitch(
+                              value: purchase.isActive!,
+                              onChanged: setPurchaseActivation,
+                              trackColor: Colors.green.withOpacity(0.4),
+                              thumbColor: AppColors.white,
+                              activeColor: Colors.green,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  ],
+                ) : Container(),
                 /// USER
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
@@ -1221,7 +1270,7 @@ class _PurchasePageState extends State<PurchasePage> {
               mixpanel!.track('edit_bono_confirmed');
               try {
                 await _userDataService.updateUserBono(
-                    user.id!, currentBrand.id!, bonoSelected);
+                    user.id!, currentBrand.id!, bonoSelected, purchase.isActive!);
               }
               catch(e) {
                 print(e);
@@ -2024,6 +2073,11 @@ class _PurchasePageState extends State<PurchasePage> {
       }
       setState(() {});
     }
+  }
+  void setPurchaseActivation(bool? activation) {
+    setState(() {
+      purchase.isActive = activation;
+    });
   }
 
 }

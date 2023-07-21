@@ -437,16 +437,19 @@ class PurchaseFirebaseCalls {
   }
 
   Future<void> addEventToPurchase(String purchaseId, String eventId) async {
-    print('NEW FUNCTION ADD USER TO');
-    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(events).doc(eventId).get();
-    Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
-    // Add This to Payments
-    await _firestore
-      .collection(purchases)
-      .doc(purchaseId)
-      .collection("Events")
-      .doc(eventId)
-      .set({
+    if(purchaseId != "") {
+      DocumentSnapshot<
+          Map<String, dynamic>> _documentSnapshot = await _firestore.collection(
+          events).doc(eventId).get();
+      Event event = Event.fromObjectAllData(
+          _documentSnapshot.id, _documentSnapshot);
+      // Add This to Payments
+      await _firestore
+          .collection(purchases)
+          .doc(purchaseId)
+          .collection("Events")
+          .doc(eventId)
+          .set({
         "isPrivate": event.isPrivate,
         "title": event.title,
         "imageUrl": event.imageUrl,
@@ -460,7 +463,8 @@ class PurchaseFirebaseCalls {
         "numTrainers": event.numTrainers,
         "numClients": event.numClients,
         "maxMembers": event.maxMembers,
-    });
+      });
+    }
   }
 
   //Update Data

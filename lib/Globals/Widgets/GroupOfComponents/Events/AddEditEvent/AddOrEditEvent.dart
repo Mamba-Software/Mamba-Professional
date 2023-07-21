@@ -19,7 +19,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectMembersDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
@@ -56,7 +55,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   final _eventDataService = EventDataService();
   //JMF_AddUser_BEGIN
   final _purchaseDataService = PurchaseDataService();
-  TopSnackBarDef topSnackBarComp = TopSnackBarDef();
   //JMF_AddUser_END
   final _locationDataService = LocationDataService();
   final _brandDataService = BrandDataService();
@@ -621,35 +619,46 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         actions: [
           widget.eventId != null ? IconButton(
               onPressed: () async {
-                if (event.eventGroupId == null) {
-                  // DeleteDialog
+                if(!originalClients.any((client) => client.purchaseId != "")) {
+                  if (event.eventGroupId == null) {
+                    // DeleteDialog
+                    var result = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return DeleteConfirmationDialog(text: AppLocalizations
+                              .of(context)!.deleteEventConfirmation);
+                        }
+                    );
+                    if (result) {
+                      _deleteEventFunction();
+                    }
+                  } else {
+                    var result = await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return DeleteRecurrentEventDialog(
+                          isCompleted: !widget.isBeforeEdit,
+                        );
+                      },
+                    );
+                    if (result != null) {
+                      if (result == 1) {
+                        print("Deleting Only This Event..");
+                        _deleteEventFunction();
+                      } else {
+                        print("Delete This Event and the Rest Forward ...");
+                        _deleteRecurrentEventFunction();
+                      }
+                    }
+                  }
+                }
+                else {
                   var result = await showDialog(
                       context: context,
                       builder: (_) {
-                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
+                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteClientsWithPurchases, permitDelete: false);
                       }
                   );
-                  if (result) {
-                    _deleteEventFunction();
-                  }
-                } else {
-                  var result = await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return DeleteRecurrentEventDialog(
-                        isCompleted: !widget.isBeforeEdit,
-                      );
-                    },
-                  );
-                  if (result != null) {
-                    if (result == 1) {
-                      print("Deleting Only This Event..");
-                      _deleteEventFunction();
-                    } else {
-                      print("Delete This Event and the Rest Forward ...");
-                      _deleteRecurrentEventFunction();
-                    }
-                  }
                 }
               },
               icon: SizedBox(
@@ -1080,7 +1089,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                             padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.01, right:  MediaQuery.of(context).size.width * 0.01),
                                             child: Center(
                                               child: Text(
-                                                'Elímine los clientes con compras para poder quitar bonos de la sesión',
+                                                AppLocalizations.of(context)!.deleteClientsWithPurchasesBonos,
                                                 style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -2596,7 +2605,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       if(selectedBonos.isNotEmpty) {
           await _purchaseDataService.addEventToPurchase(
               eventClientsAdded[i].purchaseId!, widget.eventId!);
-
       }
       //JMF_AddUser_END
 
@@ -2841,23 +2849,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       }*/
       // Handle Clients Added
       // Clients Added Not Matched means that they have added to the Event
-      for (int i = 0; i < eventClientsAdded.length; i++) {
-        var user = eventClientsAdded[i];
-        // Add Clients to Event
-        await _eventDataService.addUserToEvent(eventId, user.id!, user.purchaseId!, true);
-
-        //JMF_AddUser_BEGIN
-        if(selectedBonos.isNotEmpty) {
-          await _purchaseDataService.addEventToPurchase(
-              eventClientsAdded[i].purchaseId!, widget.eventId!);
-
-        }
-        //JMF_AddUser_END
-
-        // Add Event Local Notifications
-        await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
-        print("Client Added "+user.id.toString());
-      }
 
     }
     mixpanel!.track('edit_event_completed', properties: {
@@ -2887,11 +2878,26 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     for (var i=0; i<eventMembers.length; i++) {
       var user = eventMembers[i];
       // Firebase Call
-      if (user.id != currentUser.id!) {
-        await _eventDataService.addUserToEvent(eventId, user.id!, "",true);
-      } else {
-        await _eventDataService.addUserToEvent(eventId, user.id!, "");
-      }
+        //JMF_AddUser_Begin
+        if(user.isTrainer!) {
+          if (user.id != currentUser.id!) {
+            await _eventDataService.addUserToEvent(eventId, user.id!, "",true);
+          }
+          else {
+            await _eventDataService.addUserToEvent(eventId, user.id!, "");
+          }
+        }
+        else {
+          await _eventDataService.addUserToEvent(eventId, user.id!, user.purchaseId!, true);
+          if(selectedBonos.isNotEmpty) {
+              await _purchaseDataService.addEventToPurchase(
+                  user.purchaseId!, eventId);
+          }
+          // Notifications Service, this also send Notifications to Trainers
+          _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
+        }
+        //JMF_AddUser_End
+
       // Local Notifications
       await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
     }
