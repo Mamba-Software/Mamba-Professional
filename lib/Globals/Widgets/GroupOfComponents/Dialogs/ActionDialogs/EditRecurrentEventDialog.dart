@@ -5,7 +5,8 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class EditRecurrentEventDialog extends StatefulWidget {
   bool isCompleted;
-  EditRecurrentEventDialog({Key? key, required this.isCompleted}) : super(key: key);
+  bool clientsModified;
+  EditRecurrentEventDialog({Key? key, required this.isCompleted, required this.clientsModified}) : super(key: key);
 
   @override
   _EditRecurrentEventDialogState createState() => _EditRecurrentEventDialogState();
@@ -30,6 +31,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
 
   @override
   void initState() {
+    if(widget.clientsModified) widget.isCompleted = true;
     if (widget.isCompleted) _value = 1;
     super.initState();
   }
@@ -103,7 +105,10 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                           AppLocalizations.of(context)!.thisEventAndRest,
                           style: widget.isCompleted ? Theme.of(context).textTheme.caption : Theme.of(context).textTheme.bodyText2,
                         ),
-                        subtitle: widget.isCompleted ? Text(
+                        subtitle: widget.clientsModified? Text(
+                          AppLocalizations.of(context)!.notAvailableClientsModifiedEvents,
+                          style:  Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                        ) : widget.isCompleted ? Text(
                           AppLocalizations.of(context)!.notAvailableFinishedEvents,
                           style:  Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
                         ) : null,

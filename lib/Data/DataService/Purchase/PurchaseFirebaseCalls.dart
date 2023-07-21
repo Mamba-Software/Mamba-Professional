@@ -331,6 +331,7 @@ class PurchaseFirebaseCalls {
           .where("bonoId", isEqualTo: selectedBonos[i])
           .where("isActive", isEqualTo: true)
           .get();
+
       for (int j = 0; j < querySnapshot.docs.length; j++) {
         Purchase purchase = Purchase.fromObjectAllData(querySnapshot.docs[j].id, querySnapshot.docs[j]);
         DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(users)
@@ -428,6 +429,7 @@ class PurchaseFirebaseCalls {
       "expirationTime": bonoSelected.condition?.expirationTime,
       "paymentMethod": purchase.paymentMethod,
       "directPurchase": false,
+      "isActive": true,
     }).catchError((err) {
       print(err);
     });

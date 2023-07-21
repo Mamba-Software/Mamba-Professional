@@ -89,30 +89,6 @@ class _JoinConfirmationDialogBonosState extends State<JoinConfirmationDialogBono
   Widget joinEventBodyConditions() {
       return widget.bonos.isNotEmpty ? Column(
         children: [
-          userBonosPurchases.length > 1 ? Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Text(
-                      AppLocalizations.of(context)!.whichBono,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(height: 1.5, fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
-                  ),
-                ],
-              ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height*0.02
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _buildPageIndicator(),
-              ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height*0.02
-              ),
-            ],
-          ) : Container(),
           StreamBuilder<QuerySnapshot>(
               stream: _userDataService.getUserActivePurchasesFromBrandStream(widget.userId, widget.brand.id!),
               builder: (context, snapshot) {
@@ -132,8 +108,33 @@ class _JoinConfirmationDialogBonosState extends State<JoinConfirmationDialogBono
                     }
                   });
                   _numPages = userBonosPurchases.length;
+
                   return Column(
                       children: [
+                        userBonosPurchases.length > 1 ? Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.whichBono,
+                                    style: Theme.of(context).textTheme.bodyText1?.copyWith(height: 1.5, fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height*0.02
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: _buildPageIndicator(),
+                            ),
+                            SizedBox(
+                                height: MediaQuery.of(context).size.height*0.02
+                            ),
+                          ],
+                        ) : Container(),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.22,
                           width: MediaQuery.of(context).size.width,
@@ -263,7 +264,7 @@ class _JoinConfirmationDialogBonosState extends State<JoinConfirmationDialogBono
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
-                          backgroundColor: widget.bonos.isEmpty || userBonosPurchases.isNotEmpty? Colors.green : Colors.green.withOpacity(0.3),
+                          backgroundColor: Colors.green,
                           fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
@@ -275,14 +276,7 @@ class _JoinConfirmationDialogBonosState extends State<JoinConfirmationDialogBono
                           AppLocalizations.of(context)!.book,
                           style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
                         ),
-                        icon: isLoading ? SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.05,
-                          height: MediaQuery.of(context).size.height * 0.025,
-                          child: const CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2.5,
-                          ),
-                        ) : Icon(Icons.event_available_outlined, size: MediaQuery.of(context).size.width*0.06, color: Colors.white),
+                        icon:  Icon(Icons.event_available_outlined, size: MediaQuery.of(context).size.width*0.06, color: Colors.white),
                         onPressed: () async {
                               if (widget.bonos.isEmpty) {
                                 setState(() {

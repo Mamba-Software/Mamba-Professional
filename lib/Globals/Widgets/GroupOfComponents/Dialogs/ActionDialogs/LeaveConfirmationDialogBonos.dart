@@ -66,6 +66,12 @@ class _LeaveConfirmationDialogBonosState extends State<LeaveConfirmationDialogBo
     });
     // Busquem dins dels bonos de l'usuari quin conté l'event
     for (Bono userBono in userBonos) {
+        setState(() {
+          bonoSelected = userBono;
+        });
+      }
+    /*
+    for (Bono userBono in userBonos) {
       // Agafem la Purchase del Bono
       bool eventExists = await _purchaseDataService.checkIfEventInPurchase(userBono.purchaseId!, widget.event.id!);
       if (eventExists) {
@@ -74,7 +80,7 @@ class _LeaveConfirmationDialogBonosState extends State<LeaveConfirmationDialogBo
         });
         break;
       }
-    }
+    }*/
 
   }
 
@@ -208,7 +214,7 @@ class _LeaveConfirmationDialogBonosState extends State<LeaveConfirmationDialogBo
                           ),
                         ),
                         label: Text(
-                          AppLocalizations.of(context)!.leave,
+                          AppLocalizations.of(context)!.delete,
                           style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
                         ),
                         icon: isLoading ? SizedBox(

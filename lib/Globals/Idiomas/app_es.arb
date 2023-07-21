@@ -1598,7 +1598,7 @@
   "@joinEvent": {
     "description": "Wellcome message"
   },
-  "joinEventConfirmation": "¿Estás seguro de que quieres reservar una plaza para esta sesión?\n\nLos organizadores recibirán una notificación.",
+  "joinEventConfirmation": "Debes asignar una compra del cliente para reservar esta sesión\n\nLos cambios se realizarán si confirmas la creación o edición de la sesión.",
   "@joinEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -1606,7 +1606,7 @@
   "@leaveEvent": {
     "description": "Wellcome message"
   },
-  "leaveEventConfirmation": "¿Estás seguro de que quieres cancelar tu reserva para esta sesión?\n\nLos organizadores recibirán una notificación.",
+  "leaveEventConfirmation": "Esta es la compra con la que el cliente reservó la sesión\n\nLos cambios se realizarán si confirmas la creación o edición de la sesión.",
   "@leaveEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -3403,6 +3403,10 @@
   "@notAvailableFinishedEvents": {
     "description": "cantEditText message"
   },
+  "notAvailableClientsModifiedEvents": "No disponible ya que se han modificado clientes",
+  "@notAvailableClientsModifiedEvents": {
+    "description": "cantEditText message"
+  },
   "directPurchaseDescription": "Permite que las compras de tus bonos se aprueben sin solicitud, el cliente obtendrá el bono al momento de hacer su compra",
   "@directPurchaseDescription": {
     "description": "directPurchase message"
@@ -3444,7 +3448,7 @@
       }
     }
   },
-  "whichBono": "¿Que bono quieres usar?",
+  "whichBono": "¿Con qué compra quieres reservar?",
   "@whichBono": {
     "description": "userJoinsBrandUser message"
   }

@@ -369,9 +369,9 @@
   "planNewEvent": "Reservar una sessió",
   "calendarBrandTextClient": "Reserva una sessió amb {brand}",
   "joinEvent": "Reservar sessió",
-  "joinEventConfirmation": "Estàs segur que vols reservar un lloc per aquesta sessió?\n\nEls organitzadors rebran una notificació al respecte",
+  "joinEventConfirmation": "Has d'assignar una compra del client per reservar aquesta sessió?\n\nEls canvis es realitzaran si confirmes la creació o edició de la sessió.",
   "leaveEvent": "Abandonar sessió",
-  "leaveEventConfirmation": "Estàs segur que vols cancel·lar la teva reserva en aquesta sessió?\n\nEls organitzadors rebran una notificació al respecte",
+  "leaveEventConfirmation": "Aquesta és la compra amb la que el client va reservar la sessió?\n\nEls canvis es realitzaran si confirmes la creació o edició de la sessió.",
   "allEvents": "sessions totals",
   "monthEvents": "sessions aquest mes",
   "eventHistory": "Historial d'esdeveniments",
@@ -765,6 +765,7 @@
   "isMaintenanceText": "Estem afinant els detalls per portar-te una experiència encara millor. Només tardarem uns minuts per tornar amb força...",
   "cantEditText": "La data, l'hora i la duració d'un esdeveniment finalitzat no es poden modificar",
   "notAvailableFinishedEvents": "No disponible para eventos finalizados",
+  "notAvailableClientsModifiedEvents": "No disponible ja que s'han modificat clients",
   "directPurchaseDescription": "Permet que les compres dels teus vals s'aprovin sense sol·licitud, el client obtindrà el val al moment de fer la compra",
   "directPurchasetext": "Compra directa",
   "deletePurchase": "Estàs segur que vols eliminar aquesta compra?\n\nEl client serà eliminat/ada de tots els esdeveniments realitzats amb aquest val.",
@@ -774,5 +775,5 @@
   "addEventsToPurchaseSubText": "Afectaran al número de sessiones per aquest val",
   "purchase": "Compra",
   "createdBy": "Creada per {name}",
-  "whichBono": "Quin val vols utilitzar?"
+  "whichBono": "Amb quina compra vols reservar?"
 }

@@ -717,7 +717,7 @@ class SelectAllEvents extends StatelessWidget {
           color = Colors.orangeAccent;
         } else if (bookedCapacity > 0.80 && bookedCapacity < 1) {
           color = Colors.deepOrangeAccent;
-        } else if (bookedCapacity == 1) {
+        } else if (bookedCapacity >= 1) {
           color = Colors.red;
         }
       }

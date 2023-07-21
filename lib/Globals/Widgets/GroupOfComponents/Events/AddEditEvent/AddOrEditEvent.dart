@@ -67,6 +67,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   bool isLoading = false;
   // Boolean isUpdated
   bool isUpdated = false;
+  bool clientsModified = false;
   // Tab Controller
   double addEventTabValue = 0.33;
   double updateEventTabValue = 0.50;
@@ -100,6 +101,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   TextEditingController startDateController = TextEditingController();
   TextEditingController startTimeController = TextEditingController();
   bool errorDate = false;
+  bool errorBonos = false;
   Timestamp? doneAt;
   // Duration
   String duration = "1.00";
@@ -477,7 +479,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             )
         );
         if (selectedClients != null) {
+          if(selectedClients.any((client) => client.purchaseId != "")) {
+            errorBonos = true;
+          }
+          else {
+            errorBonos = false;
+          }
           setState(() {
+            clientsModified = true;
             brandClientsSelected = selectedClients;
             errorNoTrainerSelected = false;
           });
@@ -1067,6 +1076,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                               ),
                                             ],
                                           ),
+                                          errorBonos? Padding(
+                                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.01, right:  MediaQuery.of(context).size.width * 0.01),
+                                            child: Center(
+                                              child: Text(
+                                                'Elímine los clientes con compras para poder quitar bonos de la sesión',
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ) : Container(),
                                           ListView.builder(
                                               physics: const NeverScrollableScrollPhysics(),
                                               padding: EdgeInsets.zero,
@@ -1138,7 +1157,13 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                             }
                                                             setState(() {
                                                               if (selectedBonos.contains(bono.id!)) {
-                                                                selectedBonos.remove(bono.id!);
+                                                                if(brandClientsSelected.any((client) => client.purchaseId != "")) {
+                                                                  errorBonos = true;
+                                                                }
+                                                                else {
+                                                                  errorBonos = false;
+                                                                  selectedBonos.remove(bono.id!);
+                                                                }
                                                               } else {
                                                                 selectedBonos.add(bono.id!);
                                                               }
@@ -1768,23 +1793,52 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                                                         var client = brandClientsSelected[index];
                                                         return GestureDetector(
                                                           onTap: () async {
-                                                            //JMF_AddUser_BEGIN
-                                                            var result = await showDialog(
-                                                                context: context,
-                                                                builder: (_) {
-                                                                  return LeaveConfirmationDialogBonos(
-                                                                    text: AppLocalizations.of(context)!.joinEventConfirmation,
-                                                                    event: event,
-                                                                    brand: currentBrand,
-                                                                    bonos: filterBonosByIds(), purchaseId: client.purchaseId!, user: client,
-                                                                  );
+                                                            if(selectedBonos.isNotEmpty && client.purchaseId != "") {
+                                                              //JMF_AddUser_BEGIN
+                                                              var result = await showDialog(
+                                                                  context: context,
+                                                                  builder: (_) {
+                                                                    return LeaveConfirmationDialogBonos(
+                                                                      text: AppLocalizations
+                                                                          .of(
+                                                                          context)!
+                                                                          .leaveEventConfirmation,
+                                                                      event: event,
+                                                                      brand: currentBrand,
+                                                                      bonos: filterBonosByIds(),
+                                                                      purchaseId: client
+                                                                          .purchaseId!,
+                                                                      user: client,
+                                                                    );
+                                                                  }
+                                                              );
+                                                              if (result !=
+                                                                  null &&
+                                                                  result) {
+                                                                var temp = brandClientsSelected;
+                                                                temp.remove(
+                                                                    client);
+                                                                if(temp.any((client) => client.purchaseId != "")) {
+                                                                  errorBonos = true;
                                                                 }
-                                                            );
-                                                            if (result != null && result) {
+                                                                else {
+                                                                  errorBonos = false;
+                                                                }
+                                                                setState(() {
+                                                                  clientsModified =
+                                                                  true;
+                                                                  brandClientsSelected =
+                                                                      temp;
+                                                                });
+                                                              }
+                                                            }
+                                                            else {
                                                               var temp = brandClientsSelected;
                                                               temp.remove(
                                                                   client);
                                                               setState(() {
+                                                                clientsModified =
+                                                                true;
                                                                 brandClientsSelected =
                                                                     temp;
                                                               });
@@ -1977,16 +2031,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                         } else {
                           mixpanel!.track('add_event_trainers_error', properties: {'isPrivate': false});
                         }
-                      } else if (brandClientsSelected.length > eventMaxMembers) {
-                        setState(() {
-                          errorClientsSelected = true;
-                        });
+                      } /*else if (brandClientsSelected.length > eventMaxMembers) {
                         if (widget.eventId != null) {
                           mixpanel!.track('edit_event_clients_error', properties: {'isPrivate': false});
                         } else {
                           mixpanel!.track('add_event_clients_error', properties: {'isPrivate': false});
                         }
-                      } else {
+                      }*/
+                      else {
                         if (widget.eventId == null) {
                           _addEventFunction();
                         } else {
@@ -1998,6 +2050,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                               builder: (BuildContext context) {
                                 return EditRecurrentEventDialog(
                                   isCompleted: !widget.isBeforeEdit,
+                                  clientsModified: clientsModified,
                                 );
                               },
                             );
@@ -2527,7 +2580,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
     //JMF_AddUser_Begin
     //Update purchase
-    await UpdateUserPurchase(event.id!);
+    if(selectedBonos.isNotEmpty) {
+      await UpdateUserPurchase(event.id!);
+    }
     //JMF_AddUser_End
 
     // Handle Clients Added
@@ -2874,17 +2929,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future<void> UpdateUserPurchase(String eventId) async {
-    for(int i = 0; i < originalClients.length; ++i)
-      {
-        int index =  brandClientsSelected.indexWhere((element) => element.id == originalClients[i].id);
-        if(index != -1) {
-          if(brandClientsSelected[index].purchaseId != originalClients[i].purchaseId)
-            {
-              await _eventDataService.updateEventUserPurchase(eventId, originalClients[i].id!, brandClientsSelected[index].purchaseId!);
-            }
-        }
-
-      }
+    for(int i = 0; i < brandClientsSelected.length; ++i)
+    {
+        await _eventDataService.updateEventUserPurchase(eventId, brandClientsSelected[i].id!, brandClientsSelected[i].purchaseId!);
+    }
   }
-
 }

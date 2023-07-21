@@ -243,7 +243,8 @@ class UserFirebaseCalls {
   Future<Usuario> getUserDetails(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore
         .collection(users).doc(uid).get();
-    return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      print(uid);
+      return Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
   }
 
   Future<Brand?> getUserBrands(String uid) async {
@@ -638,6 +639,7 @@ class UserFirebaseCalls {
           .collection("Purchases")
           .where("isActive", isEqualTo: true)
           .get();
+      print(querySnapshot.docs.length);
       for (int i = 0; i < querySnapshot.docs.length; i++) {
         Purchase purchase = Purchase.fromObjectAllData(
             querySnapshot.docs[i].id, querySnapshot.docs[i]);

@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
@@ -2245,9 +2246,20 @@ class FirebaseDatabaseService {
   // Update Event
   Future<void> updateEventUserPurchase(String eventId, String userId, String purchaseId) async {
     try {
-      await _firestore.collection(events).doc(eventId).collection("Users").doc(userId).update({
-        "purchaseId": purchaseId,
-      });
+      final _purchaseDataService = PurchaseDataService();
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await  _firestore.collection(events).doc(eventId).collection("Users").doc(userId).get();
+      Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      if(user.purchaseId != purchaseId) {
+        await _firestore.collection(events).doc(eventId).collection("Users").doc(userId).update({
+          "purchaseId": purchaseId,
+        });
+        await _purchaseDataService.deletedPurchaseUserFromEvent(
+            user, eventId);
+        await _purchaseDataService.addEventToPurchase(
+            purchaseId, eventId);
+      }
+
     } catch (e) {
       print(e.toString());
     }

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -34,6 +36,8 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
   // Brand Data Service
   var _brandDataService = BrandDataService();
   var _purchaseDataService = PurchaseDataService();
+  final _eventDataService = EventDataService();
+  final _userDataService = UserDataService();
   // Boolean Loading
   bool isLoading = false;
   // Search Controller
@@ -63,7 +67,17 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
     for (var user in widget.selectedUsers) {
       String id = user.id!;
       var index = filteredClients.indexWhere((element) => element.id! == id);
-      selectedClients.add(filteredClients[index]);
+      if(index >= 0) {
+        filteredClients[index].purchaseId = user.purchaseId;
+        selectedClients.add(filteredClients[index]);
+      }
+      else {
+        Usuario userAux = await _userDataService.getUserDetails(user.id!);
+        userAux.purchaseId = user.purchaseId;
+        filteredClients.add(userAux);
+        selectedClients.add(userAux);
+      }
+
     }
     // Return Future Delayed
     await Future.delayed(const Duration(milliseconds: 500));
@@ -280,7 +294,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                 ],
                               ),
                               onTap: () async {
-                                if(widget.selectedBonos!.isEmpty) {
+                                if(widget.selectedBonos!.isEmpty || user.purchaseId == "") {
                                   var selectedUsers = selectedClients;
                                   if (selectedUsers.contains(user)) {
                                     selectedUsers.remove(user);
@@ -321,7 +335,7 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                         context: context,
                                         builder: (_) {
                                           return LeaveConfirmationDialogBonos(
-                                            text: AppLocalizations.of(context)!.joinEventConfirmation,
+                                            text: AppLocalizations.of(context)!.leaveEventConfirmation,
                                             event: widget.event,
                                             brand: currentBrand,
                                             bonos: widget.bonos, purchaseId: user.purchaseId!, user: user,
@@ -348,11 +362,11 @@ class _SelectClientsEventState extends State<SelectClientsEvent> {
                                         }
                                     );
                                     if (result != null && result[0]) {
-                                        user.purchaseId = result[1];
-                                        selectedUsers.add(user);
-                                        setState(() {
+                                      user.purchaseId = result[1];
+                                      selectedUsers.add(user);
+                                      setState(() {
                                           selectedClients = selectedUsers;
-                                        });
+                                      });
 
                                   }
 

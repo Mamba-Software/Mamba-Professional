@@ -2736,17 +2736,23 @@ exports.purchaseUpdatesCoverData = functions
       if (before.directPurchase != after.directPurchase) {
         coverDataChange = true;
       }
+      if (before.isActive != after.isActive) {
+            coverDataChange = true;
+      }
 
     await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
            "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
         });
 
     await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
            "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
         });
 
         await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
            "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
         });
       return null;
     });
@@ -5954,17 +5960,23 @@ exports.zzzzUserDeletesPurchase = functions
           if (before.directPurchase != after.directPurchase) {
             coverDataChange = true;
           }
+          if (before.isActive != after.isActive) {
+                      coverDataChange = true;
+            }
 
             await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
                "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
             });
 
             await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
                "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
             });
 
             await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).update({
                "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
             });
           return null;
         });

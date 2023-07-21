@@ -66,6 +66,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   bool isLoading = false;
   // Boolean isUpdated
   bool isUpdated = false;
+  bool clientsModified = false;
+  bool errorBonos = false;
   // Tab Controller
   double addEventTabValue = 0.33;
   double updateEventTabValue = 0.50;
@@ -390,7 +392,14 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
             )
         );
         if (selectedClients != null) {
+          if(selectedClients.any((client) => client.purchaseId != "")) {
+            errorBonos = true;
+          }
+          else {
+            errorBonos = false;
+          }
           setState(() {
+            clientsModified = true;
             brandClientsSelected = selectedClients;
             errorNoTrainerSelected = false;
           });
@@ -1151,7 +1160,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           }
                                                           setState(() {
                                                             if (selectedBonos.contains(bono.id!)) {
-                                                              selectedBonos.remove(bono.id!);
+                                                              if(brandClientsSelected.any((client) => client.purchaseId != "")) {
+                                                                errorBonos = true;
+                                                              }
+                                                              else {
+                                                                errorBonos = false;
+                                                                selectedBonos.remove(bono.id!);
+                                                              }
                                                             } else {
                                                               selectedBonos.add(bono.id!);
                                                             }
@@ -1772,27 +1787,56 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         var client = brandClientsSelected[index];
                                                         return GestureDetector(
                                                           onTap: () async {
+                                                          if(selectedBonos.isNotEmpty && client.purchaseId != "") {
                                                             //JMF_AddUser_BEGIN
                                                             var result = await showDialog(
                                                                 context: context,
                                                                 builder: (_) {
                                                                   return LeaveConfirmationDialogBonos(
-                                                                    text: AppLocalizations.of(context)!.joinEventConfirmation,
+                                                                    text: AppLocalizations
+                                                                        .of(
+                                                                        context)!
+                                                                        .leaveEventConfirmation,
                                                                     event: event,
                                                                     brand: currentBrand,
-                                                                    bonos: filterBonosByIds(), purchaseId: client.purchaseId!, user: client,
+                                                                    bonos: filterBonosByIds(),
+                                                                    purchaseId: client
+                                                                        .purchaseId!,
+                                                                    user: client,
                                                                   );
                                                                 }
                                                             );
-                                                            if (result != null && result) {
+                                                            if (result !=
+                                                                null &&
+                                                                result) {
                                                               var temp = brandClientsSelected;
                                                               temp.remove(
                                                                   client);
+                                                              if(temp.any((client) => client.purchaseId != "")) {
+                                                                errorBonos = true;
+                                                              }
+                                                              else {
+                                                                errorBonos = false;
+                                                              }
                                                               setState(() {
+                                                                clientsModified =
+                                                                true;
                                                                 brandClientsSelected =
                                                                     temp;
                                                               });
                                                             }
+                                                          }
+                                                          else {
+                                                            var temp = brandClientsSelected;
+                                                            temp.remove(
+                                                                client);
+                                                            setState(() {
+                                                              clientsModified =
+                                                              true;
+                                                              brandClientsSelected =
+                                                                  temp;
+                                                            });
+                                                          }
 
                                                             //JMF_AddUser_END
                                                           },
@@ -2000,6 +2044,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                 builder: (BuildContext context) {
                                   return EditRecurrentEventDialog(
                                     isCompleted: !widget.isBeforeEdit,
+                                    clientsModified: clientsModified,
                                   );
                                 },
                               );
@@ -2524,7 +2569,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
 
     //JMF_AddUser_Begin
     //Update purchase
-    await UpdateUserPurchase(event.id!);
+    if(selectedBonos.isNotEmpty) {
+      await UpdateUserPurchase(event.id!);
+    }
     //JMF_AddUser_End
 
     // Handle Clients Added
@@ -2887,16 +2934,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   }
 
   Future<void> UpdateUserPurchase(String eventId) async {
-    for(int i = 0; i < originalClients.length; ++i)
+    for(int i = 0; i < brandClientsSelected.length; ++i)
     {
-      int index =  brandClientsSelected.indexWhere((element) => element.id == originalClients[i].id);
-      if(index != -1) {
-        if(brandClientsSelected[index].purchaseId != originalClients[i].purchaseId)
-        {
-          await _eventDataService.updateEventUserPurchase(eventId, originalClients[i].id!, brandClientsSelected[index].purchaseId!);
-        }
-      }
-
+      await _eventDataService.updateEventUserPurchase(eventId, brandClientsSelected[i].id!, brandClientsSelected[i].purchaseId!);
     }
   }
 
