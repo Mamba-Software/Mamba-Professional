@@ -671,6 +671,48 @@ class UserFirebaseCalls {
     return userBonos;
   }
 
+  Future<String> getUserActiveSessions(String userId) async {
+    int sessions = -1;
+      QuerySnapshot querySnapshot = await _firestore
+          .collection(users)
+          .doc(userId)
+          .collection("Purchases")
+          .where("isActive", isEqualTo: true)
+          .get();
+      for (int i = 0; i < querySnapshot.docs.length; i++) {
+        if(sessions == -1)
+          {
+            sessions = 0;
+          }
+        Purchase purchase = Purchase.fromObjectAllData(
+            querySnapshot.docs[i].id, querySnapshot.docs[i]);
+        QuerySnapshot querySnapshotEvents = await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Purchases")
+            .doc(querySnapshot.docs[i].id)
+            .collection('Events')
+            .get();
+
+        sessions = sessions + (purchase.sessions! - querySnapshotEvents.size);
+        if(sessions > 9) {
+          return '10';
+        }
+      }
+      if(sessions == -1) {
+        QuerySnapshot querySnapshot2 = await _firestore
+            .collection(users)
+            .doc(userId)
+            .collection("Purchases")
+            .where("isActive", isEqualTo: false)
+            .get();
+        if(querySnapshot2.size > 0) {
+          sessions = 0;
+        }
+      }
+      return sessions.toString();
+  }
+
   //Add
 
   Future<int> addUser(String email, String password, String idioma, bool isTrainer, [bool definePassword = false]) async {

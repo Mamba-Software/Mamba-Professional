@@ -53,6 +53,7 @@ class UserDataService {
   Future<Event> getLastUserEvent(String? userId) => _firebase.getLastUserEvent(userId);
   Future<List<String>> getBlockedByUsers(String userId) => _firebase.getBlockedByUsers(userId);
   Future<List<Bono>> getUserActiveBonos(String userId, String purchaseId) => _firebase.getUserActiveBonos(userId, purchaseId);
+  Future<String> getUserActiveSessions(String userId) => _firebase.getUserActiveSessions(userId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma, bool isTrainer, [bool definePassword = false]) => _firebase.addUser(email, password, idioma, isTrainer, definePassword);

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -17,6 +18,7 @@ import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -649,89 +651,287 @@ class _Clients extends State<Clients> {
             childCount: widget.numClients == 0 ? 5 : widget.numClients,
             ),
           ) : filteredMembers.isNotEmpty ?
-          SliverList(
-            delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-              Usuario user = filteredMembers[index];
-              DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
-              return ListTile(
-                  leading: CircularImage(
-                    size: MediaQuery.of(context).size.width*0.15,
-                    image: user.imageUrl,
-                    color: Theme.of(context).primaryColor,
-                    borderWidth: 1.0,
-                  ),
-                  title: Text(
-                    user.name!,
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.left,
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.lastEventAt == null ? AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(dateJoined, Localizations.localeOf(context).languageCode)) :
-                        AppLocalizations.of(context)!.lastActiveIn(DateTimeUtils().formatDateTimeToStringMMMYYYY(user.lastEventAt!.toDate(), Localizations.localeOf(context).languageCode)),
-                        style: Theme.of(context).textTheme.caption,
-                      ),
-                    ],
-                  ),
-                  trailing: user.id! == currentUser.id ? IconButton(
-                    icon: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.all(0),
-                    onPressed: false ? () {
-                    } : null,
-                  ) :
-                  IconButton(
-                    icon: Icon(Icons.chat_outlined, color: Theme.of(context).primaryColor,size: MediaQuery.of(context).size.height*0.03,),
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () async {
-                      mixpanel!.track('brand_clients_chat_button');
-                      types.User otherUser = types.User(
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        id: user.id!, // UID from Firebase Authentication
-                        imageUrl: user.imageUrl,
-                      );
-                      final room = await FirebaseChatCore.instance.createRoom(otherUser,metadata: {
-                        "trainer" + user.id!: user.isTrainer,
-                        "trainer" + currentUser.id!: currentUser.isTrainer,
-                        "active" + user.id!: false,
-                        "active" + currentUser.id!: true,
-                      });
+          BlocProvider<ClientSessionsCubit>(
+            lazy: false,
+            create: (context) => ClientSessionsCubit(filteredMembers),
+            child: BlocBuilder<ClientSessionsCubit, ClientsSessionsState>(
+                builder: (context, state) {
+                  if(state is ClientsSessionsLoaded) {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate((
+                          BuildContext context, int index) {
+                        Usuario user = state.users[index];
+                        DateTime dateJoined = DateTimeUtils()
+                            .formatStringToDateTimeDDMMYY(
+                            user.dateJoined!, Localizations
+                            .localeOf(context)
+                            .languageCode);
+                        return ListTile(
+                          leading: CircularImage(
+                            size: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.15,
+                            image: user.imageUrl,
+                            color: Theme
+                                .of(context)
+                                .primaryColor,
+                            borderWidth: 1.0,
+                          ),
+                          title: Text(
+                            user.name!,
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .bodyText1
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.lastEventAt == null ? AppLocalizations.of(
+                                    context)!.lastActiveIn(DateTimeUtils()
+                                    .formatDateTimeToStringMMMYYYY(
+                                    dateJoined, Localizations
+                                    .localeOf(context)
+                                    .languageCode)) :
+                                AppLocalizations.of(context)!.lastActiveIn(
+                                    DateTimeUtils()
+                                        .formatDateTimeToStringMMMYYYY(
+                                        user.lastEventAt!.toDate(),
+                                        Localizations
+                                            .localeOf(context)
+                                            .languageCode)),
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .caption,
+                              ),
+                            ],
+                          ),
+                          trailing: user.id! == currentUser.id ? IconButton(
+                            icon: Icon(Icons.arrow_forward_ios, color: Theme
+                                .of(context)
+                                .primaryColor, size: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.03,),
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.all(0),
+                            onPressed: false ? () {} : null,
+                          ) : user.sessions == null || user.sessions == '-1'?
+                          IconButton(
+                            icon: Icon(Icons.chat_outlined, color: Theme
+                                .of(context)
+                                .primaryColor, size: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.03,),
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.all(0),
+                            onPressed: () async {
+                              mixpanel!.track('brand_clients_chat_button');
+                              types.User otherUser = types.User(
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                id: user.id!,
+                                // UID from Firebase Authentication
+                                imageUrl: user.imageUrl,
+                              );
+                              final room = await FirebaseChatCore.instance
+                                  .createRoom(otherUser, metadata: {
+                                "trainer" + user.id!: user.isTrainer,
+                                "trainer" + currentUser.id!: currentUser
+                                    .isTrainer,
+                                "active" + user.id!: false,
+                                "active" + currentUser.id!: true,
+                              });
 
-                      bool? deleteRoom = await Navigator.push(
-                        context,
-                        CupertinoPageRoute<bool>(
-                            builder: (context) => ChatPage(room: room)),).whenComplete(() async {
-                        room.metadata!["active" + currentUser.id!] = false;
-                        _roomDataService.updateRoom(room.id, room.metadata!);
-                      });
-                      if (!deleteRoom!) {
-                        _roomDataService.deleteRoom(room.id);
-                        mixpanel!.track('brand_clients_chat_empty');
-                      }
-                    },
-                  ),
-                  onTap: () async {
-                    mixpanel!.track('brand_clients_profile_view');
-                    var result = await Navigator.push(
-                        context,
-                        CupertinoPageRoute<bool?>(
-                            builder: (context) => ProfileViewUser(
-                              userID: user.id!,
-                              viewOnly: false,
-                            )
-                        )
+                              bool? deleteRoom = await Navigator.push(
+                                context,
+                                CupertinoPageRoute<bool>(
+                                    builder: (context) =>
+                                        ChatPage(room: room)),)
+                                  .whenComplete(() async {
+                                room.metadata!["active" + currentUser.id!] =
+                                false;
+                                _roomDataService.updateRoom(
+                                    room.id, room.metadata!);
+                              });
+                              if (!deleteRoom!) {
+                                _roomDataService.deleteRoom(room.id);
+                                mixpanel!.track('brand_clients_chat_empty');
+                              }
+                            },
+                          ) : Padding(
+                            padding: const EdgeInsets.all(0),
+                            child: Container(
+                              height: MediaQuery.of(context).size.width*0.12,
+                              width: MediaQuery.of(context).size.width*0.08,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  shape: BoxShape.circle
+                              ),
+                              child: buildPlacesLeftWidget(int.parse(user.sessions!)),
+                            ),
+                          ),
+                          onTap: () async {
+                            mixpanel!.track('brand_clients_profile_view');
+                            var result = await Navigator.push(
+                                context,
+                                CupertinoPageRoute<bool?>(
+                                    builder: (context) =>
+                                        ProfileViewUser(
+                                          userID: user.id!,
+                                          viewOnly: false,
+                                        )
+                                )
+                            );
+                            if (result == true) {
+                              await getAllUsers();
+                            }
+                          },
+                        );
+                      },
+                        childCount: filteredMembers.length, // 1000 list items
+                      ),
                     );
-                    if (result == true) {
-                      await getAllUsers();
-                    }
-                  },
-                );
-              },
-              childCount: filteredMembers.length,               // 1000 list items
+                  }
+                  else {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate((
+                          BuildContext context, int index) {
+                        Usuario user = filteredMembers[index];
+                        DateTime dateJoined = DateTimeUtils()
+                            .formatStringToDateTimeDDMMYY(
+                            user.dateJoined!, Localizations
+                            .localeOf(context)
+                            .languageCode);
+                        return ListTile(
+                          leading: CircularImage(
+                            size: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.15,
+                            image: user.imageUrl,
+                            color: Theme
+                                .of(context)
+                                .primaryColor,
+                            borderWidth: 1.0,
+                          ),
+                          title: Text(
+                            user.name!,
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .bodyText1
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.left,
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.lastEventAt == null ? AppLocalizations.of(
+                                    context)!.lastActiveIn(DateTimeUtils()
+                                    .formatDateTimeToStringMMMYYYY(
+                                    dateJoined, Localizations
+                                    .localeOf(context)
+                                    .languageCode)) :
+                                AppLocalizations.of(context)!.lastActiveIn(
+                                    DateTimeUtils()
+                                        .formatDateTimeToStringMMMYYYY(
+                                        user.lastEventAt!.toDate(),
+                                        Localizations
+                                            .localeOf(context)
+                                            .languageCode)),
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .caption,
+                              ),
+                            ],
+                          ),
+                          trailing: user.id! == currentUser.id ? IconButton(
+                            icon: Icon(Icons.arrow_forward_ios, color: Theme
+                                .of(context)
+                                .primaryColor, size: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.03,),
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.all(0),
+                            onPressed: false ? () {} : null,
+                          ) :
+                          IconButton(
+                            icon: Icon(Icons.chat_outlined, color: Theme
+                                .of(context)
+                                .primaryColor, size: MediaQuery
+                                .of(context)
+                                .size
+                                .height * 0.03,),
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.all(0),
+                            onPressed: () async {
+                              mixpanel!.track('brand_clients_chat_button');
+                              types.User otherUser = types.User(
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                id: user.id!,
+                                // UID from Firebase Authentication
+                                imageUrl: user.imageUrl,
+                              );
+                              final room = await FirebaseChatCore.instance
+                                  .createRoom(otherUser, metadata: {
+                                "trainer" + user.id!: user.isTrainer,
+                                "trainer" + currentUser.id!: currentUser
+                                    .isTrainer,
+                                "active" + user.id!: false,
+                                "active" + currentUser.id!: true,
+                              });
+
+                              bool? deleteRoom = await Navigator.push(
+                                context,
+                                CupertinoPageRoute<bool>(
+                                    builder: (context) =>
+                                        ChatPage(room: room)),)
+                                  .whenComplete(() async {
+                                room.metadata!["active" + currentUser.id!] =
+                                false;
+                                _roomDataService.updateRoom(
+                                    room.id, room.metadata!);
+                              });
+                              if (!deleteRoom!) {
+                                _roomDataService.deleteRoom(room.id);
+                                mixpanel!.track('brand_clients_chat_empty');
+                              }
+                            },
+                          ),
+                          onTap: () async {
+                            mixpanel!.track('brand_clients_profile_view');
+                            var result = await Navigator.push(
+                                context,
+                                CupertinoPageRoute<bool?>(
+                                    builder: (context) =>
+                                        ProfileViewUser(
+                                          userID: user.id!,
+                                          viewOnly: false,
+                                        )
+                                )
+                            );
+                            if (result == true) {
+                              await getAllUsers();
+                            }
+                          },
+                        );
+                      },
+                        childCount: filteredMembers.length, // 1000 list items
+                      ),
+                    );
+                  }
+              }
             ),
           ) : SliverFillRemaining(
             hasScrollBody: false,
@@ -891,6 +1091,32 @@ class _Clients extends State<Clients> {
           ),
         );
       },
+    );
+  }
+
+  // Build Places Left Event
+  Widget buildPlacesLeftWidget(int places) {
+    return FittedBox(
+      fit: BoxFit.fitHeight,
+      child: Container(
+          height: MediaQuery.of(context).size.width*0.1,
+          //padding: const EdgeInsets.only(top: 4, bottom: 8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                places == 10? '+9' : places.toString(),
+                style: Theme.of(context).textTheme.headline3?.copyWith( color: places == 0? Colors.red : Colors.green),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                places == 1 ? AppLocalizations.of(context)!.session : AppLocalizations.of(context)!.sessions,
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: places == 0? Colors.red : Colors.green),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          )
+      )
     );
   }
 
