@@ -48,7 +48,6 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.language, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
-        elevation: 1,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () {
@@ -59,13 +58,13 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
+            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.02),
             child: Column(
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                SizedBox(height: MediaQuery.of(context).size.height*0.02),
                 ListTile(
-                  dense: false,
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                  dense: true,
+                  contentPadding: EdgeInsets.only(left: 0.0, right: 16.0),
                   title: Text(
                     "Español",
                     style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
@@ -94,8 +93,8 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 ListTile(
-                  dense: false,
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                  dense: true,
+                  contentPadding: EdgeInsets.only(left: 0.0, right: 8.0),
                   title: Text(
                     "Català",
                     style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),

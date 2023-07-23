@@ -157,7 +157,6 @@ class _SettingsState extends State<Settings> {
     Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).appBarTheme.titleTextStyle,),
-        elevation: 1,
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),

@@ -945,11 +945,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   color: AppColors.black
                                               )),
                                               Center(
-                                                child: CircularImage(
-                                                  size: MediaQuery.of(context).size.height * 0.15,
-                                                  file: _image,
-                                                  borderWidth: 1,
-                                                  color: AppColors.grey,
+                                                child: Material(
+                                                  elevation: 8,
+                                                  shape: const CircleBorder(),
+                                                  child: CircularImage(
+                                                    size: MediaQuery.of(context).size.height * 0.15,
+                                                    file: _image,
+                                                    borderWidth: 1,
+                                                    color: AppColors.grey,
+                                                  ),
                                                 )
                                               ),
                                             ],
@@ -962,11 +966,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               const Center(child: CircularProgressIndicator(
                                                   color: AppColors.black
                                               )),
-                                              Center(child: CircularImage(
-                                                size: MediaQuery.of(context).size.height * 0.15,
-                                                image: imageUrl,
-                                                borderWidth: 1,
-                                                color: AppColors.grey,
+                                              Center(child: Material(
+                                                elevation: 8,
+                                                shape: const CircleBorder(),
+                                                child: CircularImage(
+                                                  size: MediaQuery.of(context).size.height * 0.15,
+                                                  image: imageUrl,
+                                                  borderWidth: 1,
+                                                  color: AppColors.grey,
+                                                ),
                                               )
                                               ),
                                             ],
