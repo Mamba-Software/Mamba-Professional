@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -42,7 +43,15 @@ class _Trainers extends State<Trainers> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
 
   // Brand Data Service

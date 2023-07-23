@@ -148,7 +148,7 @@ class DayOfferState extends State<DayOffer> {
     if (filteredEvents[i].doneAt!.toDate().weekday == day) {
       totalSumClients = totalSumClients + clients;
       weekDays[number] = weekDays[number] + clients;
-      print(weekDays[number]);
+      //print(weekDays[number]);
     }
   }
 
