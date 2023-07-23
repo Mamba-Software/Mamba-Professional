@@ -223,7 +223,7 @@ class _Clients extends State<Clients> {
             elevation: 4,
             floating: true,
             pinned: true,
-            //snap: true,
+            snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 height: MediaQuery.of(context).size.height*0.2,

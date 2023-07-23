@@ -1046,7 +1046,11 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      buildUserPicture(),
+                      Material(
+                        elevation: 8,
+                        shape: const CircleBorder(),
+                        child: buildUserPicture()
+                      ),
                       const SizedBox(height: 12),
                       buildUserTitle(),
                     ],

@@ -117,22 +117,31 @@ class _LocationsState extends State<Locations> {
       locationContainers.clear();
     });
     var tempList = locationList.map((i) =>
-      LocationImageTile(
-        height: MediaQuery.of(context).size.height*0.16,
-        width: MediaQuery.of(context).size.width,
-        locationId: i.id!,
-        brandId: currentBrand.id!,
-        canEdit: canEdit,
-        locationChanged: (boolean) async {
-          if (boolean == true) {
-            setState(() {
-              isLoading = true;
-              loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
-            });
-            await Future.delayed(const Duration(seconds: 4));
-            getAllLocations();
-          }
-        },
+      Column(
+        children: [
+          Material(
+            elevation: 8,
+            borderRadius: BorderRadius.circular(15.0),
+            child: LocationImageTile(
+              height: MediaQuery.of(context).size.height*0.16,
+              width: MediaQuery.of(context).size.width,
+              locationId: i.id!,
+              brandId: currentBrand.id!,
+              canEdit: canEdit,
+              locationChanged: (boolean) async {
+                if (boolean == true) {
+                  setState(() {
+                    isLoading = true;
+                    loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
+                  });
+                  await Future.delayed(const Duration(seconds: 4));
+                  getAllLocations();
+                }
+              },
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.01)
+        ],
       )
     ).toList();
     setState(() {
@@ -278,8 +287,9 @@ class _LocationsState extends State<Locations> {
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: false,
+            floating: true,
             pinned: true,
+            snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -430,7 +440,7 @@ class _LocationsState extends State<Locations> {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height*0.16,
+                    height: MediaQuery.of(context).size.height*0.18,
                     width: MediaQuery.of(context).size.width,
                     child: GestureDetector(
                       child: CarouselSlider(

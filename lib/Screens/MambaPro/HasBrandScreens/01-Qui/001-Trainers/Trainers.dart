@@ -276,8 +276,9 @@ class _Trainers extends State<Trainers> {
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: false,
+            floating: true,
             pinned: true,
+            snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 height: MediaQuery.of(context).size.height*0.2,

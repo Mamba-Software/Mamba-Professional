@@ -662,7 +662,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).scaffoldBackgroundColor),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).backgroundColor),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -698,7 +698,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).scaffoldBackgroundColor),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).backgroundColor),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -969,7 +969,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
           centerTitle: true,
           elevation: 0,
           scrolledUnderElevation: 4,
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () {
@@ -1196,14 +1196,18 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             ),
           ],
         ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(height: MediaQuery.of(context).size.height*0.0),
-            buildUserPicture(),
+            Material(
+              elevation: 8,
+              shape: const CircleBorder(),
+              child: buildUserPicture()
+            ),
             const SizedBox(height: 12),
             buildUserTitle(),
             SizedBox(height: MediaQuery.of(context).size.height*0.04),

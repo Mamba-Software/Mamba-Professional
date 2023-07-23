@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -98,7 +99,15 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   // App Bar and Scroll View
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
 
   @override
@@ -224,8 +233,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: false,
+            floating: true,
             pinned: true,
+            snap: true,
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),

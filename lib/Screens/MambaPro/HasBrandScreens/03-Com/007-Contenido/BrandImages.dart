@@ -2,6 +2,7 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -39,7 +40,15 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
@@ -231,8 +240,9 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                   expandedHeight: MediaQuery.of(context).size.height*0.15,
                   systemOverlayStyle: SystemUiOverlayStyle.light,
                   elevation: 4,
-                  floating: false,
+                  floating: true,
                   pinned: true,
+                  snap: true,
                   flexibleSpace: FlexibleSpaceBar(
                     background: Container(
                       color: AppColors.darkGrey,
@@ -446,13 +456,17 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                   )
                               );
                             },
-                            child: RectangularImage(
-                              height: MediaQuery.of(context).size.height*0.18,
-                              width: MediaQuery.of(context).size.height*0.9,
-                              borderRadius: 10,
-                              color: AppColors.grey,
-                              borderWidth: 1,
-                              image: image.url,
+                            child: Material(
+                              elevation: 8,
+                              borderRadius: BorderRadius.circular(15.0),
+                              child: RectangularImage(
+                                height: MediaQuery.of(context).size.height*0.18,
+                                width: MediaQuery.of(context).size.height*0.9,
+                                borderRadius: 10,
+                                color: AppColors.grey,
+                                borderWidth: 0,
+                                image: image.url,
+                              ),
                             ),
                           ),
                           /// Set Favorite Image
@@ -468,7 +482,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                          color: Theme.of(context).backgroundColor, //New
+                                          color: Theme.of(context).scaffoldBackgroundColor, //New
                                           blurRadius: 1.0,
                                           offset: const Offset(0, 0)
                                       )
@@ -536,7 +550,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                        color: Theme.of(context).backgroundColor, //New
+                                        color: Theme.of(context).scaffoldBackgroundColor, //New
                                         blurRadius: 1.0,
                                         offset: const Offset(0, 0)
                                     )
@@ -596,7 +610,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                        color: Theme.of(context).backgroundColor, //New
+                                        color: Theme.of(context).scaffoldBackgroundColor, //New
                                         blurRadius: 1.0,
                                         offset: const Offset(0, 0)
                                     )
@@ -661,7 +675,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                          color: Theme.of(context).backgroundColor, //New
+                                          color: Theme.of(context).scaffoldBackgroundColor, //New
                                           blurRadius: 1.0,
                                           offset: const Offset(0, 0)
                                       )
