@@ -384,7 +384,7 @@ class _SettingsState extends State<Settings> {
                 }
               },
               child: Material(
-                elevation: 4,
+                elevation: 8,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(30.0),
@@ -424,7 +424,7 @@ class _SettingsState extends State<Settings> {
                 );
               },
               child: Material(
-                elevation: 4,
+                elevation: 8,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(30.0),
