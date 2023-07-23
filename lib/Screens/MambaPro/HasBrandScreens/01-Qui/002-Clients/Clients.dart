@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -47,7 +48,15 @@ class _Clients extends State<Clients> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
   // Brand Data Service
   final _brandDataService = BrandDataService();
@@ -89,7 +98,7 @@ class _Clients extends State<Clients> {
     });
     filteredMembers = allMembers;
     // Return Future Delayed
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     setState(() {
       isLoading = false;
     });
@@ -212,7 +221,7 @@ class _Clients extends State<Clients> {
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: false,
+            floating: true,
             pinned: true,
             //snap: true,
             flexibleSpace: FlexibleSpaceBar(

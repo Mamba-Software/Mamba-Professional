@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -55,9 +56,16 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
-
   final DateFormat formatter = DateFormat('dd-MM-yyyy');
 
   // Screen Dimensions
@@ -286,7 +294,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 expandedHeight: MediaQuery.of(context).size.height * 0.13,
                 systemOverlayStyle: SystemUiOverlayStyle.light,
                 elevation: 0,
-                floating: false,
+                floating: true,
                 pinned: true,
                 forceElevated: innerBoxIsScrolled,
                 //snap: true,

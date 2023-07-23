@@ -133,7 +133,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                   height: MediaQuery.of(context).size.width*0.7,
                   width: MediaQuery.of(context).size.width*0.7,
                   decoration: BoxDecoration(
-                    color: AppColors.white.withOpacity(0.7),
+                    color: AppColors.lightGrey.withOpacity(0.9),
                     borderRadius: const BorderRadius.all(
                       Radius.circular(10),
                     ),
@@ -310,7 +310,7 @@ class _ShareBrandLinkState extends State<ShareBrandLink> {
                   height: MediaQuery.of(context).size.width*0.7,
                   width: MediaQuery.of(context).size.width*0.7,
                   decoration: BoxDecoration(
-                    color: AppColors.white.withOpacity(0.7),
+                    color: AppColors.lightGrey.withOpacity(0.9),
                     borderRadius: const BorderRadius.all(
                       Radius.circular(10),
                     ),
