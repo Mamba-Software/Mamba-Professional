@@ -38,6 +38,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
   int? genderTemp;
   final _genderKey = GlobalKey<_GenderWidgetState>();
   // Date of Birth
+  DateTime startDateLocal = DateTime.now();
   TextEditingController startDateController = TextEditingController();
   // Boolean isUpdated
   bool isUpdated = false;
@@ -104,6 +105,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
           use24hFormat: true,
           onDateTimeChanged: (val) {
             setState(() {
+              startDateLocal = val;
               startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMMMYYYY(val, Localizations.localeOf(context).languageCode);
             });
           }
@@ -770,10 +772,11 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                   currentUser.gender = genderTemp;
                 }
                 if (startDateController.text != currentUser.dateOfBirth) {
+                  startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDateLocal, Localizations.localeOf(context).languageCode);
                   currentUser.dateOfBirth = startDateController.text;
                 }
                 currentUser.name = currentUser.firstName!+" "+currentUser.lastName!;
-                _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
+                await _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
                 mixpanel!.track('user_profile_settings_edit_info_completed');
               }
               Navigator.pop(context);
