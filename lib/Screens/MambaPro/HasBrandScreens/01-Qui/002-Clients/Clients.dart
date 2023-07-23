@@ -20,6 +20,7 @@ import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -730,7 +731,18 @@ class _Clients extends State<Clients> {
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.all(0),
                             onPressed: false ? () {} : null,
-                          ) : user.sessions == null || user.sessions == '-1'?
+                          ) : user.sessions == null? Padding(
+                            padding: const EdgeInsets.all(0),
+                            child: Container(
+                              height: MediaQuery.of(context).size.width*0.12,
+                              width: MediaQuery.of(context).size.width*0.08,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  shape: BoxShape.circle
+                              ),
+                              child: LoadingView(isSmall: true, hasLogo: false, color: Colors.black),
+                            ),
+                          )  : user.sessions == '-1'?
                           IconButton(
                             icon: Icon(Icons.chat_outlined, color: Theme
                                 .of(context)
@@ -797,7 +809,9 @@ class _Clients extends State<Clients> {
                                           viewOnly: false,
                                         )
                                 )
-                            );
+                            ).whenComplete(() {
+                              context.read<ClientSessionsCubit>().updateUser(index, state.users);
+                            });
                             if (result == true) {
                               await getAllUsers();
                             }
@@ -874,49 +888,11 @@ class _Clients extends State<Clients> {
                             padding: const EdgeInsets.all(0),
                             onPressed: false ? () {} : null,
                           ) :
-                          IconButton(
-                            icon: Icon(Icons.chat_outlined, color: Theme
-                                .of(context)
-                                .primaryColor, size: MediaQuery
+                          Icon(
+                            Icons.downloading, color: Colors.transparent, size: MediaQuery
                                 .of(context)
                                 .size
-                                .height * 0.03,),
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.all(0),
-                            onPressed: () async {
-                              mixpanel!.track('brand_clients_chat_button');
-                              types.User otherUser = types.User(
-                                firstName: user.firstName,
-                                lastName: user.lastName,
-                                id: user.id!,
-                                // UID from Firebase Authentication
-                                imageUrl: user.imageUrl,
-                              );
-                              final room = await FirebaseChatCore.instance
-                                  .createRoom(otherUser, metadata: {
-                                "trainer" + user.id!: user.isTrainer,
-                                "trainer" + currentUser.id!: currentUser
-                                    .isTrainer,
-                                "active" + user.id!: false,
-                                "active" + currentUser.id!: true,
-                              });
-
-                              bool? deleteRoom = await Navigator.push(
-                                context,
-                                CupertinoPageRoute<bool>(
-                                    builder: (context) =>
-                                        ChatPage(room: room)),)
-                                  .whenComplete(() async {
-                                room.metadata!["active" + currentUser.id!] =
-                                false;
-                                _roomDataService.updateRoom(
-                                    room.id, room.metadata!);
-                              });
-                              if (!deleteRoom!) {
-                                _roomDataService.deleteRoom(room.id);
-                                mixpanel!.track('brand_clients_chat_empty');
-                              }
-                            },
+                                .height * 0.03,
                           ),
                           onTap: () async {
                             mixpanel!.track('brand_clients_profile_view');
@@ -1105,31 +1081,51 @@ class _Clients extends State<Clients> {
 
   // Build Places Left Event
   Widget buildPlacesLeftWidget(int places) {
+    dynamic color = Colors.red;
+    if(places == 0) {
+      color = Colors.red;
+    }
+    else {
+      double bookedCapacity = places/10;
+      if(bookedCapacity <= 0.20) {
+        color = Colors.red;
+      } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
+        color = Colors.deepOrangeAccent;
+      } else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
+        color = Colors.orangeAccent;
+      } else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
+        color = const Color(0xFFffd966);
+      } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
+        color = const Color(0xFFA8C76C);
+      } else if(bookedCapacity >= 1) {
+        color = Colors.green;
+      }
+    }
+
     return FittedBox(
-      fit: BoxFit.fitHeight,
-      child: Container(
-          height: MediaQuery.of(context).size.width*0.1,
-          //padding: const EdgeInsets.only(top: 4, bottom: 8),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                places == 10? '+9' : places.toString(),
-                style: Theme.of(context).textTheme.headline3?.copyWith( color: places == 0? Colors.red : Colors.green),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                places == 1 ? AppLocalizations.of(context)!.session : AppLocalizations.of(context)!.sessions,
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: places == 0? Colors.red : Colors.green),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          )
-      )
+        fit: BoxFit.fitHeight,
+        child: Container(
+            height: MediaQuery.of(context).size.width*0.1,
+            //padding: const EdgeInsets.only(top: 4, bottom: 8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  places == 10? '+9' : places.toString(),
+                  style: Theme.of(context).textTheme.headline3?.copyWith( color: color),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  places == 1 ? AppLocalizations.of(context)!.session : AppLocalizations.of(context)!.sessions,
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: color),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            )
+        )
     );
   }
 
-  
   @override
   void dispose() {
     super.dispose();
