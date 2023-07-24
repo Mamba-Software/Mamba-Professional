@@ -1250,6 +1250,7 @@ class _PurchasePageState extends State<PurchasePage> {
         ],
       ),
       resizeToAvoidBottomInset: false,
+      //floatingActionButton: whichFloatingActionButton(context),
       bottomSheet: isBonoSelected ? GestureDetector(
         onTap: isLoading ? null : () async {
           if (checkIfAllBonoConditionsAreCorrect()) {
@@ -1388,8 +1389,19 @@ class _PurchasePageState extends State<PurchasePage> {
             ),
           )
       ),
+
     );
   }
+
+  Widget whichFloatingActionButton(BuildContext context) {
+    if (isBonoSelected) {
+      return Container();
+    } else {
+      return Container();
+    }
+  }
+
+
   
   Widget optionTextWrite(
       var keyboard,
