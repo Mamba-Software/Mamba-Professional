@@ -233,9 +233,9 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: true,
+            floating: false,
             pinned: true,
-            snap: true,
+            //snap: true,
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),

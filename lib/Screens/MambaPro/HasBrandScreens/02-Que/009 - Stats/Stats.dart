@@ -295,9 +295,8 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                 expandedHeight: MediaQuery.of(context).size.height * 0.13,
                 systemOverlayStyle: SystemUiOverlayStyle.light,
                 elevation: 0,
-                floating: true,
+                floating: false,
                 pinned: true,
-                snap: true,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     color: AppColors.darkGrey,
@@ -386,7 +385,6 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                   ),
                   SizedBox(width: MediaQuery.of(context).size.width*0.03),
                 ],
-                forceElevated: false,
               ),
               SliverPersistentHeader(
                 delegate: _SliverAppBarDelegateSecond(

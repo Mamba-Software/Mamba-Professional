@@ -731,16 +731,20 @@ class _Clients extends State<Clients> {
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.all(0),
                             onPressed: false ? () {} : null,
-                          ) : user.sessions == null? Padding(
+                          ) : user.sessions == null ? Padding(
                             padding: const EdgeInsets.all(0),
                             child: Container(
-                              height: MediaQuery.of(context).size.width*0.12,
-                              width: MediaQuery.of(context).size.width*0.08,
+                              height: MediaQuery.of(context).size.width*0.04,
+                              width: MediaQuery.of(context).size.width*0.04,
+                              margin: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.02),
                               decoration: BoxDecoration(
                                   color: Theme.of(context).scaffoldBackgroundColor,
                                   shape: BoxShape.circle
                               ),
-                              child: LoadingView(isSmall: true, hasLogo: false, color: Colors.black),
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).primaryColor,
+                                strokeWidth: 1.5,
+                              ),
                             ),
                           )  : user.sessions == '-1'?
                           IconButton(
@@ -953,7 +957,7 @@ class _Clients extends State<Clients> {
           activeChild: const Icon(Icons.group_add_outlined),
           animationDuration: const Duration(milliseconds: 100),
           foregroundColor: AppColors.white,
-          overlayColor: Theme.of(context).primaryColorDark,
+          overlayColor: Theme.of(context).scaffoldBackgroundColor,
           overlayOpacity: 0.95,
           spacing: MediaQuery.of(context).size.height*0.02,
           spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
@@ -965,7 +969,7 @@ class _Clients extends State<Clients> {
                   size: 30,
                 ),
                 elevation: 10,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).backgroundColor,
                 labelWidget: Container(
                   color: Colors.transparent,
                   padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
@@ -1000,7 +1004,7 @@ class _Clients extends State<Clients> {
                   ),
                 ),
                 elevation: 10,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).backgroundColor,
                 labelWidget: Container(
                   color: Colors.transparent,
                   padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
@@ -1116,7 +1120,7 @@ class _Clients extends State<Clients> {
                   textAlign: TextAlign.center,
                 ),
                 Text(
-                  places == 1 ? AppLocalizations.of(context)!.session : AppLocalizations.of(context)!.sessions,
+                  places == 1 ? AppLocalizations.of(context)!.session.toLowerCase() : AppLocalizations.of(context)!.sessions.toLowerCase(),
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(fontSize: 5, color: color),
                   textAlign: TextAlign.center,
                 ),

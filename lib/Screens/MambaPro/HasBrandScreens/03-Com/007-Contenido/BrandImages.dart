@@ -240,9 +240,8 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                   expandedHeight: MediaQuery.of(context).size.height*0.15,
                   systemOverlayStyle: SystemUiOverlayStyle.light,
                   elevation: 4,
-                  floating: true,
+                  floating: false,
                   pinned: true,
-                  snap: true,
                   flexibleSpace: FlexibleSpaceBar(
                     background: Container(
                       color: AppColors.darkGrey,

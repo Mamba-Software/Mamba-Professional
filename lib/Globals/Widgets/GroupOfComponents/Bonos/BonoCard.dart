@@ -130,7 +130,7 @@ class BonoCardState extends State<BonoCard> {
         }
       },
       child: Material(
-        elevation: 8,
+        elevation: widget.width*0.025,
         borderRadius: BorderRadius.circular(widget.width*0.05),
         child: Stack(children: [
           AnimatedContainer(

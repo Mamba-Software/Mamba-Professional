@@ -2511,7 +2511,7 @@
   "@ilimitadas": {
     "description": "ilimitadas message"
   },
-  "verfied": "Verificada",
+  "verfied": "Pagado",
   "@verfied": {
     "description": "ilimitadas message"
   },
@@ -2519,7 +2519,7 @@
   "@verfiedDesc": {
     "description": "ilimitadas message"
   },
-  "unverfied": "Sin verificar",
+  "unverfied": "Pendiente de pago",
   "@unverfied": {
     "description": "ilimitadas message"
   },

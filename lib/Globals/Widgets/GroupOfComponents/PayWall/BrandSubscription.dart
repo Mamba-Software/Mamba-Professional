@@ -94,8 +94,8 @@ class _BrandInfoState extends State<BrandSubscription> with SingleTickerProvider
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: true,
-            snap: true,
+            floating: false,
+            //snap: true,
             pinned: true,
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,

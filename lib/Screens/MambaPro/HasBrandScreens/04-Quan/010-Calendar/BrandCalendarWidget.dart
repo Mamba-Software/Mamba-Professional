@@ -1773,7 +1773,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           animatedIcon: AnimatedIcons.add_event,
           animationDuration: const Duration(milliseconds: 300),
           foregroundColor: AppColors.white,
-          overlayColor: Theme.of(context).primaryColorDark,
+          overlayColor: Theme.of(context).scaffoldBackgroundColor,
           overlayOpacity: 0.95,
           spacing: MediaQuery.of(context).size.height*0.02,
           spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
@@ -1784,7 +1784,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 Icons.groups,
               ),
               elevation: 10,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).backgroundColor,
               labelWidget: Container(
                 color: Colors.transparent,
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
@@ -1820,7 +1820,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 Icons.person,
               ),
               elevation: 10,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).backgroundColor,
               labelWidget: Container(
                 color: Colors.transparent,
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
