@@ -346,13 +346,13 @@ class PurchaseCard extends StatelessWidget {
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Icon(
               Icons.new_releases_outlined,
-              color: Colors.orange,
+              color: AppColors.red,
               size: MediaQuery.of(context).size.width * 0.04,
             ),
             SizedBox(width: MediaQuery.of(context).size.width * 0.01),
             Text(
               AppLocalizations.of(context)!.unverfied,
-              style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.orange, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
               textAlign: TextAlign.right,
             ),
           ],
