@@ -1501,7 +1501,7 @@ class _PurchasePageState extends State<PurchasePage> {
                 await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
               }
               mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
-              await Future.delayed(const Duration(milliseconds: 5000));
+              await Future.delayed(const Duration(milliseconds: 1500));
             }
             else if (isBonoRequest) {
               /// CONFIRM BONO REQUEST
