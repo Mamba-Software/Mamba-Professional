@@ -1080,7 +1080,8 @@ class UserFirebaseCalls {
     }
   }
 
-  Future<void> updateUserBono(String userId, String brandId, Bono bono, bool isActive) async {
+  Future<void> updateUserPurchase(String userId, String brandId, Bono bono, Purchase purchase) async {
+    // TODO: TO BE DELETED - USER BONO
     // Update User Bono
     await _firestore.collection(users).doc(userId).collection("Bonos").doc(bono.id).update({
       "sessions": bono.sessions,
@@ -1088,6 +1089,8 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
     // Update the Purchase Collection
     await _firestore.collection(purchases).doc(bono.purchaseId).update({
@@ -1096,7 +1099,8 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
-      "isActive": isActive,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
     // Update the User/Purchase Collection
     await _firestore.collection(users).doc(userId).collection("Purchases").doc(bono.purchaseId).update({
@@ -1105,6 +1109,8 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
     // Update the Brand/Bonos/Purchase Collection
     await _firestore.collection(brands).doc(brandId).collection("Purchases").doc(bono.purchaseId).update({
@@ -1113,6 +1119,8 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
     // Update the Brand/Bonos/Purchase Collection
     await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bono.id).collection("Purchases").doc(bono.purchaseId).update({
@@ -1121,6 +1129,8 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
     // Update the Brand/Bonos/Purchase Collection
     await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(bono.purchaseId).update({
@@ -1129,6 +1139,8 @@ class UserFirebaseCalls {
       "expirationTime": bono.condition?.expirationTime,
       "cancelTime": bono.condition?.cancelTime,
       "weeklySessions": bono.condition?.weeklySessions,
+      "paymentMethod": purchase.paymentMethod,
+      "isActive": purchase.isActive,
     });
   }
 

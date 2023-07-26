@@ -497,7 +497,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
                     border: Border.all(width: 1, color: Theme.of(context).primaryColor),
                     shape: BoxShape.circle,
                   ),
-                  disabledDatesTextStyle: Theme.of(context).textTheme.caption?.copyWith(color: Theme.of(context).backgroundColor.withOpacity(0.89)),
+                  disabledDatesTextStyle: Theme.of(context).textTheme.caption,
                 ),
                 monthViewSettings: DateRangePickerMonthViewSettings(
                   firstDayOfWeek: 1,

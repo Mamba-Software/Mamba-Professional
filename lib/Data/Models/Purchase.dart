@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 
@@ -19,6 +20,12 @@ class Purchase {
   Timestamp? purchasedAt;
   bool? isActive;
   bool? directPurchase;
+  Condition? condition = Condition(
+    expirationTime: 0,
+    cancelTime: 0,
+    weeklySessions: 0,
+  );
+
   // List of Events Done with this purchase
   Bono? bono;
   Brand? brand;
@@ -68,6 +75,16 @@ class Purchase {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('directPurchase')) {
       directPurchase = documentSnapshot.get("directPurchase");
+    }
+    // Conditions
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('expirationTime')) {
+      condition!.expirationTime = documentSnapshot.get("expirationTime");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('cancelTime')) {
+      condition!.cancelTime = documentSnapshot.get("cancelTime");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('weeklySessions')) {
+      condition!.weeklySessions = documentSnapshot.get("weeklySessions");
     }
   }
 

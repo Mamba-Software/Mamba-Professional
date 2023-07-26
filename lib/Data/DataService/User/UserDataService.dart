@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
@@ -77,7 +78,7 @@ class UserDataService {
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma);
   Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
-  Future<void> updateUserBono(String userId, String brandId, Bono bono, bool isActive) => _firebase.updateUserBono(userId, brandId, bono, isActive);
+  Future<void> updateUserPurchase(String userId, String brandId, Bono bono, Purchase purchase) => _firebase.updateUserPurchase(userId, brandId, bono, purchase);
   Future<void> updateUserZoomScale(String userId, String brandId, double zoomScale) => _firebase.updateUserZoomScale(brandId, userId, zoomScale);
 
   // Delete Data

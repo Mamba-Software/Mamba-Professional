@@ -318,6 +318,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
         //print("Stream PURCHASES New Data");
         for (var change in querySnapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
+            print("purchase added");
             // Fetch the Purchase
             Purchase p = Purchase.fromObjectAllData(change.doc.id, change.doc);
             // If the new purchase is inside current date that should have been fetched
@@ -370,13 +371,42 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
               /// Emit New Status
               print("Stream PURCHASES Finished");
               emit(
-                loadedState = loadedState.copyWith(
-                  purchasesHistoryObjects: purchasesHistoryObjects,
-                )
+                loadedState = loadedState.copyWith(purchasesHistoryObjects: purchasesHistoryObjects)
               );
               // Filter New Purchase
               filterBy(filterByPurchaseStatus, filterByActivePurchases);
             }
+          } else if (change.type == DocumentChangeType.modified) {
+            print("purchase modified");
+            // Fetch the Purchase
+            Purchase p = Purchase.fromObjectAllData(change.doc.id, change.doc);
+            // If the new purchase is inside current date that should have been fetched
+            int index = purchasesHistoryObjects.indexWhere((element) => element.purchase!.id == p.id);
+            // Build Purchase Object
+            PurchaseHistoryModel obj = PurchaseHistoryModel(
+              user: purchasesHistoryObjects[index].user,
+              brand: purchasesHistoryObjects[index].brand,
+              bono: purchasesHistoryObjects[index].bono,
+              bonoReq: null,
+              purchase: p,
+              purchasedAt: p.purchasedAt!,
+              purchaseStatus: p.directPurchase != null && p.directPurchase! ? PurchaseStatus.DIRECT : PurchaseStatus.CONFIRMED,
+            );
+            // Remove the old object
+            purchasesHistoryObjects.removeAt(index);
+            purchasesHistoryObjects.insert(index, obj);
+            /// Emit New Status
+            emit(loadedState = loadedState.copyWith(purchasesHistoryObjects: purchasesHistoryObjects));
+          } else if (change.type == DocumentChangeType.removed) {
+            print("purchase removed");
+            // Fetch the Purchase
+            Purchase p = Purchase.fromObjectAllData(change.doc.id, change.doc);
+            // Find the old object position
+            int index = purchasesHistoryObjects.indexWhere((element) => element.purchase!.id == p.id);
+            // Remove the old object
+            purchasesHistoryObjects.removeAt(index);
+            /// Emit New Status
+            emit(loadedState = loadedState.copyWith(purchasesHistoryObjects: purchasesHistoryObjects));
           }
         }
       },
@@ -439,7 +469,6 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
       print("filterByActivePurchases $filterActive");
       filterByPurchaseStatus = List.from(filterStatus);
       filterByActivePurchases = List.from(filterActive);
-
       /// Filter purchasesHistoryObjects by the current date range...
       List<PurchaseHistoryModel> filteredDateList = List.from(purchasesHistoryObjects);
       filteredDateList.removeWhere((element) {
@@ -611,6 +640,7 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
   Future<void> close() {
     _subscriptionPurchases.cancel();
     _subscriptionBonoRequests.cancel();
+    print("closing streams");
     return super.close();
   }
 

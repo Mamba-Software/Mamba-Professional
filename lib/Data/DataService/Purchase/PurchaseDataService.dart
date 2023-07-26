@@ -36,7 +36,7 @@ class PurchaseDataService {
   // Update Data
   Future<void> updateUserPurchaseSessions(String userId, String brandId, String purchaseId, int sessions, String bonoId) => _firebase.updateUserPurchaseSessions(userId, brandId, purchaseId, sessions, bonoId);
   Future<void> updatePurchaseEvents(String purchaseId, String userId, List<Event> eventsToAdd, List<Event> eventsToDelete) => _firebase.updatePurchaseEvents( purchaseId, userId, eventsToAdd, eventsToDelete);
-  Future<void> updatePurchaseToVerified(String purchaseId) => _firebase.updatePurchaseToVerified( purchaseId);
+  Future<void> updatePurchasePaymentStatus(String purchaseId, bool isPaid) => _firebase.updatePurchasePaymentStatus(purchaseId, isPaid);
 
   // Delete Data
   Future<void> deletePurchase(String purchaseId, String userId, String brandId) => _firebase.detelePurchase(purchaseId, userId, brandId);

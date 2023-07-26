@@ -526,12 +526,12 @@ class PurchaseFirebaseCalls {
     }
   }
 
-  Future<void> updatePurchaseToVerified(String purchaseId) async {
+  Future<void> updatePurchasePaymentStatus(String purchaseId, bool isPaid) async {
       await _firestore
-          .collection(purchases)
-          .doc(purchaseId)
-          .update({
-        "directPurchase": false,
+      .collection(purchases)
+      .doc(purchaseId)
+      .update({
+        "directPurchase": isPaid,
       });
   }
 

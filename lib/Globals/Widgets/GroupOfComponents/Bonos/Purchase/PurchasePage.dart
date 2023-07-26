@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/BonoRequest.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -140,6 +141,8 @@ class _PurchasePageState extends State<PurchasePage> {
     if (widget.purchase != null) {
       mixpanel!.track('edit_bono_view');
       purchase = widget.purchase!;
+      print("purchase.isActive!");
+      print(purchase.isActive!);
       editBono = true;
     }
     /// ACCEPT PURCHASE
@@ -192,14 +195,19 @@ class _PurchasePageState extends State<PurchasePage> {
       // Edit Bono && Bono Request
       bonos.add(widget.bono!);
       bonoSelected.setBasicData = bonos[0];
-      bonoSelected.setConditionsData = bonos[0].condition!;
       isBonoSelected = true;
       // Accept Bono Request
       if (isBonoRequest) {
+        bonoSelected.setBonoPrice = bonos[0].price!;
+        bonoSelected.setBonoSessions = bonos[0].sessions!;
+        bonoSelected.setConditionsData = bonos[0].condition!;
         seeConditions = false;
         setBonoConditions(bonoSelected);
       } else {
-        // Edit Bono Request
+        // Edit Bono
+        bonoSelected.setBonoPrice = purchase.price!;
+        bonoSelected.setBonoSessions = purchase.sessions!;
+        bonoSelected.setConditionsData = purchase.condition!;
         seeConditions = true;
         getPurchase();
       }
@@ -211,8 +219,8 @@ class _PurchasePageState extends State<PurchasePage> {
   }
 
   Future<void> getPurchase() async {
-    purchase = await _purchaseDataService.getPurchaseInfo(purchase.id!);
-    purchase.setInitialEventsData = purchase.events;
+    Purchase tempPurchase = await _purchaseDataService.getPurchaseInfo(purchase.id!);
+    purchase.setInitialEventsData = tempPurchase.events;
     startDate = purchase.purchasedAt!.toDate();
     paymentMethod = purchase.paymentMethod;
     originalExpirationTime = bonoSelected.condition!.expirationTime!;
@@ -1238,6 +1246,7 @@ class _PurchasePageState extends State<PurchasePage> {
                           isLoading = true;
                         });
                         await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
+                        await Future.delayed(const Duration(milliseconds: 1500));
                         mixpanel!.track('bono_confirmation_deleted');
                         Navigator.of(context).pop();
                       }
@@ -1472,25 +1481,17 @@ class _PurchasePageState extends State<PurchasePage> {
               bonoSelected.sessions = 10000;
             }
             if (editBono) {
-              if(purchase.directPurchase == true) {
-                mixpanel!.track('purchase_verified');
-                _purchaseDataService.updatePurchaseToVerified(
-                    purchase.id!);
-              }
               /// EDIT BONO REQUEST
               mixpanel!.track('edit_bono_confirmed');
               try {
-                await _userDataService.updateUserBono(
-                    user.id!, currentBrand.id!, bonoSelected, purchase.isActive!);
-              }
-              catch(e) {
+                purchase.paymentMethod = paymentMethod;
+                await _userDataService.updateUserPurchase(user.id!, currentBrand.id!, bonoSelected, purchase);
+                await _purchaseDataService.updatePurchasePaymentStatus(purchase.id!, purchase.directPurchase!);
+              } catch (e) {
                 print(e);
               }
-              if(eventsUpdated) {
-                print('We update the events');
-                print(purchase.events.length);
-                await _purchaseDataService.updatePurchaseEvents(
-                    purchase.id!, user.id!, newPurchase.events, newPurchase.initalEvents);
+              if (eventsUpdated) {
+                await _purchaseDataService.updatePurchaseEvents(purchase.id!, user.id!, newPurchase.events, newPurchase.initalEvents);
               }
               /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
               if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
@@ -1500,7 +1501,7 @@ class _PurchasePageState extends State<PurchasePage> {
                 await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
               }
               mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
-              await Future.delayed(const Duration(seconds: 1));
+              await Future.delayed(const Duration(milliseconds: 5000));
             }
             else if (isBonoRequest) {
               /// CONFIRM BONO REQUEST
@@ -1527,8 +1528,7 @@ class _PurchasePageState extends State<PurchasePage> {
               // Local Notifications Service
               await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
               mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
-            }
-            else {
+            } else {
               /// OTORGAR BONO
               // Build Purchase Object
               Purchase purchase = Purchase();
