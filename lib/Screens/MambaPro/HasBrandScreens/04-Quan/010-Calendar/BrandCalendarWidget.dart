@@ -313,8 +313,10 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           context.read<BrandEventsCubit>().updateBrandEvent(eventId, _brandTrainers);
         }
       } else {
-        // Event Has Been Deleted
-        context.read<BrandEventsCubit>().deleteBrandEvent(eventId);
+        if (isCompleted) {
+          // Event Has Been Updated
+          context.read<BrandEventsCubit>().deleteBrandEvent(eventId);
+        }
       }
     }
   }

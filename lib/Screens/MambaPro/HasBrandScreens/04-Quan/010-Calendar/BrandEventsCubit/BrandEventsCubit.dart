@@ -40,6 +40,41 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       }
       // Open the Stream to Get Brand Upcoming Events
       _subscription = _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
+          List<DocumentSnapshot> documents = querySnapshot.docs;
+          upcomingEventsList = documentsToEvents(documents, _brandTrainers);
+          List<Event> finalList = finishedEventsList+upcomingEventsList;
+          // Order Notification List Descending Time
+          finalList.sort((a,b) {
+            var aDate =  DateTime(
+              int.parse(a.year!),
+              int.parse(a.month!),
+              int.parse(a.day!),
+              int.parse(a.hour!),
+              int.parse(a.minute!),
+            );
+            var bDate =  DateTime(
+              int.parse(b.year!),
+              int.parse(b.month!),
+              int.parse(b.day!),
+              int.parse(b.hour!),
+              int.parse(b.minute!),
+            );
+            return aDate.compareTo(bDate);
+          });
+          // Emit a new state with the list of `Events`.
+          emit(BrandEventsLoaded(finalList));
+        },
+          onError: (e) {
+            print("Brand Events Error"+e.toString());
+            emit(BrandEventsError(e.toString()));
+          },
+        );
+      } catch(e) {
+        print("Brand Events Error"+e.toString());
+        emit(BrandEventsError(e.toString()));
+      }
+      /* Open the Stream to Get Brand Upcoming Events
+      _subscription = _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
         for (var change in querySnapshot.docChanges) {
           if (change.type == DocumentChangeType.added) {
             print("new one");
@@ -90,6 +125,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
       print("Brand Events Error"+e.toString());
       emit(BrandEventsError(e.toString()));
     }
+       */
   }
 
   Future<void> getMoreBrandEvents(String eventId, List<Usuario> _brandTrainers) async {

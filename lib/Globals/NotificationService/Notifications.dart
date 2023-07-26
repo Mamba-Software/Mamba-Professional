@@ -285,6 +285,13 @@ class _NotificationsState extends State<Notifications> {
             Text(AppLocalizations.of(context)!.notificationsBottomNav, style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.center,),
           ],
         ),
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         centerTitle: false,
         actions: [
           TextButton.icon(
