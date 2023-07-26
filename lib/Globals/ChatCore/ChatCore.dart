@@ -33,7 +33,7 @@ class _ChatCoreState extends State<ChatCore> {
   bool _initialized = false;
   User? _user;
 
-  var _roomDataService = new RoomDataService();
+  var _roomDataService = RoomDataService();
   final _userDataService = UserDataService();
   var searchController = TextEditingController();
   bool searchClicked = false;
@@ -65,6 +65,7 @@ class _ChatCoreState extends State<ChatCore> {
         });
       });
     } catch (e) {
+      print(e.toString());
       Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
           _error = true;
@@ -232,9 +233,9 @@ class _ChatCoreState extends State<ChatCore> {
                           child: Container(
                             height: MediaQuery.of(context).size.height*0.025,
                             width: MediaQuery.of(context).size.width*0.3,
-                            decoration: BoxDecoration(
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
                               ),
                               color: AppColors.grey,
                             ),
@@ -252,10 +253,10 @@ class _ChatCoreState extends State<ChatCore> {
                           child: Container(
                             height: MediaQuery.of(context).size.height*0.02,
                             width: MediaQuery.of(context).size.width*0.5,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: AppColors.grey,
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
                               ),
                             ),
                           ),
@@ -268,10 +269,10 @@ class _ChatCoreState extends State<ChatCore> {
                       child: Container(
                         height: MediaQuery.of(context).size.height*0.04,
                         width: MediaQuery.of(context).size.width*0.10,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppColors.grey,
-                          borderRadius: new BorderRadius.all(
-                            const Radius.circular(10.0),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
                           ),
                         ),
                       ),
@@ -394,9 +395,9 @@ class _ChatCoreState extends State<ChatCore> {
                         child: Container(
                           height: MediaQuery.of(context).size.height*0.025,
                           width: MediaQuery.of(context).size.width*0.3,
-                          decoration: BoxDecoration(
-                            borderRadius: new BorderRadius.all(
-                              const Radius.circular(10.0),
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
                             ),
                             color: AppColors.grey,
                           ),
@@ -414,10 +415,10 @@ class _ChatCoreState extends State<ChatCore> {
                         child: Container(
                           height: MediaQuery.of(context).size.height*0.02,
                           width: MediaQuery.of(context).size.width*0.5,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: AppColors.grey,
-                            borderRadius: new BorderRadius.all(
-                              const Radius.circular(10.0),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
                             ),
                           ),
                         ),
@@ -430,10 +431,10 @@ class _ChatCoreState extends State<ChatCore> {
                     child: Container(
                       height: MediaQuery.of(context).size.height*0.04,
                       width: MediaQuery.of(context).size.width*0.10,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: AppColors.grey,
-                        borderRadius: new BorderRadius.all(
-                          const Radius.circular(10.0),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
                         ),
                       ),
                     ),
@@ -528,8 +529,7 @@ class _ChatCoreState extends State<ChatCore> {
         stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
         //initialData: const [],
         builder: (context, snapshot) {
-          if (snapshot.data == null) {
-            print("1");
+          if (snapshot.hasData == false) {
             return ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
@@ -560,9 +560,9 @@ class _ChatCoreState extends State<ChatCore> {
                             child: Container(
                               height: MediaQuery.of(context).size.height*0.025,
                               width: MediaQuery.of(context).size.width*0.3,
-                              decoration: BoxDecoration(
-                                borderRadius: new BorderRadius.all(
-                                  const Radius.circular(10.0),
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0),
                                 ),
                                 color: AppColors.grey,
                               ),
@@ -580,10 +580,10 @@ class _ChatCoreState extends State<ChatCore> {
                             child: Container(
                               height: MediaQuery.of(context).size.height*0.02,
                               width: MediaQuery.of(context).size.width*0.5,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: AppColors.grey,
-                                borderRadius: new BorderRadius.all(
-                                  const Radius.circular(10.0),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0),
                                 ),
                               ),
                             ),
@@ -596,10 +596,10 @@ class _ChatCoreState extends State<ChatCore> {
                         child: Container(
                           height: MediaQuery.of(context).size.height*0.04,
                           width: MediaQuery.of(context).size.width*0.1,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: AppColors.grey,
-                            borderRadius: new BorderRadius.all(
-                              const Radius.circular(10.0),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
                             ),
                           ),
                         ),
@@ -610,7 +610,6 @@ class _ChatCoreState extends State<ChatCore> {
                 }
             );
           } else if (snapshot.data!.isEmpty && snapshot.connectionState == ConnectionState.active ) {
-            print("2");
             return SizedBox(
               height: MediaQuery.of(context).size.height *0.65,
               child: Column(
@@ -632,7 +631,6 @@ class _ChatCoreState extends State<ChatCore> {
               ),
             );
           } else {
-            print("3");
             allRooms = snapshot.data!;
             if (!isFiltered) {
               return ListView.builder(

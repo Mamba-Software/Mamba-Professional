@@ -1244,7 +1244,6 @@ class _PurchasePageState extends State<PurchasePage> {
                     },
                     child: Material(
                       elevation: 4,
-                      shadowColor: Theme.of(context).primaryColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(30.0)),
                       ),
@@ -1258,7 +1257,7 @@ class _PurchasePageState extends State<PurchasePage> {
                         child: Center(
                             child: Text(
                               AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(),
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
                             )
                         ),
                       ),
@@ -1286,7 +1285,6 @@ class _PurchasePageState extends State<PurchasePage> {
                     },
                     child: Material(
                       elevation: 4,
-                      shadowColor: Theme.of(context).primaryColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(30.0)),
                       ),
@@ -1300,7 +1298,7 @@ class _PurchasePageState extends State<PurchasePage> {
                         child: Center(
                             child: Text(
                               AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.purchase.toLowerCase(),
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark),
+                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
                             )
                         ),
                       ),
