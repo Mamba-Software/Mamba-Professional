@@ -466,7 +466,7 @@ class _SelectCalendarDateState extends State<SelectCalendarDate> {
         children: <Widget>[
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, bottom: MediaQuery.of(context).size.width*0.05),
+              margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05, bottom: MediaQuery.of(context).size.height*0.09),
               child: SfDateRangePicker(
                 controller: _dateRangePickerController,
                 onSelectionChanged: _onSelectionChanged,

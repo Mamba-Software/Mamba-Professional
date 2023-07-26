@@ -1085,7 +1085,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Positioned(
-                  bottom: Platform.isAndroid ? MediaQuery.of(context).size.height*0.02 : MediaQuery.of(context).size.height*0.06,
+                  bottom: Platform.isAndroid ? MediaQuery.of(context).size.height*0.03 : MediaQuery.of(context).size.height*0.06,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: buildProfileCarousel.asMap().entries.map((entry) {

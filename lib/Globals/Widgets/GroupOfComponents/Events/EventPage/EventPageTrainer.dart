@@ -465,11 +465,15 @@ class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerPr
               color: Theme.of(context).scaffoldBackgroundColor,
             ),
           ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor
+          Shimmer.fromColors(
+            baseColor: AppColors.grey,
+            highlightColor: AppColors.grey.withOpacity(0.5),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor
+              ),
             ),
           ),
           Positioned(

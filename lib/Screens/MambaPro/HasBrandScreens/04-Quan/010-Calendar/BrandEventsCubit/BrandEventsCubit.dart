@@ -45,6 +45,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
             print("new one");
             DocumentSnapshot document = change.doc;
             Event evt = documentToEvent(document, _brandTrainers);
+            upcomingEventsList.removeWhere((element) => element.id == evt.id!);
             upcomingEventsList.add(evt);
           }
           if (change.type == DocumentChangeType.modified) {
@@ -186,6 +187,7 @@ class BrandEventsCubit extends Cubit<BrandEventsState> {
   Future<void> deleteBrandEvent(String eventId) async {
     try {
       print("Delete More Brand Events");
+      upcomingEventsList.removeWhere((element) => element.id == eventId);
       finishedEventsList.removeWhere((element) => element.id == eventId);
       List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
       // Order Notification List Descending Time
