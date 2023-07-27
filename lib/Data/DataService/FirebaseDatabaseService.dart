@@ -1906,6 +1906,19 @@ class FirebaseDatabaseService {
     // User Joins Event
     Future<bool> addUserToEvent(String eid, String uid, String purchaseId, [bool invitedDirectly = false]) async {
       try {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        await  _firestore.collection(events).doc(eid).get();
+        Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        if(event.maxMembers != null && event.numClients != null) {
+          if(event.numClients! > event.maxMembers!) {
+            await _firestore
+                .collection(events)
+                .doc(eid)
+                .update({
+              "maxMembers": event.maxMembers! + 1,
+            });
+          }
+        }
         Usuario user = await getUserDetails(uid);
         Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
         if (invitedDirectly) {

@@ -78,7 +78,7 @@ class SelectAllEvents extends StatelessWidget {
                   side: BorderSide.none
               ),
               onChanged: (bool? boolean) {
-                context.read<BonoEventsCubit>().updateSelected(event, loadedState.selectedEvents, loadedState.allEvents, loadedState.filteredEvents);
+                //context.read<BonoEventsCubit>().updateSelected(event, loadedState.selectedEvents, loadedState.allEvents, loadedState.filteredEvents);
               },
             ),
           ),
