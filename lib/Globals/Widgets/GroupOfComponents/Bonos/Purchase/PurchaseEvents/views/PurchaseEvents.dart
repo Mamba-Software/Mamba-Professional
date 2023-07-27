@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/cubit/BonoEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoEvents/views/SelectAllEvents.dart';
@@ -79,8 +80,11 @@ class PurchaseEventsBody extends StatelessWidget {
                                   child: events.isNotEmpty ? Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      state is BonoEventsLoaded ? Text(
                                         AppLocalizations.of(context)!.edit,
+                                        style: Theme.of(context).textTheme.bodyText1,
+                                      ) : Text(
+                                        AppLocalizations.of(context)!.chargingEvents,
                                         style: Theme.of(context).textTheme.bodyText1,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width*0.02),
@@ -101,8 +105,11 @@ class PurchaseEventsBody extends StatelessWidget {
                                   ) : Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
+                                      state is BonoEventsLoaded ? Text(
                                         AppLocalizations.of(context)!.add,
+                                        style: Theme.of(context).textTheme.bodyText1,
+                                      ) : Text(
+                                        AppLocalizations.of(context)!.chargingEvents,
                                         style: Theme.of(context).textTheme.bodyText1,
                                       ),
                                       SizedBox(width: MediaQuery.of(context).size.width * 0.02),
@@ -184,25 +191,77 @@ class PurchaseEventsBody extends StatelessWidget {
                                           isMyEvent: true,
                                           showEmoji: false,
                                         ),
+                                        Positioned(
+                                          top: MediaQuery.of(context).size.width*0.01,
+                                          right: MediaQuery.of(context).size.width*0.02,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                                            child: Container(
+                                              width: MediaQuery.of(context).size.width*0.1,
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context).scaffoldBackgroundColor,
+                                                shape: BoxShape.circle,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                      color: Theme.of(context).scaffoldBackgroundColor, //New
+                                                      blurRadius: 1.0,
+                                                      offset: const Offset(0, 0)
+                                                  )
+                                                ],
+                                              ),
+                                              child: Center(
+                                                child: IconButton(
+                                                  onPressed: () async {
+                                                    events.removeWhere((element) => element.id == event.id);
+                                                    loadedState.purchase
+                                                        .setPurchasedEventsData =
+                                                        events;
+                                                    context.read<PurchaseEventsCubit>()
+                                                        .updateEvents(loadedState.purchase);
+                                                    executeFunction(loadedState.purchase);
+                                                  },
+                                                  icon: Icon(
+                                                      Icons.delete_outline,
+                                                      color: AppColors.red,
+                                                      size: MediaQuery.of(context).size.width*0.06
+                                                  ),
+                                                  alignment: Alignment.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ]
                                   ),
                                 ),
                               );
                             }
                         ),
-                      ) : Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                                AppLocalizations.of(context)!.noEvents,
-                                style: Theme.of(context).textTheme.bodyText2,
-                                textAlign: TextAlign.center
+                      ) : Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              child: Image.asset(Constants.emptyCalendar)),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                          Padding(
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.42),
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    AppLocalizations.of(context)!.noEvents,
+                                    style: Theme.of(context).textTheme.caption,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          )
+                        ],
                       ),
+
                       SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                     ],
                   );

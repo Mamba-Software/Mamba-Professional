@@ -783,5 +783,6 @@
   "deleteClientsWithPurchasesBonos": "Elimini els clients amb compres per poder treure bonos de la sessió",
   "orderBySessions": "Ordenar por número de sessions restants",
   "orderBySessionsMoreToLess": "De més sessions a menys sessions",
-  "orderBySessionsLessToMore": "De menys sessions a més sessions"
+  "orderBySessionsLessToMore": "De menys sessions a més sessions",
+  "chargingEvents": "Carregant events"
 }
