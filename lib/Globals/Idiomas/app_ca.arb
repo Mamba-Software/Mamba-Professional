@@ -780,5 +780,8 @@
   "desactivarCompra": "Desactivar compra",
   "activePurchaseQuesDesc": "Els teus clients poden utilitzar la compra si està activa. Aquesta s'activa i desactiva automàticament, però es pot forçar el seu estat de forma manual.",
   "deleteClientsWithPurchases": "Editi la sessió eliminant els clients amb compres, confirmi l'edició y posteriorment podrà esborrar la sessió",
-  "deleteClientsWithPurchasesBonos": "Elimini els clients amb compres per poder treure bonos de la sessió"
+  "deleteClientsWithPurchasesBonos": "Elimini els clients amb compres per poder treure bonos de la sessió",
+  "orderBySessions": "Ordenar por número de sessions restants",
+  "orderBySessionsMoreToLess": "De més sessions a menys sessions",
+  "orderBySessionsLessToMore": "De menys sessions a més sessions"
 }

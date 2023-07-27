@@ -3471,5 +3471,17 @@
   "deleteClientsWithPurchasesBonos": "Elimine los clientes con compras para poder quitar bonos de la sesión",
   "@deleteClientsWithPurchasesBonos": {
     "description": "deleteClientsWithPurchasesBonos message"
+  },
+  "orderBySessions": "Ordenar por número de sesiones restantes",
+  "@orderBySessions": {
+    "description": "orderBySessions message"
+  },
+  "orderBySessionsMoreToLess": "De más sesiones a menos sesiones",
+  "@orderBySessionsMoreToLess": {
+    "description": "orderBySessionsMoreToLess message"
+  },
+  "orderBySessionsLessToMore": "De menos sesiones a más sesiones",
+  "@orderBySessionsLessToMore": {
+    "description": "orderBySessionsLessToMore message"
   }
 }

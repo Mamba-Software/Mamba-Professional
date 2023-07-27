@@ -79,7 +79,9 @@ class _Clients extends State<Clients> {
 
   // Filters
   bool hasFilter = false;
+  bool hasOrder = false;
   List<bool> filterByClients = [true, true];
+  List<bool> orderBySessions = [false, false];
 
   Future<void> getAllUsers() async {
     List<Usuario> brandUsers = await _brandDataService.getBrandClients(widget.brandId);
@@ -176,6 +178,54 @@ class _Clients extends State<Clients> {
     Navigator.pop(context);
   }
 
+  void orderBySessionsFunc(bool reverse) {
+    // Filter By
+    if(!reverse) {
+      allMembers.sort((a, b) {
+        // Handling null cases
+        if (a.sessions == null && b.sessions == null) {
+          return 0; // Both are null, so they are equal
+        } else if (a.sessions == null) {
+          return 1; // a.sessions is null, so a should come after b
+        } else if (b.sessions == null) {
+          return -1; // b.sessions is null, so b should come after a
+        }
+
+        // Compare sessions as integers
+        int aSessions = int.parse(a.sessions!);
+        int bSessions = int.parse(b.sessions!);
+        return bSessions.compareTo(aSessions);
+      });
+    }
+    else {
+      allMembers.sort((a, b) {
+        // Handling null cases
+        if (a.sessions == null && b.sessions == null) {
+          return 0; // Both are null, so they are equal
+        } else if (b.sessions == null) {
+          return 1; // a.sessions is null, so a should come after b
+        } else if (a.sessions == null) {
+          return -1; // b.sessions is null, so b should come after a
+        }
+
+        // Compare sessions as integers
+        int aSessions = int.parse(a.sessions!);
+        int bSessions = int.parse(b.sessions!);
+        return aSessions.compareTo(bSessions);
+      });
+    }
+
+    filteredMembers = List.from(allMembers);
+
+
+      setState(() {
+        hasOrder = true;
+      });
+
+      // Navigator Pop
+      Navigator.pop(context);
+  }
+
   String returnFilteredActiveClientsString() {
     String activeStaff = "";
     int cnt = 0;
@@ -189,6 +239,17 @@ class _Clients extends State<Clients> {
     }
     if (cnt == 1) {
       return activeStaff.split(", ")[0];
+    }
+    return activeStaff;
+  }
+
+  String returnFilteredOrderClientsString() {
+    String activeStaff = "";
+    if (orderBySessions[0]) {
+      activeStaff += AppLocalizations.of(context)!.orderBySessionsMoreToLess;
+    }
+    if (orderBySessions[1]) {
+      activeStaff += AppLocalizations.of(context)!.orderBySessionsLessToMore;
     }
     return activeStaff;
   }
@@ -244,7 +305,7 @@ class _Clients extends State<Clients> {
                             AppLocalizations.of(context)!.clients,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                           ) : SizedBox(
-                            width: MediaQuery.of(context).size.width*0.65,
+                            width: MediaQuery.of(context).size.width*0.55,
                             child: TextField(
                               autofocus: true,
                               controller: searchController,
@@ -283,7 +344,7 @@ class _Clients extends State<Clients> {
                           FittedBox(
                             fit: BoxFit.fitWidth,
                             child: SizedBox(
-                              width: MediaQuery.of(context).size.width*0.23,
+                              width: MediaQuery.of(context).size.width*0.35,
                               /*
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.green, width: 1.0),
@@ -343,7 +404,7 @@ class _Clients extends State<Clients> {
                                               return StatefulBuilder(
                                                 builder: (BuildContext context, StateSetter setStateBottom) {
                                                   return FractionallySizedBox(
-                                                    heightFactor: 0.25,
+                                                    heightFactor: 0.35,
                                                     child: SizedBox(
                                                       height: MediaQuery.of(context).size.height * 0.5,
                                                       width: MediaQuery.of(context).size.width,
@@ -494,6 +555,181 @@ class _Clients extends State<Clients> {
                                         child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
                                           Icons.filter_list,
                                           color: hasFilter ? AppColors.darkGrey :  AppColors.white,
+                                          size: MediaQuery.of(context).size.width*0.07,
+                                        )),
+                                      ),
+                                    ),
+                                  ),
+                                  ClipOval(
+                                    child: Material(
+                                      color: hasOrder ? AppColors.white : Colors.transparent, // Button color
+                                      child: InkWell(
+                                        splashColor: Theme.of(context).backgroundColor, // Splash color
+                                        onTap: () async {
+                                          mixpanel!.track('brand_clients_order_button');
+                                          await showModalBottomSheet<int?>(
+                                            context: context,
+                                            isScrollControlled: true,
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.vertical(
+                                                top: Radius.circular(20),
+                                              ),
+                                            ),
+                                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                                            builder: (BuildContext context) {
+                                              // Page View Controller
+                                              final PageController _pageController = PageController(initialPage: 0);
+                                              int _currentPage = 0;
+                                              // Widget
+                                              return StatefulBuilder(
+                                                builder: (BuildContext context, StateSetter setStateBottom) {
+                                                  return FractionallySizedBox(
+                                                    heightFactor: 0.35,
+                                                    child: SizedBox(
+                                                      height: MediaQuery.of(context).size.height * 0.5,
+                                                      width: MediaQuery.of(context).size.width,
+                                                      child: Padding(
+                                                        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment.start,
+                                                          children: [
+                                                            ListTile(
+                                                              title: Text(
+                                                                  AppLocalizations.of(context)!.orderBy,
+                                                                  style: Theme.of(context).textTheme.caption,
+                                                                  textAlign: TextAlign.left
+                                                              ),
+                                                              trailing: TextButton(
+                                                                  child: Text(
+                                                                      AppLocalizations.of(context)!.clear,
+                                                                      style: Theme.of(context).textTheme.caption
+                                                                  ),
+                                                                  onPressed: () {
+                                                                    mixpanel!.track('brand_clients_order_clean');
+                                                                    setStateBottom(() {
+                                                                      searchController.clear();
+                                                                      filterSearchResults("");
+                                                                      orderBySessions = [false, false];
+                                                                      hasOrder = false;
+                                                                      filterByActive();
+                                                                    });
+                                                                  }
+                                                              ),
+                                                              dense: true,
+                                                              onTap: _currentPage == 0 ? null : () {
+                                                                mixpanel!.track('brand_clients_order_back');
+                                                                _pageController.previousPage(
+                                                                  duration: const Duration(milliseconds: 500),
+                                                                  curve: Curves.ease,
+                                                                );
+                                                              },
+                                                            ),
+                                                            SizedBox(
+                                                              height: MediaQuery.of(context).size.height * 0.15,
+                                                              width: MediaQuery.of(context).size.width,
+                                                              child: PageView(
+                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                controller: _pageController,
+                                                                onPageChanged: (int page) {
+                                                                  setStateBottom(() {
+                                                                    _currentPage = page;
+                                                                  });
+                                                                },
+                                                                children: <Widget>[
+                                                                  Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          mixpanel!.track('brand_clients_order_active');
+                                                                          _pageController.nextPage(
+                                                                            duration: const Duration(milliseconds: 500),
+                                                                            curve: Curves.ease,
+                                                                          );
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.orderBySessions,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        subtitle: Text(
+                                                                            returnFilteredOrderClientsString(),
+                                                                            style: Theme.of(context).textTheme.caption,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(
+                                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            searchController.clear();
+                                                                            filterSearchResults("");
+                                                                            filterByClients = [true, true];
+                                                                            hasFilter = false;
+                                                                            orderBySessions[0] = !orderBySessions[0];
+                                                                            orderBySessions[1] = false;
+                                                                            orderBySessionsFunc(false);
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.orderBySessionsMoreToLess,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: orderBySessions[0] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            searchController.clear();
+                                                                            filterSearchResults("");
+                                                                            filterByClients = [true, true];
+                                                                            orderBySessions[1] = !orderBySessions[1];
+                                                                            orderBySessions[0] = false;
+                                                                            orderBySessionsFunc(true);
+                                                                            hasFilter = false;
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.orderBySessionsLessToMore,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: orderBySessions[1] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                } ,
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
+                                          Icons.import_export,
+                                          color: hasOrder ? AppColors.darkGrey :  AppColors.white,
                                           size: MediaQuery.of(context).size.width*0.07,
                                         )),
                                       ),
