@@ -100,9 +100,8 @@ class SelectAllEvents extends StatelessWidget {
   Color getColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.selected)) {
       return Theme.of(parentContext).colorScheme.secondary;
-    } else {
-      return AppColors.white;
     }
+    return Colors.transparent;
   }
 
   @override

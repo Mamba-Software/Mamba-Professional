@@ -2257,6 +2257,7 @@ class _PurchasePageState extends State<PurchasePage> {
       setState(() {});
     }
   }
+
   void setPurchaseActivation(bool? activation) {
     setState(() {
       purchase.isActive = activation;

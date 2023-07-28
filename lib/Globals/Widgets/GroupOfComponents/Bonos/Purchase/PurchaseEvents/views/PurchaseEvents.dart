@@ -241,19 +241,22 @@ class PurchaseEventsBody extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         mainAxisSize: MainAxisSize.max,
                         children: [
+                          /*
                           SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.3,
+                              width: MediaQuery.of(context).size.width * 0.2,
                               child: Image.asset(Constants.emptyCalendar)),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                          */
                           Padding(
-                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.42),
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.05),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Flexible(
                                   child: Text(
                                     AppLocalizations.of(context)!.noEvents,
                                     style: Theme.of(context).textTheme.caption,
-                                    textAlign: TextAlign.center,
+                                    textAlign: TextAlign.start,
                                   ),
                                 ),
                               ],
@@ -269,7 +272,7 @@ class PurchaseEventsBody extends StatelessWidget {
               ),
             );
           default:
-          // Handle All other States aka Loading or Initial
+            // Handle All other States aka Loading or Initial
             return Column(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),

@@ -397,6 +397,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
             purchasesHistoryObjects.insert(index, obj);
             /// Emit New Status
             emit(loadedState = loadedState.copyWith(purchasesHistoryObjects: purchasesHistoryObjects));
+            // Filter New Bono Request
+            filterBy(filterByPurchaseStatus, filterByActivePurchases);
           } else if (change.type == DocumentChangeType.removed) {
             print("purchase removed");
             // Fetch the Purchase
@@ -407,6 +409,8 @@ class BrandPurchasesCubit extends Cubit<BrandPurchasesState> {
             purchasesHistoryObjects.removeAt(index);
             /// Emit New Status
             emit(loadedState = loadedState.copyWith(purchasesHistoryObjects: purchasesHistoryObjects));
+            // Filter New Bono Request
+            filterBy(filterByPurchaseStatus, filterByActivePurchases);
           }
         }
       },
