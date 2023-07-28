@@ -260,7 +260,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                           children: [
                                             Expanded(
                                               child: Material(
-                                                elevation: 8,
+                                                elevation: 4,
                                                 borderRadius: BorderRadius.circular(15.0),
                                                 child: TextFormField(
                                                   controller: firstNameController,
@@ -326,7 +326,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                           children: [
                                             Expanded(
                                               child: Material(
-                                                elevation: 8,
+                                                elevation: 4,
                                                 borderRadius: BorderRadius.circular(15.0),
                                                 child: TextFormField(
                                                   controller: lastNameController,
@@ -383,7 +383,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Material(
-                                        elevation: 8,
+                                        elevation: 4,
                                         shape: const CircleBorder(),
                                         child: CircularImage(
                                           size: MediaQuery.of(context).size.width * 0.3,
@@ -590,7 +590,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                             children: <Widget>[
                               Flexible(
                                 child: Material(
-                                  elevation: 8,
+                                  elevation: 4,
                                   borderRadius: BorderRadius.circular(15.0),
                                   child: TextFormField(
                                     initialValue: currentUser.email,
@@ -682,7 +682,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                   children: <Widget>[
                                     Flexible(
                                       child: Material(
-                                        elevation: 8,
+                                        elevation: 4,
                                         borderRadius: BorderRadius.circular(15.0),
                                         child: TextFormField(
                                           controller: startDateController,
@@ -825,7 +825,7 @@ class _GenderWidgetState extends State<GenderWidget> {
   }
   Widget _icon(int index, {required String text, required IconData icon}) {
     return Material(
-      elevation: 8,
+      elevation: 4,
       shape: const CircleBorder(),
       shadowColor: gender == index ? Theme.of(context).colorScheme.secondary.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
       child: SizedBox.fromSize(

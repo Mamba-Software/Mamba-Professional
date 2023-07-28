@@ -886,7 +886,7 @@ class _PayWallState extends State<PayWall> {
                 height: MediaQuery.of(context).size.height *
                     0.02),
             Material(
-              elevation: 8,
+              elevation: 4,
               borderRadius: BorderRadius.circular(15.0),
               child: Row(
                 children: [
@@ -1009,7 +1009,7 @@ class _PayWallState extends State<PayWall> {
                 textAlign: TextAlign.center,
               ),
               style: OutlinedButton.styleFrom(
-                elevation: 8,
+                elevation: 4,
                 backgroundColor: Theme.of(context).primaryColor,
                 fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                 shape: const RoundedRectangleBorder(

@@ -177,7 +177,7 @@ class SelectAllEvents extends StatelessWidget {
                     body: Column(
                       children: [
                         loadedState.selectedEvents.isNotEmpty ? Material(
-                          elevation: 8,
+                          elevation: 4,
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: MediaQuery
                                 .of(context)

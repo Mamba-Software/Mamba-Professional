@@ -120,7 +120,7 @@ class _LocationsState extends State<Locations> {
       Column(
         children: [
           Material(
-            elevation: 8,
+            elevation: 4,
             borderRadius: BorderRadius.circular(15.0),
             child: LocationImageTile(
               height: MediaQuery.of(context).size.height*0.16,

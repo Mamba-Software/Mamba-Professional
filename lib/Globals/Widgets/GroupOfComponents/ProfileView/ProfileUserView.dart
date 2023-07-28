@@ -1204,7 +1204,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
           children: [
             SizedBox(height: MediaQuery.of(context).size.height*0.0),
             Material(
-              elevation: 8,
+              elevation: 4,
               shape: const CircleBorder(),
               child: buildUserPicture()
             ),

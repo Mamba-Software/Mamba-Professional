@@ -1047,7 +1047,7 @@ class _ProfileState extends State<Profile> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Material(
-                        elevation: 8,
+                        elevation: 4,
                         shape: const CircleBorder(),
                         child: buildUserPicture()
                       ),

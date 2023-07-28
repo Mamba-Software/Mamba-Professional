@@ -199,7 +199,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
     final snackbar = SnackBar(
       behavior: SnackBarBehavior.floating,
       margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.0, horizontal: MediaQuery.of(context).size.width * 0.05),
-      elevation: 8,
+      elevation: 4,
       content: Row(
         children: [
           Icon(Icons.info_outlined, color: Theme.of(context).primaryColor, size:  MediaQuery.of(context).size.width*0.08,),
@@ -456,7 +456,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                               );
                             },
                             child: Material(
-                              elevation: 8,
+                              elevation: 4,
                               borderRadius: BorderRadius.circular(15.0),
                               child: RectangularImage(
                                 height: MediaQuery.of(context).size.height*0.18,
