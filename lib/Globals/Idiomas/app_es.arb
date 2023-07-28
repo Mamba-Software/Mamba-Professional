@@ -3487,5 +3487,9 @@
   "chargingEvents": "Cargando eventos",
   "@chargingEvents": {
     "description": "chargingEvents message"
+  },
+  "and": "y",
+  "@and": {
+    "description": "chargingEvents message"
   }
 }

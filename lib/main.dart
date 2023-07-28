@@ -222,8 +222,7 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                         return CupertinoPageRoute(
                           builder: (_) =>
                               BrandPurchaseHistory(
-                                brandId: brandId,
-                                userId: "",
+                                brandId: brandId
                               ),
                           settings: const RouteSettings(name: 'BonosRequests'),
                         );

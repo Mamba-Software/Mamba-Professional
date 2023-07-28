@@ -23,7 +23,7 @@ class MambaProUtils {
     if(pageIndex == 1)return Text(AppLocalizations.of(context)!.staff, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 2)return Text(AppLocalizations.of(context)!.clients, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)),);
     if(pageIndex == 4)return Text(AppLocalizations.of(context)!.categories, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
-    if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
+    if(pageIndex == 5)return Text(AppLocalizations.of(context)!.bonos+" "+AppLocalizations.of(context)!.and+" "+AppLocalizations.of(context)!.boughts.toLowerCase(), style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 8)return Text(AppLocalizations.of(context)!.settings, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 7)return Text(AppLocalizations.of(context)!.photos, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));
     if(pageIndex == 6)return Text(AppLocalizations.of(context)!.opinions, style: Theme.of(context).textTheme.bodyText1?.copyWith(color: returnColor(context)));

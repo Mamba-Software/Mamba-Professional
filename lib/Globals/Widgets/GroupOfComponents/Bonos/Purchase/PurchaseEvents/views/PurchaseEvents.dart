@@ -56,7 +56,7 @@ class PurchaseEventsBody extends StatelessWidget {
             PurchaseEventsLoaded loadedState = state as PurchaseEventsLoaded;
             List<Event> events = loadedState.purchase.events;
             events.sort((a, b) => a.doneAt!.compareTo(b.doneAt!));
-            return  BlocProvider<BonoEventsCubit>(
+            return BlocProvider<BonoEventsCubit>(
               lazy: false,
               create: (context) => BonoEventsCubit(purchase, currentBrand.id!, events, [], true),
               child: BlocBuilder<BonoEventsCubit, BonoEventsState>(

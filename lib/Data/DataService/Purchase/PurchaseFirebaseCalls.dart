@@ -148,7 +148,7 @@ class PurchaseFirebaseCalls {
     return purchases;
   }
 
-  Future<List<Purchase>> getBrandUserPurchases(String brandId, DateTime startDate, DateTime endDate, String userId, [bool applyThreshold = false]) async {
+  Future<List<Purchase>> getBrandUserPurchases(String userId, String brandId, DateTime startDate, DateTime endDate, [bool applyThreshold = false]) async {
     List<Purchase> purchases = [];
     int threshold = 100;
     Query query;
@@ -164,14 +164,17 @@ class PurchaseFirebaseCalls {
           .then((snapshot) => snapshot.size);
       // Hybrid Approach: if size < 100 ? All at once : 100 by 100 based on the date
       if (collectionSize <= threshold) {
-        query = _firestore.collection(brands).doc(brandId).collection("Purchases");
+        query = _firestore.collection(brands).doc(brandId).collection("Users")
+            .doc(userId).collection("Purchases");
       } else {
-        query = _firestore.collection(brands).doc(brandId).collection("Purchases")
+        query = _firestore.collection(brands).doc(brandId).collection("Users")
+            .doc(userId).collection("Purchases")
             .where("purchasedAt", isLessThan: endDate)
             .where("purchasedAt", isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
       }
     } else {
-      query = _firestore.collection(brands).doc(brandId).collection("Purchases")
+      query = _firestore.collection(brands).doc(brandId).collection("Users")
+          .doc(userId).collection("Purchases")
           .where("purchasedAt", isLessThan: endDate)
           .where("purchasedAt", isGreaterThanOrEqualTo: Timestamp.fromDate(startDate));
     }
@@ -483,6 +486,10 @@ class PurchaseFirebaseCalls {
       "sessions": sessions
     });
     // Update the Brand/Bonos/Purchase Collection
+    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+      "sessions": sessions
+    });
+
     //ENS INTERESSA? TODO
     await _firestore.collection(brands).doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).update({
       "sessions": sessions
@@ -538,12 +545,19 @@ class PurchaseFirebaseCalls {
   // Delete Data
 
   Future<void> detelePurchase(String purchaseId, String userId, String brandId) async {
-
     await deleteEventsFromUserPurchase(purchaseId,userId,brandId);
-
-    await _firestore
-        .collection(purchases)
-        .doc(purchaseId).delete();
+    await _firestore.collection(purchases).doc(purchaseId).delete();
+    /*
+    Ho fa CF.
+    // Delete the Purchase Collection
+    await _firestore.collection(purchases).doc(purchaseId).delete();
+    // Delete the Users/Purchases Collection
+    await _firestore.collection(users).doc(userId).collection("Purchases").doc(purchaseId).delete();
+    // Delete the Brands/Purchases Collection
+    await _firestore.collection(brands).doc(brandId).collection("Purchases").doc(purchaseId).delete();
+    // Delete the Brands/Users/Purchases Collection
+    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+     */
 
   }
 

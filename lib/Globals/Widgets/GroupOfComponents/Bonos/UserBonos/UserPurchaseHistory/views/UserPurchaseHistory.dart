@@ -7,37 +7,39 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserPurchaseHistory/views/UserPurchaseCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Calendars/SelectCalendar/SelectCalendarDate.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/models/PurchaseHistoryModel.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseCard.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../../../../Globals/Constants.dart';
-import '../cubit/BrandPurchasesCubit.dart';
+import '../cubit/UserPurchasesCubit.dart';
 
-class BrandPurchaseHistory extends StatelessWidget {
-  final String brandId;
+class UserPurchaseHistory extends StatelessWidget {
+  final String userId;
+  final String brandId;  
 
-  const BrandPurchaseHistory({Key? key, required this.brandId}) : super(key: key);
+  const UserPurchaseHistory({Key? key, required this.brandId, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<BrandPurchasesCubit>(
-      create: (context) => BrandPurchasesCubit(brandId),
-      child: BrandPurchaseHistoryBody(brandId: brandId),
+    return BlocProvider<UserPurchasesCubit>(
+      create: (context) => UserPurchasesCubit(userId, brandId),
+      child: UserPurchaseHistoryBody(brandId: brandId, userId: userId),
     );
   }
 }
 
-class BrandPurchaseHistoryBody extends StatefulWidget {
+class UserPurchaseHistoryBody extends StatefulWidget {
   final String brandId;
+  final String userId;
 
-  const BrandPurchaseHistoryBody({Key? key, required this.brandId}) : super(key: key);
+  const UserPurchaseHistoryBody({Key? key, required this.brandId, required this.userId}) : super(key: key);
 
   @override
-  _BrandPurchaseHistoryBodyState createState() => _BrandPurchaseHistoryBodyState();
+  _UserPurchaseHistoryBodyState createState() => _UserPurchaseHistoryBodyState();
 }
 
-class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
+class _UserPurchaseHistoryBodyState extends State<UserPurchaseHistoryBody> {
 
   String brandId = "";
 
@@ -74,7 +76,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
       },
     );
     if (result != null) {
-      context.read<BrandPurchasesCubit>().filterByDateRange(result.first, result.last);
+      context.read<UserPurchasesCubit>().filterByDateRange(result.first, result.last);
     }
   }
 
@@ -159,13 +161,13 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BrandPurchasesCubit, BrandPurchasesState>(
+    return BlocBuilder<UserPurchasesCubit, UserPurchasesState>(
       builder: (context, state) {
         switch (state.runtimeType) {
-          case BrandPurchasesLoaded:
+          case UserPurchasesLoaded:
             // Handles Loaded State
-            final brandPurchasesCubit = context.read<BrandPurchasesCubit>();
-            BrandPurchasesLoaded loadedState = state as BrandPurchasesLoaded;
+            final userPurchasesCubit = context.read<UserPurchasesCubit>();
+            UserPurchasesLoaded loadedState = state as UserPurchasesLoaded;
             DateTime startDate = loadedState.startDate;
             DateTime endDate = loadedState.endDate;
             DateTime dateJoinedBrand = loadedState.dateJoinedBrand;
@@ -252,7 +254,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                       onPressed: () {
                                                         filterByPurchaseStatus = [true, true, true];
                                                         filterByActivePurchases = [true, true];
-                                                        brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
+                                                        userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                         Navigator.pop(context);
                                                       }
                                                   ),
@@ -346,7 +348,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[0])) {
                                                                 filterByPurchaseStatus[0] = !filterByPurchaseStatus[0];
-                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
+                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -367,7 +369,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[1])) {
                                                                 filterByPurchaseStatus[1] = !filterByPurchaseStatus[1];
-                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
+                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -388,7 +390,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByPurchaseStatus[2])) {
                                                                 filterByPurchaseStatus[2] = !filterByPurchaseStatus[2];
-                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
+                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -412,7 +414,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByActivePurchases[0])) {
                                                                 filterByActivePurchases[0] = !filterByActivePurchases[0];
-                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
+                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -433,7 +435,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                                               filterActive.retainWhere((element) => element == true);
                                                               if (!(filterActive.length == 1 && filterByActivePurchases[1])) {
                                                                 filterByActivePurchases[1] = !filterByActivePurchases[1];
-                                                                brandPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
+                                                                userPurchasesCubit.filterBy(filterByPurchaseStatus, filterByActivePurchases);
                                                                 Navigator.pop(context);
                                                               }
                                                             },
@@ -499,7 +501,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                                     size: MediaQuery.of(context).size.width*0.035,
                                   ),
                                   onPressed: () async {
-                                    context.read<BrandPurchasesCubit>().orderByDate(!loadedState.orderByDescending);
+                                    context.read<UserPurchasesCubit>().orderByDate(!loadedState.orderByDescending);
                                   },
                                 ),
                               ),
@@ -546,7 +548,7 @@ class _BrandPurchaseHistoryBodyState extends State<BrandPurchaseHistoryBody> {
                         itemCount: state.purchasesHistoryObjects.length,
                         itemBuilder: (context, index) {
                           PurchaseHistoryModel obj = loadedState.purchasesHistoryObjects[index];
-                          return BrandPurchaseCard(
+                          return UserPurchaseCard(
                             bono: obj.bono,
                             user: obj.user,
                             brand: obj.brand,

@@ -14,14 +14,14 @@ import '../../../../../../../Data/Models/Purchase.dart';
 import '../../../../../../../Globals/Styles/AppColors/AppColors.dart';
 import '../../../../../../../Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 
-class PurchaseCard extends StatelessWidget {
+class BrandPurchaseCard extends StatelessWidget {
   final Usuario user;
   final Brand brand;
   final Bono bono;
   final BonoRequest? bonoRequest;
   final Purchase? purchase;
 
-  const PurchaseCard({
+  const BrandPurchaseCard({
     Key? key,
     required this.user,
     required this.brand,

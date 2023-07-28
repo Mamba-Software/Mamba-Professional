@@ -141,8 +141,6 @@ class _PurchasePageState extends State<PurchasePage> {
     if (widget.purchase != null) {
       mixpanel!.track('edit_bono_view');
       purchase = widget.purchase!;
-      print("purchase.isActive!");
-      print(purchase.isActive!);
       editBono = true;
     }
     /// ACCEPT PURCHASE
@@ -524,6 +522,66 @@ class _PurchasePageState extends State<PurchasePage> {
                     style: Theme.of(context).appBarTheme.titleTextStyle
                 )
             ),
+            actions: [
+              /// DELETE BONO REQUEST
+              isBonoRequest ? IconButton(
+                  onPressed: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    var result = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchaseRequest);
+                        }
+                    );
+                    if (result) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
+                      await Future.delayed(const Duration(milliseconds: 1500));
+                      mixpanel!.track('bono_confirmation_deleted');
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  icon: SizedBox(
+                    width: MediaQuery.of(context).size.width*0.15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,)
+                      ],
+                    ),
+                  )
+              ) : editBono ? IconButton(
+                  onPressed: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    var result = await showDialog(
+                        context: context,
+                        builder: (_) {
+                          return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchase);
+                        }
+                    );
+                    if (result) {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      await _purchaseDataService.deletePurchase(purchase.id!, widget.user.id!, widget.brand.id!);
+                      mixpanel!.track('purchase_deleted');
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  icon: SizedBox(
+                    width: MediaQuery.of(context).size.width*0.15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,)
+                      ],
+                    ),
+                  )
+              ) : Container(),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03)
+            ],
           ),
           SliverToBoxAdapter(
             child: Column(
@@ -1228,93 +1286,7 @@ class _PurchasePageState extends State<PurchasePage> {
                     ],
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                /// DELETE BONO REQUEST
-                isBonoRequest ? Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
-                  child: GestureDetector(
-                    onTap: () async {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchaseRequest);
-                          }
-                      );
-                      if (result) {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
-                        await Future.delayed(const Duration(milliseconds: 1500));
-                        mixpanel!.track('bono_confirmation_deleted');
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    child: Material(
-                      elevation: 4,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.red,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        width: MediaQuery.of(context).size.width * 0.90,
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        child: Center(
-                            child: Text(
-                              AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.request.toLowerCase(),
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
-                            )
-                        ),
-                      ),
-                    ),
-                  ),
-                ) : editBono ? Padding(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.015),
-                  child: GestureDetector(
-                    onTap: () async {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                      var result = await showDialog(
-                          context: context,
-                          builder: (_) {
-                            return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deletePurchase);
-                          }
-                      );
-                      if (result) {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        await _purchaseDataService.deletePurchase(purchase.id!, widget.user.id!, widget.brand.id!);
-                        mixpanel!.track('purchase_deleted');
-                        Navigator.of(context).pop();
-                      }
-                    },
-                    child: Material(
-                      elevation: 4,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.red,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        width: MediaQuery.of(context).size.width * 0.90,
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        child: Center(
-                            child: Text(
-                              AppLocalizations.of(context)!.delete+" "+AppLocalizations.of(context)!.purchase.toLowerCase(),
-                              style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white),
-                            )
-                        ),
-                      ),
-                    ),
-                  ),
-                ) : Container(),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.12),
               ],
             ),
           ),
@@ -1770,9 +1742,7 @@ class _PurchasePageState extends State<PurchasePage> {
                           if (variable == 'ses') {
                             bonoSelected.sessions = int.parse(val);
                           } else if (variable == 'price') {
-                            double price = double.parse(
-                                val.replaceAll(',', '.'));
-                            print(roundDouble(price, 2));
+                            double price = double.parse(val.replaceAll(',', '.'));
                             bonoSelected.price = roundDouble(price, 2);
                           }
                         });

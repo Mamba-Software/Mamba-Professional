@@ -1051,7 +1051,6 @@ class _NotificationsState extends State<Notifications> {
             CupertinoPageRoute<void>(
               builder: (context) => BrandPurchaseHistory(
                 brandId: currentBrand.id!,
-                userId: ""
               ),
             )
         );

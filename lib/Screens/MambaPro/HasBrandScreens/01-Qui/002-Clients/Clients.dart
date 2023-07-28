@@ -173,7 +173,6 @@ class _Clients extends State<Clients> {
         hasFilter = true;
       });
     }
-
     // Navigator Pop
     Navigator.pop(context);
   }
@@ -300,7 +299,7 @@ class _Clients extends State<Clients> {
                             AppLocalizations.of(context)!.clients,
                             style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white,),
                           ) : SizedBox(
-                            width: MediaQuery.of(context).size.width*0.55,
+                            width: MediaQuery.of(context).size.width*0.65,
                             child: TextField(
                               autofocus: true,
                               controller: searchController,

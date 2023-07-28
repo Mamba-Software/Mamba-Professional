@@ -115,7 +115,6 @@ class _BonosProState extends State<BonosPro> {
         CupertinoPageRoute<void>(
           builder: (context) => BrandPurchaseHistory(
             brandId: widget.brandId,
-            userId: "",
           ),
         )
     );

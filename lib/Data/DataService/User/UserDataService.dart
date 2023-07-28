@@ -97,4 +97,7 @@ class UserDataService {
   Stream<QuerySnapshot> getUserActivePurchasesFromBrandStream(String userId, String brandId) => _firebase.getUserActivePurchasesFromBrandStream(userId, brandId);
 
   Stream<DocumentSnapshot> getBonoFromEventUser(String userId, String bonoId) => _firebase.getBonoFromEventUser(userId, bonoId);
+
+  // Purchases
+  Stream<QuerySnapshot> getUserBrandPurchasesStream(String userId, String brandId) => _firebase.getUserBrandPurchasesStream(userId, brandId);
 }

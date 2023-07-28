@@ -1251,4 +1251,16 @@ class UserFirebaseCalls {
         .snapshots();
   }
 
+
+  Stream<QuerySnapshot> getUserBrandPurchasesStream(String userId, String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection(users)
+        .doc(userId)
+        .collection("Purchases")
+        .snapshots();
+  }
+
+
 }

@@ -784,5 +784,6 @@
   "orderBySessions": "Número de sessions restants",
   "orderBySessionsMoreToLess": "De més sessions a menys sessions",
   "orderBySessionsLessToMore": "De menys sessions a més sessions",
-  "chargingEvents": "Carregant events"
+  "chargingEvents": "Carregant events",
+  "and": "i"
 }

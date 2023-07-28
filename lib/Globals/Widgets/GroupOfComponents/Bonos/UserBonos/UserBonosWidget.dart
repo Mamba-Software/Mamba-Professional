@@ -15,6 +15,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/User
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
+import 'UserPurchaseHistory/views/UserPurchaseHistory.dart';
+
 class UserBonosWidget extends StatefulWidget {
   String userId;
   String brandId;
@@ -49,9 +51,9 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => BrandPurchaseHistory(
-            brandId: widget.brandId,
+          builder: (context) => UserPurchaseHistory(
             userId: widget.userId,
+            brandId: widget.brandId,
           ),
         )
     );
