@@ -844,7 +844,7 @@ class _PurchasePageState extends State<PurchasePage> {
                   ),
                 ),
                 /// EVENTS
-                editBono ? PurchaseEvents(purchase: purchase,context: context, executeFunction: executeFunctionWithPurchase) : Container(),
+                editBono ? PurchaseEvents(purchase: purchase, context: context, executeFunction: executeFunctionWithPurchase) : Container(),
                 /// CONDITIONS
                 !editBono ? Padding(
                   padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.04, right: MediaQuery.of(context).size.width * 0.04),
