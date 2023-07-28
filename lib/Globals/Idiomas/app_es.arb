@@ -3472,7 +3472,7 @@
   "@deleteClientsWithPurchasesBonos": {
     "description": "deleteClientsWithPurchasesBonos message"
   },
-  "orderBySessions": "Ordenar por número de sesiones restantes",
+  "orderBySessions": "Número de sesiones restantes",
   "@orderBySessions": {
     "description": "orderBySessions message"
   },

@@ -181,7 +181,7 @@ class _Clients extends State<Clients> {
   void orderBySessionsFunc(bool reverse) {
     // Filter By
     if(!reverse) {
-      allMembers.sort((a, b) {
+      filteredMembers.sort((a, b) {
         // Handling null cases
         if (a.sessions == null && b.sessions == null) {
           return 0; // Both are null, so they are equal
@@ -198,7 +198,7 @@ class _Clients extends State<Clients> {
       });
     }
     else {
-      allMembers.sort((a, b) {
+      filteredMembers.sort((a, b) {
         // Handling null cases
         if (a.sessions == null && b.sessions == null) {
           return 0; // Both are null, so they are equal
@@ -214,16 +214,11 @@ class _Clients extends State<Clients> {
         return aSessions.compareTo(bSessions);
       });
     }
-
-    filteredMembers = List.from(allMembers);
-
-
-      setState(() {
-        hasOrder = true;
-      });
-
-      // Navigator Pop
-      Navigator.pop(context);
+    setState(() {
+      hasOrder = true;
+    });
+    // Navigator Pop
+    Navigator.pop(context);
   }
 
   String returnFilteredActiveClientsString() {
@@ -344,7 +339,7 @@ class _Clients extends State<Clients> {
                           FittedBox(
                             fit: BoxFit.fitWidth,
                             child: SizedBox(
-                              width: MediaQuery.of(context).size.width*0.35,
+                              width: MediaQuery.of(context).size.width*0.23,
                               /*
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.green, width: 1.0),
@@ -382,7 +377,7 @@ class _Clients extends State<Clients> {
                                   ),
                                   ClipOval(
                                     child: Material(
-                                      color: hasFilter ? AppColors.white : Colors.transparent, // Button color
+                                      color: hasOrder || hasFilter ? AppColors.white : Colors.transparent, // Button color
                                       child: InkWell(
                                         splashColor: Theme.of(context).backgroundColor, // Splash color
                                         onTap: () async {
@@ -400,11 +395,12 @@ class _Clients extends State<Clients> {
                                               // Page View Controller
                                               final PageController _pageController = PageController(initialPage: 0);
                                               int _currentPage = 0;
+                                              bool isFilterBy = true;
                                               // Widget
                                               return StatefulBuilder(
                                                 builder: (BuildContext context, StateSetter setStateBottom) {
                                                   return FractionallySizedBox(
-                                                    heightFactor: 0.35,
+                                                    heightFactor: 0.4,
                                                     child: SizedBox(
                                                       height: MediaQuery.of(context).size.height * 0.5,
                                                       width: MediaQuery.of(context).size.width,
@@ -416,7 +412,7 @@ class _Clients extends State<Clients> {
                                                           children: [
                                                             ListTile(
                                                               title: Text(
-                                                                  AppLocalizations.of(context)!.filterBy,
+                                                                  isFilterBy == false ? AppLocalizations.of(context)!.orderBy : AppLocalizations.of(context)!.filterBy,
                                                                   style: Theme.of(context).textTheme.caption,
                                                                   textAlign: TextAlign.left
                                                               ),
@@ -431,6 +427,8 @@ class _Clients extends State<Clients> {
                                                                       searchController.clear();
                                                                       filterSearchResults("");
                                                                       filterByClients = [true, true];
+                                                                      orderBySessions = [false, false];
+                                                                      hasOrder = false;
                                                                       filterByActive();
                                                                     });
                                                                   }
@@ -445,7 +443,7 @@ class _Clients extends State<Clients> {
                                                               },
                                                             ),
                                                             SizedBox(
-                                                              height: MediaQuery.of(context).size.height * 0.15,
+                                                              height: MediaQuery.of(context).size.height * 0.25,
                                                               width: MediaQuery.of(context).size.width,
                                                               child: PageView(
                                                                 physics: const NeverScrollableScrollPhysics(),
@@ -460,6 +458,9 @@ class _Clients extends State<Clients> {
                                                                     children: [
                                                                       ListTile(
                                                                         onTap: () {
+                                                                          setStateBottom(() {
+                                                                            isFilterBy = true;
+                                                                          });
                                                                           mixpanel!.track('brand_clients_filter_active');
                                                                           _pageController.nextPage(
                                                                             duration: const Duration(milliseconds: 500),
@@ -483,9 +484,52 @@ class _Clients extends State<Clients> {
                                                                           ),
                                                                         ),
                                                                       ),
+                                                                      ListTile(
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.orderBy,
+                                                                            style: Theme.of(context).textTheme.caption,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        dense: true,
+                                                                        onTap: _currentPage == 0 ? null : () {
+                                                                          mixpanel!.track('brand_clients_filter_back');
+                                                                          _pageController.previousPage(
+                                                                            duration: const Duration(milliseconds: 500),
+                                                                            curve: Curves.ease,
+                                                                          );
+                                                                        },
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            isFilterBy = false;
+                                                                          });
+                                                                          mixpanel!.track('brand_clients_order_active');
+                                                                          _pageController.nextPage(
+                                                                            duration: const Duration(milliseconds: 500),
+                                                                            curve: Curves.ease,
+                                                                          );
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.orderBySessions,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        subtitle: Text(
+                                                                            returnFilteredOrderClientsString(),
+                                                                            style: Theme.of(context).textTheme.caption,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(
+                                                                              child: Icon(Icons.arrow_forward_ios, size:MediaQuery.of(context).size.width * 0.04,color: AppColors.grey)
+                                                                          ),
+                                                                        ),
+                                                                      ),
                                                                     ],
                                                                   ),
-                                                                  Column(
+                                                                  isFilterBy ? Column(
                                                                     children: [
                                                                       ListTile(
                                                                         onTap: () {
@@ -538,6 +582,54 @@ class _Clients extends State<Clients> {
                                                                         ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
                                                                       ),
                                                                     ],
+                                                                  ) :
+                                                                  Column(
+                                                                    children: [
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            searchController.clear();
+                                                                            filterSearchResults("");
+                                                                            filterByClients = [true, true];
+                                                                            hasFilter = false;
+                                                                            orderBySessions[0] = !orderBySessions[0];
+                                                                            orderBySessions[1] = false;
+                                                                            orderBySessionsFunc(false);
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.orderBySessionsMoreToLess,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: orderBySessions[0] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                      ListTile(
+                                                                        onTap: () {
+                                                                          setStateBottom(() {
+                                                                            searchController.clear();
+                                                                            filterSearchResults("");
+                                                                            filterByClients = [true, true];
+                                                                            orderBySessions[1] = !orderBySessions[1];
+                                                                            orderBySessions[0] = false;
+                                                                            orderBySessionsFunc(true);
+                                                                            hasFilter = false;
+                                                                          });
+                                                                        },
+                                                                        title: Text(
+                                                                            AppLocalizations.of(context)!.orderBySessionsLessToMore,
+                                                                            style: Theme.of(context).textTheme.bodyText1,
+                                                                            textAlign: TextAlign.left
+                                                                        ),
+                                                                        trailing: orderBySessions[1] ? SizedBox(
+                                                                          width: MediaQuery.of(context).size.width * 0.15,
+                                                                          child: Center(child: Icon(Icons.check, size:MediaQuery.of(context).size.width * 0.08,color: Theme.of(context).colorScheme.secondary)),
+                                                                        ) : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ],
                                                               ),
@@ -554,12 +646,13 @@ class _Clients extends State<Clients> {
                                         },
                                         child: SizedBox(width: MediaQuery.of(context).size.width*0.09, height: MediaQuery.of(context).size.width*0.09, child: Icon(
                                           Icons.filter_list,
-                                          color: hasFilter ? AppColors.darkGrey :  AppColors.white,
+                                          color: hasOrder || hasFilter ? AppColors.darkGrey :  AppColors.white,
                                           size: MediaQuery.of(context).size.width*0.07,
                                         )),
                                       ),
                                     ),
                                   ),
+                                  /*
                                   ClipOval(
                                     child: Material(
                                       color: hasOrder ? AppColors.white : Colors.transparent, // Button color
@@ -735,6 +828,8 @@ class _Clients extends State<Clients> {
                                       ),
                                     ),
                                   )
+
+                                   */
                                 ],
                               ),
                             ),
