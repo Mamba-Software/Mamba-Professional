@@ -47,5 +47,6 @@ class PurchaseDataService {
   /////////////////////////////////////////////////////////////////// STREAMS
 
   Stream<DocumentSnapshot> getPurchaseInfoStream(String purchaseId) => _firebase.getPurchaseInfoStream(purchaseId);
+  Stream<QuerySnapshot> getPurchaseEventsStream(String purchaseId) => _firebase.getPurchaseEventsStream(purchaseId);
 
 }

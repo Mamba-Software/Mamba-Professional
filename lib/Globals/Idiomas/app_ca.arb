@@ -301,6 +301,7 @@
   "full": "Ple",
   "available": "Disponible",
   "noEvents": "Sense esdeveniments",
+  "noEventsAccesibleBono": "No trobem esdeveniments que siguin accessibles amb aquest val",
   "noMembersFound": "No hem trobat cap membre",
   "noBrandsFound": "No hem trobat marques a prop teu",
   "myRequests": "Sol·licituds",

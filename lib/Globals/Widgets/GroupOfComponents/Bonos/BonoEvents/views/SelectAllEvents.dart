@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
@@ -243,7 +244,7 @@ class SelectAllEvents extends StatelessWidget {
                             .of(context)
                             .size
                             .height * 0.01,),
-                        Expanded(
+                        loadedState.filteredEvents.isNotEmpty ? Expanded(
                           child: SfCalendarTheme(
                             data: SfCalendarThemeData(
                               brightness: Brightness.dark,
@@ -472,7 +473,28 @@ class SelectAllEvents extends StatelessWidget {
                               },
                             ),
                           ),
-                        ),
+                        ) :
+                        Expanded(
+                          child: Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width*0.6,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  SizedBox(
+                                      width: MediaQuery.of(context).size.width*0.25,
+                                      child: Image.asset(Constants.emptyCalendar)
+                                  ),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                                  Text(AppLocalizations.of(context)!.noEventsAccesibleBono, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                                  SizedBox(height: MediaQuery.of(context).size.height*0.12),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                     floatingActionButton: Padding(

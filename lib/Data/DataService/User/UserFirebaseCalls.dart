@@ -1256,7 +1256,7 @@ class UserFirebaseCalls {
     return _firestore
         .collection(brands)
         .doc(brandId)
-        .collection(users)
+        .collection("Users")
         .doc(userId)
         .collection("Purchases")
         .snapshots();

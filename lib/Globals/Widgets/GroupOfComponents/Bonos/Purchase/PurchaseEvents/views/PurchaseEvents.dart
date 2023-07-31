@@ -264,7 +264,6 @@ class PurchaseEventsBody extends StatelessWidget {
                           )
                         ],
                       ),
-
                       SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                     ],
                   );

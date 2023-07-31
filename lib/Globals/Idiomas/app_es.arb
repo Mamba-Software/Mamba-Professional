@@ -1288,6 +1288,10 @@
   "@noEvents": {
     "description": "Wellcome message"
   },
+  "noEventsAccesibleBono": "No encontramos eventos que sean accesibles con este bono.",
+  "@noEventsAccesibleBono": {
+    "description": "Wellcome message"
+  },
   "noMembersFound": "No hemos encontrado ningún miembro",
   "@noMembersFound": {
     "description": "Wellcome message"

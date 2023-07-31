@@ -320,6 +320,8 @@ class UserPurchasesCubit extends Cubit<UserPurchasesState> {
       _subscriptionPurchases = _userDataService.getUserBrandPurchasesStream(userId, brandId).skip(1).listen((querySnapshot) async {
         print("Stream PURCHASES New Data");
         for (var change in querySnapshot.docChanges) {
+          print(change.type);
+          print(querySnapshot.docChanges.length);
           if (change.type == DocumentChangeType.added) {
             print("purchase added");
             // Fetch the Purchase
