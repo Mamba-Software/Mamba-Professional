@@ -126,12 +126,18 @@ class _SettingsEditPhotoPageState extends State<SettingsEditPhotoPage> with Widg
           child: ListView(
             physics: const NeverScrollableScrollPhysics(),
             children: <Widget>[
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.4,
-                child: Center(
-                  child: CircularImage(size: MediaQuery.of(context).size.height * 0.35, image: _imageUrl,),
+                height: MediaQuery.of(context).size.height * 0.35,
+                child: Material(
+                  elevation: 4,
+                  shape: const CircleBorder(),
+                  child: Center(
+                    child: CircularImage(size: MediaQuery.of(context).size.height * 0.35, image: _imageUrl,),
+                  ),
                 ),
               ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               const Icon(Icons.arrow_upward,size: 40,),
               Container(
                 padding: const EdgeInsets.all(30.0),

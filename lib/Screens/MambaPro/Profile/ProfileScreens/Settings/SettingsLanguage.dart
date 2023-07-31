@@ -94,7 +94,7 @@ class _SettingsPrivacyState extends State<SettingsLanguage> {
                 SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 ListTile(
                   dense: true,
-                  contentPadding: EdgeInsets.only(left: 0.0, right: 8.0),
+                  contentPadding: EdgeInsets.only(left: 0.0, right: 16.0),
                   title: Text(
                     "Català",
                     style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold),
