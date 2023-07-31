@@ -181,8 +181,8 @@ class BonosPurchasedState extends State<BonosPurchased> {
         Container(
           width: MediaQuery.of(context).size.width,
           constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height*0.22,
-            minHeight: MediaQuery.of(context).size.height*0.22,
+            maxHeight: MediaQuery.of(context).size.height*0.24,
+            minHeight: MediaQuery.of(context).size.height*0.24,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -215,7 +215,7 @@ class BonosPurchasedState extends State<BonosPurchased> {
                     itemBuilder: (context, index) {
                       Bono bono = bonos[index];
                       return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08),
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.08, right: MediaQuery.of(context).size.width * 0.08, bottom: MediaQuery.of(context).size.height*0.02),
                         child:  BonoCard(
                             height: MediaQuery.of(context).size.height * 0.22,
                             width: MediaQuery.of(context).size.width * 0.84,
@@ -518,9 +518,9 @@ class BonosPurchasedState extends State<BonosPurchased> {
   Widget _indicator(bool isActive) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      height: 4.0,
-      width: isActive ? 12.0 : 6.0,
+      margin: const EdgeInsets.symmetric(horizontal: 4.0),
+      height: isActive ? 6.0 : 4.0,
+      width: isActive ? 6.0 : 4.0,
       decoration: BoxDecoration(
         color: isActive ? Theme.of(context).primaryColor : Theme.of(context).primaryColor.withOpacity(0.5),
         borderRadius: const BorderRadius.all(Radius.circular(12)),
