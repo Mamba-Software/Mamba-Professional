@@ -786,5 +786,7 @@
   "orderBySessionsMoreToLess": "De més sessions a menys sessions",
   "orderBySessionsLessToMore": "De menys sessions a més sessions",
   "chargingEvents": "Carregant events",
-  "and": "i"
+  "and": "i",
+  "addClientDescription": "En un esdeveniment recurrent podràs afegir a un client una vegada l'esdeveniment hagi estat creat",
+  "cantEditRecurrent": "Elimina els clients del esdeveniment per poder indicar si és un esdeveniment recurrent"
 }

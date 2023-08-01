@@ -983,7 +983,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         ]
                                     ),
                                   ),
-                                  allBonos.isNotEmpty && brandClientsSelected.isEmpty ? Padding(
+                                  allBonos.isNotEmpty? Padding(
                                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                                     child: Column(
                                       children: [
@@ -1370,25 +1370,28 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                       value: isRecurrent,
                                                       onChanged: (bool newVal) {
                                                         if(widget.isBeforeEdit) {
-                                                          setState(() {
-                                                            if (isRecurrent) {
-                                                              values = [
-                                                                false,
-                                                                false,
-                                                                false,
-                                                                false,
-                                                                false,
-                                                                false,
-                                                                false
-                                                              ];
-                                                            } else {
-                                                              values[startDate
-                                                                  .weekday -
-                                                                  1] = true;
-                                                            }
-                                                            isRecurrent =
-                                                                newVal;
-                                                          });
+                                                          if (brandClientsSelected
+                                                              .isEmpty) {
+                                                            setState(() {
+                                                              if (isRecurrent) {
+                                                                values = [
+                                                                  false,
+                                                                  false,
+                                                                  false,
+                                                                  false,
+                                                                  false,
+                                                                  false,
+                                                                  false
+                                                                ];
+                                                              } else {
+                                                                values[startDate
+                                                                    .weekday -
+                                                                    1] = true;
+                                                              }
+                                                              isRecurrent =
+                                                                  newVal;
+                                                            });
+                                                          }
                                                         }
                                                       },
                                                       trackColor: Colors.green.withOpacity(0.4),
@@ -1399,6 +1402,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 ],
                                               )
                                           ),
+                                          widget.eventId == null && brandClientsSelected.isNotEmpty? Padding(
+                                            padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                            child: Center(
+                                              child: Text(
+                                                AppLocalizations.of(context)!.cantEditRecurrent,
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ) : Container(),
                                           isRecurrent ? Column(
                                             children: [
                                               Padding(
@@ -1782,7 +1795,20 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           )
                                       ),
                                       //JMF_AddUser_BEGIN
-                                      Padding(
+                                      widget.eventId == null && isRecurrent?   Padding(
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.addClientDescription,
+                                                  style: Theme.of(context).textTheme.caption,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                      ) : Padding(
                                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
                                         child: SizedBox(
                                           width: MediaQuery.of(context).size.width,
@@ -1804,37 +1830,49 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         var client = brandClientsSelected[index];
                                                         return GestureDetector(
                                                           onTap: () async {
-                                                          if(selectedBonos.isNotEmpty && client.purchaseId != "") {
-                                                            //JMF_AddUser_BEGIN
-                                                            var result = await showDialog(
-                                                                context: context,
-                                                                builder: (_) {
-                                                                  return LeaveConfirmationDialogBonos(
-                                                                    text: AppLocalizations
-                                                                        .of(
-                                                                        context)!
-                                                                        .leaveEventConfirmation,
-                                                                    event: event,
-                                                                    brand: currentBrand,
-                                                                    bonos: filterBonosByIds(),
-                                                                    purchaseId: client
-                                                                        .purchaseId!,
-                                                                    user: client,
-                                                                  );
+                                                            if(selectedBonos.isNotEmpty && client.purchaseId != "") {
+                                                              //JMF_AddUser_BEGIN
+                                                              var result = await showDialog(
+                                                                  context: context,
+                                                                  builder: (_) {
+                                                                    return LeaveConfirmationDialogBonos(
+                                                                      text: AppLocalizations
+                                                                          .of(
+                                                                          context)!
+                                                                          .leaveEventConfirmation,
+                                                                      event: event,
+                                                                      brand: currentBrand,
+                                                                      bonos: filterBonosByIds(),
+                                                                      purchaseId: client
+                                                                          .purchaseId!,
+                                                                      user: client,
+                                                                    );
+                                                                  }
+                                                              );
+                                                              if (result !=
+                                                                  null &&
+                                                                  result) {
+                                                                var temp = brandClientsSelected;
+                                                                temp.remove(
+                                                                    client);
+                                                                if(temp.any((client) => client.purchaseId != "")) {
+                                                                  errorBonos = true;
                                                                 }
-                                                            );
-                                                            if (result !=
-                                                                null &&
-                                                                result) {
+                                                                else {
+                                                                  errorBonos = false;
+                                                                }
+                                                                setState(() {
+                                                                  clientsModified =
+                                                                  true;
+                                                                  brandClientsSelected =
+                                                                      temp;
+                                                                });
+                                                              }
+                                                            }
+                                                            else {
                                                               var temp = brandClientsSelected;
                                                               temp.remove(
                                                                   client);
-                                                              if(temp.any((client) => client.purchaseId != "")) {
-                                                                errorBonos = true;
-                                                              }
-                                                              else {
-                                                                errorBonos = false;
-                                                              }
                                                               setState(() {
                                                                 clientsModified =
                                                                 true;
@@ -1842,18 +1880,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                                     temp;
                                                               });
                                                             }
-                                                          }
-                                                          else {
-                                                            var temp = brandClientsSelected;
-                                                            temp.remove(
-                                                                client);
-                                                            setState(() {
-                                                              clientsModified =
-                                                              true;
-                                                              brandClientsSelected =
-                                                                  temp;
-                                                            });
-                                                          }
 
                                                             //JMF_AddUser_END
                                                           },

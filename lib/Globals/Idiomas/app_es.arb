@@ -3494,5 +3494,13 @@
   "and": "y",
   "@and": {
     "description": "chargingEvents message"
+  },
+  "addClientDescription": "En un evento recurrente podrás añadir clientes una vez el evento haya sido creado",
+  "@addClientDescription":{
+    "bonosClient": "addClientDescription client text"
+  },
+  "cantEditRecurrent": "Elimina los clientes del evento para poder indicar si es un evento recurrente",
+  "@addClientDescription":{
+    "bonosClient": "addClientDescription client text"
   }
 }
