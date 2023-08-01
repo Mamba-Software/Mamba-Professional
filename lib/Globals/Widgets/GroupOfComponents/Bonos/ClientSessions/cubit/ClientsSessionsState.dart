@@ -20,9 +20,14 @@ class ClientsSessionsLoading extends ClientsSessionsState {
 
 class ClientsSessionsLoaded extends ClientsSessionsState {
   final List<Usuario> users;
+  final List<Usuario> allUsers;
+  final List<Usuario> filteredUsers;
+  final List<Usuario> searchedUsers;
+  final bool finished;
+  final int i;
 
-  const ClientsSessionsLoaded(this.users);
+  const ClientsSessionsLoaded(this.users, this.allUsers, this.finished, this.i, this.filteredUsers, this.searchedUsers);
 
   @override
-  List<Object?> get props => [users];
+  List<Object?> get props => [users, allUsers, finished, i, filteredUsers, searchedUsers];
 }
