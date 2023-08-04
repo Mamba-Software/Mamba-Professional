@@ -69,6 +69,7 @@ class _Clients extends State<Clients> {
   ValueNotifier<bool> isDialOpen = ValueNotifier(false);
   // Search Controller
   bool searchClicked = false;
+  String query = "";
   var searchController = TextEditingController();
 
   String brandUrlClient = "";
@@ -93,19 +94,33 @@ class _Clients extends State<Clients> {
 
   void filterSearchResults(String value, dynamic state) {
     if(state is ClientsSessionsLoaded) {
-      context.read<ClientSessionsCubit>().filterSearchResults(value, state.users, state.filteredUsers, state.allUsers);
+      context.read<ClientSessionsCubit>().filterSearchResults(
+          value, filterByClients, state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
     }
   }
 
   void filterByActive(dynamic state) {
-
-    if(filterByClients[0] && filterByClients[1]) {
-      context.read<ClientSessionsCubit>().filterByActive(
-          filterByClients, state.searchedUsers, state.searchedUsers, state.allUsers);
-    }
-    else {
-      context.read<ClientSessionsCubit>().filterByActive(
-          filterByClients, state.users, state.users, state.allUsers);
+    if(state is ClientsSessionsLoaded) {
+      if (filterByClients[0] && filterByClients[1]) {
+        context.read<ClientSessionsCubit>().filterByActive(
+            filterByClients,
+            state.searchedUsers,
+            state.allUsers,
+            state.filteredUsers,
+            state.searchedUsers,
+            state.i,
+            state.finished);
+      }
+      else {
+        context.read<ClientSessionsCubit>().filterByActive(
+            filterByClients,
+            state.usersNow,
+            state.allUsers,
+            state.filteredUsers,
+            state.searchedUsers,
+            state.i,
+            state.finished);
+      }
     }
     /*
     // Filter By
@@ -247,7 +262,7 @@ class _Clients extends State<Clients> {
           if (state is ClientsSessionsLoaded) {
             if(!state.finished) {
               context.read<ClientSessionsCubit>().updateClientSessions(
-                  state.allUsers, state.i);
+                  state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
             }
           }
           return Scaffold(
@@ -287,7 +302,8 @@ class _Clients extends State<Clients> {
                                     autofocus: true,
                                     controller: searchController,
                                     onChanged: (value) {
-                                      filterSearchResults(value, state);
+                                      query = value;
+                                      filterSearchResults(query, state);
                                     },
                                     style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
                                     textAlign: TextAlign.left,
@@ -310,7 +326,8 @@ class _Clients extends State<Clients> {
                                         onPressed: () {
                                           mixpanel!.track('brand_clients_search_clean');
                                           searchController.clear();
-                                          filterSearchResults("", state);
+                                          query = "";
+                                          filterSearchResults(query, state);
                                         },
                                         icon: const Icon(Icons.delete_outline, color: Colors.grey,),
                                       ),
@@ -344,7 +361,8 @@ class _Clients extends State<Clients> {
                                                 searchClicked = !searchClicked;
                                                 if(searchClicked == false) {
                                                   searchController.clear();
-                                                  filterSearchResults("", state);
+                                                  query = "";
+                                                  filterSearchResults(query, state);
                                                 }
                                               });
                                             },
@@ -408,11 +426,11 @@ class _Clients extends State<Clients> {
                                                                         onPressed: () {
                                                                           mixpanel!.track('brand_clients_filter_clean');
                                                                           setStateBottom(() {
-                                                                            searchController.clear();
+                                                                            //searchController.clear();
                                                                             filterByClients = [true, true];
                                                                             orderBySessions = [false, false];
                                                                             hasOrder = false;
-                                                                            filterByActive(state);
+                                                                            filterSearchResults(query, state);
                                                                           });
                                                                         }
                                                                     ),
@@ -525,7 +543,7 @@ class _Clients extends State<Clients> {
                                                                                     filterByClients[0] = !filterByClients[0];
                                                                                     mixpanel!.track('brand_clients_filter_active', properties: {'Values': [filterByClients[0] ? 'Yes' : ' ', filterByClients[1] ? 'No' : ' ' ]});
                                                                                     //orderBySessions = [false, false];
-                                                                                    filterByActive(state);
+                                                                                    filterSearchResults(query, state);
                                                                                   }
                                                                                 });
                                                                               },
@@ -546,11 +564,11 @@ class _Clients extends State<Clients> {
                                                                                   var filterActive = List.from(filterByClients);
                                                                                   filterActive.retainWhere((element) => element == true);
                                                                                   if (!(filterActive.length == 1 && filterByClients[1])) {
-                                                                                    searchController.clear();
+                                                                                    //searchController.clear();
                                                                                     filterByClients[1] = !filterByClients[1];
                                                                                     mixpanel!.track('brand_clients_filter_active', properties: {'Values': [filterByClients[0] ? 'Yes' : ' ', filterByClients[1] ? 'No' : ' ' ]});
                                                                                     orderBySessions = [false, false];
-                                                                                    filterByActive(state);
+                                                                                    filterSearchResults(query, state);
                                                                                   }
                                                                                 });
                                                                               },
@@ -571,13 +589,13 @@ class _Clients extends State<Clients> {
                                                                             ListTile(
                                                                               onTap: () {
                                                                                 setStateBottom(() {
-                                                                                  searchController.clear();
+                                                                                  //searchController.clear();
                                                                                   filterByClients = [true, true];
                                                                                   hasFilter = false;
                                                                                   orderBySessions[0] = !orderBySessions[0];
                                                                                   orderBySessions[1] = false;
                                                                                   if(orderBySessions[0] == false) {
-                                                                                    filterByActive(state);
+                                                                                    filterSearchResults(query, state);
                                                                                   }
                                                                                   else {
                                                                                     orderBySessionsFunc(false);
@@ -597,13 +615,13 @@ class _Clients extends State<Clients> {
                                                                             ListTile(
                                                                               onTap: () {
                                                                                 setStateBottom(() {
-                                                                                  searchController.clear();
+                                                                                  //searchController.clear();
                                                                                   filterByClients = [true, true];
                                                                                   orderBySessions[1] = !orderBySessions[1];
                                                                                   orderBySessions[0] = false;
                                                                                   hasFilter = false;
                                                                                   if(orderBySessions[1] == false) {
-                                                                                    filterByActive(state);
+                                                                                    filterSearchResults(query, state);
                                                                                   }
                                                                                   else {
                                                                                     orderBySessionsFunc(true);
@@ -735,7 +753,7 @@ class _Clients extends State<Clients> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate((
                       BuildContext context, int index) {
-                    Usuario user = state.users[index];
+                    Usuario user = state.usersNow[index];
                     DateTime dateJoined = DateTimeUtils()
                         .formatStringToDateTimeDDMMYY(
                         user.dateJoined!, Localizations
@@ -879,12 +897,12 @@ class _Clients extends State<Clients> {
                                     )
                             )
                         ).whenComplete(() {
-                          context.read<ClientSessionsCubit>().updateUser(index, state.users);
+                          context.read<ClientSessionsCubit>().updateUser(user.id!, state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
                         });
                       },
                     );
                   },
-                    childCount: state.users.length, // 1000 list items
+                    childCount: state.usersNow.length, // 1000 list items
                   ),
                 ) : SliverList(
                   delegate: SliverChildBuilderDelegate((BuildContext context, int index) {

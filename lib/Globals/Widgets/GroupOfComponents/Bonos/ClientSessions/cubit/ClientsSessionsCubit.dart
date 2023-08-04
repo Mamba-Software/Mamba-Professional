@@ -21,29 +21,64 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
       emit(const ClientsSessionsLoading());
       if(allUsers.isEmpty) {
         allMembers = await getAllUsers();
-        emit(ClientsSessionsLoaded(allMembers, allMembers, false, 0, allMembers, allMembers));
+        emit(ClientsSessionsLoaded(allMembers, allMembers, allMembers, allMembers, false, 0));
       }
   }
 
-  void updateClientSessions(List<Usuario> allMembers, int i) async {
-    if(i < allMembers.length) {
-      allMembers[i].sessions =
-      await _userDataService.getUserActiveSessions(allMembers[i].id!);
-      emit(ClientsSessionsLoaded(allMembers, allMembers, false, ++i, allMembers, allMembers));
+    //FES UN DESARROLLO AQUI PER FER QUE AQUEST5A FUNCIO ES VAIG CRIDANT SEGONS LA I
+  void updateClientSessions(List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers, int i, bool finished) async {
+    int index = -1;
+    if(i < allUsers.length) {
+      allUsers[i].sessions =
+      await _userDataService.getUserActiveSessions(allUsers[i].id!);
+      emit(ClientsSessionsLoaded(usersNow, allUsers, filteredUsers, searchedUsers, false, ++i,));
     }
     else {
-      emit(ClientsSessionsLoaded(allMembers, allMembers, true, i, allMembers, allMembers));
+      for(int j = 0; j < allUsers.length; ++j)  {
+         index = usersNow.indexWhere((element) => element.id == allUsers[j].id);
+         if(index >= 0) {
+           usersNow[index].sessions = allUsers[j].sessions;
+         }
+         index = filteredUsers.indexWhere((element) => element.id == allUsers[j].id);
+         if(index >= 0) {
+           filteredUsers[index].sessions = allUsers[j].sessions;
+         }
+         index = searchedUsers.indexWhere((element) => element.id == allUsers[j].id);
+         if(index >= 0) {
+           searchedUsers[index].sessions = allUsers[j].sessions;
+         }
+      }
+      emit(ClientsSessionsLoaded(usersNow, allUsers, filteredUsers, searchedUsers, true, i,));
     }
   }
 
 
-  void updateUser(int index, List<Usuario> users) async {
-    users[index].sessions = null;
-    emit(ClientsSessionsLoaded(users, users,false, 0, users, users));
-    await Future.delayed(const Duration(milliseconds: 1000));
-    users[index].sessions = await _userDataService.getUserActiveSessions(users[index].id!);
-    emit(ClientsSessionsLoaded(allUsers, users, false,0, users, users));
+  void updateUser(String userId, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers, int i, bool finished) async {
+    int index = -1;
+    int realIndex = -1;
+    index = allUsers.indexWhere((element) => element.id == userId);
 
+    if (index >= 0) {
+      realIndex = index;
+      allUsers[index].sessions =
+      await _userDataService.getUserActiveSessions(userId);
+
+      index = usersNow.indexWhere((element) => element.id == userId);
+      if (index >= 0) {
+        usersNow[index].sessions = allUsers[realIndex].sessions;
+      }
+      index = filteredUsers.indexWhere((element) => element.id == userId);
+      if (index >= 0) {
+        filteredUsers[index].sessions = allUsers[realIndex].sessions;
+      }
+      index = searchedUsers.indexWhere((element) => element.id == userId);
+      if (index >= 0) {
+        searchedUsers[index].sessions = allUsers[realIndex].sessions;
+      }
+
+      emit(ClientsSessionsLoaded(
+        usersNow, allUsers, filteredUsers, searchedUsers, true, i,));
+    }
   }
 
   Future<List<Usuario>> getAllUsers() async {
@@ -69,26 +104,28 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
     return allMembers;
   }
 
-  void filterSearchResults(String query, List<Usuario> users, List<Usuario> filteredMembers, List<Usuario> allMembers) {
+  void filterSearchResults(String query,List<bool> filterByClients, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers,  int i, bool finished) {
     List<Usuario> usersFiltered = [];
     if (query.isNotEmpty || query != "") {
-      for (var item in filteredMembers) {
+      for (var item in allUsers) {
         if (item.name!.toLowerCase().startsWith(query)) {
           usersFiltered.add(item);
         }
       }
-      emit(ClientsSessionsLoaded(usersFiltered, allMembers, true, 0, filteredMembers, usersFiltered));
+      filterByActive(filterByClients, usersFiltered, allUsers, filteredUsers, searchedUsers, i, finished);
+      //emit(ClientsSessionsLoaded(usersFiltered, allUsers, filteredUsers, usersFiltered, finished, i,));
     } else {
-      emit(ClientsSessionsLoaded(filteredMembers, allMembers, true, 0, filteredMembers, allMembers));
+      filterByActive(filterByClients, allUsers, allUsers, filteredUsers, searchedUsers, i, finished);
+      //emit(ClientsSessionsLoaded(filteredUsers, allUsers, filteredUsers, allUsers, finished, i));
     }
   }
 
-  void filterByActive(List<bool> filterByClients, List<Usuario> usersFiltered, List<Usuario> searchedUsers, List<Usuario> allMembers) {
+  void filterByActive(List<bool> filterByClients, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers,  int i, bool finished) {
     List<Usuario> filteredMembers = [];
-    usersFiltered.sort((a, b) {
+    usersNow.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
     });
-    filteredMembers = List.from(usersFiltered);
+    filteredMembers = List.from(usersNow);
     int cnt = 0;
     if (filterByClients[0] == false) {
       filteredMembers.removeWhere((element) {
@@ -114,11 +151,8 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
     } else {
       cnt += 1;
     }
-    if (cnt == 2) {
-      emit(ClientsSessionsLoaded(filteredMembers, allMembers, true, 0, filteredMembers, searchedUsers));
-    } else {
-      emit(ClientsSessionsLoaded(filteredMembers, allMembers, true, 0, filteredMembers, searchedUsers));
-    }
+
+      emit(ClientsSessionsLoaded(filteredMembers, allUsers, filteredMembers, searchedUsers, finished, i));
 
   }
 
