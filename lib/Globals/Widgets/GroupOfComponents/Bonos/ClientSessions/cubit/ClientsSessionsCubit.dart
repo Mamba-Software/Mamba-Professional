@@ -104,7 +104,7 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
     return allMembers;
   }
 
-  void filterSearchResults(String query,List<bool> filterByClients, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers,  int i, bool finished) {
+  void filterSearchResults(String query,List<bool> filterByClients, List<bool> orderBySessions, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers,  int i, bool finished) {
     List<Usuario> usersFiltered = [];
     if (query.isNotEmpty || query != "") {
       for (var item in allUsers) {
@@ -112,15 +112,15 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
           usersFiltered.add(item);
         }
       }
-      filterByActive(filterByClients, usersFiltered, allUsers, filteredUsers, searchedUsers, i, finished);
+      filterByActive(filterByClients, orderBySessions, usersFiltered, allUsers, filteredUsers, searchedUsers, i, finished);
       //emit(ClientsSessionsLoaded(usersFiltered, allUsers, filteredUsers, usersFiltered, finished, i,));
     } else {
-      filterByActive(filterByClients, allUsers, allUsers, filteredUsers, searchedUsers, i, finished);
+      filterByActive(filterByClients, orderBySessions, allUsers, allUsers, filteredUsers, searchedUsers, i, finished);
       //emit(ClientsSessionsLoaded(filteredUsers, allUsers, filteredUsers, allUsers, finished, i));
     }
   }
 
-  void filterByActive(List<bool> filterByClients, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers,  int i, bool finished) {
+  void filterByActive(List<bool> filterByClients, List<bool> orderBySessions, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers,  int i, bool finished) {
     List<Usuario> filteredMembers = [];
     usersNow.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
@@ -152,7 +152,48 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
       cnt += 1;
     }
 
-      emit(ClientsSessionsLoaded(filteredMembers, allUsers, filteredMembers, searchedUsers, finished, i));
+    orderBySessionsFunc(orderBySessions, filteredMembers, allUsers, filteredMembers, searchedUsers, i, finished);
+
+  }
+
+  void orderBySessionsFunc(List<bool> orderBySessions, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers,  int i, bool finished) {
+    // Filter By
+    if(orderBySessions[0]) {
+      usersNow.sort((a, b) {
+        // Handling null cases
+        if (a.sessions == null && b.sessions == null) {
+          return 0; // Both are null, so they are equal
+        } else if (a.sessions == null) {
+          return 1; // a.sessions is null, so a should come after b
+        } else if (b.sessions == null) {
+          return -1; // b.sessions is null, so b should come after a
+        }
+
+        // Compare sessions as integers
+        int aSessions = int.parse(a.sessions!);
+        int bSessions = int.parse(b.sessions!);
+        return bSessions.compareTo(aSessions);
+      });
+    }
+    else if(orderBySessions[1]) {
+      usersNow.sort((a, b) {
+        // Handling null cases
+        if (a.sessions == null && b.sessions == null) {
+          return 0; // Both are null, so they are equal
+        } else if (b.sessions == null) {
+          return 1; // a.sessions is null, so a should come after b
+        } else if (a.sessions == null) {
+          return -1; // b.sessions is null, so b should come after a
+        }
+
+        // Compare sessions as integers
+        int aSessions = int.parse(a.sessions!);
+        int bSessions = int.parse(b.sessions!);
+        return aSessions.compareTo(bSessions);
+      });
+    }
+
+    emit(ClientsSessionsLoaded(usersNow, allUsers, filteredUsers, searchedUsers, finished, i));
 
   }
 

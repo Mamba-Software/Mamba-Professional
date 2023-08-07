@@ -81,7 +81,7 @@ class _Clients extends State<Clients> {
   // Filters
   bool hasFilter = false;
   bool hasOrder = false;
-  bool permitOrder = false;
+
   List<bool> filterByClients = [true, true];
   List<bool> orderBySessions = [false, false];
 
@@ -92,13 +92,16 @@ class _Clients extends State<Clients> {
     });
   }
 
-  void filterSearchResults(String value, dynamic state) {
+  void filterSearchResults(String value, dynamic state, bool comesFromBottom) {
     if(state is ClientsSessionsLoaded) {
       context.read<ClientSessionsCubit>().filterSearchResults(
-          value, filterByClients, state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
+          value, filterByClients, orderBySessions, state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
+    }
+    if(comesFromBottom) {
+      Navigator.pop(context);
     }
   }
-
+/*
   void filterByActive(dynamic state) {
     if(state is ClientsSessionsLoaded) {
       if (filterByClients[0] && filterByClients[1]) {
@@ -165,7 +168,7 @@ class _Clients extends State<Clients> {
     }*/
     // Navigator Pop
     Navigator.pop(context);
-  }
+  } */
 
   void orderBySessionsFunc(bool reverse) {
     // Filter By
@@ -303,7 +306,7 @@ class _Clients extends State<Clients> {
                                     controller: searchController,
                                     onChanged: (value) {
                                       query = value;
-                                      filterSearchResults(query, state);
+                                      filterSearchResults(query, state, false);
                                     },
                                     style: Theme.of(context).textTheme.caption?.copyWith(color: AppColors.white),
                                     textAlign: TextAlign.left,
@@ -327,7 +330,7 @@ class _Clients extends State<Clients> {
                                           mixpanel!.track('brand_clients_search_clean');
                                           searchController.clear();
                                           query = "";
-                                          filterSearchResults(query, state);
+                                          filterSearchResults(query, state, false);
                                         },
                                         icon: const Icon(Icons.delete_outline, color: Colors.grey,),
                                       ),
@@ -362,7 +365,7 @@ class _Clients extends State<Clients> {
                                                 if(searchClicked == false) {
                                                   searchController.clear();
                                                   query = "";
-                                                  filterSearchResults(query, state);
+                                                  filterSearchResults(query, state, false);
                                                 }
                                               });
                                             },
@@ -430,7 +433,8 @@ class _Clients extends State<Clients> {
                                                                             filterByClients = [true, true];
                                                                             orderBySessions = [false, false];
                                                                             hasOrder = false;
-                                                                            filterSearchResults(query, state);
+                                                                            hasFilter = false;
+                                                                            filterSearchResults(query, state, true);
                                                                           });
                                                                         }
                                                                     ),
@@ -485,7 +489,7 @@ class _Clients extends State<Clients> {
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                            permitOrder? ListTile(
+                                                                            state is ClientsSessionsLoaded && state.finished? ListTile(
                                                                               title: Text(
                                                                                   AppLocalizations.of(context)!.orderBy,
                                                                                   style: Theme.of(context).textTheme.caption,
@@ -500,7 +504,7 @@ class _Clients extends State<Clients> {
                                                                                 );
                                                                               },
                                                                             ) : Container(),
-                                                                            permitOrder? ListTile(
+                                                                            state is ClientsSessionsLoaded && state.finished? ListTile(
                                                                               onTap: () {
                                                                                 setStateBottom(() {
                                                                                   isFilterBy = false;
@@ -542,8 +546,8 @@ class _Clients extends State<Clients> {
                                                                                     //searchController.clear();
                                                                                     filterByClients[0] = !filterByClients[0];
                                                                                     mixpanel!.track('brand_clients_filter_active', properties: {'Values': [filterByClients[0] ? 'Yes' : ' ', filterByClients[1] ? 'No' : ' ' ]});
-                                                                                    //orderBySessions = [false, false];
-                                                                                    filterSearchResults(query, state);
+                                                                                    hasFilter = true;
+                                                                                    filterSearchResults(query, state, true);
                                                                                   }
                                                                                 });
                                                                               },
@@ -566,9 +570,9 @@ class _Clients extends State<Clients> {
                                                                                   if (!(filterActive.length == 1 && filterByClients[1])) {
                                                                                     //searchController.clear();
                                                                                     filterByClients[1] = !filterByClients[1];
+                                                                                    hasFilter = true;
                                                                                     mixpanel!.track('brand_clients_filter_active', properties: {'Values': [filterByClients[0] ? 'Yes' : ' ', filterByClients[1] ? 'No' : ' ' ]});
-                                                                                    orderBySessions = [false, false];
-                                                                                    filterSearchResults(query, state);
+                                                                                    filterSearchResults(query, state, true);
                                                                                   }
                                                                                 });
                                                                               },
@@ -590,16 +594,11 @@ class _Clients extends State<Clients> {
                                                                               onTap: () {
                                                                                 setStateBottom(() {
                                                                                   //searchController.clear();
-                                                                                  filterByClients = [true, true];
-                                                                                  hasFilter = false;
                                                                                   orderBySessions[0] = !orderBySessions[0];
                                                                                   orderBySessions[1] = false;
-                                                                                  if(orderBySessions[0] == false) {
-                                                                                    filterSearchResults(query, state);
-                                                                                  }
-                                                                                  else {
-                                                                                    orderBySessionsFunc(false);
-                                                                                  }
+                                                                                  hasOrder = true;
+                                                                                  filterSearchResults(query, state, true);
+
                                                                                 });
                                                                               },
                                                                               title: Text(
@@ -615,17 +614,10 @@ class _Clients extends State<Clients> {
                                                                             ListTile(
                                                                               onTap: () {
                                                                                 setStateBottom(() {
-                                                                                  //searchController.clear();
-                                                                                  filterByClients = [true, true];
                                                                                   orderBySessions[1] = !orderBySessions[1];
                                                                                   orderBySessions[0] = false;
-                                                                                  hasFilter = false;
-                                                                                  if(orderBySessions[1] == false) {
-                                                                                    filterSearchResults(query, state);
-                                                                                  }
-                                                                                  else {
-                                                                                    orderBySessionsFunc(true);
-                                                                                  }
+                                                                                  hasOrder = true;
+                                                                                  filterSearchResults(query, state, true);
                                                                                 });
                                                                               },
                                                                               title: Text(
