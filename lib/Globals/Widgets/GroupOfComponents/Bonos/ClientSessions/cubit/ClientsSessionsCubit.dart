@@ -25,13 +25,13 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
       }
   }
 
-    //FES UN DESARROLLO AQUI PER FER QUE AQUEST5A FUNCIO ES VAIG CRIDANT SEGONS LA I
-  void updateClientSessions(List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers, int i, bool finished) async {
+  void updateClientSessions(String query, List<bool> filterByClients, List<bool> orderBySessions, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers, int i, bool finished) async {
     int index = -1;
     if(i < allUsers.length) {
       allUsers[i].sessions =
       await _userDataService.getUserActiveSessions(allUsers[i].id!);
-      emit(ClientsSessionsLoaded(usersNow, allUsers, filteredUsers, searchedUsers, false, ++i,));
+      filterSearchResults(query, filterByClients, orderBySessions, usersNow, allUsers, filteredUsers, searchedUsers, ++i, false);
+      //emit(ClientsSessionsLoaded(usersNow, allUsers, filteredUsers, searchedUsers, false, ++i,));
     }
     else {
       for(int j = 0; j < allUsers.length; ++j)  {
@@ -48,7 +48,8 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
            searchedUsers[index].sessions = allUsers[j].sessions;
          }
       }
-      emit(ClientsSessionsLoaded(usersNow, allUsers, filteredUsers, searchedUsers, true, i,));
+      filterSearchResults(query, filterByClients, orderBySessions, usersNow, allUsers, filteredUsers, searchedUsers, i, true);
+      //emit(ClientsSessionsLoaded(usersNow, allUsers, filteredUsers, searchedUsers, true, i,));
     }
   }
 
@@ -88,12 +89,7 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
       Usuario user = brandUsers[i];
       allMembers.add(user);
     }
-    /*
-    for (var i=0; i< 10; i++) {
-      Usuario user = brandUsers[0];
-      allClients.add(user);
-    }
-    */
+
     allMembers.sort((a, b) {
       return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
     });

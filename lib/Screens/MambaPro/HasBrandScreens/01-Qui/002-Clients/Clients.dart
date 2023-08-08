@@ -82,6 +82,8 @@ class _Clients extends State<Clients> {
   bool hasFilter = false;
   bool hasOrder = false;
 
+  int it = -1;
+
   List<bool> filterByClients = [true, true];
   List<bool> orderBySessions = [false, false];
 
@@ -93,6 +95,10 @@ class _Clients extends State<Clients> {
   }
 
   void filterSearchResults(String value, dynamic state, bool comesFromBottom) {
+    if(!orderBySessions[0] && !orderBySessions[1] && filterByClients[0] && filterByClients[1]) {
+      hasFilter = false;
+      hasOrder = false;
+    }
     if(state is ClientsSessionsLoaded) {
       context.read<ClientSessionsCubit>().filterSearchResults(
           value, filterByClients, orderBySessions, state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
@@ -101,74 +107,6 @@ class _Clients extends State<Clients> {
       Navigator.pop(context);
     }
   }
-/*
-  void filterByActive(dynamic state) {
-    if(state is ClientsSessionsLoaded) {
-      if (filterByClients[0] && filterByClients[1]) {
-        context.read<ClientSessionsCubit>().filterByActive(
-            filterByClients,
-            state.searchedUsers,
-            state.allUsers,
-            state.filteredUsers,
-            state.searchedUsers,
-            state.i,
-            state.finished);
-      }
-      else {
-        context.read<ClientSessionsCubit>().filterByActive(
-            filterByClients,
-            state.usersNow,
-            state.allUsers,
-            state.filteredUsers,
-            state.searchedUsers,
-            state.i,
-            state.finished);
-      }
-    }
-    /*
-    // Filter By
-    allMembers.sort((a, b) {
-      return a.name.toString().toLowerCase().compareTo(b.name.toString().toLowerCase());
-    });
-    filteredMembers = List.from(allMembers);
-    int cnt = 0;
-    if (filterByClients[0] == false) {
-      filteredMembers.removeWhere((element) {
-        DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 31));
-        if (element.lastEventAt == null) {
-          return false;
-        } else {
-          return oneMonthAgo.isBefore(element.lastEventAt!.toDate());
-        }
-      });
-    } else {
-      cnt += 1;
-    }
-    if (filterByClients[1] == false) {
-      filteredMembers.removeWhere((element) {
-        DateTime oneMonthAgo = DateTime.now().subtract(const Duration(days: 31));
-        if (element.lastEventAt == null) {
-          return true;
-        } else {
-          return oneMonthAgo.isAfter(element.lastEventAt!.toDate());
-        }
-      });
-    } else {
-      cnt += 1;
-    }
-    // Has Filter Update
-    if (cnt == 2) {
-      setState(() {
-        hasFilter = false;
-      });
-    } else {
-      setState(() {
-        hasFilter = true;
-      });
-    }*/
-    // Navigator Pop
-    Navigator.pop(context);
-  } */
 
   void orderBySessionsFunc(bool reverse) {
     // Filter By
@@ -264,8 +202,12 @@ class _Clients extends State<Clients> {
         builder: (context, state) {
           if (state is ClientsSessionsLoaded) {
             if(!state.finished) {
-              context.read<ClientSessionsCubit>().updateClientSessions(
-                  state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
+              if(state.i != it) {
+                context.read<ClientSessionsCubit>().updateClientSessions(query, filterByClients, orderBySessions,
+                    state.usersNow, state.allUsers, state.filteredUsers,
+                    state.searchedUsers, state.i, state.finished);
+                it = state.i;
+              }
             }
           }
           return Scaffold(
