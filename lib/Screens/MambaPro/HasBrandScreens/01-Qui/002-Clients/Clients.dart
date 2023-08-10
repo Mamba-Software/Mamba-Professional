@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -12,7 +11,6 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
@@ -20,7 +18,6 @@ import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
@@ -28,8 +25,6 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
-
-import '../015-AddMembers/MembershipRequestsPro.dart';
 
 class Clients extends StatefulWidget {
   String brandId;
@@ -60,8 +55,6 @@ class _Clients extends State<Clients> {
     return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
   // Brand Data Service
-  final _brandDataService = BrandDataService();
-  final _userDataService = UserDataService();
   final _roomDataService = RoomDataService();
   final _dynamicLinkUtils = DynamicLinkUtils();
   // Boolean Loading
@@ -203,9 +196,7 @@ class _Clients extends State<Clients> {
           if (state is ClientsSessionsLoaded) {
             if(!state.finished) {
               if(state.i != it) {
-                context.read<ClientSessionsCubit>().updateClientSessions(query, filterByClients, orderBySessions,
-                    state.usersNow, state.allUsers, state.filteredUsers,
-                    state.searchedUsers, state.i, state.finished);
+                context.read<ClientSessionsCubit>().updateClientSessions(query, filterByClients, orderBySessions, state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
                 it = state.i;
               }
             }
@@ -685,14 +676,10 @@ class _Clients extends State<Clients> {
                 const SliverToBoxAdapter(child: SizedBox(height: 10)),
                 state is ClientsSessionsLoaded ?
                 SliverList(
-                  delegate: SliverChildBuilderDelegate((
-                      BuildContext context, int index) {
+                  delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                     Usuario user = state.usersNow[index];
-                    DateTime dateJoined = DateTimeUtils()
-                        .formatStringToDateTimeDDMMYY(
-                        user.dateJoined!, Localizations
-                        .localeOf(context)
-                        .languageCode);
+                    String dateTimeNow = DateTimeUtils().formatDateTimeToStringDDMMYYYY(DateTime.now(), Localizations.localeOf(context).languageCode);
+                    DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined ?? dateTimeNow, Localizations.localeOf(context).languageCode);
                     return ListTile(
                       leading: CircularImage(
                         size: MediaQuery
@@ -830,9 +817,10 @@ class _Clients extends State<Clients> {
                                       viewOnly: false,
                                     )
                             )
-                        ).whenComplete(() {
-                          context.read<ClientSessionsCubit>().updateUser(user.id!, state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
-                        });
+                        );
+                        if (result != null && result) {
+                          context.read<ClientSessionsCubit>().loadList();
+                        }
                       },
                     );
                   },
@@ -1033,6 +1021,9 @@ class _Clients extends State<Clients> {
               ),
         )
     );
+    if (result != null && result) {
+      context.read<ClientSessionsCubit>().loadList();
+    }
   }
 
   Future<void> navigateShareBrandLink() async {

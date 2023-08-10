@@ -17,12 +17,12 @@ class ClientSessionsCubit extends Cubit<ClientsSessionsState> {
   }
 
   void loadList() async {
-      List<Usuario> allMembers = [];
-      emit(const ClientsSessionsLoading());
-      if(allUsers.isEmpty) {
-        allMembers = await getAllUsers();
-        emit(ClientsSessionsLoaded(allMembers, allMembers, allMembers, allMembers, false, 0));
-      }
+    List<Usuario> allMembers = [];
+    emit(const ClientsSessionsLoading());
+    if(allUsers.isEmpty) {
+      allMembers = await getAllUsers();
+      emit(ClientsSessionsLoaded(allMembers, allMembers, allMembers, allMembers, false, 0));
+    }
   }
 
   void updateClientSessions(String query, List<bool> filterByClients, List<bool> orderBySessions, List<Usuario> usersNow, List<Usuario> allUsers, List<Usuario> filteredUsers, List<Usuario> searchedUsers, int i, bool finished) async {
