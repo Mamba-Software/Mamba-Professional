@@ -187,6 +187,7 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     }
     calculateExpandedHeight();
     calculateCurrentBonoStats();
+    print("rebuild");
   }
 
   @override

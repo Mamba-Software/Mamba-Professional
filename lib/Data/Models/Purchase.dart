@@ -109,7 +109,7 @@ class Purchase {
     numberOfEvents = events.length;
   }
   set setInitialEventsData(List<Event> events) {
-    this.initalEvents = events;
+    initalEvents = events;
   }
 
   // Set Basic Data
@@ -121,5 +121,26 @@ class Purchase {
   set setPurchasedBrandBono(Brand brand) {
     this.brand = brand;
   }
+
+  Purchase.copy(Purchase other)
+      : id = other.id,
+        userId = other.userId,
+        brandId = other.brandId,
+        bonoId = other.bonoId,
+        price = other.price,
+        paymentMethod = other.paymentMethod,
+        sessions = other.sessions,
+        purchasedAt = other.purchasedAt,
+        isActive = other.isActive,
+        directPurchase = other.directPurchase,
+        condition = other.condition != null ? Condition(
+          expirationTime: other.condition!.expirationTime,
+          cancelTime: other.condition!.cancelTime,
+          weeklySessions: other.condition!.weeklySessions,
+        ) : null,
+        events = List.from(other.events), // Assuming Event has a copy constructor
+        initalEvents = List.from(other.events),
+        numberOfEvents = other.numberOfEvents;
+
 
 }

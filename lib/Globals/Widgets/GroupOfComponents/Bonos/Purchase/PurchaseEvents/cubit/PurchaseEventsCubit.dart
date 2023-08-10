@@ -18,6 +18,8 @@ class PurchaseEventsCubit extends Cubit<PurchaseEventsState> {
 
   void loadList(Purchase purchase) async {
     if(purchase.id != null) {
+      print("purchase.events");
+      print(purchase.events.length);
       emit(const PurchaseEventsLoading());
       Purchase purchaseNew = await _purchaseDataService.getPurchaseEvents(purchase);
       purchaseNew.setInitialEventsData = purchaseNew.events;

@@ -207,17 +207,28 @@ class _PurchasePageState extends State<PurchasePage> {
         bonoSelected.setBonoSessions = purchase.sessions!;
         bonoSelected.setConditionsData = purchase.condition!;
         seeConditions = true;
-        getPurchase();
+        await getPurchase();
       }
     }
     Future.delayed(Duration.zero, () async {
       dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
+      originalPaymentString = AppLocalizations.of(context)!.giftPaymentMethod;
+      if (paymentMethod == 0) {
+        originalPaymentString = AppLocalizations.of(context)!.cashPaymentMethod;
+      } else if(paymentMethod == 1) {
+        originalPaymentString = AppLocalizations.of(context)!.transferPaymentMethod;
+      }
     });
+    print("purchase.page");
+    print(purchase.events.length);
     setState(() {});
   }
 
   Future<void> getPurchase() async {
     Purchase tempPurchase = await _purchaseDataService.getPurchaseInfo(purchase.id!);
+    print("tempPurchase.events");
+    print(tempPurchase.events.length);
+    purchase.events = tempPurchase.events;
     purchase.setInitialEventsData = tempPurchase.events;
     startDate = purchase.purchasedAt!.toDate();
     paymentMethod = purchase.paymentMethod;
@@ -486,15 +497,6 @@ class _PurchasePageState extends State<PurchasePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (isFirstBuild) {
-      originalPaymentString = AppLocalizations.of(context)!.giftPaymentMethod;
-      if (paymentMethod == 0) {
-        originalPaymentString = AppLocalizations.of(context)!.cashPaymentMethod;
-      } else if(paymentMethod == 1) {
-        originalPaymentString = AppLocalizations.of(context)!.transferPaymentMethod;
-      }
-      isFirstBuild = false;
-    }
     return Scaffold(
       body: CustomScrollView(
         controller: _scrollController,
@@ -746,6 +748,7 @@ class _PurchasePageState extends State<PurchasePage> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+
                 /// BONOS
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
@@ -834,7 +837,7 @@ class _PurchasePageState extends State<PurchasePage> {
                           width: MediaQuery.of(context).size.width*0.84,
                           bono: bonoSelected,
                           brand: widget.brand,
-                          purchase: purchase,
+                          purchase: Purchase.copy(purchase),
                           isExpanded: false,
                           canExpand: false,
                           onlyView: true,
@@ -1294,147 +1297,6 @@ class _PurchasePageState extends State<PurchasePage> {
       ),
       resizeToAvoidBottomInset: false,
       floatingActionButton: whichFloatingActionButton(context),
-      /*
-      bottomSheet: isBonoSelected ? GestureDetector(
-        onTap: isLoading ? null : () async {
-          if (checkIfAllBonoConditionsAreCorrect()) {
-            FocusManager.instance.primaryFocus?.unfocus();
-            setState(() {
-              isLoading = true;
-            });
-            if (noSessions) {
-              bonoSelected.sessions = 10000;
-            }
-            if (editBono) {
-              if(purchase.directPurchase == true) {
-                mixpanel!.track('purchase_verified');
-                _purchaseDataService.updatePurchaseToVerified(
-                    purchase.id!);
-              }
-              /// EDIT BONO REQUEST
-              mixpanel!.track('edit_bono_confirmed');
-              try {
-                await _userDataService.updateUserBono(
-                    user.id!, currentBrand.id!, bonoSelected, purchase.isActive!);
-              }
-              catch(e) {
-                print(e);
-              }
-              if(eventsUpdated) {
-                print('We update the events');
-                print(purchase.events.length);
-                await _purchaseDataService.updatePurchaseEvents(
-                    purchase.id!, user.id!, newPurchase.events, newPurchase.initalEvents);
-              }
-              /// UPDATE EXPIRING LOCAL NOTIFICATION IF EXPIRTAION TIME HAS CHANGED
-              if (originalExpirationTime != bonoSelected.condition!.expirationTime!) {
-                // Delete Local Notifications if Expiration Time has change in Update
-                await _localNotificationService.deleteRemoteBonoExpirationLocalNotification(user.id!, currentBrand.id!, bonoSelected.purchaseId!);
-                // Local Notifications Service
-                await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, bonoSelected.purchaseId!);
-              }
-              mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
-              await Future.delayed(const Duration(seconds: 1));
-            }
-            else if (isBonoRequest) {
-              /// CONFIRM BONO REQUEST
-              // Build Purchase Object
-              Purchase purchase = Purchase();
-              purchase.purchasedAt = Timestamp.now();
-              purchase.brandId = widget.brand.id!;
-              purchase.bonoId = widget.bonoRequest?.bonoId;
-              purchase.price = bonoSelected.price;
-              purchase.userId = widget.bonoRequest?.userId!;
-              purchase.paymentMethod = paymentMethod;
-              //Add user to brand
-              Brand? userBrand = await _userDataService.getUserBrandsToAdd( widget.user.id!, widget.brand.id!);
-              if (userBrand == null) {
-                NotificationService().userJoinsBrand(widget.user.id!, widget.brand.id!);
-                _brandDataService.addUserToBrand(widget.user.id!, widget.brand.id!, 0);
-              }
-              // Notifications Service
-              _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
-              // Build Purchase Object
-              String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
-              await _brandDataService.deleteBrandBonoRequest(widget.brand.id!, widget.user.id!, widget.bonoRequest?.id!);
-              await _brandDataService.updateBonoCompras(widget.brand.id!, purchase.bonoId!);
-              // Local Notifications Service
-              await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
-              mixpanel!.track('bono_confirmation_accepted', properties: {'Payment Method': purchase.paymentMethod.toString()});
-            }
-            else {
-              /// OTORGAR BONO
-              // Build Purchase Object
-              Purchase purchase = Purchase();
-              purchase.purchasedAt = Timestamp.now();
-              purchase.brandId = widget.brand.id!;
-              purchase.bonoId = bonoSelected.id!;
-              purchase.price = bonoSelected.price!;
-              purchase.userId = user.id!;
-              purchase.paymentMethod = paymentMethod;
-              // Build Purchase Object
-              _notificationService.userBuysBono(widget.user.id!, widget.brand.id!, bonoSelected);
-              // Save Purchase Object
-              String purchaseId = await _purchaseDataService.addPurchase(purchase, bonoSelected);
-              await _brandDataService.updateBonoCompras(widget.brand.id!, bonoSelected.id!);
-              await Future.delayed(const Duration(seconds: 2));
-              // Local Notifications Service
-              await _localNotificationService.addRemoteBonoExpirationLocalNotification(context, purchaseId);
-              mixpanel!.track('give_bono_view', properties: {'Payment Method': purchase.paymentMethod.toString()});
-            }
-            Navigator.of(context).pop();
-          }
-        },
-        child: Container(
-            height: MediaQuery.of(context).size.height*0.08,
-            width: double.infinity,
-            color: Theme.of(context).primaryColor,
-            child: isLoading ? Center(
-              child: Container(
-                padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                child: LoadingView(
-                  isSmall: true,
-                  hasLogo: false,
-                  color: Theme.of(context).primaryColorDark,
-                ),
-              ),
-            )
-                : Center(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-                child: Text(
-                  AppLocalizations.of(context)!.confirm,
-                  style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
-                ),
-              ),
-            )
-        ),
-      ) : Container(
-          height: MediaQuery.of(context).size.height*0.08,
-          width: double.infinity,
-          color: Theme.of(context).primaryColor,
-          child: isLoading ? Center(
-            child: Container(
-              padding: EdgeInsets.only(bottom: Platform.isIOS ? MediaQuery.of(context).size.height * 0.01 : 0),
-              child: LoadingView(
-                isSmall: true,
-                hasLogo: false,
-                color: Theme.of(context).primaryColorDark,
-              ),
-            ),
-          ) : Center(
-            child: Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.height * 0.00),
-              child: Text(
-                'No hay bonos para otorgar a este usuario',
-                style: Theme.of(context).textTheme.headline1?.copyWith(color: Theme.of(context).primaryColorDark,),
-              ),
-            ),
-          )
-      ),
-       */
-
     );
   }
 

@@ -13,7 +13,7 @@ class CircularImage extends StatefulWidget {
   CircularImage({Key? key, this.size, this.borderWidth, this.image, this.file, this.color}) : super(key: key);
 
   @override
-  _CircularImageState createState() => new _CircularImageState();
+  _CircularImageState createState() => _CircularImageState();
 }
 
 class _CircularImageState extends State<CircularImage> {
@@ -21,19 +21,19 @@ class _CircularImageState extends State<CircularImage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Stack(
+    return Stack(
       children: <Widget>[
-        Container(
+        SizedBox(
           width: widget.size,
           height: widget.size,
           child: Center(
-            child: Container(
+            child: SizedBox(
               width: widget.size! * 0.20,
               height: widget.size! * 0.20,
               child: Center(
                 child: CircularProgressIndicator(
                   color: widget.color == null ? Theme.of(context).colorScheme.secondary : widget.color!,
-                  strokeWidth: 2,
+                  strokeWidth: widget.borderWidth == null ? 1 : widget.borderWidth! * 1.5,
                 ),
               ),
             ),
@@ -42,14 +42,14 @@ class _CircularImageState extends State<CircularImage> {
         Container(
             width: widget.size,
             height: widget.size,
-            decoration: new BoxDecoration(
+            decoration: BoxDecoration(
                 border: Border.all(
                   width: widget.borderWidth == null ? 0 : widget.borderWidth!,
                   color: widget.color == null ? Styles.mainColor : widget.color!,
                   style: widget.borderWidth == null ? BorderStyle.none : BorderStyle.solid,
                 ),
                 shape: BoxShape.circle,
-                image: new DecorationImage(
+                image: DecorationImage(
                   fit: BoxFit.cover,
                   image: widget.file != null ? FileImage(widget.file!) : CachedNetworkImageProvider(widget.image!) as ImageProvider,
                 )
