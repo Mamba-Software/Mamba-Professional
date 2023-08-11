@@ -820,6 +820,8 @@ class _Clients extends State<Clients> {
                         );
                         if (result != null && result) {
                           context.read<ClientSessionsCubit>().loadList();
+                        } else {
+                          context.read<ClientSessionsCubit>().updateUser(user.id!, state.usersNow, state.allUsers, state.filteredUsers, state.searchedUsers, state.i, state.finished);
                         }
                       },
                     );
