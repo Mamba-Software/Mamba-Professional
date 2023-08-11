@@ -4,7 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class EditRecurrentEventDialog extends StatefulWidget {
-  const EditRecurrentEventDialog({Key? key}) : super(key: key);
+  bool isCompleted;
+  bool clientsModified;
+  EditRecurrentEventDialog({Key? key, required this.isCompleted, required this.clientsModified}) : super(key: key);
 
   @override
   _EditRecurrentEventDialogState createState() => _EditRecurrentEventDialogState();
@@ -19,20 +21,28 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
       MaterialState.pressed,
       MaterialState.hovered,
       MaterialState.focused,
+      MaterialState.disabled,
     };
     if (states.any(interactiveStates.contains)) {
-      return Colors.blue;
+      return AppColors.grey;
     }
     return Theme.of(context).primaryColor;
+  }
+
+  @override
+  void initState() {
+    if(widget.clientsModified) widget.isCompleted = true;
+    if (widget.isCompleted) _value = 1;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
+      insetPadding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
+        padding: const EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -51,7 +61,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                     child: Text(AppLocalizations.of(context)!.saveRecurrentEvent, style: Theme.of(context).textTheme.bodyText1?.copyWith(height: 1.5),textAlign: TextAlign.center,),
                   ),
                 ),
-                Flexible(
+                widget.isCompleted == false ? Flexible(
                   child: Padding(
                     padding: EdgeInsets.only(top: 4.0, bottom: 4.0, right: MediaQuery.of(context).size.width*0.05, left: MediaQuery.of(context).size.width*0.05),
                     child: Text(
@@ -60,7 +70,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                ),
+                ) : Container(),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01, horizontal: MediaQuery.of(context).size.width*0.05),
                   child: Column(
@@ -68,7 +78,7 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                     children: [
                       ListTile(
                         dense: true,
-                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                        contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
                           AppLocalizations.of(context)!.thisEvent,
                           style: Theme.of(context).textTheme.bodyText2,
@@ -90,19 +100,26 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                       ),
                       ListTile(
                         dense: true,
-                        contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+                        contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
                         title: Text(
                           AppLocalizations.of(context)!.thisEventAndRest,
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: widget.isCompleted ? Theme.of(context).textTheme.caption : Theme.of(context).textTheme.bodyText2,
                         ),
+                        subtitle: widget.clientsModified? Text(
+                          AppLocalizations.of(context)!.notAvailableClientsModifiedEvents,
+                          style:  Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                        ) : widget.isCompleted ? Text(
+                          AppLocalizations.of(context)!.notAvailableFinishedEvents,
+                          style:  Theme.of(context).textTheme.caption?.copyWith(fontSize: 12.5),
+                        ) : null,
                         leading: Transform.scale(
                           scale: 1.2,
                           child: Radio(
                             value: 2,
                             groupValue: _value,
-                            activeColor: Theme.of(context).primaryColor,
+                            activeColor: widget.isCompleted ? AppColors.grey : Theme.of(context).primaryColor,
                             fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                            onChanged: (value) {
+                            onChanged: widget.isCompleted ? null : (value) {
                               setState(() {
                                 _value = int.parse(value.toString());
                               });
@@ -170,14 +187,14 @@ class _EditRecurrentEventDialogState extends State<EditRecurrentEventDialog> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(70, 70), // button width and height
+                      size: const Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Colors.green, // button color
                           child: InkWell(
                             onTap: () async {
                             },
-                            child: Icon(Icons.edit, color: Colors.white, size: 45,), // icon
+                            child: const Icon(Icons.edit, color: Colors.white, size: 45,), // icon
                           ),
                         ),
                       ),

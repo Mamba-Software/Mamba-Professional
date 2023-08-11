@@ -361,7 +361,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                 Material(
-                                  elevation: 8,
+                                  elevation: 4,
                                   borderRadius: BorderRadius.circular(15.0),
                                   child: Row(
                                     children: [
@@ -417,7 +417,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                 Material(
-                                  elevation: 8,
+                                  elevation: 4,
                                   borderRadius: BorderRadius.circular(15.0),
                                   child: Row(
                                     children: [
@@ -573,7 +573,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
                                 ),
                                 SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                 Material(
-                                  elevation: 8,
+                                  elevation: 4,
                                   borderRadius: BorderRadius.circular(15.0),
                                   child: ListTile(
                                     onTap: () async {

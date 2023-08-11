@@ -9,17 +9,15 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/Ho
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandCalendarMonthWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandRequestsWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/BrandSessionStatsWidget.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/CountDownSubscription.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/EndDateSubscription.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/PlanEventWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomeWidgets/UserTodayWidget.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BonosRequests.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import '../../../../Globals/Providers/ThemeProvider.dart';
-import '../../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import '../02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 import 'HomeWidgets/BrandBestBonoWidget.dart';
 
 // Step 1: Define a Callback.
@@ -91,7 +89,7 @@ class _HomePro extends State<HomePro> {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
-          builder: (context) => BonosRequests(
+          builder: (context) => BrandPurchaseHistory(
             brandId: widget.brandId,
           ),
         )

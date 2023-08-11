@@ -2,6 +2,7 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
@@ -11,6 +12,8 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
@@ -37,7 +40,15 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
   // Acceso a Base de Datos
   final _brandDataService = BrandDataService();
@@ -109,10 +120,9 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
 
   // Selects image from Gallery and updates in firebase.
   Future getImage() async {
-    if(!brandIsActive) {
+    if (!brandIsActive) {
       await navigateToPayWall(context);
-    }
-    else {
+    } else {
       mixpanel!.timeEvent('brand_images_added');
       try {
         List<File>? temp = await ImageUtils().pickMultipleImage();
@@ -143,6 +153,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
         setState(() {
           isLoading = false;
         });
+        print(e.toString());
         var status = await Permission.photos.status;
         if (Platform.isIOS && (status.isDenied || status.isPermanentlyDenied)) {
           bool temp = await openAppSettings();
@@ -188,7 +199,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
     final snackbar = SnackBar(
       behavior: SnackBarBehavior.floating,
       margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.0, horizontal: MediaQuery.of(context).size.width * 0.05),
-      elevation: 8,
+      elevation: 4,
       content: Row(
         children: [
           Icon(Icons.info_outlined, color: Theme.of(context).primaryColor, size:  MediaQuery.of(context).size.width*0.08,),
@@ -285,7 +296,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                           style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
                       )
                   ),
-                  centerTitle: true,
+                  centerTitle: false,
                   leading: Builder(
                     builder: (BuildContext innerContext) => Padding(
                       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -300,27 +311,50 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                     ),
                   ),
                   actions: [
-                    Padding(
-                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                      child: IconButton(
-                        icon: Icon(
-                          widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                          color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                          size: MediaQuery.of(context).size.width*0.06,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CounterBadgeIcon(
+                          counter: unreadNotifications,
+                          top: 5,
+                          right: 7,
+                          child: IconButton(
+                            icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.zero,
+                            onPressed: () => navigateToNotificationsScreen(context),
+                          ),
                         ),
-                        onPressed: () {
-                          if (widget.pinned == true) {
-                            mixpanel!.track('brand_images_pinned_off');
-                          } else {
-                            mixpanel!.track('brand_images_pinned_on');
-                          }
-                          setState(() {
-                            widget.pinned = !widget.pinned;
-                          });
-                          widget.pinnedChanged(widget.pinned);
-                        },
-                      ),
+                        CounterBadgeIcon(
+                          counter: unreadChats,
+                          top: 5,
+                          right: 7,
+                          child: IconButton(
+                            icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.zero,
+                            onPressed: () => navigateToChatScreen(context),
+                          ),
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                        GestureDetector(
+                          onTap: () => navigateToProfileScreen(context),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.08,
+                            child: Center(
+                              child: CircularImage(
+                                size: MediaQuery.of(context).size.width * 0.08,
+                                image: currentUser.imageUrl,
+                                color: AppColors.grey,
+                                borderWidth: 0.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    SizedBox(width: MediaQuery.of(context).size.width*0.03),
                   ],
                 ),
                 isLoading ? SliverFillRemaining(
@@ -383,7 +417,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                           children: [
                             Flexible(
                               child: Text(
-                                AppLocalizations.of(context)!.noData+" "+AppLocalizations.of(context)!.photos.toLowerCase()+". "+AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2],
+                                AppLocalizations.of(context)!.noData.split(" ")[0]+" "+AppLocalizations.of(context)!.photos.toLowerCase()+". "+AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2],
                                 style: Theme.of(context).textTheme.caption,
                                 textAlign: TextAlign.center,
                               ),
@@ -421,16 +455,20 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                   )
                               );
                             },
-                            child: RectangularImage(
-                              height: MediaQuery.of(context).size.height*0.18,
-                              width: MediaQuery.of(context).size.height*0.9,
-                              borderRadius: 10,
-                              color: AppColors.grey,
-                              borderWidth: 1,
-                              image: image.url,
+                            child: Material(
+                              elevation: 4,
+                              borderRadius: BorderRadius.circular(15.0),
+                              child: RectangularImage(
+                                height: MediaQuery.of(context).size.height*0.18,
+                                width: MediaQuery.of(context).size.height*0.9,
+                                borderRadius: 10,
+                                color: AppColors.grey,
+                                borderWidth: 0,
+                                image: image.url,
+                              ),
                             ),
                           ),
-                          // Favorite Image
+                          /// Set Favorite Image
                           canEdit && image.isBaseImage != true ? Positioned(
                             top: MediaQuery.of(context).size.width*0.03,
                             right: MediaQuery.of(context).size.width*0.14,
@@ -443,7 +481,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                     shape: BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                          color: Theme.of(context).backgroundColor, //New
+                                          color: Theme.of(context).scaffoldBackgroundColor, //New
                                           blurRadius: 1.0,
                                           offset: const Offset(0, 0)
                                       )
@@ -456,8 +494,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                         await navigateToPayWall(context);
                                       }
                                       else {
-                                        if (image.isBaseImage != null &&
-                                            image.isBaseImage!) {
+                                        if (image.isBaseImage != null && image.isBaseImage!) {
                                           //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
                                         } else if (canClickFav) {
                                           var result = await showDialog(
@@ -472,17 +509,10 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                           if (result) {
                                             setState(() {
                                               canClickFav = false;
-                                              _imagesUploaded[_imagesUploaded
-                                                  .indexWhere((element) =>
-                                              element.isBaseImage != null &&
-                                                  element.isBaseImage == true)]
-                                                  .isBaseImage = false;
+                                              _imagesUploaded[_imagesUploaded.indexWhere((element) => element.isBaseImage != null && element.isBaseImage == true)].isBaseImage = false;
                                               image.isBaseImage = true;
                                             });
-                                            await _brandDataService
-                                                .updateBrandBaseImage(
-                                                widget.brandId, image,
-                                                baseImage.id!);
+                                            await _brandDataService.updateBrandBaseImage(widget.brandId, image, baseImage.id!);
                                             await getBrandContentImages();
                                             setState(() {
                                               canClickFav = true;
@@ -506,7 +536,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                               ),
                             ),
                           ) : Container(),
-                          // Delete Image
+                          /// Delete Image
                           canEdit && image.isBaseImage != true ? Positioned(
                             top: MediaQuery.of(context).size.width*0.03,
                             right: MediaQuery.of(context).size.width*0.02,
@@ -519,7 +549,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                        color: Theme.of(context).backgroundColor, //New
+                                        color: Theme.of(context).scaffoldBackgroundColor, //New
                                         blurRadius: 1.0,
                                         offset: const Offset(0, 0)
                                     )
@@ -528,20 +558,17 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                 child: Center(
                                   child: IconButton(
                                     onPressed: () async {
-                                      if(!brandIsActive) {
+                                      if (!brandIsActive) {
                                         await navigateToPayWall(context);
-                                      }
-                                      else {
-                                        if ((image.isBaseImage == null ||
-                                            !image.isBaseImage!) && canClickFav) {
+                                      } else {
+                                        if ((image.isBaseImage == null || !image.isBaseImage!) && canClickFav) {
                                           var result = await showDialog(
-                                              context: context,
-                                              builder: (_) {
-                                                return DeleteConfirmationDialog(
-                                                    text: AppLocalizations.of(
-                                                        context)!
-                                                        .myImagesDeleteDescription);
-                                              }
+                                            context: context,
+                                            builder: (_) {
+                                              return DeleteConfirmationDialog(
+                                                  text: AppLocalizations.of(context)!.myImagesDeleteDescription
+                                              );
+                                            }
                                           );
                                           if (result) {
                                             mixpanel!.track('brand_images_delete');
@@ -550,14 +577,10 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                               isLoadingText = AppLocalizations.of(context)!.deleting+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
                                               isLoadingTextExtra =  " (" + 1.toString()+"/"+1.toString()+")";
                                             });
-                                            await _brandDataService
-                                                .deleteBrandContentPictures(
-                                                widget.brandId, image.id!,
-                                                image.url!);
+                                            await _brandDataService.deleteBrandContentPictures(widget.brandId, image.id!, image.url!);
                                             getBrandContentImages();
                                           }
-                                        }
-                                        else {
+                                        } else {
                                           //topSnackBarComp.showSnackBarBottom(context, AppLocalizations.of(context)!.myImagesFavouriteDelete, 5, false);
                                         }
                                       }
@@ -573,10 +596,67 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                               ),
                             ),
                           ) : Container(),
-                          // Delete Image
-                          image.isBaseImage == true ? Positioned(
+                          /// Delete Last Cover Image
+                          canEdit && image.isBaseImage == true && _imagesUploaded.length == 1 ? Positioned(
                             top: MediaQuery.of(context).size.width*0.03,
-                            right: MediaQuery.of(context).size.width*0.03,
+                            right: MediaQuery.of(context).size.width*0.02,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width*0.1,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).scaffoldBackgroundColor,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                        color: Theme.of(context).scaffoldBackgroundColor, //New
+                                        blurRadius: 1.0,
+                                        offset: const Offset(0, 0)
+                                    )
+                                  ],
+                                ),
+                                child: Center(
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      if (!brandIsActive) {
+                                        await navigateToPayWall(context);
+                                      } else {
+                                        if (canClickFav) {
+                                          var result = await showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return DeleteConfirmationDialog(
+                                                text: AppLocalizations.of(context)!.myImagesDeleteDescription+"\n\n"+AppLocalizations.of(context)!.yourImagesDescription.split("\n")[2]);
+                                            }
+                                          );
+                                          if (result) {
+                                            mixpanel!.track('brand_images_delete');
+                                            setState(() {
+                                              isLoading = true;
+                                              isLoadingText = AppLocalizations.of(context)!.deleting+" "+AppLocalizations.of(context)!.photos.toLowerCase()+"...";
+                                              isLoadingTextExtra =  " (" + 1.toString()+"/"+1.toString()+")";
+                                            });
+                                            await _brandDataService.deleteBrandCoverPicture(widget.brandId, image.id!, image.url!);
+                                            getBrandContentImages();
+                                          }
+                                        }
+                                      }
+                                    },
+                                    icon: Icon(
+                                        Icons.delete_outline,
+                                        color: AppColors.red,
+                                        size: MediaQuery.of(context).size.width*0.06
+                                    ),
+                                    alignment: Alignment.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ) : Container(),
+                          /// Cover Image
+                          image.isBaseImage == true ? Positioned(
+                            top: MediaQuery.of(context).size.width*0.038,
+                            right: _imagesUploaded.length == 1 ? MediaQuery.of(context).size.width*0.16 : MediaQuery.of(context).size.width*0.03,
                             child: GestureDetector(
                               onTap: () {
                                 showInSnackBar(AppLocalizations.of(context)!.myImagesFavouriteDelete, 5);
@@ -594,7 +674,7 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                          color: Theme.of(context).backgroundColor, //New
+                                          color: Theme.of(context).scaffoldBackgroundColor, //New
                                           blurRadius: 1.0,
                                           offset: const Offset(0, 0)
                                       )

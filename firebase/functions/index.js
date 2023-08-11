@@ -1972,14 +1972,14 @@ exports.userJoinsEvent = functions
           numClients += 1;
         }
       }
-      /* Update Event Assisting Members
+      // Update Event Assisting Members
       await db
       .collection("Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });*/
+      });
       var isPrivate = false;
       if (eventDoc.isPrivate != undefined) {
         isPrivate = eventDoc.isPrivate;
@@ -2447,14 +2447,14 @@ exports.userLeavesEvent = functions
        .doc(eventId)
        .delete();
      }
-      /* Update Event Assisting Members
+      //Update Event Assisting Members
       await db
       .collection("Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });*/
+      });
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -2661,6 +2661,101 @@ exports.changeMessageStatus = functions
     }
   })
 
+  // User Deletes Purchase
+  exports.UserDeletesPurchase = functions
+    .region("europe-west1")
+    .firestore
+    .document("/Purchases/{purchaseId}")
+    .onDelete( async (snap, context) => {
+        // Get the value of the context triggers.
+         const purchaseId = context.params.purchaseId;
+
+         const purchaseDoc = snap.data();
+         //const purchaseDoc = purchaseSnapShot.data();
+
+           const userId = purchaseDoc.userId;
+           const bonoId = purchaseDoc.bonoId;
+           const brandId =  purchaseDoc.brandId;
+
+            await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).delete();
+
+           await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+
+           await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+
+           await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).delete();
+
+        return null;
+    });
+
+    //  User Cancels User Purchase Event
+    exports.UserCancelsUserPurchaseEvent = functions
+    .region("europe-west1")
+    .firestore
+    .document("/Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}/Events/{eventId}")
+    .onDelete( async (snap, context) => {
+
+       const purchaseId = context.params.purchaseId;
+       const eventId = context.params.eventId;
+
+       // Get data of the purchase
+
+       const purchaseSnapShot = await db.collection("Purchases").doc(purchaseId).get();
+       const purchaseDoc = purchaseSnapShot.data();
+
+       const userId = purchaseDoc.userId;
+       const bonoId = purchaseDoc.bonoId;
+       const brandId =  purchaseDoc.brandId;
+
+       // Delete Event from Purchases
+
+       await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+       await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+       await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+      return null;
+      });
+
+// User Updates Purchase Data
+exports.purchaseUpdatesCoverData = functions
+.region("europe-west1")
+.firestore
+.document("/Purchases/{purchaseId}")
+.onUpdate( async (change, context) => {
+     const purchaseId = context.params.purchaseId;
+      const before = change.before.data();
+      const after = change.after.data();
+
+      const userId = after.userId;
+      const bonoId = after.bonoId;
+      const brandId =  after.brandId;
+
+      let coverDataChange = false;
+      if (before.directPurchase != after.directPurchase) {
+        coverDataChange = true;
+      }
+      if (before.isActive != after.isActive) {
+            coverDataChange = true;
+      }
+
+    await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
+        });
+
+    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
+        });
+
+        await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+           "directPurchase": after.directPurchase,
+           "isActive": after.isActive,
+        });
+      return null;
+    });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // 7777 TEST ENVIRONMENT CLOUD FUNCTIONS
@@ -4146,14 +4241,14 @@ exports.zzzzUserJoinsEvent = functions
           numClients += 1;
         }
       }
-      /* Update Event Assisting Members
+      // Update Event Assisting Members
       await db
       .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });*/
+      });
       // Add Event To Users Event Subcollection
       await db
       .collection("7777 Users")
@@ -4621,14 +4716,14 @@ exports.zzzzUserLeavesEvent = functions
        .doc(eventId)
        .delete();
      }
-      /* Update Event Assisting Members
+       //Update Event Assisting Members
       await db
       .collection("7777 Events")
       .doc(eventId)
       .update({
         "numClients": numClients,
         "numTrainers": numTrainers,
-      });*/
+      });
       // Update Number of Client and Trainers on Each of Event Subcollection
       // User´s Event First
       for (var i in eventUsersSnapshot.docs) {
@@ -4933,6 +5028,7 @@ exports.UserPurchasesBono = functions
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
@@ -4946,7 +5042,8 @@ exports.UserPurchasesBono = functions
       "sessions": purchaseDoc.sessions,
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
-      "expirationTime": purchaseDoc.expirationTime, 
+      "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
   });
 
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -4961,6 +5058,7 @@ exports.UserPurchasesBono = functions
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -4975,6 +5073,7 @@ exports.UserPurchasesBono = functions
     "weeklySessions": purchaseDoc.weeklySessions,
     "cancelTime": purchaseDoc.cancelTime,
     "expirationTime": purchaseDoc.expirationTime,
+    "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -5242,13 +5341,13 @@ exports.UserCancelsPurchaseEvent = functions
 
    // Delete Event from Purchases
 
-   await db.collection("Brands").doc(brandId).doc(purchaseId).collection("Events").doc(eventId).delete();
-
-   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+   await db.collection("Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
   return null;
   });
@@ -5353,6 +5452,7 @@ exports.zzzzUserPurchasesBono = functions
      "weeklySessions": purchaseDoc.weeklySessions,
      "cancelTime": purchaseDoc.cancelTime,
      "expirationTime": purchaseDoc.expirationTime,
+     "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -5367,6 +5467,7 @@ exports.zzzzUserPurchasesBono = functions
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).set({
@@ -5381,6 +5482,7 @@ exports.zzzzUserPurchasesBono = functions
     "weeklySessions": purchaseDoc.weeklySessions,
     "cancelTime": purchaseDoc.cancelTime,
     "expirationTime": purchaseDoc.expirationTime,
+    "directPurchase": purchaseDoc.directPurchase,
   });
 
    await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).set({
@@ -5395,6 +5497,7 @@ exports.zzzzUserPurchasesBono = functions
       "weeklySessions": purchaseDoc.weeklySessions,
       "cancelTime": purchaseDoc.cancelTime,
       "expirationTime": purchaseDoc.expirationTime,
+      "directPurchase": purchaseDoc.directPurchase,
    });
 
    await db.collection("7777 Users").doc(userId).collection("Bonos").doc(bonoId).set({
@@ -5666,13 +5769,13 @@ exports.zzzzUserCancelsPurchaseEvent = functions
 
    // Delete Event from Purchases
 
-   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
-
-   await db.collection("7777 Brands").collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+   await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
    await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+   await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
 
   return null;
   });
@@ -5789,6 +5892,93 @@ exports.updateBrandSubscription = functions
     return null
 })
 
+// User Deletes Purchase
+exports.zzzzUserDeletesPurchase = functions
+  .region("europe-west1")
+  .firestore
+  .document("/7777 Purchases/{purchaseId}")
+  .onDelete( async (snap, context) => {
+      // Get the value of the context triggers.
+       const purchaseId = context.params.purchaseId;
 
+       const purchaseDoc = snap.data();
+       //const purchaseDoc = purchaseSnapShot.data();
+
+         const userId = purchaseDoc.userId;
+         const bonoId = purchaseDoc.bonoId;
+         const brandId =  purchaseDoc.brandId;
+
+         await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).delete();
+
+         await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+
+         await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).delete();
+
+         await db.collection("7777 Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).delete();
+
+      return null;
+  });
+
+  //  User Cancels User Purchase Event
+      exports.zzzzUserCancelsUserPurchaseEvent = functions
+      .region("europe-west1")
+      .firestore
+      .document("/7777 Brands/{brandId}/Users/{userId}/Purchases/{purchaseId}/Events/{eventId}")
+      .onDelete( async (snap, context) => {
+
+         const purchaseId = context.params.purchaseId;
+         const eventId = context.params.eventId;
+         const userId = context.params.userId;
+         const brandId =  context.params.brandId;
+
+         // Delete Event from Purchases
+
+         await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+         //await db.collection("Brands").doc(brandId).collection("Bonos").doc(bonoId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+         await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).collection("Events").doc(eventId).delete();
+
+        return null;
+        });
+
+    // 7777 User Updates Purchase Data
+    exports.zzzzpurchaseUpdatesCoverData = functions
+    .region("europe-west1")
+    .firestore
+    .document("/7777 Purchases/{purchaseId}")
+    .onUpdate( async (change, context) => {
+         const purchaseId = context.params.purchaseId;
+           const before = change.before.data();
+           const after = change.after.data();
+
+           const userId = after.userId;
+           const bonoId = after.bonoId;
+           const brandId =  after.brandId;
+
+          let coverDataChange = false;
+          if (before.directPurchase != after.directPurchase) {
+            coverDataChange = true;
+          }
+          if (before.isActive != after.isActive) {
+                      coverDataChange = true;
+            }
+
+            await db.collection("7777 Brands").doc(brandId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
+            });
+
+            await db.collection("7777 Brands").doc(brandId).collection("Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
+            });
+
+            await db.collection("7777 Users").doc(userId).collection("Purchases").doc(purchaseId).update({
+               "directPurchase": after.directPurchase,
+               "isActive": after.isActive,
+            });
+          return null;
+        });
 
 

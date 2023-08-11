@@ -139,7 +139,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                     dateFormat: 'd',
                     timeRulerSize: 25,
                     nonWorkingDays: nonWorkDays,
-                    minimumAppointmentDuration: Duration(minutes: 30),
+                    minimumAppointmentDuration: const Duration(minutes: 30),
                     timeTextStyle: TextStyle(
                       fontWeight: FontWeight.w800,
                       fontSize: 12,
@@ -161,7 +161,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                           height: details.bounds.height,
                           decoration: BoxDecoration(
                             color: appointment.color,
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(5),
                             ),
                           ),
@@ -173,12 +173,12 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                                 children: [
                                   Flexible(child: Text(event.title!, textAlign: TextAlign.center, style:Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),)),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                  Text(
+                                  const Text(
                                     "-",
                                     style: TextStyle(color: Colors.white, fontSize: 14),
                                   ),
                                   SizedBox(width: MediaQuery.of(context).size.width*0.02),
-                                  Icon(
+                                  const Icon(
                                     Icons.record_voice_over,
                                     color: Colors.white,
                                     size: 20,
@@ -186,14 +186,14 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                                   SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                   Text(
                                     event.numTrainers.toString(),
-                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                    style: const TextStyle(color: Colors.white, fontSize: 14),
                                   ),
                                   Container(
                                       height: 16,
                                       width: 32,
-                                      child: VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
+                                      child: const VerticalDivider(color: Colors.white, width: 10, thickness: 2,)
                                   ),
-                                  Icon(
+                                  const Icon(
                                     Icons.directions_run,
                                     color: Colors.white,
                                     size: 20,
@@ -201,15 +201,15 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
                                   SizedBox(width: MediaQuery.of(context).size.width*0.02),
                                   Text(
                                     event.numClients.toString(),
-                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                    style: const TextStyle(color: Colors.white, fontSize: 14),
                                   ),
-                                  Text(
+                                  const Text(
                                     " / ",
                                     style: TextStyle(color: Colors.white, fontSize: 14),
                                   ),
                                   Text(
                                     event.maxMembers.toString(),
-                                    style: TextStyle(color: Colors.white, fontSize: 14),
+                                    style: const TextStyle(color: Colors.white, fontSize: 14),
                                   ),
                                 ],
                               ),
@@ -280,7 +280,7 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
 
   Widget timeRegionBuilder(BuildContext context, TimeRegionDetails timeRegionDetails) {
     return Container(
-      color: Color(0x40B5B5B5),
+      color: const Color(0x40B5B5B5),
     );
   }
 
@@ -306,12 +306,20 @@ class _BrandEventsTodayState extends State<BrandEventsToday> {
       double numClients = double.parse(event.numClients.toString());
       double maxMembers = double.parse(event.maxMembers.toString());
       double bookedCapacity = numClients/maxMembers;
-      if(bookedCapacity <= 0.20) color = Colors.green;
-      else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
-      else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
-      else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
-      else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
-      else if(bookedCapacity == 1) color = Colors.red;
+      if(bookedCapacity <= 0.20) {
+        color = Colors.green;
+      } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
+        color = const Color(0xFFA8C76C);
+      } else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
+        color = const Color(0xFFECE014);
+      } else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
+        color = Colors.orangeAccent;
+      } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
+        color = Colors.deepOrangeAccent;
+      } else if(bookedCapacity >= 1) {
+        color = Colors.red;
+      }
+
       // Afegir percentatges de members al Event.
       tempAllAppointments.add(Appointment(
         id: event.id,

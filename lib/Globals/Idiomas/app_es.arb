@@ -323,6 +323,10 @@
   "@personlize":{
     "description": "Información Text"
   },
+  "personlized": "Personalizado",
+  "@personlized":{
+    "description": "Información Text"
+  },
   "content": "Contenido",
   "@content":{
     "description": "Información Text"
@@ -645,7 +649,7 @@
   "@createBrandDesc":{
     "description": "createBrand Text"
   },
-  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción.\n\nEn 250 caracteres, transmite tus valores fundamentales y beneficios de trabajar de tu mano.",
+  "createBrandDescDescription": "Lo primero que leerán tus clientes sobre tu marca y tu forma de trabajar es esta pequeña descripción. Transmite tus valores fundamentales y beneficios de trabajar de tu mano",
   "@createBrandDescDescription":{
     "description": "createBrand Text"
   },
@@ -653,7 +657,7 @@
   "@createBrandBaseLocation":{
     "description": "createBrand Text"
   },
-  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor.\n\nEn caso de no tener una dirección fija, introduce una ubicación utilizada frecuentemente.",
+  "createBrandLocationDescription": "Esta es la ubicación que usaremos para localizar tu marca en el mapa para que los clientes puedan encontrarte a su alrededor",
   "@createBrandLocationDescription":{
     "description": "createBrand Text"
   },
@@ -661,11 +665,11 @@
   "@createBrandWorkshift":{
     "description": "createBrand Text"
   },
-  "createBrandWorkshiftDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
+  "createBrandWorkshiftDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando estás disponible. Solo podrán reservar plaza en tus eventos dentro de este horario",
   "@createBrandWorkshiftDescription":{
     "description": "createBrand Text"
   },
-  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario.",
+  "createBrandBreakDescription": "En caso de que siempre te tomes un descanso a la misma hora, por ejemplo a la hora de comer, añádelo para que conste en tu calendario",
   "@createBrandBreakDescription":{
     "description": "createBrand Text"
   },
@@ -769,7 +773,7 @@
   "@brandDescription":{
     "description": "zipCode text"
   },
-  "workingHours": "Horario de Trabajo",
+  "workingHours": "Horario de trabajo",
   "@workingHours":{
     "description": "workingHours text"
   },
@@ -1284,6 +1288,10 @@
   "@noEvents": {
     "description": "Wellcome message"
   },
+  "noEventsAccesibleBono": "No encontramos eventos que sean accesibles con este bono.",
+  "@noEventsAccesibleBono": {
+    "description": "Wellcome message"
+  },
   "noMembersFound": "No hemos encontrado ningún miembro",
   "@noMembersFound": {
     "description": "Wellcome message"
@@ -1323,6 +1331,15 @@
   },
   "requestSent": "Enviada el {dateJoined}",
   "@requestSent": {
+    "description": "Member Since message",
+    "placeholders": {
+      "dateJoined": {
+        "type": "String"
+      }
+    }
+  },
+  "purchasedAt": "Comprado el {dateJoined}",
+  "@purchasedAt": {
     "description": "Member Since message",
     "placeholders": {
       "dateJoined": {
@@ -1512,12 +1529,20 @@
   "@exitBrand": {
     "description": "Wellcome message"
   },
+  "exitBrandDesc": "Dejarás de participar en los eventos previstos y perderás los beneficios y accesos actuales. Para reincorporarte, necesitarás una nueva aprobación de los administradores",
+  "@exitBrandDesc": {
+    "description": "Wellcome message"
+  },
   "exitBrandConfirm": "¿Seguro que quieres abandonar esta marca?",
   "@exitBrandConfirm": {
     "description": "Wellcome message"
   },
   "deleteBrand": "Eliminar marca",
   "@deleteBrand": {
+    "description": "Wellcome message"
+  },
+  "deleteBrandDesc": "Se eliminará completamente toda su información, incluyendo la relación con sus clientes y todos los datos relacionados. Esta acción es irreversible y hará que la marca desaparezca como si nunca hubiera existido",
+  "@deleteBrandDesc": {
     "description": "Wellcome message"
   },
   "deleteBrandConfirmation": "¿Seguro que quieres eliminar tu marca?",
@@ -1577,7 +1602,7 @@
   "@joinEvent": {
     "description": "Wellcome message"
   },
-  "joinEventConfirmation": "¿Estás seguro de que quieres reservar una plaza para esta sesión?\n\nLos organizadores recibirán una notificación.",
+  "joinEventConfirmation": "Debes asignar una compra del cliente para reservar esta sesión\n\nLos cambios se realizarán si confirmas la creación o edición de la sesión.",
   "@joinEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -1585,7 +1610,7 @@
   "@leaveEvent": {
     "description": "Wellcome message"
   },
-  "leaveEventConfirmation": "¿Estás seguro de que quieres cancelar tu reserva para esta sesión?\n\nLos organizadores recibirán una notificación.",
+  "leaveEventConfirmation": "Esta es la compra con la que el cliente reservó la sesión\n\nLos cambios se realizarán si confirmas la creación o edición de la sesión.",
   "@leaveEventConfirmation": {
     "description": "Wellcome message"
   },
@@ -2490,6 +2515,30 @@
   "@ilimitadas": {
     "description": "ilimitadas message"
   },
+  "verfied": "Pagado",
+  "@verfied": {
+    "description": "ilimitadas message"
+  },
+  "verfiedDesc": "Se ha confirmado que se realizó el pago de esta compra. El cliente ha completado el proceso y ahora tiene acceso al bono correspondiente según las condiciones establecidas.",
+  "@verfiedDesc": {
+    "description": "ilimitadas message"
+  },
+  "unverfied": "Pendiente de pago",
+  "@unverfied": {
+    "description": "ilimitadas message"
+  },
+  "unverfiedDesc": "Aún no se ha confirmado el pago de la compra realizada por el cliente. El cliente adquirió el bono directamente, pero se espera la validación. A pesar de ello, el bono ya está disponible para su uso.",
+  "@unverfiedDesc": {
+    "description": "ilimitadas message"
+  },
+  "toConfirm": "Por confirmar",
+  "@toConfirm": {
+    "description": "ilimitadas message"
+  },
+  "toConfirmDesc": "El cliente solicitó el bono, pero está la espera de confirmación del professional. Puede implicar una revisión adicional antes de otorgar el bono. Sin respuesta, no hay acceso al bono.",
+  "@toConfirmDesc": {
+    "description": "ilimitadas message"
+  },
   "numberSessions": "Nº sesiones",
   "@numberSessions": {
     "description": "numberSessions message"
@@ -2698,7 +2747,6 @@
   "@from": {
     "description": "from message"
   },
-
   "to": "Hasta",
   "@to": {
     "description": "to message"
@@ -3012,11 +3060,11 @@
   "@last30Days":{
     "description": "last30Days text"
   },
-  "olderFirst": "Antiguos primero",
+  "olderFirst": "Antiguos",
   "@olderFirst": {
     "description": "Donde message"
   },
-  "newerFirst": "Recientes primero",
+  "newerFirst": "Recientes",
   "@newerFirst": {
     "description": "Donde message"
   },
@@ -3038,6 +3086,10 @@
   },
   "noSubscription": "No tienes plan, pulsa para adquirir uno",
   "@noSubscription": {
+    "description": "noSubscription message"
+  },
+  "adminSubscriptionDesc": "Solo el creador de la marca puede suscribirte a los planes. El pago estará vinculado a su cuenta y todas las transacciones se gestionarán a través de esta para garantizar seguridad y transparencia.",
+  "@adminSubscriptionDesc": {
     "description": "noSubscription message"
   },
   "expiresAt": "Expira el",
@@ -3263,6 +3315,10 @@
       }
     }
   },
+  "upgradeToPremium":  "Escoge tu plan",
+  "@chooseYourPlan": {
+    "description": "chooseYourPlan message"
+  },
   "chooseYourPlan":  "Escoge tu plan",
   "@chooseYourPlan": {
     "description": "chooseYourPlan message"
@@ -3341,5 +3397,110 @@
   "isMaintenanceText": "Estamos afinando los detalles para llevarte una experiencia aún mejor. Solo nos tomará unos minutos regresar con fuerza...",
   "@isMaintenanceText": {
     "description": "notSubNotAdmin message"
+  },
+  "cantEditText": "La fecha, hora y duración de un evento finalizado no se pueden modificar",
+  "@cantEditText": {
+    "description": "cantEditText message"
+  },
+  "notAvailableFinishedEvents": "No disponible para eventos finalizados",
+  "@notAvailableFinishedEvents": {
+    "description": "cantEditText message"
+  },
+  "notAvailableClientsModifiedEvents": "No disponible ya que se han modificado clientes",
+  "@notAvailableClientsModifiedEvents": {
+    "description": "cantEditText message"
+  },
+  "directPurchaseDescription": "Permite que las compras de tus bonos se aprueben sin solicitud, el cliente obtendrá el bono al momento de hacer su compra",
+  "@directPurchaseDescription": {
+    "description": "directPurchase message"
+  },
+  "directPurchasetext": "Compra directa",
+  "@directPurchasetext": {
+    "description": "directPurchasetext message"
+  },
+  "deletePurchase": "¿Estás seguro qué quieres eliminar esta compra?\n\n El cliente será eliminado de todos los eventos realizados con este bono.",
+  "@deletePurchase": {
+    "description": "deletePurchase message"
+  },
+  "deletePurchaseRequest": "¿Estás seguro de que quieres eliminar esta solicitud de compra?\n\nEl cliente será notificado de que has rechazado su solicitud y no se le otorgará el bono.",
+  "@deletePurchaseRequest": {
+    "description": "deletePurchase message"
+  },
+  "cancelEventPurchase": "¿Estás seguro que quieres desvincular este evento de la compra?",
+  "@cancelEventPurchase": {
+    "description": "cancelEventPurchase message"
+  },
+  "addEventsToPurchaseText": "Añade o desvincula eventos a la compra",
+  "@addEventsToPurchaseText": {
+    "description": "addEventsToPurchaseText message"
+  },
+  "addEventsToPurchaseSubText": "Afectaran al número de sesiones para este bono",
+  "@addEventsToPurchaseSubText": {
+    "description": "addEventsToPurchaseSubText message"
+  },
+  "purchase": "Compra",
+  "@purchase": {
+    "description": "purchase message"
+  },
+  "createdBy": "Creada por {name}",
+  "@createdBy": {
+    "description": "Member Since message",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "whichBono": "¿Con qué compra quieres reservar?",
+  "@whichBono": {
+    "description": "userJoinsBrandUser message"
+  },
+  "activarCompra": "Activar compra",
+  "@activarCompra": {
+    "description": "activarCompra message"
+  },
+  "desactivarCompra": "Desactivar compra",
+  "@desactivarCompra": {
+    "description": "desactivarCompra message"
+  },
+  "activePurchaseQuesDesc": "Tus clientes pueden usar la compra si está activa. Ésta se activa o desactiva automaticamente, pero se puede forzar su estado de manera manual.",
+  "@activePurchaseQuesDesc": {
+    "description": "activePurchaseQuesDesc message"
+  },
+  "deleteClientsWithPurchases": "Edite la sesión eliminando los clientes con compras, confirme la edición y posteriormente podrá borrar la sesión",
+  "@deleteClientsWithPurchases": {
+    "description": "deleteClientsWithPurchases message"
+  },
+  "deleteClientsWithPurchasesBonos": "Elimine los clientes con compras para poder quitar bonos de la sesión",
+  "@deleteClientsWithPurchasesBonos": {
+    "description": "deleteClientsWithPurchasesBonos message"
+  },
+  "orderBySessions": "Número de sesiones restantes",
+  "@orderBySessions": {
+    "description": "orderBySessions message"
+  },
+  "orderBySessionsMoreToLess": "De más sesiones a menos sesiones",
+  "@orderBySessionsMoreToLess": {
+    "description": "orderBySessionsMoreToLess message"
+  },
+  "orderBySessionsLessToMore": "De menos sesiones a más sesiones",
+  "@orderBySessionsLessToMore": {
+    "description": "orderBySessionsLessToMore message"
+  },
+  "chargingEvents": "Cargando eventos",
+  "@chargingEvents": {
+    "description": "chargingEvents message"
+  },
+  "and": "y",
+  "@and": {
+    "description": "chargingEvents message"
+  },
+  "addClientDescription": "En un evento recurrente podrás añadir clientes una vez el evento haya sido creado",
+  "@addClientDescription":{
+    "bonosClient": "addClientDescription client text"
+  },
+  "cantEditRecurrent": "Elimina los clientes del evento para poder indicar si es un evento recurrente",
+  "@addClientDescription":{
+    "bonosClient": "addClientDescription client text"
   }
 }

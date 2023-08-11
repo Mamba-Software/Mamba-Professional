@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
@@ -52,6 +53,8 @@ class UserDataService {
   Future<List<Bono>> getUserActiveBonosFromBrand(String userId, String brandId) => _firebase.getUserActiveBonosFromBrand(userId, brandId);
   Future<Event> getLastUserEvent(String? userId) => _firebase.getLastUserEvent(userId);
   Future<List<String>> getBlockedByUsers(String userId) => _firebase.getBlockedByUsers(userId);
+  Future<List<Bono>> getUserActiveBonos(String userId, String purchaseId) => _firebase.getUserActiveBonos(userId, purchaseId);
+  Future<String> getUserActiveSessions(String userId) => _firebase.getUserActiveSessions(userId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma, bool isTrainer, [bool definePassword = false]) => _firebase.addUser(email, password, idioma, isTrainer, definePassword);
@@ -75,7 +78,7 @@ class UserDataService {
   Future<void> updateCurrentUserSettingsPerifl(bool isPrivate, String idioma) => _firebase.updateCurrentUserSettingsPerifl(isPrivate, idioma);
   Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
-  Future<void> updateUserBono(String userId, String brandId, Bono bono) => _firebase.updateUserBono(userId, brandId, bono);
+  Future<void> updateUserPurchase(String userId, String brandId, Bono bono, Purchase purchase) => _firebase.updateUserPurchase(userId, brandId, bono, purchase);
   Future<void> updateUserZoomScale(String userId, String brandId, double zoomScale) => _firebase.updateUserZoomScale(brandId, userId, zoomScale);
 
   // Delete Data
@@ -93,4 +96,8 @@ class UserDataService {
 
   Stream<QuerySnapshot> getUserActivePurchasesFromBrandStream(String userId, String brandId) => _firebase.getUserActivePurchasesFromBrandStream(userId, brandId);
 
+  Stream<DocumentSnapshot> getBonoFromEventUser(String userId, String bonoId) => _firebase.getBonoFromEventUser(userId, bonoId);
+
+  // Purchases
+  Stream<QuerySnapshot> getUserBrandPurchasesStream(String userId, String brandId) => _firebase.getUserBrandPurchasesStream(userId, brandId);
 }

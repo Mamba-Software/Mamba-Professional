@@ -5,7 +5,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
-import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
@@ -15,7 +14,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/ImageFullScreen.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/OtorgarBono.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/Purchase/PurchasePage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/UserBonos/UserBonosWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -663,7 +662,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).scaffoldBackgroundColor),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).backgroundColor),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -699,7 +698,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).scaffoldBackgroundColor),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).backgroundColor),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -970,7 +969,7 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
           centerTitle: true,
           elevation: 0,
           scrolledUnderElevation: 4,
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
             onPressed: () {
@@ -1086,34 +1085,14 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
                                     mixpanel!.track('profile_view_give_bono');
                                     Navigator.pop(context);
                                     // Cupertino Modal
-                                    showModalBottomSheet<bool?>(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.vertical(
-                                          top: Radius.circular(20),
-                                        ),
-                                      ),
-                                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                                      builder: (BuildContext context) {
-                                        return FractionallySizedBox(
-                                          heightFactor: 0.935,
-                                          child: GestureDetector(
-                                            behavior: HitTestBehavior.opaque,
-                                            onTap: () {
-                                              FocusScopeNode currentFocus = FocusScope.of(context);
-                                              if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                                                FocusManager.instance.primaryFocus?.unfocus();
-                                              }
-                                            },
-                                            child: OtorgarBono(
-                                              user: user,
-                                              edit: false,
-                                              brand: currentBrand,
-                                            ),
+                                    await Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<void>(
+                                          builder: (context) => PurchasePage(
+                                            user: user,
+                                            brand: currentBrand,
                                           ),
-                                        );
-                                      }
+                                        )
                                     ).whenComplete( () async {
                                       await checkIfHasAllBrandBonos();
                                     });
@@ -1217,14 +1196,18 @@ class _ProfileViewUserState extends State<ProfileViewUser> with SingleTickerProv
             ),
           ],
         ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(height: MediaQuery.of(context).size.height*0.0),
-            buildUserPicture(),
+            Material(
+              elevation: 4,
+              shape: const CircleBorder(),
+              child: buildUserPicture()
+            ),
             const SizedBox(height: 12),
             buildUserTitle(),
             SizedBox(height: MediaQuery.of(context).size.height*0.04),

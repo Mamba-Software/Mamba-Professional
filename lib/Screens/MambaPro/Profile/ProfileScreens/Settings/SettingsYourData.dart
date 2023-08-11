@@ -7,6 +7,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -37,6 +38,7 @@ class _SettingsYourDataState extends State<SettingsYourData> {
   int? genderTemp;
   final _genderKey = GlobalKey<_GenderWidgetState>();
   // Date of Birth
+  DateTime startDateLocal = DateTime.now();
   TextEditingController startDateController = TextEditingController();
   // Boolean isUpdated
   bool isUpdated = false;
@@ -103,7 +105,8 @@ class _SettingsYourDataState extends State<SettingsYourData> {
           use24hFormat: true,
           onDateTimeChanged: (val) {
             setState(() {
-              startDateController.text = DateFormat('dd-MM-yyyy', Localizations.localeOf(context).languageCode).format(val);
+              startDateLocal = val;
+              startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMMMYYYY(val, Localizations.localeOf(context).languageCode);
             });
           }
       ),
@@ -149,14 +152,16 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: TextButton(
-                          child: Text(AppLocalizations.of(context)!.entendido,
-                              style: Theme.of(context).textTheme.headline3?.copyWith(fontWeight: FontWeight.bold, decoration: TextDecoration.underline)),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                          }
+                    FloatingActionButton.extended(
+                      heroTag: "43",
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                      backgroundColor: Theme.of(context).primaryColor,
+                      icon: Container(),
+                      label: Text(
+                          AppLocalizations.of(context)!.confirm,
+                          style: Theme.of(context).textTheme.headline3?.copyWith(color: Theme.of(context).primaryColorDark)
                       ),
                     ),
                   ],
@@ -201,7 +206,6 @@ class _SettingsYourDataState extends State<SettingsYourData> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.myData, style: Theme.of(context).appBarTheme.titleTextStyle,),
         centerTitle: true,
-        elevation: 1,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
           onPressed: () async {
@@ -232,11 +236,11 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.45,
+                            width: MediaQuery.of(context).size.width * 0.5,
                             child: Column(
                               children: [
                                 SizedBox(
-                                  width: MediaQuery.of(context).size.width * 0.45,
+                                  width: MediaQuery.of(context).size.width * 0.5,
                                   child: Column(
                                     children: [
                                       Row(
@@ -249,51 +253,48 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                           ),
                                         ],
                                       ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                       SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.45,
+                                        width: MediaQuery.of(context).size.width * 0.5,
                                         child: Row(
                                           children: [
                                             Expanded(
-                                              child: TextFormField(
-                                                controller: firstNameController,
-                                                keyboardType: TextInputType.name,
-                                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    firstNameControllerTemp = value;
-                                                  });
-                                                },
-                                                textCapitalization: TextCapitalization.words,
-                                                decoration: InputDecoration(
-                                                  hintText: AppLocalizations.of(context)!.nameCompletoError,
-                                                  hintStyle: Theme.of(context).textTheme.caption,
-                                                  errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                  border: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Theme.of(context).primaryColor,
-                                                          width: 1.0
-                                                      )
+                                              child: Material(
+                                                elevation: 4,
+                                                borderRadius: BorderRadius.circular(15.0),
+                                                child: TextFormField(
+                                                  controller: firstNameController,
+                                                  keyboardType: TextInputType.name,
+                                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.nameCompletoError : null,
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      firstNameControllerTemp = value;
+                                                    });
+                                                  },
+                                                  textCapitalization: TextCapitalization.words,
+                                                  decoration: InputDecoration(
+                                                      hintText: AppLocalizations.of(context)!.nameCompletoError,
+                                                      hintStyle: Theme.of(context).textTheme.caption,
+                                                      errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                      border: OutlineInputBorder(
+                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                      ),
+                                                      enabledBorder: OutlineInputBorder(
+                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                      ),
+                                                      focusedBorder: OutlineInputBorder(
+                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                      ),
+                                                      errorBorder: OutlineInputBorder(
+                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                      ),
+                                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
                                                   ),
-                                                  enabledBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Theme.of(context).primaryColor,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  focusedBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Theme.of(context).primaryColor,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  errorBorder: const UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.red,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  disabledBorder: InputBorder.none,
                                                 ),
                                               ),
                                             ),
@@ -318,51 +319,48 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                           ),
                                         ],
                                       ),
+                                      SizedBox(height: MediaQuery.of(context).size.height*0.01),
                                       SizedBox(
                                         width: MediaQuery.of(context).size.width * 0.85,
                                         child: Row(
                                           children: [
                                             Expanded(
-                                              child: TextFormField(
-                                                controller: lastNameController,
-                                                keyboardType: TextInputType.name,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    lastNameControllerTemp = value;
-                                                  });
-                                                },
-                                                validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                                textCapitalization: TextCapitalization.words,
-                                                decoration: InputDecoration(
-                                                  hintStyle: Theme.of(context).textTheme.caption,
-                                                  hintText: AppLocalizations.of(context)!.lastNameError,
-                                                  errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                                  border: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Theme.of(context).primaryColor,
-                                                          width: 1.0
-                                                      )
+                                              child: Material(
+                                                elevation: 4,
+                                                borderRadius: BorderRadius.circular(15.0),
+                                                child: TextFormField(
+                                                  controller: lastNameController,
+                                                  keyboardType: TextInputType.name,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      lastNameControllerTemp = value;
+                                                    });
+                                                  },
+                                                  validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.lastNameError : null,
+                                                  style: Theme.of(context).textTheme.bodyText2,
+                                                  textCapitalization: TextCapitalization.words,
+                                                  decoration: InputDecoration(
+                                                      hintText: AppLocalizations.of(context)!.lastNameError,
+                                                      hintStyle: Theme.of(context).textTheme.caption,
+                                                      errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                      border: OutlineInputBorder(
+                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                      ),
+                                                      enabledBorder: OutlineInputBorder(
+                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                      ),
+                                                      focusedBorder: OutlineInputBorder(
+                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                      ),
+                                                      errorBorder: OutlineInputBorder(
+                                                        borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                        borderRadius: BorderRadius.circular(15.0),
+                                                      ),
+                                                      contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
                                                   ),
-                                                  enabledBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Theme.of(context).primaryColor,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  focusedBorder: UnderlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Theme.of(context).primaryColor,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  errorBorder: const UnderlineInputBorder(
-                                                      borderSide: const BorderSide(
-                                                          color: Colors.red,
-                                                          width: 1.0
-                                                      )
-                                                  ),
-                                                  disabledBorder: InputBorder.none,
                                                 ),
                                               ),
                                             ),
@@ -384,11 +382,15 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
-                                      CircularImage(
-                                        size: MediaQuery.of(context).size.width * 0.3,
-                                        image: currentUser.imageUrl,
-                                        borderWidth: 1,
-                                        color: AppColors.grey,
+                                      Material(
+                                        elevation: 4,
+                                        shape: const CircleBorder(),
+                                        child: CircularImage(
+                                          size: MediaQuery.of(context).size.width * 0.3,
+                                          image: currentUser.imageUrl,
+                                          borderWidth: 1,
+                                          color: AppColors.grey,
+                                        ),
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.width*0.02),
                                       FittedBox(
@@ -587,67 +589,67 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                             mainAxisSize: MainAxisSize.max,
                             children: <Widget>[
                               Flexible(
-                                child: TextFormField(
-                                  initialValue: currentUser.email,
-                                  readOnly: true,
-                                  enabled: false,
-                                  style: Theme.of(context).textTheme.caption,
-                                  decoration: InputDecoration(
-                                    suffixIcon: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: SizedBox(
-                                        height: MediaQuery.of(context).size.width*0.05,
-                                        width: MediaQuery.of(context).size.width*0.07,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Icon(
-                                              Icons.lock_outlined,
-                                              color: AppColors.grey,
-                                              size: MediaQuery.of(context).size.width*0.025,
+                                child: Material(
+                                  elevation: 4,
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: TextFormField(
+                                    initialValue: currentUser.email,
+                                    readOnly: true,
+                                    enabled: false,
+                                    style: Theme.of(context).textTheme.caption,
+                                    textAlign: TextAlign.start,
+                                    decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Theme.of(context).scaffoldBackgroundColor,
+                                        hintText: AppLocalizations.of(context)!.lastNameError,
+                                        hintStyle: Theme.of(context).textTheme.caption,
+                                        errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                        suffixIcon: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context).size.width*0.05,
+                                            width: isGoogle || isApple ? MediaQuery.of(context).size.width*0.07 : MediaQuery.of(context).size.width*0.05,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Icon(
+                                                  Icons.lock_outlined,
+                                                  color: AppColors.grey,
+                                                  size: MediaQuery.of(context).size.width*0.025,
+                                                ),
+                                                isGoogle || isApple ? SizedBox(
+                                                  width: isGoogle ? MediaQuery.of(context).size.width*0.023 : MediaQuery.of(context).size.width*0.018,
+                                                  child: Image(
+                                                      image: isGoogle ? AssetImage(Constants.google) : AssetImage(Constants.apple)
+                                                  ),
+                                                ) : Container(),
+                                              ],
                                             ),
-                                            isGoogle || isApple ? SizedBox(
-                                              width: isGoogle ? MediaQuery.of(context).size.width*0.023 : MediaQuery.of(context).size.width*0.018,
-                                              child: Image(
-                                                  image: isGoogle ? AssetImage(Constants.google) : AssetImage(Constants.apple)
-                                              ),
-                                            ) : Container(),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    border: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Theme.of(context).primaryColor,
-                                            width: 1.0
-                                        )
-                                    ),
-                                    enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Theme.of(context).primaryColor,
-                                            width: 1.0
-                                        )
-                                    ),
-                                    focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Theme.of(context).primaryColor,
-                                            width: 1.0
-                                        )
-                                    ),
-                                    errorBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: Colors.red,
-                                            width: 1.0
-                                        )
-                                    ),
-                                    disabledBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                            color: AppColors.grey,
-                                            width: 1.0
-                                        )
+                                        border: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        errorBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
                                     ),
                                   ),
-                                  textAlign: TextAlign.start,
                                 ),
                               ),
                             ],
@@ -665,59 +667,61 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                             style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                          GestureDetector(
-                              onTap: () {
-                                selectSlot(context, 0);
-                                FocusScopeNode currentFocus = FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus) {
-                                  currentFocus.unfocus();
-                                }
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Flexible(
-                                    child: TextFormField(
-                                      controller: startDateController,
-                                      readOnly: true,
-                                      enabled: false,
-                                      decoration: InputDecoration(
-                                        border: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context).primaryColor,
-                                                width: 1.0
-                                            )
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context).primaryColor,
-                                                width: 1.0
-                                            )
-                                        ),
-                                        focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context).primaryColor,
-                                                width: 1.0
-                                            )
-                                        ),
-                                        errorBorder: const UnderlineInputBorder(
-                                            borderSide: const BorderSide(
-                                                color: Colors.red,
-                                                width: 1.0
-                                            )
-                                        ),
-                                        disabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                                color: Theme.of(context).primaryColor,
-                                                width: 1.0
-                                            )
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: GestureDetector(
+                                onTap: () {
+                                  selectSlot(context, 0);
+                                  FocusScopeNode currentFocus = FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus) {
+                                    currentFocus.unfocus();
+                                  }
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: <Widget>[
+                                    Flexible(
+                                      child: Material(
+                                        elevation: 4,
+                                        borderRadius: BorderRadius.circular(15.0),
+                                        child: TextFormField(
+                                          controller: startDateController,
+                                          readOnly: true,
+                                          enabled: false,
+                                          style: Theme.of(context).textTheme.bodyText2,
+                                          decoration: InputDecoration(
+                                              hintText: AppLocalizations.of(context)!.lastNameError,
+                                              hintStyle: Theme.of(context).textTheme.caption,
+                                              errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                              border: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              disabledBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(color: Colors.transparent, width: 1.5),
+                                                borderRadius: BorderRadius.circular(15.0),
+                                              ),
+                                              contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8)
+                                          ),
+                                          textAlign: TextAlign.start,
                                         ),
                                       ),
-                                      textAlign: TextAlign.start,
                                     ),
-                                  ),
-                                ],
-                              )
+                                  ],
+                                )
+                            ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height*0.04),
                         ],
@@ -768,10 +772,11 @@ class _SettingsYourDataState extends State<SettingsYourData> {
                   currentUser.gender = genderTemp;
                 }
                 if (startDateController.text != currentUser.dateOfBirth) {
+                  startDateController.text = DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDateLocal, Localizations.localeOf(context).languageCode);
                   currentUser.dateOfBirth = startDateController.text;
                 }
                 currentUser.name = currentUser.firstName!+" "+currentUser.lastName!;
-                _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
+                await _userDataService.updateCurrentUserDatosPerifl(currentUser.name!, currentUser.firstName!, currentUser.lastName!, currentUser.gender!, currentUser.dateOfBirth!);
                 mixpanel!.track('user_profile_settings_edit_info_completed');
               }
               Navigator.pop(context);
@@ -819,39 +824,44 @@ class _GenderWidgetState extends State<GenderWidget> {
     );
   }
   Widget _icon(int index, {required String text, required IconData icon}) {
-    return SizedBox.fromSize(
-        size: Size(MediaQuery.of(context).size.width*0.25, MediaQuery.of(context).size.width*0.25), // button width and height
-        child: ClipOval(
-          child: Material(
-            color: gender == index ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
-            child: InkWell(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      icon,
-                      size: 30,
-                      color: gender == index ? AppColors.white : Theme.of(context).primaryColor,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Text(
-                          text,
-                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: gender == index ? AppColors.white : Theme.of(context).primaryColor)
+    return Material(
+      elevation: 4,
+      shape: const CircleBorder(),
+      shadowColor: gender == index ? Theme.of(context).colorScheme.secondary.withOpacity(0.5) : Theme.of(context).scaffoldBackgroundColor,
+      child: SizedBox.fromSize(
+          size: Size(MediaQuery.of(context).size.width*0.25, MediaQuery.of(context).size.width*0.25), // button width and height
+          child: ClipOval(
+            child: Material(
+              color: gender == index ? Theme.of(context).colorScheme.secondary : Theme.of(context).scaffoldBackgroundColor,
+              child: InkWell(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
+                        size: 30,
+                        color: gender == index ? AppColors.white : Theme.of(context).primaryColor,
                       ),
-                    ),
-                  ],
-                ),
-                onTap: () => {
-                  setState(() {
-                    gender = index;
-                    widget.selectedGenderChanged(gender);
-                  }),
-                },
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Text(
+                            text,
+                            style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold, color: gender == index ? AppColors.white : Theme.of(context).primaryColor)
+                        ),
+                      ),
+                    ],
+                  ),
+                  onTap: () => {
+                    setState(() {
+                      gender = index;
+                      widget.selectedGenderChanged(gender);
+                    }),
+                  },
+              ),
             ),
           ),
         ),
-      );
+    );
   }
 
 }

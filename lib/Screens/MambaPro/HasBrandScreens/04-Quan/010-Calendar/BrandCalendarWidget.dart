@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
@@ -137,7 +138,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     _timeSlotViewScale = await _userDataService.getUserZoomScale(widget.brandId, currentUser.id!);
     _timeSlotViewZoom = _timeSlotViewScale * _baseTimeSlotViewZoom;
     // Get The Events Needed
-    await context.read<BrandEventsCubit>().updateInitialBrandEvents(_brandTrainers);
+    await context.read<BrandEventsCubit>().getInitialBrandEvents(_brandTrainers);
     setState(() {
       isLoading = false;
     });
@@ -245,6 +246,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   child: AddOrEditEvent(
                     locale: Localizations.localeOf(context),
                     dateTime: eventDate,
+                    isBeforeEdit: true
                   ),
                 ),
           )
@@ -284,6 +286,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                   child: AddOrEditPrivateEvent(
                     locale: Localizations.localeOf(context),
                     dateTime: eventDate,
+                    isBeforeEdit: true
                   ),
                 ),
           )
@@ -291,18 +294,31 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
     }
   }
 
-  void navigateToEventScreen(String eventId, bool isCompleted) {
+  Future<void> navigateToEventScreen(String eventId, bool isCompleted) async {
     mixpanel!.track('brand_calendar_event_view', properties: {'Calendar View': _controller.view.toString(), 'isCompleted': isCompleted});
     // Navigate to Event Screen
-    Navigator.push(
+    var result = await Navigator.push(
         context,
-        CupertinoPageRoute<void>(
+        CupertinoPageRoute<bool?>(
           builder: (context) => EventPage(
             eventId: eventId,
             onlyView: widget.onlyView,
           ),
         )
     );
+    if (result != null) {
+      if (result) {
+        if (isCompleted) {
+          // Event Has Been Updated
+          context.read<BrandEventsCubit>().updateBrandEvent(eventId, _brandTrainers);
+        }
+      } else {
+        if (isCompleted) {
+          // Event Has Been Updated
+          context.read<BrandEventsCubit>().deleteBrandEvent(eventId);
+        }
+      }
+    }
   }
 
   Widget _buildTitleText(DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
@@ -931,93 +947,119 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           navigateToEventScreen(appointment.id.toString(), isCompleted);
         },
         child: Container(
-          height: details.bounds.height,
-          width: details.bounds.width,
-          margin: const EdgeInsets.symmetric(vertical: 2),
-          padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.04, vertical: details.bounds.width*0.02),
-          decoration: BoxDecoration(
-            color: appointment.color,
-            borderRadius: BorderRadius.all(
-              Radius.circular(details.bounds.width*0.04),
+          margin: EdgeInsets.only(top: details.bounds.width*0.0, bottom: details.bounds.width*0.02, right: MediaQuery.of(context).size.width*0.02),
+          child: Material(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(details.bounds.width*0.04),),
             ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                child: Text(
-                  event.title!,
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white, fontWeight: FontWeight.w600),
-                  overflow: TextOverflow.fade,
-                  textAlign: TextAlign.start,
-                  maxLines: 1,
-                  softWrap: false,
-                ),
-              ),
-              Flexible(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
+            child: SizedBox(
+              height: details.bounds.height,
+              width: details.bounds.width,
+              child: Row(
+                children: [
+                  Container(
+                    width: details.bounds.width*0.1,
+                    decoration: BoxDecoration(
+                      color: appointment.color,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(details.bounds.width*0.04),
+                        bottomLeft: Radius.circular(details.bounds.width*0.04),
                       ),
-                      Text(
-                        DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              Flexible(
-                child: ListView.builder(
-                    shrinkWrap: false,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: event.usersList.length,
-                    clipBehavior: Clip.none,
-                    itemBuilder: (context, int index) {
-                      var trainer = event.usersList[index];
-                      if (trainer.isTrainer == true) {
-                        return Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CircularImage(
-                                size: MediaQuery.of(context).size.width*0.05,
-                                image: trainer.imageUrl,
-                                color: AppColors.white,
-                                borderWidth: 0.5,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                trainer.lastName != null && trainer.lastName!.isNotEmpty ? trainer.firstName!+" "+trainer.lastName![0]+"." : trainer.firstName!,
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                                overflow: TextOverflow.fade,
-                                maxLines: 1,
-                                softWrap: false,
-                              ),
-                            ],
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: details.bounds.width*0.04, vertical: details.bounds.width*0.02),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(details.bounds.width*0.04),
+                          bottomRight: Radius.circular(details.bounds.width*0.04),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              event.title!,
+                              style: Theme.of(context).textTheme.bodyText2?.copyWith(fontWeight: FontWeight.w600),
+                              overflow: TextOverflow.fade,
+                              textAlign: TextAlign.start,
+                              maxLines: 1,
+                              softWrap: false,
+                            ),
                           ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }
-                ),
+                          Flexible(
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    appointment.subject+" "+AppLocalizations.of(context)!.asistants.toLowerCase(),
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                  ),
+                                  Text(
+                                    DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.startTime) + " - " + DateFormat('Hm', Localizations.localeOf(context).languageCode).format(appointment.endTime),
+                                    style: Theme.of(context).textTheme.bodyText2,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            child: ListView.builder(
+                                shrinkWrap: false,
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                itemCount: event.usersList.length,
+                                clipBehavior: Clip.none,
+                                itemBuilder: (context, int index) {
+                                  var trainer = event.usersList[index];
+                                  if (trainer.isTrainer == true) {
+                                    return Container(
+                                      margin: const EdgeInsets.only(right: 5),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          CircularImage(
+                                            size: MediaQuery.of(context).size.width*0.05,
+                                            image: trainer.imageUrl,
+                                            color: AppColors.white,
+                                            borderWidth: 0.5,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            trainer.lastName != null && trainer.lastName!.isNotEmpty ? trainer.firstName!+" "+trainer.lastName![0]+"." : trainer.firstName!,
+                                            style: Theme.of(context).textTheme.bodyText2,
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 1,
+                                            softWrap: false,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    return Container();
+                                  }
+                                }
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       );
@@ -1443,7 +1485,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            centerTitle: true,
+            centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -1458,27 +1500,50 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
               ),
             ),
             actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red : AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CounterBadgeIcon(
+                    counter: unreadNotifications,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToNotificationsScreen(context),
+                    ),
                   ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_calendar_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_calendar_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                  CounterBadgeIcon(
+                    counter: unreadChats,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToChatScreen(context),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  GestureDetector(
+                    onTap: () => navigateToProfileScreen(context),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.08,
+                          image: currentUser.imageUrl,
+                          color: AppColors.grey,
+                          borderWidth: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
           BlocBuilder<BrandEventsCubit, BrandEventsState>(
@@ -1710,7 +1775,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
           animatedIcon: AnimatedIcons.add_event,
           animationDuration: const Duration(milliseconds: 300),
           foregroundColor: AppColors.white,
-          overlayColor: Theme.of(context).primaryColorDark,
+          overlayColor: Theme.of(context).scaffoldBackgroundColor,
           overlayOpacity: 0.95,
           spacing: MediaQuery.of(context).size.height*0.02,
           spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
@@ -1721,7 +1786,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 Icons.groups,
               ),
               elevation: 10,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).backgroundColor,
               labelWidget: Container(
                 color: Colors.transparent,
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
@@ -1757,7 +1822,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 Icons.person,
               ),
               elevation: 10,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              backgroundColor: Theme.of(context).backgroundColor,
               labelWidget: Container(
                 color: Colors.transparent,
                 padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
@@ -1875,7 +1940,11 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
       var color;
       if (event.isPrivate!) {
         subject = "${event.numClients}";
-        color = Colors.black;
+        if (endDate.isAfter(DateTime.now())) {
+          color = Colors.black;
+        } else {
+          color = Colors.black.withOpacity(0.7);
+        }
       } else {
         subject = "${event.numClients}/${event.maxMembers}";
         // Colors
@@ -1883,17 +1952,41 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
         double maxMembers = double.parse(event.maxMembers.toString());
         double bookedCapacity = numClients/maxMembers;
         if(bookedCapacity <= 0.20) {
-          color = Colors.green;
+          if (endDate.isAfter(DateTime.now())) {
+            color = Colors.green;
+          } else {
+            color = Colors.green.withOpacity(0.5);
+          }
         } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
-          color = const Color(0xFFA8C76C);
+          if (endDate.isAfter(DateTime.now())) {
+            color = const Color(0xFFA8C76C);
+          } else {
+            color = const Color(0xFFA8C76C).withOpacity(0.5);
+          }
         } else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
-          color = const Color(0xFFECE014);
+          if (endDate.isAfter(DateTime.now())) {
+            color = const Color(0xFFECE014);
+          } else {
+            color = const Color(0xFFECE014).withOpacity(0.5);
+          }
         } else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
-          color = Colors.orangeAccent;
+          if (endDate.isAfter(DateTime.now())) {
+            color = Colors.orangeAccent;
+          } else {
+            color = Colors.orangeAccent.withOpacity(0.5);
+          }
         } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
-          color = Colors.deepOrangeAccent;
-        } else if(bookedCapacity == 1) {
-          color = Colors.red;
+          if (endDate.isAfter(DateTime.now())) {
+            color = Colors.deepOrangeAccent;
+          } else {
+            color = Colors.deepOrangeAccent.withOpacity(0.6);
+          }
+        } else if(bookedCapacity >= 1) {
+          if (endDate.isAfter(DateTime.now())) {
+            color = Colors.red;
+          } else {
+            color = Colors.red.withOpacity(0.6);
+          }
         }
       }
       // Only If Selected Trainers

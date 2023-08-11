@@ -33,7 +33,7 @@ class _ChatCoreState extends State<ChatCore> {
   bool _initialized = false;
   User? _user;
 
-  var _roomDataService = new RoomDataService();
+  var _roomDataService = RoomDataService();
   final _userDataService = UserDataService();
   var searchController = TextEditingController();
   bool searchClicked = false;
@@ -65,6 +65,7 @@ class _ChatCoreState extends State<ChatCore> {
         });
       });
     } catch (e) {
+      print(e.toString());
       Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
           _error = true;
@@ -126,9 +127,16 @@ class _ChatCoreState extends State<ChatCore> {
               ],
             ),
             centerTitle: false,
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
             bottom: searchClicked ? PreferredSize(
                 preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.10,),
-                child: Container(
+                child: SizedBox(
                   height: MediaQuery.of(context).size.height*0.10,
                   child: Padding(
                       padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
@@ -143,11 +151,11 @@ class _ChatCoreState extends State<ChatCore> {
                         decoration: InputDecoration(
                           hintStyle: Theme.of(context).textTheme.caption,
                           hintText: AppLocalizations.of(context)!.search,
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
                               borderRadius: BorderRadius.all(Radius.circular(10.0))
                           ),
-                          border: OutlineInputBorder(
+                          border: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
                               borderRadius: BorderRadius.all(Radius.circular(10.0))
                           ),
@@ -163,13 +171,13 @@ class _ChatCoreState extends State<ChatCore> {
                             },
                             icon: Icon(Icons.delete_outline, color: Colors.grey, size: MediaQuery.of(context).size.width*0.06,),
                           ),
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                         ),
                       )
                   ),
                 )
             ) :  PreferredSize(
-              preferredSize: Size.fromHeight(0),
+              preferredSize: const Size.fromHeight(0),
               child: Container(),
             ),
             actions: [
@@ -196,7 +204,7 @@ class _ChatCoreState extends State<ChatCore> {
         ),
         body: Container(
           child: ListView.builder(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
               itemCount: 8,
@@ -211,7 +219,7 @@ class _ChatCoreState extends State<ChatCore> {
                       child: Container(
                         height: MediaQuery.of(context).size.height*0.08,
                         width: MediaQuery.of(context).size.height*0.08,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppColors.grey,
                           shape: BoxShape.circle,
                         ),
@@ -225,9 +233,9 @@ class _ChatCoreState extends State<ChatCore> {
                           child: Container(
                             height: MediaQuery.of(context).size.height*0.025,
                             width: MediaQuery.of(context).size.width*0.3,
-                            decoration: BoxDecoration(
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
                               ),
                               color: AppColors.grey,
                             ),
@@ -245,10 +253,10 @@ class _ChatCoreState extends State<ChatCore> {
                           child: Container(
                             height: MediaQuery.of(context).size.height*0.02,
                             width: MediaQuery.of(context).size.width*0.5,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               color: AppColors.grey,
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
                               ),
                             ),
                           ),
@@ -261,10 +269,10 @@ class _ChatCoreState extends State<ChatCore> {
                       child: Container(
                         height: MediaQuery.of(context).size.height*0.04,
                         width: MediaQuery.of(context).size.width*0.10,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppColors.grey,
-                          borderRadius: new BorderRadius.all(
-                            const Radius.circular(10.0),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10.0),
                           ),
                         ),
                       ),
@@ -291,7 +299,7 @@ class _ChatCoreState extends State<ChatCore> {
             centerTitle: false,
             bottom: searchClicked ? PreferredSize(
                 preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.10,),
-                child: Container(
+                child: SizedBox(
                   height: MediaQuery.of(context).size.height*0.10,
                   child: Padding(
                       padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
@@ -306,11 +314,11 @@ class _ChatCoreState extends State<ChatCore> {
                         decoration: InputDecoration(
                           hintStyle: Theme.of(context).textTheme.caption,
                           hintText: AppLocalizations.of(context)!.search,
-                          focusedBorder: OutlineInputBorder(
+                          focusedBorder: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
                               borderRadius: BorderRadius.all(Radius.circular(10.0))
                           ),
-                          border: OutlineInputBorder(
+                          border: const OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
                               borderRadius: BorderRadius.all(Radius.circular(10.0))
                           ),
@@ -326,13 +334,13 @@ class _ChatCoreState extends State<ChatCore> {
                             },
                             icon: Icon(Icons.delete_outline, color: Colors.grey, size: MediaQuery.of(context).size.width*0.06,),
                           ),
-                          contentPadding: EdgeInsets.all(0),
+                          contentPadding: const EdgeInsets.all(0),
                         ),
                       )
                   ),
                 )
             ) :  PreferredSize(
-              preferredSize: Size.fromHeight(0),
+              preferredSize: const Size.fromHeight(0),
               child: Container(),
             ),
             actions: [
@@ -357,86 +365,84 @@ class _ChatCoreState extends State<ChatCore> {
               SizedBox(width: MediaQuery.of(context).size.width*0.03,),
             ]
         ),
-        body: Container(
-          child: ListView.builder(
-              physics: BouncingScrollPhysics(),
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: 8,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                  child: ListTile(
-                    dense: true,
-                    leading: Shimmer.fromColors(
-                      baseColor: AppColors.grey,
-                      highlightColor: AppColors.grey.withOpacity(0.5),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height*0.08,
-                        width: MediaQuery.of(context).size.height*0.08,
-                        decoration: BoxDecoration(
-                          color: AppColors.grey,
-                          shape: BoxShape.circle,
-                        ),
+        body: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            itemCount: 8,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                child: ListTile(
+                  dense: true,
+                  leading: Shimmer.fromColors(
+                    baseColor: AppColors.grey,
+                    highlightColor: AppColors.grey.withOpacity(0.5),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.08,
+                      width: MediaQuery.of(context).size.height*0.08,
+                      decoration: const BoxDecoration(
+                        color: AppColors.grey,
+                        shape: BoxShape.circle,
                       ),
                     ),
-                    title: Row(
-                      children: [
-                        Shimmer.fromColors(
-                          baseColor: AppColors.grey,
-                          highlightColor: AppColors.grey.withOpacity(0.5),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height*0.025,
-                            width: MediaQuery.of(context).size.width*0.3,
-                            decoration: BoxDecoration(
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                        Shimmer.fromColors(
-                          baseColor: AppColors.grey,
-                          highlightColor: AppColors.grey.withOpacity(0.5),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height*0.02,
-                            width: MediaQuery.of(context).size.width*0.5,
-                            decoration: BoxDecoration(
-                              color: AppColors.grey,
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    trailing: Shimmer.fromColors(
-                      baseColor: AppColors.grey,
-                      highlightColor: AppColors.grey.withOpacity(0.5),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height*0.04,
-                        width: MediaQuery.of(context).size.width*0.10,
-                        decoration: BoxDecoration(
-                          color: AppColors.grey,
-                          borderRadius: new BorderRadius.all(
-                            const Radius.circular(10.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    onTap: null,
                   ),
-                );
-              }
-          ),
+                  title: Row(
+                    children: [
+                      Shimmer.fromColors(
+                        baseColor: AppColors.grey,
+                        highlightColor: AppColors.grey.withOpacity(0.5),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.025,
+                          width: MediaQuery.of(context).size.width*0.3,
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                            color: AppColors.grey,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                      Shimmer.fromColors(
+                        baseColor: AppColors.grey,
+                        highlightColor: AppColors.grey.withOpacity(0.5),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.02,
+                          width: MediaQuery.of(context).size.width*0.5,
+                          decoration: const BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  trailing: Shimmer.fromColors(
+                    baseColor: AppColors.grey,
+                    highlightColor: AppColors.grey.withOpacity(0.5),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height*0.04,
+                      width: MediaQuery.of(context).size.width*0.10,
+                      decoration: const BoxDecoration(
+                        color: AppColors.grey,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: null,
+                ),
+              );
+            }
         ),
       );
     }
@@ -453,7 +459,7 @@ class _ChatCoreState extends State<ChatCore> {
           centerTitle: false,
           bottom: searchClicked ? PreferredSize(
               preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.10,),
-              child: Container(
+              child: SizedBox(
                 height: MediaQuery.of(context).size.height*0.10,
                 child: Padding(
                     padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
@@ -468,11 +474,11 @@ class _ChatCoreState extends State<ChatCore> {
                       decoration: InputDecoration(
                         hintStyle: Theme.of(context).textTheme.caption,
                         hintText: AppLocalizations.of(context)!.search,
-                        focusedBorder: OutlineInputBorder(
+                        focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                             borderRadius: BorderRadius.all(Radius.circular(10.0))
                         ),
-                        border: OutlineInputBorder(
+                        border: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
                             borderRadius: BorderRadius.all(Radius.circular(10.0))
                         ),
@@ -488,13 +494,13 @@ class _ChatCoreState extends State<ChatCore> {
                           },
                           icon: Icon(Icons.delete_outline, color: Colors.grey, size: MediaQuery.of(context).size.width*0.06,),
                         ),
-                        contentPadding: EdgeInsets.all(0),
+                        contentPadding: const EdgeInsets.all(0),
                       ),
                     )
                 ),
               )
           ) :  PreferredSize(
-            preferredSize: Size.fromHeight(0),
+            preferredSize: const Size.fromHeight(0),
             child: Container(),
           ),
           actions: [
@@ -523,98 +529,94 @@ class _ChatCoreState extends State<ChatCore> {
         stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
         //initialData: const [],
         builder: (context, snapshot) {
-          if (snapshot.data == null) {
-            print("1");
-            return Container(
-              child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: 8,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
-                      child: ListTile(
-                        dense: true,
-                        leading: Shimmer.fromColors(
-                          baseColor: AppColors.grey,
-                          highlightColor: AppColors.grey.withOpacity(0.5),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height*0.08,
-                            width: MediaQuery.of(context).size.height*0.08,
-                            decoration: BoxDecoration(
-                              color: AppColors.grey,
-                              shape: BoxShape.circle,
-                            ),
+          if (snapshot.hasData == false) {
+            return ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: 8,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                    child: ListTile(
+                      dense: true,
+                      leading: Shimmer.fromColors(
+                        baseColor: AppColors.grey,
+                        highlightColor: AppColors.grey.withOpacity(0.5),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.08,
+                          width: MediaQuery.of(context).size.height*0.08,
+                          decoration: const BoxDecoration(
+                            color: AppColors.grey,
+                            shape: BoxShape.circle,
                           ),
                         ),
-                        title: Row(
-                          children: [
-                            Shimmer.fromColors(
-                              baseColor: AppColors.grey,
-                              highlightColor: AppColors.grey.withOpacity(0.5),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height*0.025,
-                                width: MediaQuery.of(context).size.width*0.3,
-                                decoration: BoxDecoration(
-                                  borderRadius: new BorderRadius.all(
-                                    const Radius.circular(10.0),
-                                  ),
-                                  color: AppColors.grey,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height*0.005),
-                            Shimmer.fromColors(
-                              baseColor: AppColors.grey,
-                              highlightColor: AppColors.grey.withOpacity(0.5),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height*0.02,
-                                width: MediaQuery.of(context).size.width*0.5,
-                                decoration: BoxDecoration(
-                                  color: AppColors.grey,
-                                  borderRadius: new BorderRadius.all(
-                                    const Radius.circular(10.0),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        trailing: Shimmer.fromColors(
-                          baseColor: AppColors.grey,
-                          highlightColor: AppColors.grey.withOpacity(0.5),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height*0.04,
-                            width: MediaQuery.of(context).size.width*0.1,
-                            decoration: BoxDecoration(
-                              color: AppColors.grey,
-                              borderRadius: new BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            ),
-                          ),
-                        ),
-                        onTap: null,
                       ),
-                    );
-                  }
-              ),
+                      title: Row(
+                        children: [
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.025,
+                              width: MediaQuery.of(context).size.width*0.3,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                                color: AppColors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.02,
+                              width: MediaQuery.of(context).size.width*0.5,
+                              decoration: const BoxDecoration(
+                                color: AppColors.grey,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      trailing: Shimmer.fromColors(
+                        baseColor: AppColors.grey,
+                        highlightColor: AppColors.grey.withOpacity(0.5),
+                        child: Container(
+                          height: MediaQuery.of(context).size.height*0.04,
+                          width: MediaQuery.of(context).size.width*0.1,
+                          decoration: const BoxDecoration(
+                            color: AppColors.grey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      onTap: null,
+                    ),
+                  );
+                }
             );
           } else if (snapshot.data!.isEmpty && snapshot.connectionState == ConnectionState.active ) {
-            print("2");
-            return Container(
+            return SizedBox(
               height: MediaQuery.of(context).size.height *0.65,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: Container(
+                    child: SizedBox(
                         height: MediaQuery.of(context).size.width*0.3,
                         child: Image.asset(Constants.chatImage)
                     ),
@@ -629,7 +631,6 @@ class _ChatCoreState extends State<ChatCore> {
               ),
             );
           } else {
-            print("3");
             allRooms = snapshot.data!;
             if (!isFiltered) {
               return ListView.builder(
@@ -730,7 +731,7 @@ class _ChatCoreState extends State<ChatCore> {
                                           decoration: InputDecoration(
                                             hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
                                             hintText: returnChatHintMessage(room),
-                                            contentPadding: EdgeInsets.all(0),
+                                            contentPadding: const EdgeInsets.all(0),
                                             isDense: true,
                                             enabledBorder: InputBorder.none,
                                             errorBorder: InputBorder.none,
@@ -880,7 +881,7 @@ class _ChatCoreState extends State<ChatCore> {
                                             hintText: room.lastMessages !=
                                                 null ? room.lastMessages[0]
                                                 .text : 'test',
-                                            contentPadding: EdgeInsets.all(0),
+                                            contentPadding: const EdgeInsets.all(0),
                                             isDense: true,
                                             enabledBorder: InputBorder.none,
                                             errorBorder: InputBorder.none,

@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/LibraryModels/lPaymentMethod.dart';
 import 'package:mamba_castelldefels/Data/Models/ImageObject.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
@@ -835,33 +836,33 @@ class FirebaseDatabaseService {
     return events;
   }
 
-    // Get More Notifications
-    Future <List<Event>> getUserMoreCompletedEventsLimit(String userId, String eventId, int limit) async {
-      Timestamp now = Timestamp.fromDate(DateTime.now());
-      // Get Last Notification document
-      DocumentSnapshot docu = await _firestore
-          .collection(users)
-          .doc(userId)
-          .collection("Events")
-          .doc(eventId)
-          .get();
-      // Get More Events
-      List<Event> events = [];
-      QuerySnapshot querySnapshot = await _firestore
-          .collection(users)
-          .doc(userId)
-          .collection("Events")
-          .where("doneAt", isLessThan: now)
-          .orderBy("doneAt", descending: true)
-          .startAfterDocument(docu)
-          .limit(limit)
-          .get();
-      for (int i = 0; i < querySnapshot.docs.length; i++) {
-        events.add(Event.fromObjectOnlyCoverData(
-            querySnapshot.docs[i].id, querySnapshot.docs[i]));
-      }
-      return events;
+  // Get More Notifications
+  Future <List<Event>> getUserMoreCompletedEventsLimit(String userId, String eventId, int limit) async {
+    Timestamp now = Timestamp.fromDate(DateTime.now());
+    // Get Last Notification document
+    DocumentSnapshot docu = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .doc(eventId)
+        .get();
+    // Get More Events
+    List<Event> events = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Events")
+        .where("doneAt", isLessThan: now)
+        .orderBy("doneAt", descending: true)
+        .startAfterDocument(docu)
+        .limit(limit)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      events.add(Event.fromObjectOnlyCoverData(
+          querySnapshot.docs[i].id, querySnapshot.docs[i]));
     }
+    return events;
+  }
 
   // Get More Notifications Brand
   Future <List<Event>> getBrandMoreCompletedEventsLimit(String brandId, String eventId, int limit) async {
@@ -1903,8 +1904,21 @@ class FirebaseDatabaseService {
     }
 
     // User Joins Event
-    Future<bool> addUserToEvent(String eid, String uid, [bool invitedDirectly = false]) async {
+    Future<bool> addUserToEvent(String eid, String uid, String purchaseId, [bool invitedDirectly = false]) async {
       try {
+        DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+        await  _firestore.collection(events).doc(eid).get();
+        Event event = Event.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        if(event.maxMembers != null && event.numClients != null) {
+          if(event.numClients! > event.maxMembers!) {
+            await _firestore
+                .collection(events)
+                .doc(eid)
+                .update({
+              "maxMembers": event.maxMembers! + 1,
+            });
+          }
+        }
         Usuario user = await getUserDetails(uid);
         Timestamp joinedAt = Timestamp.fromDate(DateTime.now());
         if (invitedDirectly) {
@@ -1925,6 +1939,7 @@ class FirebaseDatabaseService {
             "invitedDirectly": invitedDirectly,
             "joinedAt": joinedAt,
             "notificationToken": user.notificationToken,
+            "purchaseId": purchaseId,
           }).catchError((err) {
             print(err);
           });
@@ -1945,6 +1960,7 @@ class FirebaseDatabaseService {
             "isPrivate": user.isPrivate,
             "joinedAt": joinedAt,
             "notificationToken": user.notificationToken,
+            "purchaseId": purchaseId,
           }).catchError((err) {
             print(err);
           });
@@ -2239,6 +2255,28 @@ class FirebaseDatabaseService {
         print(e.toString());
       }
     }
+
+  // Update Event
+  Future<void> updateEventUserPurchase(String eventId, String userId, String purchaseId) async {
+    try {
+      final _purchaseDataService = PurchaseDataService();
+      DocumentSnapshot<Map<String, dynamic>> _documentSnapshot =
+      await  _firestore.collection(events).doc(eventId).collection("Users").doc(userId).get();
+      Usuario user = Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+      if(user.purchaseId != purchaseId) {
+        await _firestore.collection(events).doc(eventId).collection("Users").doc(userId).update({
+          "purchaseId": purchaseId,
+        });
+        await _purchaseDataService.deletedPurchaseUserFromEvent(
+            user, eventId);
+        await _purchaseDataService.addEventToPurchase(
+            purchaseId, eventId);
+      }
+
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
     // Update Event User Feedback
     Future<void> addEventFeedback(String eventId, String userId, double intensityScore) async {

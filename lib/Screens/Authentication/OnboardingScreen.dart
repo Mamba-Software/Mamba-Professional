@@ -693,7 +693,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ) : Container(),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                       Material(
-                                        elevation: 8,
+                                        elevation: 4,
                                         borderRadius: BorderRadius.circular(15.0),
                                         child: Row(
                                           children: [
@@ -749,7 +749,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                       ),
                                       SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                       Material(
-                                        elevation: 8,
+                                        elevation: 4,
                                         borderRadius: BorderRadius.circular(15.0),
                                         child: Row(
                                           children: [
@@ -945,11 +945,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                   color: AppColors.black
                                               )),
                                               Center(
-                                                child: CircularImage(
-                                                  size: MediaQuery.of(context).size.height * 0.15,
-                                                  file: _image,
-                                                  borderWidth: 1,
-                                                  color: AppColors.grey,
+                                                child: Material(
+                                                  elevation: 4,
+                                                  shape: const CircleBorder(),
+                                                  child: CircularImage(
+                                                    size: MediaQuery.of(context).size.height * 0.15,
+                                                    file: _image,
+                                                    borderWidth: 1,
+                                                    color: AppColors.grey,
+                                                  ),
                                                 )
                                               ),
                                             ],
@@ -962,11 +966,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               const Center(child: CircularProgressIndicator(
                                                   color: AppColors.black
                                               )),
-                                              Center(child: CircularImage(
-                                                size: MediaQuery.of(context).size.height * 0.15,
-                                                image: imageUrl,
-                                                borderWidth: 1,
-                                                color: AppColors.grey,
+                                              Center(child: Material(
+                                                elevation: 4,
+                                                shape: const CircleBorder(),
+                                                child: CircularImage(
+                                                  size: MediaQuery.of(context).size.height * 0.15,
+                                                  image: imageUrl,
+                                                  borderWidth: 1,
+                                                  color: AppColors.grey,
+                                                ),
                                               )
                                               ),
                                             ],
@@ -1058,7 +1066,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.15,
                                                 child: Material(
-                                                  elevation: 8,
+                                                  elevation: 4,
                                                   borderRadius: BorderRadius.circular(15.0),
                                                   child: TextFormField(
                                                     autofocus: true,
@@ -1141,7 +1149,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.15,
                                                 child: Material(
-                                                  elevation: 8,
+                                                  elevation: 4,
                                                   borderRadius: BorderRadius.circular(15.0),
                                                   child: TextFormField(
                                                     focusNode: focusNodeMonth,
@@ -1224,7 +1232,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               SizedBox(
                                                 width: MediaQuery.of(context).size.width*0.18,
                                                 child: Material(
-                                                  elevation: 8,
+                                                  elevation: 4,
                                                   borderRadius: BorderRadius.circular(15.0),
                                                   child: TextFormField(
                                                     focusNode: focusNodeYear,
@@ -1458,7 +1466,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.05),
                                         Material(
-                                          elevation: 8,
+                                          elevation: 4,
                                           borderRadius: BorderRadius.circular(15.0),
                                           child: Container(
                                             height: MediaQuery.of(context).size.height*0.07,
@@ -1499,7 +1507,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                         Material(
-                                          elevation: 8,
+                                          elevation: 4,
                                           borderRadius: BorderRadius.circular(15.0),
                                           child: Container(
                                             height: MediaQuery.of(context).size.height*0.07,
@@ -1540,7 +1548,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                         ),
                                         SizedBox(height: MediaQuery.of(context).size.height*0.02),
                                         Material(
-                                          elevation: 8,
+                                          elevation: 4,
                                           borderRadius: BorderRadius.circular(15.0),
                                           child: Container(
                                             height: MediaQuery.of(context).size.height*0.07,

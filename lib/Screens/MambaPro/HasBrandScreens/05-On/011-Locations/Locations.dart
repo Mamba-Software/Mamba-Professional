@@ -11,6 +11,8 @@ import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataServic
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Images/ImageUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Location/LocationImageTile.dart';
@@ -115,22 +117,31 @@ class _LocationsState extends State<Locations> {
       locationContainers.clear();
     });
     var tempList = locationList.map((i) =>
-      LocationImageTile(
-        height: MediaQuery.of(context).size.height*0.16,
-        width: MediaQuery.of(context).size.width,
-        locationId: i.id!,
-        brandId: currentBrand.id!,
-        canEdit: canEdit,
-        locationChanged: (boolean) async {
-          if (boolean == true) {
-            setState(() {
-              isLoading = true;
-              loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
-            });
-            await Future.delayed(const Duration(seconds: 4));
-            getAllLocations();
-          }
-        },
+      Column(
+        children: [
+          Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(15.0),
+            child: LocationImageTile(
+              height: MediaQuery.of(context).size.height*0.16,
+              width: MediaQuery.of(context).size.width,
+              locationId: i.id!,
+              brandId: currentBrand.id!,
+              canEdit: canEdit,
+              locationChanged: (boolean) async {
+                if (boolean == true) {
+                  setState(() {
+                    isLoading = true;
+                    loadingText = AppLocalizations.of(context)!.updating +" "+ AppLocalizations.of(context)!.locations.toLowerCase() + "...";
+                  });
+                  await Future.delayed(const Duration(seconds: 4));
+                  getAllLocations();
+                }
+              },
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height*0.01)
+        ],
       )
     ).toList();
     setState(() {
@@ -278,6 +289,7 @@ class _LocationsState extends State<Locations> {
             elevation: 4,
             floating: false,
             pinned: true,
+            //snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -327,7 +339,7 @@ class _LocationsState extends State<Locations> {
               //centerTitle: true,
             ),
             title: appBarExpanded ? Text(AppLocalizations.of(context)!.locations, style: Theme.of(context).appBarTheme.titleTextStyle,) : Container(),
-            centerTitle: true,
+            centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -342,27 +354,50 @@ class _LocationsState extends State<Locations> {
               ),
             ),
             actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CounterBadgeIcon(
+                    counter: unreadNotifications,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToNotificationsScreen(context),
+                    ),
                   ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_locations_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_locations_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                  CounterBadgeIcon(
+                    counter: unreadChats,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToChatScreen(context),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  GestureDetector(
+                    onTap: () => navigateToProfileScreen(context),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.08,
+                          image: currentUser.imageUrl,
+                          color: AppColors.grey,
+                          borderWidth: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
           isLoading ? SliverFillRemaining(
@@ -405,7 +440,7 @@ class _LocationsState extends State<Locations> {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width*0.05),
                   child: SizedBox(
-                    height: MediaQuery.of(context).size.height*0.16,
+                    height: MediaQuery.of(context).size.height*0.18,
                     width: MediaQuery.of(context).size.width,
                     child: GestureDetector(
                       child: CarouselSlider(

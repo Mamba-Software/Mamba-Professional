@@ -105,8 +105,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
           builder: (context) => const ChatCore(),
         )
     ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadConversations(
-          currentUser.id!);
+      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
       setState(() {
         unreadChats = temp;
       });
@@ -326,7 +325,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
         color = Colors.orangeAccent;
       } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
         color = Colors.deepOrangeAccent;
-      } else if(bookedCapacity == 1) {
+      } else if(bookedCapacity >= 1) {
         color = Colors.red;
       }
     }

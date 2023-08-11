@@ -74,8 +74,8 @@ class TimeToTimeOfferState extends State<TimeToTimeOffer> {
   void orderEvents()
   {
     return filteredEvents.sort((a, b){
-      print(a.doneAt);
-      print(int.parse(a.hour!));//sorting in ascending order
+      //print(a.doneAt);
+      //print(int.parse(a.hour!));//sorting in ascending order
       if(int.parse(a.hour!) == int.parse(b.hour!))
         {
           if(int.parse(a.minute!) >= int.parse(b.minute!))

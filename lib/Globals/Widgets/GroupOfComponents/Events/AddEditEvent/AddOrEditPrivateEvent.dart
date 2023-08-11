@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
@@ -16,11 +17,11 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/S
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialogBonos.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectTrainersEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,8 +39,9 @@ class AddOrEditPrivateEvent extends StatefulWidget {
   Locale locale;
   String? eventId;
   DateTime? dateTime;
+  bool isBeforeEdit;
 
-  AddOrEditPrivateEvent({Key? key, required this.locale, this.eventId, this.dateTime}) : super(key: key);
+  AddOrEditPrivateEvent({Key? key, required this.locale, this.eventId, this.dateTime, required this.isBeforeEdit}) : super(key: key);
 
   @override
   _AddOrEditPrivateEventState createState() => _AddOrEditPrivateEventState();
@@ -51,7 +53,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   final _locationDataService = LocationDataService();
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
-  var _topSnackBar = TopSnackBar();
+  //JMF_AddUser_BEGIN
+  final _purchaseDataService = PurchaseDataService();
+  //JMF_AddUser_END
   // Notification Services
   final NotificationService _notificationService = NotificationService();
   final LocalNotificationService _localNotificationService = LocalNotificationService();
@@ -59,6 +63,8 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
   bool isLoading = false;
   // Boolean isUpdated
   bool isUpdated = false;
+  bool clientsModified = false;
+  bool errorBonos = false;
   // Tab Controller
   double addEventTabValue = 0.33;
   double updateEventTabValue = 0.50;
@@ -368,8 +374,88 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
     }
   }
 
+  //JMF_AddUser_BEGIN
+  Widget buildAddClientButton() {
+    return GestureDetector(
+      onTap: () async {
+        List<Usuario>? selectedClients = await Navigator.push(
+            context,
+            CupertinoPageRoute<List<Usuario>>(
+              builder: (context) => SelectClientsEvent(
+                selectedUsers: brandClientsSelected,
+                selectedBonos: selectedBonos,
+                bonos: filterBonosByIds(), event: event,
+              ),
+            )
+        );
+        if (selectedClients != null) {
+          if(selectedClients.any((client) => client.purchaseId != "")) {
+            errorBonos = true;
+          }
+          else {
+            errorBonos = false;
+          }
+          setState(() {
+            clientsModified = true;
+            brandClientsSelected = selectedClients;
+            errorNoTrainerSelected = false;
+          });
+        }
+      }, //: null,
+      child: Padding(
+        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.width*0.17,
+              width: MediaQuery.of(context).size.width*0.17,
+              decoration: BoxDecoration(
+                color: Theme.of(context).backgroundColor,
+                border: Border.all(
+                  width: 1,
+                  color: Theme.of(context).primaryColor,
+                  style: BorderStyle.solid,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                  ),
+                ],
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Icon(
+                    Icons.person_add_alt_1,
+                    color: Theme.of(context).primaryColor,
+                    size:  MediaQuery.of(context).size.width*0.05
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.width*0.025),
+            SizedBox(
+              width: MediaQuery.of(context).size.width*0.2,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.add,
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  //JMF_AddUser_END
+
   Widget buildAddUserButton(bool isTrainer) {
-    if (isTrainer) {
       return GestureDetector(
         onTap: () async {
           List<Usuario>? selectedTrainers = await Navigator.push(
@@ -437,77 +523,6 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           ),
         ),
       );
-    } else {
-      return GestureDetector(
-        onTap: () async {
-          List<Usuario>? selectedClients = await Navigator.push(
-              context,
-              CupertinoPageRoute<List<Usuario>>(
-                builder: (context) => SelectClientsEvent(
-                  selectedUsers: brandClientsSelected,
-                ),
-              )
-          );
-          if (selectedClients != null) {
-            setState(() {
-              brandClientsSelected = selectedClients;
-              errorClientsSelected = false;
-            });
-          }
-        },
-        child: Padding(
-          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.width*0.17,
-                  width: MediaQuery.of(context).size.width*0.17,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).backgroundColor,
-                    border: Border.all(
-                      width: 1,
-                      color: Theme.of(context).primaryColor,
-                      style: BorderStyle.solid,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
-                        spreadRadius: 3,
-                        blurRadius: 4,
-                      ),
-                    ],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Icon(
-                        Icons.person_add_alt_1,
-                        color: Theme.of(context).primaryColor,
-                        size:  MediaQuery.of(context).size.width*0.05
-                    ),
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width*0.025),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.add,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
   }
 
   @override
@@ -525,47 +540,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
           },
         ),
         actions: [
-          widget.eventId != null ? IconButton(
-              onPressed: () async {
-                if (event.eventGroupId == null) {
-                  // DeleteDialog
-                  var result = await showDialog(
-                      context: context,
-                      builder: (_) {
-                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteEventConfirmation);
-                      }
-                  );
-                  if (result) {
-                    _deleteEventFunction();
-                  }
-                } else {
-                  var result = await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const DeleteRecurrentEventDialog();
-                    },
-                  );
-                  if (result != null) {
-                    if (result == 1) {
-                      print("Deleting Only This Event..");
-                      _deleteEventFunction();
-                    } else {
-                      print("Delete This Event and the Rest Forward ...");
-                      _deleteRecurrentEventFunction();
-                    }
-                  }
-                }
-              },
-              icon: SizedBox(
-                width: MediaQuery.of(context).size.width*0.15,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,),
-                  ],
-                ),
-              )
-          ) : SizedBox(
+          SizedBox(
             width: MediaQuery.of(context).size.width*0.15,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -624,6 +599,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         actions: [
           widget.eventId != null ? IconButton(
               onPressed: () async {
+              if(!originalClients.any((client) => client.purchaseId != "")) {
                 if (event.eventGroupId == null) {
                   // DeleteDialog
                   var result = await showDialog(
@@ -639,7 +615,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                   var result = await showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return const DeleteRecurrentEventDialog();
+                      return DeleteRecurrentEventDialog(
+                        isCompleted: !widget.isBeforeEdit,
+                      );
                     },
                   );
                   if (result != null) {
@@ -652,6 +630,15 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                     }
                   }
                 }
+                }
+              else {
+                var result = await showDialog(
+                    context: context,
+                    builder: (_) {
+                      return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteClientsWithPurchases, permitDelete: false);
+                    }
+                );
+              }
               },
               icon: SizedBox(
                 width: MediaQuery.of(context).size.width*0.15,
@@ -996,7 +983,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                         ]
                                     ),
                                   ),
-                                  allBonos.isNotEmpty && brandClientsSelected.isEmpty ? Padding(
+                                  allBonos.isNotEmpty? Padding(
                                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                                     child: Column(
                                       children: [
@@ -1109,6 +1096,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             ),
                                           ],
                                         ),
+                                        errorBonos? Padding(
+                                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.01, right:  MediaQuery.of(context).size.width * 0.01),
+                                          child: Center(
+                                            child: Text(
+                                              AppLocalizations.of(context)!.deleteClientsWithPurchasesBonos,
+                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ) : Container(),
                                         ListView.builder(
                                             physics: const NeverScrollableScrollPhysics(),
                                             padding: EdgeInsets.zero,
@@ -1180,7 +1177,13 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                           }
                                                           setState(() {
                                                             if (selectedBonos.contains(bono.id!)) {
-                                                              selectedBonos.remove(bono.id!);
+                                                              if(brandClientsSelected.any((client) => client.purchaseId != "")) {
+                                                                errorBonos = true;
+                                                              }
+                                                              else {
+                                                                errorBonos = false;
+                                                                selectedBonos.remove(bono.id!);
+                                                              }
                                                             } else {
                                                               selectedBonos.add(bono.id!);
                                                             }
@@ -1235,18 +1238,20 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           children: [
                                             Row(
                                               children: [
-                                                Icon(Icons.calendar_today_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.07,),
+                                                Icon(Icons.calendar_today_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
                                                 SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                                                 Flexible(
                                                   child: GestureDetector(
                                                       onTap: () {
-                                                        selectDate();
+                                                        if(widget.isBeforeEdit) {
+                                                          selectDate();
+                                                        }
                                                       },
                                                       child: TextFormField(
                                                         controller: startDateController,
                                                         readOnly: true,
                                                         enabled: false,
-                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
                                                         decoration: const InputDecoration(
                                                           border: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
@@ -1263,18 +1268,20 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             SizedBox(height: MediaQuery.of(context).size.width * 0.01),
                                             Row(
                                               children: [
-                                                Icon(Icons.schedule, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
-                                                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                Icon(Icons.schedule, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
+                                                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                                                 Flexible(
                                                   child: GestureDetector(
                                                       onTap: () {
-                                                        selectTime();
+                                                        if(widget.isBeforeEdit) {
+                                                          selectTime();
+                                                        }
                                                       },
                                                       child: TextFormField(
                                                         controller: startTimeController,
                                                         readOnly: true,
                                                         enabled: false,
-                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
                                                         decoration: const InputDecoration(
                                                           border: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
@@ -1293,18 +1300,20 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                               mainAxisSize: MainAxisSize.max,
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: <Widget>[
-                                                Icon(Icons.timer_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
-                                                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                                                Icon(Icons.timer_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
+                                                SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                                                 Flexible(
                                                   child: GestureDetector(
                                                       onTap: () {
-                                                        selectDuration();
+                                                        if(widget.isBeforeEdit) {
+                                                          selectDuration();
+                                                        }
                                                       },
                                                       child: TextFormField(
                                                         controller: durationController,
                                                         readOnly: true,
                                                         enabled: false,
-                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                        style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
                                                         decoration: const InputDecoration(
                                                           border: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
@@ -1321,11 +1330,21 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                           ],
                                         ),
                                       ),
-                                      errorDate ? Padding(
+                                      errorDate && widget.isBeforeEdit ? Padding(
                                         padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
                                         child: Center(
                                           child: Text(
                                             AppLocalizations.of(context)!.errorDate,
+                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ) : Container(),
+                                      !widget.isBeforeEdit ? Padding(
+                                        padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                        child: Center(
+                                          child: Text(
+                                            AppLocalizations.of(context)!.cantEditText,
                                             style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
                                             textAlign: TextAlign.center,
                                           ),
@@ -1350,14 +1369,30 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                     child: CupertinoSwitch(
                                                       value: isRecurrent,
                                                       onChanged: (bool newVal) {
-                                                        setState(() {
-                                                          if (isRecurrent) {
-                                                            values = [false, false, false, false, false, false, false];
-                                                          } else {
-                                                            values[startDate.weekday-1] = true;
+                                                        if(widget.isBeforeEdit) {
+                                                          if (brandClientsSelected
+                                                              .isEmpty) {
+                                                            setState(() {
+                                                              if (isRecurrent) {
+                                                                values = [
+                                                                  false,
+                                                                  false,
+                                                                  false,
+                                                                  false,
+                                                                  false,
+                                                                  false,
+                                                                  false
+                                                                ];
+                                                              } else {
+                                                                values[startDate
+                                                                    .weekday -
+                                                                    1] = true;
+                                                              }
+                                                              isRecurrent =
+                                                                  newVal;
+                                                            });
                                                           }
-                                                          isRecurrent = newVal;
-                                                        });
+                                                        }
                                                       },
                                                       trackColor: Colors.green.withOpacity(0.4),
                                                       thumbColor: AppColors.white,
@@ -1367,6 +1402,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                 ],
                                               )
                                           ),
+                                          widget.eventId == null && brandClientsSelected.isNotEmpty? Padding(
+                                            padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                                            child: Center(
+                                              child: Text(
+                                                AppLocalizations.of(context)!.cantEditRecurrent,
+                                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                          ) : Container(),
                                           isRecurrent ? Column(
                                             children: [
                                               Padding(
@@ -1400,9 +1445,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                         ],
                                                         // Working Days disabledFillColor: Colors.red,
                                                         onChanged: (v) {
-                                                          setState(() {
-                                                            values[v % 7] = !values[v % 7]!;
-                                                          });
+                                                          if(widget.isBeforeEdit) {
+                                                            setState(() {
+                                                              values[v % 7] = !values[v % 7]!;
+                                                            });
+                                                          }
                                                         },
                                                         selectedElevation: 8,
                                                         elevation: 4,
@@ -1446,9 +1493,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                               activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
+                                                                if(widget.isBeforeEdit) {
+                                                                  setState(() {
+                                                                    _value = int.parse(value.toString());
+                                                                  });
+                                                                }
+
                                                               },
                                                             ),
                                                           ),
@@ -1470,9 +1520,11 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                               activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
+                                                                if(widget.isBeforeEdit) {
+                                                                  setState(() {
+                                                                    _value = int.parse(value.toString());
+                                                                  });
+                                                                }
                                                               },
                                                             ),
                                                           ),
@@ -1494,9 +1546,12 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                               activeColor: Theme.of(context).colorScheme.secondary,
                                                               fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
                                                               onChanged: (value) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
+                                                                if(widget.isBeforeEdit) {
+                                                                  setState(() {
+                                                                    _value = int.parse(value.toString());
+                                                                  });
+                                                                }
+
                                                               },
                                                             ),
                                                           ),
@@ -1527,7 +1582,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   onChanged: null,
                                                   trackColor: Colors.green.withOpacity(0.4),
                                                   thumbColor: AppColors.white,
-                                                  activeColor: Colors.green,
+                                                  activeColor: Colors.grey,
                                                 ),
                                               ),
                                             ],
@@ -1550,7 +1605,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                                   onChanged: null,
                                                   trackColor: Colors.green.withOpacity(0.4),
                                                   thumbColor: AppColors.white,
-                                                  activeColor: Colors.green,
+                                                  activeColor: Colors.grey,
                                                 ),
                                               ),
                                             ],
@@ -1739,6 +1794,149 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                                             ],
                                           )
                                       ),
+                                      //JMF_AddUser_BEGIN
+                                      widget.eventId == null && isRecurrent?   Padding(
+                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              Flexible(
+                                                child: Text(
+                                                  AppLocalizations.of(context)!.addClientDescription,
+                                                  style: Theme.of(context).textTheme.caption,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                      ) : Padding(
+                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width,
+                                          child: SingleChildScrollView(
+                                            physics: const BouncingScrollPhysics(),
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                buildAddClientButton(),
+                                                SizedBox(
+                                                  height: MediaQuery.of(context).size.height*0.15,
+                                                  child: ListView.builder(
+                                                      shrinkWrap: true,
+                                                      physics: const NeverScrollableScrollPhysics(),
+                                                      scrollDirection: Axis.horizontal,
+                                                      itemCount: brandClientsSelected.length,
+                                                      itemBuilder: (context, int index) {
+                                                        var client = brandClientsSelected[index];
+                                                        return GestureDetector(
+                                                          onTap: () async {
+                                                            if(selectedBonos.isNotEmpty && client.purchaseId != "") {
+                                                              //JMF_AddUser_BEGIN
+                                                              var result = await showDialog(
+                                                                  context: context,
+                                                                  builder: (_) {
+                                                                    return LeaveConfirmationDialogBonos(
+                                                                      text: AppLocalizations
+                                                                          .of(
+                                                                          context)!
+                                                                          .leaveEventConfirmation,
+                                                                      event: event,
+                                                                      brand: currentBrand,
+                                                                      bonos: filterBonosByIds(),
+                                                                      purchaseId: client
+                                                                          .purchaseId!,
+                                                                      user: client,
+                                                                    );
+                                                                  }
+                                                              );
+                                                              if (result !=
+                                                                  null &&
+                                                                  result) {
+                                                                var temp = brandClientsSelected;
+                                                                temp.remove(
+                                                                    client);
+                                                                if(temp.any((client) => client.purchaseId != "")) {
+                                                                  errorBonos = true;
+                                                                }
+                                                                else {
+                                                                  errorBonos = false;
+                                                                }
+                                                                setState(() {
+                                                                  clientsModified =
+                                                                  true;
+                                                                  brandClientsSelected =
+                                                                      temp;
+                                                                });
+                                                              }
+                                                            }
+                                                            else {
+                                                              var temp = brandClientsSelected;
+                                                              temp.remove(
+                                                                  client);
+                                                              setState(() {
+                                                                clientsModified =
+                                                                true;
+                                                                brandClientsSelected =
+                                                                    temp;
+                                                              });
+                                                            }
+
+                                                            //JMF_AddUser_END
+                                                          },
+                                                          child: Padding(
+                                                            padding: !(index == brandClientsSelected.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                              children: [
+                                                                Stack(
+                                                                  alignment: Alignment.topRight,
+                                                                  children: [
+                                                                    CircularImage(
+                                                                      size: MediaQuery.of(context).size.width*0.17,
+                                                                      image: client.imageUrl,
+                                                                      color: Theme.of(context).primaryColor,
+                                                                      borderWidth: 1,
+                                                                    ),
+                                                                    Positioned(
+                                                                      top: 0,
+                                                                      left: MediaQuery.of(context).size.width*0.12,
+                                                                      child: CircleAvatar(
+                                                                        backgroundColor: AppColors.red,
+                                                                        radius: MediaQuery.of(context).size.width*0.025,
+                                                                        child: Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.035,),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: MediaQuery.of(context).size.width*0.02,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: MediaQuery.of(context).size.width*0.2,
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Text(
+                                                                        client.firstName!,
+                                                                        style: Theme.of(context).textTheme.bodyText2,
+                                                                        textAlign: TextAlign.center,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      //JMF_AddUser_END
                                     ]
                                 )
                             ),
@@ -1887,7 +2085,10 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
                               var result = await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return const EditRecurrentEventDialog();
+                                  return EditRecurrentEventDialog(
+                                    isCompleted: !widget.isBeforeEdit,
+                                    clientsModified: clientsModified,
+                                  );
                                 },
                               );
                               if (result != null) {
@@ -1922,6 +2123,7 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
 
   bool validateDateAndTime(DateTime startTime, double duration) {
     // Calculating the Time to check
+    if(!widget.isBeforeEdit) return true;
     var hour = duration.toString().split(".")[0];
     var min = duration.toStringAsFixed(2).split(".")[1];
     var endTime =  startTime.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
@@ -2359,9 +2561,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       var user = eventTrainersAdded[i];
       // Add Trainer to Event
       if (user.id != currentUser.id!) {
-        await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+        await _eventDataService.addUserToEvent(event.id!, user.id!, "", true);
       } else {
-        await _eventDataService.addUserToEvent(event.id!, user.id!);
+        await _eventDataService.addUserToEvent(event.id!, user.id!, "");
       }
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
@@ -2392,18 +2594,44 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
       var user = originalClients[i];
       // Remove Client From Event
       await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
+
+      //JMF_AddUser_BEGIN
+      if(selectedBonos.isNotEmpty) {
+        await _purchaseDataService.deletedPurchaseUserFromEvent(
+            user, widget.eventId!);
+
+      }
+      //JMF_AddUser_END
+
       // Send Client Left Event
       _notificationService.userLeaveEvent(user.id!, currentBrand.id!, event.id!);
       // Remove Event Local Notifications
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
       print("Client Removed "+user.id.toString());
     }
+
+    //JMF_AddUser_Begin
+    //Update purchase
+    if(selectedBonos.isNotEmpty) {
+      await UpdateUserPurchase(event.id!);
+    }
+    //JMF_AddUser_End
+
     // Handle Clients Added
     // Clients Added Not Matched means that they have added to the Event
     for (int i = 0; i < eventClientsAdded.length; i++) {
       var user = eventClientsAdded[i];
       // Add Client to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+      await _eventDataService.addUserToEvent(event.id!, user.id!, user.purchaseId!, true);
+      //JMF_AddUser_BEGIN
+      if(selectedBonos.isNotEmpty) {
+        await _purchaseDataService.addEventToPurchase(
+            eventClientsAdded[i].purchaseId!, widget.eventId!);
+
+      }
+      //JMF_AddUser_END
+
+
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
       print("Client Added "+user.id.toString());
@@ -2603,9 +2831,9 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         var user = eventTrainersAdded[i];
         // Add Trainer to Event
         if (user.id != currentUser.id!) {
-          await _eventDataService.addUserToEvent(event.id!, user.id!, true);
+          await _eventDataService.addUserToEvent(event.id!, user.id!, "", true);
         } else {
-          await _eventDataService.addUserToEvent(event.id!, user.id!);
+          await _eventDataService.addUserToEvent(event.id!, user.id!, "");
         }
         // Add Event Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
@@ -2685,16 +2913,17 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
         print("Notifications Trainer "+user.name!);
         // Firebase Call
         if (user.id != currentUser.id!) {
-          await _eventDataService.addUserToEvent(eventId, user.id!, true);
+          await _eventDataService.addUserToEvent(eventId, user.id!, "", true);
         } else {
-          await _eventDataService.addUserToEvent(eventId, user.id!);
+          await _eventDataService.addUserToEvent(eventId, user.id!, "");
         }
         // Local Notifications
         await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
       } else {
         print("Notifications Client "+user.name!);
         // Firebase Call
-        await _eventDataService.addUserToEvent(eventId, user.id!, true);
+        await _eventDataService.addUserToEvent(eventId, user.id!, user.purchaseId!, true);
+        await _purchaseDataService.addEventToPurchase(user.purchaseId!, eventId);
         // Notifications Service, this also send Notifications to Trainers
         _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
         // Local Notifications Service
@@ -2742,6 +2971,16 @@ class _AddOrEditPrivateEventState extends State<AddOrEditPrivateEvent> with Sing
             _eventDataService.addEventToPurchase(bono.purchaseId!,event);
         }
       }
+    }
+  }
+  List<Bono> filterBonosByIds() {
+    return allBonos.where((bono) => selectedBonos.contains(bono.id)).toList();
+  }
+
+  Future<void> UpdateUserPurchase(String eventId) async {
+    for(int i = 0; i < brandClientsSelected.length; ++i)
+    {
+      await _eventDataService.updateEventUserPurchase(eventId, brandClientsSelected[i].id!, brandClientsSelected[i].purchaseId!);
     }
   }
 

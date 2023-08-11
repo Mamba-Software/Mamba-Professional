@@ -100,8 +100,8 @@ class _MambaState extends State<Mamba> {
     }).onError((error) {
       print(error.toString());
     });
-    // Setting default open to Homepage
-    pageIndex = 0;
+    // Setting default open to Brand Calendar
+    pageIndex = 10;
     // Getting User Information
     getUserAndBrand();
     // On StartUp Dialogs
@@ -267,7 +267,12 @@ class _MambaState extends State<Mamba> {
   Widget build(BuildContext context) {
     return isLoading ?
       Scaffold(
-        body: LoadingView(),
+        backgroundColor: AppColors.black,
+        body: LoadingView(
+          hasLogo: false,
+          isSmall: true,
+          color: AppColors.white,
+        ),
       )
      :
       hasBrand ? !brandIsActive? currentUser.id == currentBrand.adminID? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();

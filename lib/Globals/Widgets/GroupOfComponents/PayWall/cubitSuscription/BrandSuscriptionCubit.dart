@@ -73,7 +73,13 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
           List<StoreProduct> product = await Purchases.getProducts([subscription.subscriptionId!]);
           if(product.isNotEmpty) {
             subscription.title = product[0].description;
+            if(subscription.title == 'month_sub') {
+              subscription.title = 'Month plan';
+            }
             subscription.description = product[0].description;
+            if(subscription.description == 'month_sub') {
+              subscription.description = 'Month plan';
+            }
           }
           emit(BrandSuscriptionLoadedTrue(subscription));
         }

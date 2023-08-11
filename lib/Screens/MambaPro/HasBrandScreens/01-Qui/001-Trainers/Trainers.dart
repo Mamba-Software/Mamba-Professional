@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -13,6 +14,7 @@ import 'package:mamba_castelldefels/Globals/ChatCore/Chat.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/ProfileView/ProfileUserView.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -41,7 +43,15 @@ class _Trainers extends State<Trainers> {
   ScrollController? _scrollController;
   bool appBarExpanded = false;
   bool get _isAppBarExpanded {
-    return _scrollController!.hasClients && _scrollController!.offset > (MediaQuery.of(context).size.height*0.15 - kToolbarHeight);
+    if (!_scrollController!.hasClients) {
+      return false;
+    }
+    if (_scrollController!.position.userScrollDirection == ScrollDirection.forward) {
+      // User is down up, so AppBar should expand.
+      return false;
+    }
+    // Use the same condition as before to check if AppBar is expanded.
+    return _scrollController!.offset > (MediaQuery.of(context).size.height * 0.15 - kToolbarHeight);
   }
 
   // Brand Data Service
@@ -266,8 +276,9 @@ class _Trainers extends State<Trainers> {
             expandedHeight: MediaQuery.of(context).size.height*0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
-            floating: false,
+            floating: true,
             pinned: true,
+            snap: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 height: MediaQuery.of(context).size.height*0.2,
@@ -685,7 +696,7 @@ class _Trainers extends State<Trainers> {
                     style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
                 )
             ),
-            centerTitle: true,
+            centerTitle: false,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.02),
@@ -700,27 +711,50 @@ class _Trainers extends State<Trainers> {
               ),
             ),
             actions: [
-              Padding(
-                padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01),
-                child: IconButton(
-                  icon: Icon(
-                    widget.pinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    color: widget.pinned ? AppColors.red :  AppColors.white.withOpacity(0.5),
-                    size: MediaQuery.of(context).size.width*0.06,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CounterBadgeIcon(
+                    counter: unreadNotifications,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToNotificationsScreen(context),
+                    ),
                   ),
-                  onPressed: () {
-                    if (widget.pinned == true) {
-                      mixpanel!.track('brand_trainers_pinned_off');
-                    } else {
-                      mixpanel!.track('brand_trainers_pinned_on');
-                    }
-                    setState(() {
-                      widget.pinned = !widget.pinned;
-                    });
-                    widget.pinnedChanged(widget.pinned);
-                  },
-                ),
+                  CounterBadgeIcon(
+                    counter: unreadChats,
+                    top: 5,
+                    right: 7,
+                    child: IconButton(
+                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.zero,
+                      onPressed: () => navigateToChatScreen(context),
+                    ),
+                  ),
+                  SizedBox(width: MediaQuery.of(context).size.width*0.03),
+                  GestureDetector(
+                    onTap: () => navigateToProfileScreen(context),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.width * 0.08,
+                      child: Center(
+                        child: CircularImage(
+                          size: MediaQuery.of(context).size.width * 0.08,
+                          image: currentUser.imageUrl,
+                          color: AppColors.grey,
+                          borderWidth: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width*0.03),
             ],
           ),
           currentUser.brandRole < 2 ? SliverToBoxAdapter(
@@ -774,78 +808,79 @@ class _Trainers extends State<Trainers> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                Divider(color: AppColors.grey, thickness: 1, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
                 SizedBox(height: MediaQuery.of(context).size.height*0.01)
               ],
             ),
           ) : const SliverToBoxAdapter(child: SizedBox(height: 10,)),
           isLoading ? SliverList(
             delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: ListTile(
-                  dense: true,
-                  leading: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.08,
-                      width: MediaQuery.of(context).size.height*0.08,
-                      decoration: const BoxDecoration(
-                        color: AppColors.grey,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                  title: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.03,
-                      width: MediaQuery.of(context).size.width*0.02,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
+              return Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
+                child: Row(
+                  children: [
+                    Shimmer.fromColors(
+                      baseColor: AppColors.grey,
+                      highlightColor: AppColors.grey.withOpacity(0.5),
+                      child: Container(
+                        height: MediaQuery.of(context).size.width*0.14,
+                        width: MediaQuery.of(context).size.width*0.14,
+                        decoration: const BoxDecoration(
+                          color: AppColors.grey,
+                          shape: BoxShape.circle,
                         ),
-                        color: AppColors.grey,
                       ),
                     ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                      Shimmer.fromColors(
-                        baseColor: AppColors.grey,
-                        highlightColor: AppColors.grey.withOpacity(0.5),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height*0.02,
-                          width: MediaQuery.of(context).size.width*0.2,
-                          decoration: const BoxDecoration(
-                            color: AppColors.grey,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10.0),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04), // adjust this value as needed
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// USER
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.02,
+                              width: MediaQuery.of(context).size.width*0.25,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                                color: AppColors.grey,
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  trailing: Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.04,
-                      width: MediaQuery.of(context).size.height*0.04,
-                      decoration: const BoxDecoration(
-                        color: AppColors.grey,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
-                        ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                          /// BONO
+                          Shimmer.fromColors(
+                            baseColor: AppColors.grey,
+                            highlightColor: AppColors.grey.withOpacity(0.5),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height*0.015,
+                              width: MediaQuery.of(context).size.width*0.45,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(5.0),
+                                ),
+                                color: AppColors.grey,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.007),
+                        ],
                       ),
                     ),
-                  ),
-                  onTap: null,
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                    Shimmer.fromColors(
+                      baseColor: AppColors.grey,
+                      highlightColor: AppColors.grey.withOpacity(0.5),
+                      child: Icon(Icons.arrow_forward_ios, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.height*0.03,),
+                    ),
+
+                  ],
                 ),
               );
             },
@@ -968,7 +1003,7 @@ class _Trainers extends State<Trainers> {
           activeChild: const Icon(Icons.group_add_outlined),
           animationDuration: const Duration(milliseconds: 100),
           foregroundColor: AppColors.white,
-          overlayColor: Theme.of(context).primaryColorDark,
+          overlayColor: Theme.of(context).scaffoldBackgroundColor,
           overlayOpacity: 0.95,
           spacing: MediaQuery.of(context).size.height*0.02,
           spaceBetweenChildren: MediaQuery.of(context).size.height*0.02,
@@ -980,7 +1015,7 @@ class _Trainers extends State<Trainers> {
                   size: 30,
                 ),
                 elevation: 10,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).backgroundColor,
                 labelWidget: Container(
                   color: Colors.transparent,
                   padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
@@ -1015,7 +1050,7 @@ class _Trainers extends State<Trainers> {
                   ),
                 ),
                 elevation: 10,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                backgroundColor: Theme.of(context).backgroundColor,
                 labelWidget: Container(
                   color: Colors.transparent,
                   padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),

@@ -53,7 +53,7 @@ class _BrandInviteDialogState extends State<BrandInviteDialog> {
     if (currentUser.isTrainer!) {
       role = 3;
     }
-    pageIndex = 0;
+    pageIndex = 10;
     NotificationService().userJoinsBrand(currentUser.id!,widget.brandId);
     await _brandDataService.addUserToBrand(currentUser.id!,widget.brandId, role);
     // Wait for CF

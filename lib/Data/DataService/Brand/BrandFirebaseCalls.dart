@@ -551,7 +551,8 @@ class BrandFirebaseCalls {
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
       "isActive": false,
-      "baseImage": ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!
+      "baseImage": ImageObject.fromObjectAllData(querySnapshot3.docs[index].id, querySnapshot3.docs[index]).url!,
+      "directPurchase": false,
     }).catchError((err) {
       print(err);
       firestoreError = true;
@@ -699,13 +700,14 @@ class BrandFirebaseCalls {
   //Update
 
   Future<void> updateBrandInfo(String brandID, String name, String description,
-      int maxMembers, List<double> workShift, int bookingWindow) async {
+      int maxMembers, List<double> workShift, int bookingWindow, bool? directPurchase) async {
     await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
       "maxMembers": maxMembers,
       "bookingWindow": bookingWindow,
       "workShift": workShift,
+      "directPurchase": directPurchase,
     });
   }
 
@@ -950,6 +952,53 @@ class BrandFirebaseCalls {
     }
   }
 
+  Future<void> deleteBrandCoverPicture(String brandID, String imageId, String? imageUrl) async {
+    // Delete Image From Storage
+    _firebaseStorage.ref().child("brands/"+ brandID +"/images/" + imageId + ".jpeg").delete();
+    // Delete Image From Firebase Firestore
+    await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Images")
+        .doc(imageId)
+        .delete();
+    // Get a new Image of the Brand
+    String newImageUrl = await getRandomBrandPhoto(brandID);
+    // Set as the new cover Image
+    await _firestore.collection(brands).doc(brandID).update({
+      "baseImage": newImageUrl,
+    });
+    // Get all places where we can find the picture in Events
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Events")
+        .where("imageUrl", isEqualTo: imageUrl)
+        .get();
+    // Update all places where we can find the picture in Events
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      Event event = Event.fromObjectOnlyCoverData(querySnapshot.docs[i].id, querySnapshot.docs[i]);
+      await _firestore.collection(events).doc(event.id).update({
+        "imageUrl": newImageUrl,
+      });
+    }
+    // Get all places where we can find the picture in Bonos
+    QuerySnapshot querySnapshotBonos = await _firestore
+        .collection(brands)
+        .doc(brandID)
+        .collection("Bonos")
+        .where("imageUrl", isEqualTo: imageUrl)
+        .get();
+    // Update all places where we can find the picture in Bonos
+    for (int i = 0; i < querySnapshotBonos.docs.length; i++) {
+      Bono bono = Bono.fromObjectAllData(querySnapshotBonos.docs[i].id, querySnapshotBonos.docs[i]);
+      await _firestore.collection(brands).doc(brandID).collection("Bonos").doc(bono.id!).update({
+        "imageUrl": newImageUrl,
+      });
+    }
+  }
+
+
   Future<void> deleteBrandUsers(String brandId) async {
     await _firestore
         .collection(brands)
@@ -1107,6 +1156,14 @@ class BrandFirebaseCalls {
         .collection("Bonos")
         .doc("Bonos Requests")
         .collection("Bonos Requests")
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getBrandPurchasesStream(String brandId) {
+    return _firestore
+        .collection(brands)
+        .doc(brandId)
+        .collection("Purchases")
         .snapshots();
   }
 

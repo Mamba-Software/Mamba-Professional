@@ -96,7 +96,6 @@ class _LocationImageTileState extends State<LocationImageTile> {
         width: widget.width,
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
-            border: Border.all(color: Theme.of(context).primaryColor, width: 1),
             borderRadius: const BorderRadius.all(Radius.circular(15.0))
         ),
         child: Row(

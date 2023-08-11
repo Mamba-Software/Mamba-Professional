@@ -74,12 +74,19 @@ class _BrandCalendarMonthWidgetState extends State<BrandCalendarMonthWidget> {
         double numClients = double.parse(event.numClients.toString());
         double maxMembers = double.parse(event.maxMembers.toString());
         double bookedCapacity = numClients/maxMembers;
-        if(bookedCapacity <= 0.20) color = Colors.green;
-        else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) color = Color(0xFFA8C76C);
-        else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) color = Color(0xFFECE014);
-        else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) color = Colors.orangeAccent;
-        else if(bookedCapacity > 0.80 && bookedCapacity < 1) color = Colors.deepOrangeAccent;
-        else if(bookedCapacity == 1) color = Colors.red;
+        if(bookedCapacity <= 0.20) {
+          color = Colors.green;
+        } else if(bookedCapacity > 0.20 && bookedCapacity <= 0.40) {
+          color = const Color(0xFFA8C76C);
+        } else if(bookedCapacity > 0.40 && bookedCapacity <= 0.60) {
+          color = const Color(0xFFECE014);
+        } else if(bookedCapacity > 0.60 && bookedCapacity <= 0.80) {
+          color = Colors.orangeAccent;
+        } else if(bookedCapacity > 0.80 && bookedCapacity < 1) {
+          color = Colors.deepOrangeAccent;
+        } else if(bookedCapacity >= 1) {
+          color = Colors.red;
+        }
       }
       // Afegir percentatges de members al Event.
       tempAllAppointments.add(Appointment(

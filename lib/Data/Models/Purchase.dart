@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Condition.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 
@@ -18,10 +19,18 @@ class Purchase {
   int? sessions;
   Timestamp? purchasedAt;
   bool? isActive;
+  bool? directPurchase;
+  Condition? condition = Condition(
+    expirationTime: 0,
+    cancelTime: 0,
+    weeklySessions: 0,
+  );
+
   // List of Events Done with this purchase
   Bono? bono;
   Brand? brand;
   List<Event> events = [];
+  List<Event> initalEvents = [];
   int numberOfEvents = 0;
 
   Purchase({
@@ -64,6 +73,19 @@ class Purchase {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('isActive')) {
       isActive = documentSnapshot.get("isActive");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('directPurchase')) {
+      directPurchase = documentSnapshot.get("directPurchase");
+    }
+    // Conditions
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('expirationTime')) {
+      condition!.expirationTime = documentSnapshot.get("expirationTime");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('cancelTime')) {
+      condition!.cancelTime = documentSnapshot.get("cancelTime");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('weeklySessions')) {
+      condition!.weeklySessions = documentSnapshot.get("weeklySessions");
+    }
   }
 
   //////////////////// SETTERS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +108,9 @@ class Purchase {
     this.events = events;
     numberOfEvents = events.length;
   }
+  set setInitialEventsData(List<Event> events) {
+    initalEvents = events;
+  }
 
   // Set Basic Data
   set setPurchasedBono(Bono bono) {
@@ -96,5 +121,26 @@ class Purchase {
   set setPurchasedBrandBono(Brand brand) {
     this.brand = brand;
   }
+
+  Purchase.copy(Purchase other)
+      : id = other.id,
+        userId = other.userId,
+        brandId = other.brandId,
+        bonoId = other.bonoId,
+        price = other.price,
+        paymentMethod = other.paymentMethod,
+        sessions = other.sessions,
+        purchasedAt = other.purchasedAt,
+        isActive = other.isActive,
+        directPurchase = other.directPurchase,
+        condition = other.condition != null ? Condition(
+          expirationTime: other.condition!.expirationTime,
+          cancelTime: other.condition!.cancelTime,
+          weeklySessions: other.condition!.weeklySessions,
+        ) : null,
+        events = List.from(other.events), // Assuming Event has a copy constructor
+        initalEvents = List.from(other.events),
+        numberOfEvents = other.numberOfEvents;
+
 
 }

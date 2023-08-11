@@ -5,8 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/Models/Subscription.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:purchases_flutter/models/offerings_wrapper.dart';
 
 
 class ActiveSubscription extends StatefulWidget {

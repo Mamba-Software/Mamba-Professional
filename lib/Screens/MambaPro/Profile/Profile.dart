@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -140,7 +142,7 @@ class _ProfileState extends State<Profile> {
     mixpanel!.timeEvent('user_profile_picture_click');
     Navigator.push(
       context,
-      CupertinoPageRoute<Null>(
+      CupertinoPageRoute<void>(
         builder: (context) => FullScreenPage(
           child:  Image.network(
             currentUser.imageUrl!,
@@ -564,7 +566,7 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).scaffoldBackgroundColor),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).backgroundColor),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -600,7 +602,7 @@ class _ProfileState extends State<Profile> {
                       },
                       style: ButtonStyle(
                           elevation: MaterialStateProperty.all(4),
-                          backgroundColor: MaterialStateProperty.all(Theme.of(context).scaffoldBackgroundColor),
+                          backgroundColor: MaterialStateProperty.all(Theme.of(context).backgroundColor),
                           animationDuration: const Duration(milliseconds: 100),
                           overlayColor: MaterialStateProperty.all(Theme.of(context).primaryColor.withOpacity(0.1)),
                           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -773,7 +775,7 @@ class _ProfileState extends State<Profile> {
               width: MediaQuery.of(context).size.width*0.9,
               padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
               decoration: BoxDecoration(
-                  color: Theme.of(context).scaffoldBackgroundColor,
+                  color: Theme.of(context).backgroundColor,
                   borderRadius: BorderRadius.circular(30)
               ),
               child: Row(
@@ -808,7 +810,7 @@ class _ProfileState extends State<Profile> {
         height: MediaQuery.of(context).size.height*0.06,
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor
+            color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -840,7 +842,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 style: OutlinedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: Theme.of(context).backgroundColor,
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                   shape: const RoundedRectangleBorder(
@@ -867,7 +869,7 @@ class _ProfileState extends State<Profile> {
         height: MediaQuery.of(context).size.height*0.06,
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor
+            color: Theme.of(context).scaffoldBackgroundColor
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -899,7 +901,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 style: OutlinedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: Theme.of(context).backgroundColor,
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                   shape: const RoundedRectangleBorder(
@@ -926,7 +928,7 @@ class _ProfileState extends State<Profile> {
         height: MediaQuery.of(context).size.height*0.06,
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor
+            color: Theme.of(context).scaffoldBackgroundColor
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -955,7 +957,7 @@ class _ProfileState extends State<Profile> {
                 ),
                 style: OutlinedButton.styleFrom(
                   elevation: 4,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  backgroundColor: Theme.of(context).backgroundColor,
                   fixedSize: Size(MediaQuery.of(context).size.width*0.35, MediaQuery.of(context).size.height*0.06),
                   side: BorderSide(width: 1.0, color: Theme.of(context).scaffoldBackgroundColor),
                   shape: const RoundedRectangleBorder(
@@ -989,7 +991,7 @@ class _ProfileState extends State<Profile> {
         backgroundColor: AppColors.black,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         child: Column(
@@ -1044,7 +1046,11 @@ class _ProfileState extends State<Profile> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      buildUserPicture(),
+                      Material(
+                        elevation: 4,
+                        shape: const CircleBorder(),
+                        child: buildUserPicture()
+                      ),
                       const SizedBox(height: 12),
                       buildUserTitle(),
                     ],
@@ -1079,7 +1085,7 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Positioned(
-                  bottom: MediaQuery.of(context).size.height*0.06,
+                  bottom: Platform.isAndroid ? MediaQuery.of(context).size.height*0.03 : MediaQuery.of(context).size.height*0.06,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: buildProfileCarousel.asMap().entries.map((entry) {
