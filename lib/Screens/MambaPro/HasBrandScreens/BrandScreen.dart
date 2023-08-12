@@ -124,6 +124,7 @@ class _BrandScreenState extends State<BrandScreen> {
       return ListTile(
           leading: _mambaProUtils.iconSelectorListView(context, _pageIndex),
           title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
+          /*
           trailing: isFavourite ? SizedBox(
             width: MediaQuery.of(context).size.width*0.15,
             child: IconButton(
@@ -181,6 +182,7 @@ class _BrandScreenState extends State<BrandScreen> {
           ) : SizedBox(
             width: MediaQuery.of(context).size.width*0.15,
           ),
+           */
           onTap: () =>  {
             Navigator.pop(context),
             setBrandActive(),
