@@ -127,6 +127,10 @@
   "@login":{
     "description": "LogIn Text "
   },
+  "continueWithApple": "Continuar con Apple",
+  "@continueWithApple":{
+    "description": "LogIn Text "
+  },
   "continueWithGoogle": "Continuar con Google",
   "@continueWithGoogle":{
     "description": "LogIn Text "
@@ -488,7 +492,7 @@
   "@titleHint":{
     "description": "Título Hint Text"
   },
-  "titleError": "Por favor introduce un título",
+  "titleError": "Introduce un título por favor",
   "@titleError":{
     "description": "Título Error Text"
   },
@@ -496,7 +500,7 @@
   "@description":{
     "description": "Descripción Text"
   },
-  "descriptionHint": "Describe el error detalladamente",
+  "descriptionHint": "Añade una descripción",
   "@descriptionHint":{
     "description": "Descripción Text"
   },
@@ -1112,6 +1116,10 @@
   },
   "editEvent": "Editar evento",
   "@editEvent":{
+    "description": "addEvent text"
+  },
+  "adding": "Añadiendo",
+  "@adding":{
     "description": "addEvent text"
   },
   "creating": "Creando",
@@ -2098,6 +2106,10 @@
   "@bonosDescriptionWarning":{
     "bonosClient": "Bonos client text"
   },
+  "bonosDescriptionGreat": "Has seleccionado algún bono.\nLa entrada al evento esta restringida.",
+  "@bonosDescriptionGreat":{
+    "bonosClient": "Bonos client text"
+  },
   "bonosDescriptionPrivate": "Selecciona los bonos que debe tener un cliente para poder ser invitado a este evento",
   "@bonosDescriptionPrivate":{
     "bonosClient": "Bonos client text"
@@ -2374,11 +2386,15 @@
   "@descriptionBono": {
     "description": "Description bono message"
   },
-  "activeBonoQues": "Activar/Desactivar bono",
-  "@activeBonoQues": {
+  "activarBono": "Activar bono",
+  "@activarBono": {
     "description": "Active bono message"
   },
-  "activeBonoQuesDesc": "Si esta activo, tus clientes podrán comprarlo. Siempre puedes activar o desactivar tu bono una vez este ha sido creado.",
+  "desactivarBono": "Desactivar bono",
+  "@desactivarBono": {
+    "description": "Active bono message"
+  },
+  "activeBonoQuesDesc": "Tus clientes sólo pueden comprarlo si está activo. Puedes activar o desactivar el bono una vez creado.",
   "@activeBonoQuesDesc": {
     "description": "Active bono message"
   },
@@ -2386,7 +2402,7 @@
   "@sesionsBono": {
     "description": "Sesions bono message"
   },
-  "sesionsBonoDesc": "Haz clic para indicar que tu bono no tiene límite de sesiones. En la siguiente pantalla, podrás definir la fecha de expiración.",
+  "sesionsBonoDesc": "Indica que tu bono cuenta con sesiones ilimitadas.",
   "@sesionsBonoDesc": {
     "description": "Sesions bono message"
   },
@@ -2424,6 +2440,14 @@
   },
   "paymentMethod": "Método de pago",
   "@paymentMethod": {
+    "description": "Donde message"
+  },
+  "paymentMethodOriginal": "El método de pago indicado inicilamente es: ",
+  "@paymentMethodOriginal": {
+    "description": "Donde message"
+  },
+  "paymentMethodEdit": "Puedes editar el método de pago en cualquier momento.",
+  "@paymentMethodEdit": {
     "description": "Donde message"
   },
   "paymentMethodConfirm": "Confirma el método de pago por favor.",
@@ -2474,12 +2498,20 @@
   "@price": {
     "description": "price message"
   },
+  "priceHint": "Añade el precio",
+  "@priceHint": {
+    "description": "price message"
+  },
   "pricePlease": "Añade el precio por favor",
   "@pricePlease": {
     "description": "price message"
   },
   "session": "sesión",
   "@session":{
+    "description": "session Text"
+  },
+  "sessionHint": "Añade las sesiones",
+  "@sessionHint":{
     "description": "session Text"
   },
   "sessionPlease": "Añade las sesiones por favor",
@@ -2498,7 +2530,7 @@
   "@esgotat":{
     "description": "expiresAt Text"
   },
-  "expiresAt": "Expira en",
+  "expiresAt": "Expira el",
   "@expiresAt":{
     "description": "expiresAt Text"
   },
@@ -2506,13 +2538,37 @@
   "@expiresAtDesc":{
     "description": "expiresAt Text"
   },
-  "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.\n\nDejar valor en 0 para evitar esta condición.",
+  "freeCancelHint":  "Añade las horas",
+  "@freeCancelHint":{
+    "description": "cancelTimeAt Text"
+  },
+  "freeCancelError":  "Añade las horas por favor",
+  "@freeCancelError":{
+    "description": "cancelTimeAt Text"
+  },
+  "freeCancelErrorSecond":  "No puede ser superior a 72 horas",
+  "@freeCancelErrorSecond":{
+    "description": "cancelTimeAt Text"
+  },
+  "freeCancelDesc":  "Número de horas mínimo para cancelar la asistencia a una sesión de manera gratuita.",
   "@freeCancelDesc":{
     "description": "cancelTimeAt Text"
   },
-  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana (lunes a domingo).\n\nDejar en 0 para evitar esta condición.",
+  "freeCancelInfo":  "Bono sin límite de sesiones, lo que significa que la cancelación es gratuita y sin restricciones.",
+  "@freeCancelInfo":{
+    "description": "cancelTimeAt Text"
+  },
+  "trainsPerWeekError": "El número máximo de sesiones por semana no puede ser superior a 7",
+  "@trainsPerWeekError":{
+    "description": "trainsPerWekk Text"
+  },
+  "trainsPerWeekDesc": "Número máximo de sesiones que pueden realizar tus clientes en una misma semana",
   "@trainsPerWeekDesc":{
     "description": "trainsPerWekk Text"
+  },
+  "expireDate":  "Fecha de expiración",
+  "@expireDate":{
+    "description": "noExpireDate Text"
   },
   "noExpireDate":  "No tiene fecha de expiración",
   "@noExpireDate":{
@@ -2660,6 +2716,19 @@
   "@purchaseHistory": {
     "description": "userJoinsBrandUser message"
   },
+  "comingNDays": "Próximos {days} Días",
+  "@comingNDays": {
+    "description": "Wellcome message",
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "endOfMonth": "Final de Mes",
+  "@endOfMonth": {
+    "description": "Wellcome message"
+  },
   "lastNDays": "Últimos {days} Días",
   "@lastNDays": {
     "description": "Wellcome message",
@@ -2673,7 +2742,6 @@
   "@lastMonth": {
     "description": "Wellcome message"
   },
-
   "facturation": "Facturación",
   "@facturation": {
     "description": "facturation message"
@@ -2964,13 +3032,19 @@
   "@subscriptionsAppBar": {
     "description": "subscriptionsAppBar message"
   },
-  "moreSubInfo": "El plan fue adquirido el {initDate} y expira el {endDate}",
+  "moreSubInfo": "El plan expira el {endDate}",
   "@moreSubInfo": {
     "description": "moreSubInfo message",
     "placeholders": {
-      "initDate": {
+      "endDate": {
         "type": "String"
-      },
+      }
+    }
+  },
+  "moreSubInfoRenAut": "El plan se renovará automáticamente el {endDate}",
+  "@moreSubInfoRenAut": {
+    "description": "moreSubInfoRenAut message",
+    "placeholders": {
       "endDate": {
         "type": "String"
       }
@@ -3124,6 +3198,14 @@
   "@subscribeNow": {
     "description": "subscribeNow message"
   },
+  "paySubscription": "Pagar suscripción",
+  "@paySubscription": {
+    "description": "subscribeNow message"
+  },
+  "paySubscriptionDesc": "Sólo el creador",
+  "@paySubscriptionDesc": {
+    "description": "subscribeNow message"
+  },
   "block": "Bloquear",
   "@block": {
     "description": "block message"
@@ -3180,5 +3262,60 @@
   "addTrainerDescription": "Añadir staff a tu marca",
   "@addTrainerDescription":{
     "description": "createBrand Text"
+  },
+  "perMonth": "/ mes",
+  "@perMonth": {
+    "description": "perMonth message"
+  },
+  "perYear": "/ año (-25%)",
+  "@perYear": {
+    "description": "perYear message"
+  },
+  "autoRenovation": "Renovación automática",
+  "@autoRenovation": {
+    "description": "autoRenovation message"
+  },
+  "bonoExpirationWeekTitleNotification": "\uD83D\uDCC5 \uD83D\uDD52 ¡Tu bono caduca {bono} en una semana! \uD83D\uDD52 \uD83D\uDCC5 ",
+  "@bonoExpirationWeekTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "bonoExpirationWeekBodyNotification": "Este es un recordatorio amistoso de que tu bono caducará en una semana. ¡Asegúrate de reservar tus sesiones antes de que sea demasiado tarde!",
+  "@bonoExpirationWeekBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "bonoExpirationDaysTitleNotification": "⏰ \uD83D\uDCC6 ¡Tu bono {bono} caduca en 3 días! \uD83D\uDCC6 ⏰ ",
+  "@bonoExpirationDaysTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "bonoExpirationDaysBodyNotification": "Este es un recordatorio amistoso de que tu bono caducará en tan solo 3 días. ¡No te quedes sin disfrutar de tus sesiones restantes!",
+  "@bonoExpirationDaysBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "bonoExpirationTomorrowTitleNotification": "\uD83D\uDEA8 ❗️ ¡Tu bono {bono} caduca mañana! ❗️ \uD83D\uDEA8 ",
+  "@bonoExpirationTomorrowTitleNotification": {
+    "description": "beforeEventBodyNotification message",
+    "placeholders": {
+      "bono": {
+        "type": "String"
+      }
+    }
+  },
+  "bonoExpirationTomorrowBodyNotification": "Este es un recordatorio urgente de que tu bono caduca mañana. ¡No te pierdas la oportunidad de utilizar tus sesiones restantes! Reserva ahora.",
+  "@bonoExpirationTomorrowBodyNotification": {
+    "description": "beforeEventBodyNotification message"
+  },
+  "notSubNotAdmin": "Su marca no dispone de un plan, solo el administrador de la marca puede subscribirse a uno",
+    "@notSubNotAdmin": {
+      "description": "notSubNotAdmin message"
   }
 }

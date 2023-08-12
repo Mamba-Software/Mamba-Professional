@@ -5,16 +5,17 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class DeleteBonoDialog extends StatelessWidget {
   final bool hasPurchases;
-  const DeleteBonoDialog({Key? key, required this.hasPurchases}) : super(key: key);
+  final bool isActive;
+  const DeleteBonoDialog({Key? key, required this.hasPurchases, required this.isActive}) : super(key: key);
 
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.all(20),
+      insetPadding: const EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
+        padding: const EdgeInsets.only(top: 40, bottom: 10, left: 10, right: 10),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -29,18 +30,19 @@ class DeleteBonoDialog extends StatelessWidget {
               children: <Widget>[
                 Flexible(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 16.0, right: 10, left: 10),
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 8.0, right: 10, left: 10),
                     child: Text(
-                      hasPurchases ? AppLocalizations.of(context)!.deactivateBonoConfirmation : AppLocalizations.of(context)!.deleteBonoConfirmation,
+                      hasPurchases && isActive ? AppLocalizations.of(context)!.deactivateBonoConfirmation : AppLocalizations.of(context)!.deleteBonoConfirmation,
                       style: Theme.of(context).textTheme.bodyText2?.copyWith(height: 1.5),
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ),
                 hasPurchases ? Container(
-                  height: MediaQuery.of(context).size.height*0.10,
+                  height: MediaQuery.of(context).size.height*0.1,
                   width: MediaQuery.of(context).size.width*0.8,
-                  padding: const EdgeInsets.all(8),
+                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     color: AppColors.red.withOpacity(0.2),
                     borderRadius: const BorderRadius.all(
@@ -49,21 +51,27 @@ class DeleteBonoDialog extends StatelessWidget {
                     border: Border.all(color: AppColors.red, width: 2),
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Icon(Icons.info_outlined, color: AppColors.red, size:  MediaQuery.of(context).size.width*0.08,),
                       const SizedBox(width: 8),
                       Flexible(
-                        child: Text(
-                          AppLocalizations.of(context)!.bonosNoDeleteWarning,
-                          textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.5),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Text(
+                            AppLocalizations.of(context)!.bonosNoDeleteWarning,
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red, height: 1.5),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ) : Container(
-                  height: MediaQuery.of(context).size.height*0.10,
+                  height: MediaQuery.of(context).size.height*0.1,
                   width: MediaQuery.of(context).size.width*0.8,
+                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.02),
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: Colors.green.withOpacity(0.2),
@@ -86,13 +94,13 @@ class DeleteBonoDialog extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 8,),
+                const SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: hasPurchases && isActive == false ? MainAxisAlignment.center : MainAxisAlignment.spaceEvenly,
                     children: [
-                      OutlinedButton.icon(
+                      hasPurchases && isActive == false ? Container() : OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
                           backgroundColor: Colors.red,
@@ -112,7 +120,7 @@ class DeleteBonoDialog extends StatelessWidget {
                           Navigator.pop(context, true);
                         },
                       ),
-                      SizedBox(width: MediaQuery.of(context).size.width*0.01),
+                      hasPurchases && isActive == false ? Container() : SizedBox(width: MediaQuery.of(context).size.width*0.01),
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
                           elevation: 4.0,
@@ -144,14 +152,14 @@ class DeleteBonoDialog extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox.fromSize(
-                      size: Size(70, 70), // button width and height
+                      size: const Size(70, 70), // button width and height
                       child: ClipOval(
                         child: Material(
                           color: Colors.red, // button color
                           child: InkWell(
                             onTap: () async {
                             },
-                            child: Icon(Icons.priority_high, color: Colors.white, size: 45,), // icon
+                            child: const Icon(Icons.priority_high, color: Colors.white, size: 45,), // icon
                           ),
                         ),
                       ),

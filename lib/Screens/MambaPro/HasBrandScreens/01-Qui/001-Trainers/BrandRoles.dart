@@ -338,8 +338,7 @@ class _BrandRolesState extends State<BrandRoles> {
               Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).backgroundColor,
-                  borderRadius:
-                  const BorderRadius.all(Radius.circular(10))
+                  borderRadius: const BorderRadius.all(Radius.circular(10))
                 ),
                 child: Column(
                   children: [
@@ -368,6 +367,7 @@ class _BrandRolesState extends State<BrandRoles> {
                     ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.02),
                         scrollDirection: Axis.vertical,
                         itemCount: allOwners.length,
                         itemBuilder: (context, index) {
@@ -400,7 +400,7 @@ class _BrandRolesState extends State<BrandRoles> {
                                   ),
                                 ],
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.height*0.03,),
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.width*0.05,),
                               onTap: () async {
                                 await onEditTrainerRole(user);
                               },
@@ -408,7 +408,6 @@ class _BrandRolesState extends State<BrandRoles> {
                           );
                         }
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.width * 0.05)
                   ],
                 ),
               ),
@@ -448,6 +447,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         physics: const BouncingScrollPhysics(),
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.02),
                         itemCount: allAdmins.length,
                         itemBuilder: (context, index) {
                           Usuario user = allAdmins[index];
@@ -479,7 +479,7 @@ class _BrandRolesState extends State<BrandRoles> {
                                   ),
                                 ],
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.height*0.03,),
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.width*0.05,),
                               onTap: () async {
                                 await onEditTrainerRole(user);
                               },
@@ -492,10 +492,9 @@ class _BrandRolesState extends State<BrandRoles> {
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
                         Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                        SizedBox(height: MediaQuery.of(context).size.width * 0.025)
+                        SizedBox(height: MediaQuery.of(context).size.width * 0.05)
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.width * 0.025)
                   ],
                 ),
               ),
@@ -536,6 +535,7 @@ class _BrandRolesState extends State<BrandRoles> {
                         shrinkWrap: true,
                         scrollDirection: Axis.vertical,
                         itemCount: allTrainers.length,
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.02),
                         itemBuilder: (context, index) {
                           Usuario user = allTrainers[index];
                           DateTime dateJoined = DateTimeUtils().formatStringToDateTimeDDMMYY(user.dateJoined!, Localizations.localeOf(context).languageCode);
@@ -566,7 +566,7 @@ class _BrandRolesState extends State<BrandRoles> {
                                   ),
                                 ],
                               ),
-                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.height*0.03,),
+                              trailing: Icon(Icons.edit, color: user.id! != currentUser.id ? Theme.of(context).primaryColor : Theme.of(context).backgroundColor, size: MediaQuery.of(context).size.width*0.05,),
                               onTap: () async {
                                 await onEditTrainerRole(user);
                               },
@@ -579,10 +579,9 @@ class _BrandRolesState extends State<BrandRoles> {
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height*0.005),
                         Text(AppLocalizations.of(context)!.noData, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
-                        SizedBox(height: MediaQuery.of(context).size.width * 0.025)
+                        SizedBox(height: MediaQuery.of(context).size.width * 0.05)
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.width * 0.05)
                   ],
                 ),
               ),

@@ -141,8 +141,7 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
   Future<void> getBrandDetails() async {
     brand = await _brandDataService.getBrandDetails(widget.brandId);
     var dateJoinedSplit = brand.dateJoined!.split("-");
-    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]),
-        int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
+    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]), int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
   }
 
   Future<void> getCollections() async {
@@ -314,17 +313,14 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                   titlePadding: EdgeInsets.zero,
                   //centerTitle: true,
                 ),
-                title: appBarExpanded
-                    ? Text(
+                title: AnimatedOpacity(
+                    opacity: appBarExpanded ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: Text(
                         AppLocalizations.of(context)!.stats,
-                        style: Theme.of(context)
-                            .appBarTheme
-                            .titleTextStyle
-                            ?.copyWith(
-                              color: AppColors.white,
-                            ),
-                      )
-                    : Container(),
+                        style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
+                    )
+                ),
                 centerTitle: true,
                 leading: Builder(
                   builder: (BuildContext innerContext) => Padding(
@@ -896,10 +892,11 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          heightFactor: 0.95,
+          heightFactor: 0.935,
           child: SelectCalendarDate(
             dateRange: [startDate, endDate],
-            brandDateJoined: dateJoinedBrand,
+            dateJoined: dateJoinedBrand,
+            isFuture: false,
           ),
         );
       },

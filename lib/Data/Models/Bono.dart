@@ -131,4 +131,9 @@ class Bono {
   set setPurchaseId(String purchaseId) {
     this.purchaseId = purchaseId;
   }
+
+  // Set Basic Data
+  set setBrandId(String brandId) {
+    this.brandId = brandId;
+  }
 }

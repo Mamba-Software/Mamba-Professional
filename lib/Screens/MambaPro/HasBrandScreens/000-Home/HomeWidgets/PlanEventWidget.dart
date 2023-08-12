@@ -28,7 +28,7 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
     super.initState();
   }
 
-  void _addEvent() {
+  void _addEvent() async {
     if(brandIsActive) {
       Navigator.push(
           context,
@@ -50,9 +50,12 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
           )
       );
     }
+    else {
+      await navigateToPayWall(context);
+    }
   }
 
-  void _addPrivateEvent() {
+  void _addPrivateEvent() async {
     if(brandIsActive) {
       Navigator.push(
           context,
@@ -73,6 +76,9 @@ class _PlanEventWidgetState extends State<PlanEventWidget> {
                 ),
           )
       );
+    }
+    else {
+      await navigateToPayWall(context);
     }
   }
 

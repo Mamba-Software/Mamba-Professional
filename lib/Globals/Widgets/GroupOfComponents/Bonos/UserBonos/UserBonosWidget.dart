@@ -188,7 +188,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                           ),
                         ],
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                      SizedBox(height: MediaQuery.of(context).size.height*0.05),
                     ],
                   ),
                 );
@@ -196,7 +196,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
             }
           }
         ),
-        SizedBox(height: widget.height*0.03,),
+        SizedBox(height: widget.height*0.0,),
       ],
     );
   }

@@ -1313,9 +1313,71 @@ class RolesInfo extends StatelessWidget {
                               children: [
                                 const SizedBox(width: 10),
                                 Text(
-                                  AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.baseLocation.toLowerCase(),
+                                  AppLocalizations.of(context)!.edit+" "+AppLocalizations.of(context)!.locations.toLowerCase(),
                                   style: Theme.of(context).textTheme.bodyText2,
                                   textAlign: TextAlign.left,
+                                ),
+                                const SizedBox(width: 15),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              border: Border(
+                                right: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
+                              ),
+                            ),
+                            child: FittedBox(
+                              fit: BoxFit.fitWidth,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const SizedBox(width: 0),
+                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  const SizedBox(width: 20),
+                                  Icon(Icons.check, color: Theme.of(context).scaffoldBackgroundColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  const SizedBox(width: 20),
+                                  Icon(Icons.check, color: AppColors.mainColor, size: MediaQuery.of(context).size.width*0.03,),
+                                  const SizedBox(width: 10),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              border: Border(
+                                left: BorderSide(width: 1.0, color: Theme.of(context).backgroundColor),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.of(context)!.paySubscription,
+                                      style: Theme.of(context).textTheme.bodyText2,
+                                      textAlign: TextAlign.left,
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      AppLocalizations.of(context)!.paySubscriptionDesc,
+                                      style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 13),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(width: 15),
                               ],

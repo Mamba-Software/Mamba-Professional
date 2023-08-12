@@ -9,7 +9,9 @@ class ReceivedNotification {
     this.title,
     this.body,
     this.payload,
+    this.bonoId,
     this.eventId,
+    this.purchaseId,
     this.createdAt,
     this.firesAt,
   });
@@ -18,23 +20,37 @@ class ReceivedNotification {
   String? title;
   String? body;
   String? payload;
+  String? bonoId;
+  String? purchaseId;
   String? eventId;
   Timestamp? createdAt;
   DateTime? firesAt;
 
   ReceivedNotification.fromObjectAllData(String documentId, DocumentSnapshot documentSnapshot) {
-    this.id = int.parse(documentId);
+    id = int.parse(documentId);
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('title')) {
+      title = documentSnapshot.get("title").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('body')) {
+      body = documentSnapshot.get("body").toString();
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('payload')) {
-      this.payload = documentSnapshot.get("payload").toString();
+      payload = documentSnapshot.get("payload").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('eventId')) {
-      this.eventId = documentSnapshot.get("eventId").toString();
+      eventId = documentSnapshot.get("eventId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonoId')) {
+      bonoId = documentSnapshot.get("bonoId").toString();
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('purchaseId')) {
+      purchaseId = documentSnapshot.get("purchaseId").toString();
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('createdAt')) {
-      this.createdAt = documentSnapshot.get("createdAt");
+      createdAt = documentSnapshot.get("createdAt");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('firesAt')) {
-      this.firesAt = (documentSnapshot.get("firesAt") as Timestamp).toDate();
+      firesAt = (documentSnapshot.get("firesAt") as Timestamp).toDate();
     }
   }
 }

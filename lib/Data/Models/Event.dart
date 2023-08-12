@@ -1,11 +1,7 @@
 // This class represents the Object <Event> that will be showed in the Sesions Widget.
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-
 import 'Usuario.dart';
 
 class Event {
@@ -29,15 +25,17 @@ class Event {
   int? numClients;
   int? numTrainers;
   int? maxMembers;
-  var joinedMembers;
-  var selectedTrainers;
   double? intensityScore;
   double? averageIntensityScore;
   int? feedbackEntries;
+  var joinedMembers;
+  var selectedTrainers;
+  var bonos;
+  String? brandName;
+  String? brandLogo;
 
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
-  List<Bono> bonosList = [];
   Location location = Location();
 
   Event({
@@ -61,10 +59,12 @@ class Event {
     this.numClients,
     this.numTrainers,
     this.maxMembers,
+    this.intensityScore,
+    this.averageIntensityScore,
+    this.feedbackEntries,
     this.joinedMembers,
     this.selectedTrainers,
-    this.intensityScore,
-    this.feedbackEntries,
+    this.bonos,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -130,20 +130,23 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
       maxMembers = documentSnapshot.get("maxMembers");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('intensityScore')) {
+      intensityScore = double.parse(documentSnapshot.get("intensityScore").toString());
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('averageIntensityScore')) {
+      averageIntensityScore = double.parse(documentSnapshot.get("averageIntensityScore").toString());
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('feedbackEntries')) {
+      feedbackEntries = documentSnapshot.get("feedbackEntries");
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('joinedMembers')) {
       joinedMembers = documentSnapshot.get("joinedMembers");
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('selectedTrainers')) {
       selectedTrainers = documentSnapshot.get("selectedTrainers");
     }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('intensityScore')) {
-    intensityScore = double.parse(documentSnapshot.get("intensityScore").toString());
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('averageIntensityScore')) {
-    averageIntensityScore = double.parse(documentSnapshot.get("averageIntensityScore").toString());
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('feedbackEntries')) {
-      feedbackEntries = documentSnapshot.get("feedbackEntries");
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bonos')) {
+      bonos = documentSnapshot.get("bonos");
     }
   }
 
@@ -193,11 +196,17 @@ class Event {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('maxMembers')) {
       maxMembers = documentSnapshot.get("maxMembers");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('intensityScore')) {
+      intensityScore = double.parse(documentSnapshot.get("intensityScore").toString());
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('averageIntensityScore')) {
       averageIntensityScore = double.parse(documentSnapshot.get("averageIntensityScore").toString());
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('feedbackEntries')) {
       feedbackEntries = documentSnapshot.get("feedbackEntries");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('brandID')) {
+      brandID = documentSnapshot.get("brandID").toString();
     }
   }
 
@@ -220,11 +229,12 @@ class Event {
     numClients = event.numClients;
     numTrainers = event.numTrainers;
     maxMembers = event.maxMembers;
-    joinedMembers = event.joinedMembers;
-    selectedTrainers = event.selectedTrainers;
     intensityScore = event.intensityScore;
     averageIntensityScore = event.averageIntensityScore;
     feedbackEntries = event.feedbackEntries;
+    joinedMembers = event.joinedMembers;
+    selectedTrainers = event.selectedTrainers;
+    bonos = event.bonos;
   }
 
   // Users
@@ -237,13 +247,13 @@ class Event {
     brandsList = brandList;
   }
 
-  // Bonos
-  set setBonosList(List<Bono> bonosList) {
-    this.bonosList = bonosList;
-  }
-
   // Locations
   set setLocation(Location location) {
     this.location = location;
+  }
+
+  // Locations
+  set setBrandId(String brandID) {
+    this.brandID = brandID;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:external_app_launcher/external_app_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +15,7 @@ import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -46,6 +49,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   // Google Sign In
   final googleSignIn = GoogleSignIn();
   bool isLoadingGoogle = false;
+  // Apple Sign In
+  final appleSignIn = GoogleSignIn();
+  bool isLoadingApple = false;
 
   @override
   initState() {
@@ -69,6 +75,65 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Platform.isAndroid == false ? GestureDetector(
+              onTap: () {
+                setState(() {
+                  isLoadingApple = true;
+                });
+                signInWithApple();
+              },
+              child: Material(
+                elevation: 4,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(30.0),
+                  ),
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height*0.07,
+                  width: MediaQuery.of(context).size.width*0.9,
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      color: AppColors.white,
+                      borderRadius: BorderRadius.circular(30)
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height*0.07,
+                        width: MediaQuery.of(context).size.height*0.07,
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: AppColors.black, borderRadius: BorderRadius.circular(30)
+                        ),
+                        child: Image(
+                          image: AssetImage(Constants.apple)
+                        ),
+                      ),
+                      Expanded(
+                        child: !isLoadingApple ? Text(
+                            AppLocalizations.of(context)!.continueWithApple,
+                            style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.black),
+                            textAlign: TextAlign.center
+                        ) : Center(
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.06,
+                            height: MediaQuery.of(context).size.width * 0.06,
+                            child: const CircularProgressIndicator(
+                              color: AppColors.black,
+                              strokeWidth: 2.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ) : Container(),
+            SizedBox(height: MediaQuery.of(context).size.height*0.02),
             GestureDetector(
               onTap: () {
                 setState(() {
@@ -265,7 +330,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
         children: [
           SizedBox(height: MediaQuery.of(context).size.height*0.02),
           TextFormField(
-            autofocus: false,
+            autofocus: true,
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
             validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
@@ -673,7 +738,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
           }
         } else {
           // Create an account and a user for this new person from google
-          bool result = await _userDataService.addUserGoogle(authResult, Localizations.localeOf(context).languageCode);
+          bool result = await _userDataService.addUserGoogleOrApple(authResult, Localizations.localeOf(context).languageCode);
           if (result) {
             mixpanel!.track('mamba_google_register_completed');
             Navigator.pushReplacement(
@@ -694,6 +759,76 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     } catch (e) {
       setState(() {
         isLoadingGoogle = false;
+      });
+      print(e.toString());
+      showInSnackBar(AppLocalizations.of(context)!.registerError);
+    }
+  }
+
+  void signInWithApple() async {
+    try {
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final oAuthProvider = OAuthProvider('apple.com');
+      final oAuthCredential = oAuthProvider.credential(
+        idToken: credential.identityToken,
+        accessToken: credential.authorizationCode,
+      );
+      UserCredential authResult = await FirebaseAuth.instance.signInWithCredential(oAuthCredential);
+      bool userExists = await _userDataService.checkIfUserExists(authResult.user!.uid);
+      if (userExists) {
+        // Check it is no Trainer
+        bool? isTrainer;
+        try {
+          isTrainer = await _userDataService.checkIfUserIsTrainer(authResult.user!.uid);
+          if (isTrainer != null && isTrainer == false) {
+            await _userDataService.signOut();
+            setState(() {
+              isLoadingApple = false;
+            });
+            showInSnackBar(AppLocalizations.of(context)!.wrongAppUser, AppLocalizations.of(context)!.wrongAppUserBody, true);
+          } else {
+            mixpanel!.track('mamba_apple_login_completed');
+            Navigator.pushReplacement(
+                context,
+                CupertinoPageRoute<void>(
+                  builder: (context) => const SplashScreen(),
+                  settings: const RouteSettings(name: 'SplashScreen'),
+                )
+            );
+          }
+        } catch (e) {
+          setState(() {
+            isLoadingApple = false;
+          });
+          showInSnackBar(AppLocalizations.of(context)!.loginError);
+        }
+      } else {
+        // Create an account and a user for this new person from Apple
+        bool result = await _userDataService.addUserGoogleOrApple(authResult, Localizations.localeOf(context).languageCode);
+        if (result) {
+          mixpanel!.track('mamba_apple_register_completed');
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => const SplashScreen(),
+                settings: const RouteSettings(name: 'SplashScreen'),
+              )
+          );
+        } else {
+          setState(() {
+            isLoadingApple = false;
+          });
+          showInSnackBar(AppLocalizations.of(context)!.loginError);
+        }
+      }
+    } catch (e) {
+      setState(() {
+        isLoadingApple = false;
       });
       print(e.toString());
       showInSnackBar(AppLocalizations.of(context)!.registerError);

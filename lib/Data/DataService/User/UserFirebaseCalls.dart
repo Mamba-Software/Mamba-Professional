@@ -385,6 +385,15 @@ class UserFirebaseCalls {
     else return [];
   }
 
+  Future<double> getUserZoomScale(String brandId, String userId) async {
+    DocumentSnapshot<Map<String, dynamic>> _documentSnapshot = await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).get();
+    if ((_documentSnapshot.data() as Map<String,dynamic>).containsKey('zoomScale')) {
+      return _documentSnapshot.get("zoomScale");
+    } else {
+      return 1.0;
+    }
+  }
+
   Future<List<ReceivedNotification>> getLocalNotifications(String userId) async {
     List<ReceivedNotification> notis = [];
     QuerySnapshot querySnapshot = await _firestore
@@ -421,6 +430,24 @@ class UserFirebaseCalls {
         .doc(userId)
         .collection("Local Notifications")
         .where("eventId", isEqualTo: eventId)
+        .get();
+    for (int i = 0; i < querySnapshot.docs.length; i++) {
+      notis.add(
+          ReceivedNotification.fromObjectAllData(querySnapshot.docs[i].id, querySnapshot.docs[i])
+      );
+    }
+    return notis;
+  }
+
+  // Get First Notifications
+  Future<List<ReceivedNotification>> findBonoLocalNotification(String userId, String bonoId, String purchaseId) async {
+    List<ReceivedNotification> notis = [];
+    QuerySnapshot querySnapshot = await _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Local Notifications")
+        .where("bonoId", isEqualTo: bonoId)
+        .where("purchaseId", isEqualTo: purchaseId)
         .get();
     for (int i = 0; i < querySnapshot.docs.length; i++) {
       notis.add(
@@ -611,7 +638,7 @@ class UserFirebaseCalls {
   }
 
   // Register User
-  Future<bool> addUserGoogle(UserCredential authResult, String idioma) async {
+  Future<bool> addUserGoogleOrApple(UserCredential authResult, String idioma) async {
     final DateTime now = DateTime.now();
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final String formatted = formatter.format(now);
@@ -655,14 +682,10 @@ class UserFirebaseCalls {
     });
   }
 
+  // Add Local Notification
   Future<void> addLocalNotification(String userId, ReceivedNotification notification) async {
     String id = notification.id!.toString();
     Timestamp now = Timestamp.now();
-    // Event Id
-    String payloadFeedback = notification.payload!.substring(0,2);
-    String payloadSubString = notification.payload!.substring(2);
-    bool isFeedback = payloadFeedback == "F-";
-    String eventId = isFeedback ? payloadSubString : notification.payload!;
     // Firebase Query
     await _firestore
         .collection(users)
@@ -670,7 +693,9 @@ class UserFirebaseCalls {
         .collection("Local Notifications")
         .doc(id)
         .set({
-      "eventId": eventId,
+      "eventId": notification.eventId,
+      "bonoId": notification.bonoId,
+      "purchaseId": notification.purchaseId,
       "payload": notification.payload!,
       "createdAt": now,
       "firesAt": notification.firesAt!,
@@ -765,6 +790,12 @@ class UserFirebaseCalls {
   Future<void> addFavouriteToUser(String brandID, String userId, List<int> favourites) async {
     await _firestore.collection(brands).doc(brandID).collection("Users").doc(userId).update({
       "favourites": favourites,
+    });
+  }
+
+  Future<void> updateUserZoomScale(String userId, String brandId, double zoomScale) async {
+    await _firestore.collection(brands).doc(brandId).collection("Users").doc(userId).update({
+      "zoomScale": zoomScale,
     });
   }
 

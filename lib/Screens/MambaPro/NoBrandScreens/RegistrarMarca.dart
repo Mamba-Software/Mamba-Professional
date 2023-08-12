@@ -116,12 +116,12 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     }
     // Create Brand
     var result = await _brandDataService.addBrand(nameBrandController.text.trim(), _image, descriptionController.text.trim(), _workShift, membersMax, bookingWindow);
-    // Add User To Brand
-    // New Database
-    await _brandDataService.addUserToBrand(currentUser.id!,result, 1);
     // Add Location
     String baseLocation = await _locationDataService.addLocation(result, true, location.placeId!, location.description!, location.street!, location.streetNumber!, location.city!, location.zipCode!, location.latitude!, location.longitude!);
     await _brandDataService.updateBrandBaseLocation(result, baseLocation);
+    // Add User To Brand
+    // New Database
+    await _brandDataService.addUserToBrand(currentUser.id!,result, 1);
     // Update Current User Brand
     NotificationService().userCreatesBrand(currentUser.id!, result);
     // Create Group Chat
@@ -138,7 +138,7 @@ class _RegistrarMarcaState extends State<RegistrarMarca> with SingleTickerProvid
     await _brandDataService
         .updateBrandPay(result,
         subscritionPromo.duration!,
-        subscritionPromo.id!, subscritionPromo.title!);
+        subscritionPromo.id!, subscritionPromo.title!, DateTime.now(), false);
     brandIsActive = false;
     // Pushing to Splash Screen
     await Future.delayed(const Duration(seconds: 2)); // Ensure listener fires

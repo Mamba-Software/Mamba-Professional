@@ -43,16 +43,18 @@ class UserDataService {
   Future<String> getBonoRequest(String userId, String brandId) => _firebase.getBonoRequest(userId, brandId);
   Future<String> getBonoUser(String userId, String brandId) => _firebase.getBonoUser(userId, brandId);
   Future<List<int>> getUserFavourites(String brandId, String userId) => _firebase.getUserFavourites(brandId, userId);
+  Future<double> getUserZoomScale(String brandId, String userId) => _firebase.getUserZoomScale(brandId, userId);
   Future<List<ReceivedNotification>> getLocalNotifications(String userId) => _firebase.getLocalNotifications(userId);
   Future<ReceivedNotification?> getIndividualLocalNotification(String userId, String notificationId) => _firebase.getIndividualLocalNotification(userId, notificationId);
   Future<List<ReceivedNotification>> findEventLocalNotification(String userId, String eventId) => _firebase.findEventLocalNotification(userId, eventId);
+  Future<List<ReceivedNotification>> findBonoLocalNotification(String userId, String bonoId, String purchaseId) => _firebase.findBonoLocalNotification(userId, bonoId, purchaseId);
   Future<List<Bono>> getUserBonos(String? userId) => _firebase.getUserBonos(userId);
   Future<Event> getLastUserEvent(String? userId) => _firebase.getLastUserEvent(userId);
   Future<List<String>> getBlockedByUsers(String userId) => _firebase.getBlockedByUsers(userId);
 
   // Add Data
   Future<int> addUser(String email, String password, String idioma) => _firebase.addUser(email, password, idioma);
-  Future<bool> addUserGoogle(UserCredential authResult, String idioma) => _firebase.addUserGoogle(authResult, idioma);
+  Future<bool> addUserGoogleOrApple(UserCredential authResult, String idioma) => _firebase.addUserGoogleOrApple(authResult, idioma);
   Future<void> addUserNickname(String userId, String nickname) => _firebase.addUserNickname(userId, nickname);
   Future<void> addLocalNotification(String userId, ReceivedNotification notification) => _firebase.addLocalNotification(userId, notification);
   Future<void> sendNotificationToUser(String userId, String type, var parameters) => _firebase.sendNotificationToUser(userId, type, parameters);
@@ -73,6 +75,7 @@ class UserDataService {
   Future<void> markNotificationAsRead(String userId, String notificationId) => _firebase.markNotificationAsRead(userId,notificationId);
   Future<void> markALLNotificationAsRead(String userId) => _firebase.markALLNotificationAsRead(userId);
   Future<void> updateUserBono(String userId, String brandId, Bono bono) => _firebase.updateUserBono(userId, brandId, bono);
+  Future<void> updateUserZoomScale(String userId, String brandId, double zoomScale) => _firebase.updateUserZoomScale(brandId, userId, zoomScale);
 
   // Delete Data
   Future<void> deleteRequestToBrand(RequestToBrand request) => _firebase.deleteRequestToBrand(request);

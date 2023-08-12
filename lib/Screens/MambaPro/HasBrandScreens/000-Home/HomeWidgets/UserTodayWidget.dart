@@ -83,9 +83,7 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
   }
   
   // Navigate to Notifications Screen
-  void navigateToNotificationsScreen() {
-    if(brandIsActive)
-    {
+  Future<void> navigateToNotificationsScreen() async {
     Navigator.push(
         context,
         CupertinoPageRoute<void>(
@@ -97,29 +95,26 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
         unreadNotifications = temp;
       });
     });
-    }
   }
 
   // Navigate to Notifications Screen
-  void navigateToChatScreen() {
-    if(brandIsActive) {
-      Navigator.push(
-          context,
-          CupertinoPageRoute<void>(
-            builder: (context) => const ChatCore(),
-          )
-      ).whenComplete(() async {
-        var temp = await _userDataService.getUnreadConversations(
-            currentUser.id!);
-        setState(() {
-          unreadChats = temp;
-        });
+  Future<void> navigateToChatScreen() async {
+    Navigator.push(
+        context,
+        CupertinoPageRoute<void>(
+          builder: (context) => const ChatCore(),
+        )
+    ).whenComplete(() async {
+      var temp = await _userDataService.getUnreadConversations(
+          currentUser.id!);
+      setState(() {
+        unreadChats = temp;
       });
-    }
+    });
   }
 
   // Navigate to Event Screen on Tap
-  void navigateToEventScreen(String eventId) {
+  Future<void> navigateToEventScreen(String eventId) async {
     if(brandIsActive) {
       mixpanel!.track('brand_homepage_user_event_view');
       // Navigate to Event Screen
@@ -132,6 +127,9 @@ class _UserTodayWidgetState extends State<UserTodayWidget> {
                 ),
           )
       );
+    }
+    else {
+      await navigateToPayWall(context);
     }
   }
 

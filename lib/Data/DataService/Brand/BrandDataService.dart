@@ -45,6 +45,7 @@ class BrandDataService {
   // Add Data
   Future<String> addBrand(String name, File image, String description, List<double> workShift, int maxMembers, int bookingWindow) => _firebase.addBrand(name, image, description, workShift, maxMembers, bookingWindow);
   Future<void> addUserToBrand(String userId, String brandId, int role) => _firebase.addUserToBrand(userId, brandId, role);
+  Future<void> addBrandContentPictureIndividual(String brandID, File image) => _firebase.addBrandContentPictureIndividual(brandID, image);
   Future<void> addBrandContentPictures(String brandID, List<File> images) => _firebase.addBrandContentPictures(brandID, images);
   Future<void> acceptRequestFromUser(RequestToBrand request) => _firebase.acceptRequestFromUser(request);
   Future<void> addBonoToBrand(String brandId, Bono bono, Condition condition) => _firebase.addBonoToBrand(brandId, bono, condition);
@@ -60,7 +61,8 @@ class BrandDataService {
   Future<void> updateBonoCompras(String brandID, String bonoId) => _firebase.updateBonoCompras(brandID, bonoId);
   Future<void> updateBonoActive(String brandID, String bonoId, bool isActive) => _firebase.updateBonoActive(brandID, bonoId, isActive);
   Future<void> updateUserBrandRole(String userId, String brandId, int role) => _firebase.updateUserBrandRole(userId, brandId, role);
-  Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title) => _firebase.updateBrandPay(brandID, time, subscriptionId, title);
+  Future<void> updateBrandPay(String brandID, int time, String subscriptionId, String title, DateTime endDate, bool revenueCatSub) => _firebase.updateBrandPay(brandID, time, subscriptionId, title, endDate, revenueCatSub);
+  Future<void> updateBrandSubscriptionRevenueCat(String brandID, String? expires_date, String? original_purchase_date, String? product_plan_identifier, String? unsuscribedAT) => _firebase.updateBrandSubscriptionRevenueCat(brandID, expires_date,  original_purchase_date, product_plan_identifier, unsuscribedAT);
 
   // Delete Data
   Future<void> deleteBrand(String brandId) => _firebase.deleteBrand(brandId);
@@ -87,5 +89,8 @@ class BrandDataService {
   Stream<QuerySnapshot> getAllBonosFromBrand(String brandId) => _firebase.getAllBonosFromBrand(brandId);
   Stream<QuerySnapshot> getBonosRequestsFromBrand(String brandId) => _firebase.getBonosRequestsFromBrand(brandId);
   Stream<DocumentSnapshot> getBonoInfoStream(String brandId, String bonoId) => _firebase.getBonoInfoStream(brandId, bonoId);
+
+  //Subscription
+  Stream<DocumentSnapshot> getBrandSubscriptionStream(String brandId) => _firebase.getBrandSubscriptionStream(brandId);
 
 }

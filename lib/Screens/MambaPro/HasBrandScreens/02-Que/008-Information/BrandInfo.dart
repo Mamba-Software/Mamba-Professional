@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,6 +20,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingVie
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/ActiveSubscription.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
+
+import '../../../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {
@@ -39,7 +42,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   final _brandDataService = BrandDataService();
   final _promotionDataService = PromotionsDataService();
   // Boolean isLoading
-  bool isLoading = true;
+  bool isLoading = false;
   bool isUpdated = false;
   // Form To Validate
   final formKeyInfo = GlobalKey<FormState>();
@@ -80,9 +83,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   int bookingWindow = 3;
   int difference = 0;
 
-  //Paywall
-  Subscription subscription = Subscription();
-  bool ShowTextExpired = false;
+  bool ShowTextExpired = true;
 
   // App Bar and Scroll View
   bool appBarExpanded = false;
@@ -104,45 +105,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
     );
     canEdit = currentUser.brandRole < 2 ? true : false;
     initBrand();
-    checkBrandActive();
-    getBrandSubscription();
-  }
-
-  void checkBrandActive()
-  {
-    if(currentBrand.endDatePay != null)
-    {
-      if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
-      {
-        brandIsActive = true;
-      }
-      else
-      {
-        ShowTextExpired = true;
-        brandIsActive = false;
-      }
-    }
-    else
-      {
-        brandIsActive = false;
-      }
-  }
-
-  Future<void> getBrandSubscription() async
-  {
-    if(currentBrand.subscriptionId != null) {
-      subscription = await _brandDataService.getBrandSubscription(
-          currentBrand.id!, currentBrand.subscriptionId!);
-    }
-    else {
-      subscription = Subscription();
-    }
-
-    difference = currentBrand.endDatePay!.toDate().difference(DateTime.now()).inDays;
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   // Gets the user info from firebase.
@@ -265,6 +227,14 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
             elevation: 4,
             floating: false,
             pinned: true,
+            title: AnimatedOpacity(
+                opacity: appBarExpanded ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 200),
+                child: Text(
+                    AppLocalizations.of(context)!.information,
+                    style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)
+                )
+            ),
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 color: AppColors.darkGrey,
@@ -311,7 +281,6 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
               titlePadding: EdgeInsets.zero,
               //centerTitle: true,
             ),
-            title: appBarExpanded ? Text(AppLocalizations.of(context)!.information, style: Theme.of(context).appBarTheme.titleTextStyle?.copyWith(color: AppColors.white,)) : Container(),
             centerTitle: true,
             leading: Builder(
               builder: (BuildContext innerContext) => Padding(
@@ -367,96 +336,142 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
           ) : SliverToBoxAdapter(
             child: Column(
               children: [
-                currentUser.brandRole < 2 ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                      Text(
-                        AppLocalizations.of(context)!.yourPlan,
-                        style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                      !brandIsActive? GestureDetector(
-                        onTap: navigateToSubscriptionsScreen,
-                        child: Container(
-                          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
-                          height: MediaQuery.of(context).size.height*0.1,
-                          width: MediaQuery.of(context).size.width*0.9,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                Icons.new_releases,
-                                color: Theme.of(context).colorScheme.secondary,
-                                size: MediaQuery.of(context).size.width*0.10,
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                              Flexible(
-                                child:  textToShow(),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                            ],
-                          ),
-                        ),
-                      ) : subscription.subscriptionId  == '7DAYSTRIAL'? freeTrialMamba() : GestureDetector(
-                        onTap: navigateToSubscriptionsScreen,
-                        child: Container(
-                          padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
-                          height: MediaQuery.of(context).size.height*0.1,
-                          width: MediaQuery.of(context).size.width*0.9,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(0),
-                                  child: Image.asset(Constants.subscriptionImage, width: MediaQuery.of(context).size.width*0.12, fit: BoxFit.cover,)
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                              Flexible(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      subscription.title!,
-                                      style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    Text(
-                                      AppLocalizations.of(context)!.seeyourSub,
-                                      style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).colorScheme.secondary),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
+                currentUser.id == currentBrand.adminID ? BlocBuilder<BrandSuscriptionCubit, BrandSuscriptionState>(
+                    builder: (context, state) {
+                      switch (state.runtimeType) {
+                        case BrandSuscriptionInitial:
+                          return const SizedBox(height: 10);
+                        case BrandSuscriptionLoading:
+                          return const SizedBox(height: 10);
+                        case BrandSuscriptionLoadedTrue:
+                          final suscriptionState = state as BrandSuscriptionLoadedTrue;
+                          difference = suscriptionState.subscription.endDate!.toDate().difference(DateTime.now()).inDays;
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                Text(
+                                  AppLocalizations.of(context)!.yourPlan,
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                              SizedBox(width: MediaQuery.of(context).size.width*0.05),
-                            ],
-                          ),
-                        ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                suscriptionState.subscription.subscriptionId  == '7DAYSTRIAL'? freeTrialMamba() : GestureDetector(
+                                  onTap: () async {
+                                    mixpanel!.track('brand_see_active_subscription');
+                                    await Navigator.push(
+                                        context,
+                                        CupertinoPageRoute<bool?>(
+                                          builder: (context) =>
+                                              ActiveSubscription(
+                                                brandId: currentBrand.id!,
+                                                subscription: suscriptionState.subscription,
+                                              ),
+                                        )
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.04),
+                                    height: MediaQuery.of(context).size.height*0.1,
+                                    width: MediaQuery.of(context).size.width*0.9,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                            borderRadius: BorderRadius.circular(0),
+                                            child: Image.asset(Constants.subscriptionImage, width: MediaQuery.of(context).size.width*0.12, fit: BoxFit.cover,)
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                        Flexible(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                suscriptionState.subscription.title!,
+                                                style: Theme.of(context).textTheme.headline3!.copyWith(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              Text(
+                                                AppLocalizations.of(context)!.seeyourSub,
+                                                style: Theme.of(context).textTheme.caption!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                      ],
+                                    ),
+                                  ),
 
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height*0.03),
-                      Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
-                      //SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    ],
-                  ),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                                //SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              ],
+                            ),
+                          );
+                        case BrandSuscriptionLoadedFalse:
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                Text(
+                                  AppLocalizations.of(context)!.yourPlan,
+                                  style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                GestureDetector(
+                                  onTap: navigateToSubscriptionsScreen,
+                                  child: Container(
+                                    padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.05),
+                                    height: MediaQuery.of(context).size.height*0.1,
+                                    width: MediaQuery.of(context).size.width*0.9,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(10),
+                                      ),
+                                      border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.new_releases,
+                                          color: Theme.of(context).colorScheme.secondary,
+                                          size: MediaQuery.of(context).size.width*0.10,
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                        Flexible(
+                                          child:  textToShow(),
+                                        ),
+                                        SizedBox(width: MediaQuery.of(context).size.width*0.05),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).size.height*0.03),
+                                Divider(color: Theme.of(context).backgroundColor, thickness: 2, indent: MediaQuery.of(context).size.width*0.05, endIndent: MediaQuery.of(context).size.width*0.05),
+                                //SizedBox(height: MediaQuery.of(context).size.height*0.01),
+                              ],
+                            ),
+                          );
+                        default:
+                          return const SizedBox(height: 10);
+                      }
+                    }
                 ) : const SizedBox(height: 10),
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.07),
@@ -545,15 +560,15 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                   descriptionControllerTemp = value;
                                 });
                               },
-                              validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
+                              //validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.descriptionError : null,
                               minLines: 1,
                               maxLines: 5,
                               maxLength: 250,
                               enabled: canEdit,
                               style: Theme.of(context).textTheme.bodyText2,
                               decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!.descriptionHint,
                                 hintStyle: Theme.of(context).textTheme.caption,
-                                hintText: AppLocalizations.of(context)!.descriptionError,
                                 enabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
                                 disabledBorder: InputBorder.none,
@@ -681,7 +696,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                                         onlyFuture: false,
                                       )
                                   );
-                                  if (pickedTimeTemp != null) {
+                                  if (pickedTimeTemp != null ) {
                                     setState(() {
                                       endTime = pickedTimeTemp;
                                       endTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, endTime.hour, endTime.minute,));
@@ -704,11 +719,11 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
                             ],
                           ),
                           errorTime != null ? Padding(
-                            padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
+                            padding: const EdgeInsets.only(left: 0, right: 0, top: 10.0, bottom: 0),
                             child: Text(
                               errorTime == 1 ? AppLocalizations.of(context)!.workingHoursError : AppLocalizations.of(context)!.workingHoursError1,
                               style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                              textAlign: TextAlign.center,
+                              textAlign: TextAlign.left,
                             ),
                           ) : Container(),
                           SizedBox(height: MediaQuery.of(context).size.height*0.04),
@@ -1067,38 +1082,8 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   }
 
   Future<void> navigateToSubscriptionsScreen() async {
-    //mixpanel!.track('brand_membership_requests_view');
-    if(brandIsActive) {
-      mixpanel!.track('brand_see_active_subscription');
-      await Navigator.push(
-          context,
-          CupertinoPageRoute<bool?>(
-            builder: (context) =>
-                ActiveSubscription(
-                  brandId: widget.brandId,
-                  subscription: subscription,
-                ),
-          )
-      );
-      setState(() {
-        isLoading = false;
-      });
-    }
-    else {
       mixpanel!.track('brand_see_paywall');
-      await Navigator.push(
-          context,
-          CupertinoPageRoute<bool?>(
-            builder: (context) =>
-                PayWall(
-                  brandId: widget.brandId,
-                ),
-          )
-      );
-      setState(() {
-        isLoading = false;
-      });
-    }
+      await navigateToPayWall(context);
   }
 
   Widget textToShow()
@@ -1119,13 +1104,15 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
       });
       return false;
     }
+    /*
     if (TimeOfDay(hour: start.hour, minute: start.minute) == const TimeOfDay(hour: 0, minute: 00) && TimeOfDay(hour: end.hour, minute: end.minute) == const TimeOfDay(hour: 23, minute: 00)) {
       setState(() {
         errorTime = 1;
       });
       return false;
     }
-    if (toDouble(start) > toDouble(end)) {
+     */
+    if (toDouble(start) >= toDouble(end)) {
       setState(() {
         errorTime = 2;
       });
@@ -1142,15 +1129,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
   {
     return GestureDetector(
       onTap: () async {
-        await Navigator.push(
-            context,
-            CupertinoPageRoute<bool?>(
-              builder: (context) =>
-                  PayWall(
-                    brandId: currentBrand.id!,
-                  ),
-            )
-        );
+        await navigateToPayWall(context);
       },
       child: Container(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width*0.01),
@@ -1185,15 +1164,7 @@ class _BrandInfoState extends State<BrandInfo> with SingleTickerProviderStateMix
             ),
             trailing: GestureDetector(
               onTap: () async {
-                await Navigator.push(
-                    context,
-                    CupertinoPageRoute<bool?>(
-                      builder: (context) =>
-                          PayWall(
-                            brandId: currentBrand.id!,
-                          ),
-                    )
-                );
+                await navigateToPayWall(context);
               },
               child: Container(
                 height: MediaQuery.of(context).size.height*0.05,

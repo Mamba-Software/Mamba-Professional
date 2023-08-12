@@ -1,26 +1,30 @@
 // ignore_for_file: avoid_print
+import 'dart:io';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/AdminService/SettingsDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Suscription/SuscriptionDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Permissions/PermisionsService.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/SharePlus/SharePlusUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/AppUpdateDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInviteDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/HomeDialogs/BrandInvitePage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/BrandScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/NoBrandScreen.dart';
 import 'package:notification_permissions/notification_permissions.dart';
-import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:store_redirect/store_redirect.dart';
 import '../../../Globals/Utils/MambaProSelector/MambaProUtils.dart';
 
 // HomePage for the App. Here the user can change between the diferent pages.
@@ -41,6 +45,7 @@ class _MambaState extends State<Mamba> {
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
+  final _suscriptionDataService = SuscriptionDataService();
   final _settingsDataService = SettingsDataService();
   final _mambaProUtils = MambaProUtils();
   final SharePlusUtils _sharePlusUtils = SharePlusUtils();
@@ -154,8 +159,8 @@ class _MambaState extends State<Mamba> {
     if (result[0] == false) {
       mixpanel!.track('minimum_app_version_open', properties: {'isMandatory': result[1]});
       if (result[1]) {
-        Future.delayed(Duration.zero, () {
-          showDialog(
+        Future.delayed(Duration.zero, () async {
+          await showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
@@ -211,6 +216,7 @@ class _MambaState extends State<Mamba> {
 
   // Gets the user info from firebase.
   void getUserAndBrand() async {
+
     // Get User Main Data
     currentUser.setBasicData = await _userDataService.getUserDetails(currentUser.id!);
     // Get User Brand
@@ -220,11 +226,18 @@ class _MambaState extends State<Mamba> {
       // Setting the Brand to the User
       hasBrand = true;
       Brand brand = currentUser.brandsList[0];
-      currentBrand.setBasicData = await _brandDataService.getBrandDetails(brand.id!);
-      currentBrand.setUserList = await _brandDataService.getBrandUsers(brand.id!);
+      currentBrand.setBasicData =
+      await _brandDataService.getBrandDetails(brand.id!);
+      currentBrand.setUserList =
+      await _brandDataService.getBrandUsers(brand.id!);
+
       // Get Role in Brand
-      int role = await _brandDataService.getUserBrandRole(brand.id!, currentUser.id!);
+      int role = await _brandDataService.getUserBrandRole(
+          brand.id!, currentUser.id!);
       currentUser.setBrandRole = role;
+      if(currentUser.id == currentBrand.adminID) {
+          Purchases.logIn(currentBrand.id!);
+      }
       mixpanel!.getPeople().set("Brands Roles", [role]);
       setBrandActive();
     }
@@ -253,10 +266,12 @@ class _MambaState extends State<Mamba> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ? Scaffold(
-      body: LoadingView(),
-    ) :
-      hasBrand ? !brandIsActive? currentUser.brandRole < 2? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
+    return isLoading ?
+      Scaffold(
+        body: LoadingView(),
+      )
+     :
+      hasBrand ? !brandIsActive? currentUser.id == currentBrand.adminID? PayWall(brandId: currentBrand.id!, comesFromInitPage: true) : const BrandScreen() : const BrandScreen() : const NoBrandScreen();
   }
 
 

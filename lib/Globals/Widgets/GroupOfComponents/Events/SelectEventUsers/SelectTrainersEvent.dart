@@ -263,7 +263,7 @@ class _SelectTrainersEventState extends State<SelectTrainersEvent> {
               height: MediaQuery.of(context).size.width*0.17,
               width: MediaQuery.of(context).size.width*0.17,
               child: FloatingActionButton(
-                heroTag: "84",
+                heroTag: "64",
                 onPressed: () {
                   Navigator.pop(context, selectedTrainers);
                 },
