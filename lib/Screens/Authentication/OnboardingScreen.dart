@@ -1086,7 +1086,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           confirmAge = false;
                                                         });
                                                       }
-                                                      if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      //if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      if (yearController.text.length == 4) {
                                                         setState(() {
                                                           canGoNextDate = true;
                                                         });
@@ -1169,7 +1170,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           confirmAge = false;
                                                         });
                                                       }
-                                                      if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      //if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      if (yearController.text.length == 4) {
                                                         setState(() {
                                                           canGoNextDate = true;
                                                         });
@@ -1222,7 +1224,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                 mainAxisAlignment: MainAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(context)!.year,
+                                                    AppLocalizations.of(context)!.year+" (*)",
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white),
                                                     textAlign: TextAlign.left,
                                                   ),
@@ -1249,7 +1251,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                           confirmAge = false;
                                                         });
                                                       }
-                                                      if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      //if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                                      if (yearController.text.length == 4) {
                                                         setState(() {
                                                           canGoNextDate = true;
                                                         });
@@ -1334,8 +1337,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                                     style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
                                                     textAlign: TextAlign.left,
                                                   ),
-                                                  Text(
+                                                  (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) ? Text(
                                                     DateTimeUtils().formatDateTimeToStringDDMMYYYY(startDate, Localizations.localeOf(context).languageCode),
+                                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
+                                                    textAlign: TextAlign.left,
+                                                  ) : Text(
+                                                    startDate.year.toString(),
                                                     style: Theme.of(context).textTheme.headline3?.copyWith(color: AppColors.white, fontWeight: FontWeight.normal),
                                                     textAlign: TextAlign.left,
                                                   ),
@@ -1394,15 +1401,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                           }
                                           if (confirmAge == false) {
                                             // Check if Date is Valid
-                                            String dateString = yearController.text+"-"+monthController.text+"-"+dayController.text;
-                                            DateTime? date = convertToDate(dateString, "yyyy-MM-dd", context);
-                                            if (date == null || date.isAfter(DateTime.now())) {
+                                            DateTime? date;
+                                            if (dayController.text.length == 2 && monthController.text.length == 2 && yearController.text.length == 4) {
+                                              // Full Date
+                                              String dateString = yearController.text+"-"+monthController.text+"-"+dayController.text;
+                                              date = convertToDate(dateString, "yyyy-MM-dd", context);
+                                            } else {
+                                              // Only Year
+                                              dayController.text = "";
+                                              monthController.text = "";
+                                              String dateString = yearController.text+"-1-1";
+                                              date = convertToDate(dateString, "yyyy-MM-dd", context);
+                                            }
+                                            if (date == null || date.isAfter(DateTime.now()) || DateTime.now().difference(date).inDays > 36500) {
                                               setState(() {
                                                 errorAge = true;
                                               });
                                             } else {
                                               setState(() {
-                                                startDate = date;
+                                                startDate = date!;
                                                 confirmAge = true;
                                                 canGoNextDate = false;
                                               });
@@ -1417,10 +1434,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               curve: Curves.ease,
                                             );
                                           }
-
-
-
-
                                         },
                                         child: Icon(
                                           Icons.arrow_forward_ios,
