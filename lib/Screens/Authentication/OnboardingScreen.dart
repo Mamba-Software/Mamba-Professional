@@ -1646,7 +1646,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                               height: MediaQuery.of(context).size.width * 0.04,
                                               width: MediaQuery.of(context).size.width * 0.04,
                                               child: const CircularProgressIndicator(
-                                                color: AppColors.white,
+                                                color: AppColors.black,
                                                 strokeWidth: 2,
                                               ),
                                             ),
