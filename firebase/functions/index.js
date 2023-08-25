@@ -238,7 +238,7 @@ exports.monthlyProductUpdates = functions
             content = content.replace(/{{email}}/g, user.email);
             const msg = {
                 to: user.email,
-                from: 'Joel de Mamba <info@mambaapp.app>',
+                from: 'Joan de Mamba <info@mambaapp.app>',
                 subject: updatesData.emailTitle,
                 html: content,
             };
@@ -270,15 +270,17 @@ exports.monthlyProductUpdates = functions
         // Check if this will be the last Cloud Function
         if (usersSnapshot.docs.length === limitPerCloudFunction) {
             // This means we have at least the number of limitPerCloudFunction users left
+            let lastUserEmail = null;
             for (let i = 0; i < limitPerCloudFunction; i++) {
                 const doc = usersSnapshot.docs[i];
                 // Get User Data
                 const user = doc.data();
+                lastUserEmail = user.email;
                 // Build & Send Email
                 sendEmail(user, updatesData);
             }
             // There are more users lefts so, we save the new last email sent
-            await db.collection('Settings').doc('ProductUpdates').update({ lastEmailFetched: user.email});                    
+            await db.collection('Settings').doc('ProductUpdates').update({ lastEmailFetched: lastUserEmail });                    
         } else {
             // This means we have less than 300 users left and this will be the last Cloud Function
             for (let i = 0; i < usersSnapshot.docs.length; i++) {
