@@ -108,7 +108,9 @@ class _SplashScreenState extends State<SplashScreen> {
                 )
             );
             // 5. Load Users Data
-            await getUserData(firebaseUser.uid);
+            //String userId = firebaseUser.uid;
+            String userId = "GFrVbdR5WNSuFydb8i32g620Rle2";
+            await getUserData(userId);
             // 6. Get Token for FirebaseMessaging
             FirebaseMessaging.instance.getToken().then((token) {
               print("Token: $token");
