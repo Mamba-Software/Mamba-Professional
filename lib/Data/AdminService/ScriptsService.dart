@@ -3061,4 +3061,56 @@ class ScriptsDatabaseService {
     }
   }
 
+  Future<bool> JMFparcheNotificationsSeptember09th() async {
+    int i = 0;
+    try {
+      print('\n');
+      print('-----------------------------');
+      print('DATA MIGRATION 02TH SEPTEMBER FOR BUG 2023');
+      print('-----------------------------');
+      print('\n');
+
+      String usersCollection = "Users";
+      QuerySnapshot querySnapshotUsers = await _firestore.collection(usersCollection).where('isTrainer', isEqualTo: true).get();
+
+      for (DocumentSnapshot docUser in querySnapshotUsers.docs) {
+        i = 0;
+        print('=================================================================================');
+        print(docUser.id);
+
+        QuerySnapshot querySnapshot = await _firestore
+            .collection(usersCollection)
+            .doc(docUser.id)
+            .collection("Notifications")
+            .where("isRead", isEqualTo: false)
+            .get();
+
+        print(querySnapshot.docs.length);
+        i = querySnapshot.docs.length;
+
+        for (DocumentSnapshot doc in querySnapshot.docs) {
+          await _firestore
+              .collection(users)
+              .doc(docUser.id)
+              .collection("Notifications")
+              .doc(doc.id)
+              .update({"isRead": true});
+          --i;
+          print(i.toString());
+        }
+        print('=================================================================================');
+      }
+
+
+      print('All notifications set to read');
+      print('\n');
+      print('=================================================================================');
+      print('=================================================================================');
+      print('\n');
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
 }

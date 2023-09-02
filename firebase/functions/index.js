@@ -40,6 +40,20 @@ exports.scheduledDailyFunction = functions
           "and Name:",
           userDoc.name,
         );
+        //JMF NOTIFICATIONS TO READ
+        if(userDoc.isTrainer == true) {
+        const notificationsUnreadUser = await db
+                .collection("Users")
+                .doc(userId)
+                .collection("Notifications")
+                .where('isRead', '==', false)
+                .get();
+            for (var j in notificationsUnreadUser.docs) {
+                      await db.collection('Users').doc(userId).collection("Notifications").doc(notificationsUnreadUser.docs[j].id).update({ isRead: true });
+            }
+        }
+        //JMF NOTIFICATIONS TO READ
+
         // Get the Users events today
         const userEventsSnapshot = await db
         .collection("Users")
