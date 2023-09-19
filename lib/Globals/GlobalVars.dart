@@ -15,7 +15,7 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
 // IS PRODUCTION ?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
 var appVersion = "MAMBA v0.0.17";
