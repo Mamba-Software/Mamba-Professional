@@ -12,7 +12,7 @@ import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
+import 'package:mamba_castelldefels/Auth/views/Login.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Mamba.dart';
 import 'package:provider/provider.dart';
 import '../../Data/DataService/Library/LibraryDataService.dart';

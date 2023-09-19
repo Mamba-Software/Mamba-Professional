@@ -11,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
@@ -167,6 +168,10 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                 providers: [
                   BlocProvider<ClientSessionsCubit>(
                     create: (_) => ClientSessionsCubit([]),
+                    lazy: false,
+                  ),
+                  BlocProvider<AuthCubit>(
+                    create: (context) => AuthCubit(),
                     lazy: false,
                   ),
                 ],
