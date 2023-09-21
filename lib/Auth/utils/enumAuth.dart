@@ -1,12 +1,21 @@
 enum AuthProviderEnum {
   normal,   // Default
   google,
-  apple
+  apple,
+  register,
+  forgot,
 }
 
 enum AuthErrorEnum {
   wrongAppUser,   // Default
   loginError,
   validateError,
-  registerError
+  registerError,
+  validateErrorRegister,
+  sameEmail,
+  manualRegisterError,
+  forgotLoginError,
+  forgotEmailError,
+  forgotValidateEmailError
+
 }

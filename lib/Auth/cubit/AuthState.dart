@@ -28,6 +28,21 @@ class AuthLoaded extends AuthState {
   List<Object?> get props => [];
 }
 
+class AuthRegistered extends AuthState {
+
+  const AuthRegistered();
+
+  @override
+  List<Object?> get props => [];
+}
+class AuthCorrectForget extends AuthState {
+
+  const AuthCorrectForget();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class AuthError extends AuthState {
   final AuthErrorEnum error;
 

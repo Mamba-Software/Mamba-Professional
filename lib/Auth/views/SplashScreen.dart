@@ -17,7 +17,7 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Mamba.dart';
 import 'package:provider/provider.dart';
 import '../../Data/DataService/Library/LibraryDataService.dart';
 import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
-import 'OnboardingScreen_old.dart';
+import 'OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

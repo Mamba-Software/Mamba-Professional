@@ -151,31 +151,31 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3 <LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider> (
-        builder: (context, LanguageProvider language, ThemeProvider theme,  FirebaseAnalyticsProvider analytics, _) {
-          final brightness = SchedulerBinding.instance.window.platformBrightness;
-          if (brightness == Brightness.dark) {
-            print("Dark Mode");
-            theme.darkModeStatusAndNavigationBar();
-          } else {
-            print("Light Mode");
-            theme.lightModeStatusAndNavigationBar();
-          }
-          return Resize(
-            allowtextScaling: true,
-            builder: () {
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider<ClientSessionsCubit>(
-                    create: (_) => ClientSessionsCubit([]),
-                    lazy: false,
-                  ),
-                  BlocProvider<AuthCubit>(
-                    create: (context) => AuthCubit(),
-                    lazy: false,
-                  ),
-                ],
-                child: MaterialApp(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ClientSessionsCubit>(
+          create: (_) => ClientSessionsCubit([]),
+          lazy: false,
+        ),
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(),
+          lazy: false,
+        ),
+      ],
+      child: Consumer3 <LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider> (
+          builder: (context, LanguageProvider language, ThemeProvider theme,  FirebaseAnalyticsProvider analytics, _) {
+            final brightness = SchedulerBinding.instance.window.platformBrightness;
+            if (brightness == Brightness.dark) {
+              print("Dark Mode");
+              theme.darkModeStatusAndNavigationBar();
+            } else {
+              print("Light Mode");
+              theme.lightModeStatusAndNavigationBar();
+            }
+            return Resize(
+              allowtextScaling: true,
+              builder: () {
+                return MaterialApp(
                   debugShowCheckedModeBanner: false,
                   title: Constants.appName,
                   themeMode: theme.themeMode,
@@ -194,69 +194,69 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                     final args = settings.arguments;
                     print('ARGUMENTS');
                     print(settings.name);
-                      switch (settings.name) {
-                        case 'SplashScreen':
-                          return CupertinoPageRoute(
-                            builder: (_) => const SplashScreen(),
-                            settings: const RouteSettings(name: 'SplashScreen'),
-                          );
-                        case 'Notifications':
-                          return CupertinoPageRoute(
-                            builder: (_) => const Notifications(),
-                            settings: const RouteSettings(name: 'Notifications'),
-                          );
-                        case 'Chat':
-                          return CupertinoPageRoute(
-                            builder: (_) => const ChatCore(),
-                            settings: const RouteSettings(name: 'ChatCore'),
-                          );
-                        case 'EventPage':
-                          String eventId = args as String;
-                          return CupertinoPageRoute(
-                            builder: (_) =>
-                                EventPage(
-                                  eventId: eventId,
-                                ),
-                            settings: const RouteSettings(name: 'EventPage'),
-                          );
-                        case 'EventFeedbackPage':
-                          String eventId = args as String;
-                          return CupertinoPageRoute(
-                            builder: (_) =>
-                                EventFeedback(
-                                  eventId: eventId,
-                                ),
-                            settings: const RouteSettings(name: 'EventFeedback'),
-                          );
-                        case 'BonosRequests':
-                          String brandId = args as String;
-                          setState(() {
-                            pageIndex = 5;
-                          });
-                          return CupertinoPageRoute(
-                            builder: (_) =>
-                                BrandPurchaseHistory(
+                    switch (settings.name) {
+                      case 'SplashScreen':
+                        return CupertinoPageRoute(
+                          builder: (_) => const SplashScreen(),
+                          settings: const RouteSettings(name: 'SplashScreen'),
+                        );
+                      case 'Notifications':
+                        return CupertinoPageRoute(
+                          builder: (_) => const Notifications(),
+                          settings: const RouteSettings(name: 'Notifications'),
+                        );
+                      case 'Chat':
+                        return CupertinoPageRoute(
+                          builder: (_) => const ChatCore(),
+                          settings: const RouteSettings(name: 'ChatCore'),
+                        );
+                      case 'EventPage':
+                        String eventId = args as String;
+                        return CupertinoPageRoute(
+                          builder: (_) =>
+                              EventPage(
+                                eventId: eventId,
+                              ),
+                          settings: const RouteSettings(name: 'EventPage'),
+                        );
+                      case 'EventFeedbackPage':
+                        String eventId = args as String;
+                        return CupertinoPageRoute(
+                          builder: (_) =>
+                              EventFeedback(
+                                eventId: eventId,
+                              ),
+                          settings: const RouteSettings(name: 'EventFeedback'),
+                        );
+                      case 'BonosRequests':
+                        String brandId = args as String;
+                        setState(() {
+                          pageIndex = 5;
+                        });
+                        return CupertinoPageRoute(
+                          builder: (_) =>
+                              BrandPurchaseHistory(
                                   brandId: brandId
-                                ),
-                            settings: const RouteSettings(name: 'BonosRequests'),
-                          );
-                        case 'MembershipRequests':
-                          String brandId = args as String;
-                          return CupertinoPageRoute(
-                            builder: (_) =>
-                                MembershipRequestsPro(
-                                  brandId: brandId,
-                                ),
-                            settings: const RouteSettings(
-                                name: 'MembershipRequests'),
-                          );
-                      }
+                              ),
+                          settings: const RouteSettings(name: 'BonosRequests'),
+                        );
+                      case 'MembershipRequests':
+                        String brandId = args as String;
+                        return CupertinoPageRoute(
+                          builder: (_) =>
+                              MembershipRequestsPro(
+                                brandId: brandId,
+                              ),
+                          settings: const RouteSettings(
+                              name: 'MembershipRequests'),
+                        );
+                    }
                   },
-                ),
-              );
-            },
-          );
-        }
+                );
+              },
+            );
+          }
+      ),
     );
   }
 }

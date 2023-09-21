@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
+import 'package:mamba_castelldefels/Auth/views/ForgotPassword.dart';
+import 'package:mamba_castelldefels/Auth/views/Register.dart';
 import 'package:mamba_castelldefels/Auth/widgets/AppleLogin.dart';
 import 'package:mamba_castelldefels/Auth/widgets/GoogleLogin.dart';
 import 'package:mamba_castelldefels/Auth/widgets/NormalLogin.dart';
@@ -18,8 +20,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/ForgotPassword.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Register.dart';
 import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,8 +37,6 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   // Access to DatabaseService
   final _userDataService = UserDataService();
 
-  // Loading Screen Boolean
-  bool isLoading = false;
   bool isEmailSignIn = false;
 
   // Password Visible
@@ -65,45 +63,74 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     super.initState();
   }
 
-  Widget _renderWidget(AuthState state) {
-    if (state is AuthError) {
-      switch (state.error) {
-        case AuthErrorEnum.wrongAppUser:
-        // Handle wrong app user error here.
-          showInSnackBar(AppLocalizations.of(context)!.wrongAppUser,
-              AppLocalizations.of(context)!.wrongAppUserBody, true);
-          context.read<AuthCubit>().resetState();
-          break;
-        case AuthErrorEnum.loginError:
-        // Handle login error here.
-          showInSnackBar(AppLocalizations.of(context)!.loginError);
-          context.read<AuthCubit>().resetState();
-          break;
-        case AuthErrorEnum.validateError:
-          print('Error: Validation failed.');
-          // Handle validation error here.
-          showInSnackBar(AppLocalizations.of(context)!.validateError,
-              AppLocalizations.of(context)!.resend + " " +
-                  AppLocalizations.of(context)!.email, true, true);
-          context.read<AuthCubit>().resetState();
-          break;
-        case AuthErrorEnum.registerError:
-          print('Error: Registration failed.');
-          // Handle registration error here.
-          showInSnackBar(AppLocalizations.of(context)!.registerError);
-          context.read<AuthCubit>().resetState();
-          break;
-      }
-    }
-    if(state is AuthLoaded) {
-      Navigator.pushReplacement(
-          context,
-          CupertinoPageRoute<void>(
-            builder: (context) => const SplashScreen(),
-            settings: const RouteSettings(name: 'SplashScreen'),
-          )
-      );
-    }
+  Widget _renderWidget() {
+    return BlocConsumer<AuthCubit, AuthState>(
+      listener: (context, state) {
+        if (state is AuthError) {
+          switch (state.error) {
+            case AuthErrorEnum.wrongAppUser:
+            // Handle wrong app user error here.
+              showInSnackBar(AppLocalizations.of(context)!.wrongAppUser,
+                  AppLocalizations.of(context)!.wrongAppUserBody, true);
+
+              break;
+            case AuthErrorEnum.loginError:
+            // Handle login error here.
+              showInSnackBar(AppLocalizations.of(context)!.loginError);
+
+              break;
+            case AuthErrorEnum.validateError:
+              print('Error: Validation failed.');
+              // Handle validation error here.
+              showInSnackBar(AppLocalizations.of(context)!.validateError,
+                  AppLocalizations.of(context)!.resend + " " +
+                      AppLocalizations.of(context)!.email, true, true);
+
+              break;
+            case AuthErrorEnum.registerError:
+              print('Error: Registration failed.');
+              // Handle registration error here.
+              showInSnackBar(AppLocalizations.of(context)!.registerError);
+              //context.read<AuthCubit>().resetState();
+              break;
+            case AuthErrorEnum.validateErrorRegister:
+              // TODO: Handle this case.
+              break;
+            case AuthErrorEnum.sameEmail:
+              // TODO: Handle this case.
+              break;
+            case AuthErrorEnum.manualRegisterError:
+              // TODO: Handle this case.
+              break;
+            case AuthErrorEnum.forgotLoginError:
+              // TODO: Handle this case.
+              break;
+            case AuthErrorEnum.forgotEmailError:
+              // TODO: Handle this case.
+              break;
+            case AuthErrorEnum.forgotValidateEmailError:
+              // TODO: Handle this case.
+              break;
+          }
+        }
+        if (state is AuthLoaded) {
+          Navigator.pushReplacement(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (context) => const SplashScreen(),
+                settings: const RouteSettings(name: 'SplashScreen'),
+              )
+          );
+        }
+      },
+      builder: (context, state) {
+        return _renderWidgetChild(state);
+      },
+    );
+  }
+
+  // Update _renderWidget to only return Widgets
+  Widget _renderWidgetChild(AuthState state) {
     return isEmailSignIn == false ? initialLogIn(state) : logInWithEmail(state);
   }
 
@@ -618,127 +645,123 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
 
     @override
     Widget build(BuildContext context) {
-      return BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            return ScaffoldMessenger(
-              key: scaffoldMessengerKey,
-              child: Scaffold(
-                resizeToAvoidBottomInset: true,
-                backgroundColor: AppColors.black,
-                appBar: isEmailSignIn ? AppBar(
-                  toolbarHeight: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.08,
-                  backgroundColor: AppColors.black,
-                  elevation: 0,
-                  centerTitle: false,
-                  systemOverlayStyle: SystemUiOverlayStyle.light,
-                  title: FocusScope
-                      .of(context)
-                      .hasPrimaryFocus == false ? SizedBox(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.2,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.3,
-                      child: Image.asset(Constants.logoExtended)
-                  ) : Container(),
-                  leadingWidth: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 0.12,
-                  automaticallyImplyLeading: false,
-                  leading: Padding(
-                    padding: EdgeInsets.only(left: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.02),
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back, size: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.08, color: AppColors.white),
-                      alignment: Alignment.center,
-                      onPressed: () {
-                        setState(() {
-                          isEmailSignIn = false;
-                        });
-                      },
-                    ),
-                  ),
-                ) : AppBar(
-                  toolbarHeight: MediaQuery
-                      .of(context)
-                      .size
-                      .height * 0.08,
-                  backgroundColor: AppColors.black,
-                  systemOverlayStyle: SystemUiOverlayStyle.light,
-                  elevation: 0,
-                ),
-                body: Form(
-                  key: _formKey,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.02, vertical: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.02),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          switchInCurve: Curves.linear,
-                          child: FocusScope
-                              .of(context)
-                              .hasPrimaryFocus || isEmailSignIn == false
-                              ? Container(
-                              key: const ValueKey<int>(0),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.05),
-                              height: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height * 0.3,
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width * 0.6,
-                              child: Image.asset(Constants.logoExtended)
-                          )
-                              : Container(
-                            key: const ValueKey<int>(1),
-                          ),
-                        ),
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 200),
-                          transitionBuilder: (Widget child, Animation<
-                              double> animation) {
-                            return SlideTransition(
-                              position: Tween<Offset>(
-                                  begin: const Offset(0, 0.1),
-                                  end: const Offset(0, 0)).animate(animation),
-                              child: child,
-                            );
-                          },
-                          child: _renderWidget(state),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+      return ScaffoldMessenger(
+        key: scaffoldMessengerKey,
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: AppColors.black,
+          appBar: isEmailSignIn ? AppBar(
+            toolbarHeight: MediaQuery
+                .of(context)
+                .size
+                .height * 0.08,
+            backgroundColor: AppColors.black,
+            elevation: 0,
+            centerTitle: false,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+            title: FocusScope
+                .of(context)
+                .hasPrimaryFocus == false ? SizedBox(
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.2,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.3,
+                child: Image.asset(Constants.logoExtended)
+            ) : Container(),
+            leadingWidth: MediaQuery
+                .of(context)
+                .size
+                .width * 0.12,
+            automaticallyImplyLeading: false,
+            leading: Padding(
+              padding: EdgeInsets.only(left: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.02),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, size: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.08, color: AppColors.white),
+                alignment: Alignment.center,
+                onPressed: () {
+                  setState(() {
+                    isEmailSignIn = false;
+                  });
+                },
               ),
-            );
-          }
+            ),
+          ) : AppBar(
+            toolbarHeight: MediaQuery
+                .of(context)
+                .size
+                .height * 0.08,
+            backgroundColor: AppColors.black,
+            systemOverlayStyle: SystemUiOverlayStyle.light,
+            elevation: 0,
+          ),
+          body: Form(
+            key: _formKey,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.02, vertical: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.02),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    switchInCurve: Curves.linear,
+                    child: FocusScope
+                        .of(context)
+                        .hasPrimaryFocus || isEmailSignIn == false
+                        ? Container(
+                        key: const ValueKey<int>(0),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.05),
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height * 0.3,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.6,
+                        child: Image.asset(Constants.logoExtended)
+                    )
+                        : Container(
+                      key: const ValueKey<int>(1),
+                    ),
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<
+                        double> animation) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                            begin: const Offset(0, 0.1),
+                            end: const Offset(0, 0)).animate(animation),
+                        child: child,
+                      );
+                    },
+                    child: _renderWidget(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       );
     }
 

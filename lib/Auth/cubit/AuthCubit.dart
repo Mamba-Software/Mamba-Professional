@@ -38,6 +38,12 @@ class AuthCubit extends Cubit<AuthState> {
       case AuthProviderEnum.apple:
           _signInWithApple(context);
         break;
+      case AuthProviderEnum.register:
+        // TODO: Handle this case.
+        break;
+      case AuthProviderEnum.forgot:
+        // TODO: Handle this case.
+        break;
     }
   }
 
@@ -168,293 +174,67 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  void resetState() {
-    emit(const AuthInitial());
-  }
+  void signUp(String email, String password1, BuildContext context) async {
+    emit(const AuthLoading(AuthProviderEnum.register));
 
-/*
-  Future<void> getInitialAuth(List<Usuario> _brandTrainers) async {
-    try {
-      // Set the State to Loading
-      emit(const AuthLoading());
-      // Brand Id String
-      String brandId = currentBrand.id!;
-      // Get Last 100 Finished Events
-      finishedEventsList = await _eventDataService.getBrandFirstCompletedEventsLimit(brandId, limit);
-      // Add The Trainers to the Event
-      List<Usuario> eventTrainers = [];
-      for (Event evt in finishedEventsList) {
-        for (Usuario trainer in _brandTrainers) {
-          int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
-          if (index != -1) {
-            eventTrainers.add(trainer);
-          }
-        }
-        evt.setUserList = eventTrainers;
-        eventTrainers = [];
+    if (emailValidator(email)) {
+      FocusScopeNode currentFocus = FocusScope.of(context);
+      if (!currentFocus.hasPrimaryFocus) {
+        currentFocus.unfocus();
       }
-      // Open the Stream to Get Brand Upcoming Events
-      _subscription = _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
-          List<DocumentSnapshot> documents = querySnapshot.docs;
-          upcomingEventsList = documentsToEvents(documents, _brandTrainers);
-          List<Event> finalList = finishedEventsList+upcomingEventsList;
-          // Order Notification List Descending Time
-          finalList.sort((a,b) {
-            var aDate =  DateTime(
-              int.parse(a.year!),
-              int.parse(a.month!),
-              int.parse(a.day!),
-              int.parse(a.hour!),
-              int.parse(a.minute!),
-            );
-            var bDate =  DateTime(
-              int.parse(b.year!),
-              int.parse(b.month!),
-              int.parse(b.day!),
-              int.parse(b.hour!),
-              int.parse(b.minute!),
-            );
-            return aDate.compareTo(bDate);
-          });
-          // Emit a new state with the list of `Events`.
-          emit(AuthLoaded(finalList));
-        },
-          onError: (e) {
-            print("Brand Events Error"+e.toString());
-            emit(AuthError(e.toString()));
-          },
-        );
-      } catch(e) {
-        print("Brand Events Error"+e.toString());
-        emit(AuthError(e.toString()));
-      }
-      /* Open the Stream to Get Brand Upcoming Events
-      _subscription = _eventDataService.getBrandUpcomingEventsStream(brandId).listen((querySnapshot) async {
-        for (var change in querySnapshot.docChanges) {
-          if (change.type == DocumentChangeType.added) {
-            print("new one");
-            DocumentSnapshot document = change.doc;
-            Event evt = documentToEvent(document, _brandTrainers);
-            upcomingEventsList.removeWhere((element) => element.id == evt.id!);
-            upcomingEventsList.add(evt);
-          }
-          if (change.type == DocumentChangeType.modified) {
-            print("modified one");
-            DocumentSnapshot document = change.doc;
-            Event evt = documentToEvent(document, _brandTrainers);
-            upcomingEventsList.removeWhere((element) => element.id == evt.id!);
-            upcomingEventsList.add(evt);
-          }
-          if (change.type == DocumentChangeType.modified) {
-            print("deleted one");
-          }
-        }
-        List<Event> finalList = finishedEventsList+upcomingEventsList;
-        // Order Notification List Descending Time
-        finalList.sort((a,b) {
-          var aDate =  DateTime(
-            int.parse(a.year!),
-            int.parse(a.month!),
-            int.parse(a.day!),
-            int.parse(a.hour!),
-            int.parse(a.minute!),
-          );
-          var bDate =  DateTime(
-            int.parse(b.year!),
-            int.parse(b.month!),
-            int.parse(b.day!),
-            int.parse(b.hour!),
-            int.parse(b.minute!),
-          );
-          return aDate.compareTo(bDate);
-        });
-        // Emit a new state with the list of `Events`.
-        emit(AuthLoaded(finalList));
-      },
-      onError: (e) {
-        print("Brand Events Error"+e.toString());
-        emit(AuthError(e.toString()));
-      },
-      );
-    } catch(e) {
-      print("Brand Events Error"+e.toString());
-      emit(AuthError(e.toString()));
+      await _signUp(email, password1, context);
+    } else {
+      emit(const AuthError(AuthErrorEnum.validateErrorRegister));
+
     }
-       */
   }
-
-  Future<void> getMoreAuth(String eventId, List<Usuario> _brandTrainers) async {
-    try {
-      print("Getting More Brand Events");
-      // Set the State to Loading
-      String brandId = currentBrand.id!;
-      // Get Last 100 Finished Events
-      List<Event> moreFinishedEvents = await _eventDataService.getBrandMoreCompletedEventsLimit(brandId, eventId, limit*2);
-      // Add The Trainers to the Event
-      List<Usuario> eventTrainers = [];
-      for (Event evt in moreFinishedEvents) {
-        for (Usuario trainer in _brandTrainers) {
-          int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
-          if (index != -1) {
-            eventTrainers.add(trainer);
-          }
-        }
-        evt.setUserList = eventTrainers;
-        eventTrainers = [];
-      }
-      finishedEventsList = List.from(moreFinishedEvents+finishedEventsList);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
-      // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
-          int.parse(a.year!),
-          int.parse(a.month!),
-          int.parse(a.day!),
-          int.parse(a.hour!),
-          int.parse(a.minute!),
-        );
-        var bDate =  DateTime(
-          int.parse(b.year!),
-          int.parse(b.month!),
-          int.parse(b.day!),
-          int.parse(b.hour!),
-          int.parse(b.minute!),
-        );
-        return aDate.compareTo(bDate);
-      });
-      emit(AuthLoaded(finalList));
-    } catch(e) {
-      print("More Brand Events Error"+e.toString());
-      emit(AuthError(e.toString()));
+  Future<void> _signUp(String email, String password1, BuildContext context) async {
+    var result =  await _userDataService.addUser(email.trim(), password1, Localizations.localeOf(context).languageCode, true);
+    if (result == 0) {
+      mixpanel!.track('mamba_register_completed');
+      emit(const AuthRegistered());
+    } else if (result == -1) {
+      mixpanel!.track('mamba_register_existing_email_error');
+      emit(const AuthError(AuthErrorEnum.sameEmail));
+    } else {
+      emit(const AuthError(AuthErrorEnum.manualRegisterError));
     }
   }
 
-  Future<void> updateBrandEvent(String eventId, List<Usuario> _brandTrainers) async {
-    try {
-      print("Update Brand Event");
-      // Set the State to Loading
-      String brandId = currentBrand.id!;
-      // Get Last 100 Finished Events
-      Event event = await _eventDataService.getSingleEvent(eventId);
-      // Add The Trainers to the Event
-      List<Usuario> eventTrainers = [];
-      for (Usuario trainer in _brandTrainers) {
-        int index = trainer.eventsList.indexWhere((element) => element.id == event.id);
-        if (index != -1) {
-          eventTrainers.add(trainer);
+  Future<void> forgotPassword(String email, String password1, BuildContext context) async {
+    if(email.isEmpty) {
+      emit(const AuthError(AuthErrorEnum.forgotEmailError));
+    } else {
+      if (emailValidator(email)) {
+        emit(const AuthLoading(AuthProviderEnum.forgot));
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+        var result = await _userDataService.resetPassword(email);
+        if (result == 1) {
+          emit(const AuthCorrectForget());
+        } else {
+          emit(const AuthError(AuthErrorEnum.forgotLoginError));
         }
       }
-      event.setUserList = eventTrainers;
-      // Remove From Finished List First and Add Again
-      finishedEventsList.removeWhere((element) => element.id == eventId);
-      finishedEventsList.add(event);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
-      // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
-          int.parse(a.year!),
-          int.parse(a.month!),
-          int.parse(a.day!),
-          int.parse(a.hour!),
-          int.parse(a.minute!),
-        );
-        var bDate =  DateTime(
-          int.parse(b.year!),
-          int.parse(b.month!),
-          int.parse(b.day!),
-          int.parse(b.hour!),
-          int.parse(b.minute!),
-        );
-        return aDate.compareTo(bDate);
-      });
-      emit(AuthLoaded(finalList));
-      print("Event $eventId Successfully Updated");
-    } catch(e) {
-      print("Delete Brand Event Error"+e.toString());
-      emit(AuthError(e.toString()));
+      else {
+        emit(const AuthError(AuthErrorEnum.forgotValidateEmailError));
+      }
     }
   }
 
-  Future<void> deleteBrandEvent(String eventId) async {
-    try {
-      print("Delete More Brand Events");
-      upcomingEventsList.removeWhere((element) => element.id == eventId);
-      finishedEventsList.removeWhere((element) => element.id == eventId);
-      List<Event> finalList = List.from(finishedEventsList+upcomingEventsList);
-      // Order Notification List Descending Time
-      finalList.sort((a,b) {
-        var aDate =  DateTime(
-          int.parse(a.year!),
-          int.parse(a.month!),
-          int.parse(a.day!),
-          int.parse(a.hour!),
-          int.parse(a.minute!),
-        );
-        var bDate =  DateTime(
-          int.parse(b.year!),
-          int.parse(b.month!),
-          int.parse(b.day!),
-          int.parse(b.hour!),
-          int.parse(b.minute!),
-        );
-        return aDate.compareTo(bDate);
-      });
-      emit(AuthLoaded(finalList));
-      print("Event $eventId Successfully Deleted");
-    } catch(e) {
-      print("Delete Brand Event Error"+e.toString());
-      emit(AuthError(e.toString()));
-    }
-  }
 
-  @override
-  Future<void> close() {
-    //print('LO CIERRO');
-    _subscription.cancel();
-    return super.close();
-  }
-
-*/
 
 }
 
-
-List<Event> documentsToEvents(List<DocumentSnapshot> documents, List<Usuario> _brandTrainers) {
-  List<Event> events = [];
-  List<Usuario> eventTrainers = [];
-  for(int i = 0; i < documents.length; i++) {
-    Event evt = Event.fromObjectOnlyCoverData(documents[i].id, documents[i]);
-    // Check Trainers in Event
-    for (Usuario trainer in _brandTrainers) {
-      int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
-      if (index != -1) {
-        eventTrainers.add(trainer);
-      }
-    }
-    evt.setUserList = eventTrainers;
-    events.add(evt);
-    eventTrainers = [];
+// Validate email and pwd format
+bool emailValidator(String value) {
+  Pattern pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
+  RegExp regex = RegExp(pattern.toString());
+  if (!regex.hasMatch(value)) {
+    return false;
+  } else {
+    return true;
   }
-  // Order By
-  events.sort((a,b) {
-    var aDate =  a.doneAt!.toDate();
-    var bDate =  b.doneAt!.toDate();
-    return aDate.compareTo(bDate);
-  });
-  // Return List of Events
-  return events;
-}
-
-Event documentToEvent(DocumentSnapshot document, List<Usuario> _brandTrainers) {
-  List<Usuario> eventTrainers = [];
-  Event evt = Event.fromObjectOnlyCoverData(document.id, document);
-  // Check Trainers in Event
-  for (Usuario trainer in _brandTrainers) {
-    int index =  trainer.eventsList.indexWhere((element) => element.id == evt.id);
-    if (index != -1) {
-      eventTrainers.add(trainer);
-    }
-  }
-  evt.setUserList = eventTrainers;
-  return evt;
 }
