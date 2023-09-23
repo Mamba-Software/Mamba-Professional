@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import '../../../../Data/Models/Brand.dart';
-import '../../../../Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Auth/views/SplashScreen.dart';
 import '../../Components/Images/CircularImage.dart';
 import '../LoadingViews/SplashScreenView.dart';
 

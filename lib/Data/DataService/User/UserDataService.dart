@@ -100,4 +100,10 @@ class UserDataService {
 
   // Purchases
   Stream<QuerySnapshot> getUserBrandPurchasesStream(String userId, String brandId) => _firebase.getUserBrandPurchasesStream(userId, brandId);
+
+  //Unread
+
+  Stream<int> getUnreadNotificationsUserStream(String userId) => _firebase.getUnreadNotificationsUserStream(userId);
+
+  Stream<int> getUnreadConversationsUserStream(String userId) => _firebase.getUnreadConversationsUserStream(userId);
 }

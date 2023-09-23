@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Auth/CreateBrand/widgets/BrandImagesContainer.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandImagesContainer.dart';
-import '../../../../../Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Auth/views/SplashScreen.dart';
 import '../../../../GlobalVars.dart';
 import '../../../Components/Images/CircularImage.dart';
 

@@ -13,14 +13,14 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Date/DateTimeUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca_old.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import '../../Data/DataService/User/UserDataService.dart';
 import '../../Globals/GlobalVars.dart';
 import '../../Globals/NotificationService/NotificationService.dart';
 import '../../Globals/Utils/Images/ImageUtils.dart';
 import '../../Globals/Widgets/Components/Images/CircularImage.dart';
-import 'SplashScreen.dart';
+import 'SplashScreen_old.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);

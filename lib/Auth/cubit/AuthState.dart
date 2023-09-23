@@ -51,3 +51,45 @@ class AuthError extends AuthState {
   @override
   List<Object?> get props => [error];
 }
+
+class AuthMaintenance extends AuthState {
+
+  const AuthMaintenance();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class AuthAdmin extends AuthState {
+
+  const AuthAdmin();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class AuthUserBrand extends AuthState {
+
+  final Brand brand;
+
+  const AuthUserBrand(this.brand);
+
+  @override
+  List<Object?> get props => [brand];
+}
+
+class AuthUserNoBrand extends AuthState {
+
+  const AuthUserNoBrand();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class AuthNewUser extends AuthState {
+
+  const AuthNewUser();
+
+  @override
+  List<Object?> get props => [];
+}

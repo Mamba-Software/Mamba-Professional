@@ -1262,5 +1262,24 @@ class UserFirebaseCalls {
         .snapshots();
   }
 
+  Stream<int> getUnreadNotificationsUserStream(String userId) {
+    return _firestore
+        .collection(users)
+        .doc(userId)
+        .collection("Notifications")
+        .where("isRead", isEqualTo: false)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
+  Stream<int> getUnreadConversationsUserStream(String userId) {
+    return _firestore
+        .collection(conversations)
+        .where(
+        "messagesRead", arrayContains: toMapisMessageRead(userId, true))
+        .snapshots()
+        .map((snapshot) => snapshot.docs.length);
+  }
+
 
 }

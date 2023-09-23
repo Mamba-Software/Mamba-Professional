@@ -24,8 +24,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/QRCode/QRScanner.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen_old.dart';
+import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca_old.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/Settings.dart';
 import 'package:shimmer/shimmer.dart';

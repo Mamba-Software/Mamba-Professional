@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Globals/NotificationService/NotificationServ
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:store_redirect/store_redirect.dart';
 
-import '../../../../../Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Auth/views/SplashScreen.dart';
 import '../../../../GlobalVars.dart';
 import '../../../Components/Images/CircularImage.dart';
 import '../../LoadingViews/LoadingView.dart';

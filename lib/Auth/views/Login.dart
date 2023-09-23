@@ -11,6 +11,7 @@ import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
 import 'package:mamba_castelldefels/Auth/views/ForgotPassword.dart';
 import 'package:mamba_castelldefels/Auth/views/Register.dart';
+import 'package:mamba_castelldefels/Auth/views/SplashScreen.dart';
 import 'package:mamba_castelldefels/Auth/widgets/AppleLogin.dart';
 import 'package:mamba_castelldefels/Auth/widgets/GoogleLogin.dart';
 import 'package:mamba_castelldefels/Auth/widgets/NormalLogin.dart';
@@ -20,7 +21,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Styles/Styles.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
