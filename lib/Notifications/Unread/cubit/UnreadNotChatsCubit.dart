@@ -9,35 +9,37 @@ part 'UnreadNotChatsState.dart';
 
 class UnreadNotChatsCubit extends Cubit<List<int>> {
 
-  late StreamSubscription<QuerySnapshot> _subscription;
   final _userDataService = UserDataService();
   int unreadNot = 0;
   int unreadChat = 0;
   List<int> unreadList = <int>[0, 0];
+  late StreamSubscription<List<int>> _combinedStreamSubscription;
 
   UnreadNotChatsCubit(final cubitAuth) : super([]) {
     unreadList.add(0);
     unreadList.add(0);
     emit(unreadList);
-    Stream<int> getUnreadNotificationsUserStream(String brandId) {
-      return _userDataService.getUnreadNotificationsUserStream(currentUser.id!);
-    }
-    Stream<int> getUnreadConversationsUserStream(String brandId) {
-      return _userDataService.getUnreadConversationsUserStream(currentUser.id!);
+    Stream<List<int>> getCombinedUnreadStreams(String brandId) {
+      return _userDataService.getCombinedUnreadStreams(currentUser.id!);
     }
     try {
       cubitAuth.stream.distinct().listen((state) {
         // Handle the state change
-        if (state is AuthUserBrand || state is AuthUserNoBrand || state is AuthNewUser) {
-          getUnreadNotificationsUserStream(currentUser.id!).listen((querySnapshot) async {
-            unreadNot = querySnapshot;
+        if (!isExecuted && state is AuthUserBrand || state is AuthUserNoBrand || state is AuthNewUser) {
+          isExecuted = true;
+          _combinedStreamSubscription = getCombinedUnreadStreams(currentUser.id!).listen((querySnapshot) async {
+            unreadNot = querySnapshot[0];
+            unreadChat = querySnapshot[1];
+
+            unreadList = [unreadNot, unreadChat]; // creating a new list instance
+            emit(unreadList);
+
           });
-          getUnreadConversationsUserStream(currentUser.id!).listen((querySnapshot) async {
-            unreadChat = querySnapshot;
-          });
-          unreadList.add(unreadNot);
-          unreadList.add(unreadChat);
-          emit(unreadList);
+
+        }
+        else if(isExecuted) {
+          _combinedStreamSubscription.cancel();
+          isExecuted = false;
         }
       });
     }
@@ -45,5 +47,12 @@ class UnreadNotChatsCubit extends Cubit<List<int>> {
     {
       emit(unreadList);
     }
+  }
+
+  // Don't forget to cancel the subscription when the cubit is closed
+  @override
+  Future<void> close() {
+    _combinedStreamSubscription.cancel();
+    return super.close();
   }
 }

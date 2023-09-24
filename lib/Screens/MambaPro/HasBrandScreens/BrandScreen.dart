@@ -731,7 +731,6 @@ class _BrandScreenState extends State<BrandScreen> {
     switch (pageIndex) {
       case 0:
         mixpanel!.track('brand_homepage_view');
-        updateChatsAndNotifications();
         return HomePro(
             brandId: currentBrand.id!,
             numTrainers: currentBrand.numTrainers!,
@@ -751,7 +750,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 9:
         mixpanel!.track('brand_stats_view');
-        updateChatsAndNotifications();
         return Stats(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -762,7 +760,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 2:
         mixpanel!.track('brand_clients_view');
-        updateChatsAndNotifications();
         return Clients(
           brandId: currentBrand.id!,
           numClients: currentBrand.numClients!,
@@ -773,7 +770,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 1:
         mixpanel!.track('brand_trainers_view');
-        updateChatsAndNotifications();
         return Trainers(
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
@@ -784,7 +780,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 8:
         mixpanel!.track('brand_info_view');
-        updateChatsAndNotifications();
         return BrandInfo(
           locale: Localizations.localeOf(context),
           brandId: currentBrand.id!,
@@ -795,7 +790,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 5:
         mixpanel!.track('brand_bonos_view');
-        updateChatsAndNotifications();
         return BonosPro(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -805,7 +799,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 10:
         mixpanel!.track('brand_calendar_view');
-        updateChatsAndNotifications();
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
           dateTime: calendarDateTime,
@@ -817,7 +810,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 7:
         mixpanel!.track('brand_images_view');
-        updateChatsAndNotifications();
         return BrandImages(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -827,7 +819,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 11:
         mixpanel!.track('brand_locations_view');
-        updateChatsAndNotifications();
         return Locations(
           brandId: currentBrand.id!,
           pinned: iconStar,
@@ -837,7 +828,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       case 17:
         mixpanel!.track('brand_subscription_view');
-        updateChatsAndNotifications();
         return BrandSubscription(
           locale: Localizations.localeOf(context),
           brandId: currentBrand.id!,
@@ -848,7 +838,6 @@ class _BrandScreenState extends State<BrandScreen> {
         );
       default:
         mixpanel!.track('brand_homepage_view');
-        updateChatsAndNotifications();
         return BrandCalendarWidget(
           brandId: currentBrand.id!,
           dateTime: calendarDateTime,
@@ -879,13 +868,13 @@ class _BrandScreenState extends State<BrandScreen> {
   }
 
   // updateChatsAndNotifications
-  void updateChatsAndNotifications() async {
+  /*void updateChatsAndNotifications() async {
     // Unread Chats
     unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
     // Unread Notifications
     unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
     setState(() {});
-  }
+  } */
 
   // Navigate to Bonos Request Screen
   void navigateToRolesInformationModal() async {

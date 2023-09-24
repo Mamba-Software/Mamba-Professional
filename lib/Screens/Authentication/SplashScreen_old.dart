@@ -248,7 +248,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
     print("This user has the System Theme On");
     // Get Current User Unread Notifications and Chats
-    unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
+    //unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
     // Get Current User Brand, if any.
     // WAIT TO AVOID PROBLEMS DUE TO CLOUD FUNCTIONS NOT BEING INSTANTANEOUS.
     await Future.delayed(const Duration(seconds: 3));

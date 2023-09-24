@@ -23,6 +23,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Eve
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -1504,28 +1506,8 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget>{
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CounterBadgeIcon(
-                    counter: unreadNotifications,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToNotificationsScreen(context),
-                    ),
-                  ),
-                  CounterBadgeIcon(
-                    counter: unreadChats,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToChatScreen(context),
-                    ),
-                  ),
+                  unreadNotifiactions(context),
+                  unreadChats(context),
                   SizedBox(width: MediaQuery.of(context).size.width*0.03),
                   GestureDetector(
                     onTap: () => navigateToProfileScreen(context),

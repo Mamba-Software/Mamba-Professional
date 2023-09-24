@@ -103,7 +103,6 @@ class UserDataService {
 
   //Unread
 
-  Stream<int> getUnreadNotificationsUserStream(String userId) => _firebase.getUnreadNotificationsUserStream(userId);
+  Stream<List<int>> getCombinedUnreadStreams(String userId) => _firebase.getCombinedUnreadStreams(userId);
 
-  Stream<int> getUnreadConversationsUserStream(String userId) => _firebase.getUnreadConversationsUserStream(userId);
 }

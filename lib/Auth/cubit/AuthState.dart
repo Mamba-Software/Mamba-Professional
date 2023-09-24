@@ -20,6 +20,14 @@ class AuthLoading extends AuthState {
   List<Object?> get props => [provider];
 }
 
+class AuthNotLoged extends AuthState {
+
+  const AuthNotLoged();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class AuthLoaded extends AuthState {
 
   const AuthLoaded();
@@ -89,6 +97,14 @@ class AuthUserNoBrand extends AuthState {
 class AuthNewUser extends AuthState {
 
   const AuthNewUser();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class AuthLogOut extends AuthState {
+
+  const AuthLogOut();
 
   @override
   List<Object?> get props => [];

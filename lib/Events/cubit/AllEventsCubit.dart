@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
@@ -12,11 +13,42 @@ class AllEventsCubit extends Cubit<List<Event>> {
 
   final _eventDataService = EventDataService();
   List<Event> eventList = [];
-  //final  AllEventsCubit blocA;
+  late StreamSubscription<QuerySnapshot> _streamAllEvents;
 
-  late StreamSubscription<QuerySnapshot> _subscription;
+  AllEventsCubit(final cubitAuth) : super([]) {
+    emit([]);
+    Stream<QuerySnapshot> getBrandEventsStream(String brandId) {
+      return _eventDataService.getBrandEventsStream(currentBrand.id!);
+    }
+    try {
+      cubitAuth.stream.distinct().listen((state) {
+        // Handle the state change
+        if (state is AuthUserBrand) {
+          _streamAllEvents = getBrandEventsStream(currentBrand.id!).listen((querySnapshot) async {
+            List<DocumentSnapshot> documents = querySnapshot.docs;
+            eventList = documentsToEvents(documents, []);
+            // Emit a new state with the list of `Events`.
+            emit(eventList);
+          });
+        }
+        else {
+          _streamAllEvents.cancel();
+        }
+      });
+    }
+    catch(e)
+    {
+      emit([]);
+    }
+  }
 
-  AllEventsCubit(super.initialState);
+
+  // Don't forget to cancel the subscription when the cubit is closed
+  @override
+  Future<void> close() {
+    _streamAllEvents.cancel();
+    return super.close();
+  }
 /*
   AllEventsCubit() : super([]) {
     Stream<QuerySnapshot> getBrandEventsStream(String brandId) {

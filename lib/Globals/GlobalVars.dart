@@ -48,10 +48,6 @@ var currentBrand = Brand();
 bool hasBrand = false;
 bool brandIsActive = false;
 
-// Unread Notifications And Chats
-var unreadNotifications = 0;
-var unreadChats = 0;
-
 // Current User Location and TimeZone
 Position? currentPosition;
 String? currentAddress;
@@ -59,6 +55,8 @@ String? timeZoneName;
 
 // Page Controller Mamba Professional
 int pageIndex = 10;
+
+bool isExecuted = false; // Initialize the flag as a member variable.
 
 // Analytics Mix Panel
 Mixpanel? mixpanel;

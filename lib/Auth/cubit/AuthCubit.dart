@@ -293,7 +293,7 @@ class AuthCubit extends Cubit<AuthState> {
             }
           } else {
             // 3.1.2 Email has NOT been verified. Go back to Login.
-            emit(const AuthInitial());
+            emit(const AuthNotLoged());
           }
         }
         else {
@@ -336,7 +336,7 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } else {
       // 2.2 User is logged NOT in. We travel to the Login
-      emit(const AuthInitial());
+      emit(const AuthNotLoged());
     }
   }
 
@@ -347,7 +347,7 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       _userDataService.signOut();
       await Future.delayed(const Duration(seconds: 1));
-      emit(const AuthInitial());
+      emit(const AuthNotLoged());
     }
     // Set App Locale To User Preferred Language
     Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
@@ -357,8 +357,7 @@ class AuthCubit extends Cubit<AuthState> {
       Provider.of<ThemeProvider>(context, listen: false).toggleTheme(currentUser.isDark!);
     }
     print("This user has the System Theme On");
-    // Get Current User Unread Notifications and Chats
-    unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
+
     // Get Current User Brand, if any.
     // WAIT TO AVOID PROBLEMS DUE TO CLOUD FUNCTIONS NOT BEING INSTANTANEOUS.
     await Future.delayed(const Duration(seconds: 3));
@@ -403,9 +402,10 @@ class AuthCubit extends Cubit<AuthState> {
     mixpanel!.getPeople().set("lastLoginDate", DateTime.now().toString());
   }
 
-
-
-
+  void logOut()
+  {
+    emit(const AuthLogOut());
+  }
 
 }
 

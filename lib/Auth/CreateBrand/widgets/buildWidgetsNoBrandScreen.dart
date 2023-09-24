@@ -1,20 +1,32 @@
 // Build the Widget of the Image
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Auth/CreateBrand/views/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
+import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/QRCode/QRScanner.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget buildUserPicture(BuildContext context, double safeAreaWidth, double safeAreaHeight) {
   return Center(
     child: GestureDetector(
-      onTap: navigateToProfileScreen,
+      onTap: () {
+        Navigator.push(
+            context,
+            CupertinoPageRoute<void>(
+              builder: (context) => const Profile(),
+            )
+        );
+      },
       child: SizedBox(
         height: safeAreaHeight * 0.1,
         child: Center(
@@ -25,7 +37,6 @@ Widget buildUserPicture(BuildContext context, double safeAreaWidth, double safeA
   );
 }
 
-// Build Greeting Widget
 Widget buildGreetingWidget(BuildContext context, double safeAreaWidth, double safeAreaHeight) {
   return Container(
     height: safeAreaHeight*0.1,
@@ -36,40 +47,11 @@ Widget buildGreetingWidget(BuildContext context, double safeAreaWidth, double sa
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        buildUserPicture(),
+        buildUserPicture(context, safeAreaWidth, safeAreaHeight),
         SizedBox(width: safeAreaWidth*0.02,),
         Expanded(
           child: Container(
-            child: isLoading ? Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Shimmer.fromColors(
-                  baseColor: AppColors.grey,
-                  highlightColor: AppColors.grey.withOpacity(0.5),
-                  child: Container(
-                    height: safeAreaHeight * 0.02,
-                    width: safeAreaWidth * 0.2,
-                    decoration: BoxDecoration(
-                      color: AppColors.grey,
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                ),
-                Shimmer.fromColors(
-                  baseColor: AppColors.grey,
-                  highlightColor: AppColors.grey.withOpacity(0.5),
-                  child: Container(
-                    height: safeAreaHeight * 0.03,
-                    width: safeAreaWidth * 0.3,
-                    decoration: BoxDecoration(
-                      color: AppColors.grey,
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                ),
-              ],
-            ) : Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -87,60 +69,12 @@ Widget buildGreetingWidget(BuildContext context, double safeAreaWidth, double sa
             ),
           ),
         ),
-        isLoading ? SizedBox(
-          width: safeAreaWidth*0.2,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Shimmer.fromColors(
-                baseColor: AppColors.grey,
-                highlightColor: AppColors.grey.withOpacity(0.5),
-                child: Container(
-                  height: safeAreaHeight * 0.04,
-                  width: safeAreaHeight * 0.04,
-                  decoration: BoxDecoration(
-                    color: AppColors.grey,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-              ),
-              SizedBox(width: safeAreaWidth*0.02,),
-              Shimmer.fromColors(
-                baseColor: AppColors.grey,
-                highlightColor: AppColors.grey.withOpacity(0.5),
-                child: Container(
-                  height: safeAreaHeight * 0.04,
-                  width: safeAreaHeight * 0.04,
-                  decoration: BoxDecoration(
-                    color: AppColors.grey,
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-              ),
-
-            ],
-          ),
-        ) : Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CounterBadgeIcon(
-              counter: unreadNotifications,
-              child: IconButton(
-                icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
-                alignment: Alignment.centerRight,
-                onPressed: navigateToNotificationsScreen,
-              ),
-            ),
-            CounterBadgeIcon(
-              counter: unreadChats,
-              child: IconButton(
-                icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
-                alignment: Alignment.centerRight,
-                onPressed: navigateToChatScreen,
-              ),
-            ),
+            unreadNotifiactions(context),
+            unreadChats(context),
           ],
         ),
       ],
@@ -354,57 +288,5 @@ Widget buildJoinBrandWidget(BuildContext context, var height, var width) {
         ],
       ),
     ),
-  );
-}
-
-
-
-// Navigate to Notifications Screen
-void _navigateToProfileScreen(BuildContext context) {
-  Navigator.push(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const Profile(),
-      )
-  );
-}
-
-// Navigate to Notifications Screen
-void navigateToNotificationsScreen(BuildContext context) {
-  Navigator.push(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const Notifications(),
-      )
-  ).whenComplete(() async {
-    var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
-    setState(() {
-      unreadNotifications = temp;
-    });
-  });
-}
-
-// Navigate to Notifications Screen
-void navigateToChatScreen(BuildContext context) {
-  Navigator.push(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const ChatCore(),
-      )
-  ).whenComplete(() async {
-    var temp = await _userDataService.getUnreadConversations(currentUser.id!);
-    setState(() {
-      unreadChats = temp;
-    });
-  });
-}
-
-// Navigate to Notifications Screen
-void navigateToProfileScreen(BuildContext context) {
-  Navigator.push(
-      context,
-      CupertinoPageRoute<void>(
-        builder: (context) => const Profile(),
-      )
   );
 }

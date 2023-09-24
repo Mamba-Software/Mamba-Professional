@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> {
     context.read<AuthCubit>().checkAndGetUserDetails(context);
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthInitial) {
+        if (state is AuthNotLoged) {
           Navigator.pushAndRemoveUntil(
             context,
             CupertinoPageRoute<void>(

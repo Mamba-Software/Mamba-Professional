@@ -24,6 +24,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularIm
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/RectangularImage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/QRCode/QRScanner.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/BrandIntroScreen_old.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/NoBrandScreens/RegistrarMarca_old.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -79,12 +81,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
         CupertinoPageRoute<void>(
           builder: (context) => const Notifications(),
         )
-    ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadNotifications(currentUser.id!);
-      setState(() {
-        unreadNotifications = temp;
-      });
-    });
+    );
   }
 
   // Navigate to Notifications Screen
@@ -94,12 +91,7 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
         CupertinoPageRoute<void>(
           builder: (context) => const ChatCore(),
         )
-    ).whenComplete(() async {
-      var temp = await _userDataService.getUnreadConversations(currentUser.id!);
-      setState(() {
-        unreadChats = temp;
-      });
-    });
+    );
   }
 
   // Navigate to Notifications Screen
@@ -212,22 +204,8 @@ class _NoBrandScreenState extends State<NoBrandScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CounterBadgeIcon(
-                counter: unreadNotifications,
-                child: IconButton(
-                  icon: Icon(Icons.notifications, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
-                  alignment: Alignment.centerRight,
-                  onPressed: navigateToNotificationsScreen,
-                ),
-              ),
-              CounterBadgeIcon(
-                counter: unreadChats,
-                child: IconButton(
-                  icon: Icon(Icons.chat, color: Theme.of(context).primaryColor, size: safeAreaWidth*0.06),
-                  alignment: Alignment.centerRight,
-                  onPressed: navigateToChatScreen,
-                ),
-              ),
+              unreadNotifiactions(context),
+              unreadChats(context),
             ],
           ),
         ],

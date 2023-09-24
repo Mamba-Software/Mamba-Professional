@@ -14,6 +14,7 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/NotificationEvent.dart';
 import 'package:mamba_castelldefels/Data/Models/RequestToBrand.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../Models/Purchase.dart';
@@ -1260,6 +1261,13 @@ class UserFirebaseCalls {
         .doc(userId)
         .collection("Purchases")
         .snapshots();
+  }
+
+  Stream<List<int>> getCombinedUnreadStreams(String userId) {
+    return CombineLatestStream.list<int>([
+      getUnreadNotificationsUserStream(userId),
+      getUnreadConversationsUserStream(userId),
+    ]);
   }
 
   Stream<int> getUnreadNotificationsUserStream(String userId) {

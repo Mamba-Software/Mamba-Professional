@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/views/Login.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -359,6 +360,7 @@ class _SettingsState extends State<Settings> {
                 );
                 if (result) {
                   mixpanel!.track('user_profile_settings_close_session_closed');
+                  context.read<AuthCubit>().logOut();
                   setState(() {
                     isLoading = true;
                   });
