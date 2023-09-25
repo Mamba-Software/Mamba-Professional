@@ -14,6 +14,7 @@ class AllEventsCubit extends Cubit<List<Event>> {
   final _eventDataService = EventDataService();
   List<Event> eventList = [];
   late StreamSubscription<QuerySnapshot> _streamAllEvents;
+  bool isStreamActive = false;
 
   AllEventsCubit(final cubitAuth) : super([]) {
     emit([]);
@@ -24,6 +25,8 @@ class AllEventsCubit extends Cubit<List<Event>> {
       cubitAuth.stream.distinct().listen((state) {
         // Handle the state change
         if (state is AuthUserBrand) {
+          if(isStreamActive) _streamAllEvents?.cancel();
+          isStreamActive = true;
           _streamAllEvents = getBrandEventsStream(currentBrand.id!).listen((querySnapshot) async {
             List<DocumentSnapshot> documents = querySnapshot.docs;
             eventList = documentsToEvents(documents, []);
@@ -32,7 +35,12 @@ class AllEventsCubit extends Cubit<List<Event>> {
           });
         }
         else {
-          _streamAllEvents.cancel();
+          if(isStreamActive) {
+            print('clo0se');
+            _streamAllEvents.cancel();
+            isStreamActive = false;
+          }
+
         }
       });
     }

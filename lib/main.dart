@@ -21,6 +21,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
@@ -169,6 +170,10 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
         ),
         BlocProvider<AllEventsCubit>(
           create: (context) => AllEventsCubit(context.read<AuthCubit>()),
+          lazy: false,
+        ),
+        BlocProvider<BrandSuscriptionCubit>(
+          create: (context) => BrandSuscriptionCubit(context.read<AuthCubit>()),
           lazy: false,
         ),
       ],

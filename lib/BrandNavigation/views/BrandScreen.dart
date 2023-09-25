@@ -8,6 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Room/RoomDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Events/views/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
@@ -19,7 +20,6 @@ import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandCalendarWidget.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/ConfirmationDialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
@@ -35,7 +35,6 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/008-Information/BrandInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/009%20-%20Stats/Stats.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/03-Com/007-Contenido/BrandImages.dart';
-import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/014-Historial/BrandEventHistoryPage.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/05-On/011-Locations/Locations.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
@@ -43,8 +42,6 @@ import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Sett
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../../../Globals/Widgets/GroupOfComponents/PayWall/BrandSubscription.dart';
-import '../../../Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
-
 // HomePage for the App. Here the user can change between the diferent pages.
 // In this class we can only see the declaration of those pages and the swiping/changing between screens.
 class BrandScreen extends StatefulWidget {
@@ -867,15 +864,6 @@ class _BrandScreenState extends State<BrandScreen> {
     }
   }
 
-  // updateChatsAndNotifications
-  /*void updateChatsAndNotifications() async {
-    // Unread Chats
-    unreadChats = await _userDataService.getUnreadConversations(currentUser.id!);
-    // Unread Notifications
-    unreadNotifications = await _userDataService.getUnreadNotifications(currentUser.id!);
-    setState(() {});
-  } */
-
   // Navigate to Bonos Request Screen
   void navigateToRolesInformationModal() async {
     mixpanel!.track('drawer_trainer_roles_info');
@@ -924,46 +912,27 @@ class _BrandScreenState extends State<BrandScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<BrandSuscriptionCubit>(
-          create: (_) => BrandSuscriptionCubit(),
-          lazy: false,
+    return Scaffold(
+      key: mambaProScaffoldKey,
+      drawer: Drawer(
+        backgroundColor: Theme.of(context).primaryColorDark,
+        child: ListView(
+          physics: const ClampingScrollPhysics(),
+          // Remove padding
+          padding: EdgeInsets.zero,
+          children: [
+            // Header
+            buildHeader(),
+            const Divider(color: AppColors.grey, thickness: 0, height: 1,),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            // Brand Options
+            buildBrandListOptions(),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+          ],
         ),
-        BlocProvider<BrandEventsCubit>(
-          create: (_) => BrandEventsCubit(),
-          lazy: true,
-        ),
-      ],
-      child: Scaffold(
-        key: mambaProScaffoldKey,
-        drawer: Drawer(
-          backgroundColor: Theme.of(context).primaryColorDark,
-          child: ListView(
-            physics: const ClampingScrollPhysics(),
-            // Remove padding
-            padding: EdgeInsets.zero,
-            children: [
-              // Header
-              buildHeader(),
-              const Divider(color: AppColors.grey, thickness: 0, height: 1,),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              // Brand Options
-              buildBrandListOptions(),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-              //Divider(color: Theme.of(context).primaryColor, thickness: 0, height: 1),
-              /*
-              // Leave/Delete Brand
-              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              buildBrandLeaveOption(),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-              */
-            ],
-          ),
-        ),
-        body: isLoading ? LoadingView() : buildBodyNavigation() ,
-
       ),
+      body: isLoading ? LoadingView() : buildBodyNavigation() ,
+
     );
   }
 

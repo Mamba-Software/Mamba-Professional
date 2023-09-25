@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Suscription/SuscriptionDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -13,16 +16,35 @@ part 'BrandSuscriptionState.dart';
 
 class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
 
-  BrandSuscriptionCubit() : super(BrandSuscriptionInitial()) {
+  late StreamSubscription<DocumentSnapshot> _streamBrandSuscription;
+
+  BrandSuscriptionCubit(final cubitAuth) : super(BrandSuscriptionInitial()) {
+
     Stream<DocumentSnapshot<Object?>> getBrandSubscriptionStream(String userId) {
       final _brandDataService = BrandDataService();
       return _brandDataService.getBrandSubscriptionStream(currentBrand.id!);
     }
 
-    getBrandSubscriptionStream(currentBrand.id!).listen((querySnapshot) async {
-      DocumentSnapshot document = querySnapshot;
-      getBrandSuscription(document);
-    });
+    try {
+      cubitAuth.stream.distinct().listen((state) {
+        // Handle the state change
+        if (state is AuthUserBrand) {
+          _streamBrandSuscription = getBrandSubscriptionStream(currentBrand.id!).listen((querySnapshot) async {
+            DocumentSnapshot document = querySnapshot;
+            getBrandSuscription(document);
+          });
+        }
+        else {
+          _streamBrandSuscription.cancel();
+        }
+      });
+    }
+    catch(e)
+    {
+      emit(const BrandSuscriptionLoadedFalse());
+    }
+
+
   }
 
   Future<void> getBrandSuscription(DocumentSnapshot document) async {
@@ -49,11 +71,11 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
             emit(BrandSuscriptionLoadedTrue(subscription));
           }
           else {
-            emit(BrandSuscriptionLoadedFalse());
+            emit(const BrandSuscriptionLoadedFalse());
           }
         }
         else {
-          emit(BrandSuscriptionLoadedFalse());
+          emit(const BrandSuscriptionLoadedFalse());
         }
 
       }
@@ -84,12 +106,12 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
           emit(BrandSuscriptionLoadedTrue(subscription));
         }
         else {
-          emit(BrandSuscriptionLoadedFalse());
+          emit(const BrandSuscriptionLoadedFalse());
         }
       }
     } catch(e) {
       print(e);
-      emit(BrandSuscriptionLoadedFalse());
+      emit(const BrandSuscriptionLoadedFalse());
     }
   }
 }
