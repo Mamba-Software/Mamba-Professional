@@ -167,6 +167,10 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
           create: (context) => UnreadNotChatsCubit(context.read<AuthCubit>()),
           lazy: false,
         ),
+        BlocProvider<AllEventsCubit>(
+          create: (context) => AllEventsCubit(context.read<AuthCubit>()),
+          lazy: false,
+        ),
       ],
       child: Consumer3 <LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider> (
           builder: (context, LanguageProvider language, ThemeProvider theme,  FirebaseAnalyticsProvider analytics, _) {
