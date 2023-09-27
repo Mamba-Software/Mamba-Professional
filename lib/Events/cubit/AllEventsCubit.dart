@@ -36,7 +36,6 @@ class AllEventsCubit extends Cubit<List<Event>> {
         }
         else {
           if(isStreamActive) {
-            print('clo0se');
             _streamAllEvents.cancel();
             isStreamActive = false;
           }

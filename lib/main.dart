@@ -14,6 +14,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/views/SplashScreen.dart';
 import 'package:mamba_castelldefels/Events/cubit/AllEventsCubit.dart';
+import 'package:mamba_castelldefels/Events/cubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
@@ -168,8 +169,8 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
           create: (context) => UnreadNotChatsCubit(context.read<AuthCubit>()),
           lazy: false,
         ),
-        BlocProvider<AllEventsCubit>(
-          create: (context) => AllEventsCubit(context.read<AuthCubit>()),
+        BlocProvider<BrandEventsCubit>(
+          create: (context) => BrandEventsCubit(context.read<AuthCubit>()),
           lazy: false,
         ),
         BlocProvider<BrandSuscriptionCubit>(
