@@ -1,6 +1,6 @@
 // Model for a Brand in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 import 'ImageObject.dart';

@@ -27,7 +27,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/Sess
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
 import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
-import '../../../../../../../Data/Models/Event.dart';
+import '../../../../../Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../Globals/Utils/Strings/StringUtils.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';

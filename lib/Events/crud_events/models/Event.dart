@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
-import 'Usuario.dart';
+import '../../../Data/Models/Usuario.dart';
 
 class Event {
   String? id;
