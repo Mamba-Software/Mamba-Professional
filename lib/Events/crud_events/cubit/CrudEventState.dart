@@ -31,11 +31,17 @@ class CrudEventLoaded extends CrudEventState {
   final Location location;
   final GoogleMapController? mapController;
   final bool appBarExpanded;
+  final List<Usuario> originalTrainers;
+  final List<Usuario> originalClients;
+  final List<Usuario> brandTrainersSelected;
+  final List<Usuario> brandClientsSelected;
+  final List<Bono> allBonos;
 
-  const CrudEventLoaded(this.event, this.isFull, this.userIsBlockedBy, this.eventBonos, this.eventTrainers, this.eventClients, this.eventClientsFeedback, this.eventTrainersIds, this.eventTrainersBool, this.location, this.mapController, this.appBarExpanded);
+
+  const CrudEventLoaded(this.event, this.isFull, this.userIsBlockedBy, this.eventBonos, this.eventTrainers, this.eventClients, this.eventClientsFeedback, this.eventTrainersIds, this.eventTrainersBool, this.location, this.mapController, this.appBarExpanded, this.originalTrainers, this.originalClients, this.brandTrainersSelected, this.brandClientsSelected, this.allBonos);
 
   @override
-  List<Object?> get props => [event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded];
+  List<Object?> get props => [event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos];
 }
 
 class CrudEventError extends CrudEventState {

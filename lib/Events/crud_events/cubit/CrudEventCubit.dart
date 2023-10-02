@@ -33,26 +33,36 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   Location location = Location();
   GoogleMapController? mapController;
   bool appBarExpanded = false;
+  List<Usuario> originalTrainers = [];
+  List<Usuario> originalClients = [];
+  List<Usuario> brandTrainersSelected = [];
+  List<Usuario> brandClientsSelected = [];
+  List<Bono> allBonos = [];
 
 
-  CrudEventCubit(String eventId) : super(const CrudEventInitial()) {
-    getEventInfo(eventId);
-  }
+  CrudEventCubit() : super(const CrudEventInitial());
 
-  void getEventInfo(String eventId) async {
+  void getEventInfo(String eventId, bool loadState) async {
+    if(loadState) {
+      emit(const CrudEventLoading());
+    }
     event = await _eventDataService.getSingleEvent(eventId);
     isFull = (event.numClients!/event.maxMembers! == 1);
     await getUsersBlockedUser();
     await getEventUsers();
     await getEventBonos();
     await getEventLocation(event.id!);
-    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded));
+    if(!loadState) {
+      await getEventMembers(event.id!);
+      await getBrandBonos();
+    }
+    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos));
   }
 
   void setAppBarExpanded(bool isAppBarExpanded)
   {
     appBarExpanded = isAppBarExpanded;
-    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded));
+    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos));
   }
 
   Future<void> getUsersBlockedUser() async {
@@ -103,6 +113,29 @@ class CrudEventCubit extends Cubit<CrudEventState> {
     eventTrainers = trainers;
     eventTrainersIds = trainersIds;
     eventClients = clients;
+  }
+
+  Future<void> getEventMembers(String eventId) async {
+    List<Usuario> members = await _eventDataService.getEventUsers(eventId);
+    for (var m in members) {
+      if (m.isTrainer!) {
+        brandTrainersSelected.add(m);
+        originalTrainers.add(m);
+      } else {
+        brandClientsSelected.add(m);
+        originalClients.add(m);
+      }
+    }
+  }
+
+  Future<void> getBrandBonos() async {
+    allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    allBonos.removeWhere((element) => element.isActive == false);
+    allBonos.sort((a,b) {
+      var aSessions =  a.sessions;
+      var bSessions =  b.sessions;
+      return aSessions!.compareTo(bSessions!);
+    });
   }
 
   Future<void> getEventLocation(String eventId) async {

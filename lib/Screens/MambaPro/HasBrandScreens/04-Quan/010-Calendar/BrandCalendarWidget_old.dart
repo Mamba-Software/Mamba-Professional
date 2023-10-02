@@ -17,7 +17,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent_old.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';

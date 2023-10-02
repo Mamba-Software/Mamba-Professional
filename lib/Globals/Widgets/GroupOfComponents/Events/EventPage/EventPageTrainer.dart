@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent_old.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:maps_launcher/maps_launcher.dart';

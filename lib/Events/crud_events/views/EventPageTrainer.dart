@@ -7,10 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/Events/crud_events/views/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
 import 'package:maps_launcher/maps_launcher.dart';
@@ -48,11 +48,8 @@ class EventPageTrainer extends StatefulWidget {
 class _EventPageTrainerState extends State<EventPageTrainer> with SingleTickerProviderStateMixin {
 
   // Acceso a Base de Datos
-  final _brandDataService = BrandDataService();
-  final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
   final _dynamicLinkUtils = DynamicLinkUtils();
-  final _userDataService = UserDataService();
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;

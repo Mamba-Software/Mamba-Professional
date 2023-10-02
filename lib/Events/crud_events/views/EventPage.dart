@@ -15,17 +15,14 @@ class EventPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<CrudEventCubit>(
-        lazy: false,
-        create: (context) => CrudEventCubit(eventId),
-        child: currentUser.isTrainer! && (onlyView == false || onlyView == null)  ?
+    context.read<CrudEventCubit>().getEventInfo(eventId, true);
+    return  currentUser.isTrainer! && (onlyView == false || onlyView == null)  ?
         EventPageTrainer(
         )  :
         EventPageClient(
           eventId: eventId,
           onlyView: onlyView,
-        ),
-    );
+        );
 
   }
 }
