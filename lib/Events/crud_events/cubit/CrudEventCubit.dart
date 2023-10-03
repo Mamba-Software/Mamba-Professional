@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -19,6 +20,7 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   final _eventDataService = EventDataService();
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
+  final _locationDataService = LocationDataService();
   Event event = Event();
   bool isFull = false;
   List<String> userIsBlockedBy = [];
@@ -31,6 +33,7 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   List<String> eventTrainersIds = [];
   List<bool> eventTrainersBool = [];
   Location location = Location();
+  Location locationDet = Location();
   GoogleMapController? mapController;
   bool appBarExpanded = false;
   List<Usuario> originalTrainers = [];
@@ -51,18 +54,21 @@ class CrudEventCubit extends Cubit<CrudEventState> {
     await getUsersBlockedUser();
     await getEventUsers();
     await getEventBonos();
-    await getEventLocation(event.id!);
+    if(loadState) {
+      await getEventLocation(event.id!);
+    }
     if(!loadState) {
+      await getEventLocationDet(event.id!);
       await getEventMembers(event.id!);
       await getBrandBonos();
     }
-    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos));
+    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos,locationDet));
   }
 
   void setAppBarExpanded(bool isAppBarExpanded)
   {
     appBarExpanded = isAppBarExpanded;
-    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos));
+    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos,locationDet));
   }
 
   Future<void> getUsersBlockedUser() async {
@@ -140,5 +146,9 @@ class CrudEventCubit extends Cubit<CrudEventState> {
 
   Future<void> getEventLocation(String eventId) async {
     location = await _eventDataService.getEventLocation(eventId);
+  }
+
+  Future<void> getEventLocationDet(String eventId) async {
+    location = await _locationDataService.getSingleLocation(location.id!);
   }
 }

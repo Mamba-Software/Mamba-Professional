@@ -142,7 +142,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   @override
   initState() {
     context.read<CrudEventCubit>().getEventInfo(widget.eventId!, false);
-    isLoading = true;
     _tabController = TabController(length: 3, vsync: this);
     if (widget.eventId != null) {
       getEventInfo();
@@ -201,54 +200,60 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Get Event Info
     //event = await _eventDataService.getSingleEvent(widget.eventId!);
     final state = context.read<CrudEventCubit>().state;
-    event = state is CrudEventLoaded? state.event : Event();
-    // Event Date
-    originalStartDate = DateTime(
-      int.parse(event.year!),
-      int.parse(event.month!),
-      int.parse(event.day!),
-      int.parse(event.hour!),
-      int.parse(event.minute!),
-    );
-    startDate = DateTime(
-      int.parse(event.year!),
-      int.parse(event.month!),
-      int.parse(event.day!),
-      int.parse(event.hour!),
-      int.parse(event.minute!),
-    );
-    startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
-    startDateController.text = StringUtils().toCapitalized(startDateController.text);
-    startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
-    oneWeek = startDate.add(const Duration(days: 7));
-    twoWeek = startDate.add(const Duration(days: 14));
-    oneMonth= startDate.add(const Duration(days: 30));
-    doneAt = Timestamp.fromDate(startDate);
-    // Event Title
-    titleController.text = event.title!;
-    titleString = titleController.text;
-    // Event Description
-    descriptionController.text = event.description!;
-    // Event Image
-    eventImageUrl = event.imageUrl;
-    isRandomImage = false;
-    // Event Duration
-    duration = event.duration!.toStringAsFixed(2);
-    durationController.text = StringUtils().durationToString(event.duration!);
-    // Event Members
-    eventMaxMembers = event.maxMembers!;
-    membersController.text = "${event.maxMembers!}";
-    brandTrainersSelected = state.brandEvent
-    originalTrainers =
-    brandClientsSelected =
-    originalClients =
-    // Event Bonos
-    allBonos =
-        eventBonos = state.eventBonos;
-    getEventBonos();
-    // Event Locations
-    originalLocationId = event.locationId!;
-    getLocationCubit();
+    if(state is CrudEventLoaded) {
+      event = state.event;
+      // Event Date
+      originalStartDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      startDate = DateTime(
+        int.parse(event.year!),
+        int.parse(event.month!),
+        int.parse(event.day!),
+        int.parse(event.hour!),
+        int.parse(event.minute!),
+      );
+      startDateController.text =
+          DateFormat('EEEE d/M/y', widget.locale.languageCode).format(
+              startDate);
+      startDateController.text =
+          StringUtils().toCapitalized(startDateController.text);
+      startTimeController.text =
+          DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
+      oneWeek = startDate.add(const Duration(days: 7));
+      twoWeek = startDate.add(const Duration(days: 14));
+      oneMonth = startDate.add(const Duration(days: 30));
+      doneAt = Timestamp.fromDate(startDate);
+      // Event Title
+      titleController.text = event.title!;
+      titleString = titleController.text;
+      // Event Description
+      descriptionController.text = event.description!;
+      // Event Image
+      eventImageUrl = event.imageUrl;
+      isRandomImage = false;
+      // Event Duration
+      duration = event.duration!.toStringAsFixed(2);
+      durationController.text = StringUtils().durationToString(event.duration!);
+      // Event Members
+      eventMaxMembers = event.maxMembers!;
+      membersController.text = "${event.maxMembers!}";
+      brandTrainersSelected = state.brandTrainersSelected;
+      originalTrainers = state.originalTrainers;
+      brandClientsSelected = state.brandClientsSelected;
+      originalClients = state.originalClients;
+      allBonos = state.allBonos;
+      eventBonos = state.eventBonos;
+      getEventBonos();
+      // Event Locations
+      originalLocationId = event.locationId!;
+      location = state.locationDet;
+      getLocationCubit();
+    }
   }
 
   Future<void> getBrandBonos() async {

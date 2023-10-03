@@ -29,6 +29,7 @@ class CrudEventLoaded extends CrudEventState {
   final List<String> eventTrainersIds;
   final List<bool> eventTrainersBool;
   final Location location;
+  final Location locationDet;
   final GoogleMapController? mapController;
   final bool appBarExpanded;
   final List<Usuario> originalTrainers;
@@ -38,10 +39,10 @@ class CrudEventLoaded extends CrudEventState {
   final List<Bono> allBonos;
 
 
-  const CrudEventLoaded(this.event, this.isFull, this.userIsBlockedBy, this.eventBonos, this.eventTrainers, this.eventClients, this.eventClientsFeedback, this.eventTrainersIds, this.eventTrainersBool, this.location, this.mapController, this.appBarExpanded, this.originalTrainers, this.originalClients, this.brandTrainersSelected, this.brandClientsSelected, this.allBonos);
+  const CrudEventLoaded(this.event, this.isFull, this.userIsBlockedBy, this.eventBonos, this.eventTrainers, this.eventClients, this.eventClientsFeedback, this.eventTrainersIds, this.eventTrainersBool, this.location, this.mapController, this.appBarExpanded, this.originalTrainers, this.originalClients, this.brandTrainersSelected, this.brandClientsSelected, this.allBonos, this.locationDet);
 
   @override
-  List<Object?> get props => [event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos];
+  List<Object?> get props => [event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos, locationDet];
 }
 
 class CrudEventError extends CrudEventState {
