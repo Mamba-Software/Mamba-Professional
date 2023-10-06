@@ -133,9 +133,10 @@ class ClientBonoCardState extends State<ClientBonoCard> {
     sessionsDone = purchase.numberOfEvents;
     // Sessions Done This Week
     DateTime now = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    DateTime monday = now.subtract(Duration(days: 7-now.weekday));
+    DateTime monday = now.subtract(Duration(days: now.weekday - 1));
+    DateTime sunday = now.add(Duration(days: 7 - now.weekday)).add(const Duration(hours: 23, minutes: 59, seconds: 59));
     eventsThisWeek = purchase.events;
-    eventsThisWeek.retainWhere((element) => element.doneAt!.toDate().isAfter(monday));
+    eventsThisWeek.retainWhere((element) => element.doneAt!.toDate().isAfter(monday) && element.doneAt!.toDate().isBefore(sunday));
     // First Get Days to expire
     purchasedDate = purchase.purchasedAt!.toDate();
     purchasedDate = DateTime(

@@ -154,6 +154,7 @@ class _UserBonosWidgetState extends State<UserBonosWidget> {
                                         );
                                       } else {
                                         bonoPurchase.numberOfEvents = snapshot.data!.docs.length;
+                                        bonoPurchase.events = _bonosUtils.documentsToEvents(snapshot.data!.docs);
                                         return Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                                           child: ClientBonoCard(
