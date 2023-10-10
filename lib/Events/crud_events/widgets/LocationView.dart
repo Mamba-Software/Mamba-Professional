@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -40,30 +41,26 @@ Widget LocationView(BuildContext context, bool editEvent, Event eventFunc) {
       builder: (context, locationCubit) {
         if(editEvent) {
           if(locationCubit.id == '' || locationCubit.isBaseLocation == null) {
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                  Shimmer.fromColors(
-                    baseColor: AppColors.grey,
-                    highlightColor: AppColors.grey.withOpacity(0.5),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height*0.13,
-                      width: MediaQuery.of(context).size.width*0.9,
-                      decoration: const BoxDecoration(
-                          color: AppColors.grey,
-                          borderRadius: BorderRadius.all(Radius.circular(15.0))
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            return Center(
+              child: LoadingView(isSmall: true, hasLogo: false,),
             );
           }
           else {
-            return Container();
+            return Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    location.description!,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
+                  location.isBaseLocation! ? Text(
+                    AppLocalizations.of(context)!.baseLocation,
+                    style: Theme.of(context).textTheme.caption?.copyWith(height: 1.5),
+                  ) : Container(),
+                ],
+              ),
+            );
           }
         }
         else {

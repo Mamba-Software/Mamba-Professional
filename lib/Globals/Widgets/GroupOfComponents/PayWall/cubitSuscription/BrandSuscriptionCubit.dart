@@ -35,7 +35,7 @@ class BrandSuscriptionCubit extends Cubit<BrandSuscriptionState> {
           });
         }
         else {
-          _streamBrandSuscription.cancel();
+          //_streamBrandSuscription.cancel();
         }
       });
     }

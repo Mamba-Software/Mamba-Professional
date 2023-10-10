@@ -46,10 +46,16 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   CrudEventCubit() : super(const CrudEventInitial());
 
   void getEventInfo(String eventId, bool loadState) async {
-    if(loadState) {
+    if(event.id == '') {
       emit(const CrudEventLoading());
     }
+    else if(eventId != event.id)
+    {
+      emit(const CrudEventLoading());
+    }
+    print(event.title);
     event = await _eventDataService.getSingleEvent(eventId);
+    print('NEW DESC' + event.title.toString());
     isFull = (event.numClients!/event.maxMembers! == 1);
     await getUsersBlockedUser();
     await getEventUsers();
@@ -61,6 +67,18 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       await getEventLocationDet(event.id!);
       await getEventMembers(event.id!);
       await getBrandBonos();
+    }
+    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos,locationDet));
+  }
+
+  void editEventInfo(String text, int caseSwitch) {
+    switch (caseSwitch) {
+      case 1:
+        event.title = text;
+        break;
+      case 2:
+        event.description = text;
+        break;
     }
     emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos,locationDet));
   }
@@ -146,9 +164,11 @@ class CrudEventCubit extends Cubit<CrudEventState> {
 
   Future<void> getEventLocation(String eventId) async {
     location = await _eventDataService.getEventLocation(eventId);
+    event.locationId = location.id!;
   }
 
   Future<void> getEventLocationDet(String eventId) async {
     location = await _locationDataService.getSingleLocation(location.id!);
+    event.locationId = location.id!;
   }
 }
