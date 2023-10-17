@@ -1,26 +1,28 @@
-
 import 'package:flutter/material.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/TitleDescriptionWidget.dart';
 
-
-  Widget InformationPage(BuildContext context, FocusNode focusNodetitleController, final formKeyInfo) {
-    return Scaffold(
-      body: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Column(
-            children: [
-              Form(
-                key: formKeyInfo,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
-                        child: Column(
-                          children: [
-                            titleDescriptionWidget(context, focusNodetitleController),
-                            /*
+Widget InformationPage(BuildContext context, FocusNode focusNodetitleController,
+    final formKeyInfo) {
+  return Scaffold(
+    body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
+        child: Column(
+          children: [
+            Form(
+              key: formKeyInfo,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.05),
+                      child: Column(
+                        children: [
+                          TitleDescriptionWidget(
+                            focusNodetitleController: focusNodetitleController,
+                          )
+                          /*
                             Padding(
                                 padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
                                 child: Row(
@@ -121,10 +123,10 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/TitleDescriptionW
                             ),
 
                              */
-                          ],
-                        ),
+                        ],
                       ),
-                      /*
+                    ),
+                    /*
                       allBonos.isNotEmpty ? Padding(
                         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05),
                         child: Column(
@@ -345,12 +347,10 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/TitleDescriptionW
                       SizedBox(height: MediaQuery.of(context).size.height * 0.15),
 
                        */
-                    ]
-                ),
-              ),
-            ],
-          )
-      ),
-      resizeToAvoidBottomInset: true,
-    );
-  }
+                  ]),
+            ),
+          ],
+        )),
+    resizeToAvoidBottomInset: true,
+  );
+}

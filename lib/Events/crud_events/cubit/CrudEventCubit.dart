@@ -16,12 +16,12 @@ import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 part 'CrudEventState.dart';
 
 class CrudEventCubit extends Cubit<CrudEventState> {
-
   final _eventDataService = EventDataService();
   final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
   final _locationDataService = LocationDataService();
   Event event = Event();
+  Event newEvent = Event();
   bool isFull = false;
   List<String> userIsBlockedBy = [];
   List<Bono> eventBonos = [];
@@ -42,33 +42,50 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   List<Usuario> brandClientsSelected = [];
   List<Bono> allBonos = [];
 
-
   CrudEventCubit() : super(const CrudEventInitial());
 
   void getEventInfo(String eventId, bool loadState) async {
-    if(event.id == '') {
+    if (event.id == '') {
       emit(const CrudEventLoading());
-    }
-    else if(eventId != event.id)
-    {
+    } else if (eventId != event.id) {
       emit(const CrudEventLoading());
     }
     print(event.title);
     event = await _eventDataService.getSingleEvent(eventId);
+    newEvent = event;
     print('NEW DESC' + event.title.toString());
-    isFull = (event.numClients!/event.maxMembers! == 1);
+    isFull = (event.numClients! / event.maxMembers! == 1);
     await getUsersBlockedUser();
     await getEventUsers();
     await getEventBonos();
-    if(loadState) {
+    if (loadState) {
       await getEventLocation(event.id!);
     }
-    if(!loadState) {
+    if (!loadState) {
       await getEventLocationDet(event.id!);
       await getEventMembers(event.id!);
       await getBrandBonos();
     }
-    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos,locationDet));
+    emit(CrudEventLoaded(
+        event,
+        isFull,
+        userIsBlockedBy,
+        eventBonos,
+        eventTrainers,
+        eventClients,
+        eventClientsFeedback,
+        eventTrainersIds,
+        eventTrainersBool,
+        location,
+        mapController,
+        appBarExpanded,
+        originalTrainers,
+        originalClients,
+        brandTrainersSelected,
+        brandClientsSelected,
+        allBonos,
+        locationDet,
+        newEvent));
   }
 
   void editEventInfo(String text, int caseSwitch) {
@@ -80,13 +97,50 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         event.description = text;
         break;
     }
-    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos,locationDet));
+    emit(CrudEventLoaded(
+        event,
+        isFull,
+        userIsBlockedBy,
+        eventBonos,
+        eventTrainers,
+        eventClients,
+        eventClientsFeedback,
+        eventTrainersIds,
+        eventTrainersBool,
+        location,
+        mapController,
+        appBarExpanded,
+        originalTrainers,
+        originalClients,
+        brandTrainersSelected,
+        brandClientsSelected,
+        allBonos,
+        locationDet,
+        newEvent));
   }
 
-  void setAppBarExpanded(bool isAppBarExpanded)
-  {
+  void setAppBarExpanded(bool isAppBarExpanded) {
     appBarExpanded = isAppBarExpanded;
-    emit(CrudEventLoaded(event, isFull, userIsBlockedBy, eventBonos, eventTrainers, eventClients, eventClientsFeedback, eventTrainersIds, eventTrainersBool, location, mapController, appBarExpanded, originalTrainers, originalClients, brandTrainersSelected, brandClientsSelected, allBonos,locationDet));
+    emit(CrudEventLoaded(
+        event,
+        isFull,
+        userIsBlockedBy,
+        eventBonos,
+        eventTrainers,
+        eventClients,
+        eventClientsFeedback,
+        eventTrainersIds,
+        eventTrainersBool,
+        location,
+        mapController,
+        appBarExpanded,
+        originalTrainers,
+        originalClients,
+        brandTrainersSelected,
+        brandClientsSelected,
+        allBonos,
+        locationDet,
+        newEvent));
   }
 
   Future<void> getUsersBlockedUser() async {
@@ -94,10 +148,11 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   }
 
   Future<void> getEventBonos() async {
-    eventBonos = await _eventDataService.getEventBonos(event.id!, currentBrand.id!);
-    eventBonos.sort((a,b) {
-      var aSessions =  a.sessions;
-      var bSessions =  b.sessions;
+    eventBonos =
+        await _eventDataService.getEventBonos(event.id!, currentBrand.id!);
+    eventBonos.sort((a, b) {
+      var aSessions = a.sessions;
+      var bSessions = b.sessions;
       return aSessions!.compareTo(bSessions!);
     });
   }
@@ -108,7 +163,7 @@ class CrudEventCubit extends Cubit<CrudEventState> {
     List<Usuario> trainers = [];
     List<String> trainersIds = [];
     List<Usuario> clients = [];
-    for (var i=0; i < allUsers.length; i++) {
+    for (var i = 0; i < allUsers.length; i++) {
       var user = allUsers[i];
       if (user.isTrainer!) {
         if (currentUser.id! == user.id!) {
@@ -121,12 +176,13 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         }
       } else {
         clients.add(user);
-        double? feedbackClient = await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
+        double? feedbackClient =
+            await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
         eventClientsFeedback.add(feedbackClient);
       }
     }
     eventTrainersBool = [];
-    for (var i=0; i < allTrainers.length; i++) {
+    for (var i = 0; i < allTrainers.length; i++) {
       var trainer = allTrainers[i];
       if (trainersIds.contains(trainer.id!)) {
         eventTrainersBool.add(true);
@@ -153,11 +209,12 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   }
 
   Future<void> getBrandBonos() async {
-    allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    allBonos =
+        await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
     allBonos.removeWhere((element) => element.isActive == false);
-    allBonos.sort((a,b) {
-      var aSessions =  a.sessions;
-      var bSessions =  b.sessions;
+    allBonos.sort((a, b) {
+      var aSessions = a.sessions;
+      var bSessions = b.sessions;
       return aSessions!.compareTo(bSessions!);
     });
   }
