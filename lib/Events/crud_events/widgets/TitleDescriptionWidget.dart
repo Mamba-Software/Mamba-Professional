@@ -8,8 +8,10 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class TitleDescriptionWidget extends StatefulWidget {
   final FocusNode focusNodetitleController;
+  BuildContext contextFrom;
 
-  TitleDescriptionWidget({required this.focusNodetitleController});
+  TitleDescriptionWidget(
+      {required this.focusNodetitleController, required this.contextFrom});
 
   @override
   _TitleDescriptionWidgetState createState() => _TitleDescriptionWidgetState();
@@ -26,6 +28,15 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
   @override
   initState() {
     super.initState();
+    final state = widget.contextFrom.read<CrudEventCubit>().state;
+    if (state is CrudEventLoaded) {
+      titleController.text = state.newEvent.title!;
+      titleString = titleController.text;
+      // Event Description
+      descriptionController.text = state.newEvent.description!;
+      descriptionString = descriptionController.text;
+    }
+
     focusNodetitleController.requestFocus();
   }
 
@@ -64,14 +75,14 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                         ? AppLocalizations.of(context)!.titleError
                         : null,
                     onChanged: (val) {
+                      context
+                          .read<CrudEventCubit>()
+                          .editEventInfo(titleString, 1);
                       setState(() {
                         titleString = val;
                       });
                     },
                     onEditingComplete: () {
-                      context
-                          .read<CrudEventCubit>()
-                          .editEventInfo(titleString, 1);
                       if (descriptionController.text.isEmpty) {
                         focusNodeDescController.requestFocus();
                       } else {
@@ -135,6 +146,9 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                     minLines: 1,
                     maxLines: 4,
                     onChanged: (val) {
+                      context
+                          .read<CrudEventCubit>()
+                          .editEventInfo(descriptionString, 2);
                       setState(() {
                         descriptionString = val;
                       });

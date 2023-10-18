@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/Location/LocationBlocSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/TitleDescriptionWidget.dart';
 
-Widget InformationPage(BuildContext context, FocusNode focusNodetitleController,
+Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
     final formKeyInfo) {
   return Scaffold(
     body: SingleChildScrollView(
@@ -21,108 +22,9 @@ Widget InformationPage(BuildContext context, FocusNode focusNodetitleController,
                         children: [
                           TitleDescriptionWidget(
                             focusNodetitleController: focusNodetitleController,
-                          )
-                          /*
-                            Padding(
-                                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.05),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: <Widget>[
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text(
-                                          AppLocalizations.of(context)!.location,
-                                          style: Theme.of(context).textTheme.headline1,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.018),
-                              child: GestureDetector(
-                                onTap: () async {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  var result = await Navigator.push(
-                                      context,
-                                      CupertinoPageRoute<String>(
-                                        builder: (context) => MyLocationsSelect(
-                                          brandId: currentBrand.id!,
-                                        ),
-                                      )
-                                  );
-                                  if (result != null) {
-                                    getLocation(result);
-                                  } else {
-                                    setState(() {
-                                      isLoading = false;
-                                    });
-                                  }
-                                },
-                                child: Material(
-                                  elevation: 4,
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                        border: Border.all(color: Theme.of(context).primaryColor, width: 1),
-                                        borderRadius: const BorderRadius.all(Radius.circular(15.0))
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          height: MediaQuery.of(context).size.height*0.1,
-                                          width: MediaQuery.of(context).size.height*0.1,
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(15),
-                                              bottomLeft: Radius.circular(15),
-                                            ),
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius: const BorderRadius.only(
-                                              topLeft: Radius.circular(15),
-                                              bottomLeft: Radius.circular(15),
-                                            ),
-                                            child: GoogleMap(
-                                              onMapCreated: _onMapCreated,
-                                              initialCameraPosition: _initialPosition,
-                                              scrollGesturesEnabled: false,
-                                              zoomGesturesEnabled: false,
-                                              rotateGesturesEnabled: false,
-                                              mapToolbarEnabled: false,
-                                              zoomControlsEnabled: false,
-                                              minMaxZoomPreference: const MinMaxZoomPreference(16,16),
-                                              myLocationButtonEnabled: false,
-                                              mapType: MapType.satellite,
-                                              markers: markers,
-                                              trafficEnabled: false,
-                                              indoorViewEnabled: false,
-                                              buildingsEnabled: false,
-                                              onTap: null,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                                        LocationView(context, true, event!),
-                                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                                        Icon(Icons.swap_horiz, color: Theme.of(context).primaryColor, size: MediaQuery.of(context).size.width*0.08),
-                                        SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                             */
+                            contextFrom: context,
+                          ),
+                          locationBlocSelector(),
                         ],
                       ),
                     ),

@@ -48,13 +48,20 @@ class AddOrEditEvent extends StatefulWidget {
   DateTime? dateTime;
   bool isBeforeEdit;
 
-  AddOrEditEvent({Key? key, required this.locale, this.eventId, this.dateTime, required this.isBeforeEdit}) : super(key: key);
+  AddOrEditEvent(
+      {Key? key,
+      required this.locale,
+      this.eventId,
+      this.dateTime,
+      required this.isBeforeEdit})
+      : super(key: key);
 
   @override
   _AddOrEditEventState createState() => _AddOrEditEventState();
 }
 
-class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProviderStateMixin {
+class _AddOrEditEventState extends State<AddOrEditEvent>
+    with SingleTickerProviderStateMixin {
   // Acceso a Base de Datos
   final _eventDataService = EventDataService();
   //JMF_AddUser_BEGIN
@@ -64,7 +71,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   final _brandDataService = BrandDataService();
   // Notification Services
   final NotificationService _notificationService = NotificationService();
-  final LocalNotificationService _localNotificationService = LocalNotificationService();
+  final LocalNotificationService _localNotificationService =
+      LocalNotificationService();
   // Boolean Loading
   bool isLoading = false;
   // Boolean isUpdated
@@ -93,7 +101,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   String? originalLocationId;
   Location location = Location();
   Set<Marker> markers = <Marker>{};
-  CameraPosition _initialPosition = const CameraPosition(target: LatLng(26.8206, 30.8025));
+  CameraPosition _initialPosition =
+      const CameraPosition(target: LatLng(26.8206, 30.8025));
   GoogleMapController? mapController;
   final Completer<GoogleMapController> _controller = Completer();
   // Starting Date and Time
@@ -160,7 +169,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         startDate.year,
         startDate.month,
         startDate.day,
-        startDate.hour+1,
+        startDate.hour + 1,
         0,
       );
     } else {
@@ -173,12 +182,15 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       );
     }
     // Define Start Date Controller
-    startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
-    startDateController.text = StringUtils().toCapitalized(startDateController.text);
-    startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
+    startDateController.text =
+        DateFormat('EEEE d/M/y', widget.locale.languageCode).format(startDate);
+    startDateController.text =
+        StringUtils().toCapitalized(startDateController.text);
+    startTimeController.text =
+        DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
     oneWeek = startDate.add(const Duration(days: 7));
     twoWeek = startDate.add(const Duration(days: 14));
-    oneMonth= startDate.add(const Duration(days: 28));
+    oneMonth = startDate.add(const Duration(days: 28));
     doneAt = Timestamp.fromDate(startDate);
     /*
     titleController.text = currentBrand.name!.replaceAll(RegExp(r"\s+"), "");
@@ -196,12 +208,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     getLocation(currentBrand.baseLocation!);
   }
 
-
   Future<void> getEventInfo() async {
     // Get Event Info
     //event = await _eventDataService.getSingleEvent(widget.eventId!);
     final state = context.read<CrudEventCubit>().state;
-    if(state is CrudEventLoaded) {
+    if (state is CrudEventLoaded) {
       event = state.event;
       // Event Date
       originalStartDate = DateTime(
@@ -219,8 +230,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         int.parse(event.minute!),
       );
       startDateController.text =
-          DateFormat('EEEE d/M/y', widget.locale.languageCode).format(
-              startDate);
+          DateFormat('EEEE d/M/y', widget.locale.languageCode)
+              .format(startDate);
       startDateController.text =
           StringUtils().toCapitalized(startDateController.text);
       startTimeController.text =
@@ -254,11 +265,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future<void> getBrandBonos() async {
-    allBonos = await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    allBonos =
+        await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
     allBonos.removeWhere((element) => element.isActive == false);
-    allBonos.sort((a,b) {
-      var aSessions =  a.sessions;
-      var bSessions =  b.sessions;
+    allBonos.sort((a, b) {
+      var aSessions = a.sessions;
+      var bSessions = b.sessions;
       return aSessions!.compareTo(bSessions!);
     });
   }
@@ -283,10 +295,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future<void> getLocationCubit() async {
-    _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
+    _initialPosition =
+        CameraPosition(target: LatLng(location.latitude!, location.longitude!));
     Marker marker = Marker(
       markerId: const MarkerId('1'),
-      position: LatLng(location.latitude!,location.longitude!),
+      position: LatLng(location.latitude!, location.longitude!),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
     );
@@ -295,10 +308,11 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
   Future<void> getLocation(String locationId) async {
     location = await _locationDataService.getSingleLocation(locationId);
-    _initialPosition = CameraPosition(target: LatLng(location.latitude!,location.longitude!));
+    _initialPosition =
+        CameraPosition(target: LatLng(location.latitude!, location.longitude!));
     Marker marker = Marker(
       markerId: const MarkerId('1'),
-      position: LatLng(location.latitude!,location.longitude!),
+      position: LatLng(location.latitude!, location.longitude!),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
     );
@@ -316,15 +330,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
   Future selectDate() async {
     // TODO: AQUI HI HA UN ERROR QUAN SINICIA EL CREATEEVENT A LES XX:59 Y ES CLICKA AIXO A LES XX+1:01
-    DateTime? pickedDateTemp =  await showCupertinoModalPopup(
+    DateTime? pickedDateTemp = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDateDialog(
-          title: AppLocalizations.of(context)!.selectDay,
-          startDate: startDate,
-          onlyFuture: true,
-          dateOfWeek: true,
-        )
-    );
+              title: AppLocalizations.of(context)!.selectDay,
+              startDate: startDate,
+              onlyFuture: true,
+              dateOfWeek: true,
+            ));
     if (pickedDateTemp != null) {
       setState(() {
         errorDate = false;
@@ -335,14 +348,17 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           startDate.hour,
           startDate.minute,
         );
-        startDateController.text = DateFormat('EEEE d/M/y', widget.locale.languageCode).format(pickedDateTemp);
-        startDateController.text = StringUtils().toCapitalized(startDateController.text);
+        startDateController.text =
+            DateFormat('EEEE d/M/y', widget.locale.languageCode)
+                .format(pickedDateTemp);
+        startDateController.text =
+            StringUtils().toCapitalized(startDateController.text);
         oneWeek = pickedDateTemp.add(const Duration(days: 7));
         twoWeek = pickedDateTemp.add(const Duration(days: 14));
-        oneMonth= pickedDateTemp.add(const Duration(days: 28));
+        oneMonth = pickedDateTemp.add(const Duration(days: 28));
         if (isRecurrent) {
           values = [false, false, false, false, false, false, false];
-          values[startDate.weekday-1] = true;
+          values[startDate.weekday - 1] = true;
         }
       });
     }
@@ -351,14 +367,13 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   Future selectTime() async {
     // TODO: AQUI HI HA UN ERROR QUAN SINICIA EL CREATEEVENT A LES XX:59 Y ES CLICKA AIXO A LES XX+1:01
     if (startDate.isBefore(DateTime.now())) startDate = DateTime.now();
-    DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
+    DateTime? pickedTimeTemp = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectTimeDialog(
-          title: AppLocalizations.of(context)!.selectTime,
-          startDate: startDate,
-          onlyFuture: true,
-        )
-    );
+              title: AppLocalizations.of(context)!.selectTime,
+              startDate: startDate,
+              onlyFuture: true,
+            ));
     if (pickedTimeTemp != null) {
       setState(() {
         errorDate = false;
@@ -369,22 +384,22 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           pickedTimeTemp.hour,
           pickedTimeTemp.minute,
         );
-        startTimeController.text = DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
+        startTimeController.text =
+            DateFormat('HH:mm', widget.locale.languageCode).format(startDate);
         oneWeek = pickedTimeTemp.add(const Duration(days: 7));
         twoWeek = pickedTimeTemp.add(const Duration(days: 14));
-        oneMonth= pickedTimeTemp.add(const Duration(days: 28));
+        oneMonth = pickedTimeTemp.add(const Duration(days: 28));
       });
     }
   }
 
   Future selectDuration() async {
-    String? pickedDuration =  await showCupertinoModalPopup(
+    String? pickedDuration = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDurationDialog(
-          title: AppLocalizations.of(context)!.selectDuration,
-          initialDuration: duration,
-        )
-    );
+              title: AppLocalizations.of(context)!.selectDuration,
+              initialDuration: duration,
+            ));
     if (pickedDuration != null) {
       setState(() {
         var hour = pickedDuration.split(".")[0];
@@ -396,13 +411,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future selectNumberOfMembers() async {
-    int? pickedMembers =  await showCupertinoModalPopup(
+    int? pickedMembers = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectMembersDialog(
-          title: AppLocalizations.of(context)!.maxNumberClients,
-          initialMembers: eventMaxMembers-1,
-        )
-    );
+              title: AppLocalizations.of(context)!.maxNumberClients,
+              initialMembers: eventMaxMembers - 1,
+            ));
     if (pickedMembers != null) {
       setState(() {
         eventMaxMembers = pickedMembers;
@@ -420,8 +434,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
               builder: (context) => SelectTrainersEvent(
                 selectedTrainers: brandTrainersSelected,
               ),
-            )
-        );
+            ));
         if (selectedTrainers != null) {
           setState(() {
             brandTrainersSelected = selectedTrainers;
@@ -430,13 +443,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       }, //: null,
       child: Padding(
-        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
+        padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.06, right: 8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: MediaQuery.of(context).size.width*0.17,
-              width: MediaQuery.of(context).size.width*0.17,
+              height: MediaQuery.of(context).size.width * 0.17,
+              width: MediaQuery.of(context).size.width * 0.17,
               decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
                 border: Border.all(
@@ -454,16 +468,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Icon(
-                    Icons.person_add_alt_1,
+                child: Icon(Icons.person_add_alt_1,
                     color: Theme.of(context).primaryColor,
-                    size:  MediaQuery.of(context).size.width*0.05
-                ),
+                    size: MediaQuery.of(context).size.width * 0.05),
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.width*0.025),
+            SizedBox(height: MediaQuery.of(context).size.width * 0.025),
             SizedBox(
-              width: MediaQuery.of(context).size.width*0.2,
+              width: MediaQuery.of(context).size.width * 0.2,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -489,17 +501,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
             context,
             CupertinoPageRoute<List<Usuario>>(
               builder: (context) => SelectClientsEvent(
-                 selectedUsers: brandClientsSelected,
-                  selectedBonos: selectedBonos,
-                  bonos: filterBonosByIds(), event: event,
+                selectedUsers: brandClientsSelected,
+                selectedBonos: selectedBonos,
+                bonos: filterBonosByIds(),
+                event: event,
               ),
-            )
-        );
+            ));
         if (selectedClients != null) {
-          if(selectedClients.any((client) => client.purchaseId != "")) {
+          if (selectedClients.any((client) => client.purchaseId != "")) {
             errorBonos = true;
-          }
-          else {
+          } else {
             errorBonos = false;
           }
           setState(() {
@@ -510,13 +521,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       }, //: null,
       child: Padding(
-        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.06, right: 8.0),
+        padding: EdgeInsets.only(
+            left: MediaQuery.of(context).size.width * 0.06, right: 8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: MediaQuery.of(context).size.width*0.17,
-              width: MediaQuery.of(context).size.width*0.17,
+              height: MediaQuery.of(context).size.width * 0.17,
+              width: MediaQuery.of(context).size.width * 0.17,
               decoration: BoxDecoration(
                 color: Theme.of(context).backgroundColor,
                 border: Border.all(
@@ -534,16 +546,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
                 shape: BoxShape.circle,
               ),
               child: Center(
-                child: Icon(
-                    Icons.person_add_alt_1,
+                child: Icon(Icons.person_add_alt_1,
                     color: Theme.of(context).primaryColor,
-                    size:  MediaQuery.of(context).size.width*0.05
-                ),
+                    size: MediaQuery.of(context).size.width * 0.05),
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.width*0.025),
+            SizedBox(height: MediaQuery.of(context).size.width * 0.025),
             SizedBox(
-              width: MediaQuery.of(context).size.width*0.2,
+              width: MediaQuery.of(context).size.width * 0.2,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -564,1110 +574,1785 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
-    return isLoading ? Scaffold(
-      appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.08,
-        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.createEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
-            : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width*0.15,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.groups,
-                  color: Theme.of(context).primaryColor,
-                  size: MediaQuery.of(context).size.width*0.06,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.1,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                        AppLocalizations.of(context)!.group,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center
+    return isLoading
+        ? Scaffold(
+            appBar: AppBar(
+              toolbarHeight: MediaQuery.of(context).size.height * 0.08,
+              title: widget.eventId == null
+                  ? Text(AppLocalizations.of(context)!.createEvent,
+                      style: Theme.of(context).appBarTheme.titleTextStyle)
+                  : Text(
+                      AppLocalizations.of(context)!.editEvent,
+                      style: Theme.of(context).appBarTheme.titleTextStyle,
                     ),
+              centerTitle: true,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: MediaQuery.of(context).size.width * 0.06,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              actions: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.15,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.groups,
+                        color: Theme.of(context).primaryColor,
+                        size: MediaQuery.of(context).size.width * 0.06,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.1,
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Text(AppLocalizations.of(context)!.group,
+                              style: Theme.of(context).textTheme.bodyText2,
+                              textAlign: TextAlign.center),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03)
               ],
-            ),
-          ),
-          SizedBox(width: MediaQuery.of(context).size.width*0.03)
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0),
-          child: IgnorePointer(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.width*0.03),
-                LinearProgressIndicator(
-                  value: addEventTabValue,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: LoadingView(
-        text: isRecurrentLoadingText
-      ),
-    ) :
-    Scaffold(
-      appBar: AppBar(
-        toolbarHeight: MediaQuery.of(context).size.height*0.08,
-        title: widget.eventId == null ? Text(AppLocalizations.of(context)!.createEvent, style: Theme.of(context).appBarTheme.titleTextStyle)
-            : Text(AppLocalizations.of(context)!.editEvent, style: Theme.of(context).appBarTheme.titleTextStyle,),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          widget.eventId != null ? IconButton(
-              onPressed: () async {
-                if(!originalClients.any((client) => client.purchaseId != "")) {
-                  if (event.eventGroupId == null) {
-                    // DeleteDialog
-                    var result = await showDialog(
-                        context: context,
-                        builder: (_) {
-                          return DeleteConfirmationDialog(text: AppLocalizations
-                              .of(context)!.deleteEventConfirmation);
-                        }
-                    );
-                    if (result) {
-                      _deleteEventFunction();
-                    }
-                  } else {
-                    var result = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return DeleteRecurrentEventDialog(
-                          isCompleted: !widget.isBeforeEdit,
-                        );
-                      },
-                    );
-                    if (result != null) {
-                      if (result == 1) {
-                        print("Deleting Only This Event..");
-                        _deleteEventFunction();
-                      } else {
-                        print("Delete This Event and the Rest Forward ...");
-                        _deleteRecurrentEventFunction();
-                      }
-                    }
-                  }
-                }
-                else {
-                  var result = await showDialog(
-                      context: context,
-                      builder: (_) {
-                        return DeleteConfirmationDialog(text: AppLocalizations.of(context)!.deleteClientsWithPurchases, permitDelete: false);
-                      }
-                  );
-                }
-              },
-              icon: SizedBox(
-                width: MediaQuery.of(context).size.width*0.15,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.delete_outlined, color: AppColors.red, size: MediaQuery.of(context).size.width*0.07,)
-                  ],
-                ),
-              )
-          ) : SizedBox(
-            width: MediaQuery.of(context).size.width*0.15,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.groups,
-                  color: Theme.of(context).primaryColor,
-                  size: MediaQuery.of(context).size.width*0.06,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width*0.1,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                        AppLocalizations.of(context)!.group,
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.center
-                    ),
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(0),
+                child: IgnorePointer(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.03),
+                      LinearProgressIndicator(
+                        value: addEventTabValue,
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-          SizedBox(width: MediaQuery.of(context).size.width*0.03)
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0),
-          child: IgnorePointer(
-            child: Column(
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.width*0.03),
-                LinearProgressIndicator(
-                  value: addEventTabValue,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  color: Theme.of(context).colorScheme.secondary,
+            body: LoadingView(text: isRecurrentLoadingText),
+          )
+        : Scaffold(
+            appBar: AppBar(
+              toolbarHeight: MediaQuery.of(context).size.height * 0.08,
+              title: widget.eventId == null
+                  ? Text(AppLocalizations.of(context)!.createEvent,
+                      style: Theme.of(context).appBarTheme.titleTextStyle)
+                  : Text(
+                      AppLocalizations.of(context)!.editEvent,
+                      style: Theme.of(context).appBarTheme.titleTextStyle,
+                    ),
+              centerTitle: true,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  size: MediaQuery.of(context).size.width * 0.06,
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      resizeToAvoidBottomInset: true,
-      body: Column(
-        children: [
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                InformationPage(context,focusNodetitleController, formKeyInfo),
-                Scaffold(
-                  body: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    child: Column(
-                      children: [
-                        Padding(
-                            padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.width*0.05),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Date and Time
-                                    Padding(
-                                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
-                                      child: Text(
-                                        AppLocalizations.of(context)!.selectDayTime,
-                                        style: Theme.of(context).textTheme.headline1,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(Icons.calendar_today_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
-                                              SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                                              Flexible(
-                                                child: GestureDetector(
-                                                    onTap: () {
-                                                      if(widget.isBeforeEdit) {
-                                                        selectDate();
-                                                      }
-                                                    },
-                                                    child: TextFormField(
-                                                      controller: startDateController,
-                                                      readOnly: true,
-                                                      enabled: false,
-                                                      style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
-                                                      decoration: const InputDecoration(
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    )
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: MediaQuery.of(context).size.width * 0.01),
-                                          Row(
-                                            children: [
-                                              Icon(Icons.schedule, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
-                                              SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                                              Flexible(
-                                                child: GestureDetector(
-                                                    onTap: () {
-                                                      if(widget.isBeforeEdit) {
-                                                        selectTime();
-                                                      }
-                                                    },
-                                                    child: TextFormField(
-                                                      controller: startTimeController,
-                                                      readOnly: true,
-                                                      enabled: false,
-                                                      style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
-                                                      decoration: const InputDecoration(
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    )
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: MediaQuery.of(context).size.width * 0.01),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Icon(Icons.timer_outlined, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.06,),
-                                              SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                                              Flexible(
-                                                child: GestureDetector(
-                                                    onTap: () {
-                                                      if(widget.isBeforeEdit) {
-                                                        selectDuration();
-                                                      }
-
-                                                    },
-                                                    child: TextFormField(
-                                                      controller: durationController,
-                                                      readOnly: true,
-                                                      enabled: false,
-                                                      style: widget.isBeforeEdit ? Theme.of(context).textTheme.bodyText2 : Theme.of(context).textTheme.caption,
-                                                      decoration: const InputDecoration(
-                                                        border: InputBorder.none,
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
-                                                        errorBorder: InputBorder.none,
-                                                        disabledBorder: InputBorder.none,
-                                                      ),
-                                                      textAlign: TextAlign.start,
-                                                    )
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    errorDate && widget.isBeforeEdit ? Padding(
-                                      padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
-                                      child: Center(
-                                        child: Text(
-                                          AppLocalizations.of(context)!.errorDate,
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ) : Container(),
-                                    !widget.isBeforeEdit ? Padding(
-                                      padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
-                                      child: Center(
-                                        child: Text(
-                                          AppLocalizations.of(context)!.cantEditText,
-                                          style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    ) : Container(),
-                                    // Recurrent Event
-                                    widget.eventId == null ? Column(
-                                      children: [
-                                        Padding(
-                                            padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Text(
-                                                  AppLocalizations.of(context)!.recurrentEvent,
-                                                  style: Theme.of(context).textTheme.headline1,
-                                                ),
-                                                SizedBox(
-                                                  height: MediaQuery.of(context).size.height * 0.035,
-                                                  width: MediaQuery.of(context).size.width * 0.1,
-                                                  child: CupertinoSwitch(
-                                                    value: isRecurrent,
-                                                    onChanged: (bool newVal) {
-                                                      if(widget.isBeforeEdit) {
-                                                        if(brandClientsSelected.isEmpty) {
-                                                          setState(() {
-                                                            if (isRecurrent) {
-                                                              values = [
-                                                                false,
-                                                                false,
-                                                                false,
-                                                                false,
-                                                                false,
-                                                                false,
-                                                                false
-                                                              ];
-                                                            } else {
-                                                              values[startDate
-                                                                  .weekday -
-                                                                  1] =
-                                                              true;
-                                                            }
-                                                            isRecurrent =
-                                                                newVal;
-                                                          });
-                                                        }
-                                                      }
-                                                    },
-                                                    trackColor: Colors.green.withOpacity(0.4),
-                                                    thumbColor: AppColors.white,
-                                                    activeColor: Colors.green,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                        ),
-                                        widget.eventId == null && brandClientsSelected.isNotEmpty? Padding(
-                                          padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
-                                          child: Center(
-                                            child: Text(
-                                              AppLocalizations.of(context)!.cantEditRecurrent,
-                                              style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ) : Container(),
-                                        isRecurrent ? Column(
-                                          children: [
-                                            Padding(
-                                                padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.01),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(10.0),
-                                                      child: Text(
-                                                        AppLocalizations.of(context)!.days,
-                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                      ),
-                                                    ),
-                                                    WeekdaySelector(
-                                                      fillColor: Theme.of(context).backgroundColor,
-                                                      textStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColor),
-                                                      selectedFillColor: Theme.of(context).primaryColor,
-
-                                                      selectedTextStyle: Theme.of(context).textTheme.bodyText2!.copyWith(color: Theme.of(context).primaryColorDark),
-                                                      firstDayOfWeek: 0,
-                                                      shortWeekdays: [
-                                                        AppLocalizations.of(context)!.mondayLetter,
-                                                        AppLocalizations.of(context)!.tuesdarLetter,
-                                                        AppLocalizations.of(context)!.wednesdayLetter,
-                                                        AppLocalizations.of(context)!.thursdayLetter,
-                                                        AppLocalizations.of(context)!.fridayLetter,
-                                                        AppLocalizations.of(context)!.saturadayLetter,
-                                                        AppLocalizations.of(context)!.sundayLetter,
-                                                      ],
-                                                      // Working Days disabledFillColor: Colors.red,
-                                                      onChanged: (v) {
-                                                        if(widget.isBeforeEdit) {
-                                                          setState(() {
-                                                            values[v % 7] = !values[v % 7]!;
-                                                          });
-                                                        }
-                                                      },
-                                                      selectedElevation: 8,
-                                                      elevation: 4,
-                                                      disabledElevation: 0,
-                                                      values: values,
-                                                    ),
-                                                  ],
-                                                )
-                                            ),
-                                            Padding(
-                                                padding: const EdgeInsets.only(top: 10),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(10.0),
-                                                      child: Text(
-                                                        AppLocalizations.of(context)!.during,
-                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                      ),
-                                                    ),
-                                                    Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: [
-                                                        ListTile(
-                                                          dense: true,
-                                                          contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                                                          title: Text(
-                                                            AppLocalizations.of(context)!.thisWeek,
-                                                            style: Theme.of(context).textTheme.bodyText2,
-                                                          ),
-                                                          subtitle: Text(
-                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
-                                                            style: Theme.of(context).textTheme.caption,
-                                                            textAlign: TextAlign.left,
-                                                          ),
-                                                          leading: Radio(
-                                                            value: 1,
-                                                            groupValue: _value,
-                                                            activeColor: Theme.of(context).colorScheme.secondary,
-                                                            fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                            onChanged: (value) {
-                                                              if(widget.isBeforeEdit) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
-                                                              }
-                                                            },
-                                                          ),
-                                                        ),
-                                                        ListTile(
-                                                          dense: true,
-                                                          contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                                                          title: Text(
-                                                            AppLocalizations.of(context)!.nextTwoWeek,
-                                                            style: Theme.of(context).textTheme.bodyText2,
-                                                          ),
-                                                          subtitle: Text(
-                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
-                                                            style: Theme.of(context).textTheme.caption,
-                                                            textAlign: TextAlign.left,
-                                                          ),
-                                                          leading: Radio(
-                                                            value: 2,
-                                                            groupValue: _value,
-                                                            activeColor: Theme.of(context).colorScheme.secondary,
-                                                            fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                            onChanged: (value) {
-                                                              if(widget.isBeforeEdit) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
-                                                              }
-                                                            },
-                                                          ),
-                                                        ),
-                                                        ListTile(
-                                                          dense: true,
-                                                          contentPadding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                                                          title: Text(
-                                                            AppLocalizations.of(context)!.wholeMonth,
-                                                            style: Theme.of(context).textTheme.bodyText2,
-                                                          ),
-                                                          subtitle: Text(
-                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
-                                                            style: Theme.of(context).textTheme.caption,
-                                                            textAlign: TextAlign.left,
-                                                          ),
-                                                          leading: Radio(
-                                                            value: 3,
-                                                            groupValue: _value,
-                                                            activeColor: Theme.of(context).colorScheme.secondary,
-                                                            fillColor: MaterialStateProperty.resolveWith((states) => getColor(states)),
-                                                            onChanged: (value) {
-                                                              if(widget.isBeforeEdit) {
-                                                                setState(() {
-                                                                  _value = int.parse(value.toString());
-                                                                });
-                                                              }
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                )
-                                            ),
-                                          ],
-                                        ) : Container(),
-                                        SizedBox(height: MediaQuery.of(context).size.height*0.05)
-                                      ],
-                                    ) : event.eventGroupId != null ? Padding(
-                                        padding: const EdgeInsets.only(top: 15,),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              AppLocalizations.of(context)!.recurrentEvent,
-                                              style: Theme.of(context).textTheme.headline1,
-                                            ),
-                                            SizedBox(
-                                              height: MediaQuery.of(context).size.height * 0.035,
-                                              width: MediaQuery.of(context).size.width * 0.1,
-                                              child: CupertinoSwitch(
-                                                value: true,
-                                                onChanged: null,
-                                                trackColor: Colors.green.withOpacity(0.4),
-                                                thumbColor: AppColors.white,
-                                                activeColor: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                    ) : Padding(
-                                        padding: const EdgeInsets.only(top: 15,),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              AppLocalizations.of(context)!.recurrentEvent,
-                                              style: Theme.of(context).textTheme.headline1,
-                                            ),
-                                            SizedBox(
-                                              height: MediaQuery.of(context).size.height * 0.035,
-                                              width: MediaQuery.of(context).size.width * 0.1,
-                                              child: CupertinoSwitch(
-                                                value: false,
-                                                onChanged: null,
-                                                trackColor: Colors.green.withOpacity(0.4),
-                                                thumbColor: AppColors.white,
-                                                activeColor: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                    ),
-                                    SizedBox(height: MediaQuery.of(context).size.height * 0.15),
-                                  ]
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              actions: [
+                widget.eventId != null
+                    ? IconButton(
+                        onPressed: () async {
+                          if (!originalClients
+                              .any((client) => client.purchaseId != "")) {
+                            if (event.eventGroupId == null) {
+                              // DeleteDialog
+                              var result = await showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return DeleteConfirmationDialog(
+                                        text: AppLocalizations.of(context)!
+                                            .deleteEventConfirmation);
+                                  });
+                              if (result) {
+                                _deleteEventFunction();
+                              }
+                            } else {
+                              var result = await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return DeleteRecurrentEventDialog(
+                                    isCompleted: !widget.isBeforeEdit,
+                                  );
+                                },
+                              );
+                              if (result != null) {
+                                if (result == 1) {
+                                  print("Deleting Only This Event..");
+                                  _deleteEventFunction();
+                                } else {
+                                  print(
+                                      "Delete This Event and the Rest Forward ...");
+                                  _deleteRecurrentEventFunction();
+                                }
+                              }
+                            }
+                          } else {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return DeleteConfirmationDialog(
+                                      text: AppLocalizations.of(context)!
+                                          .deleteClientsWithPurchases,
+                                      permitDelete: false);
+                                });
+                          }
+                        },
+                        icon: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.delete_outlined,
+                                color: AppColors.red,
+                                size: MediaQuery.of(context).size.width * 0.07,
                               )
+                            ],
                           ),
-                      ],
-                    )
+                        ))
+                    : SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.15,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.groups,
+                              color: Theme.of(context).primaryColor,
+                              size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.1,
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Text(AppLocalizations.of(context)!.group,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                    textAlign: TextAlign.center),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                SizedBox(width: MediaQuery.of(context).size.width * 0.03)
+              ],
+              bottom: PreferredSize(
+                preferredSize: const Size.fromHeight(0),
+                child: IgnorePointer(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.03),
+                      LinearProgressIndicator(
+                        value: addEventTabValue,
+                        backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ],
                   ),
-                  resizeToAvoidBottomInset: true,
                 ),
-                Scaffold(
-                  body: SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      child: Column(
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 0),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.03, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: Row(
+              ),
+            ),
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            resizeToAvoidBottomInset: true,
+            body: Column(
+              children: [
+                Expanded(
+                    child: TabBarView(
+                  controller: _tabController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    informationPage(
+                        context, focusNodetitleController, formKeyInfo),
+                    Scaffold(
+                      body: SingleChildScrollView(
+                          physics: const ClampingScrollPhysics(),
+                          child: Column(
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          MediaQuery.of(context).size.width *
+                                              0.05,
+                                      vertical:
+                                          MediaQuery.of(context).size.width *
+                                              0.05),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Date and Time
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01),
+                                          child: Text(
+                                            AppLocalizations.of(context)!
+                                                .selectDayTime,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline1,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.02),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
                                             mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.staff,
-                                                    style: Theme.of(context).textTheme.headline1,
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(
-                                                width: MediaQuery.of(context).size.width*0.03,
-                                              ),
+                                            children: [
                                               Row(
                                                 children: [
-                                                  Text(
-                                                    "( "+brandTrainersSelected.length.toString()+" )",
-                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                  Icon(
+                                                    Icons
+                                                        .calendar_today_outlined,
+                                                    color: AppColors.grey,
+                                                    size: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.06,
                                                   ),
+                                                  SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.05),
+                                                  Flexible(
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          if (widget
+                                                              .isBeforeEdit) {
+                                                            selectDate();
+                                                          }
+                                                        },
+                                                        child: TextFormField(
+                                                          controller:
+                                                              startDateController,
+                                                          readOnly: true,
+                                                          enabled: false,
+                                                          style: widget
+                                                                  .isBeforeEdit
+                                                              ? Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyText2
+                                                              : Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            border: InputBorder
+                                                                .none,
+                                                            focusedBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            enabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            errorBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            disabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.01),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.schedule,
+                                                    color: AppColors.grey,
+                                                    size: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.06,
+                                                  ),
+                                                  SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.05),
+                                                  Flexible(
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          if (widget
+                                                              .isBeforeEdit) {
+                                                            selectTime();
+                                                          }
+                                                        },
+                                                        child: TextFormField(
+                                                          controller:
+                                                              startTimeController,
+                                                          readOnly: true,
+                                                          enabled: false,
+                                                          style: widget
+                                                                  .isBeforeEdit
+                                                              ? Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyText2
+                                                              : Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            border: InputBorder
+                                                                .none,
+                                                            focusedBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            enabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            errorBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            disabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.01),
+                                              Row(
+                                                mainAxisSize: MainAxisSize.max,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Icon(
+                                                    Icons.timer_outlined,
+                                                    color: AppColors.grey,
+                                                    size: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.06,
+                                                  ),
+                                                  SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.05),
+                                                  Flexible(
+                                                    child: GestureDetector(
+                                                        onTap: () {
+                                                          if (widget
+                                                              .isBeforeEdit) {
+                                                            selectDuration();
+                                                          }
+                                                        },
+                                                        child: TextFormField(
+                                                          controller:
+                                                              durationController,
+                                                          readOnly: true,
+                                                          enabled: false,
+                                                          style: widget
+                                                                  .isBeforeEdit
+                                                              ? Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyText2
+                                                              : Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .caption,
+                                                          decoration:
+                                                              const InputDecoration(
+                                                            border: InputBorder
+                                                                .none,
+                                                            focusedBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            enabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            errorBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            disabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        errorDate && widget.isBeforeEdit
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 25,
+                                                    right: 25,
+                                                    top: 10.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .errorDate,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2
+                                                        ?.copyWith(
+                                                            color:
+                                                                AppColors.red),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(),
+                                        !widget.isBeforeEdit
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 25,
+                                                    right: 25,
+                                                    top: 10.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .cantEditText,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2
+                                                        ?.copyWith(
+                                                            color:
+                                                                AppColors.red),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              )
+                                            : Container(),
+                                        // Recurrent Event
+                                        widget.eventId == null
+                                            ? Column(
+                                                children: [
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.03),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        children: [
+                                                          Text(
+                                                            AppLocalizations.of(
+                                                                    context)!
+                                                                .recurrentEvent,
+                                                            style: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .headline1,
+                                                          ),
+                                                          SizedBox(
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                0.035,
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.1,
+                                                            child:
+                                                                CupertinoSwitch(
+                                                              value:
+                                                                  isRecurrent,
+                                                              onChanged: (bool
+                                                                  newVal) {
+                                                                if (widget
+                                                                    .isBeforeEdit) {
+                                                                  if (brandClientsSelected
+                                                                      .isEmpty) {
+                                                                    setState(
+                                                                        () {
+                                                                      if (isRecurrent) {
+                                                                        values =
+                                                                            [
+                                                                          false,
+                                                                          false,
+                                                                          false,
+                                                                          false,
+                                                                          false,
+                                                                          false,
+                                                                          false
+                                                                        ];
+                                                                      } else {
+                                                                        values[startDate.weekday -
+                                                                                1] =
+                                                                            true;
+                                                                      }
+                                                                      isRecurrent =
+                                                                          newVal;
+                                                                    });
+                                                                  }
+                                                                }
+                                                              },
+                                                              trackColor: Colors
+                                                                  .green
+                                                                  .withOpacity(
+                                                                      0.4),
+                                                              thumbColor:
+                                                                  AppColors
+                                                                      .white,
+                                                              activeColor:
+                                                                  Colors.green,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )),
+                                                  widget.eventId == null &&
+                                                          brandClientsSelected
+                                                              .isNotEmpty
+                                                      ? Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 25,
+                                                                  right: 25,
+                                                                  top: 10.0),
+                                                          child: Center(
+                                                            child: Text(
+                                                              AppLocalizations.of(
+                                                                      context)!
+                                                                  .cantEditRecurrent,
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyText2
+                                                                  ?.copyWith(
+                                                                      color: AppColors
+                                                                          .red),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : Container(),
+                                                  isRecurrent
+                                                      ? Column(
+                                                          children: [
+                                                            Padding(
+                                                                padding: EdgeInsets.only(
+                                                                    top: MediaQuery.of(context)
+                                                                            .size
+                                                                            .height *
+                                                                        0.01),
+                                                                child: Column(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .max,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .all(
+                                                                          10.0),
+                                                                      child:
+                                                                          Text(
+                                                                        AppLocalizations.of(context)!
+                                                                            .days,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyText2,
+                                                                      ),
+                                                                    ),
+                                                                    WeekdaySelector(
+                                                                      fillColor:
+                                                                          Theme.of(context)
+                                                                              .backgroundColor,
+                                                                      textStyle: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyText2!
+                                                                          .copyWith(
+                                                                              color: Theme.of(context).primaryColor),
+                                                                      selectedFillColor:
+                                                                          Theme.of(context)
+                                                                              .primaryColor,
+
+                                                                      selectedTextStyle: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyText2!
+                                                                          .copyWith(
+                                                                              color: Theme.of(context).primaryColorDark),
+                                                                      firstDayOfWeek:
+                                                                          0,
+                                                                      shortWeekdays: [
+                                                                        AppLocalizations.of(context)!
+                                                                            .mondayLetter,
+                                                                        AppLocalizations.of(context)!
+                                                                            .tuesdarLetter,
+                                                                        AppLocalizations.of(context)!
+                                                                            .wednesdayLetter,
+                                                                        AppLocalizations.of(context)!
+                                                                            .thursdayLetter,
+                                                                        AppLocalizations.of(context)!
+                                                                            .fridayLetter,
+                                                                        AppLocalizations.of(context)!
+                                                                            .saturadayLetter,
+                                                                        AppLocalizations.of(context)!
+                                                                            .sundayLetter,
+                                                                      ],
+                                                                      // Working Days disabledFillColor: Colors.red,
+                                                                      onChanged:
+                                                                          (v) {
+                                                                        if (widget
+                                                                            .isBeforeEdit) {
+                                                                          setState(
+                                                                              () {
+                                                                            values[v % 7] =
+                                                                                !values[v % 7]!;
+                                                                          });
+                                                                        }
+                                                                      },
+                                                                      selectedElevation:
+                                                                          8,
+                                                                      elevation:
+                                                                          4,
+                                                                      disabledElevation:
+                                                                          0,
+                                                                      values:
+                                                                          values,
+                                                                    ),
+                                                                  ],
+                                                                )),
+                                                            Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            10),
+                                                                child: Column(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .max,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .all(
+                                                                          10.0),
+                                                                      child:
+                                                                          Text(
+                                                                        AppLocalizations.of(context)!
+                                                                            .during,
+                                                                        style: Theme.of(context)
+                                                                            .textTheme
+                                                                            .bodyText2,
+                                                                      ),
+                                                                    ),
+                                                                    Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        ListTile(
+                                                                          dense:
+                                                                              true,
+                                                                          contentPadding: const EdgeInsets.only(
+                                                                              left: 0.0,
+                                                                              right: 0.0),
+                                                                          title:
+                                                                              Text(
+                                                                            AppLocalizations.of(context)!.thisWeek,
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyText2,
+                                                                          ),
+                                                                          subtitle:
+                                                                              Text(
+                                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneWeek))),
+                                                                            style:
+                                                                                Theme.of(context).textTheme.caption,
+                                                                            textAlign:
+                                                                                TextAlign.left,
+                                                                          ),
+                                                                          leading:
+                                                                              Radio(
+                                                                            value:
+                                                                                1,
+                                                                            groupValue:
+                                                                                _value,
+                                                                            activeColor:
+                                                                                Theme.of(context).colorScheme.secondary,
+                                                                            fillColor:
+                                                                                MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                                            onChanged:
+                                                                                (value) {
+                                                                              if (widget.isBeforeEdit) {
+                                                                                setState(() {
+                                                                                  _value = int.parse(value.toString());
+                                                                                });
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                        ListTile(
+                                                                          dense:
+                                                                              true,
+                                                                          contentPadding: const EdgeInsets.only(
+                                                                              left: 0.0,
+                                                                              right: 0.0),
+                                                                          title:
+                                                                              Text(
+                                                                            AppLocalizations.of(context)!.nextTwoWeek,
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyText2,
+                                                                          ),
+                                                                          subtitle:
+                                                                              Text(
+                                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(twoWeek))),
+                                                                            style:
+                                                                                Theme.of(context).textTheme.caption,
+                                                                            textAlign:
+                                                                                TextAlign.left,
+                                                                          ),
+                                                                          leading:
+                                                                              Radio(
+                                                                            value:
+                                                                                2,
+                                                                            groupValue:
+                                                                                _value,
+                                                                            activeColor:
+                                                                                Theme.of(context).colorScheme.secondary,
+                                                                            fillColor:
+                                                                                MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                                            onChanged:
+                                                                                (value) {
+                                                                              if (widget.isBeforeEdit) {
+                                                                                setState(() {
+                                                                                  _value = int.parse(value.toString());
+                                                                                });
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                        ListTile(
+                                                                          dense:
+                                                                              true,
+                                                                          contentPadding: const EdgeInsets.only(
+                                                                              left: 0.0,
+                                                                              right: 0.0),
+                                                                          title:
+                                                                              Text(
+                                                                            AppLocalizations.of(context)!.wholeMonth,
+                                                                            style:
+                                                                                Theme.of(context).textTheme.bodyText2,
+                                                                          ),
+                                                                          subtitle:
+                                                                              Text(
+                                                                            AppLocalizations.of(context)!.until(StringUtils().toCapitalized(DateFormat('EEEE - d/M/yy', widget.locale.languageCode).format(oneMonth))),
+                                                                            style:
+                                                                                Theme.of(context).textTheme.caption,
+                                                                            textAlign:
+                                                                                TextAlign.left,
+                                                                          ),
+                                                                          leading:
+                                                                              Radio(
+                                                                            value:
+                                                                                3,
+                                                                            groupValue:
+                                                                                _value,
+                                                                            activeColor:
+                                                                                Theme.of(context).colorScheme.secondary,
+                                                                            fillColor:
+                                                                                MaterialStateProperty.resolveWith((states) => getColor(states)),
+                                                                            onChanged:
+                                                                                (value) {
+                                                                              if (widget.isBeforeEdit) {
+                                                                                setState(() {
+                                                                                  _value = int.parse(value.toString());
+                                                                                });
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                  ],
+                                                                )),
+                                                          ],
+                                                        )
+                                                      : Container(),
+                                                  SizedBox(
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              0.05)
                                                 ],
                                               )
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context).size.width,
-                                          child: SingleChildScrollView(
-                                            physics: const BouncingScrollPhysics(),
-                                            scrollDirection: Axis.horizontal,
+                                            : event.eventGroupId != null
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      top: 15,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .recurrentEvent,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline1,
+                                                        ),
+                                                        SizedBox(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.035,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.1,
+                                                          child:
+                                                              CupertinoSwitch(
+                                                            value: true,
+                                                            onChanged: null,
+                                                            trackColor: Colors
+                                                                .green
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            thumbColor:
+                                                                AppColors.white,
+                                                            activeColor:
+                                                                Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ))
+                                                : Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                      top: 15,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Text(
+                                                          AppLocalizations.of(
+                                                                  context)!
+                                                              .recurrentEvent,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline1,
+                                                        ),
+                                                        SizedBox(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.035,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.1,
+                                                          child:
+                                                              CupertinoSwitch(
+                                                            value: false,
+                                                            onChanged: null,
+                                                            trackColor: Colors
+                                                                .green
+                                                                .withOpacity(
+                                                                    0.4),
+                                                            thumbColor:
+                                                                AppColors.white,
+                                                            activeColor:
+                                                                Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )),
+                                        SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.15),
+                                      ])),
+                            ],
+                          )),
+                      resizeToAvoidBottomInset: true,
+                    ),
+                    Scaffold(
+                      body: SingleChildScrollView(
+                          physics: const ClampingScrollPhysics(),
+                          child: Column(
+                            children: [
+                              Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 0),
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.03,
+                                                left: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05,
+                                                right: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05),
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                buildAddUserButton(true),
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .staff,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline1,
+                                                    ),
+                                                  ],
+                                                ),
                                                 SizedBox(
-                                                  height: MediaQuery.of(context).size.height*0.15,
-                                                  child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const NeverScrollableScrollPhysics(),
-                                                      scrollDirection: Axis.horizontal,
-                                                      itemCount: brandTrainersSelected.length,
-                                                      itemBuilder: (context, int index) {
-                                                        var trainer = brandTrainersSelected[index];
-                                                        return GestureDetector(
-                                                          onTap: () {
-                                                            var temp = brandTrainersSelected;
-                                                            temp.remove(trainer);
-                                                            setState(() {
-                                                              brandTrainersSelected = temp;
-                                                            });
-                                                          },
-                                                          child: Padding(
-                                                            padding: !(index == brandTrainersSelected.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Stack(
-                                                                  alignment: Alignment.topRight,
-                                                                  children: [
-                                                                    CircularImage(
-                                                                      size: MediaQuery.of(context).size.width*0.17,
-                                                                      image: trainer.imageUrl,
-                                                                      color: Theme.of(context).primaryColor,
-                                                                      borderWidth: 1,
-                                                                    ),
-                                                                    Positioned(
-                                                                      top: 0,
-                                                                      left: MediaQuery.of(context).size.width*0.12,
-                                                                      child: CircleAvatar(
-                                                                        backgroundColor: AppColors.red,
-                                                                        radius: MediaQuery.of(context).size.width*0.025,
-                                                                        child: Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.035,),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: MediaQuery.of(context).size.width*0.02,
-                                                                ),
-                                                                SizedBox(
-                                                                  width: MediaQuery.of(context).size.width*0.2,
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.03,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "( " +
+                                                          brandTrainersSelected
+                                                              .length
+                                                              .toString() +
+                                                          " )",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2,
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            )),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.005),
+                                          child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: SingleChildScrollView(
+                                              physics:
+                                                  const BouncingScrollPhysics(),
+                                              scrollDirection: Axis.horizontal,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  buildAddUserButton(true),
+                                                  SizedBox(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.15,
+                                                    child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        physics:
+                                                            const NeverScrollableScrollPhysics(),
+                                                        scrollDirection:
+                                                            Axis.horizontal,
+                                                        itemCount:
+                                                            brandTrainersSelected
+                                                                .length,
+                                                        itemBuilder: (context,
+                                                            int index) {
+                                                          var trainer =
+                                                              brandTrainersSelected[
+                                                                  index];
+                                                          return GestureDetector(
+                                                            onTap: () {
+                                                              var temp =
+                                                                  brandTrainersSelected;
+                                                              temp.remove(
+                                                                  trainer);
+                                                              setState(() {
+                                                                brandTrainersSelected =
+                                                                    temp;
+                                                              });
+                                                            },
+                                                            child: Padding(
+                                                              padding: !(index ==
+                                                                      brandTrainersSelected
+                                                                              .length -
+                                                                          1)
+                                                                  ? const EdgeInsets
+                                                                          .symmetric(
+                                                                      horizontal:
+                                                                          8.0)
+                                                                  : EdgeInsets.only(
+                                                                      right: brandTrainersSelected.length !=
+                                                                              1
+                                                                          ? MediaQuery.of(context).size.width *
+                                                                              0.06
+                                                                          : 8.0,
+                                                                      left:
+                                                                          8.0),
+                                                              child: Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Stack(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .topRight,
                                                                     children: [
-                                                                      Text(
-                                                                        trainer.firstName!,
-                                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                                        textAlign: TextAlign.center,
+                                                                      CircularImage(
+                                                                        size: MediaQuery.of(context).size.width *
+                                                                            0.17,
+                                                                        image: trainer
+                                                                            .imageUrl,
+                                                                        color: Theme.of(context)
+                                                                            .primaryColor,
+                                                                        borderWidth:
+                                                                            1,
+                                                                      ),
+                                                                      Positioned(
+                                                                        top: 0,
+                                                                        left: MediaQuery.of(context).size.width *
+                                                                            0.12,
+                                                                        child:
+                                                                            CircleAvatar(
+                                                                          backgroundColor:
+                                                                              AppColors.red,
+                                                                          radius:
+                                                                              MediaQuery.of(context).size.width * 0.025,
+                                                                          child:
+                                                                              Icon(
+                                                                            Icons.clear,
+                                                                            color:
+                                                                                AppColors.white,
+                                                                            size:
+                                                                                MediaQuery.of(context).size.width * 0.035,
+                                                                          ),
+                                                                        ),
                                                                       ),
                                                                     ],
                                                                   ),
-                                                                ),
-                                                              ],
+                                                                  SizedBox(
+                                                                    height: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.02,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: MediaQuery.of(context)
+                                                                            .size
+                                                                            .width *
+                                                                        0.2,
+                                                                    child: Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          trainer
+                                                                              .firstName!,
+                                                                          style: Theme.of(context)
+                                                                              .textTheme
+                                                                              .bodyText2,
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                        );
-                                                      }
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      errorNoTrainerSelected ? Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                        child: Center(
-                                          child: Text(
-                                            AppLocalizations.of(context)!.noTrainerSelectedError,
-                                            style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ) : Container(),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Text(
-                                                    AppLocalizations.of(context)!.clients,
-                                                    style: Theme.of(context).textTheme.headline1,
+                                                          );
+                                                        }),
                                                   ),
                                                 ],
                                               ),
-                                            ],
-                                          )
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            selectNumberOfMembers();
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: <Widget>[
-                                              Icon(Icons.person, color: AppColors.grey, size: MediaQuery.of(context).size.width*0.08,),
-                                              SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-                                              SizedBox(
-                                                width: MediaQuery.of(context).size.width * 0.05,
-                                                child: TextFormField(
-                                                  controller: membersController,
-                                                  readOnly: true,
-                                                  enabled: false,
-                                                  style: Theme.of(context).textTheme.bodyText2,
-                                                  decoration: const InputDecoration(
-                                                      border: InputBorder.none,
-                                                      focusedBorder: InputBorder.none,
-                                                      enabledBorder: InputBorder.none,
-                                                      errorBorder: InputBorder.none,
-                                                      disabledBorder: InputBorder.none,
-                                                      contentPadding: EdgeInsets.zero
-                                                  ),
-                                                  textAlign: TextAlign.start,
-                                                ),
-                                              ),
-                                              Text(
-                                                membersController.text == "1" ? AppLocalizations.of(context)!.asistants.toLowerCase().substring(0,AppLocalizations.of(context)!.asistants.length-1) : AppLocalizations.of(context)!.asistants.toLowerCase(),
-                                                style: Theme.of(context).textTheme.bodyText2,
-                                              ),
-                                            ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      //JMF_AddUser_BEGIN
-                                      widget.eventId == null && isRecurrent?  Padding(
-                                          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.01, left: MediaQuery.of(context).size.width*0.05, right: MediaQuery.of(context).size.width*0.05),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: Text(
-                                                  AppLocalizations.of(context)!.addClientDescription,
-                                                  style: Theme.of(context).textTheme.caption,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                      ) : Padding(
-                                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.005),
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context).size.width,
-                                          child: SingleChildScrollView(
-                                            physics: const BouncingScrollPhysics(),
-                                            scrollDirection: Axis.horizontal,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                buildAddClientButton(),
-                                                SizedBox(
-                                                  height: MediaQuery.of(context).size.height*0.15,
-                                                  child: ListView.builder(
-                                                      shrinkWrap: true,
-                                                      physics: const NeverScrollableScrollPhysics(),
-                                                      scrollDirection: Axis.horizontal,
-                                                      itemCount: brandClientsSelected.length,
-                                                      itemBuilder: (context, int index) {
-                                                        var client = brandClientsSelected[index];
-                                                        return GestureDetector(
-                                                          onTap: () async {
-                                                            if(selectedBonos.isNotEmpty && client.purchaseId != "") {
-                                                              //JMF_AddUser_BEGIN
-                                                              var result = await showDialog(
-                                                                  context: context,
-                                                                  builder: (_) {
-                                                                    return LeaveConfirmationDialogBonos(
-                                                                      text: AppLocalizations
-                                                                          .of(
-                                                                          context)!
-                                                                          .leaveEventConfirmation,
-                                                                      event: event,
-                                                                      brand: currentBrand,
-                                                                      bonos: filterBonosByIds(),
-                                                                      purchaseId: client
-                                                                          .purchaseId!,
-                                                                      user: client,
-                                                                    );
-                                                                  }
-                                                              );
-                                                              if (result !=
-                                                                  null &&
-                                                                  result) {
-                                                                var temp = brandClientsSelected;
-                                                                temp.remove(
-                                                                    client);
-                                                                if(temp.any((client) => client.purchaseId != "")) {
-                                                                  errorBonos = true;
-                                                                }
-                                                                else {
-                                                                  errorBonos = false;
-                                                                }
-                                                                setState(() {
-                                                                  clientsModified =
-                                                                  true;
-                                                                  brandClientsSelected =
-                                                                      temp;
-                                                                });
-                                                              }
-                                                            }
-                                                            else {
-                                                              var temp = brandClientsSelected;
-                                                              temp.remove(
-                                                                  client);
-                                                              setState(() {
-                                                                clientsModified =
-                                                                true;
-                                                                brandClientsSelected =
-                                                                    temp;
-                                                              });
-                                                            }
-
-                                                            //JMF_AddUser_END
-                                                          },
-                                                          child: Padding(
-                                                            padding: !(index == brandClientsSelected.length-1) ? const EdgeInsets.symmetric(horizontal: 8.0) : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width*0.06 : 8.0, left: 8.0),
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Stack(
-                                                                  alignment: Alignment.topRight,
-                                                                  children: [
-                                                                    CircularImage(
-                                                                      size: MediaQuery.of(context).size.width*0.17,
-                                                                      image: client.imageUrl,
-                                                                      color: Theme.of(context).primaryColor,
-                                                                      borderWidth: 1,
-                                                                    ),
-                                                                    Positioned(
-                                                                      top: 0,
-                                                                      left: MediaQuery.of(context).size.width*0.12,
-                                                                      child: CircleAvatar(
-                                                                        backgroundColor: AppColors.red,
-                                                                        radius: MediaQuery.of(context).size.width*0.025,
-                                                                        child: Icon(Icons.clear, color: AppColors.white, size: MediaQuery.of(context).size.width*0.035,),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  height: MediaQuery.of(context).size.width*0.02,
-                                                                ),
-                                                                SizedBox(
-                                                                  width: MediaQuery.of(context).size.width*0.2,
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: [
-                                                                      Text(
-                                                                        client.firstName!,
-                                                                        style: Theme.of(context).textTheme.bodyText2,
-                                                                        textAlign: TextAlign.center,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }
+                                        errorNoTrainerSelected
+                                            ? Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.01,
+                                                    left: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.05,
+                                                    right:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.05),
+                                                child: Center(
+                                                  child: Text(
+                                                    AppLocalizations.of(
+                                                            context)!
+                                                        .noTrainerSelectedError,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2
+                                                        ?.copyWith(
+                                                            color:
+                                                                AppColors.red),
+                                                    textAlign: TextAlign.center,
                                                   ),
+                                                ),
+                                              )
+                                            : Container(),
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                top: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.02,
+                                                left: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05,
+                                                right: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      AppLocalizations.of(
+                                                              context)!
+                                                          .clients,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .headline1,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.01,
+                                              left: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.05,
+                                              right: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.05),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              selectNumberOfMembers();
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.person,
+                                                  color: AppColors.grey,
+                                                  size: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.08,
+                                                ),
+                                                SizedBox(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.04),
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.05,
+                                                  child: TextFormField(
+                                                    controller:
+                                                        membersController,
+                                                    readOnly: true,
+                                                    enabled: false,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            border: InputBorder
+                                                                .none,
+                                                            focusedBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            enabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            errorBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            disabledBorder:
+                                                                InputBorder
+                                                                    .none,
+                                                            contentPadding:
+                                                                EdgeInsets
+                                                                    .zero),
+                                                    textAlign: TextAlign.start,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  membersController.text == "1"
+                                                      ? AppLocalizations.of(
+                                                              context)!
+                                                          .asistants
+                                                          .toLowerCase()
+                                                          .substring(
+                                                              0,
+                                                              AppLocalizations.of(
+                                                                          context)!
+                                                                      .asistants
+                                                                      .length -
+                                                                  1)
+                                                      : AppLocalizations.of(
+                                                              context)!
+                                                          .asistants
+                                                          .toLowerCase(),
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyText2,
                                                 ),
                                               ],
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      //JMF_AddUser_END
-                                    ]
-                                )
-                            ),
-                        ],
-                      )
-                  ),
-                  resizeToAvoidBottomInset: true,
-                ),
-              ],
-            )
-          ),
-        ],
-      ),
-      floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _selectedIndex != 0 ? Padding(
-              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
-              child: SizedBox(
-                height: 50,
-                child: FloatingActionButton.extended(
-                  heroTag: "47",
-                  onPressed: () {
-                    if (_selectedIndex == 1) {
-                      if (widget.eventId != null) {
-                        mixpanel!.track('edit_event_info', properties: {'isPrivate': false});
-                      } else {
-                        mixpanel!.track('add_event_info', properties: {'isPrivate': false});
-                      }
-                      setState(() {
-                        tabs[1] = false;
-                      });
-                    } else if (_selectedIndex == 2) {
-                      if (widget.eventId != null) {
-                        mixpanel!.track('edit_event_datetime', properties: {'isPrivate': false});
-                      } else {
-                        mixpanel!.track('add_event_datetime', properties: {'isPrivate': false});
-                      }
-                      setState(() {
-                        tabs[2] = false;
-                      });
-                    }
-                    _tabController!.animateTo(_selectedIndex -= 1);
-                    FocusScopeNode currentFocus = FocusScope.of(context);
-                    if (!currentFocus.hasPrimaryFocus &&
-                        currentFocus.focusedChild != null) {
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    }
-                    setState(() {
-                        addEventTabValue -= 0.33;
-                    }
-                    );
+                                        //JMF_AddUser_BEGIN
+                                        widget.eventId == null && isRecurrent
+                                            ? Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.01,
+                                                    left: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.05,
+                                                    right:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.05),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: <Widget>[
+                                                    Flexible(
+                                                      child: Text(
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .addClientDescription,
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .caption,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ))
+                                            : Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.005),
+                                                child: SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  child: SingleChildScrollView(
+                                                    physics:
+                                                        const BouncingScrollPhysics(),
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        buildAddClientButton(),
+                                                        SizedBox(
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.15,
+                                                          child:
+                                                              ListView.builder(
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  physics:
+                                                                      const NeverScrollableScrollPhysics(),
+                                                                  scrollDirection:
+                                                                      Axis
+                                                                          .horizontal,
+                                                                  itemCount:
+                                                                      brandClientsSelected
+                                                                          .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          int index) {
+                                                                    var client =
+                                                                        brandClientsSelected[
+                                                                            index];
+                                                                    return GestureDetector(
+                                                                      onTap:
+                                                                          () async {
+                                                                        if (selectedBonos.isNotEmpty &&
+                                                                            client.purchaseId !=
+                                                                                "") {
+                                                                          //JMF_AddUser_BEGIN
+                                                                          var result = await showDialog(
+                                                                              context: context,
+                                                                              builder: (_) {
+                                                                                return LeaveConfirmationDialogBonos(
+                                                                                  text: AppLocalizations.of(context)!.leaveEventConfirmation,
+                                                                                  event: event,
+                                                                                  brand: currentBrand,
+                                                                                  bonos: filterBonosByIds(),
+                                                                                  purchaseId: client.purchaseId!,
+                                                                                  user: client,
+                                                                                );
+                                                                              });
+                                                                          if (result != null &&
+                                                                              result) {
+                                                                            var temp =
+                                                                                brandClientsSelected;
+                                                                            temp.remove(client);
+                                                                            if (temp.any((client) =>
+                                                                                client.purchaseId !=
+                                                                                "")) {
+                                                                              errorBonos = true;
+                                                                            } else {
+                                                                              errorBonos = false;
+                                                                            }
+                                                                            setState(() {
+                                                                              clientsModified = true;
+                                                                              brandClientsSelected = temp;
+                                                                            });
+                                                                          }
+                                                                        } else {
+                                                                          var temp =
+                                                                              brandClientsSelected;
+                                                                          temp.remove(
+                                                                              client);
+                                                                          setState(
+                                                                              () {
+                                                                            clientsModified =
+                                                                                true;
+                                                                            brandClientsSelected =
+                                                                                temp;
+                                                                          });
+                                                                        }
 
-                  },
-                  backgroundColor: Theme.of(context).primaryColor,
-                  icon: Container(),
-                  label: Text(AppLocalizations.of(context)!.back, style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).primaryColorDark),),
-                ),
-              ),
-            ) :  Padding(
-              padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.01, left: MediaQuery.of(context).size.width*0.09),
-              child: Container(
-                height: 50,
-              ),
+                                                                        //JMF_AddUser_END
+                                                                      },
+                                                                      child:
+                                                                          Padding(
+                                                                        padding: !(index ==
+                                                                                brandClientsSelected.length - 1)
+                                                                            ? const EdgeInsets.symmetric(horizontal: 8.0)
+                                                                            : EdgeInsets.only(right: brandTrainersSelected.length != 1 ? MediaQuery.of(context).size.width * 0.06 : 8.0, left: 8.0),
+                                                                        child:
+                                                                            Column(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                          children: [
+                                                                            Stack(
+                                                                              alignment: Alignment.topRight,
+                                                                              children: [
+                                                                                CircularImage(
+                                                                                  size: MediaQuery.of(context).size.width * 0.17,
+                                                                                  image: client.imageUrl,
+                                                                                  color: Theme.of(context).primaryColor,
+                                                                                  borderWidth: 1,
+                                                                                ),
+                                                                                Positioned(
+                                                                                  top: 0,
+                                                                                  left: MediaQuery.of(context).size.width * 0.12,
+                                                                                  child: CircleAvatar(
+                                                                                    backgroundColor: AppColors.red,
+                                                                                    radius: MediaQuery.of(context).size.width * 0.025,
+                                                                                    child: Icon(
+                                                                                      Icons.clear,
+                                                                                      color: AppColors.white,
+                                                                                      size: MediaQuery.of(context).size.width * 0.035,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            SizedBox(
+                                                                              height: MediaQuery.of(context).size.width * 0.02,
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: MediaQuery.of(context).size.width * 0.2,
+                                                                              child: Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    client.firstName!,
+                                                                                    style: Theme.of(context).textTheme.bodyText2,
+                                                                                    textAlign: TextAlign.center,
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  }),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                        //JMF_AddUser_END
+                                      ])),
+                            ],
+                          )),
+                      resizeToAvoidBottomInset: true,
+                    ),
+                  ],
+                )),
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.01),
-              child: SizedBox(
-                height: 50,
-                child: FloatingActionButton.extended(
-                  heroTag: "48",
-                  onPressed: () async {
-                    if (_selectedIndex == 0) {
-                      if (formKeyInfo.currentState!.validate()) {
-                        if (widget.eventId != null) {
-                          mixpanel!.track('edit_event_datetime', properties: {'isPrivate': false});
-                        } else {
-                          mixpanel!.track('add_event_datetime', properties: {'isPrivate': false});
-                        }
-                          _tabController!.animateTo(_selectedIndex += 1);
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-                        if (!currentFocus.hasPrimaryFocus &&
-                            currentFocus.focusedChild != null) {
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        }
-                        setState(() {
-                            addEventTabValue += 0.33;
-                            tabs[1] = true;
-                        });
-                      } else {
-                        if (widget.eventId != null) {
-                          mixpanel!.track('edit_event_info_error', properties: {'isPrivate': false});
-                        } else {
-                          mixpanel!.track('add_event_info_error', properties: {'isPrivate': false});
-                        }
-                      }
-                    } else if (_selectedIndex == 1) {
-                      setState(() {
-                        errorDate = false;
-                      });
-                      if (validateDateAndTime(startDate, double.parse(duration))) {
-                        if (widget.eventId != null) {
-                          mixpanel!.track('edit_event_members', properties: {'isPrivate': false});
-                        } else {
-                          mixpanel!.track('add_event_members', properties: {'isPrivate': false});
-                        }
-                        _tabController!.animateTo(_selectedIndex += 1);
-                        setState(() {
-                          addEventTabValue += 0.33;
-                          tabs[2] = true;
-                        });
-                      } else {
-                        if (widget.eventId != null) {
-                          mixpanel!.track('edit_event_datetime_error', properties: {'isPrivate': false});
-                        } else {
-                          mixpanel!.track('add_event_datetime_error', properties: {'isPrivate': false});
-                        }
-                        setState(() {
-                          errorDate = true;
-                        });
-                      }
-                    } else if (_selectedIndex == 2) {
-                      if (brandTrainersSelected.isEmpty) {
-                        setState(() {
-                          errorNoTrainerSelected = true;
-                        });
-                        if (widget.eventId != null) {
-                          mixpanel!.track('edit_event_trainers_error', properties: {'isPrivate': false});
-                        } else {
-                          mixpanel!.track('add_event_trainers_error', properties: {'isPrivate': false});
-                        }
-                      } /*else if (brandClientsSelected.length > eventMaxMembers) {
+            floatingActionButton: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _selectedIndex != 0
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.01,
+                            left: MediaQuery.of(context).size.width * 0.09),
+                        child: SizedBox(
+                          height: 50,
+                          child: FloatingActionButton.extended(
+                            heroTag: "47",
+                            onPressed: () {
+                              if (_selectedIndex == 1) {
+                                if (widget.eventId != null) {
+                                  mixpanel!.track('edit_event_info',
+                                      properties: {'isPrivate': false});
+                                } else {
+                                  mixpanel!.track('add_event_info',
+                                      properties: {'isPrivate': false});
+                                }
+                                setState(() {
+                                  tabs[1] = false;
+                                });
+                              } else if (_selectedIndex == 2) {
+                                if (widget.eventId != null) {
+                                  mixpanel!.track('edit_event_datetime',
+                                      properties: {'isPrivate': false});
+                                } else {
+                                  mixpanel!.track('add_event_datetime',
+                                      properties: {'isPrivate': false});
+                                }
+                                setState(() {
+                                  tabs[2] = false;
+                                });
+                              }
+                              _tabController!.animateTo(_selectedIndex -= 1);
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
+                              if (!currentFocus.hasPrimaryFocus &&
+                                  currentFocus.focusedChild != null) {
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              }
+                              setState(() {
+                                addEventTabValue -= 0.33;
+                              });
+                            },
+                            backgroundColor: Theme.of(context).primaryColor,
+                            icon: Container(),
+                            label: Text(
+                              AppLocalizations.of(context)!.back,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                      color:
+                                          Theme.of(context).primaryColorDark),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Padding(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.01,
+                            left: MediaQuery.of(context).size.width * 0.09),
+                        child: Container(
+                          height: 50,
+                        ),
+                      ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.01),
+                  child: SizedBox(
+                    height: 50,
+                    child: FloatingActionButton.extended(
+                      heroTag: "48",
+                      onPressed: () async {
+                        if (_selectedIndex == 0) {
+                          if (formKeyInfo.currentState!.validate()) {
+                            if (widget.eventId != null) {
+                              mixpanel!.track('edit_event_datetime',
+                                  properties: {'isPrivate': false});
+                            } else {
+                              mixpanel!.track('add_event_datetime',
+                                  properties: {'isPrivate': false});
+                            }
+                            _tabController!.animateTo(_selectedIndex += 1);
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus &&
+                                currentFocus.focusedChild != null) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                            setState(() {
+                              addEventTabValue += 0.33;
+                              tabs[1] = true;
+                            });
+                          } else {
+                            if (widget.eventId != null) {
+                              mixpanel!.track('edit_event_info_error',
+                                  properties: {'isPrivate': false});
+                            } else {
+                              mixpanel!.track('add_event_info_error',
+                                  properties: {'isPrivate': false});
+                            }
+                          }
+                        } else if (_selectedIndex == 1) {
+                          setState(() {
+                            errorDate = false;
+                          });
+                          if (validateDateAndTime(
+                              startDate, double.parse(duration))) {
+                            if (widget.eventId != null) {
+                              mixpanel!.track('edit_event_members',
+                                  properties: {'isPrivate': false});
+                            } else {
+                              mixpanel!.track('add_event_members',
+                                  properties: {'isPrivate': false});
+                            }
+                            _tabController!.animateTo(_selectedIndex += 1);
+                            setState(() {
+                              addEventTabValue += 0.33;
+                              tabs[2] = true;
+                            });
+                          } else {
+                            if (widget.eventId != null) {
+                              mixpanel!.track('edit_event_datetime_error',
+                                  properties: {'isPrivate': false});
+                            } else {
+                              mixpanel!.track('add_event_datetime_error',
+                                  properties: {'isPrivate': false});
+                            }
+                            setState(() {
+                              errorDate = true;
+                            });
+                          }
+                        } else if (_selectedIndex == 2) {
+                          if (brandTrainersSelected.isEmpty) {
+                            setState(() {
+                              errorNoTrainerSelected = true;
+                            });
+                            if (widget.eventId != null) {
+                              mixpanel!.track('edit_event_trainers_error',
+                                  properties: {'isPrivate': false});
+                            } else {
+                              mixpanel!.track('add_event_trainers_error',
+                                  properties: {'isPrivate': false});
+                            }
+                          } /*else if (brandClientsSelected.length > eventMaxMembers) {
                         if (widget.eventId != null) {
                           mixpanel!.track('edit_event_clients_error', properties: {'isPrivate': false});
                         } else {
                           mixpanel!.track('add_event_clients_error', properties: {'isPrivate': false});
                         }
                       }*/
-                      else {
-                        if (widget.eventId == null) {
-                          _addEventFunction();
-                        } else {
-                          if (event.eventGroupId == null) {
-                            _updateEventFunction();
-                          } else {
-                            var result = await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return EditRecurrentEventDialog(
-                                  isCompleted: !widget.isBeforeEdit,
-                                  clientsModified: clientsModified,
-                                );
-                              },
-                            );
-                            if (result != null) {
-                              if (result == 1) {
-                                print("Edit Only This Event..");
+                          else {
+                            if (widget.eventId == null) {
+                              _addEventFunction();
+                            } else {
+                              if (event.eventGroupId == null) {
                                 _updateEventFunction();
                               } else {
-                                print("Edit This Event and the Rest Forward ...");
-                                _updateRecurrentEventFunction();
+                                var result = await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return EditRecurrentEventDialog(
+                                      isCompleted: !widget.isBeforeEdit,
+                                      clientsModified: clientsModified,
+                                    );
+                                  },
+                                );
+                                if (result != null) {
+                                  if (result == 1) {
+                                    print("Edit Only This Event..");
+                                    _updateEventFunction();
+                                  } else {
+                                    print(
+                                        "Edit This Event and the Rest Forward ...");
+                                    _updateRecurrentEventFunction();
+                                  }
+                                }
                               }
                             }
                           }
                         }
-                      }
-                    }
-                  },
-                  backgroundColor: _selectedIndex == 2 ? Colors.green : Theme.of(context).colorScheme.secondary,
-                  icon: Container(),
-                  label: widget.eventId == null ? Text(
-                    _selectedIndex == 2 ? AppLocalizations.of(context)!.createEvent : AppLocalizations.of(context)!.next,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),) : Text(
-                    _selectedIndex == 2 ? AppLocalizations.of(context)!.editEvent : AppLocalizations.of(context)!.next,
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(color: AppColors.white),),
+                      },
+                      backgroundColor: _selectedIndex == 2
+                          ? Colors.green
+                          : Theme.of(context).colorScheme.secondary,
+                      icon: Container(),
+                      label: widget.eventId == null
+                          ? Text(
+                              _selectedIndex == 2
+                                  ? AppLocalizations.of(context)!.createEvent
+                                  : AppLocalizations.of(context)!.next,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(color: AppColors.white),
+                            )
+                          : Text(
+                              _selectedIndex == 2
+                                  ? AppLocalizations.of(context)!.editEvent
+                                  : AppLocalizations.of(context)!.next,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(color: AppColors.white),
+                            ),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-    );
+          );
   }
 
   bool validateDateAndTime(DateTime startTime, double duration) {
-    if(!widget.isBeforeEdit) return true;
+    if (!widget.isBeforeEdit) return true;
     // Calculating the Time to check
     var hour = duration.toString().split(".")[0];
     var min = duration.toStringAsFixed(2).split(".")[1];
-    var endTime =  startTime.add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+    var endTime = startTime
+        .add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
     // Computing the workshift
     var workshift1 = currentBrand.workShift[0];
     var workshift2 = currentBrand.workShift[1];
@@ -1675,32 +2360,45 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     var startWorkMin = workshift1.toStringAsFixed(2).split(".")[1];
     var endWorkHour = workshift2.toStringAsFixed(2).split(".")[0];
     var endWorkMin = workshift2.toStringAsFixed(2).split(".")[1];
-    var startWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startWorkHour),int.parse(startWorkMin));
-    var endWorkDay =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endWorkHour),int.parse(endWorkMin));
+    var startWorkDay = DateTime(startTime.year, startTime.month, startTime.day,
+        int.parse(startWorkHour), int.parse(startWorkMin));
+    var endWorkDay = DateTime(startTime.year, startTime.month, startTime.day,
+        int.parse(endWorkHour), int.parse(endWorkMin));
     if ( // Can´t create event in the past
-       startTime.isBefore(DateTime.now())|| startTime.isAtSameMomentAs(DateTime.now()) || endTime.isBefore(DateTime.now()) || endTime.isAtSameMomentAs(DateTime.now())
-      // Can´t create event outside of working hours
-      || startTime.isBefore(startWorkDay) || endTime.isBefore(startWorkDay)
-      || startTime.isAfter(endWorkDay) || endTime.isAfter(endWorkDay)
-    ) {
+        startTime.isBefore(DateTime.now()) ||
+            startTime.isAtSameMomentAs(DateTime.now()) ||
+            endTime.isBefore(DateTime.now()) ||
+            endTime.isAtSameMomentAs(DateTime.now())
+            // Can´t create event outside of working hours
+            ||
+            startTime.isBefore(startWorkDay) ||
+            endTime.isBefore(startWorkDay) ||
+            startTime.isAfter(endWorkDay) ||
+            endTime.isAfter(endWorkDay)) {
       return false;
     } else {
       // Can´t create event in break period of working hours
-      for (var i=2; i<currentBrand.workShift.length; i+=2) {
+      for (var i = 2; i < currentBrand.workShift.length; i += 2) {
         // Breaks
         var break1 = currentBrand.workShift[i];
-        var break2 = currentBrand.workShift[i+1];
+        var break2 = currentBrand.workShift[i + 1];
         // Take the minute and the hour
         var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
         var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
         var endBreakHour = break2.toStringAsFixed(2).split(".")[0];
         var endBreakMin = break2.toStringAsFixed(2).split(".")[1];
         // Date Time formatted
-        var startBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
-        var endBreak =  DateTime(startTime.year, startTime.month, startTime.day, int.parse(endBreakHour), int.parse(endBreakMin));
+        var startBreak = DateTime(startTime.year, startTime.month,
+            startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
+        var endBreak = DateTime(startTime.year, startTime.month, startTime.day,
+            int.parse(endBreakHour), int.parse(endBreakMin));
         // Condition check
-        if ( ((startTime.isAfter(startBreak) || startTime.isAtSameMomentAs(startBreak)) && (startTime.isBefore(endBreak))) ||
-            ((endTime.isAfter(startBreak)) && (endTime.isBefore(endBreak) || endTime.isAtSameMomentAs(endBreak)))) {
+        if (((startTime.isAfter(startBreak) ||
+                    startTime.isAtSameMomentAs(startBreak)) &&
+                (startTime.isBefore(endBreak))) ||
+            ((endTime.isAfter(startBreak)) &&
+                (endTime.isBefore(endBreak) ||
+                    endTime.isAtSameMomentAs(endBreak)))) {
           return false;
         }
       }
@@ -1727,7 +2425,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     });
     // Get Random Photo if no Image Selected
     if (eventImageUrl == null || (eventImageUrl != null && isRandomImage)) {
-      eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+      eventImageUrl =
+          await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
     }
     // Event Start Date
     Timestamp doneAt = Timestamp.fromDate(startDate);
@@ -1737,7 +2436,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     if (!isRecurrent) {
       // Updating Loading Text
       setState(() {
-        isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
+        isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
+            " " +
+            AppLocalizations.of(context)!.events.toLowerCase() +
+            "... (" +
+            currentEvent.toString() +
+            "/" +
+            currentEvent.toString() +
+            ")";
       });
       // Creating Event Object
       Event event = Event(
@@ -1779,7 +2485,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     } else {
       // Recurrent total
       int days = values.where((item) => item == true).length;
-      totalEvents = days*_value;
+      totalEvents = days * _value;
       if (_value == 3) {
         totalEvents += days;
       }
@@ -1818,16 +2524,24 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       var weekDay = tempDate.weekday;
       if (_value == 1) {
         // One Week
-        for (var i=0; i<6; i++) {
-          if (values[weekDay-1]!) {
+        for (var i = 0; i < 6; i++) {
+          if (values[weekDay - 1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
+                  " " +
+                  AppLocalizations.of(context)!.events.toLowerCase() +
+                  "... (" +
+                  currentEvent.toString() +
+                  "/" +
+                  totalEvents.toString() +
+                  ")";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
             if (isRandomImage) {
-              eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+              eventImageUrl =
+                  await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
             }
             // Event Object
             event = Event(
@@ -1864,16 +2578,24 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       } else if (_value == 2) {
         // Two Weeks
-        for (var i=0; i<13; i++) {
-          if (values[weekDay-1]!) {
+        for (var i = 0; i < 13; i++) {
+          if (values[weekDay - 1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
+                  " " +
+                  AppLocalizations.of(context)!.events.toLowerCase() +
+                  "... (" +
+                  currentEvent.toString() +
+                  "/" +
+                  totalEvents.toString() +
+                  ")";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
             if (isRandomImage) {
-              eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+              eventImageUrl =
+                  await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
             }
             // Event Object
             event = Event(
@@ -1910,16 +2632,24 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       } else if (_value == 3) {
         // One Month
-        for (var i=0; i<27; i++) {
-          if (values[weekDay-1]!) {
+        for (var i = 0; i < 27; i++) {
+          if (values[weekDay - 1]!) {
             // Updating Loading Text
             setState(() {
-              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+              isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
+                  " " +
+                  AppLocalizations.of(context)!.events.toLowerCase() +
+                  "... (" +
+                  currentEvent.toString() +
+                  "/" +
+                  totalEvents.toString() +
+                  ")";
             });
             currentEvent += 1;
             // Change Image Url if IsRecurrent is Selected
             if (isRandomImage) {
-              eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+              eventImageUrl =
+                  await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
             }
             // Event Object
             event = Event(
@@ -1956,7 +2686,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         }
       }
       // Create Entry in /Event Groups
-      await _eventDataService.addRecurrentEventGroup(eventGroupId, groupEventsIds);
+      await _eventDataService.addRecurrentEventGroup(
+          eventGroupId, groupEventsIds);
       mixpanel!.track('add_event_completed', properties: {
         'descriptionLength': event.description!.length.toString(),
         'isPrivate': false,
@@ -1976,7 +2707,14 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     setState(() {
       isLoading = true;
       // Updating Loading Text
-      isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
+      isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +
+          " " +
+          AppLocalizations.of(context)!.events.toLowerCase() +
+          "... (" +
+          currentEvent.toString() +
+          "/" +
+          currentEvent.toString() +
+          ")";
     });
     // Delete Event Call
     await _eventDataService.deleteEvent(widget.eventId!);
@@ -1986,7 +2724,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Delete Event Bonos
     _deleteEventBonosCall(widget.eventId!);
     // Delete Event Local Notifications
-    for (var i=0; i<eventMembers.length; i++) {
+    for (var i = 0; i < eventMembers.length; i++) {
       var user = eventMembers[i];
       // Remove Local Notifications Service
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
@@ -1994,23 +2732,25 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     // Delete Event From Event Group Id in Case it has any.
     if (event.eventGroupId != null) {
       // Get Recurrent Group Ids ..
-      var eventGroupIds = await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
+      var eventGroupIds =
+          await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
       // Delete Only This Event..
       eventGroupIds.removeWhere((element) => element == event.id!);
       // Delete Event From Recurrent Group..
       if (eventGroupIds.isNotEmpty) {
-        await _eventDataService.updateRecurrentEventGroup(event.eventGroupId!, eventGroupIds);
+        await _eventDataService.updateRecurrentEventGroup(
+            event.eventGroupId!, eventGroupIds);
       } else {
         await _eventDataService.deleteRecurrentEventGroup(event.eventGroupId!);
       }
     }
-    mixpanel!.track('delete_event_completed', properties: {'isPrivate': false, 'isRecurrent': false});
+    mixpanel!.track('delete_event_completed',
+        properties: {'isPrivate': false, 'isRecurrent': false});
     // Pop to Last Page
     Navigator.pop(context, false);
   }
 
-  void _setValueToOriginal(Usuario user)
-  {
+  void _setValueToOriginal(Usuario user) {
     int index = originalTrainers.indexWhere((element) => element.id == user.id);
     // Trainer Found
     if (index != -1) {
@@ -2023,11 +2763,19 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     setState(() {
       isLoading = true;
       // Updating Loading Text
-      isRecurrentLoadingText = AppLocalizations.of(context)!.editing +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+currentEvent.toString()+")";
+      isRecurrentLoadingText = AppLocalizations.of(context)!.editing +
+          " " +
+          AppLocalizations.of(context)!.events.toLowerCase() +
+          "... (" +
+          currentEvent.toString() +
+          "/" +
+          currentEvent.toString() +
+          ")";
     });
     // Get Random Photo if no Image Selected
     if (isRandomImage) {
-      eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+      eventImageUrl =
+          await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
     }
     // Event Start Date
     Timestamp doneAt = Timestamp.fromDate(startDate);
@@ -2062,10 +2810,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     for (Bono bono in eventBonos) {
       originalBonos.add(bono.id!);
     }
-    originalBonos.sort((a,b) {
+    originalBonos.sort((a, b) {
       return a.compareTo(b);
     });
-    selectedBonos.sort((a,b) {
+    selectedBonos.sort((a, b) {
       return a.compareTo(b);
     });
     if (selectedBonos != originalBonos) {
@@ -2073,28 +2821,32 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     }
     // Update Event Location
     if (event.locationId! != originalLocationId) {
-      await _eventDataService.updateEventLocation(event.id!, event.locationId!, originalLocationId!);
+      await _eventDataService.updateEventLocation(
+          event.id!, event.locationId!, originalLocationId!);
     }
     // Compare Current Members vs Original Members
     /// Start With Trainers
     for (int i = 0; i < eventTrainers.length; i++) {
       var user = eventTrainers[i];
       // Find index in EventTrainers
-      int index = originalTrainers.indexWhere((element) => element.id == user.id);
+      int index =
+          originalTrainers.indexWhere((element) => element.id == user.id);
       // Trainer Found
       if (index != -1) {
         // Remove Trainer Left
         eventTrainersAdded.removeWhere((element) => element.id == user.id);
         originalTrainers.removeWhere((element) => element.id == user.id);
-        print("Trainer Matched "+user.id.toString());
+        print("Trainer Matched " + user.id.toString());
         if (originalStartDate != startDate) {
           // Remove Old Local Notification
           await _deleteEventLocalNotificationsCall(event.id!, user.id!);
           // Add updated ones now
-          await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+          await _addEventLocalNotificationsCall(
+              event.id!, user.id!, user.isTrainer!);
         }
       }
     }
+
     /// Handle Trainers Not Matched
     // Original Trainers Not Matched means that they have been removed from Event
     for (int i = 0; i < originalTrainers.length; i++) {
@@ -2103,8 +2855,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
       // Remove Event Local Notifications
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-      print("Trainer Removed "+user.id.toString());
+      print("Trainer Removed " + user.id.toString());
     }
+
     /// Handle Trainers Added
     // Trainers Added Not Matched means that they have added to the Event
     for (int i = 0; i < eventTrainersAdded.length; i++) {
@@ -2116,25 +2869,29 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         await _eventDataService.addUserToEvent(event.id!, user.id!, "");
       }
       // Add Event Local Notifications
-      await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
-      print("Trainer Added "+user.id.toString());
+      await _addEventLocalNotificationsCall(
+          event.id!, user.id!, user.isTrainer!);
+      print("Trainer Added " + user.id.toString());
     }
+
     /// Continue With Clients
     for (int i = 0; i < eventClients.length; i++) {
       var user = eventClients[i];
       // Find index in EventClients
-      int index = originalClients.indexWhere((element) => element.id == user.id);
+      int index =
+          originalClients.indexWhere((element) => element.id == user.id);
       // Client Found
       if (index != -1) {
         // Remove Trainer Left
         eventClientsAdded.removeWhere((element) => element.id == user.id);
         originalClients.removeWhere((element) => element.id == user.id);
-        print("Client Matched "+user.id.toString());
+        print("Client Matched " + user.id.toString());
         if (originalStartDate != startDate) {
           // Remove Old Local Notification
           await _deleteEventLocalNotificationsCall(event.id!, user.id!);
           // Add updated ones now
-          await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+          await _addEventLocalNotificationsCall(
+              event.id!, user.id!, user.isTrainer!);
         }
       }
     }
@@ -2146,22 +2903,22 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
       // Remove Client From Purchase
       //JMF_AddUser_BEGIN
-      if(selectedBonos.isNotEmpty) {
-          await _purchaseDataService.deletedPurchaseUserFromEvent(
-              user, widget.eventId!);
-
+      if (selectedBonos.isNotEmpty) {
+        await _purchaseDataService.deletedPurchaseUserFromEvent(
+            user, widget.eventId!);
       }
       //JMF_AddUser_END
       // Send Client Left Event
-      _notificationService.userLeaveEvent(user.id!, currentBrand.id!, event.id!);
+      _notificationService.userLeaveEvent(
+          user.id!, currentBrand.id!, event.id!);
       // Remove Event Local Notifications
       await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-      print("Client Removed "+user.id.toString());
+      print("Client Removed " + user.id.toString());
     }
 
     //JMF_AddUser_Begin
     //Update purchase
-    if(selectedBonos.isNotEmpty) {
+    if (selectedBonos.isNotEmpty) {
       await UpdateUserPurchase(event.id!);
     }
     //JMF_AddUser_End
@@ -2171,18 +2928,20 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     for (int i = 0; i < eventClientsAdded.length; i++) {
       var user = eventClientsAdded[i];
       // Add Clients to Event
-      await _eventDataService.addUserToEvent(event.id!, user.id!, user.purchaseId!, true);
+      await _eventDataService.addUserToEvent(
+          event.id!, user.id!, user.purchaseId!, true);
 
       //JMF_AddUser_BEGIN
-      if(selectedBonos.isNotEmpty) {
-          await _purchaseDataService.addEventToPurchase(
-              eventClientsAdded[i].purchaseId!, widget.eventId!);
+      if (selectedBonos.isNotEmpty) {
+        await _purchaseDataService.addEventToPurchase(
+            eventClientsAdded[i].purchaseId!, widget.eventId!);
       }
       //JMF_AddUser_END
 
       // Add Event Local Notifications
-      await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
-      print("Client Added "+user.id.toString());
+      await _addEventLocalNotificationsCall(
+          event.id!, user.id!, user.isTrainer!);
+      print("Client Added " + user.id.toString());
     }
     mixpanel!.track('edit_event_completed', properties: {
       'descriptionLength': event.description!.length.toString(),
@@ -2205,7 +2964,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       isLoading = true;
     });
     // Get Recurrent Group Ids ..
-    var eventGroupIds = await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
+    var eventGroupIds =
+        await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
     List<String> eventGroupIdsList = eventGroupIds.cast<String>();
     // Find index of Current Event
     int index = eventGroupIdsList.indexWhere((element) => element == event.id!);
@@ -2214,15 +2974,23 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       await _eventDataService.deleteRecurrentEventGroup(event.eventGroupId!);
     } else {
       eventGroupIds = eventGroupIds.sublist(0, index);
-      await _eventDataService.updateRecurrentEventGroup(event.eventGroupId!, eventGroupIds);
+      await _eventDataService.updateRecurrentEventGroup(
+          event.eventGroupId!, eventGroupIds);
     }
     // Recurrent total
     totalEvents = eventGroupIdsList.length - index;
     // Delete All Events After The Index
-    for (var i=index; i<eventGroupIdsList.length; i++) {
+    for (var i = index; i < eventGroupIdsList.length; i++) {
       // Updating Loading Text
       setState(() {
-        isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+        isRecurrentLoadingText = AppLocalizations.of(context)!.deleting +
+            " " +
+            AppLocalizations.of(context)!.events.toLowerCase() +
+            "... (" +
+            currentEvent.toString() +
+            "/" +
+            totalEvents.toString() +
+            ")";
       });
       currentEvent += 1;
       // Event Id
@@ -2232,15 +3000,17 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       // Delete Event Bonos
       _deleteEventBonosCall(eventId);
       // Delete Event Members
-      List<Usuario> eventMembers = await _eventDataService.getEventUsers(eventId);
+      List<Usuario> eventMembers =
+          await _eventDataService.getEventUsers(eventId);
       // Delete Event Local Notifications
-      for (var i=0; i<eventMembers.length; i++) {
+      for (var i = 0; i < eventMembers.length; i++) {
         var user = eventMembers[i];
         // Remove Local Notifications Service
         await _deleteEventLocalNotificationsCall(event.id!, user.id!);
       }
     }
-    mixpanel!.track('delete_event_completed', properties: {'isPrivate': false, 'isRecurrent': true});
+    mixpanel!.track('delete_event_completed',
+        properties: {'isPrivate': false, 'isRecurrent': true});
     // Pop to Last Page
     Navigator.pop(context, false);
   }
@@ -2251,28 +3021,38 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       isLoading = true;
     });
     // Get Recurrent Group Ids ..
-    var eventGroupIds = await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
+    var eventGroupIds =
+        await _eventDataService.getRecurrentEventGroup(event.eventGroupId!);
     List<String> eventGroupIdsList = eventGroupIds.cast<String>();
     // Find index of Current Event
     int index = eventGroupIdsList.indexWhere((element) => element == event.id!);
     // Recurrent total
     totalEvents = eventGroupIdsList.length - index;
     // Update All Events After The Index
-    for (var i=index; i<eventGroupIdsList.length; i++) {
+    for (var i = index; i < eventGroupIdsList.length; i++) {
       // Updating Loading Text
       setState(() {
-        isRecurrentLoadingText = AppLocalizations.of(context)!.editing +" "+ AppLocalizations.of(context)!.events.toLowerCase() + "... (" + currentEvent.toString()+"/"+totalEvents.toString()+")";
+        isRecurrentLoadingText = AppLocalizations.of(context)!.editing +
+            " " +
+            AppLocalizations.of(context)!.events.toLowerCase() +
+            "... (" +
+            currentEvent.toString() +
+            "/" +
+            totalEvents.toString() +
+            ")";
       });
       currentEvent += 1;
       // Event Id
       String eventId = eventGroupIdsList[i];
       // Get Random Photo if no Image Selected
       if (isRandomImage) {
-        eventImageUrl = await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+        eventImageUrl =
+            await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
       }
       // Original Event Data
       Event originalEvent = await _eventDataService.getSingleEvent(eventId);
-      List<Usuario> originalUsers = await _eventDataService.getEventUsers(eventId);
+      List<Usuario> originalUsers =
+          await _eventDataService.getEventUsers(eventId);
       List<Usuario> originalTrainers = [];
       List<Usuario> originalClients = [];
       for (var u in originalUsers) {
@@ -2320,15 +3100,16 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       // Update Event
       await _eventDataService.updateEvent(updatedEvent);
       // Update Event Bonos
-      List<Bono> eventBonosOrg = await _eventDataService.getEventBonos(eventId, currentBrand.id!);
+      List<Bono> eventBonosOrg =
+          await _eventDataService.getEventBonos(eventId, currentBrand.id!);
       List<String> originalBonos = [];
       for (Bono bono in eventBonosOrg) {
         originalBonos.add(bono.id!);
       }
-      originalBonos.sort((a,b) {
+      originalBonos.sort((a, b) {
         return a.compareTo(b);
       });
-      selectedBonos.sort((a,b) {
+      selectedBonos.sort((a, b) {
         return a.compareTo(b);
       });
       if (selectedBonos != originalBonos) {
@@ -2336,7 +3117,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       }
       // Update Event Location
       if (event.locationId! != originalEvent.locationId!) {
-        await _eventDataService.updateEventLocation(eventId, event.locationId!, originalEvent.locationId!);
+        await _eventDataService.updateEventLocation(
+            eventId, event.locationId!, originalEvent.locationId!);
       }
       // Event Members
       List<Usuario> eventTrainers = List.from(brandTrainersSelected);
@@ -2348,21 +3130,24 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
       for (int i = 0; i < eventTrainers.length; i++) {
         var user = eventTrainers[i];
         // Find index in EventTrainers
-        int index = originalTrainers.indexWhere((element) => element.id == user.id);
+        int index =
+            originalTrainers.indexWhere((element) => element.id == user.id);
         // Trainer Found
         if (index != -1) {
           // Remove Trainer Left
           eventTrainersAdded.removeWhere((element) => element.id == user.id);
           originalTrainers.removeWhere((element) => element.id == user.id);
-          print("Trainer Matched "+user.id.toString());
+          print("Trainer Matched " + user.id.toString());
           if (originalStartDate != updatedStartDate) {
             // Remove Old Local Notification
             await _deleteEventLocalNotificationsCall(event.id!, user.id!);
             // Add updated ones now
-            await _addEventLocalNotificationsCall(event.id!, user.id!, user.isTrainer!);
+            await _addEventLocalNotificationsCall(
+                event.id!, user.id!, user.isTrainer!);
           }
         }
       }
+
       /// Handle Trainers Not Matched
       // Original Trainers Not Matched means that they have been removed from Event
       for (int i = 0; i < originalTrainers.length; i++) {
@@ -2371,7 +3156,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
         await _eventDataService.deleteUserFromEvent(eventId, user.id!);
         // Remove Event Local Notifications
         await _deleteEventLocalNotificationsCall(eventId, user.id!);
-        print("Trainer Removed "+user.id.toString());
+        print("Trainer Removed " + user.id.toString());
       }
       // Handle Trainers Added
       // Trainers Added Not Matched means that they have added to the Event
@@ -2384,8 +3169,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
           await _eventDataService.addUserToEvent(event.id!, user.id!, "");
         }
         // Add Event Local Notifications
-        await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
-        print("Trainer Added "+user.id.toString());
+        await _addEventLocalNotificationsCall(
+            eventId, user.id!, user.isTrainer!);
+        print("Trainer Added " + user.id.toString());
       }
       /*
       /// Continue With Clients
@@ -2445,30 +3231,30 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     return eid;
   }
 
-  Future<void> _addEventMembersCall(String eventId, List<Usuario> eventMembers) async {
+  Future<void> _addEventMembersCall(
+      String eventId, List<Usuario> eventMembers) async {
     // Add Event Members
-    for (var i=0; i<eventMembers.length; i++) {
+    for (var i = 0; i < eventMembers.length; i++) {
       var user = eventMembers[i];
       // Firebase Call
-        //JMF_AddUser_Begin
-        if(user.isTrainer!) {
-          if (user.id != currentUser.id!) {
-            await _eventDataService.addUserToEvent(eventId, user.id!, "",true);
-          }
-          else {
-            await _eventDataService.addUserToEvent(eventId, user.id!, "");
-          }
+      //JMF_AddUser_Begin
+      if (user.isTrainer!) {
+        if (user.id != currentUser.id!) {
+          await _eventDataService.addUserToEvent(eventId, user.id!, "", true);
+        } else {
+          await _eventDataService.addUserToEvent(eventId, user.id!, "");
         }
-        else {
-          await _eventDataService.addUserToEvent(eventId, user.id!, user.purchaseId!, true);
-          if(selectedBonos.isNotEmpty) {
-              await _purchaseDataService.addEventToPurchase(
-                  user.purchaseId!, eventId);
-          }
-          // Notifications Service, this also send Notifications to Trainers
-          _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
+      } else {
+        await _eventDataService.addUserToEvent(
+            eventId, user.id!, user.purchaseId!, true);
+        if (selectedBonos.isNotEmpty) {
+          await _purchaseDataService.addEventToPurchase(
+              user.purchaseId!, eventId);
         }
-        //JMF_AddUser_End
+        // Notifications Service, this also send Notifications to Trainers
+        _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
+      }
+      //JMF_AddUser_End
 
       // Local Notifications
       await _addEventLocalNotificationsCall(eventId, user.id!, user.isTrainer!);
@@ -2485,20 +3271,25 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
     await _eventDataService.deleteEventBonos(eventId);
   }
 
-  Future<void> _addEventLocalNotificationsCall(String eventId, String userId, bool isTrainer) async {
+  Future<void> _addEventLocalNotificationsCall(
+      String eventId, String userId, bool isTrainer) async {
     // Local Notifications Service
     if (userId == currentUser.id!) {
-      await _localNotificationService.addEventLocalNotifications(context, eventId, isTrainer);
+      await _localNotificationService.addEventLocalNotifications(
+          context, eventId, isTrainer);
     } else {
-      await _localNotificationService.addRemoteEventLocalNotifications(context, eventId, userId, isTrainer);
+      await _localNotificationService.addRemoteEventLocalNotifications(
+          context, eventId, userId, isTrainer);
     }
   }
 
-  Future<void> _deleteEventLocalNotificationsCall(String eventId, String userId) async {
+  Future<void> _deleteEventLocalNotificationsCall(
+      String eventId, String userId) async {
     if (userId == currentUser.id!) {
       await _localNotificationService.deleteEventLocalNotifications(eventId);
     } else {
-      await _localNotificationService.deleteRemoteEventLocalNotifications(eventId, userId);
+      await _localNotificationService.deleteRemoteEventLocalNotifications(
+          eventId, userId);
     }
   }
 
@@ -2507,9 +3298,9 @@ class _AddOrEditEventState extends State<AddOrEditEvent> with SingleTickerProvid
   }
 
   Future<void> UpdateUserPurchase(String eventId) async {
-    for(int i = 0; i < brandClientsSelected.length; ++i)
-    {
-        await _eventDataService.updateEventUserPurchase(eventId, brandClientsSelected[i].id!, brandClientsSelected[i].purchaseId!);
+    for (int i = 0; i < brandClientsSelected.length; ++i) {
+      await _eventDataService.updateEventUserPurchase(eventId,
+          brandClientsSelected[i].id!, brandClientsSelected[i].purchaseId!);
     }
   }
 }

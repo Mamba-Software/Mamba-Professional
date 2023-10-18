@@ -52,8 +52,7 @@ class CrudEventCubit extends Cubit<CrudEventState> {
     }
     print(event.title);
     event = await _eventDataService.getSingleEvent(eventId);
-    newEvent = event;
-    print('NEW DESC' + event.title.toString());
+    newEvent.setBasicData = event;
     isFull = (event.numClients! / event.maxMembers! == 1);
     await getUsersBlockedUser();
     await getEventUsers();
@@ -66,6 +65,32 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       await getEventMembers(event.id!);
       await getBrandBonos();
     }
+    await getLocation(event.locationId!);
+    emit(CrudEventLoaded(
+        event,
+        isFull,
+        userIsBlockedBy,
+        eventBonos,
+        eventTrainers,
+        eventClients,
+        eventClientsFeedback,
+        eventTrainersIds,
+        eventTrainersBool,
+        location,
+        mapController,
+        appBarExpanded,
+        originalTrainers,
+        originalClients,
+        brandTrainersSelected,
+        brandClientsSelected,
+        allBonos,
+        locationDet,
+        newEvent));
+  }
+
+  void resetNewEvent() {
+    newEvent.setBasicData = event;
+
     emit(CrudEventLoaded(
         event,
         isFull,
@@ -91,10 +116,13 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   void editEventInfo(String text, int caseSwitch) {
     switch (caseSwitch) {
       case 1:
-        event.title = text;
+        newEvent.title = text;
         break;
       case 2:
-        event.description = text;
+        newEvent.description = text;
+        break;
+      case 3:
+        getLocation(text);
         break;
     }
     emit(CrudEventLoaded(
@@ -222,10 +250,43 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   Future<void> getEventLocation(String eventId) async {
     location = await _eventDataService.getEventLocation(eventId);
     event.locationId = location.id!;
+    location.initialPosition =
+        CameraPosition(target: LatLng(location.latitude!, location.longitude!));
+    Marker marker = Marker(
+      markerId: const MarkerId('1'),
+      position: LatLng(location.latitude!, location.longitude!),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+      onTap: () {},
+    );
+    location.markers!.add(marker);
   }
 
   Future<void> getEventLocationDet(String eventId) async {
     location = await _locationDataService.getSingleLocation(location.id!);
     event.locationId = location.id!;
+    location.initialPosition =
+        CameraPosition(target: LatLng(location.latitude!, location.longitude!));
+    Marker marker = Marker(
+      markerId: const MarkerId('1'),
+      position: LatLng(location.latitude!, location.longitude!),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+      onTap: () {},
+    );
+    location.markers!.add(marker);
+  }
+
+  Future<void> getLocation(String locationId) async {
+    emit(const CrudEventLoading());
+    newEvent.location =
+        await _locationDataService.getSingleLocation(locationId);
+    newEvent.location.initialPosition =
+        CameraPosition(target: LatLng(location.latitude!, location.longitude!));
+    Marker marker = Marker(
+      markerId: const MarkerId('1'),
+      position: LatLng(location.latitude!, location.longitude!),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+      onTap: () {},
+    );
+    newEvent.location.markers!.add(marker);
   }
 }
