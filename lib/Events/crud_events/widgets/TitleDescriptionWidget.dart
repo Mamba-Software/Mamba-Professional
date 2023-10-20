@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class TitleDescriptionWidget extends StatefulWidget {
-  final FocusNode focusNodetitleController;
   BuildContext contextFrom;
 
-  TitleDescriptionWidget(
-      {required this.focusNodetitleController, required this.contextFrom});
+  TitleDescriptionWidget({required this.contextFrom});
 
   @override
   _TitleDescriptionWidgetState createState() => _TitleDescriptionWidgetState();
@@ -23,7 +23,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
   String titleString = '';
   String descriptionString = '';
   final FocusNode focusNodeDescController = FocusNode();
-  final FocusNode focusNodetitleController = FocusNode();
+  FocusNode focusNodetitleController = FocusNode();
 
   @override
   initState() {
@@ -50,23 +50,6 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context)!.title,
-                      style: Theme.of(context).textTheme.headline1,
-                    ),
-                  ],
-                ),
-              ],
-            )),
-        Padding(
-            padding: const EdgeInsets.only(top: 0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
                 Flexible(
                   child: TextFormField(
                     focusNode: focusNodetitleController,
@@ -77,7 +60,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                     onChanged: (val) {
                       context
                           .read<CrudEventCubit>()
-                          .editEventInfo(titleString, 1);
+                          .editEventInfo(titleString, EditEventType.title);
                       setState(() {
                         titleString = val;
                       });
@@ -89,9 +72,15 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                         focusNodetitleController.unfocus();
                       }
                     },
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1
+                        ?.copyWith(fontWeight: FontWeight.normal),
                     decoration: InputDecoration(
-                      hintStyle: Theme.of(context).textTheme.caption,
+                      hintStyle: Theme.of(context)
+                          .textTheme
+                          .caption
+                          ?.copyWith(fontSize: 20),
                       errorStyle: Theme.of(context)
                           .textTheme
                           .caption
@@ -101,13 +90,13 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                         borderSide: BorderSide(color: Colors.red),
                       ),
                       disabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
                       enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
                     ),
                     enabled: true,
@@ -115,24 +104,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                 ),
               ],
             )),
-        Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      AppLocalizations.of(context)!.description,
-                      style: Theme.of(context).textTheme.headline1,
-                    ),
-                  ],
-                ),
-              ],
-            )),
+        dividerAddEditEvent(context, AppLocalizations.of(context)!.title),
         Padding(
             padding: const EdgeInsets.only(top: 0.0),
             child: Row(
@@ -146,9 +118,8 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                     minLines: 1,
                     maxLines: 4,
                     onChanged: (val) {
-                      context
-                          .read<CrudEventCubit>()
-                          .editEventInfo(descriptionString, 2);
+                      context.read<CrudEventCubit>().editEventInfo(
+                          descriptionString, EditEventType.description);
                       setState(() {
                         descriptionString = val;
                       });
@@ -161,19 +132,20 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                         borderSide: BorderSide(color: Colors.red),
                       ),
                       disabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
                       enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
                       focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
                     ),
                   ),
                 ),
               ],
             )),
+        dividerAddEditEvent(context, AppLocalizations.of(context)!.description),
       ],
     );
   }

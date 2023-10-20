@@ -21,7 +21,6 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                       child: Column(
                         children: [
                           TitleDescriptionWidget(
-                            focusNodetitleController: focusNodetitleController,
                             contextFrom: context,
                           ),
                           locationBlocSelector(),

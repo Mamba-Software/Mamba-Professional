@@ -12,6 +12,7 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 part 'CrudEventState.dart';
 
@@ -52,20 +53,21 @@ class CrudEventCubit extends Cubit<CrudEventState> {
     }
     print(event.title);
     event = await _eventDataService.getSingleEvent(eventId);
-    newEvent.setBasicData = event;
+
     isFull = (event.numClients! / event.maxMembers! == 1);
     await getUsersBlockedUser();
     await getEventUsers();
     await getEventBonos();
+    await getBrandBonos();
     if (loadState) {
       await getEventLocation(event.id!);
     }
     if (!loadState) {
       await getEventLocationDet(event.id!);
       await getEventMembers(event.id!);
-      await getBrandBonos();
     }
     await getLocation(event.locationId!);
+    populateNewEvent();
     emit(CrudEventLoaded(
         event,
         isFull,
@@ -86,6 +88,23 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         allBonos,
         locationDet,
         newEvent));
+  }
+
+  void populateNewEvent() {
+    newEvent.setBasicData = event;
+    newEvent.eventBonos = setEventBonosMap();
+  }
+
+  Map<Bono, bool> setEventBonosMap() {
+    final Map<Bono, bool> bonosMap = {};
+
+    for (Bono bono in allBonos) {
+      // Check if the current bono exists in eventBonos
+      bool exists = eventBonos.any((eventBono) => eventBono == bono);
+      // Set the value in the map
+      bonosMap[bono] = exists;
+    }
+    return bonosMap;
   }
 
   void resetNewEvent() {
@@ -113,16 +132,25 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         newEvent));
   }
 
-  void editEventInfo(String text, int caseSwitch) {
-    switch (caseSwitch) {
-      case 1:
+  Future<void> editEventInfo(String text, EditEventType editEventType,
+      [Bono? bono]) async {
+    switch (editEventType) {
+      case EditEventType.title:
         newEvent.title = text;
         break;
-      case 2:
+      case EditEventType.description:
         newEvent.description = text;
         break;
-      case 3:
-        getLocation(text);
+      case EditEventType.location:
+        await getLocation(text);
+        break;
+      case EditEventType.bonos:
+        emit(const CrudEventLoading());
+        if (text == 'AllBonos') {
+          setAllTrue();
+        } else {
+          setBonoSelectedUnselected(bono!);
+        }
         break;
     }
     emit(CrudEventLoaded(
@@ -288,5 +316,16 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       onTap: () {},
     );
     newEvent.location.markers!.add(marker);
+  }
+
+  void setBonoSelectedUnselected(Bono bono) async {
+    if (newEvent.eventBonos.containsKey(bono)) {
+      // Toggle the value associated with the bono key
+      newEvent.eventBonos[bono] = !newEvent.eventBonos[bono]!;
+    }
+  }
+
+  void setAllTrue() {
+    newEvent.eventBonos.updateAll((key, value) => true);
   }
 }
