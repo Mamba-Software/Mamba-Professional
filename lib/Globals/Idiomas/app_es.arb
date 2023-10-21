@@ -3502,5 +3502,9 @@
   "cantEditRecurrent": "Elimina los clientes del evento para poder indicar si es un evento recurrente",
   "@addClientDescription":{
     "bonosClient": "addClientDescription client text"
+  },
+  "noActiveBonos": "No dispones de bonos activos para asignar al evento",
+  "@noActiveBonos":{
+    "noActiveBonos": "noActiveBonos text"
   }
 }
