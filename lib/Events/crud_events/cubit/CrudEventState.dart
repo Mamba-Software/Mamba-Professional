@@ -38,6 +38,7 @@ class CrudEventLoaded extends CrudEventState {
   final List<Usuario> brandClientsSelected;
   final List<Bono> allBonos;
   final Event newEvent;
+  final bool isBeforeEdit;
 
   const CrudEventLoaded(
       this.event,
@@ -58,7 +59,8 @@ class CrudEventLoaded extends CrudEventState {
       this.brandClientsSelected,
       this.allBonos,
       this.locationDet,
-      this.newEvent);
+      this.newEvent,
+      this.isBeforeEdit);
 
   @override
   List<Object?> get props => [
@@ -80,7 +82,8 @@ class CrudEventLoaded extends CrudEventState {
         brandClientsSelected,
         allBonos,
         locationDet,
-        newEvent
+        newEvent,
+        isBeforeEdit
       ];
 }
 

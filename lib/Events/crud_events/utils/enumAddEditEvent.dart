@@ -3,4 +3,7 @@ enum EditEventType {
   description,
   location,
   bonos,
+  startDate,
+  time,
+  duration,
 }

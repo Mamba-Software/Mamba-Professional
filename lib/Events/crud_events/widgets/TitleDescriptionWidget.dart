@@ -37,7 +37,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
       descriptionString = descriptionController.text;
     }
 
-    focusNodetitleController.requestFocus();
+    //focusNodetitleController.requestFocus();
   }
 
   @override

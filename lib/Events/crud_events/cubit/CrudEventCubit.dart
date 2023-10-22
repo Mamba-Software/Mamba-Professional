@@ -42,6 +42,8 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   List<Usuario> brandTrainersSelected = [];
   List<Usuario> brandClientsSelected = [];
   List<Bono> allBonos = [];
+  bool isBeforeEdit = true;
+  bool errorDate = false;
 
   CrudEventCubit() : super(const CrudEventInitial());
 
@@ -87,12 +89,23 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         brandClientsSelected,
         allBonos,
         locationDet,
-        newEvent));
+        newEvent,
+        isBeforeEdit));
   }
 
   void populateNewEvent() {
     newEvent.setBasicData = event;
     newEvent.eventBonos = setEventBonosMap();
+    newEvent.startDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
+    if (newEvent.startDate.isBefore(DateTime.now())) {
+      isBeforeEdit = false;
+    }
   }
 
   Map<Bono, bool> setEventBonosMap() {
@@ -129,29 +142,53 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         brandClientsSelected,
         allBonos,
         locationDet,
-        newEvent));
+        newEvent,
+        isBeforeEdit));
   }
 
-  Future<void> editEventInfo(String text, EditEventType editEventType,
+  Future<void> editEventInfo(var varToChange, EditEventType editEventType,
       [Bono? bono]) async {
+    emit(const CrudEventLoading());
     switch (editEventType) {
       case EditEventType.title:
-        newEvent.title = text;
+        newEvent.title = varToChange;
         break;
       case EditEventType.description:
-        newEvent.description = text;
+        newEvent.description = varToChange;
         break;
       case EditEventType.location:
-        await getLocation(text);
+        await getLocation(varToChange);
         break;
       case EditEventType.bonos:
-        emit(const CrudEventLoading());
-        if (text == 'AllBonos') {
+        if (varToChange == 'AllBonos') {
           setAllTrue();
         } else {
           setBonoSelectedUnselected(bono!);
         }
         break;
+      case EditEventType.startDate:
+        errorDate = false;
+        newEvent.startDate = DateTime(
+          varToChange.year,
+          varToChange.month,
+          varToChange.day,
+          varToChange.hour,
+          varToChange.minute,
+        );
+        break;
+      case EditEventType.time:
+        break;
+      case EditEventType.duration:
+        break;
+
+      /*
+    oneWeek = pickedDateTemp.add(const Duration(days: 7));
+    twoWeek = pickedDateTemp.add(const Duration(days: 14));
+    oneMonth = pickedDateTemp.add(const Duration(days: 28));
+    if (isRecurrent) {
+      values = [false, false, false, false, false, false, false];
+      values[startDate.weekday - 1] = true;
+    }*/
     }
     emit(CrudEventLoaded(
         event,
@@ -172,7 +209,8 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         brandClientsSelected,
         allBonos,
         locationDet,
-        newEvent));
+        newEvent,
+        isBeforeEdit));
   }
 
   void setAppBarExpanded(bool isAppBarExpanded) {
@@ -196,7 +234,8 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         brandClientsSelected,
         allBonos,
         locationDet,
-        newEvent));
+        newEvent,
+        isBeforeEdit));
   }
 
   Future<void> getUsersBlockedUser() async {
@@ -304,7 +343,6 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   }
 
   Future<void> getLocation(String locationId) async {
-    emit(const CrudEventLoading());
     newEvent.location =
         await _locationDataService.getSingleLocation(locationId);
     newEvent.location.initialPosition =

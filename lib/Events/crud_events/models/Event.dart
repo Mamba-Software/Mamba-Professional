@@ -35,7 +35,7 @@ class Event {
   String? brandName;
   String? brandLogo;
   Map<Bono, bool> eventBonos = {};
-
+  DateTime startDate = DateTime.now();
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
   Location location = Location();
