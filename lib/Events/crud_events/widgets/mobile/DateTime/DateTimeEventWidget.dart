@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/DateEventSelector.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DurationEvent/DurationEventSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
@@ -27,6 +28,7 @@ Widget dateTimeEventWidget(BuildContext context, Locale locale) {
             child: Column(
               children: [
                 dateEventSelector(context, locale),
+                durationEventSelector(context),
                 /*
                 errorDate Padding(
                                       padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),

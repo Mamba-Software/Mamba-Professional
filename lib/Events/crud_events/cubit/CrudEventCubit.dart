@@ -107,6 +107,7 @@ class CrudEventCubit extends Cubit<CrudEventState> {
     if (newEvent.startDate.isBefore(DateTime.now())) {
       isBeforeEdit = false;
     }
+    newEvent.selectedTrainers = eventTrainers;
   }
 
   Map<Bono, bool> setEventBonosMap() {
@@ -188,6 +189,10 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         );
         break;
       case EditEventType.duration:
+        newEvent.duration = varToChange;
+        break;
+      case EditEventType.trainers:
+        newEvent.selectedTrainers = varToChange;
         break;
 
       /*

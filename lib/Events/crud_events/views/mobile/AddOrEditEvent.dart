@@ -1,6 +1,7 @@
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/EventBonosBlocSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateTimeEventWidget.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Staff/StaffEventSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescriptionWidget.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter/material.dart';
@@ -107,6 +108,7 @@ class AddOrEditEvent extends StatelessWidget {
                             locationBlocSelector(),
                             dateTimeEventWidget(context, locale),
                             eventBonosBlocSelector(),
+                            staffEventSelector(),
                           ],
                         ),
                       ),
