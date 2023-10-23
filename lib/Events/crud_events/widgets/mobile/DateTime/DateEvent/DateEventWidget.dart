@@ -2,26 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDateDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectDurationDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/Components/CupertinoSelect/SelectTimeDialog.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:pie_chart/pie_chart.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
-import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:maps_launcher/maps_launcher.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:weekday_selector/weekday_selector.dart';
 
 TextEditingController startDateController = TextEditingController();
 
@@ -73,13 +59,20 @@ Widget dateEventWidget(BuildContext context, DateTime startDate,
 }
 
 Future selectDate(BuildContext context, DateTime startDate) async {
-  startDate = DateTime.now(); //TODO BORRAR
+//startDate = DateTime.now(); //TODO BORRAR
+  DateTime startDateAux = DateTime(
+    startDate.year,
+    startDate.month,
+    startDate.day,
+    0,
+    0,
+  );
   // TODO: AQUI HI HA UN ERROR QUAN SINICIA EL CREATEEVENT A LES XX:59 Y ES CLICKA AIXO A LES XX+1:01
   DateTime? pickedDateTemp = await showCupertinoModalPopup(
       context: context,
       builder: (_) => SelectDateDialog(
             title: AppLocalizations.of(context)!.selectDay,
-            startDate: startDate,
+            startDate: startDateAux,
             onlyFuture: true,
             dateOfWeek: true,
           ));

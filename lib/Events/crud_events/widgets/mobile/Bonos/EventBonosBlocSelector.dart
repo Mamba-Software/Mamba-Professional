@@ -10,9 +10,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/Bonos/EventBonosWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/Location/LocationLoading.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/Location/LocationWidget.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/EventBonosWidget.dart';
 
 Event event = Event();
 

@@ -11,7 +11,6 @@ import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataServic
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/InformationPage.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/LocationView.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';

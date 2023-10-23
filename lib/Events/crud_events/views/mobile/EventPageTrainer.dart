@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/AddOrEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/LocationView.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/LocationView.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
@@ -2209,7 +2209,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                         ?.unfocus();
                                   }
                                 },
-                                child: AddOrEditPrivateEvent(
+                                child: AddOrEditEvent(
                                     locale: Localizations.localeOf(context),
                                     eventId: event!.id!,
                                     isBeforeEdit: isBeforeEdit),

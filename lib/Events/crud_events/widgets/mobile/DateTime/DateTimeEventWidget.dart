@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/DateTime/DateEvent/DateEventSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/DividerAddEditEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/DateEventSelector.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 Event event = Event();
@@ -14,7 +14,7 @@ bool isBeforeEdit = true;
 Widget dateTimeEventWidget(BuildContext context, Locale locale) {
   final state = context.read<CrudEventCubit>().state;
   if (state is CrudEventLoaded) {
-    isBeforeEdit = !state.isBeforeEdit;
+    isBeforeEdit = state.isBeforeEdit;
   }
   return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -23,7 +23,7 @@ Widget dateTimeEventWidget(BuildContext context, Locale locale) {
       children: [
         Padding(
             padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.00),
             child: Column(
               children: [
                 dateEventSelector(context, locale),

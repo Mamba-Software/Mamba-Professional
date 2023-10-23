@@ -103,6 +103,7 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       int.parse(event.hour!),
       int.parse(event.minute!),
     );
+    isBeforeEdit = true;
     if (newEvent.startDate.isBefore(DateTime.now())) {
       isBeforeEdit = false;
     }
@@ -172,11 +173,19 @@ class CrudEventCubit extends Cubit<CrudEventState> {
           varToChange.year,
           varToChange.month,
           varToChange.day,
-          varToChange.hour,
-          varToChange.minute,
+          newEvent.startDate.hour,
+          newEvent.startDate.minute,
         );
         break;
       case EditEventType.time:
+        errorDate = false;
+        newEvent.startDate = DateTime(
+          newEvent.startDate.year,
+          newEvent.startDate.month,
+          newEvent.startDate.day,
+          varToChange.hour,
+          varToChange.minute,
+        );
         break;
       case EditEventType.duration:
         break;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/Location/LocationBlocSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/TitleDescriptionWidget.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescriptionWidget.dart';
 
 Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
     final formKeyInfo) {

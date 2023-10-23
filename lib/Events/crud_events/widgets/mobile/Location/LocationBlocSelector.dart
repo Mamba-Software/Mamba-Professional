@@ -9,8 +9,8 @@ import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/Location/LocationLoading.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/Location/LocationWidget.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationLoading.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationWidget.dart';
 
 Set<Marker> markers = <Marker>{};
 CameraPosition _initialPosition =

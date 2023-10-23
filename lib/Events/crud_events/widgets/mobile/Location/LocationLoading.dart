@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/DividerAddEditEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
