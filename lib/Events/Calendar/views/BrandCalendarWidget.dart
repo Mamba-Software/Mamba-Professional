@@ -12,8 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/AddOrEditEvent.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/mobile/EventPage.dart';
 import 'package:mamba_castelldefels/Events/cubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -313,7 +313,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         CupertinoPageRoute<bool?>(
           builder: (context) => EventPage(
             eventId: eventId,
-            onlyView: widget.onlyView,
           ),
         ));
     if (result != null) {

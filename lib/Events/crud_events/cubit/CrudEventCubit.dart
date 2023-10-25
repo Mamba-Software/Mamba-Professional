@@ -70,7 +70,7 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       await getEventMembers(event.id!);
     }
     await getLocation(event.locationId!);
-    populateNewEvent();
+    //populateNewEvent();
     emit(CrudEventLoaded(
         event,
         isFull,
@@ -94,7 +94,8 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         isBeforeEdit));
   }
 
-  void populateNewEvent() {
+  void populateNewEvent(Event event) {
+    event = event;
     newEvent.setBasicData = event;
     newEvent.eventBonos = setEventBonosMap();
     newEvent.startDate = DateTime(
@@ -111,6 +112,28 @@ class CrudEventCubit extends Cubit<CrudEventState> {
     newEvent.selectedTrainers = eventTrainers;
     newEvent.maxMembers = event.maxMembers;
     newEvent.joinedMembers = brandClientsSelected;
+
+    emit(CrudEventLoaded(
+        event,
+        isFull,
+        userIsBlockedBy,
+        eventBonos,
+        eventTrainers,
+        eventClients,
+        eventClientsFeedback,
+        eventTrainersIds,
+        eventTrainersBool,
+        location,
+        mapController,
+        appBarExpanded,
+        originalTrainers,
+        originalClients,
+        brandTrainersSelected,
+        brandClientsSelected,
+        allBonos,
+        locationDet,
+        newEvent,
+        isBeforeEdit));
   }
 
   Map<Bono, bool> setEventBonosMap() {

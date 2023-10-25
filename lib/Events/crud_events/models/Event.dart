@@ -26,6 +26,7 @@ class Event {
   int? numClients;
   int? numTrainers;
   int? maxMembers;
+  int? placesLeft;
   double? intensityScore;
   double? averageIntensityScore;
   int? feedbackEntries;
@@ -61,6 +62,7 @@ class Event {
     this.numClients,
     this.numTrainers,
     this.maxMembers,
+    this.placesLeft,
     this.intensityScore,
     this.averageIntensityScore,
     this.feedbackEntries,
