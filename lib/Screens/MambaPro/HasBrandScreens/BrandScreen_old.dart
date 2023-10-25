@@ -25,7 +25,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Auth/views/SplashScreen.dart';
+import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/000-Home/HomePro.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/RolesInfo.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-Trainers/Trainers.dart';
@@ -55,13 +55,12 @@ class BrandScreen extends StatefulWidget {
 }
 
 class _BrandScreenState extends State<BrandScreen> {
-  
   bool isLoading = false;
 
   // Acceso a Base de Datos
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
-  final _roomDataService=  RoomDataService();
+  final _roomDataService = RoomDataService();
   final _brandDataService = BrandDataService();
   final _mambaProUtils = MambaProUtils();
 
@@ -101,7 +100,7 @@ class _BrandScreenState extends State<BrandScreen> {
     if (_pageIndex == 0) {
       return ListTile(
           leading: CircularImage(
-            size: MediaQuery.of(context).size.width*0.07,
+            size: MediaQuery.of(context).size.width * 0.07,
             image: currentBrand.logoUrl,
             borderWidth: 1,
             color: AppColors.grey,
@@ -110,20 +109,18 @@ class _BrandScreenState extends State<BrandScreen> {
             currentBrand.name!,
             style: Theme.of(context).textTheme.bodyText1,
           ),
-          onTap: () =>  {
-            Navigator.pop(context),
-            setBrandActive(),
-              setState(() {
-                pageIndex = _pageIndex;
-                setFavourites();
-              }),
-
-          }
-      );
+          onTap: () => {
+                Navigator.pop(context),
+                setBrandActive(),
+                setState(() {
+                  pageIndex = _pageIndex;
+                  setFavourites();
+                }),
+              });
     } else {
       return ListTile(
           leading: _mambaProUtils.iconSelectorListView(context, _pageIndex),
-          title:  _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
+          title: _mambaProUtils.titlePageSelectorListView(context, _pageIndex),
           /*
           trailing: isFavourite ? SizedBox(
             width: MediaQuery.of(context).size.width*0.15,
@@ -183,21 +180,20 @@ class _BrandScreenState extends State<BrandScreen> {
             width: MediaQuery.of(context).size.width*0.15,
           ),
            */
-          onTap: () =>  {
-            Navigator.pop(context),
-            setBrandActive(),
-            setState(() {
-              pageIndex = _pageIndex;
-              setFavourites();
-            }),
-          }
-      );
+          onTap: () => {
+                Navigator.pop(context),
+                setBrandActive(),
+                setState(() {
+                  pageIndex = _pageIndex;
+                  setFavourites();
+                }),
+              });
     }
   }
 
   Widget buildHeader() {
     return Container(
-      height: MediaQuery.of(context).size.height*0.25,
+      height: MediaQuery.of(context).size.height * 0.25,
       width: double.infinity,
       decoration: const BoxDecoration(
         color: AppColors.darkGrey,
@@ -206,16 +202,14 @@ class _BrandScreenState extends State<BrandScreen> {
         alignment: Alignment.topCenter,
         children: [
           Container(
-            decoration:
-            BoxDecoration(
+            decoration: BoxDecoration(
                 image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: CachedNetworkImageProvider(currentBrand.baseImage!),
-                )
-            ),
+              fit: BoxFit.cover,
+              image: CachedNetworkImageProvider(currentBrand.baseImage!),
+            )),
           ),
           Container(
-            height: MediaQuery.of(context).size.height*0.25,
+            height: MediaQuery.of(context).size.height * 0.25,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -241,20 +235,24 @@ class _BrandScreenState extends State<BrandScreen> {
               ),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.03, vertical: MediaQuery.of(context).size.width*0.05),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.03,
+                  vertical: MediaQuery.of(context).size.width * 0.05),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   CircularImage(
-                    size: MediaQuery.of(context).size.width*0.15,
+                    size: MediaQuery.of(context).size.width * 0.15,
                     image: currentBrand.logoUrl,
                     borderWidth: 0.5,
                     color: AppColors.white,
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width*0.03,),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.03,
+                  ),
                   Expanded(
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.width*0.15,
+                      height: MediaQuery.of(context).size.width * 0.15,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +260,10 @@ class _BrandScreenState extends State<BrandScreen> {
                           Flexible(
                             child: Text(
                               currentBrand.name!,
-                              style: Theme.of(context).textTheme.headline1?.copyWith(color: AppColors.white),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline1
+                                  ?.copyWith(color: AppColors.white),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -286,32 +287,42 @@ class _BrandScreenState extends State<BrandScreen> {
                               const SizedBox(width: 8),
                               TextButton(
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.qr_code, color: AppColors.white, size: 14,),
+                                    const Icon(
+                                      Icons.qr_code,
+                                      color: AppColors.white,
+                                      size: 14,
+                                    ),
                                     const SizedBox(width: 4),
                                     Text(
                                       AppLocalizations.of(context)!.invite,
-                                      style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.white),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2!
+                                          .copyWith(color: AppColors.white),
                                     ),
                                   ],
                                 ),
                                 style: TextButton.styleFrom(
-                                  backgroundColor: AppColors.white.withOpacity(0.3),
-                                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                                  shape: RoundedRectangleBorder(  // add this
+                                  backgroundColor:
+                                      AppColors.white.withOpacity(0.3),
+                                  padding: const EdgeInsets.only(
+                                      left: 8.0, right: 8.0),
+                                  shape: RoundedRectangleBorder(
+                                    // add this
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   minimumSize: Size(30, 20),
-                                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 onPressed: () => navigateShareBrandLink(),
                               )
                             ],
                           ),
-
-
                         ],
                       ),
                     ),
@@ -379,7 +390,8 @@ class _BrandScreenState extends State<BrandScreen> {
     switch (currentUser.brandRole) {
       case 1:
         if (currentBrand.adminID == currentUser.id) {
-          return StringUtils().toCapitalized(AppLocalizations.of(context)!.paySubscriptionDesc.split(" ")[2]);
+          return StringUtils().toCapitalized(
+              AppLocalizations.of(context)!.paySubscriptionDesc.split(" ")[2]);
         } else {
           return AppLocalizations.of(context)!.owner;
         }
@@ -414,7 +426,8 @@ class _BrandScreenState extends State<BrandScreen> {
          */
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
             AppLocalizations.of(context)!.management,
             style: Theme.of(context).textTheme.caption,
@@ -426,10 +439,10 @@ class _BrandScreenState extends State<BrandScreen> {
         listTilePro(5),
         listTilePro(9),
 
-
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
             AppLocalizations.of(context)!.members,
             style: Theme.of(context).textTheme.caption,
@@ -443,7 +456,8 @@ class _BrandScreenState extends State<BrandScreen> {
 
         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.04),
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.04),
           child: Text(
             AppLocalizations.of(context)!.yourBrand,
             style: Theme.of(context).textTheme.caption,
@@ -648,83 +662,88 @@ class _BrandScreenState extends State<BrandScreen> {
         ),
         seeNextWhere ? listTilePro(11) : Container(),
          */
-
       ],
     );
   }
 
   Widget buildBrandLeaveOption() {
-    return currentUser.brandRole < 2 ?
-    ListTile(
-        leading: Icon(Icons.delete_outline, color: Colors.red, size: MediaQuery.of(context).size.width*0.07),
-        title: Text(
-          AppLocalizations.of(context)!.deleteBrand,
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
-        ),
-        onTap: () async {
-          mixpanel!.track('delete_brand_dialog_open');
-          var result = await showDialog(
-              context: context,
-              builder: (_) {
-                return const DeleteBrandDialog();
+    return currentUser.brandRole < 2
+        ? ListTile(
+            leading: Icon(Icons.delete_outline,
+                color: Colors.red,
+                size: MediaQuery.of(context).size.width * 0.07),
+            title: Text(
+              AppLocalizations.of(context)!.deleteBrand,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  ?.copyWith(color: Colors.red),
+            ),
+            onTap: () async {
+              mixpanel!.track('delete_brand_dialog_open');
+              var result = await showDialog(
+                  context: context,
+                  builder: (_) {
+                    return const DeleteBrandDialog();
+                  });
+              if (result) {
+                mixpanel!.track('delete_brand_confirmed');
+                setState(() {
+                  isLoading = true;
+                });
+                // New DataBase
+                await _brandDataService.deleteBrand(currentBrand.id!);
+                await _roomDataService.deleteRoom(currentBrand.roomId!);
+                currentUser.setBrandList = [];
+                await Future.delayed(const Duration(seconds: 4));
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute<void>(
+                      builder: (context) => const SplashScreen(),
+                      settings: const RouteSettings(name: 'SplashScreen'),
+                    ));
               }
-          );
-          if (result) {
-            mixpanel!.track('delete_brand_confirmed');
-            setState(() {
-              isLoading = true;
-            });
-            // New DataBase
-            await _brandDataService.deleteBrand(currentBrand.id!);
-            await _roomDataService.deleteRoom(currentBrand.roomId!);
-            currentUser.setBrandList = [];
-            await Future.delayed(const Duration(seconds: 4));
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) =>
-                  const SplashScreen(),
-                  settings: const RouteSettings(
-                      name: 'SplashScreen'),
-                )
-            );
-          }
-        }
-    ) :
-    ListTile(
-        leading: Icon(Icons.logout, color: Colors.red, size: MediaQuery.of(context).size.width*0.07),
-        title: Text(
-          AppLocalizations.of(context)!.exitBrand,
-          style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.red),
-        ),
-        onTap: () async {
-          mixpanel!.track('exit_brand_dialog_open');
-          // Leaves Brand
-          var result = await showDialog(
-              context: context,
-              builder: (_) {
-                return ConfirmationDialog(text: AppLocalizations.of(context)!.exitBrandConfirm);
+            })
+        : ListTile(
+            leading: Icon(Icons.logout,
+                color: Colors.red,
+                size: MediaQuery.of(context).size.width * 0.07),
+            title: Text(
+              AppLocalizations.of(context)!.exitBrand,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText1
+                  ?.copyWith(color: Colors.red),
+            ),
+            onTap: () async {
+              mixpanel!.track('exit_brand_dialog_open');
+              // Leaves Brand
+              var result = await showDialog(
+                  context: context,
+                  builder: (_) {
+                    return ConfirmationDialog(
+                        text: AppLocalizations.of(context)!.exitBrandConfirm);
+                  });
+              if (result) {
+                mixpanel!.track('exit_brand_confirmed');
+                setState(() {
+                  isLoading = true;
+                });
+                pageIndex = 10;
+                NotificationService()
+                    .userLeavesBrand(currentUser.id!, currentBrand.id!);
+                await _eventDataService.deleteUserFromUpcomingEvents(
+                    currentUser.id!, currentUser.isTrainer!);
+                await _brandDataService.deleteUserFromBrand(
+                    currentUser.id!, currentBrand.id!);
+                Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute<void>(
+                      builder: (context) => const SplashScreen(),
+                      settings: const RouteSettings(name: 'SplashScreen'),
+                    ));
               }
-          );
-          if (result) {
-            mixpanel!.track('exit_brand_confirmed');
-            setState(() {
-              isLoading = true;
             });
-            pageIndex = 10;
-            NotificationService().userLeavesBrand(currentUser.id!, currentBrand.id!);
-            await _eventDataService.deleteUserFromUpcomingEvents(currentUser.id!, currentUser.isTrainer!);
-            await _brandDataService.deleteUserFromBrand(currentUser.id!, currentBrand.id!);
-            Navigator.pushReplacement(
-                context,
-                CupertinoPageRoute<void>(
-                  builder: (context) => const SplashScreen(),
-                  settings: const RouteSettings(name: 'SplashScreen'),
-                )
-            );
-          }
-        }
-    );
   }
 
   Widget buildBodyNavigation() {
@@ -732,21 +751,22 @@ class _BrandScreenState extends State<BrandScreen> {
       case 0:
         mixpanel!.track('brand_homepage_view');
         return HomePro(
-            brandId: currentBrand.id!,
-            numTrainers: currentBrand.numTrainers!,
-            numClients: currentBrand.numClients!,
-            navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView]) async {
-              setState(() {
-                calendarDateTime = dateTime;
-                this.calendarView = calendarView;
-                pageIndex = page;
-              });
-              await Future.delayed(const Duration(seconds: 2));
-              setState(() {
-                calendarDateTime = null;
-                this.calendarView = null;
-              });
-            },
+          brandId: currentBrand.id!,
+          numTrainers: currentBrand.numTrainers!,
+          numClients: currentBrand.numClients!,
+          navigateToPage: (int page,
+              [DateTime? dateTime, CalendarView? calendarView]) async {
+            setState(() {
+              calendarDateTime = dateTime;
+              this.calendarView = calendarView;
+              pageIndex = page;
+            });
+            await Future.delayed(const Duration(seconds: 2));
+            setState(() {
+              calendarDateTime = null;
+              this.calendarView = null;
+            });
+          },
         );
       case 9:
         mixpanel!.track('brand_stats_view');
@@ -851,7 +871,12 @@ class _BrandScreenState extends State<BrandScreen> {
           brandId: currentBrand.id!,
           numTrainers: currentBrand.numTrainers!,
           numClients: currentBrand.numClients!,
-          navigateToPage: (int page, [DateTime? dateTime, CalendarView? calendarView, bool? addGroupEvent, bool? addPrivateEvent, bool? createBono]) async {
+          navigateToPage: (int page,
+              [DateTime? dateTime,
+              CalendarView? calendarView,
+              bool? addGroupEvent,
+              bool? addPrivateEvent,
+              bool? createBono]) async {
             setState(() {
               calendarDateTime = dateTime;
               this.calendarView = calendarView;
@@ -890,9 +915,7 @@ class _BrandScreenState extends State<BrandScreen> {
       clipBehavior: Clip.antiAliasWithSaveLayer,
       builder: (BuildContext context) {
         return const FractionallySizedBox(
-            heightFactor: 0.935,
-            child: RolesInfo()
-        );
+            heightFactor: 0.935, child: RolesInfo());
       },
     );
   }
@@ -947,7 +970,11 @@ class _BrandScreenState extends State<BrandScreen> {
             children: [
               // Header
               buildHeader(),
-              const Divider(color: AppColors.grey, thickness: 0, height: 1,),
+              const Divider(
+                color: AppColors.grey,
+                thickness: 0,
+                height: 1,
+              ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               // Brand Options
               buildBrandListOptions(),
@@ -962,14 +989,12 @@ class _BrandScreenState extends State<BrandScreen> {
             ],
           ),
         ),
-        body: isLoading ? LoadingView() : buildBodyNavigation() ,
-
+        body: isLoading ? LoadingView() : buildBodyNavigation(),
       ),
     );
   }
 
   Future<void> navigateToSubscriptionsScreen() async {
-
     //mixpanel!.track('brand_membership_requests_view');
     var result = await Navigator.push(
         context,
@@ -977,8 +1002,7 @@ class _BrandScreenState extends State<BrandScreen> {
           builder: (context) => PayWall(
             brandId: currentBrand.id!,
           ),
-        )
-    );
+        ));
     if (result == null || result == true) {
       setState(() {
         isLoading = true;
@@ -990,7 +1014,8 @@ class _BrandScreenState extends State<BrandScreen> {
 
   // Function to get the favourites of the user
   void getFavourites() async {
-    favourites = await _userDataService.getUserFavourites(currentBrand.id!, currentUser.id!);
+    favourites = await _userDataService.getUserFavourites(
+        currentBrand.id!, currentUser.id!);
     if (favourites.contains(pageIndex)) {
       iconStar = true;
     }
@@ -1003,7 +1028,7 @@ class _BrandScreenState extends State<BrandScreen> {
 
   //Function to set the favourites of the user
   void setFavourites() {
-    if(favourites.isNotEmpty && favourites.contains(pageIndex)) {
+    if (favourites.isNotEmpty && favourites.contains(pageIndex)) {
       iconStar = true;
     } else {
       iconStar = false;
@@ -1016,12 +1041,12 @@ class _BrandScreenState extends State<BrandScreen> {
       iconStar = !iconStar;
       if (iconStar == true) {
         favourites.add(pageIndex);
-      }
-      else {
+      } else {
         favourites.remove(pageIndex);
       }
       favourites.sort();
-      _userDataService.addFavouriteToUser(currentBrand.id!, currentUser.id!, favourites);
+      _userDataService.addFavouriteToUser(
+          currentBrand.id!, currentUser.id!, favourites);
     });
   }
 
@@ -1058,5 +1083,3 @@ class _BrandScreenState extends State<BrandScreen> {
    */
 
 }
-
-

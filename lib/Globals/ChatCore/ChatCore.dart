@@ -13,9 +13,6 @@ import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Auth/views/SplashScreen.dart';
 import 'package:shimmer/shimmer.dart';
 import 'Chat.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -28,7 +25,6 @@ class ChatCore extends StatefulWidget {
 }
 
 class _ChatCoreState extends State<ChatCore> {
-
   bool _error = false;
   bool _initialized = false;
   User? _user;
@@ -58,7 +54,8 @@ class _ChatCoreState extends State<ChatCore> {
           _user = user;
         });
       });
-      userIsBlockedBy = await _userDataService.getBlockedByUsers(currentUser.id!);
+      userIsBlockedBy =
+          await _userDataService.getBlockedByUsers(currentUser.id!);
       Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
           _initialized = true;
@@ -78,8 +75,9 @@ class _ChatCoreState extends State<ChatCore> {
     List<types.Room> roomsFiltered = [];
     if (query.isNotEmpty || query != "") {
       for (var item in allRooms) {
-        if (item.name!.toLowerCase().startsWith(query)) {;
-        roomsFiltered.add(item);
+        if (item.name!.toLowerCase().startsWith(query)) {
+          ;
+          roomsFiltered.add(item);
         }
       }
       setState(() {
@@ -99,9 +97,13 @@ class _ChatCoreState extends State<ChatCore> {
       if (room.type.toString() == "RoomType.group") {
         if (room.lastMessages[0].author.id != currentUser.id) {
           if (room.lastMessages[0].author.firstName != null) {
-            return room.lastMessages[0].author.firstName + ': ' + room.lastMessages[0].text;
+            return room.lastMessages[0].author.firstName +
+                ': ' +
+                room.lastMessages[0].text;
           } else {
-            return AppLocalizations.of(context)!.user + ': ' + room.lastMessages[0].text;
+            return AppLocalizations.of(context)!.user +
+                ': ' +
+                room.lastMessages[0].text;
           }
         } else {
           return room.lastMessages[0].text;
@@ -122,86 +124,108 @@ class _ChatCoreState extends State<ChatCore> {
             elevation: 0,
             title: Row(
               children: [
-                SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                Text(AppLocalizations.of(context)!.chatBottomNav, style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.center,),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.01,
+                ),
+                Text(
+                  AppLocalizations.of(context)!.chatBottomNav,
+                  style: Theme.of(context).textTheme.headline3,
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
             centerTitle: false,
             automaticallyImplyLeading: false,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width*0.06,),
+              icon: Icon(
+                Icons.arrow_back,
+                size: MediaQuery.of(context).size.width * 0.06,
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
-            bottom: searchClicked ? PreferredSize(
-                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.10,),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height*0.10,
-                  child: Padding(
-                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (value) {
-                          // Filter chats
-                          filterSearchResults(value.toLowerCase());
-                        },
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          hintStyle: Theme.of(context).textTheme.caption,
-                          hintText: AppLocalizations.of(context)!.search,
-                          focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                            size: MediaQuery.of(context).size.width*0.06,
-                          ),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              searchController.clear();
-                              filterSearchResults("");
+            bottom: searchClicked
+                ? PreferredSize(
+                    preferredSize: Size.fromHeight(
+                      MediaQuery.of(context).size.height * 0.10,
+                    ),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.10,
+                      child: Padding(
+                          padding: EdgeInsets.only(
+                              right: MediaQuery.of(context).size.width * 0.04,
+                              left: MediaQuery.of(context).size.width * 0.04,
+                              top: MediaQuery.of(context).size.width * 0.03,
+                              bottom: MediaQuery.of(context).size.width * 0.02),
+                          child: TextField(
+                            controller: searchController,
+                            onChanged: (value) {
+                              // Filter chats
+                              filterSearchResults(value.toLowerCase());
                             },
-                            icon: Icon(Icons.delete_outline, color: Colors.grey, size: MediaQuery.of(context).size.width*0.06,),
-                          ),
-                          contentPadding: const EdgeInsets.all(0),
-                        ),
-                      )
+                            style: Theme.of(context).textTheme.bodyText2,
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              hintStyle: Theme.of(context).textTheme.caption,
+                              hintText: AppLocalizations.of(context)!.search,
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              border: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.grey,
+                                size: MediaQuery.of(context).size.width * 0.06,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  searchController.clear();
+                                  filterSearchResults("");
+                                },
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.grey,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.all(0),
+                            ),
+                          )),
+                    ))
+                : PreferredSize(
+                    preferredSize: const Size.fromHeight(0),
+                    child: Container(),
                   ),
-                )
-            ) :  PreferredSize(
-              preferredSize: const Size.fromHeight(0),
-              child: Container(),
-            ),
             actions: [
-              !searchClicked ?
-              IconButton(
-                  icon: Icon(Icons.search, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
-                  onPressed: () {
-                    setState(() {
-                      searchClicked = !searchClicked;
-                    });
-                  }
-              )
-                  :
-              IconButton(
-                  icon: Icon(Icons.clear, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
-                  onPressed: () {
-                    setState(() {
-                      searchClicked = !searchClicked;
-                    });
-                  }
+              !searchClicked
+                  ? IconButton(
+                      icon: Icon(Icons.search,
+                          size: MediaQuery.of(context).size.width * 0.07,
+                          color: Theme.of(context).primaryColor),
+                      onPressed: () {
+                        setState(() {
+                          searchClicked = !searchClicked;
+                        });
+                      })
+                  : IconButton(
+                      icon: Icon(Icons.clear,
+                          size: MediaQuery.of(context).size.width * 0.07,
+                          color: Theme.of(context).primaryColor),
+                      onPressed: () {
+                        setState(() {
+                          searchClicked = !searchClicked;
+                        });
+                      }),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.03,
               ),
-              SizedBox(width: MediaQuery.of(context).size.width*0.03,),
-            ]
-        ),
+            ]),
         body: Container(
           child: ListView.builder(
               physics: const BouncingScrollPhysics(),
@@ -210,15 +234,16 @@ class _ChatCoreState extends State<ChatCore> {
               itemCount: 8,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height * 0.01),
                   child: ListTile(
                     dense: true,
                     leading: Shimmer.fromColors(
                       baseColor: AppColors.grey,
                       highlightColor: AppColors.grey.withOpacity(0.5),
                       child: Container(
-                        height: MediaQuery.of(context).size.height*0.08,
-                        width: MediaQuery.of(context).size.height*0.08,
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        width: MediaQuery.of(context).size.height * 0.08,
                         decoration: const BoxDecoration(
                           color: AppColors.grey,
                           shape: BoxShape.circle,
@@ -231,8 +256,8 @@ class _ChatCoreState extends State<ChatCore> {
                           baseColor: AppColors.grey,
                           highlightColor: AppColors.grey.withOpacity(0.5),
                           child: Container(
-                            height: MediaQuery.of(context).size.height*0.025,
-                            width: MediaQuery.of(context).size.width*0.3,
+                            height: MediaQuery.of(context).size.height * 0.025,
+                            width: MediaQuery.of(context).size.width * 0.3,
                             decoration: const BoxDecoration(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(10.0),
@@ -246,13 +271,14 @@ class _ChatCoreState extends State<ChatCore> {
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.005),
                         Shimmer.fromColors(
                           baseColor: AppColors.grey,
                           highlightColor: AppColors.grey.withOpacity(0.5),
                           child: Container(
-                            height: MediaQuery.of(context).size.height*0.02,
-                            width: MediaQuery.of(context).size.width*0.5,
+                            height: MediaQuery.of(context).size.height * 0.02,
+                            width: MediaQuery.of(context).size.width * 0.5,
                             decoration: const BoxDecoration(
                               color: AppColors.grey,
                               borderRadius: BorderRadius.all(
@@ -267,8 +293,8 @@ class _ChatCoreState extends State<ChatCore> {
                       baseColor: AppColors.grey,
                       highlightColor: AppColors.grey.withOpacity(0.5),
                       child: Container(
-                        height: MediaQuery.of(context).size.height*0.04,
-                        width: MediaQuery.of(context).size.width*0.10,
+                        height: MediaQuery.of(context).size.height * 0.04,
+                        width: MediaQuery.of(context).size.width * 0.10,
                         decoration: const BoxDecoration(
                           color: AppColors.grey,
                           borderRadius: BorderRadius.all(
@@ -280,8 +306,7 @@ class _ChatCoreState extends State<ChatCore> {
                     onTap: null,
                   ),
                 );
-              }
-          ),
+              }),
         ),
       );
     }
@@ -292,79 +317,98 @@ class _ChatCoreState extends State<ChatCore> {
             elevation: 0,
             title: Row(
               children: [
-                SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-                Text(AppLocalizations.of(context)!.chatBottomNav, style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.center,),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.01,
+                ),
+                Text(
+                  AppLocalizations.of(context)!.chatBottomNav,
+                  style: Theme.of(context).textTheme.headline3,
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
             centerTitle: false,
-            bottom: searchClicked ? PreferredSize(
-                preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.10,),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height*0.10,
-                  child: Padding(
-                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (value) {
-                          // Filter chats
-                          filterSearchResults(value.toLowerCase());
-                        },
-                        style: Theme.of(context).textTheme.bodyText2,
-                        textAlign: TextAlign.left,
-                        decoration: InputDecoration(
-                          hintStyle: Theme.of(context).textTheme.caption,
-                          hintText: AppLocalizations.of(context)!.search,
-                          focusedBorder: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          border: const OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                              borderRadius: BorderRadius.all(Radius.circular(10.0))
-                          ),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            color: Colors.grey,
-                            size: MediaQuery.of(context).size.width*0.06,
-                          ),
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              searchController.clear();
-                              filterSearchResults("");
+            bottom: searchClicked
+                ? PreferredSize(
+                    preferredSize: Size.fromHeight(
+                      MediaQuery.of(context).size.height * 0.10,
+                    ),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.10,
+                      child: Padding(
+                          padding: EdgeInsets.only(
+                              right: MediaQuery.of(context).size.width * 0.04,
+                              left: MediaQuery.of(context).size.width * 0.04,
+                              top: MediaQuery.of(context).size.width * 0.03,
+                              bottom: MediaQuery.of(context).size.width * 0.02),
+                          child: TextField(
+                            controller: searchController,
+                            onChanged: (value) {
+                              // Filter chats
+                              filterSearchResults(value.toLowerCase());
                             },
-                            icon: Icon(Icons.delete_outline, color: Colors.grey, size: MediaQuery.of(context).size.width*0.06,),
-                          ),
-                          contentPadding: const EdgeInsets.all(0),
-                        ),
-                      )
+                            style: Theme.of(context).textTheme.bodyText2,
+                            textAlign: TextAlign.left,
+                            decoration: InputDecoration(
+                              hintStyle: Theme.of(context).textTheme.caption,
+                              hintText: AppLocalizations.of(context)!.search,
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              border: const OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0))),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Colors.grey,
+                                size: MediaQuery.of(context).size.width * 0.06,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  searchController.clear();
+                                  filterSearchResults("");
+                                },
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.grey,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.06,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.all(0),
+                            ),
+                          )),
+                    ))
+                : PreferredSize(
+                    preferredSize: const Size.fromHeight(0),
+                    child: Container(),
                   ),
-                )
-            ) :  PreferredSize(
-              preferredSize: const Size.fromHeight(0),
-              child: Container(),
-            ),
             actions: [
-              !searchClicked ?
-              IconButton(
-                  icon: Icon(Icons.search, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
-                  onPressed: () {
-                    setState(() {
-                      searchClicked = !searchClicked;
-                    });
-                  }
-              )
-                  :
-              IconButton(
-                  icon: Icon(Icons.clear, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
-                  onPressed: () {
-                    setState(() {
-                      searchClicked = !searchClicked;
-                    });
-                  }
+              !searchClicked
+                  ? IconButton(
+                      icon: Icon(Icons.search,
+                          size: MediaQuery.of(context).size.width * 0.07,
+                          color: Theme.of(context).primaryColor),
+                      onPressed: () {
+                        setState(() {
+                          searchClicked = !searchClicked;
+                        });
+                      })
+                  : IconButton(
+                      icon: Icon(Icons.clear,
+                          size: MediaQuery.of(context).size.width * 0.07,
+                          color: Theme.of(context).primaryColor),
+                      onPressed: () {
+                        setState(() {
+                          searchClicked = !searchClicked;
+                        });
+                      }),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.03,
               ),
-              SizedBox(width: MediaQuery.of(context).size.width*0.03,),
-            ]
-        ),
+            ]),
         body: ListView.builder(
             physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
@@ -372,15 +416,16 @@ class _ChatCoreState extends State<ChatCore> {
             itemCount: 8,
             itemBuilder: (context, index) {
               return Padding(
-                padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.01),
                 child: ListTile(
                   dense: true,
                   leading: Shimmer.fromColors(
                     baseColor: AppColors.grey,
                     highlightColor: AppColors.grey.withOpacity(0.5),
                     child: Container(
-                      height: MediaQuery.of(context).size.height*0.08,
-                      width: MediaQuery.of(context).size.height*0.08,
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      width: MediaQuery.of(context).size.height * 0.08,
                       decoration: const BoxDecoration(
                         color: AppColors.grey,
                         shape: BoxShape.circle,
@@ -393,8 +438,8 @@ class _ChatCoreState extends State<ChatCore> {
                         baseColor: AppColors.grey,
                         highlightColor: AppColors.grey.withOpacity(0.5),
                         child: Container(
-                          height: MediaQuery.of(context).size.height*0.025,
-                          width: MediaQuery.of(context).size.width*0.3,
+                          height: MediaQuery.of(context).size.height * 0.025,
+                          width: MediaQuery.of(context).size.width * 0.3,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10.0),
@@ -408,13 +453,14 @@ class _ChatCoreState extends State<ChatCore> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.005),
                       Shimmer.fromColors(
                         baseColor: AppColors.grey,
                         highlightColor: AppColors.grey.withOpacity(0.5),
                         child: Container(
-                          height: MediaQuery.of(context).size.height*0.02,
-                          width: MediaQuery.of(context).size.width*0.5,
+                          height: MediaQuery.of(context).size.height * 0.02,
+                          width: MediaQuery.of(context).size.width * 0.5,
                           decoration: const BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.all(
@@ -429,8 +475,8 @@ class _ChatCoreState extends State<ChatCore> {
                     baseColor: AppColors.grey,
                     highlightColor: AppColors.grey.withOpacity(0.5),
                     child: Container(
-                      height: MediaQuery.of(context).size.height*0.04,
-                      width: MediaQuery.of(context).size.width*0.10,
+                      height: MediaQuery.of(context).size.height * 0.04,
+                      width: MediaQuery.of(context).size.width * 0.10,
                       decoration: const BoxDecoration(
                         color: AppColors.grey,
                         borderRadius: BorderRadius.all(
@@ -442,8 +488,7 @@ class _ChatCoreState extends State<ChatCore> {
                   onTap: null,
                 ),
               );
-            }
-        ),
+            }),
       );
     }
 
@@ -452,79 +497,97 @@ class _ChatCoreState extends State<ChatCore> {
           elevation: 0,
           title: Row(
             children: [
-              SizedBox(width: MediaQuery.of(context).size.width*0.01,),
-              Text(AppLocalizations.of(context)!.chatBottomNav, style: Theme.of(context).textTheme.headline3, textAlign: TextAlign.center,),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.01,
+              ),
+              Text(
+                AppLocalizations.of(context)!.chatBottomNav,
+                style: Theme.of(context).textTheme.headline3,
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
           centerTitle: false,
-          bottom: searchClicked ? PreferredSize(
-              preferredSize: Size.fromHeight(MediaQuery.of(context).size.height*0.10,),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height*0.10,
-                child: Padding(
-                    padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.04,left: MediaQuery.of(context).size.width*0.04, top: MediaQuery.of(context).size.width*0.03, bottom: MediaQuery.of(context).size.width*0.02),
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: (value) {
-                        // Filter chats
-                        filterSearchResults(value.toLowerCase());
-                      },
-                      style: Theme.of(context).textTheme.bodyText2,
-                      textAlign: TextAlign.left,
-                      decoration: InputDecoration(
-                        hintStyle: Theme.of(context).textTheme.caption,
-                        hintText: AppLocalizations.of(context)!.search,
-                        focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.all(Radius.circular(10.0))
-                        ),
-                        border: const OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                            borderRadius: BorderRadius.all(Radius.circular(10.0))
-                        ),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.grey,
-                          size: MediaQuery.of(context).size.width*0.06,
-                        ),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            searchController.clear();
-                            filterSearchResults("");
+          bottom: searchClicked
+              ? PreferredSize(
+                  preferredSize: Size.fromHeight(
+                    MediaQuery.of(context).size.height * 0.10,
+                  ),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.10,
+                    child: Padding(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.04,
+                            left: MediaQuery.of(context).size.width * 0.04,
+                            top: MediaQuery.of(context).size.width * 0.03,
+                            bottom: MediaQuery.of(context).size.width * 0.02),
+                        child: TextField(
+                          controller: searchController,
+                          onChanged: (value) {
+                            // Filter chats
+                            filterSearchResults(value.toLowerCase());
                           },
-                          icon: Icon(Icons.delete_outline, color: Colors.grey, size: MediaQuery.of(context).size.width*0.06,),
-                        ),
-                        contentPadding: const EdgeInsets.all(0),
-                      ),
-                    )
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.left,
+                          decoration: InputDecoration(
+                            hintStyle: Theme.of(context).textTheme.caption,
+                            hintText: AppLocalizations.of(context)!.search,
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                              size: MediaQuery.of(context).size.width * 0.06,
+                            ),
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                searchController.clear();
+                                filterSearchResults("");
+                              },
+                              icon: Icon(
+                                Icons.delete_outline,
+                                color: Colors.grey,
+                                size: MediaQuery.of(context).size.width * 0.06,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.all(0),
+                          ),
+                        )),
+                  ))
+              : PreferredSize(
+                  preferredSize: const Size.fromHeight(0),
+                  child: Container(),
                 ),
-              )
-          ) :  PreferredSize(
-            preferredSize: const Size.fromHeight(0),
-            child: Container(),
-          ),
           actions: [
-            !searchClicked ?
-            IconButton(
-                icon: Icon(Icons.search, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
-                onPressed: () {
-                  setState(() {
-                    searchClicked = !searchClicked;
-                  });
-                }
-            )
-                :
-            IconButton(
-                icon: Icon(Icons.clear, size: MediaQuery.of(context).size.width*0.07, color: Theme.of(context).primaryColor),
-                onPressed: () {
-                  setState(() {
-                    searchClicked = !searchClicked;
-                  });
-                }
+            !searchClicked
+                ? IconButton(
+                    icon: Icon(Icons.search,
+                        size: MediaQuery.of(context).size.width * 0.07,
+                        color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      setState(() {
+                        searchClicked = !searchClicked;
+                      });
+                    })
+                : IconButton(
+                    icon: Icon(Icons.clear,
+                        size: MediaQuery.of(context).size.width * 0.07,
+                        color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      setState(() {
+                        searchClicked = !searchClicked;
+                      });
+                    }),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.03,
             ),
-            SizedBox(width: MediaQuery.of(context).size.width*0.03,),
-          ]
-      ),
+          ]),
       body: StreamBuilder<List<types.Room>>(
         stream: FirebaseChatCore.instance.rooms(orderByUpdatedAt: true),
         //initialData: const [],
@@ -537,15 +600,16 @@ class _ChatCoreState extends State<ChatCore> {
                 itemCount: 8,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height*0.01),
+                    padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height * 0.01),
                     child: ListTile(
                       dense: true,
                       leading: Shimmer.fromColors(
                         baseColor: AppColors.grey,
                         highlightColor: AppColors.grey.withOpacity(0.5),
                         child: Container(
-                          height: MediaQuery.of(context).size.height*0.08,
-                          width: MediaQuery.of(context).size.height*0.08,
+                          height: MediaQuery.of(context).size.height * 0.08,
+                          width: MediaQuery.of(context).size.height * 0.08,
                           decoration: const BoxDecoration(
                             color: AppColors.grey,
                             shape: BoxShape.circle,
@@ -558,8 +622,9 @@ class _ChatCoreState extends State<ChatCore> {
                             baseColor: AppColors.grey,
                             highlightColor: AppColors.grey.withOpacity(0.5),
                             child: Container(
-                              height: MediaQuery.of(context).size.height*0.025,
-                              width: MediaQuery.of(context).size.width*0.3,
+                              height:
+                                  MediaQuery.of(context).size.height * 0.025,
+                              width: MediaQuery.of(context).size.width * 0.3,
                               decoration: const BoxDecoration(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(10.0),
@@ -573,13 +638,15 @@ class _ChatCoreState extends State<ChatCore> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: MediaQuery.of(context).size.height*0.005),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.005),
                           Shimmer.fromColors(
                             baseColor: AppColors.grey,
                             highlightColor: AppColors.grey.withOpacity(0.5),
                             child: Container(
-                              height: MediaQuery.of(context).size.height*0.02,
-                              width: MediaQuery.of(context).size.width*0.5,
+                              height: MediaQuery.of(context).size.height * 0.02,
+                              width: MediaQuery.of(context).size.width * 0.5,
                               decoration: const BoxDecoration(
                                 color: AppColors.grey,
                                 borderRadius: BorderRadius.all(
@@ -594,8 +661,8 @@ class _ChatCoreState extends State<ChatCore> {
                         baseColor: AppColors.grey,
                         highlightColor: AppColors.grey.withOpacity(0.5),
                         child: Container(
-                          height: MediaQuery.of(context).size.height*0.04,
-                          width: MediaQuery.of(context).size.width*0.1,
+                          height: MediaQuery.of(context).size.height * 0.04,
+                          width: MediaQuery.of(context).size.width * 0.1,
                           decoration: const BoxDecoration(
                             color: AppColors.grey,
                             borderRadius: BorderRadius.all(
@@ -607,24 +674,28 @@ class _ChatCoreState extends State<ChatCore> {
                       onTap: null,
                     ),
                   );
-                }
-            );
-          } else if (snapshot.data!.isEmpty && snapshot.connectionState == ConnectionState.active ) {
+                });
+          } else if (snapshot.data!.isEmpty &&
+              snapshot.connectionState == ConnectionState.active) {
             return SizedBox(
-              height: MediaQuery.of(context).size.height *0.65,
+              height: MediaQuery.of(context).size.height * 0.65,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
                     child: SizedBox(
-                        height: MediaQuery.of(context).size.width*0.3,
-                        child: Image.asset(Constants.chatImage)
-                    ),
+                        height: MediaQuery.of(context).size.width * 0.3,
+                        child: Image.asset(Constants.chatImage)),
                   ),
                   Center(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.1),
-                      child: Text(AppLocalizations.of(context)!.noMessages, style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center,),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.1),
+                      child: Text(
+                        AppLocalizations.of(context)!.noMessages,
+                        style: Theme.of(context).textTheme.caption,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ],
@@ -641,38 +712,35 @@ class _ChatCoreState extends State<ChatCore> {
 
                   var userAux;
                   if (room.type.toString() != "RoomType.group") {
-                     userAux = room.users.firstWhere(
-                          (u) => u.id != _user!.uid,
+                    userAux = room.users.firstWhere(
+                      (u) => u.id != _user!.uid,
                     );
-                     if(userIsBlockedBy.contains(userAux.id))
-                     {
-                       return Container();
-                     }
+                    if (userIsBlockedBy.contains(userAux.id)) {
+                      return Container();
+                    }
                   }
 
                   bool Read = true;
-                  if(room.lastMessages != null && room.lastMessages[0].metadata[currentUser.id] == "delivered") {
+                  if (room.lastMessages != null &&
+                      room.lastMessages[0].metadata[currentUser.id] ==
+                          "delivered") {
                     Read = false;
                   }
 
-                  var dt = DateTime.fromMillisecondsSinceEpoch(
-                      room.updatedAt);
+                  var dt = DateTime.fromMillisecondsSinceEpoch(room.updatedAt);
 
                   return GestureDetector(
-                    onTap: ()  async {
-                      if(!brandIsActive) {
+                    onTap: () async {
+                      if (!brandIsActive) {
                         await navigateToPayWall(context);
-                      }
-                      else {
+                      } else {
                         Navigator.push(
                             context,
                             CupertinoPageRoute<bool>(
-                              builder: (context) =>
-                                  ChatPage(
-                                    room: room,
-                                  ),
-                            )
-                        ).whenComplete(() async {
+                              builder: (context) => ChatPage(
+                                room: room,
+                              ),
+                            )).whenComplete(() async {
                           room.metadata!["active" + currentUser.id!] = false;
                           _roomDataService.updateRoom(room.id, room.metadata!);
                         });
@@ -680,58 +748,60 @@ class _ChatCoreState extends State<ChatCore> {
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal:
-                          MediaQuery
-                              .of(context)
-                              .size
-                              .width *
-                              0.04,
-                          vertical:
-                          MediaQuery
-                              .of(context)
-                              .size
-                              .height *
-                              0.01),
+                          horizontal: MediaQuery.of(context).size.width * 0.04,
+                          vertical: MediaQuery.of(context).size.height * 0.01),
                       child: Row(
                         children: <Widget>[
                           Expanded(
                             child: Row(
                               children: <Widget>[
                                 CircularImage(
-                                  size: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.15,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.15,
                                   image: room.imageUrl,
-                                  color: Theme
-                                      .of(context)
-                                      .primaryColor,
+                                  color: Theme.of(context).primaryColor,
                                   borderWidth: 1,
                                 ),
-                                SizedBox(width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.03,),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.03,
+                                ),
                                 Expanded(
                                   child: Container(
                                     color: Colors.transparent,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text(room.name ?? '',
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                        Text(
+                                          room.name ?? '',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.bold),
                                         ),
-                                        SizedBox(height: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height * 0.005,),
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.005,
+                                        ),
                                         TextField(
                                           enabled: false,
                                           decoration: InputDecoration(
-                                            hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
-                                            hintText: returnChatHintMessage(room),
-                                            contentPadding: const EdgeInsets.all(0),
+                                            hintStyle: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2
+                                                ?.copyWith(
+                                                    color: Colors.grey.shade600,
+                                                    fontWeight: Read
+                                                        ? FontWeight.normal
+                                                        : FontWeight.bold),
+                                            hintText:
+                                                returnChatHintMessage(room),
+                                            contentPadding:
+                                                const EdgeInsets.all(0),
                                             isDense: true,
                                             enabledBorder: InputBorder.none,
                                             errorBorder: InputBorder.none,
@@ -748,29 +818,29 @@ class _ChatCoreState extends State<ChatCore> {
                               ],
                             ),
                           ),
-                          SizedBox(width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.04,),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.04,
+                          ),
                           Icon(
-                            room.type.toString() == "RoomType.group" ? Icons
-                                .groups : room.metadata!["trainer" + userAux.id] == true
-                                ? Icons.record_voice_over
-                                : Icons.directions_run,
-                            color: Theme
-                                .of(context)
-                                .primaryColor,
+                            room.type.toString() == "RoomType.group"
+                                ? Icons.groups
+                                : room.metadata!["trainer" + userAux.id] == true
+                                    ? Icons.record_voice_over
+                                    : Icons.directions_run,
+                            color: Theme.of(context).primaryColor,
                             size: room.type.toString() == "RoomType.group"
                                 ? 25
                                 : 20,
                           ),
-                          SizedBox(width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.04,),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.04,
+                          ),
                           Text(
                             (DateFormat('dd/MM/yy').format(dt)).toString(),
-                            style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption
+                                ?.copyWith(fontSize: 10),
                           ),
                         ],
                       ),
@@ -788,100 +858,96 @@ class _ChatCoreState extends State<ChatCore> {
                   var userAux;
                   if (room.type.toString() != "RoomType.group") {
                     userAux = room.users.firstWhere(
-                          (u) => u.id != _user!.uid,
+                      (u) => u.id != _user!.uid,
                     );
-                    if(userIsBlockedBy.contains(userAux.id))
-                    {
+                    if (userIsBlockedBy.contains(userAux.id)) {
                       return Container();
                     }
                   }
 
-
                   bool Read = true;
-                  if(room.lastMessages != null && room.lastMessages[0].metadata[currentUser.id] == "delivered") {
+                  if (room.lastMessages != null &&
+                      room.lastMessages[0].metadata[currentUser.id] ==
+                          "delivered") {
                     Read = false;
                   }
 
-                  var dt = DateTime.fromMillisecondsSinceEpoch(
-                      room.updatedAt);
+                  var dt = DateTime.fromMillisecondsSinceEpoch(room.updatedAt);
 
                   return GestureDetector(
-                      onTap: () async {
-                        if(!brandIsActive) {
-                          await navigateToPayWall(context);
-                        }
-                        else {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute<Null>(
-                                builder: (context) =>
-                                    ChatPage(
-                                      room: room,
-                                    ),
-                              )
-                          ).whenComplete(() {
-                            room.metadata!["active" + currentUser.id!] = false;
-                            _roomDataService.updateRoom(
-                                room.id, room.metadata!);
-                          });
-                        }
-                      },
+                    onTap: () async {
+                      if (!brandIsActive) {
+                        await navigateToPayWall(context);
+                      } else {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute<Null>(
+                              builder: (context) => ChatPage(
+                                room: room,
+                              ),
+                            )).whenComplete(() {
+                          room.metadata!["active" + currentUser.id!] = false;
+                          _roomDataService.updateRoom(room.id, room.metadata!);
+                        });
+                      }
+                    },
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal:
-                          MediaQuery
-                              .of(context)
-                              .size
-                              .width *
-                              0.04,
-                          vertical:
-                          MediaQuery
-                              .of(context)
-                              .size
-                              .height *
-                              0.01),
+                          horizontal: MediaQuery.of(context).size.width * 0.04,
+                          vertical: MediaQuery.of(context).size.height * 0.01),
                       child: Row(
                         children: <Widget>[
                           Expanded(
                             child: Row(
                               children: <Widget>[
                                 CircularImage(
-                                  size: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width * 0.15,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.15,
                                   image: room.imageUrl,
-                                  color: Theme
-                                      .of(context)
-                                      .primaryColor,
+                                  color: Theme.of(context).primaryColor,
                                   borderWidth: 1,
                                 ),
-                                SizedBox(width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.03,),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.03,
+                                ),
                                 Expanded(
                                   child: Container(
                                     color: Colors.transparent,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        Text(room.name ?? '',
-                                          style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+                                        Text(
+                                          room.name ?? '',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1
+                                              ?.copyWith(
+                                                  fontWeight: FontWeight.bold),
                                         ),
-                                        SizedBox(height: MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height * 0.005,),
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.005,
+                                        ),
                                         TextField(
                                           enabled: false,
                                           decoration: InputDecoration(
-                                            hintStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.grey.shade600, fontWeight: Read?FontWeight.normal:FontWeight.bold),
-                                            hintText: room.lastMessages !=
-                                                null ? room.lastMessages[0]
-                                                .text : 'test',
-                                            contentPadding: const EdgeInsets.all(0),
+                                            hintStyle: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2
+                                                ?.copyWith(
+                                                    color: Colors.grey.shade600,
+                                                    fontWeight: Read
+                                                        ? FontWeight.normal
+                                                        : FontWeight.bold),
+                                            hintText: room.lastMessages != null
+                                                ? room.lastMessages[0].text
+                                                : 'test',
+                                            contentPadding:
+                                                const EdgeInsets.all(0),
                                             isDense: true,
                                             enabledBorder: InputBorder.none,
                                             errorBorder: InputBorder.none,
@@ -898,28 +964,30 @@ class _ChatCoreState extends State<ChatCore> {
                               ],
                             ),
                           ),
-                          SizedBox(width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.04,),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.04,
+                          ),
                           Icon(
-                            room.type.toString() == "RoomType.group" ? Icons
-                                .groups : room.metadata!["trainer" + userAux.id] == true
-                                ? Icons.record_voice_over
-                                : Icons.directions_run,
-                            color: Theme
-                                .of(context)
-                                .primaryColor,
+                            room.type.toString() == "RoomType.group"
+                                ? Icons.groups
+                                : room.metadata!["trainer" + userAux.id] == true
+                                    ? Icons.record_voice_over
+                                    : Icons.directions_run,
+                            color: Theme.of(context).primaryColor,
                             size: room.type.toString() == "RoomType.group"
                                 ? 25
                                 : 20,
                           ),
-                          SizedBox(width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.04,),
-                          Text((DateFormat('dd/MM/yy').format(dt))
-                              .toString(), style: Theme.of(context).textTheme.caption?.copyWith(fontSize: 10),),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.04,
+                          ),
+                          Text(
+                            (DateFormat('dd/MM/yy').format(dt)).toString(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption
+                                ?.copyWith(fontSize: 10),
+                          ),
                         ],
                       ),
                     ),

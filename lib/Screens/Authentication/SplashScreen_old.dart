@@ -12,7 +12,7 @@ import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
-import 'package:mamba_castelldefels/Auth/views/Login.dart';
+import 'package:mamba_castelldefels/Auth/views/mobile/Login.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Mamba.dart';
 import 'package:provider/provider.dart';
 import '../../Data/DataService/Library/LibraryDataService.dart';
@@ -35,7 +35,6 @@ class SplashScreen extends StatefulWidget {
 //
 // While getting data from Database it is showing a Loading Widget.
 class _SplashScreenState extends State<SplashScreen> {
-
   // Data Base Access
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
@@ -52,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> initColorsList() async {
-    currentColors =  await _libraryDataService.getColors();
+    currentColors = await _libraryDataService.getColors();
     currentDegradates = await _libraryDataService.getDegradates();
   }
 
@@ -67,11 +66,17 @@ class _SplashScreenState extends State<SplashScreen> {
     mixpanel!.getPeople().set("language", currentUser.idioma!);
     mixpanel!.getPeople().set("isProduction", isProduction);
     var dateOfBirthSplit = currentUser.dateOfBirth!.split("-");
-    DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]), int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);
+    DateTime dateOfBirth = DateTime(int.parse(dateOfBirthSplit[2]),
+        int.parse(dateOfBirthSplit[1]), int.parse(dateOfBirthSplit[0]), 0, 0);
     mixpanel!.getPeople().set("dateOfBirth", dateOfBirth.toString());
     var firstLoginDateSplit = currentUser.dateJoined!.split("-");
-    DateTime firstLoginDate = DateTime(int.parse(firstLoginDateSplit[2]), int.parse(firstLoginDateSplit[1]), int.parse(firstLoginDateSplit[0]), 0, 0);
-    if (firstLoginDate.isBefore(DateTime(2022,11,15))) {
+    DateTime firstLoginDate = DateTime(
+        int.parse(firstLoginDateSplit[2]),
+        int.parse(firstLoginDateSplit[1]),
+        int.parse(firstLoginDateSplit[0]),
+        0,
+        0);
+    if (firstLoginDate.isBefore(DateTime(2022, 11, 15))) {
       /// Only update the First Login Date If Is Before the Mix Panel Update
       mixpanel!.getPeople().set("firstLoginDate", firstLoginDate.toString());
     }
@@ -100,13 +105,11 @@ class _SplashScreenState extends State<SplashScreen> {
           if (firebaseUser.emailVerified) {
             // 3.1.1 Email has been verified
             // 4. Define Prod Config for FirebaseChatCore
-            FirebaseChatCore.instance.setConfig(
-                const FirebaseChatCoreConfig(
-                  null,
-                  'Rooms',
-                  'Users',
-                )
-            );
+            FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
+              null,
+              'Rooms',
+              'Users',
+            ));
             // 5. Load Users Data
             String userId = firebaseUser.uid;
             //String userId = "GFrVbdR5WNSuFydb8i32g620Rle2";
@@ -116,7 +119,8 @@ class _SplashScreenState extends State<SplashScreen> {
               print("Token: $token");
               if (token != currentUser.notificationToken) {
                 print("New token updated");
-                _userDataService.updateUserNotificationToken(currentUser.id!, token!);
+                _userDataService.updateUserNotificationToken(
+                    currentUser.id!, token!);
               }
             });
             // 7. Travel to Corresponding Screen
@@ -126,8 +130,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   CupertinoPageRoute<void>(
                     builder: (context) => const Admin(),
                     settings: const RouteSettings(name: 'Admin'),
-                  )
-              );
+                  ));
             } else {
               if (!(currentUser.isFirst!)) {
                 sendMixPanelDataUsers();
@@ -136,17 +139,14 @@ class _SplashScreenState extends State<SplashScreen> {
                     CupertinoPageRoute<void>(
                       builder: (context) => const Mamba(),
                       settings: const RouteSettings(name: 'Mamba'),
-                    )
-                );
+                    ));
               } else {
                 Navigator.pushReplacement(
                     context,
                     CupertinoPageRoute<void>(
-                      builder: (context) =>
-                      const OnboardingScreen(),
+                      builder: (context) => const OnboardingScreen(),
                       settings: const RouteSettings(name: 'OnboardingScreen'),
-                    )
-                );
+                    ));
               }
             }
           } else {
@@ -157,19 +157,17 @@ class _SplashScreenState extends State<SplashScreen> {
                 builder: (context) => const Login(),
                 settings: const RouteSettings(name: 'Login'),
               ),
-                  (_) => false,
+              (_) => false,
             );
           }
         } else {
           // 3.2 We are in DEVELOPMENT
           // 4. Define Development Config for FirebaseCore
-          FirebaseChatCore.instance.setConfig(
-              const FirebaseChatCoreConfig(
-                null,
-                '7777 Rooms',
-                '7777 Users',
-              )
-          );
+          FirebaseChatCore.instance.setConfig(const FirebaseChatCoreConfig(
+            null,
+            '7777 Rooms',
+            '7777 Users',
+          ));
           // 5. Load Users Data
           await getUserData(firebaseUser.uid);
           // 6. Get Token for FirebaseMessaging
@@ -177,7 +175,8 @@ class _SplashScreenState extends State<SplashScreen> {
             print("Token: $token");
             if (token != currentUser.notificationToken) {
               print("New token updated");
-              _userDataService.updateUserNotificationToken(currentUser.id!, token!);
+              _userDataService.updateUserNotificationToken(
+                  currentUser.id!, token!);
             }
           });
           // 7. Travel to Corresponding Screen
@@ -187,8 +186,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 CupertinoPageRoute<void>(
                   builder: (context) => const Admin(),
                   settings: const RouteSettings(name: 'Admin'),
-                )
-            );
+                ));
           } else {
             if (!(currentUser.isFirst!)) {
               sendMixPanelDataUsers();
@@ -197,16 +195,14 @@ class _SplashScreenState extends State<SplashScreen> {
                   CupertinoPageRoute<void>(
                     builder: (context) => const Mamba(),
                     settings: const RouteSettings(name: 'Mamba'),
-                  )
-              );
+                  ));
             } else {
               Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute<void>(
                     builder: (context) => const OnboardingScreen(),
                     settings: const RouteSettings(name: 'OnboardingScreen'),
-                  )
-              );
+                  ));
             }
           }
         }
@@ -219,7 +215,7 @@ class _SplashScreenState extends State<SplashScreen> {
           builder: (context) => const Login(),
           settings: const RouteSettings(name: 'Login'),
         ),
-            (_) => false,
+        (_) => false,
       );
     }
   }
@@ -236,15 +232,18 @@ class _SplashScreenState extends State<SplashScreen> {
         CupertinoPageRoute<void>(
           builder: (context) => const Login(),
           settings: const RouteSettings(name: 'Login'),
-        ), (_) => false,
+        ),
+        (_) => false,
       );
     }
     // Set App Locale To User Preferred Language
-    Provider.of<LanguageProvider>(context, listen: false).setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
+    Provider.of<LanguageProvider>(context, listen: false)
+        .setLocale(Idiomas.getLocaleFromString(currentUser.idioma!));
     // Set App Theme To User Preferred Theme Settings
     if (currentUser.isDark != null) {
-      print("This user has a Dark Mode: "+currentUser.isDark!.toString());
-      Provider.of<ThemeProvider>(context, listen: false).toggleTheme(currentUser.isDark!);
+      print("This user has a Dark Mode: " + currentUser.isDark!.toString());
+      Provider.of<ThemeProvider>(context, listen: false)
+          .toggleTheme(currentUser.isDark!);
     }
     print("This user has the System Theme On");
     // Get Current User Unread Notifications and Chats
@@ -274,11 +273,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: null,
-      body: SplashScreenView(
-        isMaintenance: isMaintenance,
-      )
-    );
-
+        appBar: null,
+        body: SplashScreenView(
+          isMaintenance: isMaintenance,
+        ));
   }
 }
