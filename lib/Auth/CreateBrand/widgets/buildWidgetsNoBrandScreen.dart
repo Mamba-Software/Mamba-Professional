@@ -1,7 +1,7 @@
 // Build the Widget of the Image
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mamba_castelldefels/Auth/CreateBrand/views/RegistrarMarca.dart';
+import 'package:mamba_castelldefels/Auth/CreateBrand/views/mobile/RegistrarMarca.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -16,7 +16,8 @@ import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotificat
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/Profile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-Widget buildUserPicture(BuildContext context, double safeAreaWidth, double safeAreaHeight) {
+Widget buildUserPicture(
+    BuildContext context, double safeAreaWidth, double safeAreaHeight) {
   return Center(
     child: GestureDetector(
       onTap: () {
@@ -24,47 +25,51 @@ Widget buildUserPicture(BuildContext context, double safeAreaWidth, double safeA
             context,
             CupertinoPageRoute<void>(
               builder: (context) => const Profile(),
-            )
-        );
+            ));
       },
       child: SizedBox(
         height: safeAreaHeight * 0.1,
         child: Center(
-          child: CircularImage(size: safeAreaHeight * 0.08, image: currentUser.imageUrl, color: Theme.of(context).backgroundColor, borderWidth: 2,),
+          child: CircularImage(
+            size: safeAreaHeight * 0.08,
+            image: currentUser.imageUrl,
+            color: Theme.of(context).backgroundColor,
+            borderWidth: 2,
+          ),
         ),
       ),
     ),
   );
 }
 
-Widget buildGreetingWidget(BuildContext context, double safeAreaWidth, double safeAreaHeight) {
+Widget buildGreetingWidget(
+    BuildContext context, double safeAreaWidth, double safeAreaHeight) {
   return Container(
-    height: safeAreaHeight*0.1,
-    width: safeAreaHeight*0.84,
-    decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor
-    ),
+    height: safeAreaHeight * 0.1,
+    width: safeAreaHeight * 0.84,
+    decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         buildUserPicture(context, safeAreaWidth, safeAreaHeight),
-        SizedBox(width: safeAreaWidth*0.02,),
+        SizedBox(
+          width: safeAreaWidth * 0.02,
+        ),
         Expanded(
           child: Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                    StringUtils().greetingMessage(context),
-                    style: Theme.of(context).textTheme.bodyText1?.copyWith(color: AppColors.grey),
-                    textAlign: TextAlign.center
-                ),
-                Text(
-                    currentUser.firstName!,
+                Text(StringUtils().greetingMessage(context),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1
+                        ?.copyWith(color: AppColors.grey),
+                    textAlign: TextAlign.center),
+                Text(currentUser.firstName!,
                     style: Theme.of(context).textTheme.headline1,
-                    textAlign: TextAlign.center
-                ),
+                    textAlign: TextAlign.center),
               ],
             ),
           ),
@@ -92,8 +97,7 @@ Widget buildCreateBrandWidget(BuildContext context, var height, var width) {
               locale: Localizations.localeOf(context),
             ),
             settings: const RouteSettings(name: 'RegistrarMarca'),
-          )
-      );
+          ));
       if (result2 == null) mixpanel!.track('register_brand_closed');
     },
     child: Material(
@@ -110,8 +114,8 @@ Widget buildCreateBrandWidget(BuildContext context, var height, var width) {
               height: height,
               width: width,
               borderRadius: 10,
-              image: "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/calendarImage.jpg?alt=media&token=b187bd98-1d6b-4ae2-a49e-60ad59a8f65a"
-          ),
+              image:
+                  "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/calendarImage.jpg?alt=media&token=b187bd98-1d6b-4ae2-a49e-60ad59a8f65a"),
           Container(
             height: height,
             width: width,
@@ -127,9 +131,9 @@ Widget buildCreateBrandWidget(BuildContext context, var height, var width) {
                   stops: const [
                     0.0,
                     0.75
-                  ]
-              ),
-              border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                  ]),
+              border:
+                  Border.all(color: Theme.of(context).primaryColor, width: 1),
               borderRadius: const BorderRadius.all(
                 Radius.circular(10.0),
               ),
@@ -143,32 +147,37 @@ Widget buildCreateBrandWidget(BuildContext context, var height, var width) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: width*0.9,
+                  width: width * 0.9,
                   child: Row(
                     children: [
                       Flexible(
-                        child: Text(
-                            AppLocalizations.of(context)!.createBrand,
-                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
-                            textAlign: TextAlign.left
-                        ),
+                        child: Text(AppLocalizations.of(context)!.createBrand,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.left),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(
-                  height: height*0.02,
+                  height: height * 0.02,
                 ),
                 SizedBox(
-                  width: width*0.9,
+                  width: width * 0.9,
                   child: Row(
                     children: [
                       Flexible(
                         child: Text(
                             AppLocalizations.of(context)!.createBrandTitle,
-                            style: Theme.of(context).textTheme.caption!.copyWith(color: Colors.grey),
-                            textAlign: TextAlign.left
-                        ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(color: Colors.grey),
+                            textAlign: TextAlign.left),
                       ),
                     ],
                   ),
@@ -214,13 +223,15 @@ Widget buildJoinBrandWidget(BuildContext context, var height, var width) {
       child: Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          SizedBox(height: height*0.1,),
+          SizedBox(
+            height: height * 0.1,
+          ),
           RectangularImage(
               height: height,
               width: width,
               borderRadius: 10,
-              image: "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/scanQRCode.jpg?alt=media&token=eed96d79-cb69-42de-9423-da03317e7fa8"
-          ),
+              image:
+                  "https://firebasestorage.googleapis.com/v0/b/mamba-style.appspot.com/o/scanQRCode.jpg?alt=media&token=eed96d79-cb69-42de-9423-da03317e7fa8"),
           Container(
             height: height,
             width: width,
@@ -236,9 +247,9 @@ Widget buildJoinBrandWidget(BuildContext context, var height, var width) {
                   stops: const [
                     0.0,
                     0.75
-                  ]
-              ),
-              border: Border.all(color: Theme.of(context).primaryColor, width: 1),
+                  ]),
+              border:
+                  Border.all(color: Theme.of(context).primaryColor, width: 1),
               borderRadius: const BorderRadius.all(
                 Radius.circular(10.0),
               ),
@@ -252,32 +263,37 @@ Widget buildJoinBrandWidget(BuildContext context, var height, var width) {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: width*0.9,
+                  width: width * 0.9,
                   child: Row(
                     children: [
                       Flexible(
-                        child: Text(
-                            AppLocalizations.of(context)!.joinBrand,
-                            style: Theme.of(context).textTheme.headline1!.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
-                            textAlign: TextAlign.left
-                        ),
+                        child: Text(AppLocalizations.of(context)!.joinBrand,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline1!
+                                .copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.left),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(
-                  height: height*0.02,
+                  height: height * 0.02,
                 ),
                 SizedBox(
-                  width: width*0.9,
+                  width: width * 0.9,
                   child: Row(
                     children: [
                       Flexible(
                         child: Text(
                             AppLocalizations.of(context)!.joinBrandTitle,
-                            style: Theme.of(context).textTheme.caption!.copyWith(color: Colors.grey),
-                            textAlign: TextAlign.left
-                        ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(color: Colors.grey),
+                            textAlign: TextAlign.left),
                       ),
                     ],
                   ),

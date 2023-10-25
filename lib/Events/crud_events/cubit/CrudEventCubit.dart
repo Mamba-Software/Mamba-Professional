@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -108,6 +109,8 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       isBeforeEdit = false;
     }
     newEvent.selectedTrainers = eventTrainers;
+    newEvent.maxMembers = event.maxMembers;
+    newEvent.joinedMembers = brandClientsSelected;
   }
 
   Map<Bono, bool> setEventBonosMap() {
@@ -150,7 +153,7 @@ class CrudEventCubit extends Cubit<CrudEventState> {
 
   Future<void> editEventInfo(var varToChange, EditEventType editEventType,
       [Bono? bono]) async {
-    emit(const CrudEventLoading());
+    //emit(const CrudEventLoading());
     switch (editEventType) {
       case EditEventType.title:
         newEvent.title = varToChange;
@@ -194,6 +197,12 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       case EditEventType.trainers:
         newEvent.selectedTrainers = varToChange;
         break;
+      case EditEventType.clients:
+        newEvent.joinedMembers = varToChange;
+        break;
+      case EditEventType.maxMembers:
+        (state as CrudEventLoaded).newEvent.maxMembers = varToChange;
+        break;
 
       /*
     oneWeek = pickedDateTemp.add(const Duration(days: 7));
@@ -223,8 +232,15 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         brandClientsSelected,
         allBonos,
         locationDet,
-        newEvent,
+        (state as CrudEventLoaded).newEvent,
         isBeforeEdit));
+  }
+
+  @override
+  void onChange(Change<CrudEventState> change) {
+    super.onChange(change);
+    log(change.currentState.toString());
+    log(change.nextState.toString());
   }
 
   void setAppBarExpanded(bool isAppBarExpanded) {

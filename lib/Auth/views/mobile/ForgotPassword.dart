@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
-import 'package:mamba_castelldefels/Auth/widgets/RecoverPassword.dart';
+import 'package:mamba_castelldefels/Auth/widgets/mobile/RecoverPassword.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -23,7 +23,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   var _userDataService = new UserDataService();
 
   // Scaffold Messenger Key
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   // FormVariables
   final _formKey = GlobalKey<FormState>();
   // Email
@@ -46,7 +47,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       key: scaffoldMessengerKey,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.resetPassword, style: Theme.of(context).textTheme.headline3!.copyWith(color: Colors.white)),
+          title: Text(AppLocalizations.of(context)!.resetPassword,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline3!
+                  .copyWith(color: Colors.white)),
           elevation: 0,
           centerTitle: false,
           iconTheme: const IconThemeData(
@@ -55,7 +60,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           systemOverlayStyle: SystemUiOverlayStyle.light,
           backgroundColor: AppColors.black,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, size: MediaQuery.of(context).size.width * 0.06,),
+            icon: Icon(
+              Icons.arrow_back,
+              size: MediaQuery.of(context).size.width * 0.06,
+            ),
             onPressed: () {
               if (email.isNotEmpty) {
                 Navigator.pop(context, email.trim());
@@ -71,7 +79,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           child: Form(
             key: _formKey,
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width*0.05, vertical: MediaQuery.of(context).size.height*0.03),
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.05,
+                  vertical: MediaQuery.of(context).size.height * 0.03),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -80,34 +90,46 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.emailError,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            ?.copyWith(color: AppColors.white),
                         textAlign: TextAlign.left,
                       ),
                     ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.02),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   TextFormField(
                       autofocus: true,
                       keyboardType: TextInputType.emailAddress,
-                      validator: (val) => val!.isEmpty ? AppLocalizations.of(context)!.emailError : null,
+                      validator: (val) => val!.isEmpty
+                          ? AppLocalizations.of(context)!.emailError
+                          : null,
                       onChanged: (val) {
                         setState(() => email = val);
                       },
-                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(color: AppColors.white),
                       decoration: Styles.textFromInputDecoration.copyWith(
                           labelText: AppLocalizations.of(context)!.email,
-                          labelStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.white),
-                          errorStyle: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                          prefixIcon:  const Padding(
+                          labelStyle: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(color: AppColors.white),
+                          errorStyle: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(color: AppColors.red),
+                          prefixIcon: const Padding(
                             padding: EdgeInsets.all(0.0),
                             child: Icon(
                               Icons.email_outlined,
                               color: AppColors.white,
                             ), // icon is 48px widget.
-                          )
-                      )
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height*0.04),
+                          ))),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   _renderWidget(),
                 ],
               ),
@@ -173,20 +195,17 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return recoverPassword(context, state, _formKey, email, password1);
   }
 
-
-
   void showInSnackBar(String value) {
     final snackbar = SnackBar(
-      content: Text(
-          value,
+      content: Text(value,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(color: AppColors.black)
-      ),
+          style: Theme.of(context)
+              .textTheme
+              .bodyText2!
+              .copyWith(color: AppColors.black)),
       backgroundColor: Colors.white,
       duration: const Duration(seconds: 3),
     );
     scaffoldMessengerKey.currentState!.showSnackBar(snackbar);
   }
 }
-
-

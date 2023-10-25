@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
+import 'package:mamba_castelldefels/Data/DataService/Library/LibraryDataService.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import 'package:mamba_castelldefels/Screens/Admin/Admin.dart';
-import 'package:mamba_castelldefels/Auth/views/Login.dart';
+import 'package:mamba_castelldefels/Screens/Authentication/Login_old.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Mamba.dart';
-import '../../Data/DataService/Library/LibraryDataService.dart';
-import '../../Globals/Widgets/GroupOfComponents/LoadingViews/SplashScreenView.dart';
 import 'OnboardingScreen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -26,10 +26,8 @@ class SplashScreen extends StatefulWidget {
 //
 // While getting data from Database it is showing a Loading Widget.
 class _SplashScreenState extends State<SplashScreen> {
-
   // Data Base Access
   final _libraryDataService = LibraryDataService();
-
 
   @override
   initState() {
@@ -38,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> initColorsList() async {
-    currentColors =  await _libraryDataService.getColors();
+    currentColors = await _libraryDataService.getColors();
     currentDegradates = await _libraryDataService.getDegradates();
   }
 
@@ -54,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
               builder: (context) => const Login(),
               settings: const RouteSettings(name: 'Login'),
             ),
-                (_) => false,
+            (_) => false,
           );
         }
         if (state is AuthAdmin) {
@@ -63,8 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
               CupertinoPageRoute<void>(
                 builder: (context) => const Admin(),
                 settings: const RouteSettings(name: 'Admin'),
-              )
-          );
+              ));
         }
         if (state is AuthUserBrand || state is AuthUserNoBrand) {
           Navigator.pushReplacement(
@@ -72,27 +69,23 @@ class _SplashScreenState extends State<SplashScreen> {
               CupertinoPageRoute<void>(
                 builder: (context) => const Mamba(),
                 settings: const RouteSettings(name: 'Mamba'),
-              )
-          );
+              ));
         }
         if (state is AuthNewUser) {
           Navigator.pushReplacement(
               context,
               CupertinoPageRoute<void>(
-                builder: (context) =>
-                const OnboardingScreen(),
+                builder: (context) => const OnboardingScreen(),
                 settings: const RouteSettings(name: 'OnboardingScreen'),
-              )
-          );
+              ));
         }
       },
       builder: (context, state) {
         return Scaffold(
             appBar: null,
             body: SplashScreenView(
-              isMaintenance: state is AuthMaintenance? true : false,
-            )
-        );
+              isMaintenance: state is AuthMaintenance ? true : false,
+            ));
       },
     );
   }

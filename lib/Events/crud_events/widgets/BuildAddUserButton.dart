@@ -1,27 +1,56 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectTrainersEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/SelectEventUsers/SelectClientsEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/SelectEventUsers/SelectTrainersEvent.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget buildAddUserButton(
-    BuildContext context, bool isTrainer, List<Usuario> brandTrainersSelected) {
+    BuildContext context, bool isTrainer, List<Usuario> brandUsersSelected) {
   return GestureDetector(
     onTap: () async {
-      List<Usuario>? selectedTrainers = await Navigator.push(
-          context,
-          CupertinoPageRoute<List<Usuario>>(
-            builder: (context) => SelectTrainersEvent(
-              selectedTrainers: brandTrainersSelected,
-            ),
-          ));
-      if (selectedTrainers != null) {
-        context
-            .read<CrudEventCubit>()
-            .editEventInfo(selectedTrainers, EditEventType.trainers);
+      if (isTrainer) {
+        List<Usuario>? selectedTrainers = await Navigator.push(
+            context,
+            CupertinoPageRoute<List<Usuario>>(
+              builder: (context) => SelectTrainersEvent(
+                selectedTrainers: brandUsersSelected,
+              ),
+            ));
+        if (selectedTrainers != null) {
+          context
+              .read<CrudEventCubit>()
+              .editEventInfo(selectedTrainers, EditEventType.trainers);
+        }
+      } else {
+        final state = context.read<CrudEventCubit>().state;
+        List<Bono> selectedBonos = [];
+        if (state is CrudEventLoaded) {
+          selectedBonos = state.newEvent.eventBonos.keys
+              .where((key) => state.newEvent.eventBonos[key] == true)
+              .toList();
+        }
+        List<Usuario>? selectedClients = await Navigator.push(
+            context,
+            CupertinoPageRoute<List<Usuario>>(
+              builder: (context) => SelectClientsEvent(
+                selectedUsers: brandUsersSelected,
+                selectedBonos: null,
+                bonos: selectedBonos,
+              ),
+            ));
+        if (selectedClients != null) {
+          context
+              .read<CrudEventCubit>()
+              .editEventInfo(selectedClients, EditEventType.clients);
+
+          //clientsModified = true;
+
+        }
       }
     }, //: null,
     child: Padding(

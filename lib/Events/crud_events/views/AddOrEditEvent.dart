@@ -27,8 +27,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/LeaveConfirmationDialogBonos.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectClientsEvent.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/SelectEventUsers/SelectTrainersEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/SelectEventUsers/SelectClientsEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/SelectEventUsers/SelectTrainersEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -503,7 +503,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                 selectedUsers: brandClientsSelected,
                 selectedBonos: selectedBonos,
                 bonos: filterBonosByIds(),
-                event: event,
               ),
             ));
         if (selectedClients != null) {
@@ -2016,7 +2015,6 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                                                               builder: (_) {
                                                                                 return LeaveConfirmationDialogBonos(
                                                                                   text: AppLocalizations.of(context)!.leaveEventConfirmation,
-                                                                                  event: event,
                                                                                   brand: currentBrand,
                                                                                   bonos: filterBonosByIds(),
                                                                                   purchaseId: client.purchaseId!,

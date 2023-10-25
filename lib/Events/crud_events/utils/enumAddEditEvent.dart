@@ -7,4 +7,6 @@ enum EditEventType {
   time,
   duration,
   trainers,
+  clients,
+  maxMembers
 }
