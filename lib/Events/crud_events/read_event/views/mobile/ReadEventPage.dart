@@ -2673,49 +2673,28 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                       mixpanel!.track('event_view_edit_button',
                           properties: {'isPrivate': event.isPrivate!});
                       bool? result;
-                      if (event.isPrivate!) {
-                        result = await Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus &&
-                                      currentFocus.focusedChild != null) {
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  }
-                                },
-                                child: AddOrEditEvent(
-                                    locale: Localizations.localeOf(context),
-                                    eventId: event.id!,
-                                    isBeforeEdit: isBeforeEdit),
-                              ),
-                            ));
-                      } else {
-                        result = await Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus &&
-                                      currentFocus.focusedChild != null) {
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  }
-                                },
-                                child: AddOrEditEvent(
-                                    locale: Localizations.localeOf(context),
-                                    eventId: event.id!,
-                                    isBeforeEdit: isBeforeEdit),
-                              ),
-                            ));
-                      }
+                      result = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                FocusScopeNode currentFocus =
+                                    FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus &&
+                                    currentFocus.focusedChild != null) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                }
+                              },
+                              child: AddOrEditEvent(
+                                  locale: Localizations.localeOf(context),
+                                  eventId: event.id!,
+                                  isBeforeEdit: isBeforeEdit),
+                            ),
+                          )).whenComplete(() {
+                        context.read<CrudEventCubit>().resetNewEvent();
+                      });
+
                       //TODO EDIT HERE
                       /*
                       if (result != null && result) {

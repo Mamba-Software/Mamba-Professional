@@ -28,8 +28,8 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
   @override
   initState() {
     super.initState();
-    final state = widget.contextFrom.read<CrudEventCubit>().state;
-    if (state is CrudEventLoaded) {
+    final state = context.read<CrudEventCubit>().state;
+    if (state.isLoaded && !state.isNew) {
       titleController.text = state.newEvent.title!;
       titleString = titleController.text;
       // Event Description

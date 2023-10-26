@@ -9,27 +9,25 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/D
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
-Event event = Event();
-bool isBeforeEdit = true;
+class DateTimeEventWidget extends StatelessWidget {
+  final Locale locale;
+  const DateTimeEventWidget({super.key, required this.locale});
 
-Widget dateTimeEventWidget(BuildContext context, Locale locale) {
-  final state = context.read<CrudEventCubit>().state;
-  if (state is CrudEventLoaded) {
-    isBeforeEdit = state.isBeforeEdit;
-  }
-  return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.00),
-            child: Column(
-              children: [
-                dateEventSelector(context, locale),
-                durationEventSelector(context),
-                /*
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.00),
+              child: Column(
+                children: [
+                  DateEventSelector(locale: locale),
+                  DurationEventSelector(locale: locale),
+                  /*
                 errorDate Padding(
                                       padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
                                       child: Center(
@@ -41,9 +39,10 @@ Widget dateTimeEventWidget(BuildContext context, Locale locale) {
                                       ),
                                     ) : Container(),
                                     */
-              ],
-            )),
-        dividerAddEditEvent(
-            context, AppLocalizations.of(context)!.selectDayTime),
-      ]);
+                ],
+              )),
+          dividerAddEditEvent(
+              context, AppLocalizations.of(context)!.selectDayTime),
+        ]);
+  }
 }

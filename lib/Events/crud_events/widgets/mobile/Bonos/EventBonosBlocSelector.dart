@@ -14,14 +14,19 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/Even
 
 Event event = Event();
 
-Widget eventBonosBlocSelector() {
-  return BlocSelector<CrudEventCubit, CrudEventState, Map<Bono, bool>>(
-      selector: (state) {
-    if (state is CrudEventLoaded) {
-      return state.newEvent.eventBonos;
-    }
-    return {};
-  }, builder: (context, eventBonosMap) {
-    return eventBonosWidget(context, eventBonosMap);
-  });
+class EventBonosBlocSelector extends StatelessWidget {
+  const EventBonosBlocSelector({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<CrudEventCubit, CrudEventLoaded, Map<Bono, bool>>(
+        selector: (state) {
+      if (state.isLoaded) {
+        return state.newEvent.eventBonos;
+      }
+      return {};
+    }, builder: (context, eventBonosMap) {
+      return eventBonosWidget(context, eventBonosMap);
+    });
+  }
 }

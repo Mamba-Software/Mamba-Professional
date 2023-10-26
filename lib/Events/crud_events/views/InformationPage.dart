@@ -23,7 +23,6 @@ Widget informationPage(BuildContext context, FocusNode focusNodetitleController,
                           TitleDescriptionWidget(
                             contextFrom: context,
                           ),
-                          locationBlocSelector(),
                         ],
                       ),
                     ),

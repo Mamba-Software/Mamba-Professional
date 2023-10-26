@@ -56,7 +56,7 @@ Widget clientEventWidget(
                           onTap: () async {
                             final state = context.read<CrudEventCubit>().state;
                             List<Bono> selectedBonos = [];
-                            if (state is CrudEventLoaded) {
+                            if (state.isLoaded) {
                               selectedBonos = state.newEvent.eventBonos.keys
                                   .where((key) =>
                                       state.newEvent.eventBonos[key] == true)
@@ -177,18 +177,4 @@ Widget clientEventWidget(
               " )"),
     ],
   );
-}
-
-Future selectDuration(BuildContext context, String duration) async {
-  String? pickedDuration = await showCupertinoModalPopup(
-      context: context,
-      builder: (_) => SelectDurationDialog(
-            title: AppLocalizations.of(context)!.selectDuration,
-            initialDuration: duration,
-          ));
-  if (pickedDuration != null) {
-    context
-        .read<CrudEventCubit>()
-        .editEventInfo(double.parse(pickedDuration), EditEventType.duration);
-  }
 }

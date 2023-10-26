@@ -1,96 +1,31 @@
 part of 'CrudEventCubit.dart';
 
-abstract class CrudEventState extends Equatable {
-  const CrudEventState();
-}
-
-class CrudEventInitial extends CrudEventState {
-  const CrudEventInitial();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class CrudEventLoading extends CrudEventState {
-  const CrudEventLoading();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class CrudEventLoaded extends CrudEventState {
-  final Event event;
-  final bool isFull;
-  final List<String> userIsBlockedBy;
-  final List<Bono> eventBonos;
-  final List<Usuario> eventTrainers;
-  final List<Usuario> eventClients;
-  final List<double?> eventClientsFeedback;
-  final List<String> eventTrainersIds;
-  final List<bool> eventTrainersBool;
-  final Location location;
-  final Location locationDet;
-  final GoogleMapController? mapController;
-  final bool appBarExpanded;
-  final List<Usuario> originalTrainers;
-  final List<Usuario> originalClients;
-  final List<Usuario> brandTrainersSelected;
-  final List<Usuario> brandClientsSelected;
-  final List<Bono> allBonos;
+class CrudEventLoaded extends Equatable {
+  final Event oldEvent;
   final Event newEvent;
+  final bool isLoaded;
+  final bool isNew;
   final bool isBeforeEdit;
 
-  const CrudEventLoaded(
-      this.event,
-      this.isFull,
-      this.userIsBlockedBy,
-      this.eventBonos,
-      this.eventTrainers,
-      this.eventClients,
-      this.eventClientsFeedback,
-      this.eventTrainersIds,
-      this.eventTrainersBool,
-      this.location,
-      this.mapController,
-      this.appBarExpanded,
-      this.originalTrainers,
-      this.originalClients,
-      this.brandTrainersSelected,
-      this.brandClientsSelected,
-      this.allBonos,
-      this.locationDet,
-      this.newEvent,
+  const CrudEventLoaded(this.oldEvent, this.newEvent, this.isLoaded, this.isNew,
       this.isBeforeEdit);
 
-  @override
-  List<Object?> get props => [
-        event,
-        isFull,
-        userIsBlockedBy,
-        eventBonos,
-        eventTrainers,
-        eventClients,
-        eventClientsFeedback,
-        eventTrainersIds,
-        eventTrainersBool,
-        location,
-        mapController,
-        appBarExpanded,
-        originalTrainers,
-        originalClients,
-        brandTrainersSelected,
-        brandClientsSelected,
-        allBonos,
-        locationDet,
-        newEvent,
-        isBeforeEdit
-      ];
-}
-
-class CrudEventError extends CrudEventState {
-  final String message;
-  const CrudEventError(this.message);
+  CrudEventLoaded copyWith({
+    Event? oldEvent,
+    Event? newEvent,
+    bool? isLoaded,
+    bool? isNew,
+    bool? isBeforeEdit,
+  }) {
+    return CrudEventLoaded(
+      oldEvent ?? this.oldEvent,
+      newEvent ?? this.newEvent,
+      isLoaded ?? this.isLoaded,
+      isNew ?? this.isNew,
+      isBeforeEdit ?? this.isBeforeEdit,
+    );
+  }
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [oldEvent, newEvent, isLoaded, isBeforeEdit];
 }

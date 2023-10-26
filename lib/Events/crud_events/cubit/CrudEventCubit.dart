@@ -17,123 +17,70 @@ import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.da
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 part 'CrudEventState.dart';
 
-class CrudEventCubit extends Cubit<CrudEventState> {
+class CrudEventCubit extends Cubit<CrudEventLoaded> {
   final _eventDataService = EventDataService();
-  final _brandDataService = BrandDataService();
-  final _userDataService = UserDataService();
   final _locationDataService = LocationDataService();
-  Event event = Event();
-  Event newEvent = Event();
-  bool isFull = false;
-  List<String> userIsBlockedBy = [];
+
   List<Bono> eventBonos = [];
-  List<Usuario> allUsers = [];
-  List<Usuario> allTrainers = [];
-  List<Usuario> eventTrainers = [];
-  List<Usuario> eventClients = [];
-  List<double?> eventClientsFeedback = [];
-  List<String> eventTrainersIds = [];
-  List<bool> eventTrainersBool = [];
+
   Location location = Location();
-  Location locationDet = Location();
-  GoogleMapController? mapController;
-  bool appBarExpanded = false;
-  List<Usuario> originalTrainers = [];
-  List<Usuario> originalClients = [];
   List<Usuario> brandTrainersSelected = [];
   List<Usuario> brandClientsSelected = [];
   List<Bono> allBonos = [];
   bool isBeforeEdit = true;
-  bool errorDate = false;
+  final _brandDataService = BrandDataService();
 
-  CrudEventCubit() : super(const CrudEventInitial());
+  CrudEventCubit()
+      : super(CrudEventLoaded(Event(), Event(), false, true, true));
 
-  void getEventInfo(String eventId, bool loadState) async {
-    if (event.id == '') {
-      emit(const CrudEventLoading());
-    } else if (eventId != event.id) {
-      emit(const CrudEventLoading());
-    }
-    print(event.title);
-    event = await _eventDataService.getSingleEvent(eventId);
+  Future<void> populateNewEvent(Event event) async {
+    state.oldEvent.setBasicData = event;
+    state.newEvent.setBasicData = event;
 
-    isFull = (event.numClients! / event.maxMembers! == 1);
-    await getUsersBlockedUser();
-    await getEventUsers();
-    await getEventBonos();
-    await getBrandBonos();
-    if (loadState) {
-      await getEventLocation(event.id!);
-    }
-    if (!loadState) {
-      await getEventLocationDet(event.id!);
-      await getEventMembers(event.id!);
-    }
-    await getLocation(event.locationId!);
-    //populateNewEvent();
-    emit(CrudEventLoaded(
-        event,
-        isFull,
-        userIsBlockedBy,
-        eventBonos,
-        eventTrainers,
-        eventClients,
-        eventClientsFeedback,
-        eventTrainersIds,
-        eventTrainersBool,
-        location,
-        mapController,
-        appBarExpanded,
-        originalTrainers,
-        originalClients,
-        brandTrainersSelected,
-        brandClientsSelected,
-        allBonos,
-        locationDet,
-        newEvent,
-        isBeforeEdit));
-  }
+    state.oldEvent.eventBonos = setEventBonosMap();
+    state.newEvent.eventBonos = setEventBonosMap();
 
-  void populateNewEvent(Event event) {
-    event = event;
-    newEvent.setBasicData = event;
-    newEvent.eventBonos = setEventBonosMap();
-    newEvent.startDate = DateTime(
+    state.oldEvent.startDate = DateTime(
       int.parse(event.year!),
       int.parse(event.month!),
       int.parse(event.day!),
       int.parse(event.hour!),
       int.parse(event.minute!),
     );
+    state.newEvent.startDate = DateTime(
+      int.parse(event.year!),
+      int.parse(event.month!),
+      int.parse(event.day!),
+      int.parse(event.hour!),
+      int.parse(event.minute!),
+    );
+
     isBeforeEdit = true;
-    if (newEvent.startDate.isBefore(DateTime.now())) {
+    if (state.newEvent.startDate.isBefore(DateTime.now())) {
       isBeforeEdit = false;
     }
-    newEvent.selectedTrainers = eventTrainers;
-    newEvent.maxMembers = event.maxMembers;
-    newEvent.joinedMembers = brandClientsSelected;
 
-    emit(CrudEventLoaded(
-        event,
-        isFull,
-        userIsBlockedBy,
-        eventBonos,
-        eventTrainers,
-        eventClients,
-        eventClientsFeedback,
-        eventTrainersIds,
-        eventTrainersBool,
-        location,
-        mapController,
-        appBarExpanded,
-        originalTrainers,
-        originalClients,
-        brandTrainersSelected,
-        brandClientsSelected,
-        allBonos,
-        locationDet,
-        newEvent,
-        isBeforeEdit));
+    state.oldEvent.location = event.location;
+    state.newEvent.location = event.location;
+
+    state.oldEvent.selectedTrainers = event.selectedTrainers;
+    state.oldEvent.maxMembers = event.maxMembers;
+    state.oldEvent.joinedMembers = event.joinedMembers;
+
+    state.newEvent.selectedTrainers = event.selectedTrainers;
+    state.newEvent.maxMembers = event.maxMembers;
+    state.newEvent.joinedMembers = event.joinedMembers;
+
+    await getAllBonos();
+    state.oldEvent.eventBonos = setEventBonosMap();
+    state.newEvent.eventBonos = setEventBonosMap();
+
+    emit(state.copyWith(
+        oldEvent: state.oldEvent,
+        newEvent: state.newEvent,
+        isLoaded: true,
+        isNew: false,
+        isBeforeEdit: isBeforeEdit));
   }
 
   Map<Bono, bool> setEventBonosMap() {
@@ -149,40 +96,33 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   }
 
   void resetNewEvent() {
-    newEvent.setBasicData = event;
+    emit(state.copyWith(
+        oldEvent: Event(),
+        newEvent: Event(),
+        isLoaded: false,
+        isNew: true,
+        isBeforeEdit: true));
+  }
 
-    emit(CrudEventLoaded(
-        event,
-        isFull,
-        userIsBlockedBy,
-        eventBonos,
-        eventTrainers,
-        eventClients,
-        eventClientsFeedback,
-        eventTrainersIds,
-        eventTrainersBool,
-        location,
-        mapController,
-        appBarExpanded,
-        originalTrainers,
-        originalClients,
-        brandTrainersSelected,
-        brandClientsSelected,
-        allBonos,
-        locationDet,
-        newEvent,
-        isBeforeEdit));
+  Future<void> getAllBonos() async {
+    allBonos =
+        await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    allBonos.removeWhere((element) => element.isActive == false);
+    allBonos.sort((a, b) {
+      var aSessions = a.sessions;
+      var bSessions = b.sessions;
+      return aSessions!.compareTo(bSessions!);
+    });
   }
 
   Future<void> editEventInfo(var varToChange, EditEventType editEventType,
       [Bono? bono]) async {
-    //emit(const CrudEventLoading());
     switch (editEventType) {
       case EditEventType.title:
-        newEvent.title = varToChange;
+        state.newEvent.title = varToChange;
         break;
       case EditEventType.description:
-        newEvent.description = varToChange;
+        state.newEvent.description = varToChange;
         break;
       case EditEventType.location:
         await getLocation(varToChange);
@@ -195,36 +135,36 @@ class CrudEventCubit extends Cubit<CrudEventState> {
         }
         break;
       case EditEventType.startDate:
-        errorDate = false;
-        newEvent.startDate = DateTime(
+        //errorDate = false;
+        state.newEvent.startDate = DateTime(
           varToChange.year,
           varToChange.month,
           varToChange.day,
-          newEvent.startDate.hour,
-          newEvent.startDate.minute,
+          state.newEvent.startDate.hour,
+          state.newEvent.startDate.minute,
         );
         break;
       case EditEventType.time:
-        errorDate = false;
-        newEvent.startDate = DateTime(
-          newEvent.startDate.year,
-          newEvent.startDate.month,
-          newEvent.startDate.day,
+        //errorDate = false;
+        state.newEvent.startDate = DateTime(
+          state.newEvent.startDate.year,
+          state.newEvent.startDate.month,
+          state.newEvent.startDate.day,
           varToChange.hour,
           varToChange.minute,
         );
         break;
       case EditEventType.duration:
-        newEvent.duration = varToChange;
+        state.newEvent.duration = varToChange;
         break;
       case EditEventType.trainers:
-        newEvent.selectedTrainers = varToChange;
+        state.newEvent.selectedTrainers = varToChange;
         break;
       case EditEventType.clients:
-        newEvent.joinedMembers = varToChange;
+        state.newEvent.joinedMembers = varToChange;
         break;
       case EditEventType.maxMembers:
-        (state as CrudEventLoaded).newEvent.maxMembers = varToChange;
+        state.newEvent.maxMembers = varToChange;
         break;
 
       /*
@@ -236,111 +176,23 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       values[startDate.weekday - 1] = true;
     }*/
     }
-    emit(CrudEventLoaded(
-        event,
-        isFull,
-        userIsBlockedBy,
-        eventBonos,
-        eventTrainers,
-        eventClients,
-        eventClientsFeedback,
-        eventTrainersIds,
-        eventTrainersBool,
-        location,
-        mapController,
-        appBarExpanded,
-        originalTrainers,
-        originalClients,
-        brandTrainersSelected,
-        brandClientsSelected,
-        allBonos,
-        locationDet,
-        (state as CrudEventLoaded).newEvent,
-        isBeforeEdit));
+
+    Event _newEvent = Event();
+    _newEvent.setUpdatedBasicData = state.newEvent;
+
+    emit(state.copyWith(
+        oldEvent: state.oldEvent,
+        newEvent: _newEvent,
+        isLoaded: true,
+        isNew: false,
+        isBeforeEdit: isBeforeEdit));
   }
 
   @override
-  void onChange(Change<CrudEventState> change) {
+  void onChange(Change<CrudEventLoaded> change) {
     super.onChange(change);
     log(change.currentState.toString());
     log(change.nextState.toString());
-  }
-
-  void setAppBarExpanded(bool isAppBarExpanded) {
-    appBarExpanded = isAppBarExpanded;
-    emit(CrudEventLoaded(
-        event,
-        isFull,
-        userIsBlockedBy,
-        eventBonos,
-        eventTrainers,
-        eventClients,
-        eventClientsFeedback,
-        eventTrainersIds,
-        eventTrainersBool,
-        location,
-        mapController,
-        appBarExpanded,
-        originalTrainers,
-        originalClients,
-        brandTrainersSelected,
-        brandClientsSelected,
-        allBonos,
-        locationDet,
-        newEvent,
-        isBeforeEdit));
-  }
-
-  Future<void> getUsersBlockedUser() async {
-    userIsBlockedBy = await _userDataService.getBlockedByUsers(currentUser.id!);
-  }
-
-  Future<void> getEventBonos() async {
-    eventBonos =
-        await _eventDataService.getEventBonos(event.id!, currentBrand.id!);
-    eventBonos.sort((a, b) {
-      var aSessions = a.sessions;
-      var bSessions = b.sessions;
-      return aSessions!.compareTo(bSessions!);
-    });
-  }
-
-  Future<void> getEventUsers() async {
-    allUsers = await _eventDataService.getEventUsers(event!.id!);
-    allTrainers = await _brandDataService.getBrandTrainers(currentBrand.id!);
-    List<Usuario> trainers = [];
-    List<String> trainersIds = [];
-    List<Usuario> clients = [];
-    for (var i = 0; i < allUsers.length; i++) {
-      var user = allUsers[i];
-      if (user.isTrainer!) {
-        if (currentUser.id! == user.id!) {
-          // User has joined the event
-          trainers.insert(0, user);
-          trainersIds.insert(0, user.id!);
-        } else {
-          trainers.add(user);
-          trainersIds.add(user.id!);
-        }
-      } else {
-        clients.add(user);
-        double? feedbackClient =
-            await _eventDataService.getEventUserFeedback(event!.id!, user.id!);
-        eventClientsFeedback.add(feedbackClient);
-      }
-    }
-    eventTrainersBool = [];
-    for (var i = 0; i < allTrainers.length; i++) {
-      var trainer = allTrainers[i];
-      if (trainersIds.contains(trainer.id!)) {
-        eventTrainersBool.add(true);
-      } else {
-        eventTrainersBool.add(false);
-      }
-    }
-    eventTrainers = trainers;
-    eventTrainersIds = trainersIds;
-    eventClients = clients;
   }
 
   Future<void> getEventMembers(String eventId) async {
@@ -348,42 +200,15 @@ class CrudEventCubit extends Cubit<CrudEventState> {
     for (var m in members) {
       if (m.isTrainer!) {
         brandTrainersSelected.add(m);
-        originalTrainers.add(m);
       } else {
         brandClientsSelected.add(m);
-        originalClients.add(m);
       }
     }
   }
 
-  Future<void> getBrandBonos() async {
-    allBonos =
-        await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
-    allBonos.removeWhere((element) => element.isActive == false);
-    allBonos.sort((a, b) {
-      var aSessions = a.sessions;
-      var bSessions = b.sessions;
-      return aSessions!.compareTo(bSessions!);
-    });
-  }
-
-  Future<void> getEventLocation(String eventId) async {
-    location = await _eventDataService.getEventLocation(eventId);
-    event.locationId = location.id!;
-    location.initialPosition =
-        CameraPosition(target: LatLng(location.latitude!, location.longitude!));
-    Marker marker = Marker(
-      markerId: const MarkerId('1'),
-      position: LatLng(location.latitude!, location.longitude!),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-      onTap: () {},
-    );
-    location.markers!.add(marker);
-  }
-
   Future<void> getEventLocationDet(String eventId) async {
     location = await _locationDataService.getSingleLocation(location.id!);
-    event.locationId = location.id!;
+    //event.locationId = location.id!;
     location.initialPosition =
         CameraPosition(target: LatLng(location.latitude!, location.longitude!));
     Marker marker = Marker(
@@ -396,9 +221,9 @@ class CrudEventCubit extends Cubit<CrudEventState> {
   }
 
   Future<void> getLocation(String locationId) async {
-    newEvent.location =
+    state.newEvent.location =
         await _locationDataService.getSingleLocation(locationId);
-    newEvent.location.initialPosition =
+    state.newEvent.location.initialPosition =
         CameraPosition(target: LatLng(location.latitude!, location.longitude!));
     Marker marker = Marker(
       markerId: const MarkerId('1'),
@@ -406,17 +231,17 @@ class CrudEventCubit extends Cubit<CrudEventState> {
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
     );
-    newEvent.location.markers!.add(marker);
+    state.newEvent.location.markers!.add(marker);
   }
 
   void setBonoSelectedUnselected(Bono bono) async {
-    if (newEvent.eventBonos.containsKey(bono)) {
+    if (state.newEvent.eventBonos.containsKey(bono)) {
       // Toggle the value associated with the bono key
-      newEvent.eventBonos[bono] = !newEvent.eventBonos[bono]!;
+      state.newEvent.eventBonos[bono] = !state.newEvent.eventBonos[bono]!;
     }
   }
 
   void setAllTrue() {
-    newEvent.eventBonos.updateAll((key, value) => true);
+    state.newEvent.eventBonos.updateAll((key, value) => true);
   }
 }

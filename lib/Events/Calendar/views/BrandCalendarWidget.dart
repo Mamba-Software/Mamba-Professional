@@ -12,8 +12,9 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/AddOrEditEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/views/mobile/AddOrEditEvent.dart';
 import 'package:mamba_castelldefels/Events/cubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
@@ -262,7 +263,9 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                   dateTime: eventDate,
                   isBeforeEdit: true),
             ),
-          ));
+          )).whenComplete(() {
+        context.read<CrudEventCubit>().resetNewEvent();
+      });
     }
   }
 

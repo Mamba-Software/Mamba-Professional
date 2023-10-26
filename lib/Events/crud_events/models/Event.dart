@@ -36,6 +36,7 @@ class Event {
   String? brandName;
   String? brandLogo;
   Map<Bono, bool> eventBonos = {};
+  List<Bono> allBonos = [];
   DateTime startDate = DateTime.now();
   List<Usuario> usersList = [];
   List<Brand> brandsList = [];
@@ -282,6 +283,34 @@ class Event {
     joinedMembers = event.joinedMembers;
     selectedTrainers = event.selectedTrainers;
     bonos = event.bonos;
+  }
+
+  // Set Basic Data
+  set setUpdatedBasicData(Event event) {
+    creatorID = event.creatorID;
+    brandID = event.brandID;
+    title = event.title;
+    imageUrl = event.imageUrl;
+    description = event.description;
+    year = event.year;
+    month = event.month;
+    day = event.day;
+    hour = event.hour;
+    minute = event.minute;
+    duration = event.duration;
+    locationId = event.locationId;
+    numClients = event.numClients;
+    numTrainers = event.numTrainers;
+    maxMembers = event.maxMembers;
+    intensityScore = event.intensityScore;
+    averageIntensityScore = event.averageIntensityScore;
+    feedbackEntries = event.feedbackEntries;
+    joinedMembers = event.joinedMembers;
+    selectedTrainers = event.selectedTrainers;
+    bonos = event.bonos;
+    eventBonos = event.eventBonos;
+    location = event.location;
+    startDate = event.startDate;
   }
 
   // Users

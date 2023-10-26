@@ -9,21 +9,27 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/D
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateEvent/TimeEventWidget.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateTimeEventWidget.dart';
 
-Event event = Event();
+class DateEventSelector extends StatelessWidget {
+  final Locale locale;
+  const DateEventSelector({super.key, required this.locale});
 
-Widget dateEventSelector(BuildContext context, Locale locale) {
-  return BlocSelector<CrudEventCubit, CrudEventState, DateTime>(
-      selector: (state) {
-    if (state is CrudEventLoaded) {
-      return state.newEvent.startDate;
-    }
-    return DateTime.now();
-  }, builder: (context, startDate) {
-    return Column(
-      children: [
-        dateEventWidget(context, startDate, isBeforeEdit, locale),
-        timeEventWidget(context, startDate, isBeforeEdit, locale),
-      ],
-    );
-  });
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<CrudEventCubit, CrudEventLoaded, DateTime>(
+        selector: (state) {
+      if (state.isLoaded) {
+        return state.newEvent.startDate;
+      }
+      return DateTime.now();
+    }, builder: (context, startDate) {
+      return Column(
+        children: [
+          dateEventWidget(context, startDate,
+              context.read<CrudEventCubit>().state.isBeforeEdit, locale),
+          timeEventWidget(context, startDate,
+              context.read<CrudEventCubit>().state.isBeforeEdit, locale),
+        ],
+      );
+    });
+  }
 }

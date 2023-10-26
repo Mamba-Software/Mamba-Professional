@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
@@ -13,38 +10,24 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
-import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 part 'ReadEventState.dart';
 
 class ReadEventCubit extends Cubit<ReadEventLoaded> {
   final _eventDataService = EventDataService();
-  final _brandDataService = BrandDataService();
   final _userDataService = UserDataService();
   final _locationDataService = LocationDataService();
+
   Event event = Event();
-  Event newEvent = Event();
-  bool isFull = false;
   List<String> userIsBlockedBy = [];
   List<Bono> eventBonos = [];
-  List<Usuario> allUsers = [];
-  List<Usuario> allTrainers = [];
-  List<Usuario> eventTrainers = [];
-  List<Usuario> eventClients = [];
   List<double?> eventClientsFeedback = [];
-  List<String> eventTrainersIds = [];
-  List<bool> eventTrainersBool = [];
   Location location = Location();
-  Location locationDet = Location();
-  GoogleMapController? mapController;
-  bool appBarExpanded = false;
-  List<Usuario> originalTrainers = [];
-  List<Usuario> originalClients = [];
+
   List<Usuario> brandTrainersSelected = [];
   List<Usuario> brandClientsSelected = [];
-  List<Bono> allBonos = [];
+
   bool isBeforeEdit = true;
-  bool errorDate = false;
 
   ReadEventCubit(String eventId)
       : super(ReadEventLoaded(Event(), false, const [], const [])) {
@@ -113,7 +96,8 @@ class ReadEventCubit extends Cubit<ReadEventLoaded> {
   }
 
   Future<void> getEventLocation(String eventId) async {
-    location = await _eventDataService.getEventLocation(eventId);
+    location = await _eventDataService.getEventLocation(event.id!);
+    location = await _locationDataService.getSingleLocation(location.id!);
     event.locationId = location.id!;
     location.initialPosition =
         CameraPosition(target: LatLng(location.latitude!, location.longitude!));

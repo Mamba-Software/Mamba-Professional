@@ -12,28 +12,24 @@ import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationLoading.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationWidget.dart';
 
-Set<Marker> markers = <Marker>{};
-CameraPosition _initialPosition =
-    const CameraPosition(target: LatLng(26.8206, 30.8025));
-GoogleMapController? mapController;
-final Completer<GoogleMapController> _controller = Completer();
-Location location = Location();
-Event event = Event();
+class LocationBlocSelector extends StatelessWidget {
+  const LocationBlocSelector({super.key});
 
-Widget locationBlocSelector() {
-  return BlocSelector<CrudEventCubit, CrudEventState, Location>(
-      selector: (state) {
-    if (state is CrudEventLoaded) {
-      location = state.newEvent.location;
-      return location;
-    }
-    return Location();
-  }, builder: (context, locationCubit) {
-    if (locationCubit.id == null) {
-      return locationLoading(context);
-    }
-    return LocationWidget(
-      location: locationCubit,
-    );
-  });
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<CrudEventCubit, CrudEventLoaded, Location>(
+        selector: (state) {
+      if (state.isLoaded) {
+        return state.newEvent.location;
+      }
+      return Location();
+    }, builder: (context, locationCubit) {
+      if (locationCubit.id == null) {
+        return locationLoading(context);
+      }
+      return LocationWidget(
+        location: locationCubit,
+      );
+    });
+  }
 }

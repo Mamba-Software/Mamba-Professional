@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+/*import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
@@ -15,7 +15,7 @@ class EventPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<CrudEventCubit>().getEventInfo(eventId, true);
+    //context.read<CrudEventCubit>().getEventInfo(eventId, true);
     return currentUser.isTrainer! && (onlyView == false || onlyView == null)
         ? EventPageTrainer()
         : EventPageClient(
@@ -23,4 +23,4 @@ class EventPage extends StatelessWidget {
             onlyView: onlyView,
           );
   }
-}
+}*/
