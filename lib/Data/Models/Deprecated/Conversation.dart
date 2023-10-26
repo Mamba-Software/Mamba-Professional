@@ -1,5 +1,4 @@
 // This class represents the Object <Question> that will be showed in the FeedBack Screen.
-import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -17,8 +16,14 @@ class Conversation {
   var isMessageRead;
 
   Conversation(
-      { this.users, required this.year, required this.month, required this.day, required this.hour, required this.minute, required this.second, this.isMessageRead});
-
+      {this.users,
+      required this.year,
+      required this.month,
+      required this.day,
+      required this.hour,
+      required this.minute,
+      required this.second,
+      this.isMessageRead});
 
   Conversation.fromMap(Map<String, dynamic> mapData, String documentId) {
     this.conversationId = documentId;
@@ -34,7 +39,8 @@ class Conversation {
     this.isMessageRead = mapData['messagesRead'];
   }
 
-  Conversation.fromObject(DocumentSnapshot documentSnapshot, String documentId) {
+  Conversation.fromObject(
+      DocumentSnapshot documentSnapshot, String documentId) {
     this.conversationId = documentId;
     this.users = documentSnapshot.get("users");
     this.year = documentSnapshot.get("year").toString();
@@ -47,6 +53,4 @@ class Conversation {
     this.second = documentSnapshot.get("second").toString();
     this.isMessageRead = documentSnapshot.get("messagesRead");
   }
-
-
 }
