@@ -21,10 +21,8 @@ class EventBonosBlocSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<CrudEventCubit, CrudEventLoaded, Map<Bono, bool>>(
         selector: (state) {
-      if (state.isLoaded) {
-        return state.newEvent.eventBonos;
-      }
-      return {};
+      Map<Bono, bool> newEventBonos = Map.from(state.newEvent.eventBonos!);
+      return newEventBonos;
     }, builder: (context, eventBonosMap) {
       return eventBonosWidget(context, eventBonosMap);
     });

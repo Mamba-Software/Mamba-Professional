@@ -17,10 +17,7 @@ class DateEventSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<CrudEventCubit, CrudEventLoaded, DateTime>(
         selector: (state) {
-      if (state.isLoaded) {
-        return state.newEvent.startDate;
-      }
-      return DateTime.now();
+      return state.newEvent.startDate!;
     }, builder: (context, startDate) {
       return Column(
         children: [

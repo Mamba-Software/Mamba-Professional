@@ -16,16 +16,15 @@ class DurationEventSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isBeforeEdit = context.read<CrudEventCubit>().state.isBeforeEdit;
     return BlocSelector<CrudEventCubit, CrudEventLoaded, double>(
         selector: (state) {
-      if (state.isLoaded) {
-        return state.newEvent.duration!;
-      }
-      return 1.00;
+      return state.newEvent.duration!;
     }, builder: (context, duration) {
       return Column(
-        children: [durationEventWidget(context, duration, isBeforeEdit)],
+        children: [
+          durationEventWidget(context, duration,
+              context.read<CrudEventCubit>().state.isBeforeEdit)
+        ],
       );
     });
   }

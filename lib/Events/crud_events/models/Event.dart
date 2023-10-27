@@ -1,8 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // This class represents the Object <Event> that will be showed in the Sesions Widget.
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
+
 import '../../../Data/Models/Usuario.dart';
 
 class Event {
@@ -35,12 +38,12 @@ class Event {
   var bonos;
   String? brandName;
   String? brandLogo;
-  Map<Bono, bool> eventBonos = {};
-  List<Bono> allBonos = [];
-  DateTime startDate = DateTime.now();
+  Map<Bono, bool>? eventBonos;
+  List<Bono>? allBonos;
+  DateTime? startDate;
   List<Usuario> usersList = [];
-  List<Brand> brandsList = [];
-  Location location = Location();
+  List<Brand>? brandsList = [];
+  Location? location;
 
   Event({
     this.id,
@@ -70,6 +73,12 @@ class Event {
     this.joinedMembers,
     this.selectedTrainers,
     this.bonos,
+    this.allBonos,
+    this.location,
+    this.startDate,
+    this.brandName,
+    this.brandLogo,
+    this.eventBonos,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -285,34 +294,6 @@ class Event {
     bonos = event.bonos;
   }
 
-  // Set Basic Data
-  set setUpdatedBasicData(Event event) {
-    creatorID = event.creatorID;
-    brandID = event.brandID;
-    title = event.title;
-    imageUrl = event.imageUrl;
-    description = event.description;
-    year = event.year;
-    month = event.month;
-    day = event.day;
-    hour = event.hour;
-    minute = event.minute;
-    duration = event.duration;
-    locationId = event.locationId;
-    numClients = event.numClients;
-    numTrainers = event.numTrainers;
-    maxMembers = event.maxMembers;
-    intensityScore = event.intensityScore;
-    averageIntensityScore = event.averageIntensityScore;
-    feedbackEntries = event.feedbackEntries;
-    joinedMembers = event.joinedMembers;
-    selectedTrainers = event.selectedTrainers;
-    bonos = event.bonos;
-    eventBonos = event.eventBonos;
-    location = event.location;
-    startDate = event.startDate;
-  }
-
   // Users
   set setUserList(List<Usuario> userList) {
     usersList = userList;
@@ -331,5 +312,78 @@ class Event {
   // Locations
   set setBrandId(String brandID) {
     this.brandID = brandID;
+  }
+
+  Event copyWith({
+    String? id,
+    String? eventGroupId,
+    String? creatorID,
+    String? brandID,
+    bool? isPrivate,
+    String? title,
+    String? imageUrl,
+    String? description,
+    Timestamp? doneAt,
+    Timestamp? createdAt,
+    String? year,
+    String? month,
+    String? day,
+    String? hour,
+    String? minute,
+    double? duration,
+    String? locationId,
+    int? numClients,
+    int? numTrainers,
+    int? maxMembers,
+    int? placesLeft,
+    double? intensityScore,
+    double? averageIntensityScore,
+    int? feedbackEntries,
+    var joinedMembers,
+    var selectedTrainers,
+    var bonos,
+    String? brandName,
+    String? brandLogo,
+    Map<Bono, bool>? eventBonos,
+    List<Bono>? allBonos,
+    DateTime? startDate,
+    Location? location,
+  }) {
+    return Event(
+      id: id ?? this.id,
+      eventGroupId: eventGroupId ?? this.eventGroupId,
+      creatorID: creatorID ?? this.creatorID,
+      brandID: brandID ?? this.brandID,
+      isPrivate: isPrivate ?? this.isPrivate,
+      title: title ?? this.title,
+      imageUrl: imageUrl ?? this.imageUrl,
+      description: description ?? this.description,
+      doneAt: doneAt ?? this.doneAt,
+      createdAt: createdAt ?? this.createdAt,
+      year: year ?? this.year,
+      month: month ?? this.month,
+      day: day ?? this.day,
+      hour: hour ?? this.hour,
+      minute: minute ?? this.minute,
+      duration: duration ?? this.duration,
+      locationId: locationId ?? this.locationId,
+      numClients: numClients ?? this.numClients,
+      numTrainers: numTrainers ?? this.numTrainers,
+      maxMembers: maxMembers ?? this.maxMembers,
+      placesLeft: placesLeft ?? this.placesLeft,
+      intensityScore: intensityScore ?? this.intensityScore,
+      averageIntensityScore:
+          averageIntensityScore ?? this.averageIntensityScore,
+      feedbackEntries: feedbackEntries ?? this.feedbackEntries,
+      joinedMembers: joinedMembers ?? this.joinedMembers,
+      selectedTrainers: selectedTrainers ?? this.selectedTrainers,
+      bonos: bonos ?? this.bonos,
+      brandName: brandName ?? this.brandName,
+      brandLogo: brandLogo ?? this.brandLogo,
+      eventBonos: eventBonos ?? this.eventBonos,
+      allBonos: allBonos ?? this.allBonos,
+      startDate: startDate ?? this.startDate,
+      location: location ?? this.location,
+    );
   }
 }

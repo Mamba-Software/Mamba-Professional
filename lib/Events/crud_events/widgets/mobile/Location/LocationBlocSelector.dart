@@ -19,10 +19,7 @@ class LocationBlocSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<CrudEventCubit, CrudEventLoaded, Location>(
         selector: (state) {
-      if (state.isLoaded) {
-        return state.newEvent.location;
-      }
-      return Location();
+      return state.newEvent.location!;
     }, builder: (context, locationCubit) {
       if (locationCubit.id == null) {
         return locationLoading(context);

@@ -173,17 +173,17 @@ class _EventPageTrainerState extends State<EventPageTrainer>
     descriptionController.text = "${_event.description}";
     descriptionString = "${_event.description}";
 
-    location = _event.location;
+    location = _event.location!;
 
     if (currentUser.brandRole > 2) {
       canEdit = false;
     }
     startDateController.text = DateFormat(
             'EEEE d/M/y - HH:mm', Localizations.localeOf(context).languageCode)
-        .format(_event.startDate);
+        .format(_event.startDate!);
     datetitle =
         DateFormat('EEEE d MMMM', Localizations.localeOf(context).languageCode)
-            .format(_event.startDate);
+            .format(_event.startDate!);
     startDateController.text =
         StringUtils().toCapitalized(startDateController.text);
     duration = _event.duration!.toStringAsFixed(2);

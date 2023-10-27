@@ -9,9 +9,7 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAdd
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class TitleDescriptionWidget extends StatefulWidget {
-  BuildContext contextFrom;
-
-  TitleDescriptionWidget({required this.contextFrom});
+  TitleDescriptionWidget({super.key});
 
   @override
   _TitleDescriptionWidgetState createState() => _TitleDescriptionWidgetState();
@@ -24,6 +22,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
   String descriptionString = '';
   final FocusNode focusNodeDescController = FocusNode();
   FocusNode focusNodetitleController = FocusNode();
+  bool isLoading = true;
 
   @override
   initState() {
@@ -36,7 +35,6 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
       descriptionController.text = state.newEvent.description!;
       descriptionString = descriptionController.text;
     }
-
     //focusNodetitleController.requestFocus();
   }
 

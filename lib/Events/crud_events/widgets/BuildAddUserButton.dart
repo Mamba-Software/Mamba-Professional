@@ -30,8 +30,8 @@ Widget buildAddUserButton(
         final state = context.read<CrudEventCubit>().state;
         List<Bono> selectedBonos = [];
         if (state is CrudEventLoaded) {
-          selectedBonos = state.newEvent.eventBonos.keys
-              .where((key) => state.newEvent.eventBonos[key] == true)
+          selectedBonos = state.newEvent.eventBonos!.keys
+              .where((key) => state.newEvent.eventBonos![key] == true)
               .toList();
         }
         List<Usuario>? selectedClients = await Navigator.push(

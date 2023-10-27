@@ -12,10 +12,9 @@ class StaffEventSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<CrudEventCubit, CrudEventLoaded, List<Usuario>>(
         selector: (state) {
-      if (state.isLoaded) {
-        return state.newEvent.selectedTrainers;
-      }
-      return [];
+      List<Usuario> selectedTrainers =
+          List.from(state.newEvent.selectedTrainers!);
+      return selectedTrainers;
     }, builder: (context, brandTrainersSelected) {
       return Column(
         children: [

@@ -57,9 +57,9 @@ Widget clientEventWidget(
                             final state = context.read<CrudEventCubit>().state;
                             List<Bono> selectedBonos = [];
                             if (state.isLoaded) {
-                              selectedBonos = state.newEvent.eventBonos.keys
+                              selectedBonos = state.newEvent.eventBonos!.keys
                                   .where((key) =>
-                                      state.newEvent.eventBonos[key] == true)
+                                      state.newEvent.eventBonos![key] == true)
                                   .toList();
                             }
                             if (selectedBonos.isNotEmpty &&
@@ -171,7 +171,7 @@ Widget clientEventWidget(
       //JMF_AddUser_END
       dividerAddEditEvent(
           context,
-          AppLocalizations.of(context)!.staff +
+          AppLocalizations.of(context)!.clients +
               "    ( " +
               brandClientsSelected.length.toString() +
               " )"),

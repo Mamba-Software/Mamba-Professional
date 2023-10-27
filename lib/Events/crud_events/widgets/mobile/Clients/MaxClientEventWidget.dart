@@ -14,71 +14,55 @@ Widget maxClientEventWidget(BuildContext context, int eventMaxMembers) {
   return Column(
     children: [
       Padding(
-          padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.02,
-              left: MediaQuery.of(context).size.width * 0.05,
-              right: MediaQuery.of(context).size.width * 0.05),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    AppLocalizations.of(context)!.clients,
-                    style: Theme.of(context).textTheme.headline1,
-                  ),
-                ],
-              ),
-            ],
-          )),
-      Padding(
-        padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.height * 0.01,
-            left: MediaQuery.of(context).size.width * 0.05,
-            right: MediaQuery.of(context).size.width * 0.05),
-        child: GestureDetector(
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.01,
+          horizontal: MediaQuery.of(context).size.width * 0.05,
+        ),
+        child: InkWell(
           onTap: () {
             selectNumberOfMembers(context, eventMaxMembers);
           },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Icon(
-                Icons.person,
-                color: AppColors.grey,
-                size: MediaQuery.of(context).size.width * 0.08,
-              ),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.04),
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.05,
-                child: TextFormField(
-                  controller: membersController,
-                  readOnly: true,
-                  enabled: false,
-                  style: Theme.of(context).textTheme.bodyText2,
-                  decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.zero),
-                  textAlign: TextAlign.start,
+          borderRadius: BorderRadius.circular(8.0),
+          child: Container(
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
+            decoration: BoxDecoration(
+              border: Border.all(color: AppColors.grey, width: 1.0),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Row(
+              children: <Widget>[
+                Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.person,
+                      color: AppColors.grey,
+                      size: MediaQuery.of(context).size.width * 0.1,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: CircleAvatar(
+                        backgroundColor: AppColors.red,
+                        radius: MediaQuery.of(context).size.width * 0.025,
+                        child: Text(
+                          membersController.text,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: MediaQuery.of(context).size.width * 0.03,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Text(
-                membersController.text == "1"
-                    ? AppLocalizations.of(context)!
-                        .asistants
-                        .toLowerCase()
-                        .substring(0,
-                            AppLocalizations.of(context)!.asistants.length - 1)
-                    : AppLocalizations.of(context)!.asistants.toLowerCase(),
-                style: Theme.of(context).textTheme.bodyText2,
-              ),
-            ],
+                SizedBox(width: MediaQuery.of(context).size.width * 0.04),
+                Text(
+                  AppLocalizations.of(context)!.maxNumberClients.toLowerCase(),
+                  style: Theme.of(context).textTheme.bodyText2,
+                ),
+              ],
+            ),
           ),
         ),
       ),

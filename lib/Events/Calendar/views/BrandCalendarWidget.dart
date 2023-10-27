@@ -236,6 +236,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
   }
 
   Future<void> _addEvent(DateTime dateTime) async {
+    context.read<CrudEventCubit>().createNewEvent();
     if (!brandIsActive) {
       await navigateToPayWall(context);
     } else {

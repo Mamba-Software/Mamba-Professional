@@ -56,7 +56,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     );
 
     isBeforeEdit = true;
-    if (state.newEvent.startDate.isBefore(DateTime.now())) {
+    if (state.newEvent.startDate!.isBefore(DateTime.now())) {
       isBeforeEdit = false;
     }
 
@@ -81,6 +81,30 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isLoaded: true,
         isNew: false,
         isBeforeEdit: isBeforeEdit));
+  }
+
+  Future<void> createNewEvent() async {
+    late Event event = Event();
+
+    event = event.copyWith(title: '');
+    event = event.copyWith(description: '');
+    event =
+        event.copyWith(location: await getLocation(currentBrand.baseLocation!));
+    await getAllBonos();
+    event.eventBonos = setEventBonosMap();
+    event =
+        event.copyWith(startDate: state.newEvent.startDate = DateTime.now());
+    event = event.copyWith(duration: 1);
+    event = event.copyWith(selectedTrainers: [currentUser]);
+    event = event.copyWith(selectedTrainers: []);
+    event = event.copyWith(maxMembers: 1);
+
+    emit(state.copyWith(
+        newEvent: event,
+        oldEvent: event,
+        isLoaded: true,
+        isNew: true,
+        isBeforeEdit: true));
   }
 
   Map<Bono, bool> setEventBonosMap() {
@@ -117,54 +141,59 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   Future<void> editEventInfo(var varToChange, EditEventType editEventType,
       [Bono? bono]) async {
+    late Event event = Event();
     switch (editEventType) {
       case EditEventType.title:
-        state.newEvent.title = varToChange;
+        event = state.newEvent.copyWith(title: varToChange);
         break;
       case EditEventType.description:
-        state.newEvent.description = varToChange;
+        event = state.newEvent.copyWith(description: varToChange);
         break;
       case EditEventType.location:
-        await getLocation(varToChange);
+        event =
+            state.newEvent.copyWith(location: await getLocation(varToChange));
         break;
       case EditEventType.bonos:
         if (varToChange == 'AllBonos') {
-          setAllTrue();
+          event = state.newEvent.copyWith(eventBonos: setAllTrue());
         } else {
-          setBonoSelectedUnselected(bono!);
+          event = state.newEvent
+              .copyWith(eventBonos: setBonoSelectedUnselected(bono!));
         }
         break;
       case EditEventType.startDate:
         //errorDate = false;
-        state.newEvent.startDate = DateTime(
+        event = state.newEvent.copyWith(
+            startDate: state.newEvent.startDate = DateTime(
           varToChange.year,
           varToChange.month,
           varToChange.day,
-          state.newEvent.startDate.hour,
-          state.newEvent.startDate.minute,
-        );
+          state.newEvent.startDate!.hour,
+          state.newEvent.startDate!.minute,
+        ));
         break;
       case EditEventType.time:
-        //errorDate = false;
-        state.newEvent.startDate = DateTime(
-          state.newEvent.startDate.year,
-          state.newEvent.startDate.month,
-          state.newEvent.startDate.day,
+        event = state.newEvent.copyWith(
+            startDate: state.newEvent.startDate = DateTime(
+          state.newEvent.startDate!.year,
+          state.newEvent.startDate!.month,
+          state.newEvent.startDate!.day,
           varToChange.hour,
           varToChange.minute,
-        );
+        ));
+        //errorDate = false;
         break;
       case EditEventType.duration:
-        state.newEvent.duration = varToChange;
+        event = state.newEvent.copyWith(duration: varToChange);
         break;
       case EditEventType.trainers:
-        state.newEvent.selectedTrainers = varToChange;
+        event = state.newEvent.copyWith(selectedTrainers: varToChange);
         break;
       case EditEventType.clients:
-        state.newEvent.joinedMembers = varToChange;
+        event = state.newEvent.copyWith(joinedMembers: varToChange);
         break;
       case EditEventType.maxMembers:
-        state.newEvent.maxMembers = varToChange;
+        event = state.newEvent.copyWith(maxMembers: varToChange);
         break;
 
       /*
@@ -177,15 +206,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }*/
     }
 
-    Event _newEvent = Event();
-    _newEvent.setUpdatedBasicData = state.newEvent;
-
-    emit(state.copyWith(
-        oldEvent: state.oldEvent,
-        newEvent: _newEvent,
-        isLoaded: true,
-        isNew: false,
-        isBeforeEdit: isBeforeEdit));
+    emit(state.copyWith(newEvent: event));
   }
 
   @override
@@ -220,10 +241,10 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     location.markers!.add(marker);
   }
 
-  Future<void> getLocation(String locationId) async {
-    state.newEvent.location =
-        await _locationDataService.getSingleLocation(locationId);
-    state.newEvent.location.initialPosition =
+  Future<Location> getLocation(String locationId) async {
+    Location location = Location();
+    location = await _locationDataService.getSingleLocation(locationId);
+    location.initialPosition =
         CameraPosition(target: LatLng(location.latitude!, location.longitude!));
     Marker marker = Marker(
       markerId: const MarkerId('1'),
@@ -231,17 +252,21 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
       onTap: () {},
     );
-    state.newEvent.location.markers!.add(marker);
+    location.markers!.add(marker);
+
+    return location;
   }
 
-  void setBonoSelectedUnselected(Bono bono) async {
-    if (state.newEvent.eventBonos.containsKey(bono)) {
+  Map<Bono, bool> setBonoSelectedUnselected(Bono bono) {
+    if (state.newEvent.eventBonos!.containsKey(bono)) {
       // Toggle the value associated with the bono key
-      state.newEvent.eventBonos[bono] = !state.newEvent.eventBonos[bono]!;
+      state.newEvent.eventBonos![bono] = !state.newEvent.eventBonos![bono]!;
     }
+    return state.newEvent.eventBonos!;
   }
 
-  void setAllTrue() {
-    state.newEvent.eventBonos.updateAll((key, value) => true);
+  Map<Bono, bool> setAllTrue() {
+    state.newEvent.eventBonos?.updateAll((key, value) => true);
+    return state.newEvent.eventBonos!;
   }
 }

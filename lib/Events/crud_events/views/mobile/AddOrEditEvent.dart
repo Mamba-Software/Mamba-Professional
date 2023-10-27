@@ -1,9 +1,11 @@
+import 'package:mamba_castelldefels/Events/crud_events/views/mobile/CrudEventPage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/EventBonosBlocSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/ClientEventSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateTimeEventWidget.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Staff/StaffEventSelector.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescriptionWidget.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionBlocSelector.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionWidget.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -103,14 +105,7 @@ class AddOrEditEvent extends StatelessWidget {
                                 MediaQuery.of(context).size.width * 0.05),
                         child: Column(
                           children: [
-                            TitleDescriptionWidget(
-                              contextFrom: context,
-                            ),
-                            const LocationBlocSelector(),
-                            DateTimeEventWidget(locale: locale),
-                            const EventBonosBlocSelector(),
-                            const StaffEventSelector(),
-                            const ClientEventSelector(),
+                            CrudEventPage(locale: locale),
                           ],
                         ),
                       ),
