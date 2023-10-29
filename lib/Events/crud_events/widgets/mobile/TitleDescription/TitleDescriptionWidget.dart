@@ -56,9 +56,8 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                         ? AppLocalizations.of(context)!.titleError
                         : null,
                     onChanged: (val) {
-                      context
-                          .read<CrudEventCubit>()
-                          .editEventInfo(titleString, EditEventType.title);
+                      context.read<CrudEventCubit>().editEventInfo(
+                          val, EditEventType.title, null, descriptionString);
                       setState(() {
                         titleString = val;
                       });
@@ -102,7 +101,8 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                 ),
               ],
             )),
-        dividerAddEditEvent(context, AppLocalizations.of(context)!.title),
+        dividerAddEditEvent(context, AppLocalizations.of(context)!.title,
+            validateText(titleString)),
         Padding(
             padding: const EdgeInsets.only(top: 0.0),
             child: Row(
@@ -117,7 +117,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                     maxLines: 4,
                     onChanged: (val) {
                       context.read<CrudEventCubit>().editEventInfo(
-                          descriptionString, EditEventType.description);
+                          val, EditEventType.description, null, titleString);
                       setState(() {
                         descriptionString = val;
                       });
@@ -143,10 +143,18 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                 ),
               ],
             )),
-        dividerAddEditEvent(context, AppLocalizations.of(context)!.description),
+        dividerAddEditEvent(context, AppLocalizations.of(context)!.description,
+            validateText(descriptionString)),
       ],
     );
   }
+}
+
+bool validateText(String text) {
+  if (text == "") {
+    return false;
+  }
+  return true;
 }
 
 

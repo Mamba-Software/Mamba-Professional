@@ -1,3 +1,5 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/CrudEventPage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/EventBonosBlocSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/ClientEventSelector.dart';
@@ -114,6 +116,62 @@ class AddOrEditEvent extends StatelessWidget {
             )),
         resizeToAvoidBottomInset: true,
       ),
+      floatingActionButton: BlocBuilder<CrudEventCubit, CrudEventLoaded>(
+          builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width * 0.01,
+                  left: MediaQuery.of(context).size.width * 0.09),
+              child: Container(
+                height: 50,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.01),
+              child: SizedBox(
+                height: 50,
+                child: FloatingActionButton.extended(
+                  heroTag: "48",
+                  onPressed: () async {
+                    if (state.isValidated.every((bool value) => value)) {
+                      if (state.isNew) {
+                        context
+                            .read<CrudEventCubit>()
+                            .addEventFunction(context, state.newEvent);
+                        Navigator.pop(context);
+                      }
+                    }
+                  },
+                  backgroundColor:
+                      state.isValidated.every((bool value) => value)
+                          ? Colors.green
+                          : Colors.grey,
+                  icon: Container(),
+                  label: eventId == null
+                      ? Text(
+                          AppLocalizations.of(context)!.createEvent,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: AppColors.white),
+                        )
+                      : Text(
+                          AppLocalizations.of(context)!.editEvent,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: AppColors.white),
+                        ),
+                ),
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 }

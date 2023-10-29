@@ -153,7 +153,8 @@ Widget staffEventWidget(
           AppLocalizations.of(context)!.staff +
               "    ( " +
               brandTrainersSelected.length.toString() +
-              " )"),
+              " )",
+          !errorNoTrainerSelected),
     ],
   );
 }

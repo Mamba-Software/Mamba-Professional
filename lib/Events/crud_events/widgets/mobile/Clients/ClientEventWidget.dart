@@ -174,7 +174,8 @@ Widget clientEventWidget(
           AppLocalizations.of(context)!.clients +
               "    ( " +
               brandClientsSelected.length.toString() +
-              " )"),
+              " )",
+          true),
     ],
   );
 }

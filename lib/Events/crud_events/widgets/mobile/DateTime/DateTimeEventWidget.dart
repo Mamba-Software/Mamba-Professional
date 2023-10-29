@@ -26,7 +26,6 @@ class DateTimeEventWidget extends StatelessWidget {
               child: Column(
                 children: [
                   DateEventSelector(locale: locale),
-                  DurationEventSelector(locale: locale),
                   /*
                 errorDate Padding(
                                       padding: const EdgeInsets.only(left: 25, right: 25, top: 10.0),
@@ -41,8 +40,6 @@ class DateTimeEventWidget extends StatelessWidget {
                                     */
                 ],
               )),
-          dividerAddEditEvent(
-              context, AppLocalizations.of(context)!.selectDayTime),
         ]);
   }
 }

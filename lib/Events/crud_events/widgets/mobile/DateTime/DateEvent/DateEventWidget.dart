@@ -72,7 +72,7 @@ Future selectDate(BuildContext context, DateTime startDate) async {
       context: context,
       builder: (_) => SelectDateDialog(
             title: AppLocalizations.of(context)!.selectDay,
-            startDate: startDateAux,
+            startDate: startDate,
             onlyFuture: true,
             dateOfWeek: true,
           ));

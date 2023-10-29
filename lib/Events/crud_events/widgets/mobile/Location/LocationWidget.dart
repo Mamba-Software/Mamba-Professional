@@ -135,7 +135,8 @@ class _LocationWidgetState extends State<LocationWidget> {
             ),
           ),
         ),
-        dividerAddEditEvent(context, AppLocalizations.of(context)!.location)
+        dividerAddEditEvent(
+            context, AppLocalizations.of(context)!.location, true)
       ],
     );
   }

@@ -38,7 +38,7 @@ Widget eventBonosWidget(BuildContext context, Map<Bono, bool> eventBonosMap) {
                       milliseconds: 700), // Duration of the animation
                 ),
                 dividerAddEditEvent(
-                    context, AppLocalizations.of(context)!.bonos),
+                    context, AppLocalizations.of(context)!.bonos, true),
               ],
             );
           })

@@ -34,7 +34,8 @@ Widget locationLoading(BuildContext context) {
           ],
         ),
       ),
-      dividerAddEditEvent(context, AppLocalizations.of(context)!.location),
+      dividerAddEditEvent(
+          context, AppLocalizations.of(context)!.location, true),
     ],
   );
 }

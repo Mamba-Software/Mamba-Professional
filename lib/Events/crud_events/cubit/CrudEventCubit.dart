@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataService.dart';
+import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -15,11 +17,19 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
 part 'CrudEventState.dart';
 
 class CrudEventCubit extends Cubit<CrudEventLoaded> {
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
+  final _purchaseDataService = PurchaseDataService();
+
+  // Notification Services
+  final NotificationService _notificationService = NotificationService();
+  final LocalNotificationService _localNotificationService =
+      LocalNotificationService();
 
   List<Bono> eventBonos = [];
 
@@ -31,14 +41,15 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   final _brandDataService = BrandDataService();
 
   CrudEventCubit()
-      : super(CrudEventLoaded(Event(), Event(), false, true, true));
+      : super(CrudEventLoaded(Event(), Event(), false, true,
+            const [false, false, false], false, false, true));
 
   Future<void> populateNewEvent(Event event) async {
     state.oldEvent.setBasicData = event;
     state.newEvent.setBasicData = event;
 
-    state.oldEvent.eventBonos = setEventBonosMap();
-    state.newEvent.eventBonos = setEventBonosMap();
+    state.oldEvent.eventBonos = _setEventBonosMap();
+    state.newEvent.eventBonos = _setEventBonosMap();
 
     state.oldEvent.startDate = DateTime(
       int.parse(event.year!),
@@ -71,94 +82,581 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     state.newEvent.maxMembers = event.maxMembers;
     state.newEvent.joinedMembers = event.joinedMembers;
 
-    await getAllBonos();
-    state.oldEvent.eventBonos = setEventBonosMap();
-    state.newEvent.eventBonos = setEventBonosMap();
+    await _getAllBonos();
+    state.oldEvent.eventBonos = _setEventBonosMap();
+    state.newEvent.eventBonos = _setEventBonosMap();
 
     emit(state.copyWith(
         oldEvent: state.oldEvent,
         newEvent: state.newEvent,
         isLoaded: true,
         isNew: false,
+        isPrivate: event.isPrivate,
+        isValidated: _validateEvent(state.newEvent, event.isPrivate!),
         isBeforeEdit: isBeforeEdit));
   }
 
-  Future<void> createNewEvent() async {
+  Future<void> createNewEvent(DateTime? dateTime, bool isPrivate) async {
     late Event event = Event();
+    DateTime startDate = DateTime.now();
+    List<Usuario> _selectedTrainer = [];
 
-    event = event.copyWith(title: '');
-    event = event.copyWith(description: '');
-    event =
-        event.copyWith(location: await getLocation(currentBrand.baseLocation!));
-    await getAllBonos();
-    event.eventBonos = setEventBonosMap();
-    event =
-        event.copyWith(startDate: state.newEvent.startDate = DateTime.now());
-    event = event.copyWith(duration: 1);
-    event = event.copyWith(selectedTrainers: [currentUser]);
-    event = event.copyWith(selectedTrainers: []);
-    event = event.copyWith(maxMembers: 1);
+    event.title = ""; // = event.copyWith(title: '');
+    event.description = ""; // = event.copyWith(description: '');
+    event.location = await _getLocation(currentBrand.baseLocation!);
+    //event.copyWith(location: await getLocation(currentBrand.baseLocation!));
+    await _getAllBonos();
+    event.eventBonos = _setEventBonosMap();
+
+    if (dateTime == null || dateTime.isBefore(DateTime.now())) {
+      startDate = DateTime(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+        startDate.hour + 1,
+        0,
+      );
+    } else {
+      startDate = DateTime(
+        dateTime.year,
+        dateTime.month,
+        dateTime.day,
+        dateTime.hour,
+        0,
+      );
+    }
+    event.startDate =
+        startDate; // = event.copyWith(startDate: state.newEvent.startDate = startDate);
+    event.duration = 1; // = event.copyWith(duration: 1);
+    _selectedTrainer.add(currentUser);
+    event.selectedTrainers =
+        _selectedTrainer; // = event.copyWith(selectedTrainers: _selectedTrainer);
+    event.joinedMembers = []; // = event.copyWith(joinedMembers: []);
+    event.maxMembers = 1; // event.copyWith(maxMembers: 1);
 
     emit(state.copyWith(
         newEvent: event,
         oldEvent: event,
         isLoaded: true,
         isNew: true,
+        isPrivate: isPrivate,
+        isValidated: _validateEvent(event, isPrivate),
         isBeforeEdit: true));
   }
 
-  Map<Bono, bool> setEventBonosMap() {
-    final Map<Bono, bool> bonosMap = {};
-
-    for (Bono bono in allBonos) {
-      // Check if the current bono exists in eventBonos
-      bool exists = eventBonos.any((eventBono) => eventBono == bono);
-      // Set the value in the map
-      bonosMap[bono] = exists;
-    }
-    return bonosMap;
+  Future<void> addEventFunction(BuildContext context, Event _event) async {
+    await _addEventFunction(context, _event);
   }
 
+  Future<void> _addEventFunction(BuildContext context, Event _event) async {
+    String eventImageUrl;
+    print(_event.title);
+
+    mixpanel!.timeEvent("add_event_completed");
+
+    // Get Random Photo if no Image Selected
+
+    eventImageUrl =
+        await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+
+    // Event Start Date
+    Timestamp doneAt = Timestamp.fromDate(_event.startDate!);
+
+    //Event Bonos
+    List<Bono> selectedBonos = _event.eventBonos!.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
+    if (!state.isRecurrent) {
+      // Creating Event Object
+      Event event = Event(
+        isPrivate: false,
+        title: _event.title,
+        description: _event.description,
+        imageUrl: eventImageUrl,
+        doneAt: doneAt,
+        createdAt: Timestamp.now(),
+        year: _event.startDate!.year.toString(),
+        month: _event.startDate!.month.toString(),
+        day: _event.startDate!.day.toString(),
+        hour: _event.startDate!.hour.toString(),
+        minute: _event.startDate!.minute.toString(),
+        duration: _event.duration!,
+        locationId: _event.location!.id,
+        numClients: _event.selectedTrainers.length,
+        numTrainers: _event.joinedMembers.length,
+        maxMembers: _event.maxMembers,
+      );
+      // Add Event
+      String eventId = await _addEventCall(event);
+      // Add Event Members
+      await _addEventTrainers(eventId, _event.selectedTrainers, context);
+      if (_event.joinedMembers.isNotEmpty) {
+        await _addEventClients(eventId, _event.joinedMembers as List<Usuario>,
+            selectedBonos, context);
+      }
+
+      // Add Event Bonos
+      _addEventBonosCall(eventId, selectedBonos);
+      mixpanel!.track('add_event_completed', properties: {
+        'descriptionLength': event.description!.length.toString(),
+        'isPrivate': false,
+        'isRecurrent': false,
+        'doneAt': event.doneAt!.toDate().toString(),
+        'duration': event.duration.toString(),
+        'numClients': event.numClients!.toString(),
+        'numTrainers': event.numTrainers!.toString(),
+        'maxMembers': event.maxMembers!.toString(),
+      });
+      // } else {
+      //   // Recurrent total
+      //   int days = values.where((item) => item == true).length;
+      //   totalEvents = days * _value;
+      //   if (_value == 3) {
+      //     totalEvents += days;
+      //   }
+      //   // Event Group Id
+      //   String eventGroupId = const Uuid().v1();
+      //   // First the First Event
+      //   Event event = Event(
+      //     isPrivate: false,
+      //     eventGroupId: eventGroupId,
+      //     title: titleController.text,
+      //     description: descriptionController.text,
+      //     imageUrl: eventImageUrl,
+      //     doneAt: doneAt,
+      //     createdAt: Timestamp.now(),
+      //     year: startDate.year.toString(),
+      //     month: startDate.month.toString(),
+      //     day: startDate.day.toString(),
+      //     hour: startDate.hour.toString(),
+      //     minute: startDate.minute.toString(),
+      //     duration: double.parse(duration),
+      //     locationId: location.id,
+      //     numClients: brandClientsSelected.length,
+      //     numTrainers: brandTrainersSelected.length,
+      //     maxMembers: eventMaxMembers,
+      //   );
+      //   // Add Event
+      //   String eventId = await _addEventCall(event);
+      //   // Add Event Members
+      //   await _addEventMembersCall(eventId, eventMembers);
+      //   // Add Event Bonos
+      //   _addEventBonosCall(eventId, selectedBonos);
+      //   // Start Recurrence
+      //   List<String> groupEventsIds = [eventId];
+      //   var tempDate = startDate.add(const Duration(days: 1));
+      //   var tempTimestamp = Timestamp.fromDate(tempDate);
+      //   var weekDay = tempDate.weekday;
+      //   if (_value == 1) {
+      //     // One Week
+      //     for (var i = 0; i < 6; i++) {
+      //       if (values[weekDay - 1]!) {
+      //         // Updating Loading Text
+      //         setState(() {
+      //           isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
+      //               " " +
+      //               AppLocalizations.of(context)!.events.toLowerCase() +
+      //               "... (" +
+      //               currentEvent.toString() +
+      //               "/" +
+      //               totalEvents.toString() +
+      //               ")";
+      //         });
+      //         currentEvent += 1;
+      //         // Change Image Url if IsRecurrent is Selected
+      //         if (isRandomImage) {
+      //           eventImageUrl =
+      //               await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+      //         }
+      //         // Event Object
+      //         event = Event(
+      //           isPrivate: false,
+      //           eventGroupId: eventGroupId,
+      //           title: titleController.text,
+      //           description: descriptionController.text,
+      //           imageUrl: eventImageUrl,
+      //           doneAt: tempTimestamp,
+      //           createdAt: Timestamp.now(),
+      //           year: tempDate.year.toString(),
+      //           month: tempDate.month.toString(),
+      //           day: tempDate.day.toString(),
+      //           hour: tempDate.hour.toString(),
+      //           minute: tempDate.minute.toString(),
+      //           duration: double.parse(duration),
+      //           locationId: location.id,
+      //           numClients: brandClientsSelected.length,
+      //           numTrainers: brandTrainersSelected.length,
+      //           maxMembers: eventMaxMembers,
+      //         );
+      //         // Add Event
+      //         String eventId = await _addEventCall(event);
+      //         // Add Event to Group Events
+      //         groupEventsIds.add(eventId);
+      //         // Add Event Members
+      //         await _addEventMembersCall(eventId, eventMembers);
+      //         // Add Event Bonos
+      //         _addEventBonosCall(eventId, selectedBonos);
+      //       }
+      //       tempDate = tempDate.add(const Duration(days: 1));
+      //       tempTimestamp = Timestamp.fromDate(tempDate);
+      //       weekDay = tempDate.weekday;
+      //     }
+      //   } else if (_value == 2) {
+      //     // Two Weeks
+      //     for (var i = 0; i < 13; i++) {
+      //       if (values[weekDay - 1]!) {
+      //         // Updating Loading Text
+      //         setState(() {
+      //           isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
+      //               " " +
+      //               AppLocalizations.of(context)!.events.toLowerCase() +
+      //               "... (" +
+      //               currentEvent.toString() +
+      //               "/" +
+      //               totalEvents.toString() +
+      //               ")";
+      //         });
+      //         currentEvent += 1;
+      //         // Change Image Url if IsRecurrent is Selected
+      //         if (isRandomImage) {
+      //           eventImageUrl =
+      //               await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+      //         }
+      //         // Event Object
+      //         event = Event(
+      //           isPrivate: false,
+      //           eventGroupId: eventGroupId,
+      //           title: titleController.text,
+      //           description: descriptionController.text,
+      //           imageUrl: eventImageUrl,
+      //           doneAt: tempTimestamp,
+      //           createdAt: Timestamp.now(),
+      //           year: tempDate.year.toString(),
+      //           month: tempDate.month.toString(),
+      //           day: tempDate.day.toString(),
+      //           hour: tempDate.hour.toString(),
+      //           minute: tempDate.minute.toString(),
+      //           duration: double.parse(duration),
+      //           locationId: location.id,
+      //           numClients: brandClientsSelected.length,
+      //           numTrainers: brandTrainersSelected.length,
+      //           maxMembers: eventMaxMembers,
+      //         );
+      //         // Add Event
+      //         String eventId = await _addEventCall(event);
+      //         // Add Event to Group Events
+      //         groupEventsIds.add(eventId);
+      //         // Add Event Members
+      //         await _addEventMembersCall(eventId, eventMembers);
+      //         // Add Event Bonos
+      //         _addEventBonosCall(eventId, selectedBonos);
+      //       }
+      //       tempDate = tempDate.add(const Duration(days: 1));
+      //       tempTimestamp = Timestamp.fromDate(tempDate);
+      //       weekDay = tempDate.weekday;
+      //     }
+      //   } else if (_value == 3) {
+      //     // One Month
+      //     for (var i = 0; i < 27; i++) {
+      //       if (values[weekDay - 1]!) {
+      //         // Updating Loading Text
+      //         setState(() {
+      //           isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
+      //               " " +
+      //               AppLocalizations.of(context)!.events.toLowerCase() +
+      //               "... (" +
+      //               currentEvent.toString() +
+      //               "/" +
+      //               totalEvents.toString() +
+      //               ")";
+      //         });
+      //         currentEvent += 1;
+      //         // Change Image Url if IsRecurrent is Selected
+      //         if (isRandomImage) {
+      //           eventImageUrl =
+      //               await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+      //         }
+      //         // Event Object
+      //         event = Event(
+      //           isPrivate: false,
+      //           eventGroupId: eventGroupId,
+      //           title: titleController.text,
+      //           description: descriptionController.text,
+      //           imageUrl: eventImageUrl,
+      //           doneAt: tempTimestamp,
+      //           createdAt: Timestamp.now(),
+      //           year: tempDate.year.toString(),
+      //           month: tempDate.month.toString(),
+      //           day: tempDate.day.toString(),
+      //           hour: tempDate.hour.toString(),
+      //           minute: tempDate.minute.toString(),
+      //           duration: double.parse(duration),
+      //           locationId: location.id,
+      //           numClients: brandClientsSelected.length,
+      //           numTrainers: brandTrainersSelected.length,
+      //           maxMembers: eventMaxMembers,
+      //         );
+      //         // Add Event
+      //         String eventId = await _addEventCall(event);
+      //         // Add Event to Group Events
+      //         groupEventsIds.add(eventId);
+      //         // Add Event Members
+      //         await _addEventMembersCall(eventId, eventMembers);
+      //         // Add Event Bonos
+      //         _addEventBonosCall(eventId, selectedBonos);
+      //       }
+      //       tempDate = tempDate.add(const Duration(days: 1));
+      //       tempTimestamp = Timestamp.fromDate(tempDate);
+      //       weekDay = tempDate.weekday;
+      //     }
+      //   }
+      //   // Create Entry in /Event Groups
+      //   await _eventDataService.addRecurrentEventGroup(
+      //       eventGroupId, groupEventsIds);
+      //   mixpanel!.track('add_event_completed', properties: {
+      //     'descriptionLength': event.description!.length.toString(),
+      //     'isPrivate': false,
+      //     'isRecurrent': true,
+      //     'doneAt': event.doneAt!.toDate().toString(),
+      //     'duration': event.duration.toString(),
+      //     'numClients': event.numClients!.toString(),
+      //     'numTrainers': event.numTrainers!.toString(),
+      //     'maxMembers': event.maxMembers!.toString(),
+      //   });
+      // }
+    }
+  }
+/*
+  Future<void> _updateEventFunction() async {
+    mixpanel!.timeEvent("edit_event_completed");
+    // Get Random Photo if no Image Selected
+    if (isRandomImage) {
+      eventImageUrl =
+          await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+    }
+    // Event Start Date
+    Timestamp doneAt = Timestamp.fromDate(startDate);
+    // Creating Event Object
+    Event event = Event(
+      id: widget.eventId!,
+      title: titleController.text,
+      description: descriptionController.text,
+      imageUrl: eventImageUrl,
+      doneAt: doneAt,
+      createdAt: Timestamp.now(),
+      year: startDate.year.toString(),
+      month: startDate.month.toString(),
+      day: startDate.day.toString(),
+      hour: startDate.hour.toString(),
+      minute: startDate.minute.toString(),
+      duration: double.parse(duration),
+      locationId: location.id,
+      numClients: brandClientsSelected.length,
+      numTrainers: brandTrainersSelected.length,
+      maxMembers: eventMaxMembers,
+    );
+    // Event Members
+    List<Usuario> eventTrainers = List.from(brandTrainersSelected);
+    List<Usuario> eventTrainersAdded = List.from(eventTrainers);
+    List<Usuario> eventClients = List.from(brandClientsSelected);
+    List<Usuario> eventClientsAdded = List.from(eventClients);
+    // Update Event
+    await _eventDataService.updateEvent(event);
+    // Update Event Bonos
+    List<String> originalBonos = [];
+    for (Bono bono in eventBonos) {
+      originalBonos.add(bono.id!);
+    }
+    originalBonos.sort((a, b) {
+      return a.compareTo(b);
+    });
+    selectedBonos.sort((a, b) {
+      return a.compareTo(b);
+    });
+    if (selectedBonos != originalBonos) {
+      await _eventDataService.updateEventBonos(event.id!, selectedBonos);
+    }
+    // Update Event Location
+    if (event.locationId! != originalLocationId) {
+      await _eventDataService.updateEventLocation(
+          event.id!, event.locationId!, originalLocationId!);
+    }
+    // Compare Current Members vs Original Members
+    /// Start With Trainers
+    for (int i = 0; i < eventTrainers.length; i++) {
+      var user = eventTrainers[i];
+      // Find index in EventTrainers
+      int index =
+          originalTrainers.indexWhere((element) => element.id == user.id);
+      // Trainer Found
+      if (index != -1) {
+        // Remove Trainer Left
+        eventTrainersAdded.removeWhere((element) => element.id == user.id);
+        originalTrainers.removeWhere((element) => element.id == user.id);
+        print("Trainer Matched " + user.id.toString());
+        if (originalStartDate != startDate) {
+          // Remove Old Local Notification
+          await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+          // Add updated ones now
+          await _addEventLocalNotificationsCall(
+              event.id!, user.id!, user.isTrainer!);
+        }
+      }
+    }
+
+    /// Handle Trainers Not Matched
+    // Original Trainers Not Matched means that they have been removed from Event
+    for (int i = 0; i < originalTrainers.length; i++) {
+      var user = originalTrainers[i];
+      // Remove Trainer From Event
+      await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
+      // Remove Event Local Notifications
+      await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+      print("Trainer Removed " + user.id.toString());
+    }
+
+    /// Handle Trainers Added
+    // Trainers Added Not Matched means that they have added to the Event
+    for (int i = 0; i < eventTrainersAdded.length; i++) {
+      var user = eventTrainersAdded[i];
+      // Add Trainer to Event
+      if (user.id != currentUser.id!) {
+        await _eventDataService.addUserToEvent(event.id!, user.id!, "", true);
+      } else {
+        await _eventDataService.addUserToEvent(event.id!, user.id!, "");
+      }
+      // Add Event Local Notifications
+      await _addEventLocalNotificationsCall(
+          event.id!, user.id!, user.isTrainer!);
+      print("Trainer Added " + user.id.toString());
+    }
+
+    /// Continue With Clients
+    for (int i = 0; i < eventClients.length; i++) {
+      var user = eventClients[i];
+      // Find index in EventClients
+      int index =
+          originalClients.indexWhere((element) => element.id == user.id);
+      // Client Found
+      if (index != -1) {
+        // Remove Trainer Left
+        eventClientsAdded.removeWhere((element) => element.id == user.id);
+        originalClients.removeWhere((element) => element.id == user.id);
+        print("Client Matched " + user.id.toString());
+        if (originalStartDate != startDate) {
+          // Remove Old Local Notification
+          await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+          // Add updated ones now
+          await _addEventLocalNotificationsCall(
+              event.id!, user.id!, user.isTrainer!);
+        }
+      }
+    }
+    // Handle Clients Not Matched
+    // Original Clients Not Matched means that they have been removed from Event
+    for (int i = 0; i < originalClients.length; i++) {
+      var user = originalClients[i];
+      // Remove Client From Event
+      await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
+      // Remove Client From Purchase
+      //JMF_AddUser_BEGIN
+      if (selectedBonos.isNotEmpty) {
+        await _purchaseDataService.deletedPurchaseUserFromEvent(
+            user, widget.eventId!);
+      }
+      //JMF_AddUser_END
+      // Send Client Left Event
+      _notificationService.userLeaveEvent(
+          user.id!, currentBrand.id!, event.id!);
+      // Remove Event Local Notifications
+      await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+      print("Client Removed " + user.id.toString());
+    }
+
+    //JMF_AddUser_Begin
+    //Update purchase
+    if (selectedBonos.isNotEmpty) {
+      await UpdateUserPurchase(event.id!);
+    }
+    //JMF_AddUser_End
+
+    // Handle Clients Added
+    // Clients Added Not Matched means that they have added to the Event
+    for (int i = 0; i < eventClientsAdded.length; i++) {
+      var user = eventClientsAdded[i];
+      // Add Clients to Event
+      await _eventDataService.addUserToEvent(
+          event.id!, user.id!, user.purchaseId!, true);
+
+      //JMF_AddUser_BEGIN
+      if (selectedBonos.isNotEmpty) {
+        await _purchaseDataService.addEventToPurchase(
+            eventClientsAdded[i].purchaseId!, widget.eventId!);
+      }
+      //JMF_AddUser_END
+
+      // Add Event Local Notifications
+      await _addEventLocalNotificationsCall(
+          event.id!, user.id!, user.isTrainer!);
+      print("Client Added " + user.id.toString());
+    }
+    mixpanel!.track('edit_event_completed', properties: {
+      'descriptionLength': event.description!.length.toString(),
+      'isPrivate': false,
+      'isRecurrent': false,
+      'doneAt': event.doneAt!.toDate().toString(),
+      'duration': event.duration.toString(),
+      'numClients': event.numClients!.toString(),
+      'numTrainers': event.numTrainers!.toString(),
+      'maxMembers': event.maxMembers!.toString(),
+    });
+    Navigator.pop(context, true);
+  }*/
+
   void resetNewEvent() {
+    List<bool> validations = [false, false, false];
     emit(state.copyWith(
         oldEvent: Event(),
         newEvent: Event(),
         isLoaded: false,
         isNew: true,
+        isPrivate: false,
+        isValidated: validations,
         isBeforeEdit: true));
   }
 
-  Future<void> getAllBonos() async {
-    allBonos =
-        await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
-    allBonos.removeWhere((element) => element.isActive == false);
-    allBonos.sort((a, b) {
-      var aSessions = a.sessions;
-      var bSessions = b.sessions;
-      return aSessions!.compareTo(bSessions!);
-    });
-  }
-
   Future<void> editEventInfo(var varToChange, EditEventType editEventType,
-      [Bono? bono]) async {
+      [Bono? bono, String? textRefetence]) async {
     late Event event = Event();
+    List<bool> validations = [
+      state.isValidated[0],
+      state.isValidated[1],
+      state.isValidated[2]
+    ];
     switch (editEventType) {
       case EditEventType.title:
+        print(state.newEvent);
         event = state.newEvent.copyWith(title: varToChange);
+        validations[0] = _validateTitleDescription(
+            varToChange, textRefetence!, state.isPrivate);
         break;
       case EditEventType.description:
         event = state.newEvent.copyWith(description: varToChange);
+        validations[0] = _validateTitleDescription(
+            varToChange, textRefetence!, state.isPrivate);
         break;
       case EditEventType.location:
         event =
-            state.newEvent.copyWith(location: await getLocation(varToChange));
+            state.newEvent.copyWith(location: await _getLocation(varToChange));
         break;
       case EditEventType.bonos:
         if (varToChange == 'AllBonos') {
-          event = state.newEvent.copyWith(eventBonos: setAllTrue());
+          event = state.newEvent.copyWith(eventBonos: _setAllTrue());
         } else {
           event = state.newEvent
-              .copyWith(eventBonos: setBonoSelectedUnselected(bono!));
+              .copyWith(eventBonos: _setBonoSelectedUnselected(bono!));
         }
         break;
       case EditEventType.startDate:
@@ -171,6 +669,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           state.newEvent.startDate!.hour,
           state.newEvent.startDate!.minute,
         ));
+        validations[2] = _validateDateTimeDuration(
+            event.startDate!, state.newEvent.duration!, state.isPrivate);
         break;
       case EditEventType.time:
         event = state.newEvent.copyWith(
@@ -181,13 +681,17 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           varToChange.hour,
           varToChange.minute,
         ));
-        //errorDate = false;
+        validations[1] = _validateDateTimeDuration(
+            event.startDate!, state.newEvent.duration!, state.isPrivate);
         break;
       case EditEventType.duration:
         event = state.newEvent.copyWith(duration: varToChange);
+        validations[1] = _validateDateTimeDuration(
+            state.newEvent.startDate!, varToChange, state.isPrivate);
         break;
       case EditEventType.trainers:
         event = state.newEvent.copyWith(selectedTrainers: varToChange);
+        validations[2] = _validateStaff(varToChange, state.isPrivate);
         break;
       case EditEventType.clients:
         event = state.newEvent.copyWith(joinedMembers: varToChange);
@@ -205,8 +709,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       values[startDate.weekday - 1] = true;
     }*/
     }
-
-    emit(state.copyWith(newEvent: event));
+    emit(state.copyWith(newEvent: event, isValidated: validations));
   }
 
   @override
@@ -227,21 +730,71 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }
   }
 
-  Future<void> getEventLocationDet(String eventId) async {
-    location = await _locationDataService.getSingleLocation(location.id!);
-    //event.locationId = location.id!;
-    location.initialPosition =
-        CameraPosition(target: LatLng(location.latitude!, location.longitude!));
-    Marker marker = Marker(
-      markerId: const MarkerId('1'),
-      position: LatLng(location.latitude!, location.longitude!),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-      onTap: () {},
-    );
-    location.markers!.add(marker);
+  //CREATE UPDATE EVENT FUNCTIONS
+
+  Future<String> _addEventCall(Event event) async {
+    // Add Event
+    String eid = await _eventDataService.addEvent(event);
+    return eid;
   }
 
-  Future<Location> getLocation(String locationId) async {
+  Future<void> _addEventTrainers(
+      String eventId, List<Usuario> eventTrainers, BuildContext context) async {
+    // Add Event Members
+    for (var i = 0; i < eventTrainers.length; i++) {
+      var user = eventTrainers[i];
+      // Firebase Call
+      if (user.id != currentUser.id!) {
+        await _eventDataService.addUserToEvent(eventId, user.id!, "", true);
+      } else {
+        await _eventDataService.addUserToEvent(eventId, user.id!, "");
+      }
+
+      // Local Notifications
+      await _addEventLocalNotificationsCall(
+          context, eventId, user.id!, user.isTrainer!);
+    }
+  }
+
+  Future<void> _addEventClients(String eventId, List<Usuario> eventClients,
+      List<Bono> selectedBonos, BuildContext context) async {
+    // Add Event Members
+    for (var i = 0; i < eventClients.length; i++) {
+      var user = eventClients[i];
+      // Firebase Call
+      await _eventDataService.addUserToEvent(
+          eventId, user.id!, user.purchaseId!, true);
+      if (selectedBonos.isNotEmpty) {
+        //TODO ADD PURCHASE ID TO CLIENT
+        // await _purchaseDataService.addEventToPurchase(
+        //     user.purchaseId!, eventId);
+
+        // Notifications Service, this also send Notifications to Trainers
+        _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
+      }
+      //JMF_AddUser_End
+
+      // Local Notifications
+      await _addEventLocalNotificationsCall(
+          context, eventId, user.id!, user.isTrainer!);
+    }
+  }
+
+  Future<void> _addEventLocalNotificationsCall(BuildContext context,
+      String eventId, String userId, bool isTrainer) async {
+    // Local Notifications Service
+    if (userId == currentUser.id!) {
+      await _localNotificationService.addEventLocalNotifications(
+          context, eventId, isTrainer);
+    } else {
+      await _localNotificationService.addRemoteEventLocalNotifications(
+          context, eventId, userId, isTrainer);
+    }
+  }
+
+  //LOCATION FUNCTIONS
+
+  Future<Location> _getLocation(String locationId) async {
     Location location = Location();
     location = await _locationDataService.getSingleLocation(locationId);
     location.initialPosition =
@@ -257,7 +810,15 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     return location;
   }
 
-  Map<Bono, bool> setBonoSelectedUnselected(Bono bono) {
+  Future<void> _addEventBonosCall(
+      String eventId, List<Bono> selectedBonos) async {
+    // Add Event Members
+    await _eventDataService.addEventBonosObject(eventId, selectedBonos);
+  }
+
+  //BONOS FUNCTIONS
+
+  Map<Bono, bool> _setBonoSelectedUnselected(Bono bono) {
     if (state.newEvent.eventBonos!.containsKey(bono)) {
       // Toggle the value associated with the bono key
       state.newEvent.eventBonos![bono] = !state.newEvent.eventBonos![bono]!;
@@ -265,8 +826,158 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     return state.newEvent.eventBonos!;
   }
 
-  Map<Bono, bool> setAllTrue() {
+  Map<Bono, bool> _setAllTrue() {
     state.newEvent.eventBonos?.updateAll((key, value) => true);
     return state.newEvent.eventBonos!;
+  }
+
+  Future<void> _getAllBonos() async {
+    allBonos =
+        await _brandDataService.getAllBonosFromBrandList(currentBrand.id!);
+    allBonos.removeWhere((element) => element.isActive == false);
+    allBonos.sort((a, b) {
+      var aSessions = a.sessions;
+      var bSessions = b.sessions;
+      return aSessions!.compareTo(bSessions!);
+    });
+  }
+
+  Map<Bono, bool> _setEventBonosMap() {
+    final Map<Bono, bool> bonosMap = {};
+
+    for (Bono bono in allBonos) {
+      // Check if the current bono exists in eventBonos
+      bool exists = eventBonos.any((eventBono) => eventBono == bono);
+      // Set the value in the map
+      bonosMap[bono] = exists;
+    }
+    return bonosMap;
+  }
+
+  //VALIDATE FUNCTIONS
+
+  bool _validateTitleDescription(
+      String text, String textReference, bool isPrivate) {
+    if (text == "" || textReference == "") {
+      if (!state.isNew) {
+        mixpanel!.track('edit_event_info_error',
+            properties: {'isPrivate': isPrivate});
+      } else {
+        mixpanel!.track('add_event_info_error',
+            properties: {'isPrivate': isPrivate});
+      }
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateStaff(List<Usuario> selectedTrainers, bool isPrivate) {
+    if (selectedTrainers.isEmpty) {
+      if (!state.isNew) {
+        mixpanel!.track('edit_event_trainers_error',
+            properties: {'isPrivate': isPrivate});
+      } else {
+        mixpanel!.track('add_event_trainers_error',
+            properties: {'isPrivate': isPrivate});
+      }
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateDateTimeDuration(
+      DateTime startDate, double duration, bool isPrivate) {
+    if (!_validateDateAndTime(startDate, duration)) {
+      if (!state.isNew) {
+        mixpanel!.track('edit_event_datetime_error',
+            properties: {'isPrivate': isPrivate});
+      } else {
+        mixpanel!.track('add_event_datetime_error',
+            properties: {'isPrivate': isPrivate});
+      }
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateDateAndTime(DateTime startTime, double duration) {
+    if (!state.isBeforeEdit) return true;
+    // Calculating the Time to check
+    var hour = duration.toString().split(".")[0];
+    var min = duration.toStringAsFixed(2).split(".")[1];
+    var endTime = startTime
+        .add(Duration(hours: int.parse(hour), minutes: int.parse(min)));
+    // Computing the workshift
+    var workshift1 = currentBrand.workShift[0];
+    var workshift2 = currentBrand.workShift[1];
+    var startWorkHour = workshift1.toStringAsFixed(2).split(".")[0];
+    var startWorkMin = workshift1.toStringAsFixed(2).split(".")[1];
+    var endWorkHour = workshift2.toStringAsFixed(2).split(".")[0];
+    var endWorkMin = workshift2.toStringAsFixed(2).split(".")[1];
+    var startWorkDay = DateTime(startTime.year, startTime.month, startTime.day,
+        int.parse(startWorkHour), int.parse(startWorkMin));
+    var endWorkDay = DateTime(startTime.year, startTime.month, startTime.day,
+        int.parse(endWorkHour), int.parse(endWorkMin));
+    if ( // Can´t create event in the past
+        startTime.isBefore(DateTime.now()) ||
+            startTime.isAtSameMomentAs(DateTime.now()) ||
+            endTime.isBefore(DateTime.now()) ||
+            endTime.isAtSameMomentAs(DateTime.now())
+            // Can´t create event outside of working hours
+            ||
+            startTime.isBefore(startWorkDay) ||
+            endTime.isBefore(startWorkDay) ||
+            startTime.isAfter(endWorkDay) ||
+            endTime.isAfter(endWorkDay)) {
+      return false;
+    } else {
+      // Can´t create event in break period of working hours
+      for (var i = 2; i < currentBrand.workShift.length; i += 2) {
+        // Breaks
+        var break1 = currentBrand.workShift[i];
+        var break2 = currentBrand.workShift[i + 1];
+        // Take the minute and the hour
+        var startBreakHour = break1.toStringAsFixed(2).split(".")[0];
+        var startBreakMin = break1.toStringAsFixed(2).split(".")[1];
+        var endBreakHour = break2.toStringAsFixed(2).split(".")[0];
+        var endBreakMin = break2.toStringAsFixed(2).split(".")[1];
+        // Date Time formatted
+        var startBreak = DateTime(startTime.year, startTime.month,
+            startTime.day, int.parse(startBreakHour), int.parse(startBreakMin));
+        var endBreak = DateTime(startTime.year, startTime.month, startTime.day,
+            int.parse(endBreakHour), int.parse(endBreakMin));
+        // Condition check
+        if (((startTime.isAfter(startBreak) ||
+                    startTime.isAtSameMomentAs(startBreak)) &&
+                (startTime.isBefore(endBreak))) ||
+            ((endTime.isAfter(startBreak)) &&
+                (endTime.isBefore(endBreak) ||
+                    endTime.isAtSameMomentAs(endBreak)))) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+
+  List<bool> _validateEvent(Event _event, bool _isPrivate) {
+    bool isPrivate = _isPrivate;
+    List<bool> isValidated = [true, true, true];
+
+    if (!_validateTitleDescription(
+        _event.title!, _event.description!, isPrivate)) {
+      isValidated[0] = false;
+    }
+
+    if (!_validateDateTimeDuration(
+        _event.startDate!, _event.duration!, isPrivate)) {
+      isValidated[1] = false;
+    }
+
+    if (!_validateStaff(_event.selectedTrainers, isPrivate)) {
+      isValidated[2] = false;
+    }
+
+    return isValidated;
   }
 }
