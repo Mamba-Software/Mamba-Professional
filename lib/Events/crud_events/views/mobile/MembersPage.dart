@@ -9,9 +9,8 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Staff/Staf
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionBlocSelector.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 
-class CrudEventPage extends StatelessWidget {
-  final Locale locale;
-  const CrudEventPage({super.key, required this.locale});
+class MembersPage extends StatelessWidget {
+  const MembersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +21,6 @@ class CrudEventPage extends StatelessWidget {
       if (isLoaded) {
         return Column(
           children: [
-            const TitleDescriptionBlocSelector(),
-            const LocationBlocSelector(),
-            DateTimeEventWidget(locale: locale),
-            const EventBonosBlocSelector(),
             const StaffEventSelector(),
             const ClientEventSelector(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.15),

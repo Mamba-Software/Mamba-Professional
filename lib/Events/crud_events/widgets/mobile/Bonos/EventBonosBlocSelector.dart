@@ -11,6 +11,8 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/EventBonosWidget.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Event event = Event();
 
@@ -24,7 +26,12 @@ class EventBonosBlocSelector extends StatelessWidget {
       Map<Bono, bool> newEventBonos = Map.from(state.newEvent.eventBonos!);
       return newEventBonos;
     }, builder: (context, eventBonosMap) {
-      return eventBonosWidget(context, eventBonosMap);
+      return Column(
+        children: [
+          titleEventWidget(context, AppLocalizations.of(context)!.bonos),
+          eventBonosWidget(context, eventBonosMap),
+        ],
+      );
     });
   }
 }

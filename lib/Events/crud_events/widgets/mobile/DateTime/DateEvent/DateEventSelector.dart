@@ -22,14 +22,18 @@ class DateEventSelector extends StatelessWidget {
         selector: (state) {
       return state.newEvent.startDate!;
     }, builder: (context, startDate) {
-      return Column(
-        children: [
-          dateEventWidget(context, startDate,
-              context.read<CrudEventCubit>().state.isBeforeEdit, locale),
-          timeEventWidget(context, startDate,
-              context.read<CrudEventCubit>().state.isBeforeEdit, locale),
-          DurationEventSelector(locale: locale),
-        ],
+      return Padding(
+        padding:
+            EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
+        child: Column(
+          children: [
+            dateEventWidget(context, startDate,
+                context.read<CrudEventCubit>().state.isBeforeEdit, locale),
+            timeEventWidget(context, startDate,
+                context.read<CrudEventCubit>().state.isBeforeEdit, locale),
+            DurationEventSelector(locale: locale),
+          ],
+        ),
       );
     });
   }

@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
-import 'package:mamba_castelldefels/Events/crud_events/views/mobile/CrudEventPage.dart';
+import 'package:mamba_castelldefels/Events/crud_events/views/mobile/InformationPage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/EventBonosBlocSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/ClientEventSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateTimeEventWidget.dart';
@@ -107,7 +107,7 @@ class AddOrEditEvent extends StatelessWidget {
                                 MediaQuery.of(context).size.width * 0.05),
                         child: Column(
                           children: [
-                            CrudEventPage(locale: locale),
+                            //InformationPage(locale: locale),
                           ],
                         ),
                       ),

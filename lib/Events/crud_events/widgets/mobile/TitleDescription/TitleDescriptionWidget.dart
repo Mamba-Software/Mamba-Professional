@@ -28,7 +28,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
   initState() {
     super.initState();
     final state = context.read<CrudEventCubit>().state;
-    if (state.isLoaded && !state.isNew) {
+    if (state.isLoaded) {
       titleController.text = state.newEvent.title!;
       titleString = titleController.text;
       // Event Description
@@ -42,9 +42,10 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        titleEventWidget(context, AppLocalizations.of(context)!.title),
         Padding(
             padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.03),
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -69,22 +70,12 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                         focusNodetitleController.unfocus();
                       }
                     },
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline1
-                        ?.copyWith(fontWeight: FontWeight.normal),
+                    style: Theme.of(context).textTheme.bodyText2,
                     decoration: InputDecoration(
-                      hintStyle: Theme.of(context)
-                          .textTheme
-                          .caption
-                          ?.copyWith(fontSize: 20),
-                      errorStyle: Theme.of(context)
-                          .textTheme
-                          .caption
-                          ?.copyWith(color: AppColors.red),
+                      hintStyle: Theme.of(context).textTheme.caption,
                       hintText: AppLocalizations.of(context)!.titleHint,
                       errorBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
+                        borderSide: BorderSide(color: Colors.transparent),
                       ),
                       disabledBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.transparent),
@@ -103,6 +94,7 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
             )),
         dividerAddEditEvent(context, AppLocalizations.of(context)!.title,
             validateText(titleString)),
+        titleEventWidget(context, AppLocalizations.of(context)!.description),
         Padding(
             padding: const EdgeInsets.only(top: 0.0),
             child: Row(

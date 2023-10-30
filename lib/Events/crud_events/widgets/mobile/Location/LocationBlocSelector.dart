@@ -9,8 +9,10 @@ import 'package:mamba_castelldefels/Auth/utils/enumAuth.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationLoading.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationWidget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LocationBlocSelector extends StatelessWidget {
   const LocationBlocSelector({super.key});
@@ -21,11 +23,15 @@ class LocationBlocSelector extends StatelessWidget {
         selector: (state) {
       return state.newEvent.location!;
     }, builder: (context, locationCubit) {
-      if (locationCubit.id == null) {
-        return locationLoading(context);
-      }
-      return LocationWidget(
-        location: locationCubit,
+      return Column(
+        children: [
+          titleEventWidget(context, AppLocalizations.of(context)!.location),
+          locationCubit.id == null
+              ? locationLoading(context)
+              : LocationWidget(
+                  location: locationCubit,
+                ),
+        ],
       );
     });
   }
