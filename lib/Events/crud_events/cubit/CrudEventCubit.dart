@@ -90,7 +90,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isLoaded: true,
         isNew: false,
         isPrivate: event.isPrivate,
-        isValidated: _validateEvent(state.newEvent, event.isPrivate!),
+        isValidated:
+            _validateEvent(state.newEvent, event.isPrivate!, isBeforeEdit),
         isBeforeEdit: isBeforeEdit));
   }
 
@@ -127,8 +128,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         startDate; // = event.copyWith(startDate: state.newEvent.startDate = startDate);
     event.duration = 1; // = event.copyWith(duration: 1);
     _selectedTrainer.add(currentUser);
-    event.selectedTrainers =
-        _selectedTrainer; // = event.copyWith(selectedTrainers: _selectedTrainer);
+    event.selectedTrainers = List.from(_selectedTrainer);
+    _selectedTrainer; // = event.copyWith(selectedTrainers: _selectedTrainer);
     event.joinedMembers = []; // = event.copyWith(joinedMembers: []);
     event.maxMembers = 1; // event.copyWith(maxMembers: 1);
 
@@ -138,7 +139,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isLoaded: true,
         isNew: true,
         isPrivate: isPrivate,
-        isValidated: _validateEvent(event, isPrivate),
+        isValidated: _validateEvent(event, isPrivate, true),
         isBeforeEdit: true));
   }
 
@@ -667,8 +668,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           state.newEvent.startDate!.hour,
           state.newEvent.startDate!.minute,
         ));
-        validations[2] = _validateDateTimeDuration(
-            event.startDate!, state.newEvent.duration!, state.isPrivate);
+        validations[2] = _validateDateTimeDuration(event.startDate!,
+            state.newEvent.duration!, state.isPrivate, state.isBeforeEdit);
         break;
       case EditEventType.time:
         event = state.newEvent.copyWith(
@@ -679,13 +680,13 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           varToChange.hour,
           varToChange.minute,
         ));
-        validations[1] = _validateDateTimeDuration(
-            event.startDate!, state.newEvent.duration!, state.isPrivate);
+        validations[1] = _validateDateTimeDuration(event.startDate!,
+            state.newEvent.duration!, state.isPrivate, state.isBeforeEdit);
         break;
       case EditEventType.duration:
         event = state.newEvent.copyWith(duration: varToChange);
-        validations[1] = _validateDateTimeDuration(
-            state.newEvent.startDate!, varToChange, state.isPrivate);
+        validations[1] = _validateDateTimeDuration(state.newEvent.startDate!,
+            varToChange, state.isPrivate, state.isBeforeEdit);
         break;
       case EditEventType.trainers:
         event = state.newEvent.copyWith(selectedTrainers: varToChange);
@@ -869,7 +870,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     return true;
   }
 
-  bool _validateStaff(List<Usuario> selectedTrainers, bool isPrivate) {
+  bool _validateStaff(var selectedTrainers, bool isPrivate) {
     if (selectedTrainers.isEmpty) {
       if (!state.isNew) {
         mixpanel!.track('edit_event_trainers_error',
@@ -884,8 +885,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   }
 
   bool _validateDateTimeDuration(
-      DateTime startDate, double duration, bool isPrivate) {
-    if (!_validateDateAndTime(startDate, duration)) {
+      DateTime startDate, double duration, bool isPrivate, bool _isBeforeEdit) {
+    if (!_validateDateAndTime(startDate, duration, _isBeforeEdit)) {
       if (!state.isNew) {
         mixpanel!.track('edit_event_datetime_error',
             properties: {'isPrivate': isPrivate});
@@ -898,8 +899,9 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     return true;
   }
 
-  bool _validateDateAndTime(DateTime startTime, double duration) {
-    if (!state.isBeforeEdit) return true;
+  bool _validateDateAndTime(
+      DateTime startTime, double duration, bool _isBeforeEdit) {
+    if (!isBeforeEdit) return true;
     // Calculating the Time to check
     var hour = duration.toString().split(".")[0];
     var min = duration.toStringAsFixed(2).split(".")[1];
@@ -958,7 +960,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }
   }
 
-  List<bool> _validateEvent(Event _event, bool _isPrivate) {
+  List<bool> _validateEvent(Event _event, bool _isPrivate, bool _isBeforeEdit) {
     bool isPrivate = _isPrivate;
     List<bool> isValidated = [true, true, true];
 
@@ -968,7 +970,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }
 
     if (!_validateDateTimeDuration(
-        _event.startDate!, _event.duration!, isPrivate)) {
+        _event.startDate!, _event.duration!, isPrivate, _isBeforeEdit)) {
       isValidated[1] = false;
     }
 
