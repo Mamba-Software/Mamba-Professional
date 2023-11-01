@@ -57,8 +57,8 @@ class ReadEventCubit extends Cubit<ReadEventLoaded> {
 
     //Event users
     await getEventMembers(event.id!);
-    event.selectedTrainers = brandTrainersSelected;
-    event.joinedMembers = brandClientsSelected;
+    event.selectedTrainersList = brandTrainersSelected;
+    event.joinedMembersList = brandClientsSelected;
     event.placesLeft = event.maxMembers! - brandClientsSelected.length;
 
     //Blocked

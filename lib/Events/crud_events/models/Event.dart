@@ -44,6 +44,8 @@ class Event {
   List<Usuario> usersList = [];
   List<Brand>? brandsList = [];
   Location? location;
+  List<Usuario>? joinedMembersList;
+  List<Usuario>? selectedTrainersList;
 
   Event({
     this.id,
@@ -79,6 +81,8 @@ class Event {
     this.brandName,
     this.brandLogo,
     this.eventBonos,
+    this.joinedMembersList,
+    this.selectedTrainersList,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -348,6 +352,8 @@ class Event {
     List<Bono>? allBonos,
     DateTime? startDate,
     Location? location,
+    List<Usuario>? joinedMembersList,
+    List<Usuario>? selectedTrainersList,
   }) {
     return Event(
       id: id ?? this.id,
@@ -384,6 +390,8 @@ class Event {
       allBonos: allBonos ?? this.allBonos,
       startDate: startDate ?? this.startDate,
       location: location ?? this.location,
+      joinedMembersList: joinedMembersList ?? this.joinedMembersList,
+      selectedTrainersList: selectedTrainersList ?? this.selectedTrainersList,
     );
   }
 }

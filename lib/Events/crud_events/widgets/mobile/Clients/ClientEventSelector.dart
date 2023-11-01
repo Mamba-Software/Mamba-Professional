@@ -19,10 +19,13 @@ class ClientEventSelector extends StatelessWidget {
       children: [
         BlocSelector<CrudEventCubit, CrudEventLoaded, List<Usuario>>(
             selector: (state) {
-          List<Usuario> joinedMembers =
-              List.from(state.newEvent.joinedMembers!);
-          return joinedMembers;
-        }, builder: (context, joinedMembers) {
+          if (state.newEvent.joinedMembersList != null) {
+            List<Usuario> joinedMembersList =
+                List.from(state.newEvent.joinedMembersList!);
+            return joinedMembersList;
+          }
+          return [];
+        }, builder: (context, joinedMembersList) {
           return Column(
             children: [
               Padding(
@@ -50,7 +53,7 @@ class ClientEventSelector extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            "( " + joinedMembers.length.toString() + " )",
+                            "( " + joinedMembersList.length.toString() + " )",
                             style: Theme.of(context).textTheme.bodyText2,
                           ),
                         ],
@@ -59,7 +62,10 @@ class ClientEventSelector extends StatelessWidget {
                   )),
               BlocSelector<CrudEventCubit, CrudEventLoaded, int>(
                   selector: (state) {
-                return state.newEvent.maxMembers!;
+                if (state.newEvent.maxMembers != null) {
+                  return state.newEvent.maxMembers!;
+                }
+                return 1;
               }, builder: (context, maxMembers) {
                 return Column(
                   children: [
@@ -67,7 +73,7 @@ class ClientEventSelector extends StatelessWidget {
                   ],
                 );
               }),
-              clientEventWidget(context, joinedMembers),
+              clientEventWidget(context, joinedMembersList),
             ],
           );
         }),

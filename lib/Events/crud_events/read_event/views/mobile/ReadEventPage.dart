@@ -9,6 +9,7 @@ import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/AddorEdtiEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
 
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
@@ -1358,6 +1359,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                             ),
                             child: Column(
                               children: [
+                                const LinearProgressIndicatorWidget(),
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.03),
@@ -2186,10 +2188,10 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                           childAspectRatio: 0.75,
                                         ),
                                         itemCount:
-                                            event.selectedTrainers.length,
+                                            event.selectedTrainersList!.length,
                                         itemBuilder: (context, int index) {
-                                          var trainer =
-                                              event.selectedTrainers[index];
+                                          var trainer = event
+                                              .selectedTrainersList![index];
                                           return GestureDetector(
                                             onTap: () {
                                               mixpanel!.track(
@@ -2352,7 +2354,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                         ],
                                       ),
                                     ),
-                                    event.joinedMembers.isEmpty
+                                    event.joinedMembersList!.isEmpty
                                         ? Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
@@ -2393,12 +2395,12 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                                                 crossAxisCount: 4,
                                                 childAspectRatio: 0.75,
                                               ),
-                                              itemCount:
-                                                  event.joinedMembers.length,
+                                              itemCount: event
+                                                  .joinedMembersList!.length,
                                               itemBuilder:
                                                   (context, int index) {
-                                                var client =
-                                                    event.joinedMembers[index];
+                                                var client = event
+                                                    .joinedMembersList![index];
                                                 if (userIsBlockedBy
                                                     .contains(client.id)) {
                                                   client.isPrivate = true;
@@ -2692,7 +2694,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                               ),
                             ),
                           )).whenComplete(() {
-                        context.read<CrudEventCubit>().resetNewEvent();
+                        //context.read<CrudEventCubit>().resetNewEvent();
                       });
 
                       //TODO EDIT HERE

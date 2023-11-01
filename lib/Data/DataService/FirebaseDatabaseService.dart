@@ -2289,6 +2289,17 @@ class FirebaseDatabaseService {
     }
   }
 
+  Future<void> updateEventBonosObject(String eventId, List<Bono> bonos) async {
+    try {
+      // Delete Previous Event Bonos
+      await deleteEventBonos(eventId);
+      // Add New Event Bonos
+      await addEventBonosObject(eventId, bonos);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   // Update Event
   Future<void> updateEventUserPurchase(
       String eventId, String userId, String purchaseId) async {

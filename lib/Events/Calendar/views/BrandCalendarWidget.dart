@@ -237,6 +237,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
   }
 
   Future<void> _addEvent(DateTime dateTime) async {
+    context.read<CrudEventCubit>().resetNewEvent();
     context.read<CrudEventCubit>().createNewEvent(dateTime, false);
     if (!brandIsActive) {
       await navigateToPayWall(context);
@@ -264,9 +265,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 locale: Localizations.localeOf(context),
               ),
             ),
-          )).whenComplete(() {
-        context.read<CrudEventCubit>().resetNewEvent();
-      });
+          )).whenComplete(() {});
     }
   }
 

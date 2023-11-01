@@ -393,6 +393,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                     .read<CrudEventCubit>()
                                     .addEventFunction(context, state.newEvent);
                                 Navigator.pop(context);
+                              } else {
+                                context
+                                    .read<CrudEventCubit>()
+                                    .updateEventFunction(context,
+                                        state.newEvent, state.oldEvent);
+                                Navigator.pop(context);
                               }
                             }
                             /*if (widget.eventId == null) {

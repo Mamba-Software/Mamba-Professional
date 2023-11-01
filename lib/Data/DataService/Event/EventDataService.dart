@@ -102,6 +102,8 @@ class EventDataService {
       _firebase.updateEventLocation(eid, locationId, previousLocation);
   Future<void> updateEventBonos(String eventId, List<String> bonoIds) =>
       _firebase.updateEventBonos(eventId, bonoIds);
+  Future<void> updateEventBonosObject(String eventId, List<Bono> bonos) =>
+      _firebase.updateEventBonosObject(eventId, bonos);
   Future<void> updateEventUserPurchase(
           String eventId, String userId, String purchaseId) =>
       _firebase.updateEventUserPurchase(eventId, userId, purchaseId);
