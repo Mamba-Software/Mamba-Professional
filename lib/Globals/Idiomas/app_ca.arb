@@ -789,5 +789,6 @@
   "and": "i",
   "addClientDescription": "En un esdeveniment recurrent podràs afegir a un client una vegada l'esdeveniment hagi estat creat",
   "cantEditRecurrent": "Elimina els clients del esdeveniment per poder indicar si és un esdeveniment recurrent",
-  "noActiveBonos": "No disposes de vals actius per assignar a l'esdeveniment"
+  "noActiveBonos": "No disposes de vals actius per assignar a l'esdeveniment",
+  "processOnWork": "Hi ha un procés executant-se, esperi fins que acabi o reinici l'aplicació"
 }

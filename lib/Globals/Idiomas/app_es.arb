@@ -3506,5 +3506,9 @@
   "noActiveBonos": "No dispones de bonos activos para asignar al evento",
   "@noActiveBonos":{
     "noActiveBonos": "noActiveBonos text"
+  },
+  "processOnWork": "Hay un proceso ejecutandose, espere hasta que termine o reinicie la aplicación",
+  "@processOnWork":{
+    "description": "processOnWork text"
   }
 }

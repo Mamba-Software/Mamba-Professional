@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/LinearProg
 
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
 import 'package:mamba_castelldefels/Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
 
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/04-Quan/010-Calendar/BrandEventsCubit/BrandEventsCubit.dart';
@@ -49,12 +50,39 @@ class EventPage extends StatelessWidget {
     return BlocProvider<ReadEventCubit>(
         lazy: false,
         create: (context) => ReadEventCubit(eventId),
-        child: const EventPageTrainer());
+        child: EventPageUpdate(
+          eventId: eventId,
+        ));
+  }
+}
+
+class EventPageUpdate extends StatelessWidget {
+  final String eventId;
+
+  const EventPageUpdate({Key? key, required this.eventId}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<CrudEventCubit, CrudEventLoaded>(
+      listener: (context, state) {
+        if (state.mustUpdateParent) {
+          context
+              .read<ReadEventCubit>()
+              .getEventInfo(context.read<ReadEventCubit>().state.event.id!);
+          context.read<CrudEventCubit>().setMustUpdateToFalse();
+        }
+      },
+      child: EventPageTrainer(
+        eventId: eventId,
+      ),
+    );
   }
 }
 
 class EventPageTrainer extends StatefulWidget {
-  const EventPageTrainer({Key? key}) : super(key: key);
+  final String eventId;
+
+  const EventPageTrainer({Key? key, required this.eventId}) : super(key: key);
 
   @override
   _EventPageTrainerState createState() => _EventPageTrainerState();
@@ -68,6 +96,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
   final _locationDataService = LocationDataService();
   final _dynamicLinkUtils = DynamicLinkUtils();
   final _userDataService = UserDataService();
+  final _topSnackBar = TopSnackBarDef();
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
@@ -1359,7 +1388,6 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                             ),
                             child: Column(
                               children: [
-                                const LinearProgressIndicatorWidget(),
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height *
                                         0.03),
@@ -2669,36 +2697,41 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 child: FloatingActionButton.extended(
                   heroTag: "10",
                   onPressed: () async {
-                    context.read<CrudEventCubit>().populateNewEvent(event);
-                    if (!brandIsActive) {
-                      await navigateToPayWall(context);
-                    } else {
-                      mixpanel!.track('event_view_edit_button',
-                          properties: {'isPrivate': event.isPrivate!});
-                      bool? result;
-                      result = await Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                FocusScopeNode currentFocus =
-                                    FocusScope.of(context);
-                                if (!currentFocus.hasPrimaryFocus &&
-                                    currentFocus.focusedChild != null) {
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                }
-                              },
-                              child: AddOrEditEvent(
-                                locale: Localizations.localeOf(context),
+                    if (context.read<CrudEventCubit>().state.isWorking >= 100) {
+                      context.read<CrudEventCubit>().populateNewEvent(event);
+                      if (!brandIsActive) {
+                        await navigateToPayWall(context);
+                      } else {
+                        mixpanel!.track('event_view_edit_button',
+                            properties: {'isPrivate': event.isPrivate!});
+                        bool? result;
+                        result = await Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  FocusScopeNode currentFocus =
+                                      FocusScope.of(context);
+                                  if (!currentFocus.hasPrimaryFocus &&
+                                      currentFocus.focusedChild != null) {
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
+                                  }
+                                },
+                                child: AddOrEditEvent(
+                                  locale: Localizations.localeOf(context),
+                                ),
                               ),
-                            ),
-                          )).whenComplete(() {
-                        //context.read<CrudEventCubit>().resetNewEvent();
-                      });
+                            ));
 
-                      //TODO EDIT HERE
-                      /*
+                        if (result != null && result) {
+                          context.read<ReadEventCubit>().resetEvent();
+                        }
+                        //TODO
+
+                        //TODO EDIT HERE
+                        /*
                       if (result != null && result) {
                         setState(() {
                           isLoading = true;
@@ -2710,6 +2743,12 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                         print("Deleting Event ...");
                         Navigator.pop(context, false);
                       }*/
+                      }
+                    } else {
+                      _topSnackBar.showSnackBarTop(
+                          context,
+                          AppLocalizations.of(context)!.processOnWork,
+                          AppColors.red);
                     }
                   },
                   backgroundColor: Colors.green,

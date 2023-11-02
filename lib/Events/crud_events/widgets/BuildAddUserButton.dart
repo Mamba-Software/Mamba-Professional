@@ -28,19 +28,19 @@ Widget buildAddUserButton(
         }
       } else {
         final state = context.read<CrudEventCubit>().state;
-        List<Bono> selectedBonos = [];
-        if (state is CrudEventLoaded) {
-          selectedBonos = state.newEvent.eventBonos!.keys
-              .where((key) => state.newEvent.eventBonos![key] == true)
-              .toList();
-        }
+        List<Bono> bonos = [];
+        bonos = state.newEvent.eventBonos!.keys
+            .where((key) => state.newEvent.eventBonos![key] == true)
+            .toList();
+        List<String> selectedBonos =
+            bonos.map((Bono bono) => bono.id.toString()).toList();
         List<Usuario>? selectedClients = await Navigator.push(
             context,
             CupertinoPageRoute<List<Usuario>>(
               builder: (context) => SelectClientsEvent(
                 selectedUsers: brandUsersSelected,
-                selectedBonos: null,
-                bonos: selectedBonos,
+                selectedBonos: selectedBonos,
+                bonos: bonos,
               ),
             ));
         if (selectedClients != null) {

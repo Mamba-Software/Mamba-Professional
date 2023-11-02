@@ -15,6 +15,7 @@ import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/views/mobile/ReadEventPage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/AddorEdtiEvent.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/LinearProgressIndicator.dart';
 
 import 'package:mamba_castelldefels/Events/cubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -22,6 +23,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/AddEditEvent/AddOrEditPrivateEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
@@ -72,6 +74,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
   final _userDataService = UserDataService();
   final _brandDataService = BrandDataService();
   final _eventDataService = EventDataService();
+  final _topSnackBar = TopSnackBarDef();
   // Boolean Loading
   bool isLoading = true;
   bool canEdit = false;
@@ -236,36 +239,41 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     return Event();
   }
 
-  Future<void> _addEvent(DateTime dateTime) async {
-    context.read<CrudEventCubit>().resetNewEvent();
-    context.read<CrudEventCubit>().createNewEvent(dateTime, false);
-    if (!brandIsActive) {
-      await navigateToPayWall(context);
-    } else {
-      mixpanel!
-          .track('brand_calendar_plan_event', properties: {'isPrivate': false});
-      // Date Time
-      DateTime eventDate = DateTime.now();
-      eventDate =
-          DateTime(dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
-      // Navigate to Add or Edit Event
-      Navigator.push(
-          context,
-          CupertinoPageRoute<String>(
-            builder: (context) => GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                FocusScopeNode currentFocus = FocusScope.of(context);
-                if (!currentFocus.hasPrimaryFocus &&
-                    currentFocus.focusedChild != null) {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                }
-              },
-              child: AddOrEditEvent(
-                locale: Localizations.localeOf(context),
+  Future<void> _addEvent(DateTime dateTime, bool isPrivate) async {
+    if (context.read<CrudEventCubit>().state.isWorking >= 100) {
+      context.read<CrudEventCubit>().resetNewEvent();
+      context.read<CrudEventCubit>().createNewEvent(dateTime, false);
+      if (!brandIsActive) {
+        await navigateToPayWall(context);
+      } else {
+        mixpanel!.track('brand_calendar_plan_event',
+            properties: {'isPrivate': false});
+        // Date Time
+        DateTime eventDate = DateTime.now();
+        eventDate = DateTime(
+            dateTime.year, dateTime.month, dateTime.day, dateTime.hour);
+        // Navigate to Add or Edit Event
+        Navigator.push(
+            context,
+            CupertinoPageRoute<String>(
+              builder: (context) => GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  FocusScopeNode currentFocus = FocusScope.of(context);
+                  if (!currentFocus.hasPrimaryFocus &&
+                      currentFocus.focusedChild != null) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
+                },
+                child: AddOrEditEvent(
+                  locale: Localizations.localeOf(context),
+                ),
               ),
-            ),
-          )).whenComplete(() {});
+            )).whenComplete(() {});
+      }
+    } else {
+      _topSnackBar.showSnackBarTop(
+          context, AppLocalizations.of(context)!.processOnWork, AppColors.red);
     }
   }
 
@@ -1883,6 +1891,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                       color: AppColors.grey,
                       height: 1.0,
                     ),
+                    const LinearProgressIndicatorWidget(),
                   ],
                 ),
               ),
@@ -2329,7 +2338,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         if (_controller.selectedDate != null) {
                           eventDate = _controller.selectedDate;
                         }
-                        _addEvent(eventDate!);
+                        _addEvent(eventDate!, false);
                       }),
                   SpeedDialChild(
                       child: const Icon(
@@ -2361,7 +2370,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         if (_controller.selectedDate != null) {
                           eventDate = _controller.selectedDate;
                         }
-                        _addPrivateEvent(eventDate!);
+                        _addEvent(eventDate!, true);
                       }),
                 ],
               ),

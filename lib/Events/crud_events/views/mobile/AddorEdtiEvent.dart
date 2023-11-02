@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/DateTimePage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/InformationPage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/MembersPage.dart';
@@ -398,7 +399,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                     .read<CrudEventCubit>()
                                     .updateEventFunction(context,
                                         state.newEvent, state.oldEvent);
-                                Navigator.pop(context);
+                                Navigator.pop(context, true);
                               }
                             }
                             /*if (widget.eventId == null) {

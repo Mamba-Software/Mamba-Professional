@@ -35,6 +35,17 @@ class ReadEventCubit extends Cubit<ReadEventLoaded> {
   }
 
   void getEventInfo(String eventId) async {
+    event = Event();
+    userIsBlockedBy = [];
+    eventBonos = [];
+    eventClientsFeedback = [];
+    location = Location();
+
+    brandTrainersSelected = [];
+    brandClientsSelected = [];
+
+    isBeforeEdit = true;
+
     //BASIC DATA
     event = await _eventDataService.getSingleEvent(eventId);
 
@@ -65,6 +76,10 @@ class ReadEventCubit extends Cubit<ReadEventLoaded> {
     await getUsersBlockedUser();
 
     emit(ReadEventLoaded(event, true, userIsBlockedBy, eventClientsFeedback));
+  }
+
+  void resetEvent() {
+    emit(ReadEventLoaded(event, false, userIsBlockedBy, eventClientsFeedback));
   }
 
   Future<void> getUsersBlockedUser() async {

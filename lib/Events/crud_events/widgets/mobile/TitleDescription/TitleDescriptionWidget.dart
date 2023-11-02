@@ -135,8 +135,8 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                 ),
               ],
             )),
-        dividerAddEditEvent(context, AppLocalizations.of(context)!.description,
-            validateText(descriptionString)),
+        dividerAddEditEvent(
+            context, AppLocalizations.of(context)!.description, true),
       ],
     );
   }

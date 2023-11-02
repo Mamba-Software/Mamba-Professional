@@ -33,15 +33,13 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   List<Bono> eventBonos = [];
 
   Location location = Location();
-  List<Usuario> brandTrainersSelected = [];
-  List<Usuario> brandClientsSelected = [];
   List<Bono> allBonos = [];
   bool isBeforeEdit = true;
   final _brandDataService = BrandDataService();
 
   CrudEventCubit()
       : super(CrudEventLoaded(Event(), Event(), false, true,
-            const [false, false, false], false, false, true, 100));
+            const [false, false, false], false, false, true, 100, false));
 
   Future<void> populateNewEvent(Event event) async {
     state.oldEvent.setBasicData = event;
@@ -95,13 +93,15 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isValidated:
             _validateEvent(state.newEvent, event.isPrivate!, isBeforeEdit),
         isBeforeEdit: isBeforeEdit,
-        isWorking: 100));
+        isWorking: 100,
+        mustUpdateParent: false));
   }
 
   Future<void> createNewEvent(DateTime? dateTime, bool isPrivate) async {
     late Event event = Event();
     DateTime startDate = DateTime.now();
     List<Usuario> _selectedTrainer = [];
+    eventBonos = [];
 
     event.title = ""; // = event.copyWith(title: '');
     event.description = ""; // = event.copyWith(description: '');
@@ -143,11 +143,16 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isPrivate: isPrivate,
         isValidated: _validateEvent(event, isPrivate, true),
         isBeforeEdit: true,
-        isWorking: 100));
+        isWorking: 100,
+        mustUpdateParent: false));
+  }
+
+  void emitWorkingState(double workProgress) {
+    emit(state.copyWith(isWorking: workProgress));
   }
 
   Future<void> addEventFunction(BuildContext context, Event _event) async {
-    emit(state.copyWith(isWorking: 0));
+    emitWorkingState(10);
     await _addEventFunction(context, _event);
   }
 
@@ -174,7 +179,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     if (!state.isRecurrent) {
       // Creating Event Object
       Event event = Event(
-        isPrivate: false,
+        isPrivate: state.isPrivate,
         title: _event.title,
         description: _event.description,
         imageUrl: eventImageUrl,
@@ -195,17 +200,20 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       );
       // Add Event
       String eventId = await _addEventCall(event);
+      emitWorkingState(40);
       // Add Event Members
       await _addEventTrainers(eventId, event.selectedTrainersList!, context);
-
+      emitWorkingState(70);
       await _addEventClients(
           eventId, event.joinedMembersList!, selectedBonos, context);
 
+      emitWorkingState(80);
       // Add Event Bonos
       _addEventBonosCall(eventId, selectedBonos);
+      emitWorkingState(90);
       mixpanel!.track('add_event_completed', properties: {
         'descriptionLength': event.description!.length.toString(),
-        'isPrivate': false,
+        'isPrivate': event.isPrivate,
         'isRecurrent': false,
         'doneAt': event.doneAt!.toDate().toString(),
         'duration': event.duration.toString(),
@@ -444,8 +452,6 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       BuildContext context, Event _event, Event _oldEvent) async {
     String eventImageUrl;
 
-    emit(state.copyWith(isWorking: 10));
-
     print(state.oldEvent.title);
     print(state.newEvent.title);
 
@@ -464,7 +470,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     // Creating Event Object
     Event event = Event(
       id: _oldEvent.id,
-      isPrivate: false,
+      isPrivate: _oldEvent.isPrivate,
       title: _event.title,
       description: _event.description,
       imageUrl: eventImageUrl,
@@ -485,7 +491,6 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       startDate: _event.startDate!,
     );
 
-    emit(state.copyWith(isWorking: 30));
     // Update Event
     await _eventDataService.updateEvent(event);
 
@@ -507,16 +512,50 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           event.id!, event.locationId!, _oldEvent.locationId!);
     }
 
-    Set<Usuario> originalSet = Set.from(_oldEvent.selectedTrainersList!);
-    Set<Usuario> selectedSet = Set.from(event.selectedTrainersList!);
+    await _assignTrainers(context, _oldEvent, event);
 
-    List<Usuario> trainersToAdd = selectedSet.difference(originalSet).toList();
-    List<Usuario> trainersToRemove =
-        originalSet.difference(selectedSet).toList();
-    List<Usuario> matchedTrainers =
-        originalSet.intersection(selectedSet).toList();
+    await _assignClients(context, _oldEvent, event, selectedBonos);
 
-    emit(state.copyWith(isWorking: 60));
+    mixpanel!.track('edit_event_completed', properties: {
+      'descriptionLength': event.description!.length.toString(),
+      'isPrivate': event.isPrivate,
+      'isRecurrent': false,
+      'doneAt': event.doneAt!.toDate().toString(),
+      'duration': event.duration.toString(),
+      'numClients': event.numClients!.toString(),
+      'numTrainers': event.numTrainers!.toString(),
+      'maxMembers': event.maxMembers!.toString(),
+    });
+
+    updateEvent();
+  }
+
+  Future<void> _assignTrainers(
+      BuildContext context, Event _oldEvent, Event event) async {
+    Set<String?> oldIds =
+        _oldEvent.selectedTrainersList!.map((usuario) => usuario.id).toSet();
+    Set<String?> newIds =
+        event.selectedTrainersList!.map((usuario) => usuario.id).toSet();
+
+    Set<String?> idsToAdd = newIds.difference(oldIds);
+    Set<String?> idsToRemove = oldIds.difference(newIds);
+    Set<String?> idsMatched = oldIds.intersection(newIds);
+
+    List<Usuario> trainersToAdd = idsToAdd
+        .map((id) => event.selectedTrainersList!
+            .firstWhere((usuario) => usuario.id == id))
+        .cast<Usuario>()
+        .toList();
+    List<Usuario> trainersToRemove = idsToRemove
+        .map((id) => _oldEvent.selectedTrainersList!
+            .firstWhere((usuario) => usuario.id == id))
+        .cast<Usuario>()
+        .toList();
+    List<Usuario> matchedTrainers = idsMatched
+        .map((id) => event.selectedTrainersList!
+            .firstWhere((usuario) => usuario.id == id))
+        .cast<Usuario>()
+        .toList();
 
     // Compare Current Members vs Original Members
     /// Start With Trainers
@@ -559,41 +598,58 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           context, event.id!, user.id!, user.isTrainer!);
       print("Trainer Added " + user.id.toString());
     }
+  }
 
-    emit(state.copyWith(isWorking: 90));
-/*
-    /// Continue With Clients
-    for (int i = 0; i < eventClients.length; i++) {
-      var user = eventClients[i];
-      // Find index in EventClients
-      int index =
-          originalClients.indexWhere((element) => element.id == user.id);
-      // Client Found
-      if (index != -1) {
-        // Remove Trainer Left
-        eventClientsAdded.removeWhere((element) => element.id == user.id);
-        originalClients.removeWhere((element) => element.id == user.id);
-        print("Client Matched " + user.id.toString());
-        if (originalStartDate != startDate) {
-          // Remove Old Local Notification
-          await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-          // Add updated ones now
-          await _addEventLocalNotificationsCall(
-              event.id!, user.id!, user.isTrainer!);
-        }
+  Future<void> _assignClients(BuildContext context, Event _oldEvent,
+      Event event, List<Bono> selectedBonos) async {
+    Set<String?> oldIds =
+        _oldEvent.joinedMembersList!.map((usuario) => usuario.id).toSet();
+    Set<String?> newIds =
+        event.joinedMembersList!.map((usuario) => usuario.id).toSet();
+
+    Set<String?> idsToAdd = newIds.difference(oldIds);
+    Set<String?> idsToRemove = oldIds.difference(newIds);
+    Set<String?> idsMatched = oldIds.intersection(newIds);
+
+    List<Usuario> clientsToAdd = idsToAdd
+        .map((id) =>
+            event.joinedMembersList!.firstWhere((usuario) => usuario.id == id))
+        .cast<Usuario>()
+        .toList();
+    List<Usuario> clientsToRemove = idsToRemove
+        .map((id) => _oldEvent.joinedMembersList!
+            .firstWhere((usuario) => usuario.id == id))
+        .cast<Usuario>()
+        .toList();
+    List<Usuario> matchedClients = idsMatched
+        .map((id) =>
+            event.joinedMembersList!.firstWhere((usuario) => usuario.id == id))
+        .cast<Usuario>()
+        .toList();
+
+    for (int i = 0; i < matchedClients.length; i++) {
+      var user = matchedClients[i];
+
+      print("Client Matched " + user.id.toString());
+      if (_oldEvent.startDate! != event.startDate!) {
+        // Remove Old Local Notification
+        await _deleteEventLocalNotificationsCall(event.id!, user.id!);
+        // Add updated ones now
+        await _addEventLocalNotificationsCall(
+            context, event.id!, user.id!, user.isTrainer!);
       }
     }
     // Handle Clients Not Matched
     // Original Clients Not Matched means that they have been removed from Event
-    for (int i = 0; i < originalClients.length; i++) {
-      var user = originalClients[i];
+    for (int i = 0; i < clientsToRemove.length; i++) {
+      var user = clientsToRemove[i];
       // Remove Client From Event
       await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
       // Remove Client From Purchase
       //JMF_AddUser_BEGIN
       if (selectedBonos.isNotEmpty) {
         await _purchaseDataService.deletedPurchaseUserFromEvent(
-            user, widget.eventId!);
+            user, event.id!);
       }
       //JMF_AddUser_END
       // Send Client Left Event
@@ -607,14 +663,14 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     //JMF_AddUser_Begin
     //Update purchase
     if (selectedBonos.isNotEmpty) {
-      await UpdateUserPurchase(event.id!);
+      await _updateUserPurchase(event);
     }
     //JMF_AddUser_End
 
     // Handle Clients Added
     // Clients Added Not Matched means that they have added to the Event
-    for (int i = 0; i < eventClientsAdded.length; i++) {
-      var user = eventClientsAdded[i];
+    for (int i = 0; i < clientsToAdd.length; i++) {
+      var user = clientsToAdd[i];
       // Add Clients to Event
       await _eventDataService.addUserToEvent(
           event.id!, user.id!, user.purchaseId!, true);
@@ -622,27 +678,24 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       //JMF_AddUser_BEGIN
       if (selectedBonos.isNotEmpty) {
         await _purchaseDataService.addEventToPurchase(
-            eventClientsAdded[i].purchaseId!, widget.eventId!);
+            clientsToAdd[i].purchaseId!, event.id!);
       }
       //JMF_AddUser_END
 
       // Add Event Local Notifications
       await _addEventLocalNotificationsCall(
-          event.id!, user.id!, user.isTrainer!);
+          context, event.id!, user.id!, user.isTrainer!);
       print("Client Added " + user.id.toString());
-    }*/
-    mixpanel!.track('edit_event_completed', properties: {
-      'descriptionLength': event.description!.length.toString(),
-      'isPrivate': false,
-      'isRecurrent': false,
-      'doneAt': event.doneAt!.toDate().toString(),
-      'duration': event.duration.toString(),
-      'numClients': event.numClients!.toString(),
-      'numTrainers': event.numTrainers!.toString(),
-      'maxMembers': event.maxMembers!.toString(),
-    });
+    }
+  }
 
-    resetNewEvent();
+  Future<void> _updateUserPurchase(Event event) async {
+    for (int i = 0; i < event.joinedMembersList!.length; ++i) {
+      await _eventDataService.updateEventUserPurchase(
+          event.id!,
+          event.joinedMembersList![i].id!,
+          event.joinedMembersList![i].purchaseId!);
+    }
   }
 
   void resetNewEvent() {
@@ -655,7 +708,26 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isPrivate: false,
         isValidated: validations,
         isBeforeEdit: true,
-        isWorking: 101));
+        isWorking: 100,
+        mustUpdateParent: false));
+  }
+
+  void updateEvent() {
+    List<bool> validations = [false, false, false];
+    emit(state.copyWith(
+        oldEvent: Event(),
+        newEvent: Event(),
+        isLoaded: false,
+        isNew: true,
+        isPrivate: false,
+        isValidated: validations,
+        isBeforeEdit: true,
+        isWorking: 100,
+        mustUpdateParent: true));
+  }
+
+  void setMustUpdateToFalse() {
+    emit(state.copyWith(mustUpdateParent: false));
   }
 
   Future<void> editEventInfo(var varToChange, EditEventType editEventType,
@@ -670,13 +742,11 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       case EditEventType.title:
         print(state.newEvent);
         event = state.newEvent.copyWith(title: varToChange);
-        validations[0] = _validateTitleDescription(
-            varToChange, textRefetence!, state.isPrivate);
+        validations[0] =
+            _validateTitleDescription(varToChange, state.isPrivate);
         break;
       case EditEventType.description:
         event = state.newEvent.copyWith(description: varToChange);
-        validations[0] = _validateTitleDescription(
-            varToChange, textRefetence!, state.isPrivate);
         break;
       case EditEventType.location:
         event =
@@ -750,17 +820,6 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     log(change.nextState.toString());
   }
 
-  Future<void> getEventMembers(String eventId) async {
-    List<Usuario> members = await _eventDataService.getEventUsers(eventId);
-    for (var m in members) {
-      if (m.isTrainer!) {
-        brandTrainersSelected.add(m);
-      } else {
-        brandClientsSelected.add(m);
-      }
-    }
-  }
-
   //CREATE UPDATE EVENT FUNCTIONS
 
   Future<String> _addEventCall(Event event) async {
@@ -796,9 +855,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       await _eventDataService.addUserToEvent(
           eventId, user.id!, user.purchaseId!, true);
       if (selectedBonos.isNotEmpty) {
-        //TODO ADD PURCHASE ID TO CLIENT
-        // await _purchaseDataService.addEventToPurchase(
-        //     user.purchaseId!, eventId);
+        await _purchaseDataService.addEventToPurchase(
+            user.purchaseId!, eventId);
 
         // Notifications Service, this also send Notifications to Trainers
         _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
@@ -902,9 +960,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   //VALIDATE FUNCTIONS
 
-  bool _validateTitleDescription(
-      String text, String textReference, bool isPrivate) {
-    if (text == "" || textReference == "") {
+  bool _validateTitleDescription(String text, bool isPrivate) {
+    if (text == "") {
       if (!state.isNew) {
         mixpanel!.track('edit_event_info_error',
             properties: {'isPrivate': isPrivate});
@@ -1011,8 +1068,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     bool isPrivate = _isPrivate;
     List<bool> isValidated = [true, true, true];
 
-    if (!_validateTitleDescription(
-        _event.title!, _event.description!, isPrivate)) {
+    if (!_validateTitleDescription(_event.title!, isPrivate)) {
       isValidated[0] = false;
     }
 

@@ -14,11 +14,6 @@ class LinearProgressIndicatorWidget extends StatelessWidget {
         selector: (state) {
       return state.isWorking;
     }, builder: (context, isWorking) {
-      if (isWorking >= 100) {
-        /*context
-            .read<ReadEventCubit>()
-            .getEventInfo(context.read<ReadEventCubit>().state.event.id!);*/
-      }
       return SizedBox(
         height: 3,
         child: isWorking >= 100
@@ -26,6 +21,7 @@ class LinearProgressIndicatorWidget extends StatelessWidget {
             : LinearProgressIndicator(
                 value: isWorking / 100,
                 color: AppColors.mainColor,
+                backgroundColor: Colors.transparent,
               ),
       );
     });

@@ -2312,19 +2312,22 @@ class FirebaseDatabaseService {
               .collection("Users")
               .doc(userId)
               .get();
-      Usuario user =
-          Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
-      if (user.purchaseId != purchaseId) {
-        await _firestore
-            .collection(events)
-            .doc(eventId)
-            .collection("Users")
-            .doc(userId)
-            .update({
-          "purchaseId": purchaseId,
-        });
-        await _purchaseDataService.deletedPurchaseUserFromEvent(user, eventId);
-        await _purchaseDataService.addEventToPurchase(purchaseId, eventId);
+      if (_documentSnapshot.exists) {
+        Usuario user =
+            Usuario.fromObjectAllData(_documentSnapshot.id, _documentSnapshot);
+        if (user.purchaseId != purchaseId) {
+          await _firestore
+              .collection(events)
+              .doc(eventId)
+              .collection("Users")
+              .doc(userId)
+              .update({
+            "purchaseId": purchaseId,
+          });
+          await _purchaseDataService.deletedPurchaseUserFromEvent(
+              user, eventId);
+          await _purchaseDataService.addEventToPurchase(purchaseId, eventId);
+        }
       }
     } catch (e) {
       print(e.toString());
