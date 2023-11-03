@@ -261,6 +261,8 @@
   "thisWeek": "Aquesta setmana",
   "nextTwoWeek": "Dues setmanes",
   "wholeMonth": "Quatre setmanes",
+  "wholeTwoMonth": "Vuit semanas",
+  "wholeThreeMonth": "Dotze semanas",
   "until": "Fins al {date}",
   "addEvent": "Afegir esdeveniment",
   "createEvent": "Crear esdeveniment",

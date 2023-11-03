@@ -6,14 +6,8 @@ import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
-import 'package:maps_launcher/maps_launcher.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 final ValueNotifier<bool> isExpanded = ValueNotifier<bool>(false);
@@ -72,8 +66,8 @@ Widget bonoFieldDescription(BuildContext context, Map<Bono, bool> eventBonosMap,
                         ),
                       ),
                       _isExpandedValue
-                          ? Icon(Icons.keyboard_arrow_up)
-                          : Icon(Icons.keyboard_arrow_down)
+                          ? const Icon(Icons.keyboard_arrow_up)
+                          : const Icon(Icons.keyboard_arrow_down)
                     ],
                   )),
               eventBonosMap.values.every((value) => value == false)
@@ -183,25 +177,35 @@ Widget bonoFieldDescription(BuildContext context, Map<Bono, bool> eventBonosMap,
                         ),
                       ],
                     ),
-                    true
-                        ? Padding(
-                            padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.01,
-                                right:
-                                    MediaQuery.of(context).size.width * 0.01),
-                            child: Center(
-                              child: Text(
-                                AppLocalizations.of(context)!
-                                    .deleteClientsWithPurchasesBonos,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    ?.copyWith(color: AppColors.red),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                        : Container(),
+                    BlocSelector<CrudEventCubit, CrudEventLoaded, bool>(
+                        selector: (state) {
+                      return state.errorBonos;
+                    }, builder: (context, errorBonos) {
+                      return Column(
+                        children: [
+                          errorBonos
+                              ? Padding(
+                                  padding: EdgeInsets.only(
+                                      left: MediaQuery.of(context).size.width *
+                                          0.01,
+                                      right: MediaQuery.of(context).size.width *
+                                          0.01),
+                                  child: Center(
+                                    child: Text(
+                                      AppLocalizations.of(context)!
+                                          .deleteClientsWithPurchasesBonos,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText2
+                                          ?.copyWith(color: AppColors.red),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                )
+                              : Container(),
+                        ],
+                      );
+                    }),
                     ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.zero,

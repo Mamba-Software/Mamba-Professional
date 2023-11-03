@@ -31,7 +31,9 @@ class DateEventSelector extends StatelessWidget {
                 context.read<CrudEventCubit>().state.isBeforeEdit, locale),
             timeEventWidget(context, startDate,
                 context.read<CrudEventCubit>().state.isBeforeEdit, locale),
-            DurationEventSelector(locale: locale),
+            DurationEventSelector(
+              locale: locale,
+            ),
           ],
         ),
       );

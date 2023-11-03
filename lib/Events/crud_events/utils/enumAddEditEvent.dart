@@ -8,5 +8,8 @@ enum EditEventType {
   duration,
   trainers,
   clients,
-  maxMembers
+  maxMembers,
+  recurrent,
+  dayFromRecurrent,
+  valueRecurrent,
 }

@@ -20,6 +20,7 @@ class DurationEventSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isBeforeEdit = false;
     return BlocSelector<CrudEventCubit, CrudEventLoaded, double>(
         selector: (state) {
       return state.newEvent.duration!;
@@ -28,6 +29,7 @@ class DurationEventSelector extends StatelessWidget {
           context.read<CrudEventCubit>().state.newEvent.startDate!,
           duration,
           context.read<CrudEventCubit>().state.isBeforeEdit);
+      isBeforeEdit = context.read<CrudEventCubit>().state.isBeforeEdit;
       return Column(
         children: [
           durationEventWidget(context, duration,
@@ -50,6 +52,22 @@ class DurationEventSelector extends StatelessWidget {
               : Container(),
           dividerAddEditEvent(
               context, AppLocalizations.of(context)!.selectDayTime, validated),
+          !isBeforeEdit
+              ? Padding(
+                  padding:
+                      const EdgeInsets.only(left: 25, right: 25, top: 10.0),
+                  child: Center(
+                    child: Text(
+                      AppLocalizations.of(context)!.cantEditText,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(color: AppColors.red),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : Container(),
         ],
       );
     });
@@ -57,8 +75,10 @@ class DurationEventSelector extends StatelessWidget {
 }
 
 bool validateDateAndTime(
-    DateTime startTime, double duration, bool isBeforeEdit) {
-  if (!isBeforeEdit) return true;
+    DateTime startTime, double duration, bool _isBeforeEdit) {
+  if (!_isBeforeEdit) {
+    return true;
+  }
   // Calculating the Time to check
   var hour = duration.toString().split(".")[0];
   var min = duration.toStringAsFixed(2).split(".")[1];

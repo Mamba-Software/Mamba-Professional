@@ -228,7 +228,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
         }
       }
     }
-    setState(() {});
+    //setState(() {});
   }
 
   Event getEvent(String eventId, List<Event> eventsList) {
@@ -242,12 +242,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
   Future<void> _addEvent(DateTime dateTime, bool isPrivate) async {
     if (context.read<CrudEventCubit>().state.isWorking >= 100) {
       context.read<CrudEventCubit>().resetNewEvent();
-      context.read<CrudEventCubit>().createNewEvent(dateTime, false);
+      context.read<CrudEventCubit>().createNewEvent(dateTime, isPrivate);
       if (!brandIsActive) {
         await navigateToPayWall(context);
       } else {
         mixpanel!.track('brand_calendar_plan_event',
-            properties: {'isPrivate': false});
+            properties: {'isPrivate': isPrivate});
         // Date Time
         DateTime eventDate = DateTime.now();
         eventDate = DateTime(

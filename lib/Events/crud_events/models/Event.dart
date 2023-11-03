@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
 
 import '../../../Data/Models/Usuario.dart';
 
@@ -46,6 +47,8 @@ class Event {
   Location? location;
   List<Usuario>? joinedMembersList;
   List<Usuario>? selectedTrainersList;
+  bool? isRecurrent;
+  Recurrent? recurrent;
 
   Event({
     this.id,
@@ -83,6 +86,8 @@ class Event {
     this.eventBonos,
     this.joinedMembersList,
     this.selectedTrainersList,
+    this.isRecurrent,
+    this.recurrent,
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -354,6 +359,8 @@ class Event {
     Location? location,
     List<Usuario>? joinedMembersList,
     List<Usuario>? selectedTrainersList,
+    bool? isRecurrent,
+    Recurrent? recurrent,
   }) {
     return Event(
       id: id ?? this.id,
@@ -392,6 +399,8 @@ class Event {
       location: location ?? this.location,
       joinedMembersList: joinedMembersList ?? this.joinedMembersList,
       selectedTrainersList: selectedTrainersList ?? this.selectedTrainersList,
+      isRecurrent: isRecurrent ?? this.isRecurrent,
+      recurrent: recurrent ?? this.recurrent,
     );
   }
 }

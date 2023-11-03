@@ -1113,6 +1113,14 @@
   "@wholeMonth":{
     "description": "Días text"
   },
+  "wholeTwoMonth": "Ocho semanas",
+  "@wholeTwoMonth":{
+    "description": "wholeTwoMonth text"
+  },
+  "wholeThreeMonth": "Doce semanas",
+  "@wholeThreeMonth":{
+    "description": "wholeThreeMonth text"
+  },
   "until": "Hasta el {date}",
   "@until": {
     "description": "Wellcome message",

@@ -13,6 +13,7 @@ import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -36,10 +37,11 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   List<Bono> allBonos = [];
   bool isBeforeEdit = true;
   final _brandDataService = BrandDataService();
+  bool errorBonos = false;
 
   CrudEventCubit()
       : super(CrudEventLoaded(Event(), Event(), false, true,
-            const [false, false, false], false, false, true, 100, false));
+            const [false, false, false], false, true, 100, false, false));
 
   Future<void> populateNewEvent(Event event) async {
     state.oldEvent.setBasicData = event;
@@ -84,6 +86,9 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     state.oldEvent.eventBonos = _setEventBonosMap();
     state.newEvent.eventBonos = _setEventBonosMap();
 
+    state.oldEvent.isRecurrent = event.eventGroupId != null;
+    state.newEvent.isRecurrent = event.eventGroupId != null;
+
     emit(state.copyWith(
         oldEvent: state.oldEvent,
         newEvent: state.newEvent,
@@ -94,7 +99,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
             _validateEvent(state.newEvent, event.isPrivate!, isBeforeEdit),
         isBeforeEdit: isBeforeEdit,
         isWorking: 100,
-        mustUpdateParent: false));
+        mustUpdateParent: false,
+        errorBonos: errorBonos));
   }
 
   Future<void> createNewEvent(DateTime? dateTime, bool isPrivate) async {
@@ -134,6 +140,18 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     event.selectedTrainersList = List.from(_selectedTrainer);
     event.joinedMembersList = []; // = event.copyWith(joinedMembersList!: []);
     event.maxMembers = 1; // event.copyWith(maxMembers: 1);
+    event.isRecurrent = false;
+    Recurrent recurrent = Recurrent(
+      oneWeek: event.startDate!.add(const Duration(days: 7)),
+      twoWeek: event.startDate!.add(const Duration(days: 14)),
+      oneMonth: event.startDate!.add(const Duration(days: 28)),
+      twoMonth: event.startDate!.add(const Duration(days: 56)),
+      threeMonth: event.startDate!.add(const Duration(days: 74)),
+      values: [false, false, false, false, false, false, false],
+      value: 1,
+    );
+
+    event.recurrent = recurrent;
 
     emit(state.copyWith(
         newEvent: event,
@@ -144,19 +162,22 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isValidated: _validateEvent(event, isPrivate, true),
         isBeforeEdit: true,
         isWorking: 100,
-        mustUpdateParent: false));
+        mustUpdateParent: false,
+        errorBonos: errorBonos));
   }
 
   void emitWorkingState(double workProgress) {
     emit(state.copyWith(isWorking: workProgress));
   }
 
-  Future<void> addEventFunction(BuildContext context, Event _event) async {
+  Future<void> addEventFunction(
+      BuildContext context, Event _event, bool isPrivate) async {
     emitWorkingState(10);
-    await _addEventFunction(context, _event);
+    await _addEventFunction(context, _event, isPrivate);
   }
 
-  Future<void> _addEventFunction(BuildContext context, Event _event) async {
+  Future<void> _addEventFunction(
+      BuildContext context, Event _event, bool isPrivate) async {
     String eventImageUrl;
 
     //Event Bonos
@@ -176,10 +197,10 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     Timestamp doneAt = Timestamp.fromDate(_event.startDate!);
     print(_event.title);
 
-    if (!state.isRecurrent) {
+    if (!_event.isRecurrent!) {
       // Creating Event Object
       Event event = Event(
-        isPrivate: state.isPrivate,
+        isPrivate: isPrivate,
         title: _event.title,
         description: _event.description,
         imageUrl: eventImageUrl,
@@ -738,9 +759,9 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       state.isValidated[1],
       state.isValidated[2]
     ];
+    errorBonos = state.errorBonos;
     switch (editEventType) {
       case EditEventType.title:
-        print(state.newEvent);
         event = state.newEvent.copyWith(title: varToChange);
         validations[0] =
             _validateTitleDescription(varToChange, state.isPrivate);
@@ -761,27 +782,42 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         }
         break;
       case EditEventType.startDate:
-        //errorDate = false;
-        event = state.newEvent.copyWith(
-            startDate: state.newEvent.startDate = DateTime(
+        DateTime startDate = DateTime(
           varToChange.year,
           varToChange.month,
           varToChange.day,
           state.newEvent.startDate!.hour,
           state.newEvent.startDate!.minute,
-        ));
-        validations[2] = _validateDateTimeDuration(event.startDate!,
+        );
+        event = state.newEvent.copyWith(
+            startDate: state.newEvent.startDate = startDate,
+            recurrent: updateRecurrency(
+                startDate,
+                state.newEvent.isRecurrent!,
+                state.newEvent.recurrent!.value!,
+                true,
+                state.newEvent.recurrent!.values!,
+                -1));
+        validations[1] = _validateDateTimeDuration(event.startDate!,
             state.newEvent.duration!, state.isPrivate, state.isBeforeEdit);
         break;
       case EditEventType.time:
-        event = state.newEvent.copyWith(
-            startDate: state.newEvent.startDate = DateTime(
+        DateTime startDate = DateTime(
           state.newEvent.startDate!.year,
           state.newEvent.startDate!.month,
           state.newEvent.startDate!.day,
           varToChange.hour,
           varToChange.minute,
-        ));
+        );
+        event = state.newEvent.copyWith(
+            startDate: state.newEvent.startDate = startDate,
+            recurrent: updateRecurrency(
+                startDate,
+                state.newEvent.isRecurrent!,
+                state.newEvent.recurrent!.value!,
+                false,
+                state.newEvent.recurrent!.values!,
+                -1));
         validations[1] = _validateDateTimeDuration(event.startDate!,
             state.newEvent.duration!, state.isPrivate, state.isBeforeEdit);
         break;
@@ -795,10 +831,50 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         validations[2] = _validateStaff(varToChange, state.isPrivate);
         break;
       case EditEventType.clients:
+        if (varToChange.isNotEmpty) {
+          if (varToChange.any((client) => client.purchaseId != "")) {
+            errorBonos = true;
+          } else {
+            errorBonos = false;
+          }
+        } else {
+          errorBonos = false;
+        }
         event = state.newEvent.copyWith(joinedMembersList: varToChange);
         break;
       case EditEventType.maxMembers:
         event = state.newEvent.copyWith(maxMembers: varToChange);
+        break;
+      case EditEventType.recurrent:
+        event = state.newEvent.copyWith(
+            isRecurrent: varToChange,
+            recurrent: updateRecurrency(
+                state.newEvent.startDate!,
+                varToChange,
+                state.newEvent.recurrent!.value!,
+                true,
+                state.newEvent.recurrent!.values!,
+                -1));
+        break;
+      case EditEventType.dayFromRecurrent:
+        event = state.newEvent.copyWith(
+            recurrent: updateRecurrency(
+                state.newEvent.startDate!,
+                state.newEvent.isRecurrent!,
+                state.newEvent.recurrent!.value!,
+                false,
+                state.newEvent.recurrent!.values!,
+                varToChange));
+        break;
+      case EditEventType.valueRecurrent:
+        event = state.newEvent.copyWith(
+            recurrent: updateRecurrency(
+                state.newEvent.startDate!,
+                state.newEvent.isRecurrent!,
+                varToChange,
+                false,
+                state.newEvent.recurrent!.values!,
+                -1));
         break;
 
       /*
@@ -810,7 +886,39 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       values[startDate.weekday - 1] = true;
     }*/
     }
-    emit(state.copyWith(newEvent: event, isValidated: validations));
+    emit(state.copyWith(
+      newEvent: event,
+      isValidated: validations,
+      errorBonos: errorBonos,
+    ));
+  }
+
+  Recurrent updateRecurrency(DateTime startDate, bool isRecurrent, int _value,
+      bool checkValues, List<bool> _values, int newVal) {
+    List<bool> values;
+    if (checkValues) {
+      if (isRecurrent) {
+        values = [false, false, false, false, false, false, false];
+        values[startDate.weekday - 1] = true;
+      } else {
+        values = [false, false, false, false, false, false, false];
+      }
+    } else {
+      values = _values;
+      if (newVal != -1) {
+        values[newVal % 7] = !values[newVal % 7];
+      }
+    }
+    Recurrent recurrent = Recurrent(
+      oneWeek: startDate.add(const Duration(days: 7)),
+      twoWeek: startDate.add(const Duration(days: 14)),
+      oneMonth: startDate.add(const Duration(days: 28)),
+      twoMonth: startDate.add(const Duration(days: 56)),
+      threeMonth: startDate.add(const Duration(days: 74)),
+      values: values,
+      value: _value,
+    );
+    return recurrent;
   }
 
   @override
@@ -924,8 +1032,17 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   Map<Bono, bool> _setBonoSelectedUnselected(Bono bono) {
     if (state.newEvent.eventBonos!.containsKey(bono)) {
-      // Toggle the value associated with the bono key
-      state.newEvent.eventBonos![bono] = !state.newEvent.eventBonos![bono]!;
+      if (state.newEvent.eventBonos![bono] == true) {
+        if (state.newEvent.joinedMembersList!
+            .any((client) => client.purchaseId != "")) {
+          errorBonos = true;
+        } else {
+          errorBonos = false;
+          state.newEvent.eventBonos![bono] = !state.newEvent.eventBonos![bono]!;
+        }
+      } else {
+        state.newEvent.eventBonos![bono] = !state.newEvent.eventBonos![bono]!;
+      }
     }
     return state.newEvent.eventBonos!;
   }
