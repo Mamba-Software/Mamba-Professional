@@ -2,8 +2,10 @@ class Recurrent {
   final DateTime? oneWeek;
   final DateTime? twoWeek;
   final DateTime? oneMonth;
-  final DateTime? twoMonth;
   final DateTime? threeMonth;
+  final DateTime? sixMonth;
+  final DateTime? nineMonth;
+  final DateTime? twelveMonth;
   final List<bool>? values;
   final int? value;
 
@@ -11,8 +13,10 @@ class Recurrent {
     this.oneWeek,
     this.twoWeek,
     this.oneMonth,
-    this.twoMonth,
     this.threeMonth,
+    this.sixMonth,
+    this.nineMonth,
+    this.twelveMonth,
     this.values,
     this.value,
   });
@@ -21,8 +25,10 @@ class Recurrent {
     DateTime? oneWeek,
     DateTime? twoWeek,
     DateTime? oneMonth,
-    DateTime? twoMonth,
     DateTime? threeMonth,
+    DateTime? sixMonth,
+    DateTime? nineMonth,
+    DateTime? twelveMonth,
     List<bool>? values,
     int? value,
   }) {
@@ -30,8 +36,10 @@ class Recurrent {
       oneWeek: oneWeek ?? this.oneWeek,
       twoWeek: twoWeek ?? this.twoWeek,
       oneMonth: oneMonth ?? this.oneMonth,
-      twoMonth: twoMonth ?? this.twoMonth,
       threeMonth: threeMonth ?? this.threeMonth,
+      sixMonth: sixMonth ?? this.sixMonth,
+      nineMonth: nineMonth ?? this.nineMonth,
+      twelveMonth: twelveMonth ?? this.twelveMonth,
       values: values ?? this.values,
       value: value ?? this.value,
     );

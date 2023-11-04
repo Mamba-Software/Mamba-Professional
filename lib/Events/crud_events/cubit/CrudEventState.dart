@@ -11,6 +11,7 @@ class CrudEventLoaded extends Equatable {
   final double isWorking;
   final bool mustUpdateParent;
   final bool errorBonos;
+  final bool clientsModified;
 
   const CrudEventLoaded(
       this.oldEvent,
@@ -22,7 +23,8 @@ class CrudEventLoaded extends Equatable {
       this.isBeforeEdit,
       this.isWorking,
       this.mustUpdateParent,
-      this.errorBonos);
+      this.errorBonos,
+      this.clientsModified);
 
   CrudEventLoaded copyWith({
     Event? oldEvent,
@@ -35,6 +37,7 @@ class CrudEventLoaded extends Equatable {
     double? isWorking,
     bool? mustUpdateParent,
     bool? errorBonos,
+    bool? clientsModified,
   }) {
     return CrudEventLoaded(
       oldEvent ?? this.oldEvent,
@@ -47,6 +50,7 @@ class CrudEventLoaded extends Equatable {
       isWorking ?? this.isWorking,
       mustUpdateParent ?? this.mustUpdateParent,
       errorBonos ?? this.errorBonos,
+      clientsModified ?? this.clientsModified,
     );
   }
 
@@ -61,6 +65,7 @@ class CrudEventLoaded extends Equatable {
         isBeforeEdit,
         isWorking,
         mustUpdateParent,
-        errorBonos
+        errorBonos,
+        clientsModified
       ];
 }

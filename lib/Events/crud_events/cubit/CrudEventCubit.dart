@@ -19,6 +19,7 @@ import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.da
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:uuid/uuid.dart';
 part 'CrudEventState.dart';
 
 class CrudEventCubit extends Cubit<CrudEventLoaded> {
@@ -38,17 +39,36 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   bool isBeforeEdit = true;
   final _brandDataService = BrandDataService();
   bool errorBonos = false;
+  bool clientsModified = false;
 
   CrudEventCubit()
-      : super(CrudEventLoaded(Event(), Event(), false, true,
-            const [false, false, false], false, true, 100, false, false));
+      : super(CrudEventLoaded(
+            Event(),
+            Event(),
+            false,
+            true,
+            const [false, false, false],
+            false,
+            true,
+            100,
+            false,
+            false,
+            false));
 
   Future<void> populateNewEvent(Event event) async {
+    clientsModified = false;
+    errorBonos = false;
+
     state.oldEvent.setBasicData = event;
     state.newEvent.setBasicData = event;
 
     state.oldEvent.id = event.id;
     state.newEvent.id = event.id;
+
+    if (event.eventGroupId != null) {
+      state.oldEvent.eventGroupId = event.eventGroupId;
+      state.newEvent.eventGroupId = event.eventGroupId;
+    }
 
     state.oldEvent.startDate = DateTime(
       int.parse(event.year!),
@@ -81,6 +101,20 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     state.newEvent.maxMembers = event.maxMembers;
     state.newEvent.joinedMembersList = event.joinedMembersList!;
 
+    Recurrent recurrent = Recurrent(
+      oneWeek: event.startDate!.add(const Duration(days: 7)),
+      twoWeek: event.startDate!.add(const Duration(days: 14)),
+      oneMonth: event.startDate!.add(const Duration(days: 28)),
+      threeMonth: event.startDate!.add(const Duration(days: 74)),
+      sixMonth: event.startDate!.add(const Duration(days: 168)),
+      nineMonth: event.startDate!.add(const Duration(days: 252)),
+      twelveMonth: event.startDate!.add(const Duration(days: 888)),
+      values: [false, false, false, false, false, false, false],
+      value: 1,
+    );
+
+    state.newEvent.recurrent = recurrent;
+
     await _getAllBonos();
     eventBonos = List.from(event.bonos);
     state.oldEvent.eventBonos = _setEventBonosMap();
@@ -100,7 +134,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isBeforeEdit: isBeforeEdit,
         isWorking: 100,
         mustUpdateParent: false,
-        errorBonos: errorBonos));
+        errorBonos: errorBonos,
+        clientsModified: clientsModified));
   }
 
   Future<void> createNewEvent(DateTime? dateTime, bool isPrivate) async {
@@ -108,6 +143,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     DateTime startDate = DateTime.now();
     List<Usuario> _selectedTrainer = [];
     eventBonos = [];
+    clientsModified = false;
+    errorBonos = false;
 
     event.title = ""; // = event.copyWith(title: '');
     event.description = ""; // = event.copyWith(description: '');
@@ -145,8 +182,10 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       oneWeek: event.startDate!.add(const Duration(days: 7)),
       twoWeek: event.startDate!.add(const Duration(days: 14)),
       oneMonth: event.startDate!.add(const Duration(days: 28)),
-      twoMonth: event.startDate!.add(const Duration(days: 56)),
       threeMonth: event.startDate!.add(const Duration(days: 74)),
+      sixMonth: event.startDate!.add(const Duration(days: 168)),
+      nineMonth: event.startDate!.add(const Duration(days: 252)),
+      twelveMonth: event.startDate!.add(const Duration(days: 888)),
       values: [false, false, false, false, false, false, false],
       value: 1,
     );
@@ -163,7 +202,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isBeforeEdit: true,
         isWorking: 100,
         mustUpdateParent: false,
-        errorBonos: errorBonos));
+        errorBonos: errorBonos,
+        clientsModified: clientsModified));
   }
 
   void emitWorkingState(double workProgress) {
@@ -172,13 +212,19 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   Future<void> addEventFunction(
       BuildContext context, Event _event, bool isPrivate) async {
-    emitWorkingState(10);
-    await _addEventFunction(context, _event, isPrivate);
+    if (!_event.isRecurrent!) {
+      emitWorkingState(10);
+      await _addUniqueEventFunction(context, _event, isPrivate);
+    } else {
+      emitWorkingState(1);
+      await _addRecurrentEvents(context, _event, isPrivate);
+    }
   }
 
-  Future<void> _addEventFunction(
+  Future<void> _addUniqueEventFunction(
       BuildContext context, Event _event, bool isPrivate) async {
     String eventImageUrl;
+    mixpanel!.timeEvent("add_event_completed");
 
     //Event Bonos
     List<Bono> selectedBonos = _event.eventBonos!.entries
@@ -186,287 +232,301 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         .map((entry) => entry.key)
         .toList();
 
-    mixpanel!.timeEvent("add_event_completed");
-
     // Get Random Photo if no Image Selected
-
     eventImageUrl =
         await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
 
     // Event Start Date
     Timestamp doneAt = Timestamp.fromDate(_event.startDate!);
-    print(_event.title);
 
-    if (!_event.isRecurrent!) {
-      // Creating Event Object
-      Event event = Event(
-        isPrivate: isPrivate,
-        title: _event.title,
-        description: _event.description,
-        imageUrl: eventImageUrl,
-        doneAt: doneAt,
-        createdAt: Timestamp.now(),
-        year: _event.startDate!.year.toString(),
-        month: _event.startDate!.month.toString(),
-        day: _event.startDate!.day.toString(),
-        hour: _event.startDate!.hour.toString(),
-        minute: _event.startDate!.minute.toString(),
-        duration: _event.duration!,
-        locationId: _event.location!.id,
-        numClients: _event.joinedMembersList!.length,
-        numTrainers: _event.selectedTrainersList!.length,
-        maxMembers: _event.maxMembers,
-        joinedMembersList: _event.joinedMembersList!,
-        selectedTrainersList: _event.selectedTrainersList!,
-      );
-      // Add Event
-      String eventId = await _addEventCall(event);
-      emitWorkingState(40);
-      // Add Event Members
-      await _addEventTrainers(eventId, event.selectedTrainersList!, context);
-      emitWorkingState(70);
-      await _addEventClients(
-          eventId, event.joinedMembersList!, selectedBonos, context);
+    // Creating Event Object
+    Event event = Event(
+      isPrivate: isPrivate,
+      title: _event.title,
+      description: _event.description,
+      imageUrl: eventImageUrl,
+      doneAt: doneAt,
+      createdAt: Timestamp.now(),
+      year: _event.startDate!.year.toString(),
+      month: _event.startDate!.month.toString(),
+      day: _event.startDate!.day.toString(),
+      hour: _event.startDate!.hour.toString(),
+      minute: _event.startDate!.minute.toString(),
+      duration: _event.duration!,
+      locationId: _event.location!.id,
+      numClients: _event.joinedMembersList!.length,
+      numTrainers: _event.selectedTrainersList!.length,
+      maxMembers: _event.maxMembers,
+      joinedMembersList: _event.joinedMembersList!,
+      selectedTrainersList: _event.selectedTrainersList!,
+    );
+    // Add Event
+    String eventId = await _addEventCall(event);
+    emitWorkingState(40);
+    // Add Event Members
+    await _addEventTrainers(eventId, event.selectedTrainersList!, context);
+    emitWorkingState(70);
+    await _addEventClients(
+        eventId, event.joinedMembersList!, selectedBonos, context);
 
-      emitWorkingState(80);
-      // Add Event Bonos
-      _addEventBonosCall(eventId, selectedBonos);
-      emitWorkingState(90);
-      mixpanel!.track('add_event_completed', properties: {
-        'descriptionLength': event.description!.length.toString(),
-        'isPrivate': event.isPrivate,
-        'isRecurrent': false,
-        'doneAt': event.doneAt!.toDate().toString(),
-        'duration': event.duration.toString(),
-        'numClients': event.numClients!.toString(),
-        'numTrainers': event.numTrainers!.toString(),
-        'maxMembers': event.maxMembers!.toString(),
-      });
-      // } else {
-      //   // Recurrent total
-      //   int days = values.where((item) => item == true).length;
-      //   totalEvents = days * _value;
-      //   if (_value == 3) {
-      //     totalEvents += days;
-      //   }
-      //   // Event Group Id
-      //   String eventGroupId = const Uuid().v1();
-      //   // First the First Event
-      //   Event event = Event(
-      //     isPrivate: false,
-      //     eventGroupId: eventGroupId,
-      //     title: titleController.text,
-      //     description: descriptionController.text,
-      //     imageUrl: eventImageUrl,
-      //     doneAt: doneAt,
-      //     createdAt: Timestamp.now(),
-      //     year: startDate.year.toString(),
-      //     month: startDate.month.toString(),
-      //     day: startDate.day.toString(),
-      //     hour: startDate.hour.toString(),
-      //     minute: startDate.minute.toString(),
-      //     duration: double.parse(duration),
-      //     locationId: location.id,
-      //     numClients: brandClientsSelected.length,
-      //     numTrainers: brandTrainersSelected.length,
-      //     maxMembers: eventMaxMembers,
-      //   );
-      //   // Add Event
-      //   String eventId = await _addEventCall(event);
-      //   // Add Event Members
-      //   await _addEventMembersCall(eventId, eventMembers);
-      //   // Add Event Bonos
-      //   _addEventBonosCall(eventId, selectedBonos);
-      //   // Start Recurrence
-      //   List<String> groupEventsIds = [eventId];
-      //   var tempDate = startDate.add(const Duration(days: 1));
-      //   var tempTimestamp = Timestamp.fromDate(tempDate);
-      //   var weekDay = tempDate.weekday;
-      //   if (_value == 1) {
-      //     // One Week
-      //     for (var i = 0; i < 6; i++) {
-      //       if (values[weekDay - 1]!) {
-      //         // Updating Loading Text
-      //         setState(() {
-      //           isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
-      //               " " +
-      //               AppLocalizations.of(context)!.events.toLowerCase() +
-      //               "... (" +
-      //               currentEvent.toString() +
-      //               "/" +
-      //               totalEvents.toString() +
-      //               ")";
-      //         });
-      //         currentEvent += 1;
-      //         // Change Image Url if IsRecurrent is Selected
-      //         if (isRandomImage) {
-      //           eventImageUrl =
-      //               await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
-      //         }
-      //         // Event Object
-      //         event = Event(
-      //           isPrivate: false,
-      //           eventGroupId: eventGroupId,
-      //           title: titleController.text,
-      //           description: descriptionController.text,
-      //           imageUrl: eventImageUrl,
-      //           doneAt: tempTimestamp,
-      //           createdAt: Timestamp.now(),
-      //           year: tempDate.year.toString(),
-      //           month: tempDate.month.toString(),
-      //           day: tempDate.day.toString(),
-      //           hour: tempDate.hour.toString(),
-      //           minute: tempDate.minute.toString(),
-      //           duration: double.parse(duration),
-      //           locationId: location.id,
-      //           numClients: brandClientsSelected.length,
-      //           numTrainers: brandTrainersSelected.length,
-      //           maxMembers: eventMaxMembers,
-      //         );
-      //         // Add Event
-      //         String eventId = await _addEventCall(event);
-      //         // Add Event to Group Events
-      //         groupEventsIds.add(eventId);
-      //         // Add Event Members
-      //         await _addEventMembersCall(eventId, eventMembers);
-      //         // Add Event Bonos
-      //         _addEventBonosCall(eventId, selectedBonos);
-      //       }
-      //       tempDate = tempDate.add(const Duration(days: 1));
-      //       tempTimestamp = Timestamp.fromDate(tempDate);
-      //       weekDay = tempDate.weekday;
-      //     }
-      //   } else if (_value == 2) {
-      //     // Two Weeks
-      //     for (var i = 0; i < 13; i++) {
-      //       if (values[weekDay - 1]!) {
-      //         // Updating Loading Text
-      //         setState(() {
-      //           isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
-      //               " " +
-      //               AppLocalizations.of(context)!.events.toLowerCase() +
-      //               "... (" +
-      //               currentEvent.toString() +
-      //               "/" +
-      //               totalEvents.toString() +
-      //               ")";
-      //         });
-      //         currentEvent += 1;
-      //         // Change Image Url if IsRecurrent is Selected
-      //         if (isRandomImage) {
-      //           eventImageUrl =
-      //               await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
-      //         }
-      //         // Event Object
-      //         event = Event(
-      //           isPrivate: false,
-      //           eventGroupId: eventGroupId,
-      //           title: titleController.text,
-      //           description: descriptionController.text,
-      //           imageUrl: eventImageUrl,
-      //           doneAt: tempTimestamp,
-      //           createdAt: Timestamp.now(),
-      //           year: tempDate.year.toString(),
-      //           month: tempDate.month.toString(),
-      //           day: tempDate.day.toString(),
-      //           hour: tempDate.hour.toString(),
-      //           minute: tempDate.minute.toString(),
-      //           duration: double.parse(duration),
-      //           locationId: location.id,
-      //           numClients: brandClientsSelected.length,
-      //           numTrainers: brandTrainersSelected.length,
-      //           maxMembers: eventMaxMembers,
-      //         );
-      //         // Add Event
-      //         String eventId = await _addEventCall(event);
-      //         // Add Event to Group Events
-      //         groupEventsIds.add(eventId);
-      //         // Add Event Members
-      //         await _addEventMembersCall(eventId, eventMembers);
-      //         // Add Event Bonos
-      //         _addEventBonosCall(eventId, selectedBonos);
-      //       }
-      //       tempDate = tempDate.add(const Duration(days: 1));
-      //       tempTimestamp = Timestamp.fromDate(tempDate);
-      //       weekDay = tempDate.weekday;
-      //     }
-      //   } else if (_value == 3) {
-      //     // One Month
-      //     for (var i = 0; i < 27; i++) {
-      //       if (values[weekDay - 1]!) {
-      //         // Updating Loading Text
-      //         setState(() {
-      //           isRecurrentLoadingText = AppLocalizations.of(context)!.creating +
-      //               " " +
-      //               AppLocalizations.of(context)!.events.toLowerCase() +
-      //               "... (" +
-      //               currentEvent.toString() +
-      //               "/" +
-      //               totalEvents.toString() +
-      //               ")";
-      //         });
-      //         currentEvent += 1;
-      //         // Change Image Url if IsRecurrent is Selected
-      //         if (isRandomImage) {
-      //           eventImageUrl =
-      //               await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
-      //         }
-      //         // Event Object
-      //         event = Event(
-      //           isPrivate: false,
-      //           eventGroupId: eventGroupId,
-      //           title: titleController.text,
-      //           description: descriptionController.text,
-      //           imageUrl: eventImageUrl,
-      //           doneAt: tempTimestamp,
-      //           createdAt: Timestamp.now(),
-      //           year: tempDate.year.toString(),
-      //           month: tempDate.month.toString(),
-      //           day: tempDate.day.toString(),
-      //           hour: tempDate.hour.toString(),
-      //           minute: tempDate.minute.toString(),
-      //           duration: double.parse(duration),
-      //           locationId: location.id,
-      //           numClients: brandClientsSelected.length,
-      //           numTrainers: brandTrainersSelected.length,
-      //           maxMembers: eventMaxMembers,
-      //         );
-      //         // Add Event
-      //         String eventId = await _addEventCall(event);
-      //         // Add Event to Group Events
-      //         groupEventsIds.add(eventId);
-      //         // Add Event Members
-      //         await _addEventMembersCall(eventId, eventMembers);
-      //         // Add Event Bonos
-      //         _addEventBonosCall(eventId, selectedBonos);
-      //       }
-      //       tempDate = tempDate.add(const Duration(days: 1));
-      //       tempTimestamp = Timestamp.fromDate(tempDate);
-      //       weekDay = tempDate.weekday;
-      //     }
-      //   }
-      //   // Create Entry in /Event Groups
-      //   await _eventDataService.addRecurrentEventGroup(
-      //       eventGroupId, groupEventsIds);
-      //   mixpanel!.track('add_event_completed', properties: {
-      //     'descriptionLength': event.description!.length.toString(),
-      //     'isPrivate': false,
-      //     'isRecurrent': true,
-      //     'doneAt': event.doneAt!.toDate().toString(),
-      //     'duration': event.duration.toString(),
-      //     'numClients': event.numClients!.toString(),
-      //     'numTrainers': event.numTrainers!.toString(),
-      //     'maxMembers': event.maxMembers!.toString(),
-      //   });
-      // }
-      resetNewEvent();
+    emitWorkingState(80);
+    // Add Event Bonos
+    _addEventBonosCall(eventId, selectedBonos);
+    emitWorkingState(90);
+    mixpanel!.track('add_event_completed', properties: {
+      'descriptionLength': event.description!.length.toString(),
+      'isPrivate': event.isPrivate,
+      'isRecurrent': false,
+      'doneAt': event.doneAt!.toDate().toString(),
+      'duration': event.duration.toString(),
+      'numClients': event.numClients!.toString(),
+      'numTrainers': event.numTrainers!.toString(),
+      'maxMembers': event.maxMembers!.toString(),
+    });
+
+    resetNewEvent();
+  }
+
+  Future<void> _addRecurrentEvents(
+      BuildContext context, Event _event, bool isPrivate) async {
+    mixpanel!.timeEvent("add_event_completed");
+
+    List<int> dayOfWeek = [];
+    Recurrent recurrent = _event.recurrent!;
+
+    int weekDay = _event.startDate!.weekday;
+    weekDay = weekDay - 1;
+
+    for (int i = 0; i < recurrent.values!.length; i++) {
+      if (_event.recurrent!.values![i]) {
+        dayOfWeek.add(i - weekDay);
+      }
     }
+    //Event Bonos
+    List<Bono> selectedBonos = _event.eventBonos!.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
+
+    _event.doneAt = Timestamp.fromDate(_event.startDate!);
+
+    // Event Group Id
+    String eventGroupId = const Uuid().v1();
+
+    DateTime startDate;
+
+    // Start Recurrence
+    List<String> groupEventsIds = [];
+
+    int totalEvents = recurrent.value! * dayOfWeek.length;
+    double valuePortions = 100 / totalEvents;
+    double valueToSum = valuePortions;
+
+    //PER CADA SETMANA
+    for (int i = 0; i < recurrent.value!; i++) {
+      //AGAFEM ELS DIES QUE S'HA D'APLICAR
+      for (int j = 0; j < dayOfWeek.length; j++) {
+        emitWorkingState(valuePortions);
+        valuePortions += valueToSum;
+        startDate =
+            _event.startDate!.add(Duration(days: ((i * 7) + dayOfWeek[j])));
+        if (!startDate.isBefore(_event.startDate!)) {
+          groupEventsIds.add(await _addOneRecurrentEvent(context, startDate,
+              eventGroupId, _event, isPrivate, selectedBonos));
+        }
+      }
+    }
+    // Create Entry in /Event Groups
+    await _eventDataService.addRecurrentEventGroup(
+        eventGroupId, groupEventsIds);
+    mixpanel!.track('add_event_completed', properties: {
+      'descriptionLength': _event.description!.length.toString(),
+      'isPrivate': isPrivate,
+      'isRecurrent': true,
+      'doneAt': _event.doneAt!.toDate().toString(),
+      'duration': _event.duration.toString(),
+      'numClients': _event.joinedMembersList!.length.toString(),
+      'numTrainers': _event.selectedTrainersList!.length.toString(),
+      'maxMembers': _event.maxMembers!.toString(),
+    });
+
+    resetNewEvent();
+  }
+
+  Future<String> _addOneRecurrentEvent(
+      BuildContext context,
+      DateTime startDate,
+      String eventGroupId,
+      Event _event,
+      bool isPrivate,
+      List<Bono> selectedBonos) async {
+    String eventImageUrl;
+
+    // Get Random Photo if no Image Selected
+    eventImageUrl =
+        await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
+
+    // Event Start Date
+    Timestamp doneAt = Timestamp.fromDate(startDate);
+
+    // Creating Event Object
+    Event event = Event(
+      isPrivate: isPrivate,
+      title: _event.title,
+      description: _event.description,
+      imageUrl: eventImageUrl,
+      doneAt: doneAt,
+      createdAt: Timestamp.now(),
+      year: startDate.year.toString(),
+      month: startDate.month.toString(),
+      day: startDate.day.toString(),
+      hour: startDate.hour.toString(),
+      minute: startDate.minute.toString(),
+      duration: _event.duration!,
+      locationId: _event.location!.id,
+      numClients: _event.joinedMembersList!.length,
+      numTrainers: _event.selectedTrainersList!.length,
+      maxMembers: _event.maxMembers,
+      joinedMembersList: _event.joinedMembersList!,
+      selectedTrainersList: _event.selectedTrainersList!,
+      eventGroupId: eventGroupId,
+    );
+    // Add Event
+    String eventId = await _addEventCall(event);
+
+    // Add Event Members
+    await _addEventTrainers(eventId, event.selectedTrainersList!, context);
+
+    await _addEventClients(
+        eventId, event.joinedMembersList!, selectedBonos, context);
+
+    // Add Event Bonos
+    _addEventBonosCall(eventId, selectedBonos);
+
+    return eventId;
   }
 
   Future<void> updateEventFunction(
       BuildContext context, Event _event, Event _oldEvent) async {
     emit(state.copyWith(isWorking: 0));
     await _updateEventFunction(context, _event, _oldEvent);
+  }
+
+  Future<void> updateRecurrentEventFunction(
+      BuildContext context, Event _event, Event _oldEvent) async {
+    emit(state.copyWith(isWorking: 0));
+    await _updateRecurrentEventFunction(context, _event);
+  }
+
+  Future<void> _updateRecurrentEventFunction(
+      BuildContext context, Event _event) async {
+    mixpanel!.timeEvent('edit_event_completed');
+
+    // Get Recurrent Group Ids ..
+    var eventGroupIds =
+        await _eventDataService.getRecurrentEventGroup(_event.eventGroupId!);
+    List<String> eventGroupIdsList = eventGroupIds.cast<String>();
+
+    // Find index of Current Event
+    int index =
+        eventGroupIdsList.indexWhere((element) => element == _event.id!);
+    // Recurrent total
+    //totalEvents = eventGroupIdsList.length - index;
+
+    // Update All Events After The Index
+    for (var i = index; i < eventGroupIdsList.length; i++) {
+      // Event Id
+      String eventId = eventGroupIdsList[i];
+
+      // Original Event Data
+      Event originalEvent = await _eventDataService.getSingleEvent(eventId);
+
+      List<Usuario> originalUsers =
+          await _eventDataService.getEventUsers(eventId);
+
+      List<Usuario> originalTrainers = [];
+
+      for (var u in originalUsers) {
+        if (u.isTrainer!) {
+          originalTrainers.add(u);
+        }
+      }
+
+      originalEvent.selectedTrainersList = List.from(originalTrainers);
+      // Event Start Date
+      var originalStartDate = DateTime(
+        int.parse(originalEvent.year!),
+        int.parse(originalEvent.month!),
+        int.parse(originalEvent.day!),
+        int.parse(originalEvent.hour!),
+        int.parse(originalEvent.minute!),
+      );
+
+      originalEvent.startDate = originalStartDate;
+
+      var updatedStartDate = DateTime(
+        int.parse(originalEvent.year!),
+        int.parse(originalEvent.month!),
+        int.parse(originalEvent.day!),
+        _event.startDate!.hour,
+        _event.startDate!.minute,
+      );
+
+      Timestamp doneAt = Timestamp.fromDate(updatedStartDate);
+
+      Event updatedEvent = Event(
+        id: eventId,
+        isPrivate: _event.isPrivate,
+        title: _event.title,
+        description: _event.description,
+        imageUrl: _event.imageUrl,
+        doneAt: doneAt,
+        createdAt: Timestamp.now(),
+        year: updatedStartDate.year.toString(),
+        month: updatedStartDate.month.toString(),
+        day: updatedStartDate.day.toString(),
+        hour: updatedStartDate.hour.toString(),
+        minute: updatedStartDate.minute.toString(),
+        duration: _event.duration,
+        locationId: _event.location!.id,
+        numClients: _event.joinedMembersList!.length,
+        numTrainers: _event.selectedTrainersList!.length,
+        maxMembers: _event.maxMembers,
+        joinedMembersList: _event.joinedMembersList!,
+        selectedTrainersList: _event.selectedTrainersList!,
+        startDate: updatedStartDate,
+      );
+
+      // Update Event
+      await _eventDataService.updateEvent(updatedEvent);
+
+      // Update Event Bonos
+      List<Bono> originalBonos =
+          await _eventDataService.getEventBonos(eventId, currentBrand.id!);
+
+      for (Bono bono in originalEvent.bonos) {
+        originalBonos.add(bono);
+      }
+
+      //Event Bonos
+      List<Bono> selectedBonos = _event.eventBonos!.entries
+          .where((entry) => entry.value)
+          .map((entry) => entry.key)
+          .toList();
+
+      if (!selectedBonos.every((bono) =>
+          originalBonos.any((originalBono) => originalBono.id == bono.id))) {
+        await _eventDataService.updateEventBonosObject(eventId, selectedBonos);
+      }
+
+      // Update Event Location
+      if (originalEvent.locationId! != updatedEvent.locationId!) {
+        await _eventDataService.updateEventLocation(
+            eventId, updatedEvent.locationId!, originalEvent.locationId!);
+      }
+
+      await _assignTrainers(context, originalEvent, updatedEvent);
+    }
   }
 
   Future<void> _updateEventFunction(
@@ -722,15 +782,18 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   void resetNewEvent() {
     List<bool> validations = [false, false, false];
     emit(state.copyWith(
-        oldEvent: Event(),
-        newEvent: Event(),
-        isLoaded: false,
-        isNew: true,
-        isPrivate: false,
-        isValidated: validations,
-        isBeforeEdit: true,
-        isWorking: 100,
-        mustUpdateParent: false));
+      oldEvent: Event(),
+      newEvent: Event(),
+      isLoaded: false,
+      isNew: true,
+      isPrivate: false,
+      isValidated: validations,
+      isBeforeEdit: true,
+      isWorking: 100,
+      mustUpdateParent: false,
+      errorBonos: errorBonos,
+      clientsModified: clientsModified,
+    ));
   }
 
   void updateEvent() {
@@ -744,7 +807,9 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         isValidated: validations,
         isBeforeEdit: true,
         isWorking: 100,
-        mustUpdateParent: true));
+        mustUpdateParent: true,
+        errorBonos: errorBonos,
+        clientsModified: clientsModified));
   }
 
   void setMustUpdateToFalse() {
@@ -760,6 +825,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       state.isValidated[2]
     ];
     errorBonos = state.errorBonos;
+    clientsModified = state.clientsModified;
+
     switch (editEventType) {
       case EditEventType.title:
         event = state.newEvent.copyWith(title: varToChange);
@@ -789,6 +856,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           state.newEvent.startDate!.hour,
           state.newEvent.startDate!.minute,
         );
+        //PROBLEMS QUAN FAIG UPDATE EVENT
         event = state.newEvent.copyWith(
             startDate: state.newEvent.startDate = startDate,
             recurrent: updateRecurrency(
@@ -831,6 +899,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         validations[2] = _validateStaff(varToChange, state.isPrivate);
         break;
       case EditEventType.clients:
+        clientsModified = true;
         if (varToChange.isNotEmpty) {
           if (varToChange.any((client) => client.purchaseId != "")) {
             errorBonos = true;
@@ -876,20 +945,12 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
                 state.newEvent.recurrent!.values!,
                 -1));
         break;
-
-      /*
-    oneWeek = pickedDateTemp.add(const Duration(days: 7));
-    twoWeek = pickedDateTemp.add(const Duration(days: 14));
-    oneMonth = pickedDateTemp.add(const Duration(days: 28));
-    if (isRecurrent) {
-      values = [false, false, false, false, false, false, false];
-      values[startDate.weekday - 1] = true;
-    }*/
     }
     emit(state.copyWith(
       newEvent: event,
       isValidated: validations,
       errorBonos: errorBonos,
+      clientsModified: clientsModified,
     ));
   }
 
@@ -913,8 +974,10 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       oneWeek: startDate.add(const Duration(days: 7)),
       twoWeek: startDate.add(const Duration(days: 14)),
       oneMonth: startDate.add(const Duration(days: 28)),
-      twoMonth: startDate.add(const Duration(days: 56)),
-      threeMonth: startDate.add(const Duration(days: 74)),
+      threeMonth: startDate.add(const Duration(days: 91)),
+      sixMonth: startDate.add(const Duration(days: 182)),
+      nineMonth: startDate.add(const Duration(days: 273)),
+      twelveMonth: startDate.add(const Duration(days: 364)),
       values: values,
       value: _value,
     );

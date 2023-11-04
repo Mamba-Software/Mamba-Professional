@@ -1109,7 +1109,7 @@
   "@nextTwoWeek":{
     "description": "Días text"
   },
-  "wholeMonth": "Cuatro semanas",
+  "wholeMonth": "Un mes",
   "@wholeMonth":{
     "description": "Días text"
   },
@@ -1117,9 +1117,21 @@
   "@wholeTwoMonth":{
     "description": "wholeTwoMonth text"
   },
-  "wholeThreeMonth": "Doce semanas",
+  "wholeThreeMonth": "Tres meses",
   "@wholeThreeMonth":{
     "description": "wholeThreeMonth text"
+  },
+  "wholeSixMonth": "Seis meses",
+  "@wholeSixMonth":{
+    "description": "wholeSixMonth text"
+  },
+  "wholeNineMonth": "Nueve meses",
+  "@wholeNineMonth":{
+    "description": "wholeNineMonth text"
+  },
+  "wholeTwelveMonth": "Doce meses",
+  "@wholeTwelveMonth":{
+    "description": "wholeTwelveMonth text"
   },
   "until": "Hasta el {date}",
   "@until": {

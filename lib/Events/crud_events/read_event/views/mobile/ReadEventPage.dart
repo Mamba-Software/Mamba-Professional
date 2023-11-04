@@ -96,7 +96,7 @@ class _EventPageTrainerState extends State<EventPageTrainer>
   final _locationDataService = LocationDataService();
   final _dynamicLinkUtils = DynamicLinkUtils();
   final _userDataService = UserDataService();
-  final _topSnackBar = TopSnackBarDef();
+
   // Screen Dimensions
   double safeAreaHeight = 0;
   double safeAreaWidth = 0;
@@ -2697,41 +2697,39 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                 child: FloatingActionButton.extended(
                   heroTag: "10",
                   onPressed: () async {
-                    if (context.read<CrudEventCubit>().state.isWorking >= 100) {
-                      context.read<CrudEventCubit>().populateNewEvent(event);
-                      if (!brandIsActive) {
-                        await navigateToPayWall(context);
-                      } else {
-                        mixpanel!.track('event_view_edit_button',
-                            properties: {'isPrivate': event.isPrivate!});
-                        bool? result;
-                        result = await Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus &&
-                                      currentFocus.focusedChild != null) {
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  }
-                                },
-                                child: AddOrEditEvent(
-                                  locale: Localizations.localeOf(context),
-                                ),
+                    context.read<CrudEventCubit>().populateNewEvent(event);
+                    if (!brandIsActive) {
+                      await navigateToPayWall(context);
+                    } else {
+                      mixpanel!.track('event_view_edit_button',
+                          properties: {'isPrivate': event.isPrivate!});
+                      bool? result;
+                      result = await Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () {
+                                FocusScopeNode currentFocus =
+                                    FocusScope.of(context);
+                                if (!currentFocus.hasPrimaryFocus &&
+                                    currentFocus.focusedChild != null) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                }
+                              },
+                              child: AddOrEditEvent(
+                                locale: Localizations.localeOf(context),
                               ),
-                            ));
+                            ),
+                          ));
 
-                        if (result != null && result) {
-                          context.read<ReadEventCubit>().resetEvent();
-                        }
-                        //TODO
+                      if (result != null && result) {
+                        context.read<ReadEventCubit>().resetEvent();
+                      }
+                      //TODO
 
-                        //TODO EDIT HERE
-                        /*
+                      //TODO EDIT HERE
+                      /*
                       if (result != null && result) {
                         setState(() {
                           isLoading = true;
@@ -2743,12 +2741,6 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                         print("Deleting Event ...");
                         Navigator.pop(context, false);
                       }*/
-                      }
-                    } else {
-                      _topSnackBar.showSnackBarTop(
-                          context,
-                          AppLocalizations.of(context)!.processOnWork,
-                          AppColors.red);
                     }
                   },
                   backgroundColor: Colors.green,

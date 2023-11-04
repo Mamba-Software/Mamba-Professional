@@ -6,6 +6,8 @@ import 'package:mamba_castelldefels/Events/crud_events/views/mobile/InformationP
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/MembersPage.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/EditRecurrentEventDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +35,8 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
   TabController? _tabController;
   int _selectedIndex = 0;
   List<bool> tabs = [true, false, false];
+
+  final _topSnackBar = TopSnackBarDef();
 
   @override
   initState() {
@@ -389,16 +393,67 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                               state.isValidated[2] == true) {
                             if (state.isValidated
                                 .every((bool value) => value)) {
-                              if (state.isNew) {
-                                context.read<CrudEventCubit>().addEventFunction(
-                                    context, state.newEvent, state.isPrivate);
-                                Navigator.pop(context);
+                              if (context
+                                      .read<CrudEventCubit>()
+                                      .state
+                                      .isWorking >=
+                                  100) {
+                                if (state.isNew) {
+                                  context
+                                      .read<CrudEventCubit>()
+                                      .addEventFunction(context, state.newEvent,
+                                          state.isPrivate);
+                                  Navigator.pop(context);
+                                } else {
+                                  if (!state.newEvent.isRecurrent!) {
+                                    context
+                                        .read<CrudEventCubit>()
+                                        .updateEventFunction(context,
+                                            state.newEvent, state.oldEvent);
+                                    Navigator.pop(context, true);
+                                  } else {
+                                    var result = await showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return EditRecurrentEventDialog(
+                                          isCompleted: !context
+                                              .read<CrudEventCubit>()
+                                              .state
+                                              .isBeforeEdit,
+                                          clientsModified: context
+                                              .read<CrudEventCubit>()
+                                              .state
+                                              .clientsModified,
+                                        );
+                                      },
+                                    );
+                                    if (result != null) {
+                                      if (result == 1) {
+                                        print("Edit Only This Event..");
+                                        context
+                                            .read<CrudEventCubit>()
+                                            .updateEventFunction(context,
+                                                state.newEvent, state.oldEvent);
+                                        Navigator.pop(context, true);
+                                      } else {
+                                        print(
+                                            "Edit This Event and the Rest Forward ...");
+                                        context
+                                            .read<CrudEventCubit>()
+                                            .updateRecurrentEventFunction(
+                                                context,
+                                                state.newEvent,
+                                                state.oldEvent);
+                                        Navigator.pop(context, true);
+                                      }
+                                    }
+                                  }
+                                }
                               } else {
-                                context
-                                    .read<CrudEventCubit>()
-                                    .updateEventFunction(context,
-                                        state.newEvent, state.oldEvent);
-                                Navigator.pop(context, true);
+                                _topSnackBar.showSnackBarTop(
+                                    context,
+                                    AppLocalizations.of(context)!.processOnWork,
+                                    AppColors.red);
                               }
                             }
                             /*if (widget.eventId == null) {
