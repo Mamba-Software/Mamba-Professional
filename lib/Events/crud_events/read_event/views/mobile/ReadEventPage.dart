@@ -2726,6 +2726,9 @@ class _EventPageTrainerState extends State<EventPageTrainer>
                       if (result != null && result) {
                         context.read<ReadEventCubit>().resetEvent();
                       }
+                      if (result != null && !result) {
+                        Navigator.pop(context, false);
+                      }
                       //TODO
 
                       //TODO EDIT HERE
