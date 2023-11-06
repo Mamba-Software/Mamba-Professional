@@ -50,8 +50,6 @@ class DurationEventSelector extends StatelessWidget {
                   ),
                 )
               : Container(),
-          dividerAddEditEvent(
-              context, AppLocalizations.of(context)!.selectDayTime, validated),
           !isBeforeEdit
               ? Padding(
                   padding:
@@ -68,6 +66,8 @@ class DurationEventSelector extends StatelessWidget {
                   ),
                 )
               : Container(),
+          dividerAddEditEvent(
+              context, AppLocalizations.of(context)!.selectDayTime, validated),
         ],
       );
     });

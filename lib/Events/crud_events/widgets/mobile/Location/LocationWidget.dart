@@ -38,8 +38,8 @@ class _LocationWidgetState extends State<LocationWidget> {
       children: [
         Padding(
           padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * 0.028,
-              bottom: MediaQuery.of(context).size.height * 0.028),
+            top: MediaQuery.of(context).size.height * 0.028,
+          ),
           child: GestureDetector(
             onTap: () async {
               var result = await Navigator.push(
@@ -135,8 +135,6 @@ class _LocationWidgetState extends State<LocationWidget> {
             ),
           ),
         ),
-        dividerAddEditEvent(
-            context, AppLocalizations.of(context)!.location, true)
       ],
     );
   }

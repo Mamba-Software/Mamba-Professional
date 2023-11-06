@@ -57,7 +57,6 @@ Widget durationEventWidget(
           ),
         ],
       ),
-      SizedBox(height: MediaQuery.of(context).size.width * 0.01),
     ],
   );
 }

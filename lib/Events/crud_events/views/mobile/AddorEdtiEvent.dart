@@ -315,8 +315,10 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                             child: Column(
                               children: [
                                 Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 0),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal:
+                                            MediaQuery.of(context).size.width *
+                                                0.05),
                                     child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,

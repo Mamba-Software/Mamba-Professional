@@ -31,8 +31,6 @@ Widget eventBonosWidget(BuildContext context, Map<Bono, bool> eventBonosMap) {
                   duration: const Duration(
                       milliseconds: 700), // Duration of the animation
                 ),
-                dividerAddEditEvent(
-                    context, AppLocalizations.of(context)!.bonos, true),
               ],
             );
           })
@@ -49,7 +47,7 @@ Widget bonoFieldDescription(BuildContext context, Map<Bono, bool> eventBonosMap,
         },
         child: Padding(
           padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.05),
+              horizontal: MediaQuery.of(context).size.width * 0.00),
           child: Column(
             children: [
               Padding(

@@ -24,8 +24,6 @@ class DateTimeEventWidget extends StatelessWidget {
                   titleEventWidget(
                       context, AppLocalizations.of(context)!.selectDayTime),
                   DateEventSelector(locale: locale),
-                  RecurrentEventSelector(locale: locale),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                 ],
               )),
         ]);

@@ -153,7 +153,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     clientsModified = false;
     errorBonos = false;
 
-    event.title = ""; // = event.copyWith(title: '');
+    event.title = currentBrand.name; // = event.copyWith(title: '');
     event.description = ""; // = event.copyWith(description: '');
     event.location = await _getLocation(currentBrand.baseLocation!);
     //event.copyWith(location: await getLocation(currentBrand.baseLocation!));
@@ -183,7 +183,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     _selectedTrainer.add(currentUser);
     event.selectedTrainersList = List.from(_selectedTrainer);
     event.joinedMembersList = []; // = event.copyWith(joinedMembersList!: []);
-    event.maxMembers = 1; // event.copyWith(maxMembers: 1);
+    event.maxMembers = 4; // event.copyWith(maxMembers: 1);
     event.isRecurrent = false;
     Recurrent recurrent = Recurrent(
       oneWeek: event.startDate!.add(const Duration(days: 7)),
@@ -1028,7 +1028,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         event = state.newEvent.copyWith(joinedMembersList: varToChange);
         break;
       case EditEventType.maxMembers:
-        event = state.newEvent.copyWith(maxMembers: varToChange);
+        event = state.newEvent.copyWith(maxMembers: int.parse(varToChange));
         break;
       case EditEventType.recurrent:
         event = state.newEvent.copyWith(

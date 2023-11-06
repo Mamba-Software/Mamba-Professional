@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAdd
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 
 class TitleDescriptionWidget extends StatefulWidget {
-  TitleDescriptionWidget({super.key});
+  const TitleDescriptionWidget({super.key});
 
   @override
   _TitleDescriptionWidgetState createState() => _TitleDescriptionWidgetState();
@@ -44,8 +44,8 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
       children: [
         titleEventWidget(context, AppLocalizations.of(context)!.title),
         Padding(
-            padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * 0.01),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -72,19 +72,35 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                     },
                     style: Theme.of(context).textTheme.bodyText2,
                     decoration: InputDecoration(
-                      hintStyle: Theme.of(context).textTheme.caption,
+                      hintStyle: Theme.of(context).textTheme.caption?.copyWith(
+                          color: titleString.isEmpty
+                              ? AppColors.red
+                              : Theme.of(context).textTheme.caption!.color),
                       hintText: AppLocalizations.of(context)!.titleHint,
+                      errorStyle: Theme.of(context)
+                          .textTheme
+                          .caption
+                          ?.copyWith(color: AppColors.red),
                       errorBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
+                        borderSide: BorderSide(color: AppColors.red),
                       ),
-                      disabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
+                      disabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: titleString.isEmpty
+                                ? AppColors.red
+                                : Theme.of(context).dividerColor),
                       ),
-                      enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: titleString.isEmpty
+                                ? AppColors.red
+                                : Theme.of(context).dividerColor),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: titleString.isEmpty
+                                ? AppColors.red
+                                : Theme.of(context).dividerColor),
                       ),
                     ),
                     enabled: true,
@@ -92,11 +108,10 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                 ),
               ],
             )),
-        dividerAddEditEvent(context, AppLocalizations.of(context)!.title,
-            validateText(titleString)),
         titleEventWidget(context, AppLocalizations.of(context)!.description),
         Padding(
-            padding: const EdgeInsets.only(top: 0.0),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * 0.01),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
@@ -118,196 +133,28 @@ class _TitleDescriptionWidgetState extends State<TitleDescriptionWidget> {
                     decoration: InputDecoration(
                       hintStyle: Theme.of(context).textTheme.caption,
                       hintText: AppLocalizations.of(context)!.descriptionHint,
-                      errorBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
+                      errorBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).dividerColor),
                       ),
-                      disabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
+                      disabledBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).dividerColor),
                       ),
-                      enabledBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).dividerColor),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.transparent),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).dividerColor),
                       ),
                     ),
                   ),
                 ),
               ],
             )),
-        dividerAddEditEvent(
-            context, AppLocalizations.of(context)!.description, true),
       ],
     );
   }
 }
-
-bool validateText(String text) {
-  if (text == "") {
-    return false;
-  }
-  return true;
-}
-
-
-  // return Column(
-  //   children: [
-  //     BlocSelector<CrudEventCubit, CrudEventState, String>(
-  //       selector: (state) {
-  //         if (state is CrudEventLoaded) {
-  //           titleNotifier.value = state.event.title!;
-  //         }
-  //         return ''; // This return value won't be used, but is required for the BlocSelector's type signature
-  //       },
-  //       builder: (context, _) {
-  //         return ValueListenableBuilder<String>(
-  //           valueListenable: titleNotifier,
-  //           builder: (context, titleValue, child) {
-  //             titleController.text = titleValue;
-  //             return Column(
-  //               children: [
-  //                 Padding(
-  //                     padding: EdgeInsets.only(
-  //                         top: MediaQuery.of(context).size.height * 0.03),
-  //                     child: Row(
-  //                       mainAxisSize: MainAxisSize.max,
-  //                       children: <Widget>[
-  //                         Column(
-  //                           mainAxisAlignment: MainAxisAlignment.start,
-  //                           mainAxisSize: MainAxisSize.min,
-  //                           children: <Widget>[
-  //                             Text(
-  //                               AppLocalizations.of(context)!.title,
-  //                               style: Theme.of(context).textTheme.headline1,
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ],
-  //                     )),
-  //                 Padding(
-  //                     padding: const EdgeInsets.only(top: 0),
-  //                     child: Row(
-  //                       mainAxisSize: MainAxisSize.max,
-  //                       children: <Widget>[
-  //                         Flexible(
-  //                           child: TextFormField(
-  //                             focusNode: focusNodetitleController,
-  //                             controller: titleController,
-  //                             validator: (val) => val!.isEmpty
-  //                                 ? AppLocalizations.of(context)!.titleError
-  //                                 : null,
-  //                             onChanged: (val) {
-  //                               context
-  //                                   .read<CrudEventCubit>()
-  //                                   .editEventInfo(val, 1);
-  //                             },
-  //                             onEditingComplete: () {
-  //                               if (descriptionController.text.isEmpty) {
-  //                                 focusNodeDescController.requestFocus();
-  //                               } else {
-  //                                 focusNodetitleController.unfocus();
-  //                               }
-  //                             },
-  //                             style: Theme.of(context).textTheme.bodyText2,
-  //                             decoration: InputDecoration(
-  //                               hintStyle: Theme.of(context).textTheme.caption,
-  //                               errorStyle: Theme.of(context)
-  //                                   .textTheme
-  //                                   .caption
-  //                                   ?.copyWith(color: AppColors.red),
-  //                               hintText:
-  //                                   AppLocalizations.of(context)!.titleHint,
-  //                               errorBorder: const UnderlineInputBorder(
-  //                                 borderSide: BorderSide(color: Colors.red),
-  //                               ),
-  //                               disabledBorder: const UnderlineInputBorder(
-  //                                 borderSide: BorderSide(color: Colors.grey),
-  //                               ),
-  //                               enabledBorder: const UnderlineInputBorder(
-  //                                 borderSide: BorderSide(color: Colors.grey),
-  //                               ),
-  //                               focusedBorder: const UnderlineInputBorder(
-  //                                 borderSide: BorderSide(color: Colors.grey),
-  //                               ),
-  //                             ),
-  //                             enabled: true,
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     )),
-  //               ],
-  //             );
-  //           },
-  //         );
-  //       },
-  //     ),
-  //     BlocSelector<CrudEventCubit, CrudEventState, String>(selector: (state) {
-  //       if (state is CrudEventLoaded) {
-  //         return state.event.description!;
-  //       }
-  //       return '';
-  //     }, builder: (context, descriptionEvent) {
-  //       descriptionController.text = descriptionEvent;
-  //       return Column(
-  //         children: [
-  //           Padding(
-  //               padding: EdgeInsets.only(
-  //                   top: MediaQuery.of(context).size.height * 0.05),
-  //               child: Row(
-  //                 mainAxisSize: MainAxisSize.max,
-  //                 children: <Widget>[
-  //                   Column(
-  //                     mainAxisAlignment: MainAxisAlignment.start,
-  //                     mainAxisSize: MainAxisSize.min,
-  //                     children: <Widget>[
-  //                       Text(
-  //                         AppLocalizations.of(context)!.description,
-  //                         style: Theme.of(context).textTheme.headline1,
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               )),
-  //           Padding(
-  //               padding: const EdgeInsets.only(top: 0.0),
-  //               child: Row(
-  //                 mainAxisSize: MainAxisSize.max,
-  //                 children: <Widget>[
-  //                   Flexible(
-  //                     child: TextFormField(
-  //                       focusNode: focusNodeDescController,
-  //                       keyboardType: TextInputType.visiblePassword,
-  //                       controller: descriptionController,
-  //                       minLines: 1,
-  //                       maxLines: 4,
-  //                       onChanged: (val) {
-  //                         context.read<CrudEventCubit>().editEventInfo(val, 2);
-  //                       },
-  //                       style: Theme.of(context).textTheme.bodyText2,
-  //                       decoration: InputDecoration(
-  //                         hintStyle: Theme.of(context).textTheme.caption,
-  //                         hintText:
-  //                             AppLocalizations.of(context)!.descriptionHint,
-  //                         errorBorder: const UnderlineInputBorder(
-  //                           borderSide: BorderSide(color: Colors.red),
-  //                         ),
-  //                         disabledBorder: const UnderlineInputBorder(
-  //                           borderSide: BorderSide(color: Colors.grey),
-  //                         ),
-  //                         enabledBorder: const UnderlineInputBorder(
-  //                           borderSide: BorderSide(color: Colors.grey),
-  //                         ),
-  //                         focusedBorder: const UnderlineInputBorder(
-  //                           borderSide: BorderSide(color: Colors.grey),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               )),
-  //         ],
-  //       );
-  //     }),
-  //   ],
-  // );
-

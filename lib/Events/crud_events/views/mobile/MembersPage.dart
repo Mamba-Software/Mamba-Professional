@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Bonos/Even
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/ClientEventSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DateTime/DateTimeEventWidget.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Location/LocationBlocSelector.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/MaxClients/MaxClientsEvent.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Staff/StaffEventSelector.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/TitleDescription/TitleDescriptionBlocSelector.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
@@ -22,6 +23,14 @@ class MembersPage extends StatelessWidget {
         return Column(
           children: [
             const StaffEventSelector(),
+            dividerAddEditEvent(
+                context,
+                AppLocalizations.of(context)!.staff +
+                    "    ( " +
+                    brandTrainersSelected.length.toString() +
+                    " )",
+                !errorNoTrainerSelected),
+            const MaxClientsEventSelector(),
             const ClientEventSelector(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.15),
           ],

@@ -35,7 +35,7 @@ class RecurrentEventSelector extends StatelessWidget {
                   children: [
                     Padding(
                         padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.03),
+                            top: MediaQuery.of(context).size.height * 0.02),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.max,
@@ -61,10 +61,16 @@ class RecurrentEventSelector extends StatelessWidget {
                             ),
                           ],
                         )),
-                    isRecurrent
-                        ? RecurrentEventObjectSelector(locale: locale)
-                        : Container(),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.05)
+                    AnimatedCrossFade(
+                      firstChild: Container(), // Widget when expanded
+                      // Widget when contracted
+                      secondChild: RecurrentEventObjectSelector(locale: locale),
+                      crossFadeState: isRecurrent
+                          ? CrossFadeState.showSecond
+                          : CrossFadeState.showFirst,
+                      duration: const Duration(
+                          milliseconds: 700), // Duration of the animation
+                    ),
                   ],
                 )
               : isRecurrent

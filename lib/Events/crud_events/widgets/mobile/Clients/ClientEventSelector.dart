@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/ClientEventWidget.dart';
-import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/MaxClientEventWidget.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/MaxClients/MaxClientEventWidget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Event event = Event();
@@ -60,19 +60,6 @@ class ClientEventSelector extends StatelessWidget {
                       )
                     ],
                   )),
-              BlocSelector<CrudEventCubit, CrudEventLoaded, int>(
-                  selector: (state) {
-                if (state.newEvent.maxMembers != null) {
-                  return state.newEvent.maxMembers!;
-                }
-                return 1;
-              }, builder: (context, maxMembers) {
-                return Column(
-                  children: [
-                    maxClientEventWidget(context, maxMembers),
-                  ],
-                );
-              }),
               clientEventWidget(context, joinedMembersList),
             ],
           );

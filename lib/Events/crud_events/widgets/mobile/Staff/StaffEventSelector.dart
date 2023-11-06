@@ -22,38 +22,31 @@ class StaffEventSelector extends StatelessWidget {
       return [];
     }, builder: (context, brandTrainersSelected) {
       return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-              padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.03,
-                  left: MediaQuery.of(context).size.width * 0.05,
-                  right: MediaQuery.of(context).size.width * 0.05),
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(
-                        AppLocalizations.of(context)!.staff,
-                        style: Theme.of(context).textTheme.headline1,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.03,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "( " + brandTrainersSelected.length.toString() + " )",
-                        style: Theme.of(context).textTheme.bodyText2,
-                      ),
-                    ],
-                  )
-                ],
-              )),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              titleEventWidget(context, AppLocalizations.of(context)!.staff),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.03,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.00),
+                child: Row(
+                  children: [
+                    Text(
+                      "( " + brandTrainersSelected.length.toString() + " )",
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
           staffEventWidget(context, brandTrainersSelected),
         ],
       );
