@@ -23,13 +23,6 @@ class MembersPage extends StatelessWidget {
         return Column(
           children: [
             const StaffEventSelector(),
-            dividerAddEditEvent(
-                context,
-                AppLocalizations.of(context)!.staff +
-                    "    ( " +
-                    brandTrainersSelected.length.toString() +
-                    " )",
-                !errorNoTrainerSelected),
             const MaxClientsEventSelector(),
             const ClientEventSelector(),
             SizedBox(height: MediaQuery.of(context).size.height * 0.15),

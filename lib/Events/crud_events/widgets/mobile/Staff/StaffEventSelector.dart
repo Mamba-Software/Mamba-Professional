@@ -35,7 +35,7 @@ class StaffEventSelector extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.00),
+                    top: MediaQuery.of(context).size.height * 0.02),
                 child: Row(
                   children: [
                     Text(
@@ -48,6 +48,13 @@ class StaffEventSelector extends StatelessWidget {
             ],
           ),
           staffEventWidget(context, brandTrainersSelected),
+          dividerAddEditEvent(
+              context,
+              AppLocalizations.of(context)!.staff +
+                  "    ( " +
+                  brandTrainersSelected.length.toString() +
+                  " )",
+              !errorNoTrainerSelected),
         ],
       );
     });

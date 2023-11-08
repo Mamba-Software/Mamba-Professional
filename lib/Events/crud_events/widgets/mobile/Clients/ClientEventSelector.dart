@@ -5,6 +5,7 @@ import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/Clients/ClientEventWidget.dart';
+import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/DividerAddEditEvent.dart';
 import 'package:mamba_castelldefels/Events/crud_events/widgets/mobile/MaxClients/MaxClientEventWidget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -28,39 +29,36 @@ class ClientEventSelector extends StatelessWidget {
         }, builder: (context, joinedMembersList) {
           return Column(
             children: [
-              Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.03,
-                      bottom: MediaQuery.of(context).size.height * 0.01,
-                      left: MediaQuery.of(context).size.width * 0.05,
-                      right: MediaQuery.of(context).size.width * 0.05),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            AppLocalizations.of(context)!.clients,
-                            style: Theme.of(context).textTheme.headline1,
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.03,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "( " + joinedMembersList.length.toString() + " )",
-                            style: Theme.of(context).textTheme.bodyText2,
-                          ),
-                        ],
-                      )
-                    ],
-                  )),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  titleEventWidget(
+                      context, AppLocalizations.of(context)!.clients),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.03,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.02),
+                    child: Row(
+                      children: [
+                        Text(
+                          "( " + joinedMembersList.length.toString() + " )",
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
               clientEventWidget(context, joinedMembersList),
+              dividerAddEditEvent(
+                  context,
+                  AppLocalizations.of(context)!.clients +
+                      "    ( " +
+                      joinedMembersList.length.toString() +
+                      " )",
+                  true),
             ],
           );
         }),

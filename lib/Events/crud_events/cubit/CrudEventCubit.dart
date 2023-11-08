@@ -221,7 +221,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   Future<void> deleteEventFunction(
       BuildContext context, Event _oldEvent, bool isPrivate) async {
-    emitWorkingState(10);
+    emitWorkingState(30);
     await _deleteEventFunction(context, _oldEvent, isPrivate);
   }
 
@@ -271,7 +271,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
   Future<void> deleteRecurrentEventFunction(
       BuildContext context, Event _oldEvent, bool isPrivate) async {
-    emitWorkingState(0);
+    emitWorkingState(30);
     await _deleteRecurrentEventFunction(context, _oldEvent, isPrivate);
   }
 
@@ -297,7 +297,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     }
     // Recurrent total
     int totalEvents = eventGroupIdsList.length - index;
-    double valuePortions = 100 / totalEvents;
+    double valuePortions = 70 / totalEvents;
     double valueToSum = valuePortions;
     // Delete All Events After The Index
     for (var i = index; i < eventGroupIdsList.length; i++) {
@@ -327,10 +327,10 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   Future<void> addEventFunction(
       BuildContext context, Event _event, bool isPrivate) async {
     if (!_event.isRecurrent!) {
-      emitWorkingState(10);
+      emitWorkingState(30);
       await _addUniqueEventFunction(context, _event, isPrivate);
     } else {
-      emitWorkingState(0);
+      emitWorkingState(30);
       await _addRecurrentEvents(context, _event, isPrivate);
     }
   }
@@ -433,7 +433,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     List<String> groupEventsIds = [];
 
     int totalEvents = recurrent.value! * dayOfWeek.length;
-    double valuePortions = 100 / totalEvents;
+    double valuePortions = 70 / totalEvents;
     double valueToSum = valuePortions;
 
     //PER CADA SETMANA
@@ -547,7 +547,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     // Recurrent total
     //totalEvents = eventGroupIdsList.length - index;
     int totalEvents = eventGroupIdsList.length;
-    double valuePortions = 100 / totalEvents;
+    double valuePortions = 70 / totalEvents;
     double valueToSum = valuePortions;
 
     // Update All Events After The Index

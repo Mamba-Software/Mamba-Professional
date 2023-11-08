@@ -55,7 +55,7 @@ Widget buildAddUserButton(
     }, //: null,
     child: Padding(
       padding: EdgeInsets.only(
-          left: MediaQuery.of(context).size.width * 0.06, right: 8.0),
+          left: MediaQuery.of(context).size.width * 0.00, right: 8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

@@ -164,23 +164,6 @@ Widget clientEventWidget(
           ),
         ),
       ),
-      Padding(
-        padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).size.height * 0.01,
-            left: MediaQuery.of(context).size.width * 0.05,
-            right: MediaQuery.of(context).size.width * 0.05),
-        child: Column(
-          children: [
-            dividerAddEditEvent(
-                context,
-                AppLocalizations.of(context)!.clients +
-                    "    ( " +
-                    brandClientsSelected.length.toString() +
-                    " )",
-                true),
-          ],
-        ),
-      )
       //JMF_AddUser_END
     ],
   );
