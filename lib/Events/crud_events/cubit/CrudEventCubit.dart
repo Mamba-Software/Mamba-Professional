@@ -445,14 +445,18 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         startDate =
             _event.startDate!.add(Duration(days: ((i * 7) + dayOfWeek[j])));
         if (!startDate.isBefore(_event.startDate!)) {
+          /* await _eventDataService.addEventRecurrent(
+              startDate, eventGroupId, _event, isPrivate, selectedBonos);*/
+          //TODO CLOUD FUNCTION
           groupEventsIds.add(await _addOneRecurrentEvent(context, startDate,
               eventGroupId, _event, isPrivate, selectedBonos));
+          // Create Entry in /Event Groups
+          await _eventDataService.addRecurrentEventGroup(
+              eventGroupId, groupEventsIds);
         }
       }
     }
-    // Create Entry in /Event Groups
-    await _eventDataService.addRecurrentEventGroup(
-        eventGroupId, groupEventsIds);
+
     mixpanel!.track('add_event_completed', properties: {
       'descriptionLength': _event.description!.length.toString(),
       'isPrivate': isPrivate,

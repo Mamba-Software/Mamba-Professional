@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
@@ -50,6 +51,8 @@ class _MaxClientEventWidgetState extends State<MaxClientEventWidget> {
                 focusNode: null,
                 controller: membersController,
                 maxLines: null,
+                maxLength: 3,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 minLines: 1,
                 validator: (val) => val!.isEmpty ? null : null,
                 onChanged: (val) {
@@ -65,20 +68,21 @@ class _MaxClientEventWidgetState extends State<MaxClientEventWidget> {
                 },
                 style: Theme.of(context).textTheme.bodyText1,
                 decoration: InputDecoration(
-                  suffixStyle: Theme.of(context).textTheme.caption,
-                  hintStyle: Theme.of(context).textTheme.caption,
+                  counterText: '',
+                  hintStyle: Theme.of(context).textTheme.bodyText1?.copyWith(
+                      color: Theme.of(context).textTheme.caption!.color),
                   hintText: '4',
-                  errorBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
+                  disabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Theme.of(context).dividerColor),
                   ),
-                  disabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Theme.of(context).dividerColor),
                   ),
-                  enabledBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Theme.of(context).dividerColor),
                   ),
                 ),
               ),

@@ -44,21 +44,43 @@ class RecurrentEventSelector extends StatelessWidget {
                               AppLocalizations.of(context)!.recurrentEvent,
                               style: Theme.of(context).textTheme.headline1,
                             ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.035,
-                              width: MediaQuery.of(context).size.width * 0.1,
-                              child: CupertinoSwitch(
-                                value: isRecurrent,
-                                onChanged: (bool newVal) {
-                                  context.read<CrudEventCubit>().editEventInfo(
-                                      newVal, EditEventType.recurrent);
-                                },
-                                trackColor: Colors.green.withOpacity(0.4),
-                                thumbColor: AppColors.white,
-                                activeColor: Colors.green,
-                              ),
-                            ),
+                            context
+                                    .read<CrudEventCubit>()
+                                    .state
+                                    .newEvent
+                                    .joinedMembersList!
+                                    .isEmpty
+                                ? SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.035,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.1,
+                                    child: CupertinoSwitch(
+                                      value: isRecurrent,
+                                      onChanged: (bool newVal) {
+                                        context
+                                            .read<CrudEventCubit>()
+                                            .editEventInfo(newVal,
+                                                EditEventType.recurrent);
+                                      },
+                                      trackColor: Colors.green.withOpacity(0.4),
+                                      thumbColor: AppColors.white,
+                                      activeColor: Colors.green,
+                                    ),
+                                  )
+                                : SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.035,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.1,
+                                    child: CupertinoSwitch(
+                                      value: false,
+                                      onChanged: null,
+                                      trackColor: Colors.green.withOpacity(0.4),
+                                      thumbColor: AppColors.white,
+                                      activeColor: Colors.grey,
+                                    ),
+                                  )
                           ],
                         )),
                     AnimatedCrossFade(

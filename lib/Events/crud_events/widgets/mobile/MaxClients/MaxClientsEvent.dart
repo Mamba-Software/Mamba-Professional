@@ -28,7 +28,6 @@ class MaxClientsEventSelector extends StatelessWidget {
           titleEventWidget(
               context, AppLocalizations.of(context)!.maxNumberClients),
           MaxClientEventWidget(maxMembers: maxMembers),
-          dividerAddEditEvent(context, '', true),
         ],
       );
     });

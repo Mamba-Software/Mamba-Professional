@@ -24,7 +24,12 @@ class MembersPage extends StatelessWidget {
           children: [
             const StaffEventSelector(),
             const MaxClientsEventSelector(),
-            const ClientEventSelector(),
+            BlocSelector<CrudEventCubit, CrudEventLoaded, bool>(
+                selector: (state) {
+              return !state.newEvent.isRecurrent! || !state.isNew;
+            }, builder: (context, addClients) {
+              return addClients ? const ClientEventSelector() : Container();
+            }),
             SizedBox(height: MediaQuery.of(context).size.height * 0.15),
           ],
         );

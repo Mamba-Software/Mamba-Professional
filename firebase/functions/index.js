@@ -5997,4 +5997,41 @@ exports.zzzzUserDeletesPurchase = functions
           return null;
         });
 
-
+// Recurrent Event Function
+exports.createRecurrentEvent = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+  // Get the Variables
+  const { eventId } = data;  
+  // Create the user verifiaction email link Firebase Admin SDK  
+  const verificationLink = await admin.auth().generateEmailVerificationLink(email);  
+  // Get Email Template
+  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
+  const templateDoc = templateSnapshot.data();          
+  // Determine the base email content      
+  let baseContent = templateDoc.wellcomeVerify; 
+  if (isTrainer == true) {
+    baseContent = templateDoc.wellcomeVerifyPro;
+  }          
+  // Replace macros with actual data
+  const emailTitleString = "📧 Verifica tu cuenta 📧";  
+  let content = baseContent.replace(/{{link}}/g, verificationLink);
+  content = content.replace(/{{email}}/g, email); 
+  const msg = {
+      to: email,
+      from: 'Equipo de Mamba <info@mambaapp.app>',
+      subject: emailTitleString,
+      html: content,        
+  };  
+  // Send Email
+  let success = true;
+  try {
+    await sgMail.send(msg);
+    console.log('Email sent to ', email);
+  } catch (error) {
+    console.error('Error sending email to', email, error);
+    success = false;
+  }
+  return { isSuccessful: success};
+});

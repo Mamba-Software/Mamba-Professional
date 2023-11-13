@@ -88,6 +88,9 @@ class EventDataService {
       _firebase.addEventBonos(eventId, bonoIds);
   Future<void> addEventBonosObject(String eventId, List<Bono> bonos) =>
       _firebase.addEventBonosObject(eventId, bonos);
+  Future<int> addEventRecurrent(DateTime startDate, String eventGroupId,
+          Event _event, bool isPrivate, List<Bono> selectedBonos) =>
+      _firebase.addEventRecurrent(startDate, _event, isPrivate, selectedBonos);
 
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);

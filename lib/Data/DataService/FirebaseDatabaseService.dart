@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
@@ -2437,6 +2438,29 @@ class FirebaseDatabaseService {
       }
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  Future<int> addEventRecurrent(DateTime startDate, Event _event,
+      bool isPrivate, List<Bono> selectedBonos) async {
+    try {
+      final HttpsCallable callable =
+          FirebaseFunctions.instanceFor(region: 'europe-west1')
+              .httpsCallable('createRecurrentEvent');
+      final HttpsCallableResult result = await callable.call(
+        <String, dynamic>{
+          'startDate': startDate,
+          'event': _event,
+          'isPrivate': isPrivate,
+          'selectedBonos': selectedBonos,
+        },
+      );
+      bool success = result.data['isSuccessful'];
+      if (success) return 1;
+      return -1;
+    } catch (e) {
+      print(e.toString());
+      return -1;
     }
   }
 
