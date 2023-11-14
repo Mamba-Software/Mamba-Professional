@@ -90,6 +90,36 @@ class Event {
     this.recurrent,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'isPrivate': isPrivate,
+      'title': title,
+      'description': description,
+      'imageUrl': imageUrl,
+      'doneAt': doneAt?.toString(),
+      'createdAt':
+          Timestamp.now().toString(), // If you want the current timestamp
+      'year': year,
+      'month': month,
+      'day': day,
+      'hour': hour,
+      'minute': minute,
+      'duration': duration,
+      'locationId': locationId,
+      'numClients': joinedMembersList?.length,
+      'numTrainers': selectedTrainersList?.length,
+      'maxMembers': maxMembers,
+      //'joinedMembersList': joinedMembersList,
+      //'selectedTrainersList': selectedTrainersList,
+      'eventGroupId': eventGroupId,
+      'brandName': brandName,
+      'brandLogo': brandLogo,
+      'brandID': brandID,
+      'locationDescription': location!.description,
+    };
+  }
+
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
 
   Event.fromObjectAllData(

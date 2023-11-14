@@ -2441,18 +2441,19 @@ class FirebaseDatabaseService {
     }
   }
 
-  Future<int> addEventRecurrent(DateTime startDate, Event _event,
-      bool isPrivate, List<Bono> selectedBonos) async {
+  Future<int> addEventRecurrent(Event _event) async {
     try {
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
-              .httpsCallable('createRecurrentEvent');
+              .httpsCallable('zzzzCreateRecurrentEvent');
+      print(_event.toJson());
+      print(GeoFlutterUtils.getGeoPointJSON(
+          _event.location!.latitude!, _event.location!.longitude!));
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
-          'startDate': startDate,
-          'event': _event,
-          'isPrivate': isPrivate,
-          'selectedBonos': selectedBonos,
+          'event': _event.toJson(),
+          ...GeoFlutterUtils.getGeoPointJSON(
+              _event.location!.latitude!, _event.location!.longitude!),
         },
       );
       bool success = result.data['isSuccessful'];

@@ -445,14 +445,12 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         startDate =
             _event.startDate!.add(Duration(days: ((i * 7) + dayOfWeek[j])));
         if (!startDate.isBefore(_event.startDate!)) {
-          /* await _eventDataService.addEventRecurrent(
-              startDate, eventGroupId, _event, isPrivate, selectedBonos);*/
           //TODO CLOUD FUNCTION
           groupEventsIds.add(await _addOneRecurrentEvent(context, startDate,
               eventGroupId, _event, isPrivate, selectedBonos));
           // Create Entry in /Event Groups
-          await _eventDataService.addRecurrentEventGroup(
-              eventGroupId, groupEventsIds);
+          /*await _eventDataService.addRecurrentEventGroup(
+              eventGroupId, groupEventsIds);*/
         }
       }
     }
@@ -489,10 +487,13 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
 
     // Creating Event Object
     Event event = Event(
+      id: const Uuid().v1(),
       isPrivate: isPrivate,
       title: _event.title,
       description: _event.description,
       imageUrl: eventImageUrl,
+      brandID: currentBrand.id,
+      creatorID: currentUser.id,
       doneAt: doneAt,
       createdAt: Timestamp.now(),
       year: startDate.year.toString(),
@@ -508,8 +509,19 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       joinedMembersList: _event.joinedMembersList!,
       selectedTrainersList: _event.selectedTrainersList!,
       eventGroupId: eventGroupId,
+      bonos: selectedBonos,
+      location: _event.location!,
+      brandName: currentBrand.name,
+      brandLogo: currentBrand.logoUrl,
     );
+
+    String eventId = '';
+
+    await _eventDataService.addEventRecurrent(event);
+
     // Add Event
+
+    /*
     String eventId = await _addEventCall(event);
 
     // Add Event Members
@@ -519,7 +531,7 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         eventId, event.joinedMembersList!, selectedBonos, context);
 
     // Add Event Bonos
-    _addEventBonosCall(eventId, selectedBonos);
+    _addEventBonosCall(eventId, selectedBonos);*/
 
     return eventId;
   }

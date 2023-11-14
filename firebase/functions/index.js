@@ -5998,40 +5998,101 @@ exports.zzzzUserDeletesPurchase = functions
         });
 
 // Recurrent Event Function
-exports.createRecurrentEvent = functions
+exports.zzzzCreateRecurrentEvent = functions
 .region("europe-west1")
 .https
 .onCall(async (data, context) => {
-  // Get the Variables
-  const { eventId } = data;  
-  // Create the user verifiaction email link Firebase Admin SDK  
-  const verificationLink = await admin.auth().generateEmailVerificationLink(email);  
-  // Get Email Template
-  const templateSnapshot = await db.collection("Library").doc("Email Templates").get();
-  const templateDoc = templateSnapshot.data();          
-  // Determine the base email content      
-  let baseContent = templateDoc.wellcomeVerify; 
-  if (isTrainer == true) {
-    baseContent = templateDoc.wellcomeVerifyPro;
-  }          
-  // Replace macros with actual data
-  const emailTitleString = "📧 Verifica tu cuenta 📧";  
-  let content = baseContent.replace(/{{link}}/g, verificationLink);
-  content = content.replace(/{{email}}/g, email); 
-  const msg = {
-      to: email,
-      from: 'Equipo de Mamba <info@mambaapp.app>',
-      subject: emailTitleString,
-      html: content,        
-  };  
-  // Send Email
-  let success = true;
-  try {
-    await sgMail.send(msg);
-    console.log('Email sent to ', email);
-  } catch (error) {
-    console.error('Error sending email to', email, error);
-    success = false;
-  }
-  return { isSuccessful: success};
+
+    functions.logger.log("new data", data);
+
+    const { event, geoPosition } = data;  
+    const eventsCollection = '7777 Events';
+    const eventID = event.id;
+
+    
+    functions.logger.log("EVENT", event);
+    functions.logger.log("EVENTID", eventID);
+
+    try {
+        // Add to "\Events"
+        await admin.firestore().collection(eventsCollection).doc(eventID).set({
+            ...event,
+            ...geoPosition,
+        });
+
+        functions.logger.log("STEP 1", event);
+
+        // Add to Private Events if event is private
+        if (event.isPrivate) {
+            await admin.firestore()
+                .collection(eventsCollection)
+                .doc("Private Events")
+                .collection("Private Events")
+                .doc(eventID)
+                .set({
+                    ...event,
+                    ...geoPosition,
+                });
+        }
+
+        functions.logger.log("STEP 2", event);
+
+        // Add to "\Events\Brands"
+        await admin.firestore()
+            .collection(eventsCollection)
+            .doc(eventID)
+            .collection("Brands")
+            .doc(event.brandID)
+            .set({
+                name: event.brandName,
+                logoUrl: event.brandLogo,
+            });
+            functions.logger.log("STEP 3", event);
+        // Add to "\Events\Location"
+        await admin.firestore()
+            .collection(eventsCollection)
+            .doc(eventID)
+            .collection("Locations")
+            .doc(event.locationId)
+            .set({
+                description: event.locationDescription,
+                longitude: geoPosition.geopoint.longitude,
+                latitude: geoPosition.geopoint.latitude,
+                ...geoPosition,
+            });
+            functions.logger.log("STEP 4", event);
+        // Add Event To Brands/Events Subcollection
+        await admin.firestore()
+            .collection('7777 Brands')
+            .doc(event.brandID)
+            .collection("Events")
+            .doc(eventID)
+            .set({
+                ...event,
+                ...geoPosition,
+            });
+
+            functions.logger.log("STEP 5", event);
+
+        // Add to Brands/Events/Private Events if event is private
+        if (event.isPrivate) {
+            await admin.firestore()
+                .collection('7777 Brands')
+                .doc(event.brandID)
+                .collection("Events")
+                .doc("Private Events")
+                .collection("Private Events")
+                .doc(eventID)
+                .set({
+                    ...event,
+                    ...geoPosition,
+                });
+                
+        }
+        functions.logger.log("STEP 6", event);
+        return { success: true, eventId: eventID };
+    } catch (error) {
+        console.error("Error adding event:", error);
+        return { success: false };
+    }
 });
