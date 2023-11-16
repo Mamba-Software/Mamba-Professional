@@ -96,10 +96,7 @@ class Event {
       'isPrivate': isPrivate,
       'title': title,
       'description': description,
-      'imageUrl': imageUrl,
-      'doneAt': doneAt?.toString(),
-      'createdAt':
-          Timestamp.now().toString(), // If you want the current timestamp
+      'imageUrl': imageUrl, // If you want the current timestamp
       'year': year,
       'month': month,
       'day': day,

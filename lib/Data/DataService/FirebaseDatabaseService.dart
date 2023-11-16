@@ -2441,7 +2441,8 @@ class FirebaseDatabaseService {
     }
   }
 
-  Future<int> addEventRecurrent(Event _event) async {
+  Future<int> addEventRecurrent(
+      Event _event, List<String> bonos, List<String> trainers) async {
     try {
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
@@ -2452,11 +2453,14 @@ class FirebaseDatabaseService {
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
           'event': _event.toJson(),
+          'doneAtString': _event.doneAt?.millisecondsSinceEpoch,
           ...GeoFlutterUtils.getGeoPointJSON(
               _event.location!.latitude!, _event.location!.longitude!),
+          'bonos': bonos,
+          'trainers': trainers,
         },
       );
-      bool success = result.data['isSuccessful'];
+      bool success = result.data['success'];
       if (success) return 1;
       return -1;
     } catch (e) {

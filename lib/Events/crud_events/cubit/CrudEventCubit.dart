@@ -422,6 +422,19 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         .map((entry) => entry.key)
         .toList();
 
+    List<String> bonos = [];
+    if (selectedBonos.isNotEmpty) {
+      bonos = selectedBonos.map((bono) => bono.id).cast<String>().toList();
+    }
+
+    List<String> trainers = [];
+    if (_event.selectedTrainersList!.isNotEmpty) {
+      trainers = _event.selectedTrainersList!
+          .map((trainer) => trainer.id)
+          .cast<String>()
+          .toList();
+    }
+
     _event.doneAt = Timestamp.fromDate(_event.startDate!);
 
     // Event Group Id
@@ -447,10 +460,10 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         if (!startDate.isBefore(_event.startDate!)) {
           //TODO CLOUD FUNCTION
           groupEventsIds.add(await _addOneRecurrentEvent(context, startDate,
-              eventGroupId, _event, isPrivate, selectedBonos));
+              eventGroupId, _event, isPrivate, selectedBonos, bonos, trainers));
           // Create Entry in /Event Groups
-          /*await _eventDataService.addRecurrentEventGroup(
-              eventGroupId, groupEventsIds);*/
+          await _eventDataService.addRecurrentEventGroup(
+              eventGroupId, groupEventsIds);
         }
       }
     }
@@ -475,7 +488,9 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       String eventGroupId,
       Event _event,
       bool isPrivate,
-      List<Bono> selectedBonos) async {
+      List<Bono> selectedBonos,
+      List<String> bonos,
+      List<String> trainers) async {
     String eventImageUrl;
 
     // Get Random Photo if no Image Selected
@@ -515,23 +530,21 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       brandLogo: currentBrand.logoUrl,
     );
 
-    String eventId = '';
+    String eventId = await _addEventCall(event);
 
-    await _eventDataService.addEventRecurrent(event);
+    event.id = eventId;
+
+    _eventDataService.addEventRecurrent(event, bonos, trainers);
 
     // Add Event
-
-    /*
+/*
     String eventId = await _addEventCall(event);
 
     // Add Event Members
     await _addEventTrainers(eventId, event.selectedTrainersList!, context);
 
-    await _addEventClients(
-        eventId, event.joinedMembersList!, selectedBonos, context);
-
     // Add Event Bonos
-    _addEventBonosCall(eventId, selectedBonos);*/
+    // _addEventBonosCall(eventId, selectedBonos);*/
 
     return eventId;
   }
