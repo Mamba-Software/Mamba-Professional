@@ -423,7 +423,7 @@
   "userSendsBonoRequestBrand": "{name} ha enviat una sol·licitut de compra",
   "userSendsBonoRequestSubtitleBrand": "Espera confirmació per a comprar el val {bono}",
   "userCancelsBonoRequestBrand": "{name} ha cancel·lat la seva sol·licitud de compra",
-  "userCancelsBonoRequestSubtitleBrand": "El val {bo} li ha deixat d'interessar",
+  "userCancelsBonoRequestSubtitleBrand": "El val {bono} li ha deixat d'interessar",
   "userBuysBonoBrand": "{name} ha comprat el val {bono}",
   "userBuysBonoSubtitleBrand": "Pot realitzar un total de {sesions} sessions",
   "myLocationsBaseLocationDesc": "Aquesta és la ubicació que utilitzarem per localitzar la teva marca al mapa perquè els clients puguin trobar-te a prop seu.",

@@ -40,29 +40,48 @@ class LocalNotificationService {
     tz.setLocalLocation(tz.getLocation(timeZoneName!));
     // Configuration Android and iOs
     final AndroidInitializationSettings android = AndroidInitializationSettings('logo_foreground');
-    final IOSInitializationSettings ios = IOSInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-        onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {
-          didReceiveLocalNotificationSubject.add(
-            ReceivedNotification(
-              id: id,
-              title: title,
-              body: body,
-              payload: payload,
-            ),
-          );
-        }
-      );
+    final DarwinInitializationSettings ios = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {
+        didReceiveLocalNotificationSubject.add(
+          ReceivedNotification(
+            id: id,
+            title: title,
+            body: body,
+            payload: payload,
+          ),
+        );
+      },    
+    );
     InitializationSettings initializationSettings = InitializationSettings(android: android, iOS: ios);
     // Initialise Notifications Plugin
     _notificationsPlugin.initialize(
       initializationSettings,
-      onSelectNotification: (String? payload) async {
-        onNotifications.add(payload);
-      }
+      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
+        switch (notificationResponse.notificationResponseType) {
+          case NotificationResponseType.selectedNotification:      
+            onNotifications.add(notificationResponse.payload);
+            break;
+          case NotificationResponseType.selectedNotificationAction:
+            onNotifications.add(notificationResponse.payload);
+            break;
+        }
+      },
+      onDidReceiveBackgroundNotificationResponse: myBackgroundHandler,     
     );
+  }
+
+  void myBackgroundHandler(NotificationResponse notificationResponse) {
+    switch (notificationResponse.notificationResponseType) {
+      case NotificationResponseType.selectedNotification:      
+        onNotifications.add(notificationResponse.payload);
+        break;
+      case NotificationResponseType.selectedNotificationAction:
+        onNotifications.add(notificationResponse.payload);
+        break;
+    }
   }
 
   AndroidNotificationDetails getAndroidNotificationDetails({String? imageSource}) {
@@ -89,28 +108,14 @@ class LocalNotificationService {
     return androidPlatformChannelSpecifics;
   }
 
-  IOSNotificationDetails getIOSNotificationDetails({String? imageSource}) {
-    var iOSPlatformChannelSpecifics;
-    if (imageSource == null) {
-      iOSPlatformChannelSpecifics = IOSNotificationDetails(
-        presentAlert: true,
-        presentBadge: true,
-        presentSound: true,
-      );
-    } else {
-      iOSPlatformChannelSpecifics = IOSNotificationDetails(
+  DarwinNotificationDetails getIOSNotificationDetails({String? imageSource}) {
+    const DarwinNotificationDetails iosNotificationDetails =
+        DarwinNotificationDetails(
           presentAlert: true,
           presentBadge: true,
           presentSound: true,
-          /*
-          attachments: <IOSNotificationAttachment>[
-            IOSNotificationAttachment("assets/images/calendarImage.jpg")
-          ]
-          sound: 'a_long_cold_sting.wav',
-          */
-      );
-    }
-    return iOSPlatformChannelSpecifics;
+    );
+    return iosNotificationDetails;
   }
 
   Future<void> showNotification(ReceivedNotification notification) async {
@@ -221,7 +226,7 @@ class LocalNotificationService {
   Future<void> didNotificationLaunch(BuildContext context) async {
     NotificationAppLaunchDetails? notificationAppLaunchDetails = await _notificationsPlugin.getNotificationAppLaunchDetails();
     if (notificationAppLaunchDetails?.didNotificationLaunchApp != null && notificationAppLaunchDetails?.didNotificationLaunchApp == true) {
-      onClickedNotification(context, notificationAppLaunchDetails!.payload!);
+      onClickedNotification(context, notificationAppLaunchDetails!.notificationResponse!.payload!);
     }
   }
 

@@ -1096,17 +1096,18 @@ class ScriptsDatabaseService {
             final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
             final splitted = filePath.substring(0, (lastIndex));
             final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+            File file;
             var compressedFileImage = await FlutterImageCompress.compressAndGetFile(
               fileImage.absolute.path,
               outPath,
               quality: 75,
               rotate: 0,
             );
-            var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+            var compressedSize = await ImageUtils().getImageFileSize(File(compressedFileImage!.path), 2);
             print("Compressed Image Size: "+compressedSize);
             // Upload Photo de Firebase and Update
             print("Uploading image ...");
-            var result = await _userDataService.updateUserPhoto(user.id!, compressedFileImage);
+            var result = await _userDataService.updateUserPhoto(user.id!, File(compressedFileImage.path));
             print("Image succesfully uploaded!");
             print("\n");
             List<Brand> brandsList = await _brandDataService.getAllBrandsFromUser(user.id!);
@@ -1170,11 +1171,11 @@ class ScriptsDatabaseService {
           quality: 75,
           rotate: 0,
         );
-        var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+        var compressedSize = await ImageUtils().getImageFileSize(File(compressedFileImage!.path), 2);
         print("Compressed Image Size: "+compressedSize);
         // Upload Photo de Firebase and Update
         print("Uploading image ...");
-        await _brandDataService.updateBrandPhoto(brand.id!, compressedFileImage);
+        await _brandDataService.updateBrandPhoto(brand.id!, File(compressedFileImage.path));
         print("Image succesfully uploaded!");
         print('\n');
         print('=================================================================================');
@@ -1842,11 +1843,11 @@ class ScriptsDatabaseService {
           quality: 75,
           rotate: 0,
         );
-        var compressedSize = await ImageUtils().getImageFileSize(compressedFileImage!, 2);
+        var compressedSize = await ImageUtils().getImageFileSize(File(compressedFileImage!.path), 2);
         print("Compressed Image Size: "+compressedSize);
         // Upload Image
         var storageRef = _firebaseStorage.ref().child("library/images/event/" + querySnapshot.docs[i].id.toString() + ".jpeg");
-        var uploadTask = storageRef.putFile(compressedFileImage);
+        var uploadTask = storageRef.putFile(File(compressedFileImage.path));
         await uploadTask.whenComplete(() async {
           await storageRef.getDownloadURL().then((value) async {
             await _firestore.collection(library).doc("Images").collection("Events").doc(querySnapshot.docs[i].id.toString()).update({

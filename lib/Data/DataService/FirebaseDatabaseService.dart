@@ -1706,11 +1706,11 @@ class FirebaseDatabaseService {
       }
       averageTime = eventsList.length.toDouble() / differenceInWeeks;
       // Week Streak
-      int currentWeek = Jiffy(today).week;
+        int currentWeek = Jiffy.parseFromDateTime(today).weekOfYear;
       eventsList = eventsList.reversed.toList();
       for (int i = 0; i < eventsList.length; i++) {
         // Numero de la Setmana del Evento
-        int eventWeek = Jiffy(eventsList[i].doneAt!.toDate()).week;
+        int eventWeek = Jiffy.parseFromDateTime(eventsList[i].doneAt!.toDate()).weekOfYear;
         // Add Week to the Array
         if (weeksInRow.indexWhere((element) => element == eventWeek) == -1) {
           if (weeksInRow.isEmpty) {
