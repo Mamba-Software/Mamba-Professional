@@ -6005,7 +6005,7 @@ exports.zzzzCreateRecurrentEvent = functions
 
     functions.logger.log("new data", data);
 
-    const { event, doneAtString, geoPosition, bonos, trainers} = data;  
+    const { event, doneAtString, geoPosition, bonos, trainers, notification, firesAt} = data;  
     const eventsCollection = '7777 Events';
     const brandsCollection = '7777 Brands';
     const usersCollection = '7777 Users';
@@ -6024,7 +6024,7 @@ exports.zzzzCreateRecurrentEvent = functions
         // Add to "\Events"
        
         //await addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection);
-        addTrainers(trainers, eventRef, userRef);
+        addTrainers(trainers, eventRef, userRef, notification, firesAt);
         addBonos(bonos, eventRef);
 
         return { success: true, eventId: eventID };
@@ -6137,11 +6137,10 @@ function addBonos(bonos, eventRef) {
   }
 }
 
-async function addTrainers(trainers, eventRef, userRef) {
+async function addTrainers(trainers, eventRef, userRef, notification, firesAt) {
 
   if (trainers && trainers.length > 0) {
     const joinedAt = admin.firestore.Timestamp.now();
-    const batch = admin.firestore().batch();
 
     for (const trainerId of trainers) {
       const userSnapshot = await userRef.doc(trainerId).get();
@@ -6157,15 +6156,39 @@ async function addTrainers(trainers, eventRef, userRef) {
           noImageUrl: user.noImageUrl,
           isTrainer: user.isTrainer,
           isPrivate: user.isPrivate,
-          invitedDirectly: false,
           joinedAt: joinedAt,
           notificationToken: user.notificationToken,
         };
-        batch.set(trainerRef, userData);
+        await trainerRef.set(userData); // Direct set for each trainer
+        addLocalNotification(userRef, trainerId, notification, firesAt);
       }
     }
+  }
+}
 
-    await batch.commit();
+async function addLocalNotification(userRef, userId, notification, firesAt) {
+
+  if (!userId || !notification) {
+      throw new Error('Invalid arguments. UserId and notification are required.');
+  }
+  try {
+      const now = admin.firestore.Timestamp.now();
+      const userRefComplete = userRef
+                        .doc(userId)
+                        .collection('Local Notifications') // Adjust the subcollection name as necessary
+                        .doc(notification.id.toString());
+
+      await userRefComplete.set({
+          eventId: notification.eventId,
+          bonoId: notification.bonoId,
+          purchaseId: notification.purchaseId,
+          payload: notification.payload,
+          createdAt: now,
+          firesAt: admin.firestore.Timestamp.fromMillis(firesAt),
+      });
+  } catch (error) {
+      console.error('Error adding local notification:', error);
+      throw error;
   }
 }
 

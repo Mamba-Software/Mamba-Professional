@@ -140,7 +140,7 @@ class AddOrEditEvent extends StatelessWidget {
                     if (state.isValidated.every((bool value) => value)) {
                       if (state.isNew) {
                         context.read<CrudEventCubit>().addEventFunction(
-                            context, state.newEvent, state.isPrivate);
+                            context, state.newEvent, state.isPrivate, '', '');
                         Navigator.pop(context);
                       }
                     }

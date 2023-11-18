@@ -10,15 +10,21 @@ import 'package:mamba_castelldefels/Data/DataService/Location/LocationDataServic
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
+import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/addEvents.dart';
+import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
+import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/recurrentEvents.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 import 'package:equatable/equatable.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Recurrent.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/utils/enumAddEditEvent.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/NotificationService.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:uuid/uuid.dart';
 part 'CrudEventState.dart';
 
@@ -26,11 +32,9 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   final _eventDataService = EventDataService();
   final _locationDataService = LocationDataService();
   final _purchaseDataService = PurchaseDataService();
-
-  // Notification Services
-  final NotificationService _notificationService = NotificationService();
-  final LocalNotificationService _localNotificationService =
-      LocalNotificationService();
+  final _notificationsEvents = NotificationsEvent();
+  final _addEvents = AddEventFunctions();
+  final _recurrentEvents = RecurrentEvents();
 
   List<Bono> eventBonos = [];
 
@@ -244,7 +248,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     for (var i = 0; i < eventMembers.length; i++) {
       var user = eventMembers[i];
       // Remove Local Notifications Service
-      await _deleteEventLocalNotificationsCall(_oldEvent.id!, user.id!);
+      await _notificationsEvents.deleteEventLocalNotificationsCall(
+          _oldEvent.id!, user.id!, currentUser.id!);
     }
     emitWorkingState(80);
     // Delete Event From Event Group Id in Case it has any.
@@ -317,7 +322,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       for (var i = 0; i < eventMembers.length; i++) {
         var user = eventMembers[i];
         // Remove Local Notifications Service
-        await _deleteEventLocalNotificationsCall(_oldEvent.id!, user.id!);
+        await _notificationsEvents.deleteEventLocalNotificationsCall(
+            _oldEvent.id!, user.id!, currentUser.id!);
       }
     }
     mixpanel!.track('delete_event_completed',
@@ -325,18 +331,31 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   }
 
   Future<void> addEventFunction(
-      BuildContext context, Event _event, bool isPrivate) async {
+      BuildContext context,
+      Event _event,
+      bool isPrivate,
+      String titleNot,
+      String bodyNot,
+      String titleNotAfter,
+      String bodyNotAfter) async {
     if (!_event.isRecurrent!) {
       emitWorkingState(30);
-      await _addUniqueEventFunction(context, _event, isPrivate);
+      await _addUniqueEventFunction(context, _event, isPrivate, titleNot,
+          bodyNot, titleNotAfter, bodyNotAfter);
     } else {
       emitWorkingState(30);
-      await _addRecurrentEvents(context, _event, isPrivate);
+      await _addRecurrentEvents(context, _event, isPrivate, titleNot, bodyNot);
     }
   }
 
   Future<void> _addUniqueEventFunction(
-      BuildContext context, Event _event, bool isPrivate) async {
+      BuildContext context,
+      Event _event,
+      bool isPrivate,
+      String titleNot,
+      String bodyNot,
+      String titleNotAfter,
+      String bodyNotAfter) async {
     String eventImageUrl;
     mixpanel!.timeEvent("add_event_completed");
 
@@ -375,18 +394,39 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       selectedTrainersList: _event.selectedTrainersList!,
     );
     // Add Event
-    String eventId = await _addEventCall(event);
+    String eventId = await _addEvents.addEventCall(event);
     emitWorkingState(40);
+
     // Add Event Members
-    await _addEventTrainers(eventId, event.selectedTrainersList!, context);
+    await _addEvents.addEventTrainers(
+        eventId,
+        event.selectedTrainersList!,
+        context,
+        currentUser.id!,
+        _notificationsEvents.setEventNotificationBefore(
+            event, titleNot, bodyNot));
+
     emitWorkingState(70);
-    await _addEventClients(
-        eventId, event.joinedMembersList!, selectedBonos, context);
+
+    await _addEvents.addEventClients(
+        eventId,
+        event.joinedMembersList!,
+        selectedBonos,
+        context,
+        currentUser.id!,
+        currentBrand.id!,
+        _notificationsEvents.setEventNotificationBefore(
+            event, titleNot, bodyNot),
+        _notificationsEvents.setEventNotificationAfter(
+            event, titleNotAfter, bodyNotAfter));
 
     emitWorkingState(80);
+
     // Add Event Bonos
     _addEventBonosCall(eventId, selectedBonos);
+
     emitWorkingState(90);
+
     mixpanel!.track('add_event_completed', properties: {
       'descriptionLength': event.description!.length.toString(),
       'isPrivate': event.isPrivate,
@@ -401,8 +441,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     resetNewEvent();
   }
 
-  Future<void> _addRecurrentEvents(
-      BuildContext context, Event _event, bool isPrivate) async {
+  Future<void> _addRecurrentEvents(BuildContext context, Event _event,
+      bool isPrivate, String titleNot, String bodyNot) async {
     mixpanel!.timeEvent("add_event_completed");
 
     List<int> dayOfWeek = [];
@@ -459,8 +499,19 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
             _event.startDate!.add(Duration(days: ((i * 7) + dayOfWeek[j])));
         if (!startDate.isBefore(_event.startDate!)) {
           //TODO CLOUD FUNCTION
-          groupEventsIds.add(await _addOneRecurrentEvent(context, startDate,
-              eventGroupId, _event, isPrivate, selectedBonos, bonos, trainers));
+          groupEventsIds.add(await _recurrentEvents.addOneRecurrentEvent(
+              context,
+              startDate,
+              eventGroupId,
+              _event,
+              isPrivate,
+              currentBrand,
+              currentUser.id!,
+              selectedBonos,
+              bonos,
+              trainers,
+              titleNot,
+              bodyNot));
           // Create Entry in /Event Groups
           await _eventDataService.addRecurrentEventGroup(
               eventGroupId, groupEventsIds);
@@ -480,73 +531,6 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     });
 
     resetNewEvent();
-  }
-
-  Future<String> _addOneRecurrentEvent(
-      BuildContext context,
-      DateTime startDate,
-      String eventGroupId,
-      Event _event,
-      bool isPrivate,
-      List<Bono> selectedBonos,
-      List<String> bonos,
-      List<String> trainers) async {
-    String eventImageUrl;
-
-    // Get Random Photo if no Image Selected
-    eventImageUrl =
-        await _brandDataService.getRandomBrandPhoto(currentBrand.id!);
-
-    // Event Start Date
-    Timestamp doneAt = Timestamp.fromDate(startDate);
-
-    // Creating Event Object
-    Event event = Event(
-      id: const Uuid().v1(),
-      isPrivate: isPrivate,
-      title: _event.title,
-      description: _event.description,
-      imageUrl: eventImageUrl,
-      brandID: currentBrand.id,
-      creatorID: currentUser.id,
-      doneAt: doneAt,
-      createdAt: Timestamp.now(),
-      year: startDate.year.toString(),
-      month: startDate.month.toString(),
-      day: startDate.day.toString(),
-      hour: startDate.hour.toString(),
-      minute: startDate.minute.toString(),
-      duration: _event.duration!,
-      locationId: _event.location!.id,
-      numClients: _event.joinedMembersList!.length,
-      numTrainers: _event.selectedTrainersList!.length,
-      maxMembers: _event.maxMembers,
-      joinedMembersList: _event.joinedMembersList!,
-      selectedTrainersList: _event.selectedTrainersList!,
-      eventGroupId: eventGroupId,
-      bonos: selectedBonos,
-      location: _event.location!,
-      brandName: currentBrand.name,
-      brandLogo: currentBrand.logoUrl,
-    );
-
-    String eventId = await _addEventCall(event);
-
-    event.id = eventId;
-
-    _eventDataService.addEventRecurrent(event, bonos, trainers);
-
-    // Add Event
-/*
-    String eventId = await _addEventCall(event);
-
-    // Add Event Members
-    await _addEventTrainers(eventId, event.selectedTrainersList!, context);
-
-    // Add Event Bonos
-    // _addEventBonosCall(eventId, selectedBonos);*/
-
-    return eventId;
   }
 
   Future<void> updateEventFunction(
@@ -670,7 +654,13 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
             eventId, updatedEvent.locationId!, originalEvent.locationId!);
       }
 
-      await _assignTrainers(context, originalEvent, updatedEvent);
+      await _addEvents.assignTrainers(
+          context,
+          originalEvent,
+          updatedEvent,
+          currentUser.id!,
+          _notificationsEvents.setEventNotificationBefore(
+              event, titleNot, bodyNot));
     }
   }
 
@@ -738,9 +728,10 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           event.id!, event.locationId!, _oldEvent.locationId!);
     }
 
-    await _assignTrainers(context, _oldEvent, event);
+    await _addEvents.assignTrainers(context, _oldEvent, event, currentUser.id!);
 
-    await _assignClients(context, _oldEvent, event, selectedBonos);
+    await _addEvents.assignClients(
+        context, _oldEvent, event, selectedBonos, currentBrand.id!);
 
     mixpanel!.track('edit_event_completed', properties: {
       'descriptionLength': event.description!.length.toString(),
@@ -754,174 +745,6 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     });
 
     updateEvent();
-  }
-
-  Future<void> _assignTrainers(
-      BuildContext context, Event _oldEvent, Event event) async {
-    Set<String?> oldIds =
-        _oldEvent.selectedTrainersList!.map((usuario) => usuario.id).toSet();
-    Set<String?> newIds =
-        event.selectedTrainersList!.map((usuario) => usuario.id).toSet();
-
-    Set<String?> idsToAdd = newIds.difference(oldIds);
-    Set<String?> idsToRemove = oldIds.difference(newIds);
-    Set<String?> idsMatched = oldIds.intersection(newIds);
-
-    List<Usuario> trainersToAdd = idsToAdd
-        .map((id) => event.selectedTrainersList!
-            .firstWhere((usuario) => usuario.id == id))
-        .cast<Usuario>()
-        .toList();
-    List<Usuario> trainersToRemove = idsToRemove
-        .map((id) => _oldEvent.selectedTrainersList!
-            .firstWhere((usuario) => usuario.id == id))
-        .cast<Usuario>()
-        .toList();
-    List<Usuario> matchedTrainers = idsMatched
-        .map((id) => event.selectedTrainersList!
-            .firstWhere((usuario) => usuario.id == id))
-        .cast<Usuario>()
-        .toList();
-
-    // Compare Current Members vs Original Members
-    /// Start With Trainers
-    for (int i = 0; i < matchedTrainers.length; i++) {
-      var user = matchedTrainers[i];
-
-      print("Trainer Matched " + user.id.toString());
-      if (_oldEvent.startDate! != event.startDate!) {
-        // Remove Old Local Notification
-        await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-        // Add updated ones now
-        await _addEventLocalNotificationsCall(
-            context, event.id!, user.id!, user.isTrainer!);
-      }
-    }
-
-    /// Handle Trainers Not Matched
-    // Original Trainers Not Matched means that they have been removed from Event
-    for (int i = 0; i < trainersToRemove.length; i++) {
-      var user = trainersToRemove[i];
-      // Remove Trainer From Event
-      await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
-      // Remove Event Local Notifications
-      await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-      print("Trainer Removed " + user.id.toString());
-    }
-
-    /// Handle Trainers Added
-    // Trainers Added Not Matched means that they have added to the Event
-    for (int i = 0; i < trainersToAdd.length; i++) {
-      var user = trainersToAdd[i];
-      // Add Trainer to Event
-      if (user.id != currentUser.id!) {
-        await _eventDataService.addUserToEvent(event.id!, user.id!, "", true);
-      } else {
-        await _eventDataService.addUserToEvent(event.id!, user.id!, "");
-      }
-      // Add Event Local Notifications
-      await _addEventLocalNotificationsCall(
-          context, event.id!, user.id!, user.isTrainer!);
-      print("Trainer Added " + user.id.toString());
-    }
-  }
-
-  Future<void> _assignClients(BuildContext context, Event _oldEvent,
-      Event event, List<Bono> selectedBonos) async {
-    Set<String?> oldIds =
-        _oldEvent.joinedMembersList!.map((usuario) => usuario.id).toSet();
-    Set<String?> newIds =
-        event.joinedMembersList!.map((usuario) => usuario.id).toSet();
-
-    Set<String?> idsToAdd = newIds.difference(oldIds);
-    Set<String?> idsToRemove = oldIds.difference(newIds);
-    Set<String?> idsMatched = oldIds.intersection(newIds);
-
-    List<Usuario> clientsToAdd = idsToAdd
-        .map((id) =>
-            event.joinedMembersList!.firstWhere((usuario) => usuario.id == id))
-        .cast<Usuario>()
-        .toList();
-    List<Usuario> clientsToRemove = idsToRemove
-        .map((id) => _oldEvent.joinedMembersList!
-            .firstWhere((usuario) => usuario.id == id))
-        .cast<Usuario>()
-        .toList();
-    List<Usuario> matchedClients = idsMatched
-        .map((id) =>
-            event.joinedMembersList!.firstWhere((usuario) => usuario.id == id))
-        .cast<Usuario>()
-        .toList();
-
-    for (int i = 0; i < matchedClients.length; i++) {
-      var user = matchedClients[i];
-
-      print("Client Matched " + user.id.toString());
-      if (_oldEvent.startDate! != event.startDate!) {
-        // Remove Old Local Notification
-        await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-        // Add updated ones now
-        await _addEventLocalNotificationsCall(
-            context, event.id!, user.id!, user.isTrainer!);
-      }
-    }
-    // Handle Clients Not Matched
-    // Original Clients Not Matched means that they have been removed from Event
-    for (int i = 0; i < clientsToRemove.length; i++) {
-      var user = clientsToRemove[i];
-      // Remove Client From Event
-      await _eventDataService.deleteUserFromEvent(event.id!, user.id!);
-      // Remove Client From Purchase
-      //JMF_AddUser_BEGIN
-      if (selectedBonos.isNotEmpty) {
-        await _purchaseDataService.deletedPurchaseUserFromEvent(
-            user, event.id!);
-      }
-      //JMF_AddUser_END
-      // Send Client Left Event
-      _notificationService.userLeaveEvent(
-          user.id!, currentBrand.id!, event.id!);
-      // Remove Event Local Notifications
-      await _deleteEventLocalNotificationsCall(event.id!, user.id!);
-      print("Client Removed " + user.id.toString());
-    }
-
-    //JMF_AddUser_Begin
-    //Update purchase
-    if (selectedBonos.isNotEmpty) {
-      await _updateUserPurchase(event);
-    }
-    //JMF_AddUser_End
-
-    // Handle Clients Added
-    // Clients Added Not Matched means that they have added to the Event
-    for (int i = 0; i < clientsToAdd.length; i++) {
-      var user = clientsToAdd[i];
-      // Add Clients to Event
-      await _eventDataService.addUserToEvent(
-          event.id!, user.id!, user.purchaseId!, true);
-
-      //JMF_AddUser_BEGIN
-      if (selectedBonos.isNotEmpty) {
-        await _purchaseDataService.addEventToPurchase(
-            clientsToAdd[i].purchaseId!, event.id!);
-      }
-      //JMF_AddUser_END
-
-      // Add Event Local Notifications
-      await _addEventLocalNotificationsCall(
-          context, event.id!, user.id!, user.isTrainer!);
-      print("Client Added " + user.id.toString());
-    }
-  }
-
-  Future<void> _updateUserPurchase(Event event) async {
-    for (int i = 0; i < event.joinedMembersList!.length; ++i) {
-      await _eventDataService.updateEventUserPurchase(
-          event.id!,
-          event.joinedMembersList![i].id!,
-          event.joinedMembersList![i].purchaseId!);
-    }
   }
 
   void resetNewEvent() {
@@ -1137,79 +960,6 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
   }
 
   //CREATE UPDATE EVENT FUNCTIONS
-
-  Future<String> _addEventCall(Event event) async {
-    // Add Event
-    String eid = await _eventDataService.addEvent(event);
-    return eid;
-  }
-
-  Future<void> _addEventTrainers(
-      String eventId, List<Usuario> eventTrainers, BuildContext context) async {
-    // Add Event Members
-    for (var i = 0; i < eventTrainers.length; i++) {
-      var user = eventTrainers[i];
-      // Firebase Call
-      if (user.id != currentUser.id!) {
-        await _eventDataService.addUserToEvent(eventId, user.id!, "", true);
-      } else {
-        await _eventDataService.addUserToEvent(eventId, user.id!, "");
-      }
-
-      // Local Notifications
-      await _addEventLocalNotificationsCall(
-          context, eventId, user.id!, user.isTrainer!);
-    }
-  }
-
-  Future<void> _addEventClients(String eventId, List<Usuario> eventClients,
-      List<Bono> selectedBonos, BuildContext context) async {
-    // Add Event Members
-    for (var i = 0; i < eventClients.length; i++) {
-      var user = eventClients[i];
-      // Firebase Call
-      await _eventDataService.addUserToEvent(
-          eventId, user.id!, user.purchaseId!, true);
-      if (selectedBonos.isNotEmpty) {
-        await _purchaseDataService.addEventToPurchase(
-            user.purchaseId!, eventId);
-      }
-      // Notifications Service, this also send Notifications to Trainers
-      _notificationService.userJoinEvent(user.id!, currentBrand.id!, eventId);
-      //JMF_AddUser_End
-
-      // Local Notifications
-      await _addEventLocalNotificationsCall(
-          context, eventId, user.id!, user.isTrainer!);
-    }
-  }
-
-  Future<void> _addEventLocalNotificationsCall(BuildContext context,
-      String eventId, String userId, bool isTrainer) async {
-    //PROBLEMS TODO SOLVE
-    try {
-      // Local Notifications Service
-      if (userId == currentUser.id!) {
-        await _localNotificationService.addEventLocalNotifications(
-            context, eventId, isTrainer);
-      } else {
-        await _localNotificationService.addRemoteEventLocalNotifications(
-            context, eventId, userId, isTrainer);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  Future<void> _deleteEventLocalNotificationsCall(
-      String eventId, String userId) async {
-    if (userId == currentUser.id!) {
-      await _localNotificationService.deleteEventLocalNotifications(eventId);
-    } else {
-      await _localNotificationService.deleteRemoteEventLocalNotifications(
-          eventId, userId);
-    }
-  }
 
   //LOCATION FUNCTIONS
 

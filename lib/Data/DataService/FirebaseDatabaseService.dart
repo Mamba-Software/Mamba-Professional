@@ -2441,8 +2441,8 @@ class FirebaseDatabaseService {
     }
   }
 
-  Future<int> addEventRecurrent(
-      Event _event, List<String> bonos, List<String> trainers) async {
+  Future<int> addEventRecurrent(Event _event, List<String> bonos,
+      List<String> trainers, ReceivedNotification receivedNotification) async {
     try {
       final HttpsCallable callable =
           FirebaseFunctions.instanceFor(region: 'europe-west1')
@@ -2458,6 +2458,8 @@ class FirebaseDatabaseService {
               _event.location!.latitude!, _event.location!.longitude!),
           'bonos': bonos,
           'trainers': trainers,
+          'notification': receivedNotification.toJson(),
+          'firesAt': receivedNotification.firesAt?.millisecondsSinceEpoch,
         },
       );
       bool success = result.data['success'];

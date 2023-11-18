@@ -6,6 +6,7 @@ import 'package:mamba_castelldefels/Events/crud_events/views/mobile/InformationP
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/MembersPage.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
+import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/TopSnackBar/TopSnackBarDef.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteRecurrentEventDialog.dart';
@@ -463,10 +464,22 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                       .isWorking >=
                                   100) {
                                 if (state.isNew) {
+                                  String eventTimeTime = StringUtils()
+                                      .hourMinutesToString(
+                                          state.newEvent.startDate!.hour,
+                                          state.newEvent.startDate!.minute);
                                   context
                                       .read<CrudEventCubit>()
-                                      .addEventFunction(context, state.newEvent,
-                                          state.isPrivate);
+                                      .addEventFunction(
+                                          context,
+                                          state.newEvent,
+                                          state.isPrivate,
+                                          AppLocalizations.of(context)!
+                                              .beforeEventTitleNotification(
+                                                  state.newEvent.title!,
+                                                  eventTimeTime),
+                                          AppLocalizations.of(context)!
+                                              .beforeEventBodyNotification);
                                   Navigator.pop(context);
                                 } else {
                                   if (!state.newEvent.isRecurrent!) {

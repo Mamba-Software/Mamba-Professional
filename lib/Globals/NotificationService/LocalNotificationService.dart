@@ -399,20 +399,95 @@ class LocalNotificationService {
     // Notification one hour before
     ReceivedNotification notificationBefore = ReceivedNotification(
       id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      //title: AppLocalizations.of(context)!.beforeEventTitleNotification(event.title!, eventTimeTime), PROBLEMS
-      title: '⚠️ 🏋️‍ ' +
+      title: AppLocalizations.of(context)!
+          .beforeEventTitleNotification(event.title!, eventTimeTime),
+      /*title: '⚠️ 🏋️‍ ' +
           event.title! +
           ' a las ' +
           eventTimeTime.toString() +
-          ' 🏋️‍ ⚠️ ',
-      //body: AppLocalizations.of(context)!.beforeEventBodyNotification, PROBLEMS
-      body:
-          'Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles',
+          ' 🏋️‍ ⚠️ ',*/
+      body: AppLocalizations.of(context)!.beforeEventBodyNotification,
+      /*  body:
+          'Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles',*/
 
       payload: event.id!,
       createdAt: Timestamp.now(),
       firesAt: beforeDate,
     );
+    // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
+    final location = tz.getLocation(timeZoneName!);
+    final scheduledDate =
+        tz.TZDateTime.from(notificationBefore.firesAt!, location);
+    // Add Notification Firebase
+    _userDataService.addLocalNotification(currentUser.id!, notificationBefore);
+    // Scheduling Notification
+    _notificationsPlugin.zonedSchedule(
+        notificationBefore.id!,
+        notificationBefore.title,
+        notificationBefore.body,
+        scheduledDate,
+        platformChannelSpecifics,
+        payload: notificationBefore.payload,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+  }
+
+  Future<void> addEventLocalNotificationsCubit(
+      BuildContext context,
+      String eventId,
+      bool? isTrainer,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
+    // Defining Platform Channel Specifics
+    var platformChannelSpecifics = NotificationDetails(
+        android: getAndroidNotificationDetails(),
+        iOS: getIOSNotificationDetails());
+
+    // Send Feedback Notification To Clients
+    if (isTrainer == false) {
+      /*
+      var temp = event.duration!.toStringAsFixed(2);
+      var hour = temp.split(".")[0];
+      var min = temp.split(".")[1];
+      int hourNumber = int.parse(hour);
+      int minNumber = int.parse(min) + 1;
+      // Schedule Before Notification
+      DateTime afterDate =
+          startDate.add(Duration(hours: hourNumber, minutes: minNumber));
+      // Notification 1 minute after
+      
+      ReceivedNotification notificationAfter = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title: AppLocalizations.of(context)!.afterEventTitleNotification,
+        body: AppLocalizations.of(context)!.afterEventBodyNotification,
+        payload: "F-" + event.id!,
+        createdAt: Timestamp.now(),
+        firesAt: afterDate,
+      );*/
+      // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
+      final location = tz.getLocation(timeZoneName!);
+      final scheduledDate =
+          tz.TZDateTime.from(notificationAfter.firesAt!, location);
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(currentUser.id!, notificationAfter);
+      // Scheduling Notification
+      _notificationsPlugin.zonedSchedule(
+          notificationAfter.id!,
+          notificationAfter.title,
+          notificationAfter.body,
+          scheduledDate,
+          platformChannelSpecifics,
+          payload: notificationAfter.payload,
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime);
+      // To make sure not the same Timestamp
+      await Future.delayed(Duration(seconds: 1));
+    }
+
+    // Schedule Before Notification
+
     // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate =
@@ -509,6 +584,26 @@ class LocalNotificationService {
       createdAt: Timestamp.now(),
       firesAt: beforeDate,
     );
+    // Add Notification Firebase
+    _userDataService.addLocalNotification(userId, notificationBefore);
+    print("Reminder Event Notification Added");
+  }
+
+  Future<void> addRemoteEventLocalNotificationsCubit(
+      BuildContext context,
+      String eventId,
+      String userId,
+      bool isTrainer,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
+    // Send Feedback Notification To Clients
+    if (isTrainer == false) {
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(userId, notificationAfter);
+      // To make sure not the same Timestamp
+      await Future.delayed(Duration(seconds: 1));
+      print("Feedback Event Notification Added");
+    }
     // Add Notification Firebase
     _userDataService.addLocalNotification(userId, notificationBefore);
     print("Reminder Event Notification Added");

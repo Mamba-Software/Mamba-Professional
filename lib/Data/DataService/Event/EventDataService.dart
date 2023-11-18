@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/Conversation.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Deprecated/GroupOfQuestions.dart';
 import 'package:mamba_castelldefels/Data/Models/Location.dart';
@@ -88,9 +89,10 @@ class EventDataService {
       _firebase.addEventBonos(eventId, bonoIds);
   Future<void> addEventBonosObject(String eventId, List<Bono> bonos) =>
       _firebase.addEventBonosObject(eventId, bonos);
-  Future<int> addEventRecurrent(
-          Event _event, List<String> bonos, List<String> trainers) =>
-      _firebase.addEventRecurrent(_event, bonos, trainers);
+  Future<int> addEventRecurrent(Event _event, List<String> bonos,
+          List<String> trainers, ReceivedNotification receivedNotification) =>
+      _firebase.addEventRecurrent(
+          _event, bonos, trainers, receivedNotification);
 
   // Update Data
   Future<void> updateEvent(Event event) => _firebase.updateEvent(event);
