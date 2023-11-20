@@ -3410,6 +3410,14 @@
   "@notAvailableClientsModifiedEvents": {
     "description": "cantEditText message"
   },
+  "freeSessionDescription": "Permite que los interesados disfruten de una sesión gratuita, con la posibilidad de reservar su plaza en uno de tus servicios sin costo alguno. Esta oferta es válida sólo una vez.",
+  "@freeSessionDescription": {
+    "description": "directPurchase message"
+  },
+  "freeSession": "Sesión gratuita",
+  "@freeSession": {
+    "description": "directPurchasetext message"
+  },
   "directPurchaseDescription": "Permite que las compras de tus bonos se aprueben sin solicitud, el cliente obtendrá el bono al momento de hacer su compra",
   "@directPurchaseDescription": {
     "description": "directPurchase message"

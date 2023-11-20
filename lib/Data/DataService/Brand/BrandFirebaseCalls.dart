@@ -700,7 +700,7 @@ class BrandFirebaseCalls {
   //Update
 
   Future<void> updateBrandInfo(String brandID, String name, String description,
-      int maxMembers, List<double> workShift, int bookingWindow, bool? directPurchase) async {
+      int maxMembers, List<double> workShift, int bookingWindow, bool? directPurchase, bool? freeSession) async {
     await _firestore.collection(brands).doc(brandID).update({
       "name": name,
       "description": description,
@@ -708,6 +708,7 @@ class BrandFirebaseCalls {
       "bookingWindow": bookingWindow,
       "workShift": workShift,
       "directPurchase": directPurchase,
+      "freeSession": freeSession,
     });
   }
 

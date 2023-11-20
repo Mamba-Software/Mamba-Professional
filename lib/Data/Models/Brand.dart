@@ -1,6 +1,7 @@
 // Model for a Brand in our App
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Data/Models/Location.dart';
 import 'package:mamba_castelldefels/Data/Models/Usuario.dart';
 
 import 'ImageObject.dart';
@@ -21,17 +22,27 @@ class Brand {
   var workShift;
   int? maxMembers;
   int? bookingWindow;
+  int? bookingWindowMin;  
+  bool? freeSession;
+  double? distance;
+  String? city;
+  String? zipCode;
   String? baseImage;
+  double? longitude;
+  double? latitude;
+  bool? notShow;
+  bool? directPurchase;
+  
   Timestamp? endDatePay;
   String? subscriptionId;
-  Map<String, dynamic>? subscription;
-  bool? directPurchase;
-
+  Map<String, dynamic>? subscription;  
   List<String> promotions = [];
+
   List<ImageObject> imagesList = [];
   List<RequestToBrand> requestsList = [];
   List<Usuario> usersList = [];
   List<Event> eventsList = [];
+  List<Location> locationList = [];
 
   Brand({
     this.id,
@@ -47,11 +58,18 @@ class Brand {
     this.workShift,
     this.maxMembers,
     this.bookingWindow,
+    this.bookingWindowMin,
+    this.freeSession,
+    this.city,
+    this.zipCode,
     this.baseImage,
+    this.longitude,
+    this.latitude,
+    this.notShow,
+    this.directPurchase,
     this.endDatePay,
     this.subscriptionId,
-    this.subscription,
-    this.directPurchase
+    this.subscription,    
   });
 
   //////////////////// CONSTRUCTORS ///////////////////////////////////////////////////////////////////////////////////////////
@@ -94,6 +112,15 @@ class Brand {
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bookingWindow')) {
       bookingWindow = documentSnapshot.get("bookingWindow");
     }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('bookingWindowMin')) {
+      bookingWindowMin = documentSnapshot.get("bookingWindowMin");
+    }    
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('freeSession')) {
+      freeSession = documentSnapshot.get("freeSession");
+    }
+    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('directPurchase')) {
+      directPurchase = documentSnapshot.get("directPurchase");
+    }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('baseImage')) {
       baseImage = documentSnapshot.get("baseImage").toString();
     }
@@ -105,10 +132,7 @@ class Brand {
     }
     if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('subscription')) {
       subscription = documentSnapshot.get("subscription");
-    }
-    if ((documentSnapshot.data() as Map<String,dynamic>).containsKey('directPurchase')) {
-      directPurchase = documentSnapshot.get("directPurchase");
-    }
+    }    
   }
 
   Brand.fromObjectOnlyCoverData(String documentId, DocumentSnapshot documentSnapshot) {
@@ -140,12 +164,19 @@ class Brand {
     workShift = brand.workShift;
     maxMembers = brand.maxMembers;
     bookingWindow = brand.bookingWindow;
+    bookingWindowMin = brand.bookingWindowMin;
+    directPurchase = brand.directPurchase;
+    freeSession = brand.freeSession;
     baseImage = brand.baseImage;
     endDatePay = brand.endDatePay;
     subscriptionId = brand.subscriptionId;
     subscription = brand.subscription;
-    directPurchase = brand.directPurchase;
-
+    city = brand.city;
+    zipCode = brand.zipCode;
+    baseImage = brand.baseImage;
+    latitude = brand.latitude;
+    longitude = brand.longitude;
+    notShow = brand.notShow;
   }
 
   // Requests
@@ -163,8 +194,13 @@ class Brand {
     this.eventsList = eventsList;
   }
 
-  // Events
+  // Images
   set setImageList(List<ImageObject> imagesList) {
     this.imagesList = imagesList;
+  }
+
+  // Locations
+  set setLocationList(List<Location> locationList) {
+    this.locationList = locationList;
   }
 }

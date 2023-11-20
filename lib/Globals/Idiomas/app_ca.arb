@@ -767,6 +767,8 @@
   "cantEditText": "La data, l'hora i la duració d'un esdeveniment finalitzat no es poden modificar",
   "notAvailableFinishedEvents": "No disponible para eventos finalizados",
   "notAvailableClientsModifiedEvents": "No disponible ja que s'han modificat clients",
+  "freeSessionDescription": "Permet que els interessats gaudeixin d'una sessió gratuïta, amb la possibilitat de reservar la seva plaça en un dels teus serveis sense cap cost. Aquesta oferta és vàlida només una vegada.",  
+  "freeSession": "Sessió gratuïta",
   "directPurchaseDescription": "Permet que les compres dels teus vals s'aprovin sense sol·licitud, el client obtindrà el val al moment de fer la compra",
   "directPurchasetext": "Compra directa",
   "deletePurchase": "Estàs segur que vols eliminar aquesta compra?\n\nEl client serà eliminat/ada de tots els esdeveniments realitzats amb aquest val.",
