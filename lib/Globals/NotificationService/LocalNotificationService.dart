@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
+import 'package:rxdart/subjects.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -11,10 +14,7 @@ import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotificati
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-import 'package:rxdart/subjects.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mamba_castelldefels/main.dart';
 
 /// Streams are created so that app can respond to notification-related events
 /// since the plugin is initialised in the `main` function
@@ -24,7 +24,6 @@ class LocalNotificationService {
 
   // Data Service
   final _userDataService = UserDataService();
-  final _brandDataService = BrandDataService();
   final _eventDataService = EventDataService();
   final _purchaseDataService = PurchaseDataService();
   
@@ -39,7 +38,7 @@ class LocalNotificationService {
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation(timeZoneName!));
     // Configuration Android and iOs
-    final AndroidInitializationSettings android = AndroidInitializationSettings('logo_foreground');
+    const AndroidInitializationSettings android = AndroidInitializationSettings('logo_foreground');
     final DarwinInitializationSettings ios = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -69,7 +68,7 @@ class LocalNotificationService {
             break;
         }
       },
-      onDidReceiveBackgroundNotificationResponse: myBackgroundHandler,     
+      onDidReceiveBackgroundNotificationResponse: backgroundLocalMessageHandler,     
     );
   }
 
@@ -85,9 +84,9 @@ class LocalNotificationService {
   }
 
   AndroidNotificationDetails getAndroidNotificationDetails({String? imageSource}) {
-    var androidPlatformChannelSpecifics;
+    AndroidNotificationDetails androidPlatformChannelSpecifics;
     if (imageSource == null) {
-      androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      androidPlatformChannelSpecifics = const AndroidNotificationDetails(
         'high_importance_channel',
         'High Importance Notifications',
         icon: 'logo_foreground',
@@ -95,7 +94,7 @@ class LocalNotificationService {
         priority: Priority.max,
       );
     } else {
-      androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      androidPlatformChannelSpecifics = const AndroidNotificationDetails(
         'high_importance_channel',
         'High Importance Notifications',
         icon: 'logo_foreground',
@@ -376,11 +375,11 @@ class LocalNotificationService {
           uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
       );
       // To make sure not the same Timestamp
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
     }
 
     // Schedule Before Notification
-    DateTime beforeDate = startDate.subtract(Duration(hours: 1));
+    DateTime beforeDate = startDate.subtract(const Duration(hours: 1));
     String eventTimeTime = StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
     // Notification one hour before
     ReceivedNotification notificationBefore = ReceivedNotification(
@@ -454,12 +453,12 @@ class LocalNotificationService {
       // Add Notification Firebase
       _userDataService.addLocalNotification(userId, notificationAfter);
       // To make sure not the same Timestamp
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       print("Feedback Event Notification Added");
     }
 
     // Schedule Before Notification
-    DateTime beforeDate = startDate.subtract(Duration(hours: 1));
+    DateTime beforeDate = startDate.subtract(const Duration(hours: 1));
     String eventTimeTime = StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
     // Notification one hour before
     ReceivedNotification notificationBefore = ReceivedNotification(

@@ -1,16 +1,15 @@
 import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
@@ -18,6 +17,7 @@ import 'package:mamba_castelldefels/Globals/Styles/AppThemes/AppThemes.dart';
 import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
+import 'package:mamba_castelldefels/firebase_options.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
@@ -29,22 +29,36 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:resize/resize.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'dart:io' show Platform;
-
 import 'Globals/Utils/DynamicLinks/DynamicLinkUtils.dart';
 import 'Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
-import 'Globals/store_config.dart';
 import 'Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/MembershipRequestsPro.dart';
 import 'Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 
 // Declaring Instance of AppThemes();
 AppThemes _appThemes = AppThemes();
 // Initialize the [FlutterLocalNotificationsPlugin] package.
-late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+LocalNotificationService localNotificationService = LocalNotificationService();
 // Create a [AndroidNotificationChannel] for heads up notifications
 late AndroidNotificationChannel channel;
 
 // BackGroundNotificationHandler
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
+  if (message.data.containsKey('route')) {
+    String route = message.data['route'];
+    localNotificationService.onNotifications.add(route);
+  }    
+}
+
+// Local BackGroundNotificationHandler
+Future<void> backgroundLocalMessageHandler(NotificationResponse notificationResponse) async {  
+  switch (notificationResponse.notificationResponseType) {
+      case NotificationResponseType.selectedNotification:      
+        localNotificationService.onNotifications.add(notificationResponse.payload);
+        break;
+      case NotificationResponseType.selectedNotificationAction:
+        localNotificationService.onNotifications.add(notificationResponse.payload);
+        break;
+    }
 }
 
 // Starting app function. After initialization, we define the global providers:
@@ -53,7 +67,9 @@ Future<void> main() async {
   await runZonedGuarded(() async {
     // Initialize App
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     // Initialise TimeZone
     timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
     // Firebase Messaging Back Ground Message Handler
