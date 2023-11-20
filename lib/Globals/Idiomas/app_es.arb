@@ -789,7 +789,7 @@
   "@workingHoursDescription":{
     "description": "workingHours text"
   },
-  "lunchBreak": "Descansos",
+  "lunchBreak": "Descanso",
   "@lunchBreak":{
     "description": "Descansos text"
   },

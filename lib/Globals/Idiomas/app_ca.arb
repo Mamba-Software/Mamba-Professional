@@ -185,7 +185,7 @@
   "workingHoursError": "Introdueix el teu horari laboral si us plau",
   "workingHoursError1": "L'hora d'inici ha de ser prèvia a l'hora de finalització",
   "workingHoursDescription": "És important que defineixis el teu horari de treball perquè els teus clients sàpiguen quan pots ser contactat i quan estàs fora del teu horari laboral.",
-  "lunchBreak": "Descansos",
+  "lunchBreak": "Descanso",
   "lunchBreakDescription": "En cas que sempre et prenguis un descans a la mateixa hora, per exemple l'hora del dinar, afegeix-heu perquè consti al teu calendari. Pots afegir un màxim de tres descansos durant el dia.",
   "lunchBreakAdded": "Descans afegit!",
   "state": "Estat",

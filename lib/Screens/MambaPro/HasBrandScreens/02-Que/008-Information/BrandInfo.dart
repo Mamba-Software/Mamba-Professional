@@ -86,19 +86,16 @@ class _BrandInfoState extends State<BrandInfo>
   final List<double> _workShift = [];
   int? errorTime;
   // Descansos
+  TextEditingController breakStartTimeController = TextEditingController();
+  TextEditingController breakEndTimeController = TextEditingController();
   DateTime breakStartTime = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 13, 0);
   DateTime breakEndTime = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0);
-  TimeOfDay _breakStartTime = const TimeOfDay(hour: 13, minute: 00);
-  TimeOfDay _breakEndTime = const TimeOfDay(hour: 14, minute: 00);
-  TextEditingController breakStartTimeController = TextEditingController();
-  TextEditingController breakEndTimeController = TextEditingController();
+  TimeOfDay _breakStartTime = const TimeOfDay(hour: 00, minute: 00);
+  TimeOfDay _breakEndTime = const TimeOfDay(hour: 00, minute: 00);
   final List<TimeOfDay> _breakList = [];
-  List<int> removedIndex = [];
-  int breakLimit = 2;
   bool errorBreakTime = false;
-  List<int> startBreaks = [];
   // Booking Window
   int bookingWindow = 3;
   // Purchase
@@ -182,6 +179,43 @@ class _BrandInfoState extends State<BrandInfo>
       endHourWS,
       endMinWS,
     ));
+    print(currentBrand.workShift);
+    // Break Hours
+    for (var i = 2; i < currentBrand.workShift.length; i += 2) {
+      var start = currentBrand.workShift[i];
+      int s = start.toInt();
+      var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
+      var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
+      var end = currentBrand.workShift[i + 1];
+      int e = end.toInt();
+      var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
+      var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
+      breakStartTime = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, startHour, startMin);
+      _breakStartTime = TimeOfDay(hour: startHour, minute: startMin);
+      breakEndTime = DateTime(DateTime.now().year, DateTime.now().month,
+          DateTime.now().day, endHour, endMin);
+      _breakEndTime = TimeOfDay(hour: endHour, minute: endMin);
+      // Array of Breaks
+      _breakList.add(_breakStartTime);
+      _breakList.add(_breakEndTime);
+    }
+    breakStartTimeController.text =
+        DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      _breakStartTime.hour,
+      _breakStartTime.minute,
+    ));
+    breakEndTimeController.text =
+        DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      _breakEndTime.hour,
+      _breakEndTime.minute,
+    ));
     // Booking Window
     bookingWindow = currentBrand.bookingWindow!;
     // Direct Purchase
@@ -234,6 +268,14 @@ class _BrandInfoState extends State<BrandInfo>
           int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
       var endMinWS =
           int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
+      var startHourBreak =
+          int.parse(currentBrand.workShift[2].toStringAsFixed(2).split(".")[0]);
+      var startMinBreak =
+          int.parse(currentBrand.workShift[2].toStringAsFixed(2).split(".")[1]);
+      var endHourBreak =
+          int.parse(currentBrand.workShift[3].toStringAsFixed(2).split(".")[0]);
+      var endMinBreak =
+          int.parse(currentBrand.workShift[3].toStringAsFixed(2).split(".")[1]);
       if (nameBrandControllerTemp.trim() != currentBrand.name! &&
           nameBrandControllerTemp != "") {
         isUpdated = true;
@@ -261,14 +303,31 @@ class _BrandInfoState extends State<BrandInfo>
               ))) {
         isUpdated = true;
         mixpanel!.track('brand_info_workshit_change');
+      } else if (breakStartTimeController.text !=
+              DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
+                DateTime.now().year,
+                DateTime.now().month,
+                DateTime.now().day,
+                startHourBreak,
+                startMinBreak,
+              )) ||
+          breakEndTimeController.text !=
+              DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
+                DateTime.now().year,
+                DateTime.now().month,
+                DateTime.now().day,
+                endHourBreak,
+                endMinBreak,
+              ))) {
+        isUpdated = true;
+        mixpanel!.track('brand_info_break_hours_change');
       } else if (currentBrand.bookingWindow! != bookingWindow) {
         isUpdated = true;
         mixpanel!.track('brand_info_booking_window_change');
       } else if (currentBrand.directPurchase! != directPurchase) {
         isUpdated = true;
         mixpanel!.track('brand_info_direct_purchase_change');
-      }
-      if (currentBrand.freeSession != freeSession) {
+      } else if (currentBrand.freeSession != freeSession) {
         isUpdated = true;
         mixpanel!.track('brand_info_free_session_change');
       } else {
@@ -851,47 +910,27 @@ class _BrandInfoState extends State<BrandInfo>
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
                         Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_month_outlined,
-                              color: AppColors.grey,
-                              size: MediaQuery.of(context).size.width * 0.05,
-                            ),
-                            SizedBox(
-                                width:
-                                    MediaQuery.of(context).size.width * 0.02),
-                            Text(
-                              AppLocalizations.of(context)!.calendar,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline3
-                                  ?.copyWith(color: AppColors.grey),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: MediaQuery.of(context).size.width * 0.05),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        /// WORKING HOURS
-                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              AppLocalizations.of(context)!.workingHours,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_month_outlined,
+                                  color: AppColors.grey,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                ),
+                                SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.02),
+                                Text(
+                                  AppLocalizations.of(context)!.calendar,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline3
+                                      ?.copyWith(color: AppColors.grey),
+                                ),
+                              ],
                             ),
                             timeZoneName != null
                                 ? Flexible(
@@ -908,6 +947,27 @@ class _BrandInfoState extends State<BrandInfo>
                                   )
                                 : Container(),
                           ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        /// WORKING HOURS
+                        Text(
+                          AppLocalizations.of(context)!.workingHours,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.015),
@@ -1070,6 +1130,175 @@ class _BrandInfoState extends State<BrandInfo>
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
 
+                        /// BREAK HOURS
+                        Text(
+                          AppLocalizations.of(context)!.lunchBreak,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.015),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            TextButton(
+                              onPressed: canEdit
+                                  ? () async {
+                                      DateTime? pickedTimeTemp =
+                                          await showCupertinoModalPopup(
+                                              context: context,
+                                              builder: (_) => SelectTimeDialog(
+                                                    title: AppLocalizations.of(
+                                                            context)!
+                                                        .selectTime,
+                                                    startDate: breakStartTime,
+                                                    onlyFuture: false,
+                                                  ));
+                                      if (pickedTimeTemp != null) {
+                                        setState(() {
+                                          breakStartTime = pickedTimeTemp;
+                                          breakStartTimeController
+                                              .text = DateFormat('HH:mm',
+                                                  widget.locale!.languageCode)
+                                              .format(DateTime(
+                                            DateTime.now().year,
+                                            DateTime.now().month,
+                                            DateTime.now().day,
+                                            breakStartTime.hour,
+                                            breakStartTime.minute,
+                                          ));
+                                        });
+                                      }
+                                    }
+                                  : null,
+                              style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: const Size(50, 30),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  alignment: Alignment.centerLeft),
+                              child: Material(
+                                elevation: 4,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15)),
+                                    color: Theme.of(context).backgroundColor,
+                                  ),
+                                  child: Text(
+                                    breakStartTimeController.text,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12.0),
+                              child: Text("-",
+                                  style: Theme.of(context).textTheme.headline3),
+                            ),
+                            TextButton(
+                              onPressed: canEdit
+                                  ? () async {
+                                      DateTime? pickedTimeTemp =
+                                          await showCupertinoModalPopup(
+                                              context: context,
+                                              builder: (_) => SelectTimeDialog(
+                                                    title: AppLocalizations.of(
+                                                            context)!
+                                                        .selectTime,
+                                                    startDate: breakEndTime,
+                                                    onlyFuture: false,
+                                                  ));
+                                      if (pickedTimeTemp != null) {
+                                        setState(() {
+                                          breakEndTime = pickedTimeTemp;
+                                          breakEndTimeController
+                                              .text = DateFormat('HH:mm',
+                                                  widget.locale!.languageCode)
+                                              .format(DateTime(
+                                            DateTime.now().year,
+                                            DateTime.now().month,
+                                            DateTime.now().day,
+                                            breakEndTime.hour,
+                                            breakEndTime.minute,
+                                          ));
+                                        });
+                                      }
+                                    }
+                                  : null,
+                              style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: const Size(50, 30),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  alignment: Alignment.centerLeft),
+                              child: Material(
+                                elevation: 4,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15)),
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15)),
+                                    color: Theme.of(context).backgroundColor,
+                                  ),
+                                  child: Text(
+                                    breakEndTimeController.text,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        errorTime != null
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 0, right: 0, top: 10.0, bottom: 0),
+                                child: Text(
+                                  errorTime == 1
+                                      ? AppLocalizations.of(context)!
+                                          .workingHoursError
+                                      : AppLocalizations.of(context)!
+                                          .workingHoursError1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText2
+                                      ?.copyWith(color: AppColors.red),
+                                  textAlign: TextAlign.left,
+                                ),
+                              )
+                            : Container(),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.015),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context)!
+                                    .createBrandBreakDescription,
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.03),
+
                         /// BOOKING WINDOW
                         Text(
                           AppLocalizations.of(context)!.bookingWindow,
@@ -1135,249 +1364,6 @@ class _BrandInfoState extends State<BrandInfo>
                         ),
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.03),
-
-                        /// BRAND BREAK
-                        /*
-                    SizedBox(height: MediaQuery.of(context).size.height*0.04),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            AppLocalizations.of(context)!.createBrandBreakDescription,
-                            style: Theme.of(context).textTheme.caption,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.02),
-                    Text(
-                      AppLocalizations.of(context)!.lunchBreak,
-                      style: Theme.of(context).textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.43,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              TextButton(
-                                onPressed: _breakList.length < breakLimit ? () async {
-                                  DateTime? pickedTimeTemp =  await showCupertinoModalPopup(
-                                      context: context,
-                                      builder: (_) => SelectTimeDialog(
-                                        title: AppLocalizations.of(context)!.selectTime,
-                                        startDate: breakStartTime,
-                                        onlyFuture: false,
-                                      )
-                                  );
-                                  if (pickedTimeTemp != null) {
-                                    setState(() {
-                                      breakStartTime = pickedTimeTemp;
-                                      breakStartTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakStartTime.hour, breakStartTime.minute,));
-                                    });
-                                  }
-                                } : null,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                    border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Text(
-                                    breakStartTimeController.text,
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
-                                  ),
-                                ),
-                              ),
-                              Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),),
-                              TextButton(
-                                onPressed: _breakList.length < breakLimit ? () async {
-                                  DateTime? pickedTimeTemp = await showCupertinoModalPopup(
-                                      context: context,
-                                      builder: (_) => SelectTimeDialog(
-                                        title: AppLocalizations.of(context)!.selectTime,
-                                        startDate: breakEndTime,
-                                        onlyFuture: false,
-                                      )
-                                  );
-                                  if (pickedTimeTemp != null) {
-                                    setState(() {
-                                      breakEndTime = pickedTimeTemp;
-                                      breakEndTimeController.text = DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, breakEndTime.hour, breakEndTime.minute,));
-                                    });
-                                  }
-                                } : null,
-                                child: Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                    border: Border.all(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey, width: 1.0),
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Text(
-                                    breakEndTimeController.text,
-                                    style: Theme.of(context).textTheme.headline3?.copyWith(color: _breakList.length < breakLimit ? Theme.of(context).primaryColor : Colors.grey),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        _breakList.length < breakLimit ? Padding(
-                          padding: const EdgeInsets.only(left: 0.0),
-                          child: OutlinedButton(
-                            onPressed: () {
-                              double toDouble(DateTime myTime) => myTime.hour + myTime.minute/100.0;
-                              if (toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text)) > toDouble(DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text))){
-                                setState(() {
-                                  errorBreakTime = true;
-                                });
-                              } else {
-                                DateTime start = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakStartTimeController.text);
-                                DateTime end = DateFormat('HH:mm', widget.locale!.languageCode).parse(breakEndTimeController.text);
-                                _breakStartTime = TimeOfDay(hour: start.hour, minute: start.minute);
-                                _breakEndTime = TimeOfDay(hour: end.hour, minute: end.minute);
-                                setState(() {
-                                  errorBreakTime = false ;
-                                  _breakList.clear();
-                                  _breakList.add(_breakStartTime);
-                                  _breakList.add(_breakEndTime);
-                                });
-                              }
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon( Icons.add, color: Colors.white, size: 30,),
-                              ],
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              elevation: 3,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(5),
-                            ),
-                          ),
-                        ) : Container(),
-                      ],
-                    ),
-                    errorBreakTime ? Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 5.0, bottom: 0),
-                      child: Text(
-                        AppLocalizations.of(context)!.workingHoursError1,
-                        style: Theme.of(context).textTheme.bodyText2?.copyWith(color: AppColors.red),
-                        textAlign: TextAlign.center,
-                      ),
-                    ) : Container(),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _breakList.length,
-                      itemBuilder: (context, int index) {
-                        if(index.isEven && !removedIndex.contains(index)) {
-                          return Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.43,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    TextButton(
-                                      onPressed: false ? () {
-                                      } : null,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                          border: Border.all(color: Colors.green, width: 1.0),
-                                          color: Colors.transparent,
-                                        ),
-                                        child: Text(
-                                          '${_breakList[index].format(context)}',
-                                          style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
-                                        ),
-                                      ),
-                                    ),
-                                    Text("-", style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),),
-                                    TextButton(
-                                      onPressed: false ? () {
-                                      } : null,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.all(const Radius.circular(5)),
-                                          border: Border.all(color: Colors.green, width: 1.0),
-                                          color: Colors.transparent,
-                                        ),
-                                        child: Text(
-                                          '${_breakList[index+1].format(context)}',
-                                          style: Theme.of(context).textTheme.headline3?.copyWith(color: Colors.green),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0.0),
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      removedIndex.add(index);
-                                      removedIndex.add(index+1);
-                                      breakLimit += 2;
-                                    });
-                                  },
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon( Icons.remove, color: Colors.white, size: 30,),
-                                    ],
-                                  ),
-                                  style: OutlinedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    elevation: 3,
-                                    shape: const CircleBorder(),
-                                    padding: const EdgeInsets.all(5),
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                child: Text(AppLocalizations.of(context)!.lunchBreakAdded, style: Theme.of(context).textTheme.bodyText2?.copyWith(fontStyle: FontStyle.italic), textAlign: TextAlign.center,),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                      shrinkWrap: true,
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.height*0.01),
-                    _breakList.length < breakLimit ? Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            AppLocalizations.of(context)!.createBrandAddDescription,
-                            style: Theme.of(context).textTheme.bodyText2,
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ],
-                    ) : Container(),
-                     */
                       ],
                     ),
                   ),
@@ -1807,19 +1793,19 @@ class _BrandInfoState extends State<BrandInfo>
                         DateFormat('HH:mm', widget.locale!.languageCode)
                             .parse(endTimeController.text);
                     double toDouble(DateTime myTime) =>
-                        myTime.hour + myTime.minute / 100;
+                        myTime.hour + myTime.minute / 60.0;
+                    double toDouble2(TimeOfDay myTime) =>
+                        myTime.hour + myTime.minute / 60.0;
                     // Reset Workshift
                     _workShift.clear();
                     _workShift.add(toDouble(start));
                     _workShift.add(toDouble(end));
-                    /*
-              for (var i=0; i < _breakList.length; i+=2) {
-                if(!removedIndex.contains(i)) {
-                  _workShift.add(toDouble2(_breakList[i]));
-                  _workShift.add(toDouble2(_breakList[i+1]));
-                }
-              }
-               */
+                    for (var i = 0; i < _breakList.length; i += 2) {
+                      _workShift.add(toDouble2(_breakList[i]));
+                      _workShift.add(toDouble2(_breakList[i + 1]));
+                    }
+                    print(_workShift);
+                    // Update Brand Info
                     await _brandDataService.updateBrandInfo(
                         widget.brandId,
                         nameBrandController.text,
@@ -1901,14 +1887,15 @@ class _BrandInfoState extends State<BrandInfo>
       });
       return false;
     }
-    /*
-    if (TimeOfDay(hour: start.hour, minute: start.minute) == const TimeOfDay(hour: 0, minute: 00) && TimeOfDay(hour: end.hour, minute: end.minute) == const TimeOfDay(hour: 23, minute: 00)) {
+    if (TimeOfDay(hour: start.hour, minute: start.minute) ==
+            const TimeOfDay(hour: 0, minute: 00) &&
+        TimeOfDay(hour: end.hour, minute: end.minute) ==
+            const TimeOfDay(hour: 23, minute: 00)) {
       setState(() {
         errorTime = 1;
       });
       return false;
     }
-     */
     if (toDouble(start) >= toDouble(end)) {
       setState(() {
         errorTime = 2;

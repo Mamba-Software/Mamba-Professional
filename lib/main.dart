@@ -46,19 +46,22 @@ Future<void> _backgroundMessageHandler(RemoteMessage message) async {
   if (message.data.containsKey('route')) {
     String route = message.data['route'];
     localNotificationService.onNotifications.add(route);
-  }    
+  }
 }
 
 // Local BackGroundNotificationHandler
-Future<void> backgroundLocalMessageHandler(NotificationResponse notificationResponse) async {  
+Future<void> backgroundLocalMessageHandler(
+    NotificationResponse notificationResponse) async {
   switch (notificationResponse.notificationResponseType) {
-      case NotificationResponseType.selectedNotification:      
-        localNotificationService.onNotifications.add(notificationResponse.payload);
-        break;
-      case NotificationResponseType.selectedNotificationAction:
-        localNotificationService.onNotifications.add(notificationResponse.payload);
-        break;
-    }
+    case NotificationResponseType.selectedNotification:
+      localNotificationService.onNotifications
+          .add(notificationResponse.payload);
+      break;
+    case NotificationResponseType.selectedNotificationAction:
+      localNotificationService.onNotifications
+          .add(notificationResponse.payload);
+      break;
+  }
 }
 
 // Starting app function. After initialization, we define the global providers:
@@ -81,37 +84,26 @@ Future<void> main() async {
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     }
     // Init MixPanel
-    mixpanel = await Mixpanel.init(
-        "c573538be2d62355bb2f0968ff42c181",
-        trackAutomaticEvents: true,
-        optOutTrackingDefault: false
-    );
+    mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
+        trackAutomaticEvents: true, optOutTrackingDefault: false);
     await initPlatformState();
     // Run App
-    runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<LanguageProvider>(
-              create: (_) => LanguageProvider()
-          ),
-          ChangeNotifierProvider<ThemeProvider>(
-              create: (_) => ThemeProvider()
-          ),
-          ChangeNotifierProvider<FirebaseAnalyticsProvider>(
-              create: (_) => FirebaseAnalyticsProvider()
-          ),
-        ],
-        child: const Mamba(),
-      )
-    );
+    runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<LanguageProvider>(
+            create: (_) => LanguageProvider()),
+        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider<FirebaseAnalyticsProvider>(
+            create: (_) => FirebaseAnalyticsProvider()),
+      ],
+      child: const Mamba(),
+    ));
   }, (error, stackTrace) {
     FirebaseCrashlytics.instance.recordError(error, stackTrace);
   });
-
 }
 
 Future<void> initPlatformState() async {
-
   await Purchases.setLogLevel(LogLevel.debug);
 
   if (Platform.isAndroid) {
@@ -121,7 +113,6 @@ Future<void> initPlatformState() async {
     PurchasesConfiguration configuration = PurchasesConfiguration(appleApiKey);
     await Purchases.configure(configuration);
   }
-
 }
 
 class Mamba extends StatefulWidget {
@@ -132,7 +123,6 @@ class Mamba extends StatefulWidget {
 }
 
 class _MambaState extends State<Mamba> with WidgetsBindingObserver {
-
   final _dynamicLinkUtils = DynamicLinkUtils();
   Timer? _timerLink;
 
@@ -146,8 +136,9 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       _timerLink = Timer(
-        const Duration(milliseconds: 1000), () {
-            _dynamicLinkUtils.retrieveDynamicLink();
+        const Duration(milliseconds: 1000),
+        () {
+          _dynamicLinkUtils.retrieveDynamicLink();
         },
       );
     }
@@ -162,113 +153,104 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    return Consumer3 <LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider> (
-        builder: (context, LanguageProvider language, ThemeProvider theme,  FirebaseAnalyticsProvider analytics, _) {
-          final brightness = SchedulerBinding.instance.window.platformBrightness;
-          if (brightness == Brightness.dark) {
-            print("Dark Mode");
-            theme.darkModeStatusAndNavigationBar();
-          } else {
-            print("Light Mode");
-            theme.lightModeStatusAndNavigationBar();
-          }
-          return Resize(
-            allowtextScaling: true,
-            builder: () {
-              return MultiBlocProvider(
-                providers: [
-                  BlocProvider<ClientSessionsCubit>(
-                    create: (_) => ClientSessionsCubit([]),
-                    lazy: false,
-                  ),
-                ],
-                child: MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  title: Constants.appName,
-                  themeMode: theme.themeMode,
-                  theme: _appThemes.returnResponsiveLightTheme(100.vh),
-                  darkTheme: _appThemes.returnResponsiveDarkTheme(100.vh),
-                  locale: language.idioma,
-                  supportedLocales: Idiomas.all,
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                  ],
-                  home: const SplashScreen(),
-                  onGenerateRoute: (RouteSettings settings) {
-                    final args = settings.arguments;
-                    print('ARGUMENTS');
-                    print(settings.name);
-                      switch (settings.name) {
-                        case 'SplashScreen':
-                          return CupertinoPageRoute(
-                            builder: (_) => const SplashScreen(),
-                            settings: const RouteSettings(name: 'SplashScreen'),
-                          );
-                        case 'Notifications':
-                          return CupertinoPageRoute(
-                            builder: (_) => const Notifications(),
-                            settings: const RouteSettings(name: 'Notifications'),
-                          );
-                        case 'Chat':
-                          return CupertinoPageRoute(
-                            builder: (_) => const ChatCore(),
-                            settings: const RouteSettings(name: 'ChatCore'),
-                          );
-                        case 'EventPage':
-                          String eventId = args as String;
-                          return CupertinoPageRoute(
-                            builder: (_) =>
-                                EventPage(
-                                  eventId: eventId,
-                                ),
-                            settings: const RouteSettings(name: 'EventPage'),
-                          );
-                        case 'EventFeedbackPage':
-                          String eventId = args as String;
-                          return CupertinoPageRoute(
-                            builder: (_) =>
-                                EventFeedback(
-                                  eventId: eventId,
-                                ),
-                            settings: const RouteSettings(name: 'EventFeedback'),
-                          );
-                        case 'BonosRequests':
-                          String brandId = args as String;
-                          setState(() {
-                            pageIndex = 5;
-                          });
-                          return CupertinoPageRoute(
-                            builder: (_) =>
-                                BrandPurchaseHistory(
-                                  brandId: brandId
-                                ),
-                            settings: const RouteSettings(name: 'BonosRequests'),
-                          );
-                        case 'MembershipRequests':
-                          String brandId = args as String;
-                          return CupertinoPageRoute(
-                            builder: (_) =>
-                                MembershipRequestsPro(
-                                  brandId: brandId,
-                                ),
-                            settings: const RouteSettings(
-                                name: 'MembershipRequests'),
-                          );
-                      }
-                  },
-                ),
-              );
-            },
+    return Consumer3<LanguageProvider, ThemeProvider,
+            FirebaseAnalyticsProvider>(
+        builder: (context, LanguageProvider language, ThemeProvider theme,
+            FirebaseAnalyticsProvider analytics, _) {
+      final brightness = SchedulerBinding.instance.window.platformBrightness;
+      if (brightness == Brightness.dark) {
+        print("Dark Mode");
+        theme.darkModeStatusAndNavigationBar();
+      } else {
+        print("Light Mode");
+        theme.lightModeStatusAndNavigationBar();
+      }
+      return Resize(
+        allowtextScaling: true,
+        builder: () {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<ClientSessionsCubit>(
+                create: (_) => ClientSessionsCubit([]),
+                lazy: false,
+              ),
+            ],
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: Constants.appName,
+              themeMode: theme.themeMode,
+              theme: _appThemes.returnResponsiveLightTheme(100.vh),
+              darkTheme: _appThemes.returnResponsiveDarkTheme(100.vh),
+              locale: language.idioma,
+              supportedLocales: Idiomas.all,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              home: const SplashScreen(),
+              onGenerateRoute: (RouteSettings settings) {
+                final args = settings.arguments;
+                print('ARGUMENTS');
+                print(settings.name);
+                switch (settings.name) {
+                  case 'SplashScreen':
+                    return CupertinoPageRoute(
+                      builder: (_) => const SplashScreen(),
+                      settings: const RouteSettings(name: 'SplashScreen'),
+                    );
+                  case 'Notifications':
+                    return CupertinoPageRoute(
+                      builder: (_) => const Notifications(),
+                      settings: const RouteSettings(name: 'Notifications'),
+                    );
+                  case 'Chat':
+                    return CupertinoPageRoute(
+                      builder: (_) => const ChatCore(),
+                      settings: const RouteSettings(name: 'ChatCore'),
+                    );
+                  case 'EventPage':
+                    String eventId = args as String;
+                    return CupertinoPageRoute(
+                      builder: (_) => EventPage(
+                        eventId: eventId,
+                      ),
+                      settings: const RouteSettings(name: 'EventPage'),
+                    );
+                  case 'EventFeedbackPage':
+                    String eventId = args as String;
+                    return CupertinoPageRoute(
+                      builder: (_) => EventFeedback(
+                        eventId: eventId,
+                      ),
+                      settings: const RouteSettings(name: 'EventFeedback'),
+                    );
+                  case 'BonosRequests':
+                    String brandId = args as String;
+                    setState(() {
+                      pageIndex = 5;
+                    });
+                    return CupertinoPageRoute(
+                      builder: (_) => BrandPurchaseHistory(brandId: brandId),
+                      settings: const RouteSettings(name: 'BonosRequests'),
+                    );
+                  case 'MembershipRequests':
+                    String brandId = args as String;
+                    return CupertinoPageRoute(
+                      builder: (_) => MembershipRequestsPro(
+                        brandId: brandId,
+                      ),
+                      settings: const RouteSettings(name: 'MembershipRequests'),
+                    );
+                }
+              },
+            ),
           );
-        }
-    );
+        },
+      );
+    });
   }
 }
-
