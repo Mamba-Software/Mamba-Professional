@@ -223,128 +223,55 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     emit(state.copyWith(isWorking: workProgress));
   }
 
-  Future<void> deleteEventFunction(
-      BuildContext context, Event _oldEvent, bool isPrivate) async {
-    emitWorkingState(30);
-    await _deleteEventFunction(context, _oldEvent, isPrivate);
+  void resetNewEvent() {
+    List<bool> validations = [false, false, false];
+    emit(state.copyWith(
+      oldEvent: Event(),
+      newEvent: Event(),
+      isLoaded: false,
+      isNew: true,
+      isPrivate: false,
+      isValidated: validations,
+      isBeforeEdit: true,
+      isWorking: 100,
+      mustUpdateParent: false,
+      errorBonos: errorBonos,
+      clientsModified: clientsModified,
+    ));
   }
 
-  Future<void> _deleteEventFunction(
-      BuildContext context, Event _oldEvent, bool isPrivate) async {
-    mixpanel!.timeEvent("delete_event_completed");
-
-    // Delete Event Call
-    await _eventDataService.deleteEvent(_oldEvent.id!, isPrivate);
-    emitWorkingState(30);
-
-    // Event Members
-    List<Usuario> eventMembers = List.from(_oldEvent.selectedTrainersList!);
-    eventMembers.addAll(_oldEvent.joinedMembersList!);
-
-    // Delete Event Bonos
-    _deleteEventBonosCall(_oldEvent.id!);
-    emitWorkingState(60);
-    // Delete Event Local Notifications
-    for (var i = 0; i < eventMembers.length; i++) {
-      var user = eventMembers[i];
-      // Remove Local Notifications Service
-      await _notificationsEvents.deleteEventLocalNotificationsCall(
-          _oldEvent.id!, user.id!, currentUser.id!);
-    }
-    emitWorkingState(80);
-    // Delete Event From Event Group Id in Case it has any.
-    if (_oldEvent.eventGroupId != null) {
-      // Get Recurrent Group Ids ..
-      var eventGroupIds = await _eventDataService
-          .getRecurrentEventGroup(_oldEvent.eventGroupId!);
-      // Delete Only This Event..
-      eventGroupIds.removeWhere((element) => element == _oldEvent.id!);
-      // Delete Event From Recurrent Group..
-      if (eventGroupIds.isNotEmpty) {
-        await _eventDataService.updateRecurrentEventGroup(
-            _oldEvent.eventGroupId!, eventGroupIds);
-      } else {
-        await _eventDataService
-            .deleteRecurrentEventGroup(_oldEvent.eventGroupId!);
-      }
-    }
-    mixpanel!.track('delete_event_completed',
-        properties: {'isPrivate': isPrivate, 'isRecurrent': false});
-
-    resetNewEvent();
+  void updateEvent() {
+    List<bool> validations = [false, false, false];
+    emit(state.copyWith(
+        oldEvent: Event(),
+        newEvent: Event(),
+        isLoaded: false,
+        isNew: true,
+        isPrivate: false,
+        isValidated: validations,
+        isBeforeEdit: true,
+        isWorking: 100,
+        mustUpdateParent: true,
+        errorBonos: errorBonos,
+        clientsModified: clientsModified));
   }
 
-  Future<void> deleteRecurrentEventFunction(
-      BuildContext context, Event _oldEvent, bool isPrivate) async {
-    emitWorkingState(30);
-    await _deleteRecurrentEventFunction(context, _oldEvent, isPrivate);
-  }
-
-  Future<void> _deleteRecurrentEventFunction(
-      BuildContext context, Event _oldEvent, bool isPrivate) async {
-    mixpanel!.timeEvent("delete_event_completed");
-
-    // Get Recurrent Group Ids ..
-    var eventGroupIds =
-        await _eventDataService.getRecurrentEventGroup(_oldEvent.eventGroupId!);
-    List<String> eventGroupIdsList = eventGroupIds.cast<String>();
-    // Find index of Current Event
-    int index =
-        eventGroupIdsList.indexWhere((element) => element == _oldEvent.id!);
-    // Update Recurrent Event Group
-    if (index == 0) {
-      await _eventDataService
-          .deleteRecurrentEventGroup(_oldEvent.eventGroupId!);
-    } else {
-      eventGroupIds = eventGroupIds.sublist(0, index);
-      await _eventDataService.updateRecurrentEventGroup(
-          _oldEvent.eventGroupId!, eventGroupIds);
-    }
-    // Recurrent total
-    int totalEvents = eventGroupIdsList.length - index;
-    double valuePortions = 70 / totalEvents;
-    double valueToSum = valuePortions;
-    // Delete All Events After The Index
-    for (var i = index; i < eventGroupIdsList.length; i++) {
-      // Updating Loading Text
-      emitWorkingState(valuePortions);
-      valuePortions += valueToSum;
-      // Event Id
-      String eventId = eventGroupIdsList[i];
-      // Delete Event Call
-      await _eventDataService.deleteEvent(eventId);
-      // Delete Event Bonos
-      _deleteEventBonosCall(eventId);
-      // Delete Event Members
-      List<Usuario> eventMembers =
-          await _eventDataService.getEventUsers(eventId);
-      // Delete Event Local Notifications
-      for (var i = 0; i < eventMembers.length; i++) {
-        var user = eventMembers[i];
-        // Remove Local Notifications Service
-        await _notificationsEvents.deleteEventLocalNotificationsCall(
-            _oldEvent.id!, user.id!, currentUser.id!);
-      }
-    }
-    mixpanel!.track('delete_event_completed',
-        properties: {'isPrivate': isPrivate, 'isRecurrent': true});
-  }
+  //ADD EVENT
 
   Future<void> addEventFunction(
       BuildContext context,
       Event _event,
       bool isPrivate,
-      String titleNot,
-      String bodyNot,
-      String titleNotAfter,
-      String bodyNotAfter) async {
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
     if (!_event.isRecurrent!) {
       emitWorkingState(30);
-      await _addUniqueEventFunction(context, _event, isPrivate, titleNot,
-          bodyNot, titleNotAfter, bodyNotAfter);
+      await _addUniqueEventFunction(
+          context, _event, isPrivate, notificationBefore, notificationAfter);
     } else {
       emitWorkingState(30);
-      await _addRecurrentEvents(context, _event, isPrivate, titleNot, bodyNot);
+      await _addRecurrentEvents(
+          context, _event, isPrivate, notificationBefore, notificationAfter);
     }
   }
 
@@ -352,10 +279,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       BuildContext context,
       Event _event,
       bool isPrivate,
-      String titleNot,
-      String bodyNot,
-      String titleNotAfter,
-      String bodyNotAfter) async {
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
     String eventImageUrl;
     mixpanel!.timeEvent("add_event_completed");
 
@@ -395,18 +320,13 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     );
     // Add Event
     String eventId = await _addEvents.addEventCall(event);
-    emitWorkingState(40);
+    notificationBefore.payload = eventId;
+    notificationAfter.payload = "F-" + eventId;
+    emitWorkingState(60);
 
     // Add Event Members
-    await _addEvents.addEventTrainers(
-        eventId,
-        event.selectedTrainersList!,
-        context,
-        currentUser.id!,
-        _notificationsEvents.setEventNotificationBefore(
-            event, titleNot, bodyNot));
-
-    emitWorkingState(70);
+    await _addEvents.addEventTrainers(eventId, event.selectedTrainersList!,
+        context, currentUser.id!, notificationBefore);
 
     await _addEvents.addEventClients(
         eventId,
@@ -415,10 +335,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
         context,
         currentUser.id!,
         currentBrand.id!,
-        _notificationsEvents.setEventNotificationBefore(
-            event, titleNot, bodyNot),
-        _notificationsEvents.setEventNotificationAfter(
-            event, titleNotAfter, bodyNotAfter));
+        notificationBefore,
+        notificationAfter);
 
     emitWorkingState(80);
 
@@ -441,8 +359,12 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     resetNewEvent();
   }
 
-  Future<void> _addRecurrentEvents(BuildContext context, Event _event,
-      bool isPrivate, String titleNot, String bodyNot) async {
+  Future<void> _addRecurrentEvents(
+      BuildContext context,
+      Event _event,
+      bool isPrivate,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
     mixpanel!.timeEvent("add_event_completed");
 
     List<int> dayOfWeek = [];
@@ -510,8 +432,8 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
               selectedBonos,
               bonos,
               trainers,
-              titleNot,
-              bodyNot));
+              notificationBefore,
+              notificationAfter));
           // Create Entry in /Event Groups
           await _eventDataService.addRecurrentEventGroup(
               eventGroupId, groupEventsIds);
@@ -533,20 +455,36 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     resetNewEvent();
   }
 
+  //Update event
+
   Future<void> updateEventFunction(
-      BuildContext context, Event _event, Event _oldEvent) async {
-    emit(state.copyWith(isWorking: 0));
-    await _updateEventFunction(context, _event, _oldEvent);
+      BuildContext context,
+      Event _event,
+      Event _oldEvent,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
+    emit(state.copyWith(isWorking: 30));
+    await _updateEventFunction(
+        context, _event, _oldEvent, notificationBefore, notificationAfter);
   }
 
   Future<void> updateRecurrentEventFunction(
-      BuildContext context, Event _event, Event _oldEvent) async {
-    emit(state.copyWith(isWorking: 0));
-    await _updateRecurrentEventFunction(context, _event, _oldEvent.isPrivate!);
+      BuildContext context,
+      Event _event,
+      Event _oldEvent,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
+    emit(state.copyWith(isWorking: 30));
+    await _updateRecurrentEventFunction(context, _event, _oldEvent.isPrivate!,
+        notificationBefore, notificationAfter);
   }
 
   Future<void> _updateRecurrentEventFunction(
-      BuildContext context, Event _event, bool isPrivate) async {
+      BuildContext context,
+      Event _event,
+      bool isPrivate,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
     mixpanel!.timeEvent('edit_event_completed');
 
     // Get Recurrent Group Ids ..
@@ -659,13 +597,17 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           originalEvent,
           updatedEvent,
           currentUser.id!,
-          _notificationsEvents.setEventNotificationBefore(
-              event, titleNot, bodyNot));
+          _notificationsEvents.setEventNotificationBeforeRecurrent(updatedEvent,
+              notificationBefore.title!, notificationBefore.body!));
     }
   }
 
   Future<void> _updateEventFunction(
-      BuildContext context, Event _event, Event _oldEvent) async {
+      BuildContext context,
+      Event _event,
+      Event _oldEvent,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
     String eventImageUrl;
 
     print(state.oldEvent.title);
@@ -707,6 +649,9 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
       startDate: _event.startDate!,
     );
 
+    notificationBefore.payload = _oldEvent.id;
+    notificationAfter.payload = "F-" + _oldEvent.id!;
+
     // Update Event
     await _eventDataService.updateEvent(event);
 
@@ -728,10 +673,18 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
           event.id!, event.locationId!, _oldEvent.locationId!);
     }
 
-    await _addEvents.assignTrainers(context, _oldEvent, event, currentUser.id!);
+    await _addEvents.assignTrainers(
+        context, _oldEvent, event, currentUser.id!, notificationBefore);
 
     await _addEvents.assignClients(
-        context, _oldEvent, event, selectedBonos, currentBrand.id!);
+        context,
+        _oldEvent,
+        event,
+        selectedBonos,
+        currentBrand.id!,
+        currentUser.id!,
+        notificationBefore,
+        notificationAfter);
 
     mixpanel!.track('edit_event_completed', properties: {
       'descriptionLength': event.description!.length.toString(),
@@ -747,37 +700,113 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     updateEvent();
   }
 
-  void resetNewEvent() {
-    List<bool> validations = [false, false, false];
-    emit(state.copyWith(
-      oldEvent: Event(),
-      newEvent: Event(),
-      isLoaded: false,
-      isNew: true,
-      isPrivate: false,
-      isValidated: validations,
-      isBeforeEdit: true,
-      isWorking: 100,
-      mustUpdateParent: false,
-      errorBonos: errorBonos,
-      clientsModified: clientsModified,
-    ));
+  //Delete event
+
+  Future<void> deleteEventFunction(
+      BuildContext context, Event _oldEvent, bool isPrivate) async {
+    emitWorkingState(30);
+    await _deleteEventFunction(context, _oldEvent, isPrivate);
   }
 
-  void updateEvent() {
-    List<bool> validations = [false, false, false];
-    emit(state.copyWith(
-        oldEvent: Event(),
-        newEvent: Event(),
-        isLoaded: false,
-        isNew: true,
-        isPrivate: false,
-        isValidated: validations,
-        isBeforeEdit: true,
-        isWorking: 100,
-        mustUpdateParent: true,
-        errorBonos: errorBonos,
-        clientsModified: clientsModified));
+  Future<void> _deleteEventFunction(
+      BuildContext context, Event _oldEvent, bool isPrivate) async {
+    mixpanel!.timeEvent("delete_event_completed");
+
+    // Delete Event Call
+    await _eventDataService.deleteEvent(_oldEvent.id!, isPrivate);
+    emitWorkingState(30);
+
+    // Event Members
+    List<Usuario> eventMembers = List.from(_oldEvent.selectedTrainersList!);
+    eventMembers.addAll(_oldEvent.joinedMembersList!);
+
+    // Delete Event Bonos
+    _deleteEventBonosCall(_oldEvent.id!);
+    emitWorkingState(60);
+    // Delete Event Local Notifications
+    for (var i = 0; i < eventMembers.length; i++) {
+      var user = eventMembers[i];
+      // Remove Local Notifications Service
+      await _notificationsEvents.deleteEventLocalNotificationsCall(
+          _oldEvent.id!, user.id!, currentUser.id!);
+    }
+    emitWorkingState(80);
+    // Delete Event From Event Group Id in Case it has any.
+    if (_oldEvent.eventGroupId != null) {
+      // Get Recurrent Group Ids ..
+      var eventGroupIds = await _eventDataService
+          .getRecurrentEventGroup(_oldEvent.eventGroupId!);
+      // Delete Only This Event..
+      eventGroupIds.removeWhere((element) => element == _oldEvent.id!);
+      // Delete Event From Recurrent Group..
+      if (eventGroupIds.isNotEmpty) {
+        await _eventDataService.updateRecurrentEventGroup(
+            _oldEvent.eventGroupId!, eventGroupIds);
+      } else {
+        await _eventDataService
+            .deleteRecurrentEventGroup(_oldEvent.eventGroupId!);
+      }
+    }
+    mixpanel!.track('delete_event_completed',
+        properties: {'isPrivate': isPrivate, 'isRecurrent': false});
+
+    resetNewEvent();
+  }
+
+  Future<void> deleteRecurrentEventFunction(
+      BuildContext context, Event _oldEvent, bool isPrivate) async {
+    emitWorkingState(30);
+    await _deleteRecurrentEventFunction(context, _oldEvent, isPrivate);
+  }
+
+  Future<void> _deleteRecurrentEventFunction(
+      BuildContext context, Event _oldEvent, bool isPrivate) async {
+    mixpanel!.timeEvent("delete_event_completed");
+
+    // Get Recurrent Group Ids ..
+    var eventGroupIds =
+        await _eventDataService.getRecurrentEventGroup(_oldEvent.eventGroupId!);
+    List<String> eventGroupIdsList = eventGroupIds.cast<String>();
+    // Find index of Current Event
+    int index =
+        eventGroupIdsList.indexWhere((element) => element == _oldEvent.id!);
+    // Update Recurrent Event Group
+    if (index == 0) {
+      await _eventDataService
+          .deleteRecurrentEventGroup(_oldEvent.eventGroupId!);
+    } else {
+      eventGroupIds = eventGroupIds.sublist(0, index);
+      await _eventDataService.updateRecurrentEventGroup(
+          _oldEvent.eventGroupId!, eventGroupIds);
+    }
+    // Recurrent total
+    int totalEvents = eventGroupIdsList.length - index;
+    double valuePortions = 70 / totalEvents;
+    double valueToSum = valuePortions;
+    // Delete All Events After The Index
+    for (var i = index; i < eventGroupIdsList.length; i++) {
+      // Updating Loading Text
+      emitWorkingState(valuePortions);
+      valuePortions += valueToSum;
+      // Event Id
+      String eventId = eventGroupIdsList[i];
+      // Delete Event Call
+      await _eventDataService.deleteEvent(eventId);
+      // Delete Event Bonos
+      _deleteEventBonosCall(eventId);
+      // Delete Event Members
+      List<Usuario> eventMembers =
+          await _eventDataService.getEventUsers(eventId);
+      // Delete Event Local Notifications
+      for (var i = 0; i < eventMembers.length; i++) {
+        var user = eventMembers[i];
+        // Remove Local Notifications Service
+        await _notificationsEvents.deleteEventLocalNotificationsCall(
+            _oldEvent.id!, user.id!, currentUser.id!);
+      }
+    }
+    mixpanel!.track('delete_event_completed',
+        properties: {'isPrivate': isPrivate, 'isRecurrent': true});
   }
 
   void setMustUpdateToFalse() {
@@ -959,8 +988,6 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     log(change.nextState.toString());
   }
 
-  //CREATE UPDATE EVENT FUNCTIONS
-
   //LOCATION FUNCTIONS
 
   Future<Location> _getLocation(String locationId) async {
@@ -979,13 +1006,13 @@ class CrudEventCubit extends Cubit<CrudEventLoaded> {
     return location;
   }
 
+  //BONOS FUNCTIONS
+
   Future<void> _addEventBonosCall(
       String eventId, List<Bono> selectedBonos) async {
     // Add Event Members
     await _eventDataService.addEventBonosObject(eventId, selectedBonos);
   }
-
-  //BONOS FUNCTIONS
 
   Map<Bono, bool> _setBonoSelectedUnselected(Bono bono) {
     if (state.newEvent.eventBonos!.containsKey(bono)) {

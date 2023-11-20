@@ -4,6 +4,7 @@ import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/addEvents.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
 import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
@@ -27,8 +28,8 @@ class RecurrentEvents {
       List<Bono> selectedBonos,
       List<String> bonos,
       List<String> trainers,
-      String titleNot,
-      String bodyNot) async {
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
     String eventImageUrl;
 
     // Get Random Photo if no Image Selected
@@ -40,7 +41,6 @@ class RecurrentEvents {
 
     // Creating Event Object
     Event event = Event(
-      id: const Uuid().v1(),
       isPrivate: isPrivate,
       title: _event.title,
       description: _event.description,
@@ -79,8 +79,8 @@ class RecurrentEvents {
           currentUserId,
           context,
           currentUserId,
-          _notificationsEvents.setEventNotificationBefore(
-              event, titleNot, bodyNot));
+          _notificationsEvents.setEventNotificationBeforeRecurrent(
+              event, notificationBefore.title!, notificationBefore.body!));
       trainers.remove(currentUserId);
     }
 
@@ -88,8 +88,8 @@ class RecurrentEvents {
         event,
         bonos,
         trainers,
-        _notificationsEvents.setEventNotificationBefore(
-            event, titleNot, bodyNot));
+        _notificationsEvents.setEventNotificationBeforeRecurrent(
+            event, notificationBefore.title!, notificationBefore.body!));
 
     // Add Event
 

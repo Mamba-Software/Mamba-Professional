@@ -68,6 +68,27 @@ class NotificationsEvent {
       title: titleNot,
       body: bodyNot,
       bonoId: '',
+      payload: '',
+      //payload: event.id!,
+      createdAt: Timestamp.now(),
+      firesAt: beforeDate,
+    );
+    return notificationBefore;
+  }
+
+  ReceivedNotification setEventNotificationBeforeRecurrent(
+      Event event, String titleNot, String bodyNot) {
+    // Schedule Before Notification
+    DateTime beforeDate = event.startDate!.subtract(Duration(hours: 1));
+    String eventTimeTime = StringUtils()
+        .hourMinutesToString(event.startDate!.hour, event.startDate!.minute);
+    titleNot = titleNot.replaceAll('replace', eventTimeTime);
+    // Notification one hour before
+    ReceivedNotification notificationBefore = ReceivedNotification(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: titleNot,
+      body: bodyNot,
+      bonoId: '',
       payload: event.id!,
       createdAt: Timestamp.now(),
       firesAt: beforeDate,
@@ -93,7 +114,8 @@ class NotificationsEvent {
       body: bodyNotAfter,
       //title: AppLocalizations.of(context)!.afterEventTitleNotification,
       //body: AppLocalizations.of(context)!.afterEventBodyNotification,
-      payload: "F-" + event.id!,
+      //payload: "F-" + event.id!,
+      payload: "",
       createdAt: Timestamp.now(),
       firesAt: afterDate,
     );

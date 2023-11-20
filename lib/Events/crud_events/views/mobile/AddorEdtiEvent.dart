@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/Events/crud_events/cubit/functions/notificationsEvents.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Events/crud_events/read_event/cubit/ReadEventCubit.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/DateTimePage.dart';
 import 'package:mamba_castelldefels/Events/crud_events/views/mobile/InformationPage.dart';
@@ -40,6 +43,7 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
   List<bool> tabs = [true, false, false];
 
   final _topSnackBar = TopSnackBarDef();
+  final _notificationsEvents = NotificationsEvent();
 
   @override
   initState() {
@@ -463,30 +467,34 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                       .state
                                       .isWorking >=
                                   100) {
+                                String eventTimeTime = StringUtils()
+                                    .hourMinutesToString(
+                                        state.newEvent.startDate!.hour,
+                                        state.newEvent.startDate!.minute);
                                 if (state.isNew) {
-                                  String eventTimeTime = StringUtils()
-                                      .hourMinutesToString(
-                                          state.newEvent.startDate!.hour,
-                                          state.newEvent.startDate!.minute);
                                   context
                                       .read<CrudEventCubit>()
                                       .addEventFunction(
                                           context,
                                           state.newEvent,
                                           state.isPrivate,
-                                          AppLocalizations.of(context)!
-                                              .beforeEventTitleNotification(
-                                                  state.newEvent.title!,
-                                                  eventTimeTime),
-                                          AppLocalizations.of(context)!
-                                              .beforeEventBodyNotification);
+                                          _setNotificationBefore(
+                                              eventTimeTime, state.newEvent),
+                                          _setNotificationAfter(
+                                              state.newEvent));
                                   Navigator.pop(context);
                                 } else {
                                   if (!state.newEvent.isRecurrent!) {
                                     context
                                         .read<CrudEventCubit>()
-                                        .updateEventFunction(context,
-                                            state.newEvent, state.oldEvent);
+                                        .updateEventFunction(
+                                            context,
+                                            state.newEvent,
+                                            state.oldEvent,
+                                            _setNotificationBefore(
+                                                eventTimeTime, state.newEvent),
+                                            _setNotificationAfter(
+                                                state.newEvent));
                                     Navigator.pop(context, true);
                                   } else {
                                     var result = await showDialog(
@@ -509,8 +517,15 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                         print("Edit Only This Event..");
                                         context
                                             .read<CrudEventCubit>()
-                                            .updateEventFunction(context,
-                                                state.newEvent, state.oldEvent);
+                                            .updateEventFunction(
+                                                context,
+                                                state.newEvent,
+                                                state.oldEvent,
+                                                _setNotificationBefore(
+                                                    eventTimeTime,
+                                                    state.newEvent),
+                                                _setNotificationAfter(
+                                                    state.newEvent));
                                         Navigator.pop(context, true);
                                       } else {
                                         print(
@@ -520,7 +535,12 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
                                             .updateRecurrentEventFunction(
                                                 context,
                                                 state.newEvent,
-                                                state.oldEvent);
+                                                state.oldEvent,
+                                                _setNotificationBefore(
+                                                    eventTimeTime,
+                                                    state.newEvent),
+                                                _setNotificationAfter(
+                                                    state.newEvent));
                                         Navigator.pop(context, false);
                                       }
                                     }
@@ -600,5 +620,27 @@ class _AddOrEditEventState extends State<AddOrEditEvent>
               ),
             );
     });
+  }
+
+  ReceivedNotification _setNotificationBefore(
+      String eventTimeTime, Event _event) {
+    return _event.isRecurrent!
+        ? _notificationsEvents.setEventNotificationBefore(
+            _event,
+            AppLocalizations.of(context)!
+                .beforeEventTitleNotification(_event.title!, 'replace'),
+            AppLocalizations.of(context)!.beforeEventBodyNotification)
+        : _notificationsEvents.setEventNotificationBefore(
+            _event,
+            AppLocalizations.of(context)!
+                .beforeEventTitleNotification(_event.title!, eventTimeTime),
+            AppLocalizations.of(context)!.beforeEventBodyNotification);
+  }
+
+  ReceivedNotification _setNotificationAfter(Event _event) {
+    return _notificationsEvents.setEventNotificationAfter(
+        _event,
+        AppLocalizations.of(context)!.afterEventTitleNotification,
+        AppLocalizations.of(context)!.afterEventBodyNotification);
   }
 }
