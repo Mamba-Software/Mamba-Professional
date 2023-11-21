@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
+import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:mamba_castelldefels/Globals/Utils/Strings/StringUtils.dart';
@@ -1233,16 +1234,33 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Flexible(
-                            child: Text(
-                              event.title!,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText2
-                                  ?.copyWith(fontWeight: FontWeight.w600),
-                              overflow: TextOverflow.fade,
-                              textAlign: TextAlign.start,
-                              maxLines: 1,
-                              softWrap: false,
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    event.title!,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2
+                                        ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color: Theme.of(context)
+                                                .primaryColor
+                                                .withOpacity(
+                                                    isCompleted ? 0.5 : 1)),
+                                    overflow: TextOverflow.fade,
+                                    textAlign: TextAlign.start,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                  ),
+                                ),
+                                isCompleted
+                                    ? buildEventFeedbackText(
+                                        event,
+                                        details.bounds.height,
+                                        details.bounds.width)
+                                    : Container(),
+                              ],
                             ),
                           ),
                           Flexible(
@@ -1347,6 +1365,32 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
       );
     }
     return Container();
+  }
+
+  // Build EventFeedback Value
+  Widget buildEventFeedbackText(Event event, var height, var width) {
+    if (event.averageIntensityScore != null) {
+      return SizedBox(
+        height: height * 0.2,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            SizedBox(
+              width: width * 0.02,
+            ),
+            Text(event.averageIntensityScore!.toStringAsFixed(1),
+                style: Theme.of(context).textTheme.bodyText1,
+                textAlign: TextAlign.center),
+            SizedBox(
+              width: width * 0.06,
+              child: Image.asset(Constants.fireEmojiImage),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 
   String returnFilteredRolesString() {
