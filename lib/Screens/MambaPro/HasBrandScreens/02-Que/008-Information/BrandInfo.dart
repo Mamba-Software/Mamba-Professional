@@ -94,8 +94,7 @@ class _BrandInfoState extends State<BrandInfo>
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 14, 0);
   TimeOfDay _breakStartTime = const TimeOfDay(hour: 00, minute: 00);
   TimeOfDay _breakEndTime = const TimeOfDay(hour: 00, minute: 00);
-  final List<TimeOfDay> _breakList = [];
-  bool errorBreakTime = false;
+  int? errorBreakTime;
   // Booking Window
   int bookingWindow = 3;
   // Purchase
@@ -179,14 +178,13 @@ class _BrandInfoState extends State<BrandInfo>
       endHourWS,
       endMinWS,
     ));
-    print(currentBrand.workShift);
     // Break Hours
-    for (var i = 2; i < currentBrand.workShift.length; i += 2) {
-      var start = currentBrand.workShift[i];
+    if (currentBrand.workShift.length > 2) {
+      var start = currentBrand.workShift[2];
       int s = start.toInt();
       var startHour = int.parse(start.toStringAsFixed(2).split(".")[0]);
       var startMin = int.parse(start.toStringAsFixed(2).split(".")[1]);
-      var end = currentBrand.workShift[i + 1];
+      var end = currentBrand.workShift[3];
       int e = end.toInt();
       var endHour = int.parse(end.toStringAsFixed(2).split(".")[0]);
       var endMin = int.parse(end.toStringAsFixed(2).split(".")[1]);
@@ -196,9 +194,6 @@ class _BrandInfoState extends State<BrandInfo>
       breakEndTime = DateTime(DateTime.now().year, DateTime.now().month,
           DateTime.now().day, endHour, endMin);
       _breakEndTime = TimeOfDay(hour: endHour, minute: endMin);
-      // Array of Breaks
-      _breakList.add(_breakStartTime);
-      _breakList.add(_breakEndTime);
     }
     breakStartTimeController.text =
         DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
@@ -260,6 +255,7 @@ class _BrandInfoState extends State<BrandInfo>
   @override
   Widget build(BuildContext context) {
     if (!isLoading) {
+      // Working Hours
       var startHourWS =
           int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
       var startMinWS =
@@ -268,14 +264,6 @@ class _BrandInfoState extends State<BrandInfo>
           int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[0]);
       var endMinWS =
           int.parse(currentBrand.workShift[1].toStringAsFixed(2).split(".")[1]);
-      var startHourBreak =
-          int.parse(currentBrand.workShift[2].toStringAsFixed(2).split(".")[0]);
-      var startMinBreak =
-          int.parse(currentBrand.workShift[2].toStringAsFixed(2).split(".")[1]);
-      var endHourBreak =
-          int.parse(currentBrand.workShift[3].toStringAsFixed(2).split(".")[0]);
-      var endMinBreak =
-          int.parse(currentBrand.workShift[3].toStringAsFixed(2).split(".")[1]);
       if (nameBrandControllerTemp.trim() != currentBrand.name! &&
           nameBrandControllerTemp != "") {
         isUpdated = true;
@@ -308,16 +296,16 @@ class _BrandInfoState extends State<BrandInfo>
                 DateTime.now().year,
                 DateTime.now().month,
                 DateTime.now().day,
-                startHourBreak,
-                startMinBreak,
+                _breakStartTime.hour,
+                _breakStartTime.minute,
               )) ||
           breakEndTimeController.text !=
               DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
                 DateTime.now().year,
                 DateTime.now().month,
                 DateTime.now().day,
-                endHourBreak,
-                endMinBreak,
+                _breakEndTime.hour,
+                _breakEndTime.minute,
               ))) {
         isUpdated = true;
         mixpanel!.track('brand_info_break_hours_change');
@@ -989,6 +977,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                   ));
                                       if (pickedTimeTemp != null) {
                                         setState(() {
+                                          errorTime = null;
                                           startTime = pickedTimeTemp;
                                           startTimeController.text = DateFormat(
                                                   'HH:mm',
@@ -1051,6 +1040,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                   ));
                                       if (pickedTimeTemp != null) {
                                         setState(() {
+                                          errorTime = null;
                                           endTime = pickedTimeTemp;
                                           endTimeController.text = DateFormat(
                                                   'HH:mm',
@@ -1158,6 +1148,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                   ));
                                       if (pickedTimeTemp != null) {
                                         setState(() {
+                                          errorBreakTime = null;
                                           breakStartTime = pickedTimeTemp;
                                           breakStartTimeController
                                               .text = DateFormat('HH:mm',
@@ -1220,6 +1211,7 @@ class _BrandInfoState extends State<BrandInfo>
                                                   ));
                                       if (pickedTimeTemp != null) {
                                         setState(() {
+                                          errorBreakTime = null;
                                           breakEndTime = pickedTimeTemp;
                                           breakEndTimeController
                                               .text = DateFormat('HH:mm',
@@ -1261,16 +1253,69 @@ class _BrandInfoState extends State<BrandInfo>
                                 ),
                               ),
                             ),
+                            SizedBox(
+                                width:
+                                    MediaQuery.of(context).size.width * 0.05),
+                            GestureDetector(
+                              onTap: breakStartTime.hour == 0 ||
+                                      breakEndTime.hour == 0
+                                  ? null
+                                  : () async {
+                                      setState(() {
+                                        errorBreakTime = null;
+                                      });
+                                      breakStartTime = DateTime(
+                                          DateTime.now().year,
+                                          DateTime.now().month,
+                                          DateTime.now().day,
+                                          0,
+                                          0);
+                                      breakStartTimeController.text =
+                                          DateFormat('HH:mm',
+                                                  widget.locale!.languageCode)
+                                              .format(DateTime(
+                                        DateTime.now().year,
+                                        DateTime.now().month,
+                                        DateTime.now().day,
+                                        breakStartTime.hour,
+                                        breakStartTime.minute,
+                                      ));
+                                      breakEndTime = DateTime(
+                                          DateTime.now().year,
+                                          DateTime.now().month,
+                                          DateTime.now().day,
+                                          0,
+                                          0);
+                                      breakEndTimeController.text = DateFormat(
+                                              'HH:mm',
+                                              widget.locale!.languageCode)
+                                          .format(DateTime(
+                                        DateTime.now().year,
+                                        DateTime.now().month,
+                                        DateTime.now().day,
+                                        breakEndTime.hour,
+                                        breakEndTime.minute,
+                                      ));
+                                    },
+                              child: Icon(
+                                Icons.clear,
+                                color: breakStartTime.hour == 0 ||
+                                        breakEndTime.hour == 0
+                                    ? Colors.transparent
+                                    : AppColors.grey,
+                                size: MediaQuery.of(context).size.width * 0.05,
+                              ),
+                            ),
                           ],
                         ),
-                        errorTime != null
+                        errorBreakTime != null
                             ? Padding(
                                 padding: const EdgeInsets.only(
                                     left: 0, right: 0, top: 10.0, bottom: 0),
                                 child: Text(
-                                  errorTime == 1
+                                  errorBreakTime == 1
                                       ? AppLocalizations.of(context)!
-                                          .workingHoursError
+                                          .workingHoursError2
                                       : AppLocalizations.of(context)!
                                           .workingHoursError1,
                                   style: Theme.of(context)
@@ -1781,8 +1826,6 @@ class _BrandInfoState extends State<BrandInfo>
                 onPressed: () async {
                   if (validateInfo()) {
                     setState(() {
-                      errorTime == null;
-                      errorBreakTime == false;
                       appBarExpanded = false;
                       isLoading = true;
                     });
@@ -1792,18 +1835,20 @@ class _BrandInfoState extends State<BrandInfo>
                     DateTime end =
                         DateFormat('HH:mm', widget.locale!.languageCode)
                             .parse(endTimeController.text);
+                    DateTime breakStart =
+                        DateFormat('HH:mm', widget.locale!.languageCode)
+                            .parse(breakStartTimeController.text);
+                    DateTime breakEnd =
+                        DateFormat('HH:mm', widget.locale!.languageCode)
+                            .parse(breakEndTimeController.text);
                     double toDouble(DateTime myTime) =>
-                        myTime.hour + myTime.minute / 60.0;
-                    double toDouble2(TimeOfDay myTime) =>
-                        myTime.hour + myTime.minute / 60.0;
+                        myTime.hour + myTime.minute / 100;
                     // Reset Workshift
                     _workShift.clear();
                     _workShift.add(toDouble(start));
                     _workShift.add(toDouble(end));
-                    for (var i = 0; i < _breakList.length; i += 2) {
-                      _workShift.add(toDouble2(_breakList[i]));
-                      _workShift.add(toDouble2(_breakList[i + 1]));
-                    }
+                    _workShift.add(toDouble(breakStart));
+                    _workShift.add(toDouble(breakEnd));
                     print(_workShift);
                     // Update Brand Info
                     await _brandDataService.updateBrandInfo(
@@ -1877,6 +1922,10 @@ class _BrandInfoState extends State<BrandInfo>
         .parse(startTimeController.text);
     DateTime end = DateFormat('HH:mm', widget.locale!.languageCode)
         .parse(endTimeController.text);
+    DateTime startBreak = DateFormat('HH:mm', widget.locale!.languageCode)
+        .parse(breakStartTimeController.text);
+    DateTime endBreak = DateFormat('HH:mm', widget.locale!.languageCode)
+        .parse(breakEndTimeController.text);
     double toDouble(DateTime myTime) => myTime.hour + myTime.minute / 100.0;
     if (!formKeyInfo.currentState!.validate()) {
       return false;
@@ -1887,23 +1936,29 @@ class _BrandInfoState extends State<BrandInfo>
       });
       return false;
     }
-    if (TimeOfDay(hour: start.hour, minute: start.minute) ==
-            const TimeOfDay(hour: 0, minute: 00) &&
-        TimeOfDay(hour: end.hour, minute: end.minute) ==
-            const TimeOfDay(hour: 23, minute: 00)) {
-      setState(() {
-        errorTime = 1;
-      });
-      return false;
-    }
     if (toDouble(start) >= toDouble(end)) {
       setState(() {
         errorTime = 2;
       });
       return false;
     }
+    if (startBreak.hour != 0 && endBreak.hour != 0) {
+      if (start.isAfter(startBreak) || end.isBefore(endBreak)) {
+        setState(() {
+          errorBreakTime = 1;
+        });
+        return false;
+      }
+      if (toDouble(startBreak) >= toDouble(endBreak)) {
+        setState(() {
+          errorBreakTime = 2;
+        });
+        return false;
+      }
+    }
     setState(() {
       errorTime == null;
+      errorBreakTime = null;
       errorMembers = false;
     });
     return true;

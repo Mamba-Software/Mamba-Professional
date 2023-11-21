@@ -785,6 +785,10 @@
   "@workingHoursError1":{
     "description": "workingHours text"
   },
+  "workingHoursError2": "Tu descanso debe estar dentro de tu horario laboral",
+  "@workingHoursError2":{
+    "description": "workingHours text"
+  },
   "workingHoursDescription": "Es importante que definas tu horario de trabajo para que tus clientes sepan cuando puedes ser contactado y cuando estás fuera de tu horario laboral.",
   "@workingHoursDescription":{
     "description": "workingHours text"
