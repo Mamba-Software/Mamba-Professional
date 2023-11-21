@@ -2022,6 +2022,10 @@
   "termsAndConditions": "Términos y Condiciones",
   "@termsAndConditions": {
     "description": "membersOfBrand message"
+  },   
+  "privacy": "Privacidad",
+  "@privacy": {
+    "description": "membersOfBrand message"
   },
   "useMambaTermsAndConditions": "Utilizando Mamba aceptas nuestros ",
   "@useMambaTermsAndConditions": {

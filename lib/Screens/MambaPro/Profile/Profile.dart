@@ -977,7 +977,7 @@ class _ProfileState extends State<Profile> {
 
   Future<void> launchEmail() async {
     mixpanel!.track('user_profile_email_mamba');
-    const url = 'mailto:mambastylecastelldefels@gmail.com';
+    String url = 'mailto:$contactEmail';
     if (await canLaunchUrlString(url)) {
       await launchUrlString(url);
     }

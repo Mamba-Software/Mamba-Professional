@@ -21,17 +21,22 @@ bool isProduction = true;
 var appVersion = "MAMBA v0.0.17";
 
 List<lColor> currentColors = [];
-List<lDegradate> currentDegradates = [];//0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
+List<lDegradate> currentDegradates =
+    []; //0x00000000, 0xFFE53935, 0xFF43A047, 0xFF1E88E5, 0xFF8E24AA, 0xFFFB8C00, 0xFFFDD835
 
 // App
-var androidGooglePlayUrl = "https://play.google.com/store/apps/details?id=com.mamba.mambaprofessionalapp";
-var iosAppStoreUrl = "https://apps.apple.com/es/app/mamba-professional/id1642701679";
+var androidGooglePlayUrl =
+    "https://play.google.com/store/apps/details?id=com.mamba.mambaprofessionalapp";
+var iosAppStoreUrl =
+    "https://apps.apple.com/es/app/mamba-professional/id1642701679";
+
+// Email
+var contactEmail = "contacto@mambafitness.es";
 
 // Website
-var websiteES = "https://www.mambaapp.app/";
-var websiteCA = "https://www.mambaapp.app/ca/inici/";
-var termsAndConditionsES = "https://www.mambaapp.app/terminos-y-condiciones/";
-var termsAndConditionsCA = "https://www.mambaapp.app/ca/termes-i-condicions/";
+var website = "https://mambafitness.es/";
+var termsAndConditions = "https://mambafitness.es/terminos-y-condiciones/";
+var privacy = "https://mambafitness.es/privacidad/";
 
 var functionalitiesES = "https://www.mambaapp.app/#funcionalidades";
 var functionalitiesCA = "https://www.mambaapp.app/#funcionalidades";
@@ -75,48 +80,38 @@ const appleApiKey = 'appl_WdXLePsgLfQWTsDgYXYWYkdbDCj';
 const entitlementID = 'AllFeatures';
 
 //JMF 18042023 REVENUECAT
-void setBrandActive()
-{
+void setBrandActive() {
   //Se trata de revenueCat
   if (currentBrand.subscription != null) {
-    if(currentBrand.subscription?['brandIsActive'] == true) {
+    if (currentBrand.subscription?['brandIsActive'] == true) {
       brandIsActive = true;
-    }
-    else {
+    } else {
       brandIsActive = false;
     }
   }
   //Se trata de una antigua suscripción
-  else if(currentBrand.endDatePay != null)
-  {
-    if(DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0)
-    {
-
+  else if (currentBrand.endDatePay != null) {
+    if (DateTime.now().compareTo(currentBrand.endDatePay!.toDate()) < 0) {
       brandIsActive = true;
-    }
-    else
-    {
+    } else {
       brandIsActive = false;
     }
-  }
-  else
-  {
+  } else {
     brandIsActive = false;
   }
 }
 
-Future<void> navigateToPayWall(var context, [bool fromActiveSubs = false])
-async {
+Future<void> navigateToPayWall(var context,
+    [bool fromActiveSubs = false]) async {
   final _topSnackBar = TopSnackBarDef();
-  if(currentUser.id == currentBrand.adminID) {
+  if (currentUser.id == currentBrand.adminID) {
     if (fromActiveSubs) {
       await Navigator.push(
         context,
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              PayWall(
-                brandId: currentBrand.id!,
-              ),
+          pageBuilder: (context, animation, secondaryAnimation) => PayWall(
+            brandId: currentBrand.id!,
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
@@ -130,15 +125,13 @@ async {
       ).whenComplete(() {
         Navigator.pop(context);
       });
-    }
-    else {
+    } else {
       await Navigator.push(
         context,
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              PayWall(
-                brandId: currentBrand.id!,
-              ),
+          pageBuilder: (context, animation, secondaryAnimation) => PayWall(
+            brandId: currentBrand.id!,
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return SlideTransition(
               position: Tween<Offset>(
@@ -151,9 +144,9 @@ async {
         ),
       );
     }
-  }
-  else {
-    _topSnackBar.showSnackBarBottom(context,  AppLocalizations.of(context)!.notSubNotAdmin, 5);
+  } else {
+    _topSnackBar.showSnackBarBottom(
+        context, AppLocalizations.of(context)!.notSubNotAdmin, 5);
   }
 }
 
@@ -164,8 +157,7 @@ void navigateToProfileScreen(BuildContext context) {
       CupertinoPageRoute<void>(
         builder: (context) => const Profile(),
         settings: const RouteSettings(name: 'Profile'),
-      )
-  );
+      ));
 }
 
 // Navigate to Notifications Screen
@@ -174,8 +166,7 @@ Future<void> navigateToNotificationsScreen(BuildContext context) async {
       context,
       CupertinoPageRoute<void>(
         builder: (context) => const Notifications(),
-      )
-  );
+      ));
 }
 
 // Navigate to Notifications Screen
@@ -184,10 +175,5 @@ Future<void> navigateToChatScreen(BuildContext context) async {
       context,
       CupertinoPageRoute<void>(
         builder: (context) => const ChatCore(),
-      )
-  );
+      ));
 }
-
-
-
-
