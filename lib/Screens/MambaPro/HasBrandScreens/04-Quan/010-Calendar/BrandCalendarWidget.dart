@@ -155,7 +155,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     // Get The Events Needed
     await context
         .read<BrandEventsCubit>()
-        .getInitialBrandEvents(_brandTrainers);
+        .getInitialBrandEvents(_brandTrainers);      
     setState(() {
       isLoading = false;
     });

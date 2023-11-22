@@ -2024,6 +2024,7 @@ exports.userJoinsEvent = functions
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
+        "freeSession": eventUserDoc.freeSession,
       });
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
@@ -2049,6 +2050,7 @@ exports.userJoinsEvent = functions
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
+        "freeSession": eventUserDoc.freeSession,
       });
      }
       // Update Number of Client and Trainers on Each of Event Subcollection
@@ -2150,7 +2152,7 @@ exports.userJoinsEvent = functions
       // Send Notifications
       if (userDoc.isTrainer == false) {
         // Don´t Send Full Notification When it is a Private Event
-        if (eventDoc.isPrivate != true) {
+        if (eventDoc.isPrivate != true) {          
           // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
           if (eventDoc.maxMembers == numClients) {
               // Event is full
@@ -2283,7 +2285,7 @@ exports.userJoinsEvent = functions
             }
           }
         } else {
-          // Event is full
+          // Event Private
           functions.logger.log(
             "NOTIFICATION PRIVATE EVENT",
           );
@@ -2405,6 +2407,71 @@ exports.userJoinsEvent = functions
           response
           );
        }
+
+      // Send Notification per Invidual User
+      if (eventDoc.isPrivate != true && eventUserDoc.freeSession == true) {
+        functions.logger.log(
+          "Send Notification per Invidual User",
+        );
+        for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            const trainerSnapshot = await db.collection("Users").doc(id).get();
+            const trainerDoc = trainerSnapshot.data();
+            functions.logger.log(
+              "trainerDoc",
+              trainerDoc,
+              );
+            var payload = 0;
+            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+            if (trainerDoc.idioma == "es") {
+              // Date To String
+              let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservado su sesión gratuita 📆",
+                  body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            } else {
+              // Date To String
+              let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservat la seva sessió gratuïta 📆",                  
+                  body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            }
+            functions.logger.log(
+              "Payload",
+              payload
+              );
+            response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+            functions.logger.log(
+              "Response",
+              response
+              );
+          }
+        }
+      }
        return null;
      });
 
@@ -4284,6 +4351,7 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        "freeSession": eventUserDoc.freeSession,
         //TODO INTEGRATION .12
         "brandID": eventDoc.brandID,
       });
@@ -4311,6 +4379,7 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
+        "freeSession": eventUserDoc.freeSession,
         //TODO INTEGRATION .12
         "brandID": eventDoc.brandID,
       });
@@ -4418,7 +4487,7 @@ exports.zzzzUserJoinsEvent = functions
       // Send Notifications
       if (userDoc.isTrainer == false) {
         // Don´t Send Full Notification When it is a Private Event
-        if (eventDoc.isPrivate != true) {
+        if (eventDoc.isPrivate != true) {          
           // Send Notification to Trainers if booked capacity == 100% or > 50%, only when Clients Join
           if (eventDoc.maxMembers == numClients) {
               // Event is full
@@ -4674,6 +4743,71 @@ exports.zzzzUserJoinsEvent = functions
             response
             );
        }
+
+      // Send Notification per Invidual User
+      if (eventDoc.isPrivate != true && eventUserDoc.freeSession == true) {
+        functions.logger.log(
+          "Send Notification per Invidual User",
+        );
+        for (var i in eventUsersSnapshot.docs) {
+          const id = eventUsersSnapshot.docs[i].id;
+          const eventUsersDoc = eventUsersSnapshot.docs[i].data();
+          if (eventUsersDoc.isTrainer) {
+            const trainerSnapshot = await db.collection("7777 Users").doc(id).get();
+            const trainerDoc = trainerSnapshot.data();
+            functions.logger.log(
+              "trainerDoc",
+              trainerDoc,
+              );
+            var payload = 0;
+            let date = new Date(eventDoc.year, eventDoc.month-1, eventDoc.day);
+            if (trainerDoc.idioma == "es") {
+              // Date To String
+              let dateString = date.toLocaleDateString('es-ES', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservado su sesión gratuita 📆",
+                  body: "El evento "+eventDoc.title+" se realizará el "+dateString+" a las "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            } else {
+              // Date To String
+              let dateString = date.toLocaleDateString('ca-CA', { weekday:"long", day:"numeric", month:"long"});
+              // Hour and Minutes to String
+              let eventTimeTime = eventDoc.hour+":";
+              let minutes = eventDoc.minute == "0" ? "00" : eventDoc.minute;
+              eventTimeTime += minutes;
+              // Send Payload
+              payload = {
+                notification: {
+                  title: userDoc.name+" ha reservat la seva sessió gratuïta 📆",                  
+                  body: "L'esdeveniment "+eventDoc.title+" es realitzarà el "+dateString+" a les "+eventTimeTime,
+                },
+                data: {
+                  route: eventId,
+                },
+              };
+            }
+            functions.logger.log(
+              "Payload",
+              payload
+              );
+            response = await admin.messaging().sendToDevice(trainerDoc.notificationToken, payload);
+            functions.logger.log(
+              "Response",
+              response
+              );
+          }
+        }
+      }
        return null;
      });
 
