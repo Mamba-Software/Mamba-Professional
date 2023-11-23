@@ -6139,4 +6139,200 @@ exports.zzzzUserDeletesPurchase = functions
           return null;
         });
 
+// Recurrent Event Function
+exports.zzzzCreateRecurrentEvent = functions
+.region("europe-west1")
+.https
+.onCall(async (data, context) => {
+
+    functions.logger.log("new data", data);
+
+    const { event, doneAtString, geoPosition, bonos, trainers, notification, firesAt} = data;  
+    const eventsCollection = '7777 Events';
+    const brandsCollection = '7777 Brands';
+    const usersCollection = '7777 Users';
+    const eventID = event.id;
+
+    const eventRef = admin.firestore().collection(eventsCollection).doc(eventID);
+    const userRef = admin.firestore().collection(usersCollection);
+    
+    functions.logger.log("EVENT", event);
+    functions.logger.log("EVENTID", eventID);
+
+    try {
+
+      const createdAt = admin.firestore.Timestamp.now();
+      const doneAt = admin.firestore.Timestamp.fromMillis(doneAtString);
+        // Add to "\Events"
+       
+        //await addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection);
+        addTrainers(trainers, eventRef, userRef, notification, firesAt);
+        addBonos(bonos, eventRef);
+
+        return { success: true, eventId: eventID };
+
+    } catch (error) {
+        console.error("Error adding event:", error);
+        return { success: false };
+    }
+});
+
+async function addEvent(event, createdAt, doneAt, geoPosition, eventsCollection, eventID, brandsCollection) {
+    await admin.firestore().collection(eventsCollection).doc(eventID).set({
+      ...event,
+      createdAt,
+      doneAt,
+      ...geoPosition,
+  });
+
+  functions.logger.log("STEP 1", event);
+
+  // Add to Private Events if event is private
+  if (event.isPrivate) {
+      await admin.firestore()
+          .collection(eventsCollection)
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID)
+          .set({
+              ...event,
+              createdAt,
+              doneAt,
+              ...geoPosition,
+          });
+  }
+
+  functions.logger.log("STEP 2", event);
+
+  // Add to "\Events\Brands"
+  await admin.firestore()
+      .collection(eventsCollection)
+      .doc(eventID)
+      .collection("Brands")
+      .doc(event.brandID)
+      .set({
+          name: event.brandName,
+          logoUrl: event.brandLogo,
+      });
+      functions.logger.log("STEP 3", event);
+
+  // Add to "\Events\Location"
+  await admin.firestore()
+      .collection(eventsCollection)
+      .doc(eventID)
+      .collection("Locations")
+      .doc(event.locationId)
+      .set({
+          description: event.locationDescription,
+          longitude: geoPosition.geopoint.longitude,
+          latitude: geoPosition.geopoint.latitude,
+          ...geoPosition,
+      });
+      functions.logger.log("STEP 4", event);
+  // Add Event To Brands/Events Subcollection
+  await admin.firestore()
+      .collection(brandsCollection)
+      .doc(event.brandID)
+      .collection("Events")
+      .doc(eventID)
+      .set({
+          ...event,
+          createdAt,
+          doneAt,
+          ...geoPosition,
+      });
+
+      functions.logger.log("STEP 5", event);
+
+  // Add to Brands/Events/Private Events if event is private
+  if (event.isPrivate) {
+      await admin.firestore()
+          .collection(brandsCollection)
+          .doc(event.brandID)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventID)
+          .set({
+              ...event,
+              createdAt,
+              doneAt,
+              ...geoPosition,
+          });
+          
+  }
+  functions.logger.log("STEP 6", event);
+}
+
+function addBonos(bonos, eventRef) {
+
+  if (bonos && bonos.length > 0) {
+
+    const batch = admin.firestore().batch();
+
+    bonos.forEach(bonoId => {
+        const bonoRef = eventRef.collection("Bonos").doc(bonoId);
+        batch.set(bonoRef, { "bonoId": bonoId });
+    });
+
+    batch.commit();
+  }
+}
+
+async function addTrainers(trainers, eventRef, userRef, notification, firesAt) {
+
+  if (trainers && trainers.length > 0) {
+    const joinedAt = admin.firestore.Timestamp.now();
+
+    for (const trainerId of trainers) {
+      const userSnapshot = await userRef.doc(trainerId).get();
+      const user = userSnapshot.data();
+      if (user) {
+        const trainerRef = eventRef.collection("Users").doc(trainerId);
+        const userData = {
+          name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          nick: user.nick,
+          imageUrl: user.imageUrl,
+          noImageUrl: user.noImageUrl,
+          isTrainer: user.isTrainer,
+          isPrivate: user.isPrivate,
+          joinedAt: joinedAt,
+          notificationToken: user.notificationToken,
+        };
+        await trainerRef.set(userData); // Direct set for each trainer
+        addLocalNotification(userRef, trainerId, notification, firesAt);
+      }
+    }
+  }
+}
+
+async function addLocalNotification(userRef, userId, notification, firesAt) {
+
+  if (!userId || !notification) {
+      throw new Error('Invalid arguments. UserId and notification are required.');
+  }
+  try {
+      const now = admin.firestore.Timestamp.now();
+      const userRefComplete = userRef
+                        .doc(userId)
+                        .collection('Local Notifications') // Adjust the subcollection name as necessary
+                        .doc(notification.id.toString());
+
+      await userRefComplete.set({
+          eventId: notification.eventId,
+          bonoId: notification.bonoId,
+          purchaseId: notification.purchaseId,
+          payload: notification.payload,
+          createdAt: now,
+          firesAt: admin.firestore.Timestamp.fromMillis(firesAt),
+      });
+  } catch (error) {
+      console.error('Error adding local notification:', error);
+      throw error;
+  }
+}
+
+
 

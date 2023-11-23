@@ -16,6 +16,8 @@ import 'package:mamba_castelldefels/Globals/Utils/Bonos/BonosUtils.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Badges/CounterBadgeIcon.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/CircularImage.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/BonoCard.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/AddEditBono.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/005-Bonos/BrandPurchaseHistory/views/BrandPurchaseHistory.dart';
 import 'package:provider/provider.dart';
@@ -472,28 +474,8 @@ class _BonosProState extends State<BonosPro> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CounterBadgeIcon(
-                    counter: unreadNotifications,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToNotificationsScreen(context),
-                    ),
-                  ),
-                  CounterBadgeIcon(
-                    counter: unreadChats,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToChatScreen(context),
-                    ),
-                  ),
+                  unreadNotifiactions(context),
+                  unreadChats(context),
                   SizedBox(width: MediaQuery.of(context).size.width*0.03),
                   GestureDetector(
                     onTap: () => navigateToProfileScreen(context),

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
+import 'package:mamba_castelldefels/Auth/views/mobile/Login.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -14,7 +16,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -629,6 +630,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
 
   @override
   Widget build(BuildContext context) {
+    
     if (firstBuild) {
       deleteTemp = "";
       firstBuild = false;
@@ -691,9 +693,12 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           controller: deleteController,
                           onChanged: (val) {
                             setState(() => {deleteTemp = val});
+                            setState(() => {deleteTemp = val});
                             if (val.length < 6 || hasBrand) {
                               setState(() => {canDelete = false});
+                              setState(() => {canDelete = false});
                             } else {
+                              setState(() => {canDelete = true});
                               setState(() => {canDelete = true});
                             }
                           },
@@ -754,6 +759,22 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         ),
                       )
                     : Container(),
+                wrongPassword
+                    ? Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20.0, left: 10, right: 10),
+                          child: Text(
+                            "${AppLocalizations.of(context)!.passwordNotSameError} ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                ?.copyWith(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : Container(),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Row(
@@ -788,7 +809,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 size: MediaQuery.of(context).size.width * 0.06)
                             : Container(),
                         backgroundColor:
-                            canDelete ? Colors.red : Colors.red[200],
+                            canDelete ? Colors.red : Colors.red[200],                        
                         foregroundColor: AppColors.white,
                         onPressed: canDelete
                             ? () async {
@@ -859,7 +880,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                   );
                                 }
                               }
-                            : null,
+                            : null,                        
                       ),
                       FloatingActionButton.extended(
                         heroTag: "40",
@@ -955,6 +976,7 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
       children: [
         _iconLocale(allLocales[0], context),
         SizedBox(width: MediaQuery.of(context).size.width * 0.10),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.10),
         _iconLocale(allLocales[1], context),
       ],
     );
@@ -1000,6 +1022,6 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
                   }),
         ),
       ),
-    );
+    );      
   }
 }

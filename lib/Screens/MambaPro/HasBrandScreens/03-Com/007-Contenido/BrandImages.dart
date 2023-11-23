@@ -20,6 +20,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/FavouriteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BrandImages extends StatefulWidget {
@@ -357,33 +359,8 @@ class _BrandImagesState extends State<BrandImages> with WidgetsBindingObserver {
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        CounterBadgeIcon(
-                          counter: unreadNotifications,
-                          top: 5,
-                          right: 7,
-                          child: IconButton(
-                            icon: Icon(Icons.notifications,
-                                color: AppColors.white,
-                                size: MediaQuery.of(context).size.width * 0.06),
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.zero,
-                            onPressed: () =>
-                                navigateToNotificationsScreen(context),
-                          ),
-                        ),
-                        CounterBadgeIcon(
-                          counter: unreadChats,
-                          top: 5,
-                          right: 7,
-                          child: IconButton(
-                            icon: Icon(Icons.chat,
-                                color: AppColors.white,
-                                size: MediaQuery.of(context).size.width * 0.06),
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.zero,
-                            onPressed: () => navigateToChatScreen(context),
-                          ),
-                        ),
+                        unreadNotifiactions(context),
+                        unreadChats(context),                        
                         SizedBox(
                             width: MediaQuery.of(context).size.width * 0.03),
                         GestureDetector(

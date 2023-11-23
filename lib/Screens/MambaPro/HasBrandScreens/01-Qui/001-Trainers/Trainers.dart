@@ -24,6 +24,8 @@ import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/001-
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/RegisterBrandMember.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/01-Qui/015-AddMembers/ShareBrandLink.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 
 class Trainers extends StatefulWidget {
   String brandId;
@@ -715,28 +717,8 @@ class _Trainers extends State<Trainers> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CounterBadgeIcon(
-                    counter: unreadNotifications,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToNotificationsScreen(context),
-                    ),
-                  ),
-                  CounterBadgeIcon(
-                    counter: unreadChats,
-                    top: 5,
-                    right: 7,
-                    child: IconButton(
-                      icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.zero,
-                      onPressed: () => navigateToChatScreen(context),
-                    ),
-                  ),
+                  unreadNotifiactions(context),
+                  unreadChats(context),
                   SizedBox(width: MediaQuery.of(context).size.width*0.03),
                   GestureDetector(
                     onTap: () => navigateToProfileScreen(context),

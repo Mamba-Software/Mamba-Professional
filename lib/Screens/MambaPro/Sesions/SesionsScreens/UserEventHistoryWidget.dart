@@ -8,7 +8,7 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/Eve
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventPage/EventPage.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import '../../../../../Data/Models/Event.dart';
+import '../../../../Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserEventHistoryWidget extends StatefulWidget {
