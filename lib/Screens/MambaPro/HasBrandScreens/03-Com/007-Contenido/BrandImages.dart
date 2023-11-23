@@ -20,6 +20,8 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/Components/Images/FullScreenImageCarousel.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/FavouriteConfirmationDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BrandImages extends StatefulWidget {

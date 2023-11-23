@@ -10,6 +10,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/LocalNotificationService.dart';
+import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
+import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
+import 'package:mamba_castelldefels/Events/crud_events/cubit/CrudEventCubit.dart';
+import 'package:mamba_castelldefels/Events/cubit/AllEventsCubit.dart';
+import 'package:mamba_castelldefels/Events/cubit/BrandEventsCubit.dart';
 import 'package:mamba_castelldefels/Globals/NotificationService/Notifications.dart';
 import 'package:mamba_castelldefels/Globals/Providers/FirebaseAnalyticsProvider.dart';
 import 'package:mamba_castelldefels/Globals/Providers/ThemeProvider.dart';
@@ -18,11 +23,12 @@ import 'package:mamba_castelldefels/Globals/ChatCore/ChatCore.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Bonos/ClientSessions/cubit/ClientsSessionsCubit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Events/EventFeedback.dart';
 import 'package:mamba_castelldefels/firebase_options.dart';
+import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/cubitSuscription/BrandSuscriptionCubit.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/cubit/UnreadNotChatsCubit.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:mamba_castelldefels/Globals/Constants.dart';
 import 'package:mamba_castelldefels/Globals/Idiomas/Idiomas.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -42,8 +48,7 @@ LocalNotificationService localNotificationService = LocalNotificationService();
 late AndroidNotificationChannel channel;
 
 // BackGroundNotificationHandler
-Future<void> _backgroundMessageHandler(RemoteMessage message) async {
-  if (message.data.containsKey('route')) {
+Future<void> _backgroundMessageHandler(RemoteMessage message) async {  if (message.data.containsKey('route')) {
     String route = message.data['route'];
     localNotificationService.onNotifications.add(route);
   }
@@ -86,8 +91,20 @@ Future<void> main() async {
     // Init MixPanel
     mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
         trackAutomaticEvents: true, optOutTrackingDefault: false);
+    mixpanel = await Mixpanel.init("c573538be2d62355bb2f0968ff42c181",
+        trackAutomaticEvents: true, optOutTrackingDefault: false);
     await initPlatformState();
     // Run App
+    runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider<LanguageProvider>(
+            create: (_) => LanguageProvider()),
+        ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider<FirebaseAnalyticsProvider>(
+            create: (_) => FirebaseAnalyticsProvider()),
+      ],
+      child: const Mamba(),
+    ));
     runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider<LanguageProvider>(
@@ -139,6 +156,9 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
         const Duration(milliseconds: 1000),
         () {
           _dynamicLinkUtils.retrieveDynamicLink();
+        const Duration(milliseconds: 1000),
+        () {
+          _dynamicLinkUtils.retrieveDynamicLink();
         },
       );
     }
@@ -155,29 +175,49 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<LanguageProvider, ThemeProvider,
-            FirebaseAnalyticsProvider>(
-        builder: (context, LanguageProvider language, ThemeProvider theme,
-            FirebaseAnalyticsProvider analytics, _) {
-      final brightness = SchedulerBinding.instance.window.platformBrightness;
-      if (brightness == Brightness.dark) {
-        print("Dark Mode");
-        theme.darkModeStatusAndNavigationBar();
-      } else {
-        print("Light Mode");
-        theme.lightModeStatusAndNavigationBar();
-      }
-      return Resize(
-        allowtextScaling: true,
-        builder: () {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider<ClientSessionsCubit>(
-                create: (_) => ClientSessionsCubit([]),
-                lazy: false,
-              ),
-            ],
-            child: MaterialApp(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ClientSessionsCubit>(
+          create: (_) => ClientSessionsCubit([]),
+          lazy: false,
+        ),
+        BlocProvider<CrudEventCubit>(
+          lazy: false,
+          create: (context) => CrudEventCubit(),
+        ),
+        BlocProvider<AuthCubit>(
+          create: (context) => AuthCubit(),
+          lazy: false,
+        ),
+        BlocProvider<UnreadNotChatsCubit>(
+          create: (context) => UnreadNotChatsCubit(context.read<AuthCubit>()),
+          lazy: false,
+        ),
+        BlocProvider<BrandEventsCubit>(
+          create: (context) => BrandEventsCubit(context.read<AuthCubit>()),
+          lazy: false,
+        ),
+        BlocProvider<BrandSuscriptionCubit>(
+          create: (context) => BrandSuscriptionCubit(context.read<AuthCubit>()),
+          lazy: false,
+        ),
+      ],
+      child:
+          Consumer3<LanguageProvider, ThemeProvider, FirebaseAnalyticsProvider>(
+              builder: (context, LanguageProvider language, ThemeProvider theme,
+                  FirebaseAnalyticsProvider analytics, _) {
+        final brightness = SchedulerBinding.instance.window.platformBrightness;
+        if (brightness == Brightness.dark) {
+          print("Dark Mode");
+          theme.darkModeStatusAndNavigationBar();
+        } else {
+          print("Light Mode");
+          theme.lightModeStatusAndNavigationBar();
+        }
+        return Resize(
+          allowtextScaling: true,
+          builder: () {
+            return MaterialApp(
               debugShowCheckedModeBanner: false,
               title: Constants.appName,
               themeMode: theme.themeMode,
@@ -247,10 +287,10 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
                     );
                 }
               },
-            ),
-          );
-        },
-      );
-    });
+            );
+          },
+        );
+      }),
+    );
   }
 }

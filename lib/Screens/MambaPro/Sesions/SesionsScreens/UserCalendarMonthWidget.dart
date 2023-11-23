@@ -5,7 +5,7 @@ import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart
 import 'package:mamba_castelldefels/Globals/Styles/AppColors/AppColors.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
-import '../../../../../Data/Models/Event.dart';
+import '../../../../Events/crud_events/models/Event.dart';
 import '../../../../../Globals/Utils/Strings/StringUtils.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Calendars/UserCalendarWidget.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

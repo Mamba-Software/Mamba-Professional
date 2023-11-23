@@ -1113,9 +1113,29 @@
   "@nextTwoWeek":{
     "description": "Días text"
   },
-  "wholeMonth": "Cuatro semanas",
+  "wholeMonth": "Un mes",
   "@wholeMonth":{
     "description": "Días text"
+  },
+  "wholeTwoMonth": "Ocho semanas",
+  "@wholeTwoMonth":{
+    "description": "wholeTwoMonth text"
+  },
+  "wholeThreeMonth": "Tres meses",
+  "@wholeThreeMonth":{
+    "description": "wholeThreeMonth text"
+  },
+  "wholeSixMonth": "Seis meses",
+  "@wholeSixMonth":{
+    "description": "wholeSixMonth text"
+  },
+  "wholeNineMonth": "Nueve meses",
+  "@wholeNineMonth":{
+    "description": "wholeNineMonth text"
+  },
+  "wholeTwelveMonth": "Doce meses",
+  "@wholeTwelveMonth":{
+    "description": "wholeTwelveMonth text"
   },
   "until": "Hasta el {date}",
   "@until": {
@@ -3518,5 +3538,13 @@
   "cantEditRecurrent": "Elimina los clientes del evento para poder indicar si es un evento recurrente",
   "@addClientDescription":{
     "bonosClient": "addClientDescription client text"
+  },
+  "noActiveBonos": "No dispones de bonos activos para asignar al evento",
+  "@noActiveBonos":{
+    "noActiveBonos": "noActiveBonos text"
+  },
+  "processOnWork": "Hay un proceso ejecutandose, espere hasta que termine o reinicie la aplicación",
+  "@processOnWork":{
+    "description": "processOnWork text"
   }
 }

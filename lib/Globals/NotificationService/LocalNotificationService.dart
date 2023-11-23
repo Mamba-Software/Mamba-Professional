@@ -9,7 +9,7 @@ import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart
 import 'package:mamba_castelldefels/Data/DataService/Purchase/PurchaseDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
 import 'package:mamba_castelldefels/Data/Models/Bono.dart';
-import 'package:mamba_castelldefels/Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Events/crud_events/models/Event.dart';
 import 'package:mamba_castelldefels/Data/Models/Notifications/RecievedNotification.dart';
 import 'package:mamba_castelldefels/Data/Models/Purchase.dart';
 import 'package:mamba_castelldefels/Globals/GlobalVars.dart';
@@ -18,17 +18,18 @@ import 'package:mamba_castelldefels/main.dart';
 
 /// Streams are created so that app can respond to notification-related events
 /// since the plugin is initialised in the `main` function
-final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject = BehaviorSubject<ReceivedNotification>();
+final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject =
+    BehaviorSubject<ReceivedNotification>();
 
 class LocalNotificationService {
-
   // Data Service
   final _userDataService = UserDataService();
   final _eventDataService = EventDataService();
   final _purchaseDataService = PurchaseDataService();
-  
-  // Variables 
-  static final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  // Variables
+  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   final BehaviorSubject<String?> onNotifications = BehaviorSubject<String?>();
 
   // Main Functions
@@ -38,12 +39,14 @@ class LocalNotificationService {
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation(timeZoneName!));
     // Configuration Android and iOs
-    const AndroidInitializationSettings android = AndroidInitializationSettings('logo_foreground');
+    const AndroidInitializationSettings android =
+        AndroidInitializationSettings('logo_foreground');
     final DarwinInitializationSettings ios = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
-      onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {
+      onDidReceiveLocalNotification:
+          (int id, String? title, String? body, String? payload) async {
         didReceiveLocalNotificationSubject.add(
           ReceivedNotification(
             id: id,
@@ -52,15 +55,17 @@ class LocalNotificationService {
             payload: payload,
           ),
         );
-      },    
+      },
     );
-    InitializationSettings initializationSettings = InitializationSettings(android: android, iOS: ios);
+    InitializationSettings initializationSettings =
+        InitializationSettings(android: android, iOS: ios);
     // Initialise Notifications Plugin
     _notificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) {
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) {
         switch (notificationResponse.notificationResponseType) {
-          case NotificationResponseType.selectedNotification:      
+          case NotificationResponseType.selectedNotification:
             onNotifications.add(notificationResponse.payload);
             break;
           case NotificationResponseType.selectedNotificationAction:
@@ -68,13 +73,13 @@ class LocalNotificationService {
             break;
         }
       },
-      onDidReceiveBackgroundNotificationResponse: backgroundLocalMessageHandler,     
+      onDidReceiveBackgroundNotificationResponse: backgroundLocalMessageHandler,
     );
   }
 
   void myBackgroundHandler(NotificationResponse notificationResponse) {
     switch (notificationResponse.notificationResponseType) {
-      case NotificationResponseType.selectedNotification:      
+      case NotificationResponseType.selectedNotification:
         onNotifications.add(notificationResponse.payload);
         break;
       case NotificationResponseType.selectedNotificationAction:
@@ -83,7 +88,8 @@ class LocalNotificationService {
     }
   }
 
-  AndroidNotificationDetails getAndroidNotificationDetails({String? imageSource}) {
+  AndroidNotificationDetails getAndroidNotificationDetails(
+      {String? imageSource}) {
     AndroidNotificationDetails androidPlatformChannelSpecifics;
     if (imageSource == null) {
       androidPlatformChannelSpecifics = const AndroidNotificationDetails(
@@ -110,9 +116,9 @@ class LocalNotificationService {
   DarwinNotificationDetails getIOSNotificationDetails({String? imageSource}) {
     const DarwinNotificationDetails iosNotificationDetails =
         DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
     );
     return iosNotificationDetails;
   }
@@ -122,36 +128,36 @@ class LocalNotificationService {
       // Defining Platform Channel Specifics
       var platformChannelSpecifics = NotificationDetails(
           android: getAndroidNotificationDetails(),
-          iOS: getIOSNotificationDetails()
-      );
+          iOS: getIOSNotificationDetails());
       // Showing Notification
       _notificationsPlugin.show(
-          notification.id!,
-          notification.title,
-          notification.body,
-          platformChannelSpecifics,
-          payload: notification.payload,
+        notification.id!,
+        notification.title,
+        notification.body,
+        platformChannelSpecifics,
+        payload: notification.payload,
       );
     } on Exception catch (e) {
       print(e);
     }
   }
 
-  Future<void> scheduleNotification(BuildContext context, ReceivedNotification notification) async {
+  Future<void> scheduleNotification(
+      BuildContext context, ReceivedNotification notification) async {
     // Defining Platform Channel Specifics
     var platformChannelSpecifics = NotificationDetails(
         android: getAndroidNotificationDetails(),
-        iOS: getIOSNotificationDetails()
-    );
+        iOS: getIOSNotificationDetails());
     // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
-    final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);    
+    final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);
     // Get Event
     //print(notification.eventId!);
     Event event = await _eventDataService.getSingleEvent(notification.eventId!);
-    String eventTimeTime = StringUtils().hourMinutesToString(int.parse(event.hour!), int.parse(event.minute!));
+    String eventTimeTime = StringUtils()
+        .hourMinutesToString(int.parse(event.hour!), int.parse(event.minute!));
     // Check with Type of Notification
-    String payloadFeedback = notification.payload!.substring(0,2);
+    String payloadFeedback = notification.payload!.substring(0, 2);
     String payloadSubString = notification.payload!.substring(2);
     bool isFeedback = payloadFeedback == "F-";
     if (isFeedback) {
@@ -164,25 +170,27 @@ class LocalNotificationService {
           platformChannelSpecifics,
           payload: notification.payload,
           androidAllowWhileIdle: true,
-          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
-      );
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime);
     } else {
       // Scheduling Notification
       _notificationsPlugin.zonedSchedule(
           notification.id!,
-          AppLocalizations.of(context)!.beforeEventTitleNotification(event.title!, eventTimeTime),
+          AppLocalizations.of(context)!
+              .beforeEventTitleNotification(event.title!, eventTimeTime),
           AppLocalizations.of(context)!.beforeEventBodyNotification,
           scheduledDate,
           platformChannelSpecifics,
           payload: notification.payload,
           androidAllowWhileIdle: true,
-          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
-      );
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime);
     }
   }
 
   // onClickedNotification handles Redirection of Notification
-  Future<void> onClickedNotification(BuildContext context, String payload) async {
+  Future<void> onClickedNotification(
+      BuildContext context, String payload) async {
     // Two types of Notifications:
     //      LocalNotifications only send String payload
     //      Remote Firebase Notifications we send the whole Notification with Arguments
@@ -191,7 +199,8 @@ class LocalNotificationService {
       case "SplashScreen":
         break;
       case "Notifications":
-        await Navigator.of(context).pushNamed("Notifications", arguments: pageIndex);
+        await Navigator.of(context)
+            .pushNamed("Notifications", arguments: pageIndex);
         break;
       case "Chat":
         await Navigator.of(context).pushNamed("Chat", arguments: pageIndex);
@@ -199,23 +208,27 @@ class LocalNotificationService {
       case "BrandPage":
         break;
       case 'BonosRequests':
-        await Navigator.of(context).pushNamed("BonosRequests", arguments: currentBrand.id!);
+        await Navigator.of(context)
+            .pushNamed("BonosRequests", arguments: currentBrand.id!);
         break;
       case 'MembershipRequests':
-        await Navigator.of(context).pushNamed("MembershipRequests", arguments: currentBrand.id!);
+        await Navigator.of(context)
+            .pushNamed("MembershipRequests", arguments: currentBrand.id!);
         break;
       default:
-        String payloadFeedback = payload.substring(0,2);
+        String payloadFeedback = payload.substring(0, 2);
         String payloadSubString = payload.substring(2);
         bool isFeedback = payloadFeedback == "F-";
         if (isFeedback) {
           print("Feedback Event Page");
-          await Navigator.of(context).pushNamed("EventFeedbackPage", arguments: payloadSubString);
+          await Navigator.of(context)
+              .pushNamed("EventFeedbackPage", arguments: payloadSubString);
           // Jump to Page 2, Feedback
           //pageController.jumpToPage(2);
         } else {
           print("Event Page");
-          await Navigator.of(context).pushNamed("EventPage", arguments: payload);
+          await Navigator.of(context)
+              .pushNamed("EventPage", arguments: payload);
         }
         break;
     }
@@ -223,16 +236,20 @@ class LocalNotificationService {
 
   // didNotificationLaunch handle
   Future<void> didNotificationLaunch(BuildContext context) async {
-    NotificationAppLaunchDetails? notificationAppLaunchDetails = await _notificationsPlugin.getNotificationAppLaunchDetails();
-    if (notificationAppLaunchDetails?.didNotificationLaunchApp != null && notificationAppLaunchDetails?.didNotificationLaunchApp == true) {
-      onClickedNotification(context, notificationAppLaunchDetails!.notificationResponse!.payload!);
+    NotificationAppLaunchDetails? notificationAppLaunchDetails =
+        await _notificationsPlugin.getNotificationAppLaunchDetails();
+    if (notificationAppLaunchDetails?.didNotificationLaunchApp != null &&
+        notificationAppLaunchDetails?.didNotificationLaunchApp == true) {
+      onClickedNotification(context,
+          notificationAppLaunchDetails!.notificationResponse!.payload!);
     }
   }
 
   Future<void> handleLocalNotifications(BuildContext context) async {
     print("Handling Local Notifications...");
     // Get Firebase Notifications
-    List<ReceivedNotification> firebaseNotifications = await _userDataService.getLocalNotifications(currentUser.id!);
+    List<ReceivedNotification> firebaseNotifications =
+        await _userDataService.getLocalNotifications(currentUser.id!);
     // Create Aux Variables
     var firebaseNotificationsTemp = List.from(firebaseNotifications);
     // Delete the ones that have been fired
@@ -241,35 +258,44 @@ class LocalNotificationService {
       if (DateTime.now().isAfter(notif.firesAt!)) {
         // Find index in Local Notifications
         firebaseNotificationsTemp.remove(notif);
-        _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
-        print("Removing Fired Notification "+notif.id.toString());
+        _userDataService.deleteLocalNotification(
+            currentUser.id!, notif.id!.toString());
+        print("Removing Fired Notification " + notif.id.toString());
       }
-      bool eventExists = await _eventDataService.checkIfEventExists(notif.eventId!);
+      bool eventExists =
+          await _eventDataService.checkIfEventExists(notif.eventId!);
       if (eventExists == false) {
         // Find index in Local Notifications
         firebaseNotificationsTemp.remove(notif);
-        _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
-        print("Removing False Notification "+notif.id.toString());
+        _userDataService.deleteLocalNotification(
+            currentUser.id!, notif.id!.toString());
+        print("Removing False Notification " + notif.id.toString());
       }
     }
-    print(firebaseNotificationsTemp.length.toString()+ " Firebase notifications left...");
+    print(firebaseNotificationsTemp.length.toString() +
+        " Firebase notifications left...");
     // Compare the ones left to fire with Local Device Notifications
-    List<PendingNotificationRequest> pendingNotificationRequests = await _notificationsPlugin.pendingNotificationRequests();
-    print(pendingNotificationRequests.length.toString()+ " Local notifications...");
+    List<PendingNotificationRequest> pendingNotificationRequests =
+        await _notificationsPlugin.pendingNotificationRequests();
+    print(pendingNotificationRequests.length.toString() +
+        " Local notifications...");
     // Create Aux Variables
-    var pendingNotificationRequestsTemp = List.from(pendingNotificationRequests);
+    var pendingNotificationRequestsTemp =
+        List.from(pendingNotificationRequests);
     var firebaseLeftTemp = List.from(firebaseNotificationsTemp);
     // Iterate Firebase Notifications
     for (int i = 0; i < firebaseNotificationsTemp.length; i++) {
       ReceivedNotification notif = firebaseNotificationsTemp[i];
       // Find index in Local Notifications
-      int index = pendingNotificationRequests.indexWhere((element) => element.id == notif.id);
+      int index = pendingNotificationRequests
+          .indexWhere((element) => element.id == notif.id);
       // Notification Found
       if (index != -1) {
         // Remove From Firebase and Local Notifications Lists
-        pendingNotificationRequestsTemp.removeWhere((element) => element.id == notif.id);
+        pendingNotificationRequestsTemp
+            .removeWhere((element) => element.id == notif.id);
         firebaseLeftTemp.removeWhere((element) => element.id == notif.id);
-        print("Notification Matched "+notif.id.toString());
+        print("Notification Matched " + notif.id.toString());
       }
     }
     // Handle the Remaining Firebase Notifications
@@ -278,8 +304,8 @@ class LocalNotificationService {
       for (int i = 0; i < firebaseLeftTemp.length; i++) {
         ReceivedNotification notif = firebaseLeftTemp[i];
         // Schedule Notif
-        await this.scheduleNotification(context,notif);
-        print("Local Notification Added "+notif.id.toString());
+        await this.scheduleNotification(context, notif);
+        print("Local Notification Added " + notif.id.toString());
       }
     }
     // Handle the Remaining Local Notifications
@@ -289,7 +315,7 @@ class LocalNotificationService {
         PendingNotificationRequest notif = pendingNotificationRequestsTemp[i];
         // Cancel Local Notification
         _notificationsPlugin.cancel(notif.id);
-        print("Local Notification Canceled "+notif.id.toString());
+        print("Local Notification Canceled " + notif.id.toString());
       }
     }
     var localNotif = await _notificationsPlugin.pendingNotificationRequests();
@@ -303,34 +329,29 @@ class LocalNotificationService {
     // Defining Platform Channel Specifics
     var platformChannelSpecifics = NotificationDetails(
         android: getAndroidNotificationDetails(),
-        iOS: getIOSNotificationDetails()
-    );
+        iOS: getIOSNotificationDetails());
     // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
     final scheduledDate = tz.TZDateTime.from(notification.firesAt!, location);
     // Add Notification Firebase
     _userDataService.addLocalNotification(currentUser.id!, notification);
     // Scheduling Notification
-    _notificationsPlugin.zonedSchedule(
-        notification.id!,
-        notification.title,
-        notification.body,
-        scheduledDate,
-        platformChannelSpecifics,
+    _notificationsPlugin.zonedSchedule(notification.id!, notification.title,
+        notification.body, scheduledDate, platformChannelSpecifics,
         payload: notification.payload,
         androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
-    );
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
 
   // Local Notification Current User
 
-  Future<void> addEventLocalNotifications(BuildContext context, String eventId, bool? isTrainer) async {
+  Future<void> addEventLocalNotifications(
+      BuildContext context, String eventId, bool? isTrainer) async {
     // Defining Platform Channel Specifics
     var platformChannelSpecifics = NotificationDetails(
         android: getAndroidNotificationDetails(),
-        iOS: getIOSNotificationDetails()
-    );
+        iOS: getIOSNotificationDetails());
     // Getting Event Data
     Event event = await _eventDataService.getSingleEvent(eventId);
     DateTime startDate = DateTime(
@@ -342,25 +363,27 @@ class LocalNotificationService {
     );
     // Send Feedback Notification To Clients
     if (isTrainer == false) {
-      var temp  = event.duration!.toStringAsFixed(2);
+      var temp = event.duration!.toStringAsFixed(2);
       var hour = temp.split(".")[0];
       var min = temp.split(".")[1];
       int hourNumber = int.parse(hour);
       int minNumber = int.parse(min) + 1;
       // Schedule Before Notification
-      DateTime afterDate = startDate.add(Duration(hours: hourNumber, minutes: minNumber));
+      DateTime afterDate =
+          startDate.add(Duration(hours: hourNumber, minutes: minNumber));
       // Notification 1 minute after
       ReceivedNotification notificationAfter = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title: AppLocalizations.of(context)!.afterEventTitleNotification,
         body: AppLocalizations.of(context)!.afterEventBodyNotification,
-        payload: "F-"+event.id!,
+        payload: "F-" + event.id!,
         createdAt: Timestamp.now(),
         firesAt: afterDate,
       );
       // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
       final location = tz.getLocation(timeZoneName!);
-      final scheduledDate = tz.TZDateTime.from(notificationAfter.firesAt!, location);
+      final scheduledDate =
+          tz.TZDateTime.from(notificationAfter.firesAt!, location);
       // Add Notification Firebase
       _userDataService.addLocalNotification(currentUser.id!, notificationAfter);
       // Scheduling Notification
@@ -372,27 +395,38 @@ class LocalNotificationService {
           platformChannelSpecifics,
           payload: notificationAfter.payload,
           androidAllowWhileIdle: true,
-          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
-      );
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime);
       // To make sure not the same Timestamp
       await Future.delayed(const Duration(seconds: 1));
     }
 
     // Schedule Before Notification
     DateTime beforeDate = startDate.subtract(const Duration(hours: 1));
-    String eventTimeTime = StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
+    String eventTimeTime =
+        StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
     // Notification one hour before
     ReceivedNotification notificationBefore = ReceivedNotification(
-      id: DateTime.now().millisecondsSinceEpoch ~/1000,
-      title: AppLocalizations.of(context)!.beforeEventTitleNotification(event.title!, eventTimeTime),
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: AppLocalizations.of(context)!
+          .beforeEventTitleNotification(event.title!, eventTimeTime),
+      /*title: '⚠️ 🏋️‍ ' +
+          event.title! +
+          ' a las ' +
+          eventTimeTime.toString() +
+          ' 🏋️‍ ⚠️ ',*/
       body: AppLocalizations.of(context)!.beforeEventBodyNotification,
+      /*  body:
+          'Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles',*/
+
       payload: event.id!,
       createdAt: Timestamp.now(),
       firesAt: beforeDate,
     );
     // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
     final location = tz.getLocation(timeZoneName!);
-    final scheduledDate = tz.TZDateTime.from(notificationBefore.firesAt!, location);
+    final scheduledDate =
+        tz.TZDateTime.from(notificationBefore.firesAt!, location);
     // Add Notification Firebase
     _userDataService.addLocalNotification(currentUser.id!, notificationBefore);
     // Scheduling Notification
@@ -404,25 +438,101 @@ class LocalNotificationService {
         platformChannelSpecifics,
         payload: notificationBefore.payload,
         androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime
-    );
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+  }
 
+  Future<void> addEventLocalNotificationsCubit(
+      BuildContext context,
+      String eventId,
+      bool? isTrainer,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
+    // Defining Platform Channel Specifics
+    var platformChannelSpecifics = NotificationDetails(
+        android: getAndroidNotificationDetails(),
+        iOS: getIOSNotificationDetails());
+
+    // Send Feedback Notification To Clients
+    if (isTrainer == false) {
+      /*
+      var temp = event.duration!.toStringAsFixed(2);
+      var hour = temp.split(".")[0];
+      var min = temp.split(".")[1];
+      int hourNumber = int.parse(hour);
+      int minNumber = int.parse(min) + 1;
+      // Schedule Before Notification
+      DateTime afterDate =
+          startDate.add(Duration(hours: hourNumber, minutes: minNumber));
+      // Notification 1 minute after
+      
+      ReceivedNotification notificationAfter = ReceivedNotification(
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title: AppLocalizations.of(context)!.afterEventTitleNotification,
+        body: AppLocalizations.of(context)!.afterEventBodyNotification,
+        payload: "F-" + event.id!,
+        createdAt: Timestamp.now(),
+        firesAt: afterDate,
+      );*/
+      // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
+      final location = tz.getLocation(timeZoneName!);
+      final scheduledDate =
+          tz.TZDateTime.from(notificationAfter.firesAt!, location);
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(currentUser.id!, notificationAfter);
+      // Scheduling Notification
+      _notificationsPlugin.zonedSchedule(
+          notificationAfter.id!,
+          notificationAfter.title,
+          notificationAfter.body,
+          scheduledDate,
+          platformChannelSpecifics,
+          payload: notificationAfter.payload,
+          androidAllowWhileIdle: true,
+          uiLocalNotificationDateInterpretation:
+              UILocalNotificationDateInterpretation.absoluteTime);
+      // To make sure not the same Timestamp
+      await Future.delayed(Duration(seconds: 1));
+    }
+
+    // Schedule Before Notification
+
+    // Getting DateTimeTZ from CupertinoSelect scheduleNotifTime
+    final location = tz.getLocation(timeZoneName!);
+    final scheduledDate =
+        tz.TZDateTime.from(notificationBefore.firesAt!, location);
+    // Add Notification Firebase
+    _userDataService.addLocalNotification(currentUser.id!, notificationBefore);
+    // Scheduling Notification
+    _notificationsPlugin.zonedSchedule(
+        notificationBefore.id!,
+        notificationBefore.title,
+        notificationBefore.body,
+        scheduledDate,
+        platformChannelSpecifics,
+        payload: notificationBefore.payload,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
   }
 
   Future<void> deleteEventLocalNotifications(String eventId) async {
     // Find Notifications under this Event Id.
-    List<ReceivedNotification> eventNotifications = await _userDataService.findEventLocalNotification(currentUser.id!, eventId);
+    List<ReceivedNotification> eventNotifications = await _userDataService
+        .findEventLocalNotification(currentUser.id!, eventId);
     // Delete the ones that have been fired
     for (int i = 0; i < eventNotifications.length; i++) {
       ReceivedNotification notif = eventNotifications[i];
-      _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+      _userDataService.deleteLocalNotification(
+          currentUser.id!, notif.id!.toString());
       _notificationsPlugin.cancel(notif.id!);
     }
   }
 
   // Local Notification Other User. Do it Remotely, aka Firebase
 
-  Future<void> addRemoteEventLocalNotifications(BuildContext context, String eventId, String userId, bool isTrainer) async {
+  Future<void> addRemoteEventLocalNotifications(BuildContext context,
+      String eventId, String userId, bool isTrainer) async {
     // Getting Event Data
     Event event = await _eventDataService.getSingleEvent(eventId);
     DateTime startDate = DateTime(
@@ -434,19 +544,23 @@ class LocalNotificationService {
     );
     // Send Feedback Notification To Clients
     if (isTrainer == false) {
-      var temp  = event.duration!.toStringAsFixed(2);
+      var temp = event.duration!.toStringAsFixed(2);
       var hour = temp.split(".")[0];
       var min = temp.split(".")[1];
       int hourNumber = int.parse(hour);
       int minNumber = int.parse(min) + 1;
       // Schedule After Notification
-      DateTime afterDate = startDate.add(Duration(hours: hourNumber, minutes: minNumber));
+      DateTime afterDate =
+          startDate.add(Duration(hours: hourNumber, minutes: minNumber));
       // Notification 1 minute after
       ReceivedNotification notificationAfter = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/1000,
-        title: AppLocalizations.of(context)!.afterEventTitleNotification,
-        body: AppLocalizations.of(context)!.afterEventBodyNotification,
-        payload: "F-"+event.id!,
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        title: '💪 ✅️ Sesión completada ✅️ 💪',
+        //title: AppLocalizations.of(context)!.afterEventTitleNotification, PROBLEMS
+        body:
+            '¿Qué te ha parecido? ¿Demasiado intensa? Comunica tu nivel de esfuerzo a tu entrenador',
+        //body: AppLocalizations.of(context)!.afterEventBodyNotification, PROBLEMS
+        payload: "F-" + event.id!,
         createdAt: Timestamp.now(),
         firesAt: afterDate,
       );
@@ -459,12 +573,22 @@ class LocalNotificationService {
 
     // Schedule Before Notification
     DateTime beforeDate = startDate.subtract(const Duration(hours: 1));
-    String eventTimeTime = StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
+    String eventTimeTime =
+        StringUtils().hourMinutesToString(startDate.hour, startDate.minute);
     // Notification one hour before
     ReceivedNotification notificationBefore = ReceivedNotification(
-      id: DateTime.now().millisecondsSinceEpoch ~/1000,
-      title: AppLocalizations.of(context)!.beforeEventTitleNotification(event.title!, eventTimeTime),
-      body: AppLocalizations.of(context)!.beforeEventBodyNotification,
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      // title: AppLocalizations.of(context)!
+      // .beforeEventTitleNotification(event.title!, eventTimeTime), PROBLEMS
+      // body: AppLocalizations.of(context)!.beforeEventBodyNotification, PROBLEMS
+      title: '⚠️ 🏋️‍ ' +
+          event.title! +
+          ' a las ' +
+          eventTimeTime.toString() +
+          ' 🏋️‍ ⚠️ ',
+      //body: AppLocalizations.of(context)!.beforeEventBodyNotification, PROBLEMS
+      body:
+          'Esta sesión está a punto de empezar. Haz clic para consultar todos los detalles',
       payload: event.id!,
       createdAt: Timestamp.now(),
       firesAt: beforeDate,
@@ -474,9 +598,31 @@ class LocalNotificationService {
     print("Reminder Event Notification Added");
   }
 
-  Future<void> deleteRemoteEventLocalNotifications(String eventId, String userId) async {
+  Future<void> addRemoteEventLocalNotificationsCubit(
+      BuildContext context,
+      String eventId,
+      String userId,
+      bool isTrainer,
+      ReceivedNotification notificationBefore,
+      ReceivedNotification notificationAfter) async {
+    // Send Feedback Notification To Clients
+    if (isTrainer == false) {
+      // Add Notification Firebase
+      _userDataService.addLocalNotification(userId, notificationAfter);
+      // To make sure not the same Timestamp
+      await Future.delayed(Duration(seconds: 1));
+      print("Feedback Event Notification Added");
+    }
+    // Add Notification Firebase
+    _userDataService.addLocalNotification(userId, notificationBefore);
+    print("Reminder Event Notification Added");
+  }
+
+  Future<void> deleteRemoteEventLocalNotifications(
+      String eventId, String userId) async {
     // Find Notifications under this Event Id.
-    List<ReceivedNotification> eventNotifications = await _userDataService.findEventLocalNotification(userId, eventId);
+    List<ReceivedNotification> eventNotifications =
+        await _userDataService.findEventLocalNotification(userId, eventId);
     // Delete the ones that have been fired
     for (int i = 0; i < eventNotifications.length; i++) {
       ReceivedNotification notif = eventNotifications[i];
@@ -486,7 +632,8 @@ class LocalNotificationService {
 
   // ADD/DELETE BONO REMOTE NOTIFICATION
 
-  Future<void> addRemoteBonoExpirationLocalNotification(BuildContext context, String purchaseId) async {
+  Future<void> addRemoteBonoExpirationLocalNotification(
+      BuildContext context, String purchaseId) async {
     // Getting Purchase Data
     Purchase purchase = await _purchaseDataService.getPurchaseInfo(purchaseId);
     // Send only if there is an expiration condition
@@ -499,17 +646,22 @@ class LocalNotificationService {
       Bono bono = purchase.bono!;
       // Setting the three differents notifications
       DateTime purchasedDate = purchase.purchasedAt!.toDate();
-      purchasedDate = DateTime(purchasedDate.year, purchasedDate.month, purchasedDate.day+1, 9);
-      DateTime expirationDate = purchasedDate.add(Duration(days:bono.condition!.expirationTime!));
+      purchasedDate = DateTime(
+          purchasedDate.year, purchasedDate.month, purchasedDate.day + 1, 9);
+      DateTime expirationDate =
+          purchasedDate.add(Duration(days: bono.condition!.expirationTime!));
+
       /// NOTIFICATION 1 DAY BEFORE
       DateTime oneDayBefore = expirationDate.subtract(const Duration(days: 1));
       // This means the Bono has finished with this session
-      title = AppLocalizations.of(context)!.bonoExpirationTomorrowTitleNotification(bono.title!.toUpperCase());
-      body = AppLocalizations.of(context)!.bonoExpirationTomorrowBodyNotification;
-      payload = "E-"+brandId;
+      title = AppLocalizations.of(context)!
+          .bonoExpirationTomorrowTitleNotification(bono.title!.toUpperCase());
+      body =
+          AppLocalizations.of(context)!.bonoExpirationTomorrowBodyNotification;
+      payload = "E-" + brandId;
       // Notification 1 Day before
       ReceivedNotification notificationOneDayBefore = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title: title,
         body: body,
         payload: payload,
@@ -518,18 +670,21 @@ class LocalNotificationService {
         purchaseId: purchase.id,
       );
       // Add Notification Firebase
-      _userDataService.addLocalNotification(purchase.userId!, notificationOneDayBefore);
+      _userDataService.addLocalNotification(
+          purchase.userId!, notificationOneDayBefore);
       // To make sure not the same Timestamp
       await Future.delayed(const Duration(seconds: 1));
+
       /// NOTIFICATION 7 DAYS BEFORE
       DateTime oneWeekBefore = expirationDate.subtract(const Duration(days: 1));
       // This means the Bono has finished with this session
-      title = AppLocalizations.of(context)!.bonoExpirationWeekTitleNotification(bono.title!.toUpperCase());
+      title = AppLocalizations.of(context)!
+          .bonoExpirationWeekTitleNotification(bono.title!.toUpperCase());
       body = AppLocalizations.of(context)!.bonoExpirationWeekBodyNotification;
-      payload = "E-"+brandId;
+      payload = "E-" + brandId;
       // Notification 1 Day before
       ReceivedNotification notificationOneWeekBefore = ReceivedNotification(
-        id: DateTime.now().millisecondsSinceEpoch ~/1000,
+        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title: title,
         body: body,
         payload: payload,
@@ -538,18 +693,21 @@ class LocalNotificationService {
         purchaseId: purchase.id,
       );
       // Add Notification Firebase
-      _userDataService.addLocalNotification(purchase.userId!, notificationOneWeekBefore);
+      _userDataService.addLocalNotification(
+          purchase.userId!, notificationOneWeekBefore);
     }
   }
 
-  Future<void> deleteRemoteBonoExpirationLocalNotification(String userId, String bonoId, String purchaseId) async {
+  Future<void> deleteRemoteBonoExpirationLocalNotification(
+      String userId, String bonoId, String purchaseId) async {
     // Find Notifications under this Event Id.
-    List<ReceivedNotification> bonoNotifications = await _userDataService.findBonoLocalNotification(userId, bonoId, purchaseId);
+    List<ReceivedNotification> bonoNotifications = await _userDataService
+        .findBonoLocalNotification(userId, bonoId, purchaseId);
     // Delete the ones that have been fired
     for (int i = 0; i < bonoNotifications.length; i++) {
       ReceivedNotification notif = bonoNotifications[i];
-      _userDataService.deleteLocalNotification(currentUser.id!, notif.id!.toString());
+      _userDataService.deleteLocalNotification(
+          currentUser.id!, notif.id!.toString());
     }
   }
-
 }

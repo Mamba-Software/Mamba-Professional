@@ -25,7 +25,9 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/Purc
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/PurchasesStats/TotalBenefit.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/DayOffer.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Stats/SessionsStats/TimeToTimeOffer.dart';
-import '../../../../../../../Data/Models/Event.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
+import '../../../../../Events/crud_events/models/Event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../../Globals/Utils/Strings/StringUtils.dart';
 import '../../../../../Globals/Widgets/GroupOfComponents/Stats/ClientsStats/AgeRange.dart';
@@ -344,28 +346,8 @@ class _StatsState extends State<Stats> with SingleTickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      CounterBadgeIcon(
-                        counter: unreadNotifications,
-                        top: 5,
-                        right: 7,
-                        child: IconButton(
-                          icon: Icon(Icons.notifications, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.zero,
-                          onPressed: () => navigateToNotificationsScreen(context),
-                        ),
-                      ),
-                      CounterBadgeIcon(
-                        counter: unreadChats,
-                        top: 5,
-                        right: 7,
-                        child: IconButton(
-                          icon: Icon(Icons.chat, color: AppColors.white, size: MediaQuery.of(context).size.width*0.06),
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.zero,
-                          onPressed: () => navigateToChatScreen(context),
-                        ),
-                      ),
+                      unreadNotifiactions(context),
+                      unreadChats(context),
                       SizedBox(width: MediaQuery.of(context).size.width*0.03),
                       GestureDetector(
                         onTap: () => navigateToProfileScreen(context),

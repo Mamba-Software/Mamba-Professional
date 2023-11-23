@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mamba_castelldefels/Auth/cubit/AuthCubit.dart';
+import 'package:mamba_castelldefels/Auth/views/mobile/Login.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
 import 'package:mamba_castelldefels/Data/DataService/User/UserDataService.dart';
@@ -14,7 +16,6 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Data/Models/Brand.dart';
 import 'package:mamba_castelldefels/Globals/Providers/LanguageProvider.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/Login.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Feedback/FeedBack.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/Profile/ProfileScreens/Settings/SettingsLanguage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -69,6 +70,7 @@ class _SettingsState extends State<Settings> {
         CupertinoPageRoute<String>(
           builder: (context) => const SettingsYourData(),
         ));
+        ));
   }
 
   // Navigate to Privacy Screen
@@ -78,6 +80,7 @@ class _SettingsState extends State<Settings> {
         context,
         CupertinoPageRoute<String>(
           builder: (context) => const SettingsPrivacy(),
+        ));
         ));
   }
 
@@ -89,6 +92,7 @@ class _SettingsState extends State<Settings> {
         CupertinoPageRoute<String>(
           builder: (context) => const SettingsLanguage(),
         ));
+        ));
   }
 
   // Navigate to Theme Screen
@@ -99,6 +103,7 @@ class _SettingsState extends State<Settings> {
         CupertinoPageRoute<String>(
           builder: (context) => const SettingsTheme(),
         ));
+        ));
   }
 
   // Navigate to Theme Screen
@@ -108,6 +113,7 @@ class _SettingsState extends State<Settings> {
         context,
         CupertinoPageRoute<String>(
           builder: (context) => const FeedBack(),
+        ));
         ));
   }
 
@@ -598,6 +604,10 @@ class _SettingsState extends State<Settings> {
               ),
             ),
           );
+                ],
+              ),
+            ),
+          );
   }
 }
 
@@ -630,6 +640,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
   @override
   Widget build(BuildContext context) {
     if (firstBuild) {
+    if (firstBuild) {
       deleteTemp = "";
       firstBuild = false;
     }
@@ -639,6 +650,8 @@ class _DeleteDialogState extends State<DeleteDialog> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Theme.of(context).scaffoldBackgroundColor,
           borderRadius: BorderRadius.circular(15),
           color: Theme.of(context).scaffoldBackgroundColor,
         ),
@@ -658,8 +671,22 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         color: Colors.red, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
+                  child: Text(
+                    AppLocalizations.of(context)!.wantDeleteUser,
+                    style: Theme.of(context).textTheme.headline3?.copyWith(
+                        color: Colors.red, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 Flexible(
+                  child: Text(
+                    "${AppLocalizations.of(context)!.onlyAllowed} ",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(height: 1.5),
+                    textAlign: TextAlign.center,
+                  ),
                   child: Text(
                     "${AppLocalizations.of(context)!.onlyAllowed} ",
                     style: Theme.of(context)
@@ -678,8 +705,18 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         ?.copyWith(height: 1.5),
                     textAlign: TextAlign.center,
                   ),
+                  child: Text(
+                    "${AppLocalizations.of(context)!.writeDeleteUser} ",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(height: 1.5),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 Padding(
+                  padding:
+                      const EdgeInsets.only(top: 20.0, left: 15, right: 15),
                   padding:
                       const EdgeInsets.only(top: 20.0, left: 15, right: 15),
                   child: Row(
@@ -691,12 +728,19 @@ class _DeleteDialogState extends State<DeleteDialog> {
                           controller: deleteController,
                           onChanged: (val) {
                             setState(() => {deleteTemp = val});
+                            setState(() => {deleteTemp = val});
                             if (val.length < 6 || hasBrand) {
+                              setState(() => {canDelete = false});
                               setState(() => {canDelete = false});
                             } else {
                               setState(() => {canDelete = true});
+                              setState(() => {canDelete = true});
                             }
                           },
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(color: Colors.red),
                           style: Theme.of(context)
                               .textTheme
                               .bodyText2
@@ -708,12 +752,22 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 .textTheme
                                 .bodyText2
                                 ?.copyWith(color: Colors.red),
+                            hintText:
+                                AppLocalizations.of(context)!.passworRepeat,
+                            hintStyle: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                ?.copyWith(color: Colors.red),
                             enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
                               borderSide:
                                   const BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  const BorderSide(color: Colors.red, width: 1),
                               borderSide:
                                   const BorderSide(color: Colors.red, width: 1),
                               borderRadius: BorderRadius.circular(10.0),
@@ -727,10 +781,16 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                             ? Icons.visibility
                                             : Icons.visibility_off,
                                         color: AppColors.red),
+                                        // Based on passwordVisible state choose the icon
+                                        _passwordVisible
+                                            ? Icons.visibility
+                                            : Icons.visibility_off,
+                                        color: AppColors.red),
                                     onPressed: () {
                                       setState(() {
                                         _passwordVisible = !_passwordVisible;
                                       });
+                                    })),
                                     })),
                           ),
                         ),
@@ -754,6 +814,22 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         ),
                       )
                     : Container(),
+                wrongPassword
+                    ? Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20.0, left: 10, right: 10),
+                          child: Text(
+                            "${AppLocalizations.of(context)!.passwordNotSameError} ",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2
+                                ?.copyWith(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    : Container(),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Row(
@@ -761,6 +837,34 @@ class _DeleteDialogState extends State<DeleteDialog> {
                     children: [
                       FloatingActionButton.extended(
                         heroTag: "39",
+                        label: !isLoading
+                            ? Text(
+                                AppLocalizations.of(context)!.delete,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2
+                                    ?.copyWith(color: AppColors.white),
+                              )
+                            : Container(
+                                width: MediaQuery.of(context).size.width * 0.20,
+                                child: Center(
+                                  child: SizedBox(
+                                    width: 25,
+                                    height: 25,
+                                    child: CircularProgressIndicator(
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        icon: !isLoading
+                            ? Icon(Icons.delete_outline,
+                                size: MediaQuery.of(context).size.width * 0.06)
+                            : Container(),
+                        backgroundColor:
+                            canDelete ? Colors.red : Colors.red[200],
                         label: !isLoading
                             ? Text(
                                 AppLocalizations.of(context)!.delete,
@@ -860,9 +964,91 @@ class _DeleteDialogState extends State<DeleteDialog> {
                                 }
                               }
                             : null,
+                        onPressed: canDelete
+                            ? () async {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                // Delete Function
+                                bool result;
+                                if (isGoogle) {
+                                  result =
+                                      await _userDataService.deleteUserGoogle();
+                                  googleSignIn.signOut();
+                                } else {
+                                  result = await _userDataService
+                                      .deleteUser(deleteTemp);
+                                  await _userDataService
+                                      .deleteUserNickname(currentUser.nick!);
+                                }
+                                if (!result) {
+                                  setState(() {
+                                    isLoading = false;
+                                    wrongPassword = true;
+                                  });
+                                } else {
+                                  if (hasBrand) {
+                                    if (currentUser.isTrainer!) {
+                                      Brand? result = await _brandDataService
+                                          .checkUserIsBrandCreator(
+                                              currentUser.id!);
+                                      if (result != null) {
+                                        await _brandDataService
+                                            .deleteBrand(result.id!);
+                                      } else {
+                                        NotificationService().userLeavesBrand(
+                                            currentUser.id!, currentBrand.id!);
+                                        await _eventDataService
+                                            .deleteUserFromUpcomingEvents(
+                                                currentUser.id!,
+                                                currentUser.isTrainer!);
+                                        await _brandDataService
+                                            .deleteUserFromBrand(
+                                                currentUser.id!,
+                                                currentBrand.id!);
+                                      }
+                                    } else {
+                                      NotificationService().userLeavesBrand(
+                                          currentUser.id!, currentBrand.id!);
+                                      await _eventDataService
+                                          .deleteUserFromUpcomingEvents(
+                                              currentUser.id!,
+                                              currentUser.isTrainer!);
+                                      await _brandDataService
+                                          .deleteUserFromBrand(currentUser.id!,
+                                              currentBrand.id!);
+                                    }
+                                  }
+                                  currentUser.setBrandList = [];
+                                  mixpanel!.track(
+                                      'user_profile_settings_delete_account_completed');
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    CupertinoPageRoute<void>(
+                                      builder: (context) => const Login(),
+                                      settings:
+                                          const RouteSettings(name: 'Login'),
+                                    ),
+                                    (_) => false,
+                                  );
+                                }
+                              }
+                            : null,
                       ),
                       FloatingActionButton.extended(
                         heroTag: "40",
+                        icon: Icon(
+                          Icons.cancel_outlined,
+                          size: MediaQuery.of(context).size.width * 0.06,
+                        ),
+                        label: Text(
+                          AppLocalizations.of(context)!.cancel,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              ?.copyWith(
+                                  color: Theme.of(context).primaryColorDark),
+                        ),
                         icon: Icon(
                           Icons.cancel_outlined,
                           size: MediaQuery.of(context).size.width * 0.06,
@@ -905,11 +1091,17 @@ class _DeleteDialogState extends State<DeleteDialog> {
                               color: Colors.white,
                               size: 45,
                             ), // icon
+                            child: const Icon(
+                              Icons.delete_outline,
+                              color: Colors.white,
+                              size: 45,
+                            ), // icon
                           ),
                         ),
                       ),
                     ),
                   ],
+                ))
                 ))
           ],
         ),
@@ -934,6 +1126,8 @@ class LanguagePickerWidget extends StatefulWidget {
   ValueChanged<bool?> idiomaChanged;
   LanguagePickerWidget({Key? key, required this.idiomaChanged})
       : super(key: key);
+  LanguagePickerWidget({Key? key, required this.idiomaChanged})
+      : super(key: key);
   @override
   _LanguagePickerWidgetState createState() => _LanguagePickerWidgetState();
 }
@@ -944,7 +1138,10 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
   bool idiomaChanged = false;
   @override
   resetIdiomaChanged() => {idiomaChanged = false};
+  resetIdiomaChanged() => {idiomaChanged = false};
   Widget build(BuildContext context) {
+    final languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
     final languageProvider =
         Provider.of<LanguageProvider>(context, listen: false);
     _locale = languageProvider.idioma;
@@ -955,13 +1152,55 @@ class _LanguagePickerWidgetState extends State<LanguagePickerWidget> {
       children: [
         _iconLocale(allLocales[0], context),
         SizedBox(width: MediaQuery.of(context).size.width * 0.10),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.10),
         _iconLocale(allLocales[1], context),
       ],
     );
   }
 
   Widget _iconLocale(Locale locale, BuildContext context) {
+
+  Widget _iconLocale(Locale locale, BuildContext context) {
     return SizedBox.fromSize(
+      size: Size(MediaQuery.of(context).size.width * 0.17,
+          MediaQuery.of(context).size.width * 0.17), // button width and height
+      child: ClipOval(
+        child: Material(
+          color: _locale == locale
+              ? Theme.of(context).colorScheme.secondary
+              : Theme.of(context).scaffoldBackgroundColor, // button color
+          child: InkWell(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(locale.languageCode.toUpperCase(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline3
+                            ?.copyWith(fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+              onTap: () => {
+                    setState(() {
+                      _locale = locale;
+                      if (_locale!.languageCode != currentUser.idioma!) {
+                        idiomaChanged = true;
+                      } else {
+                        idiomaChanged = false;
+                      }
+                      mixpanel!.track('user_profile_settings_language',
+                          properties: {'value': _locale!.languageCode});
+                      Provider.of<LanguageProvider>(context, listen: false)
+                          .setLocale(_locale!);
+                      widget.idiomaChanged(idiomaChanged);
+                    }),
+                  }),
+        ),
+      ),
+    );
       size: Size(MediaQuery.of(context).size.width * 0.17,
           MediaQuery.of(context).size.width * 0.17), // button width and height
       child: ClipOval(

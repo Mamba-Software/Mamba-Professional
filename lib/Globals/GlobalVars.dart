@@ -15,7 +15,7 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import '../Data/LibraryModels/lColor.dart';
 
 // IS PRODUCTION ?
-bool isProduction = true;
+bool isProduction = false;
 
 // App Version
 var appVersion = "MAMBA v0.0.17";
@@ -53,10 +53,6 @@ var currentBrand = Brand();
 bool hasBrand = false;
 bool brandIsActive = false;
 
-// Unread Notifications And Chats
-var unreadNotifications = 0;
-var unreadChats = 0;
-
 // Current User Location and TimeZone
 Position? currentPosition;
 String? currentAddress;
@@ -64,6 +60,8 @@ String? timeZoneName;
 
 // Page Controller Mamba Professional
 int pageIndex = 10;
+
+bool isExecuted = false; // Initialize the flag as a member variable.
 
 // Analytics Mix Panel
 Mixpanel? mixpanel;

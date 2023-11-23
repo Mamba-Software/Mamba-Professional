@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Data/DataService/Brand/BrandDataService.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mamba_castelldefels/Data/DataService/Event/EventDataService.dart';
@@ -24,8 +25,10 @@ import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/Ac
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/Dialogs/ActionDialogs/DeleteBrandDialog.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/LoadingViews/LoadingView.dart';
 import 'package:mamba_castelldefels/Globals/Widgets/GroupOfComponents/PayWall/PayWall.dart';
-import 'package:mamba_castelldefels/Screens/Authentication/SplashScreen.dart';
+import 'package:mamba_castelldefels/Auth/views/mobile/SplashScreen.dart';
 import 'package:mamba_castelldefels/Screens/MambaPro/HasBrandScreens/02-Que/012-Logo/Logo.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadChats.dart';
+import 'package:mamba_castelldefels/Notifications/Unread/widgets/unreadNotifications.dart';
 
 // Tus Datos Widget.
 class BrandInfo extends StatefulWidget {
@@ -40,11 +43,20 @@ class BrandInfo extends StatefulWidget {
       required this.pinned,
       required this.pinnedChanged})
       : super(key: key);
+  BrandInfo(
+      {Key? key,
+      this.locale,
+      required this.brandId,
+      required this.pinned,
+      required this.pinnedChanged})
+      : super(key: key);
 
   @override
   _BrandInfoState createState() => _BrandInfoState();
 }
 
+class _BrandInfoState extends State<BrandInfo>
+    with SingleTickerProviderStateMixin {
 class _BrandInfoState extends State<BrandInfo>
     with SingleTickerProviderStateMixin {
   DateFormat formatter = DateFormat('dd/MM/yy');
@@ -76,6 +88,10 @@ class _BrandInfoState extends State<BrandInfo>
   int membersMax = 30;
   bool errorMembers = false;
   // Time Picker Horari de Trabajo
+  DateTime startTime = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0);
+  DateTime endTime = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day, 22, 0);
   DateTime startTime = DateTime(
       DateTime.now().year, DateTime.now().month, DateTime.now().day, 8, 0);
   DateTime endTime = DateTime(
@@ -113,12 +129,23 @@ class _BrandInfoState extends State<BrandInfo>
     // Use the same condition as before to check if AppBar is expanded.
     return _scrollController!.offset >
         (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
+    return _scrollController!.offset >
+        (MediaQuery.of(context).size.height * 0.13 - kToolbarHeight);
   }
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController()
+      ..addListener(
+        () => _isAppBarExpanded
+            ? setState(() {
+                appBarExpanded = true;
+              })
+            : setState(() {
+                appBarExpanded = false;
+              }),
+      );
       ..addListener(
         () => _isAppBarExpanded
             ? setState(() {
@@ -145,10 +172,26 @@ class _BrandInfoState extends State<BrandInfo>
     var dateJoinedSplit = currentBrand.dateJoined!.split("-");
     dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]),
         int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
+    dateJoinedBrand = DateTime(int.parse(dateJoinedSplit[2]),
+        int.parse(dateJoinedSplit[1]), int.parse(dateJoinedSplit[0]), 0, 0);
     // Members Deprecated
     members = currentBrand.maxMembers!;
     membersController.text = currentBrand.maxMembers.toString();
     // Start Time
+    var startHourWS =
+        int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
+    var startMinWS =
+        int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[1]);
+    startTime = DateTime(DateTime.now().year, DateTime.now().month,
+        DateTime.now().day, startHourWS, startMinWS);
+    startTimeController.text =
+        DateFormat('HH:mm', widget.locale!.languageCode).format(DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      startHourWS,
+      startMinWS,
+    ));
     var startHourWS =
         int.parse(currentBrand.workShift[0].toStringAsFixed(2).split(".")[0]);
     var startMinWS =
@@ -217,6 +260,7 @@ class _BrandInfoState extends State<BrandInfo>
     if (currentBrand.directPurchase != null) {
       directPurchase = currentBrand.directPurchase!;
     } else {
+    } else {
       currentBrand.directPurchase = false;
     }
     // Free Session
@@ -245,6 +289,8 @@ class _BrandInfoState extends State<BrandInfo>
       await Navigator.push(
           context,
           CupertinoPageRoute<void>(
+            builder: (context) => Logo(brandId: currentBrand.id!),
+          )).whenComplete(() async {
             builder: (context) => Logo(brandId: currentBrand.id!),
           )).whenComplete(() async {
         await getBrand();
@@ -331,6 +377,7 @@ class _BrandInfoState extends State<BrandInfo>
           SliverAppBar(
             backgroundColor: AppColors.darkGrey,
             expandedHeight: MediaQuery.of(context).size.height * 0.15,
+            expandedHeight: MediaQuery.of(context).size.height * 0.15,
             systemOverlayStyle: SystemUiOverlayStyle.light,
             elevation: 4,
             floating: false,
@@ -339,6 +386,11 @@ class _BrandInfoState extends State<BrandInfo>
             title: AnimatedOpacity(
                 opacity: appBarExpanded ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 200),
+                child: Text(AppLocalizations.of(context)!.settings,
+                    style:
+                        Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
+                              color: AppColors.white,
+                            ))),
                 child: Text(AppLocalizations.of(context)!.settings,
                     style:
                         Theme.of(context).appBarTheme.titleTextStyle?.copyWith(
@@ -355,6 +407,9 @@ class _BrandInfoState extends State<BrandInfo>
                       padding: EdgeInsets.only(
                           left: MediaQuery.of(context).size.width * 0.05,
                           right: MediaQuery.of(context).size.width * 0.025),
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.05,
+                          right: MediaQuery.of(context).size.width * 0.025),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -365,10 +420,16 @@ class _BrandInfoState extends State<BrandInfo>
                                 Theme.of(context).textTheme.headline1?.copyWith(
                                       color: AppColors.white,
                                     ),
+                            style:
+                                Theme.of(context).textTheme.headline1?.copyWith(
+                                      color: AppColors.white,
+                                    ),
                           ),
                           FittedBox(
                             fit: BoxFit.fitHeight,
                             child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.08,
+                              width: MediaQuery.of(context).size.width * 0.11,
                               height: MediaQuery.of(context).size.height * 0.08,
                               width: MediaQuery.of(context).size.width * 0.11,
                               child: TextButton(
@@ -378,12 +439,17 @@ class _BrandInfoState extends State<BrandInfo>
                                   color: AppColors.darkGrey,
                                   size:
                                       MediaQuery.of(context).size.width * 0.07,
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.07,
                                 ),
                               ),
                             ),
                           )
                         ],
                       ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.01,
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.01,
@@ -403,12 +469,17 @@ class _BrandInfoState extends State<BrandInfo>
               builder: (BuildContext innerContext) => Padding(
                 padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width * 0.02),
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.02),
                 child: IconButton(
                     icon: Icon(
                       Icons.menu,
                       color: AppColors.white,
                       size: MediaQuery.of(context).size.height * 0.04,
+                      size: MediaQuery.of(context).size.height * 0.04,
                     ),
+                    onPressed: () =>
+                        mambaProScaffoldKey.currentState?.openDrawer()),
                     onPressed: () =>
                         mambaProScaffoldKey.currentState?.openDrawer()),
               ),
@@ -461,6 +532,7 @@ class _BrandInfoState extends State<BrandInfo>
                   ),
                 ],
               ),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.03),
               SizedBox(width: MediaQuery.of(context).size.width * 0.03),
             ],
           ),
@@ -1885,8 +1957,14 @@ class _BrandInfoState extends State<BrandInfo>
 
   Future selectNumberOfDays() async {
     int? pickedMembers = await showCupertinoModalPopup(
+    int? pickedMembers = await showCupertinoModalPopup(
         context: context,
         builder: (_) => SelectDaysDialog(
+              title: AppLocalizations.of(context)!.select +
+                  " " +
+                  AppLocalizations.of(context)!.days.toLowerCase(),
+              intialDays: bookingWindow - 1,
+            ));
               title: AppLocalizations.of(context)!.select +
                   " " +
                   AppLocalizations.of(context)!.days.toLowerCase(),
@@ -1902,8 +1980,21 @@ class _BrandInfoState extends State<BrandInfo>
   Future<void> navigateToSubscriptionsScreen() async {
     mixpanel!.track('brand_see_paywall');
     await navigateToPayWall(context);
+    mixpanel!.track('brand_see_paywall');
+    await navigateToPayWall(context);
   }
 
+  Widget textToShow() {
+    return Text(
+      ShowTextExpired
+          ? AppLocalizations.of(context)!.subscriptionExpired
+          : AppLocalizations.of(context)!.noSubscription,
+      style: Theme.of(context)
+          .textTheme
+          .bodyText2!
+          .copyWith(color: Theme.of(context).colorScheme.secondary),
+      textAlign: TextAlign.center,
+    );
   Widget textToShow() {
     return Text(
       ShowTextExpired
@@ -1932,6 +2023,7 @@ class _BrandInfoState extends State<BrandInfo>
     }
     if (membersController.text.isEmpty) {
       setState(() {
+        errorMembers = true;
         errorMembers = true;
       });
       return false;
@@ -1965,11 +2057,15 @@ class _BrandInfoState extends State<BrandInfo>
   }
 
   Widget freeTrialMamba() {
+  Widget freeTrialMamba() {
     return GestureDetector(
       onTap: () async {
         await navigateToPayWall(context);
       },
       child: Container(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+        height: MediaQuery.of(context).size.height * 0.1,
+        width: MediaQuery.of(context).size.width * 0.9,
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
         height: MediaQuery.of(context).size.height * 0.1,
         width: MediaQuery.of(context).size.width * 0.9,
@@ -1981,10 +2077,19 @@ class _BrandInfoState extends State<BrandInfo>
           border: Border.all(
               color: Theme.of(context).colorScheme.secondary.withOpacity(0.6),
               width: 2),
+          border: Border.all(
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.6),
+              width: 2),
         ),
         child: Center(
           child: ListTile(
             title: Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.width * 0.01),
+              child: Text(AppLocalizations.of(context)!.chooseYourPlan,
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                      color: AppColors.mainColor, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.left),
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).size.width * 0.01),
               child: Text(AppLocalizations.of(context)!.chooseYourPlan,
@@ -1999,12 +2104,20 @@ class _BrandInfoState extends State<BrandInfo>
                   color: AppColors.mainColor,
                   fontWeight: FontWeight.normal,
                   fontSize: 12),
+              AppLocalizations.of(context)!
+                  .freeTrialDaysLeft(difference.toString()),
+              style: Theme.of(context).textTheme.caption!.copyWith(
+                  color: AppColors.mainColor,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 12),
             ),
             trailing: GestureDetector(
               onTap: () async {
                 await navigateToPayWall(context);
               },
               child: Container(
+                height: MediaQuery.of(context).size.height * 0.05,
+                width: MediaQuery.of(context).size.width * 0.2,
                 height: MediaQuery.of(context).size.height * 0.05,
                 width: MediaQuery.of(context).size.width * 0.2,
                 decoration: BoxDecoration(
@@ -2015,7 +2128,13 @@ class _BrandInfoState extends State<BrandInfo>
                 ),
                 child: Center(
                     child: Text(
+                child: Center(
+                    child: Text(
                   AppLocalizations.of(context)!.subscriptionsAppBar,
+                  style: Theme.of(context).textTheme.caption!.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15),
                   style: Theme.of(context).textTheme.caption!.copyWith(
                       color: AppColors.white,
                       fontWeight: FontWeight.bold,
@@ -2037,6 +2156,10 @@ class _BrandInfoState extends State<BrandInfo>
                 brandId: currentBrand.id!,
               ),
             ));
+              builder: (context) => PayWall(
+                brandId: currentBrand.id!,
+              ),
+            ));
       },
       child: Material(
         elevation: 4,
@@ -2048,23 +2171,36 @@ class _BrandInfoState extends State<BrandInfo>
             maxHeight: MediaQuery.of(context).size.height * 0.35,
             maxWidth: MediaQuery.of(context).size.width * 0.9,
             minWidth: MediaQuery.of(context).size.width * 0.9,
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+            minWidth: MediaQuery.of(context).size.width * 0.9,
           ),
           decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
             borderRadius:
                 const BorderRadius.all(Radius.circular(15.0)), // BorderRadius
           ), // BoxDecoration
+            borderRadius:
+                const BorderRadius.all(Radius.circular(15.0)), // BorderRadius
+          ), // BoxDecoration
           child: Container(
+            margin: const EdgeInsetsDirectional.only(
+                start: 1, end: 1, bottom: 1, top: 1),
             margin: const EdgeInsetsDirectional.only(
                 start: 1, end: 1, bottom: 1, top: 1),
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height,
               maxWidth: MediaQuery.of(context).size.width * 0.9,
               minWidth: MediaQuery.of(context).size.width * 0.9,
+              maxWidth: MediaQuery.of(context).size.width * 0.9,
+              minWidth: MediaQuery.of(context).size.width * 0.9,
             ),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
             padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.02),
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius:
+                  const BorderRadius.all(Radius.circular(15.0)), // BorderRadius
+            ), // BoxDecoration
               borderRadius:
                   const BorderRadius.all(Radius.circular(15.0)), // BorderRadius
             ), // BoxDecoration
@@ -2082,7 +2218,20 @@ class _BrandInfoState extends State<BrandInfo>
                   title: Text('Disfruta de MAMBA SIN LIMITE',
                       style: Theme.of(context).textTheme.bodyText1,
                       textAlign: TextAlign.left),
+                      Constants.subscriptionImage,
+                    ),
+                  ),
+                  title: Text('Disfruta de MAMBA SIN LIMITE',
+                      style: Theme.of(context).textTheme.bodyText1,
+                      textAlign: TextAlign.left),
                   subtitle: Text(
+                      'Tienes hasta el ' +
+                          ' ' +
+                          formatter
+                              .format(currentBrand.endDatePay!.toDate())
+                              .toString() +
+                          ' para suscribirte a un plan',
+                      style: Theme.of(context).textTheme.caption),
                       'Tienes hasta el ' +
                           ' ' +
                           formatter
