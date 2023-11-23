@@ -357,10 +357,12 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                       Localizations.localeOf(context).languageCode,
                     ).format(dateTimeStart)) +
                     " " +
-                    StringUtils().toCapitalized(DateFormat(
-                      'MMMM',
-                      Localizations.localeOf(context).languageCode,
-                    ).format(dateTimeStart)) +
+                    StringUtils()
+                        .toCapitalized(DateFormat(
+                          'MMMM',
+                          Localizations.localeOf(context).languageCode,
+                        ).format(dateTimeStart))
+                        .substring(0, 3) +
                     " ",
                 style: Theme.of(context)
                     .textTheme
@@ -488,19 +490,13 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
     }
   }
 
-  Widget _buildTitleFromDate(
+  
+   Widget _buildTitleFromDate(
       DateTime dateTimeStart, DateTime dateTimeEnd, DateTime middleMonthDate) {
     return Container(
       color: AppColors.darkGrey,
       padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.00),
       child: DropdownButton2(
-        dropdownWidth: MediaQuery.of(context).size.width * 0.5,
-        dropdownDecoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.all(
-            Radius.circular(15),
-          ),
-        ),
         // Initial Value
         value: selectedValue,
         style: Theme.of(context)
@@ -509,12 +505,6 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
             ?.copyWith(color: AppColors.white),
         underline: Container(color: Colors.transparent),
         isExpanded: false,
-        dropdownElevation: 4,
-        offset: const Offset(0, 0),
-        // Down Arrow Icon
-        icon: FaIcon(FontAwesomeIcons.chevronDown,
-            size: MediaQuery.of(context).size.width * 0.03,
-            color: Colors.transparent),
         // Array list of items
         selectedItemBuilder: (BuildContext context) {
           return items.map((String item) {
@@ -524,6 +514,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 children: [
                   _buildTitleText(displayDateTimeStart, displayDateTimeEnd,
                       middleMonthDate),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.015),
                   FaIcon(FontAwesomeIcons.chevronDown,
                       size: MediaQuery.of(context).size.width * 0.03,
                       color: AppColors.white),
@@ -635,15 +626,39 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
                 ),
               )),
         ],
-        customItemsHeights: [
-          MediaQuery.of(context).size.height * 0.06,
-          8,
-          MediaQuery.of(context).size.height * 0.06,
-          8,
-          MediaQuery.of(context).size.height * 0.06,
-          8,
-          MediaQuery.of(context).size.height * 0.06,
-        ],
+        // Down Arrow Icon
+        iconStyleData: IconStyleData(
+          icon: const FaIcon(FontAwesomeIcons.chevronDown,
+              color: Colors.transparent),
+          iconSize: MediaQuery.of(context).size.width * 0.03,
+          iconEnabledColor: Colors.transparent,
+          iconDisabledColor: Colors.transparent,
+        ),
+        // Drop Down Style
+        dropdownStyleData: DropdownStyleData(
+            maxHeight: MediaQuery.of(context).size.height * 0.3,
+            width: MediaQuery.of(context).size.width * 0.5,
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+            offset: const Offset(0, 0),
+            elevation: 4),
+        menuItemStyleData: MenuItemStyleData(
+          height: 40,
+          customHeights: [
+            MediaQuery.of(context).size.height * 0.06,
+            8,
+            MediaQuery.of(context).size.height * 0.06,
+            8,
+            MediaQuery.of(context).size.height * 0.06,
+            8,
+            MediaQuery.of(context).size.height * 0.06,
+          ],
+          padding: EdgeInsets.only(left: 14, right: 14),
+        ),
         // After selecting the desired option,it will
         // change button value to selected value
         onChanged: (newValue) {
@@ -663,6 +678,7 @@ class _BrandCalendarWidgetState extends State<BrandCalendarWidget> {
       ),
     );
   }
+
 
   Widget _buildEventContainer(
       CalendarAppointmentDetails details, List<Event> eventsList) {

@@ -156,9 +156,6 @@ class _MambaState extends State<Mamba> with WidgetsBindingObserver {
         const Duration(milliseconds: 1000),
         () {
           _dynamicLinkUtils.retrieveDynamicLink();
-        const Duration(milliseconds: 1000),
-        () {
-          _dynamicLinkUtils.retrieveDynamicLink();
         },
       );
     }

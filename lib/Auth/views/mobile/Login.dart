@@ -250,17 +250,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                 if (!currentFocus.hasPrimaryFocus) {
                   currentFocus.unfocus();
                 }
-                if (Localizations.localeOf(context).languageCode == 'es') {
-                  if (!await launchUrl(Uri.parse(termsAndConditionsES)))
-                    throw 'Could not launch $termsAndConditionsES';
-                } else if (Localizations.localeOf(context).languageCode ==
-                    'ca') {
-                  if (!await launchUrl(Uri.parse(termsAndConditionsCA)))
-                    throw 'Could not launch $termsAndConditionsCA';
-                } else {
-                  if (!await launchUrl(Uri.parse(termsAndConditionsES)))
-                    throw 'Could not launch $termsAndConditionsES';
-                }
+                if (!await launchUrl(Uri.parse(termsAndConditions))) throw 'Could not launch $termsAndConditions';
               },
               child: RichText(
                 textAlign: TextAlign.center,
@@ -490,16 +480,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
               if (!currentFocus.hasPrimaryFocus) {
                 currentFocus.unfocus();
               }
-              if (Localizations.localeOf(context).languageCode == 'es') {
-                if (!await launchUrl(Uri.parse(termsAndConditionsES)))
-                  throw 'Could not launch $termsAndConditionsES';
-              } else if (Localizations.localeOf(context).languageCode == 'ca') {
-                if (!await launchUrl(Uri.parse(termsAndConditionsCA)))
-                  throw 'Could not launch $termsAndConditionsCA';
-              } else {
-                if (!await launchUrl(Uri.parse(termsAndConditionsES)))
-                  throw 'Could not launch $termsAndConditionsES';
-              }
+              if (!await launchUrl(Uri.parse(termsAndConditions))) throw 'Could not launch $termsAndConditions';
             },
             child: RichText(
               textAlign: TextAlign.center,
