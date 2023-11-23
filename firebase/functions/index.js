@@ -1971,7 +1971,11 @@ exports.userJoinsEvent = functions
       const userDoc = userSnapshot.data();
       // Get Event User Data
       const eventUserSnapshot = await db.collection("Events").doc(eventId).collection("Users").doc(userId).get();
-      const eventUserDoc = eventUserSnapshot.data();
+      const eventUserDoc = eventUserSnapshot.data();      
+      let freeSession = false;
+      if (eventUserDoc.freeSession == true) {
+        freeSession = true;
+      }      
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("Events").doc(eventId).collection("Brands").get();
       // Get Data of the Event Locations
@@ -2024,7 +2028,7 @@ exports.userJoinsEvent = functions
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
-        "freeSession": eventUserDoc.freeSession,
+        "freeSession": freeSession,
       });
       // If Event Private
       // Add to Users/Events/Private Events/PrivateEvents
@@ -2050,7 +2054,7 @@ exports.userJoinsEvent = functions
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
         "brandID": eventDoc.brandID,
-        "freeSession": eventUserDoc.freeSession,
+        "freeSession": freeSession,
       });
      }
       // Update Number of Client and Trainers on Each of Event Subcollection
@@ -2132,22 +2136,22 @@ exports.userJoinsEvent = functions
           "numClients": numClients,
           "numTrainers": numTrainers,
         });
-          // If Event Private
-          // Update Cover Data Also
-          if (eventDoc.isPrivate == true) {
-            await db
-            .collection("Locations")
-            .doc(id)
-            .collection("Events")
-            .doc("Private Events")
-            .collection("Private Events")
-            .doc(eventId)
-            .update({
-              "numClients": numClients,
-              "numTrainers": numTrainers,
-            });
-          }
+        // If Event Private
+        // Update Cover Data Also
+        if (eventDoc.isPrivate == true) {
+          await db
+          .collection("Locations")
+          .doc(id)
+          .collection("Events")
+          .doc("Private Events")
+          .collection("Private Events")
+          .doc(eventId)
+          .update({
+            "numClients": numClients,
+            "numTrainers": numTrainers,
+          });
         }
+      }
       
       // Send Notifications
       if (userDoc.isTrainer == false) {
@@ -4308,6 +4312,10 @@ exports.zzzzUserJoinsEvent = functions
       // Get Event User Data
       const eventUserSnapshot = await db.collection("7777 Events").doc(eventId).collection("Users").doc(userId).get();
       const eventUserDoc = eventUserSnapshot.data();
+      let freeSession = false;
+      if (eventUserDoc.freeSession == true) {
+        freeSession = true;
+      } 
       // Get Event Brands Data
       const eventBrandsSnapshot = await db.collection("7777 Events").doc(eventId).collection("Brands").get();
       // Get Data of the Event Locations
@@ -4351,7 +4359,7 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
-        "freeSession": eventUserDoc.freeSession,
+        "freeSession": freeSession,
         //TODO INTEGRATION .12
         "brandID": eventDoc.brandID,
       });
@@ -4379,7 +4387,7 @@ exports.zzzzUserJoinsEvent = functions
         "numTrainers": numTrainers,
         "numClients": numClients,
         "maxMembers": eventDoc.maxMembers,
-        "freeSession": eventUserDoc.freeSession,
+        "freeSession": freeSession,
         //TODO INTEGRATION .12
         "brandID": eventDoc.brandID,
       });
